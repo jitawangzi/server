@@ -1,7 +1,6 @@
 :: 更新
-c:
 
-cd %metafolder%
+cd /D %metafolder%
 git pull
 :: svn revert -R .
 :: svn cleanup .
@@ -10,16 +9,16 @@ git pull
 
 :: pull 一下，防止冲突
 
-:: cd %workspace%\util
+:: cd /D %workspace%\util
 :: git pull
 
-:: cd %workspace%\protocol
+:: cd /D %workspace%\protocol
 :: git pull
 
-:: cd %workspace%\core
+:: cd /D %workspace%\core
 :: git pull
 
-:: cd %workspace%\game
+:: cd /D %workspace%\game
 :: git pull
 
 call %workspace%\game\tool\copy.bat

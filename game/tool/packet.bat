@@ -7,7 +7,7 @@ call %workspace%\game\tool\packet-protocol.bat
 
 call %workspace%\game\tool\packet-core.bat
 
-cd %workspace%\game
+cd /D %workspace%\game
 :: call %workspace%\game\tool\ant\bin\ant -buildfile=build.xml
 :: 指定assembly插件的描述文件xml 和服务器名
 mvn clean install %game.assembly.descriptor% %game.server%

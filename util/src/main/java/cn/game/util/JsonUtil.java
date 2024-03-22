@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.WritableTypeId;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -72,40 +74,18 @@ public class JsonUtil {
 		}
 	}
 
-	public static void main(String[] args) {
-		BitSet set = new BitSet();
-		set.set(1, true);
-		String jsonString = toJsonString(set);
-		System.err.println(jsonString);
-	}
-
 	// 自定义 BitSet 序列化器
 	public static class BitSetSerializer extends JsonSerializer<BitSet> {
 		@Override
 		public void serialize(BitSet value, JsonGenerator gen, SerializerProvider serializers)
 				throws IOException, JsonProcessingException {
-//			gen.writeString(value.toString());
 			gen.writeBinary(value.toByteArray());
 		}
 
 		@Override
 		public void serializeWithType(BitSet value, JsonGenerator g, SerializerProvider provider,
 				TypeSerializer typeSer) throws IOException {
-
-			// 在此实现对象的序列化逻辑，并指定类型信息
-			g.writeStartObject();
-
-			// 写入类型信息
-			typeSer.writeTypePrefixForObject(value, g);
-
-			// 写入对象的普通字段
-			serialize(value, g, provider);
-
-			// 写入类型信息
-			typeSer.writeTypeSuffixForObject(value, g);
-
-			g.writeEndObject();
-
+	        serialize(value, g, provider);
 		}
 	}
 
@@ -119,32 +99,7 @@ public class JsonUtil {
 
 		public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer)
 				throws IOException, JacksonException {
-			return typeDeserializer.deserializeTypedFromAny(p, ctxt);
+			return deserialize(p, ctxt);
 		}
 	}
-	
-	// 自定义模块
-//	static class MyModule extends SimpleModule {
-//
-//		public MyModule() {
-//			super("MyModule");
-//		}
-//
-//		@Override
-//		public void setupModule(SetupContext context) {
-//			context.addSerializers(new BitSetSerializer());
-//			context.addDeserializer(BitSet.class, new BitSetDeserializer());
-//		}
-//
-//	}
-
-	// 注册自定义模块
-//	ObjectMapper mapper = new ObjectMapper();
-//	mapper.registerModule(new MyModule());
-//
-//	// 使用 ObjectMapper 进行序列化和反序列化
-//	String json = mapper.writeValueAsString(new MyObject());
-//	MyObject object = mapper.readValue(json, MyObject.class);
-
-
 }

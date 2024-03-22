@@ -1,6 +1,5 @@
 @echo off
-c:
-cd C:\src\First_party\program\tools\Proto
+cd /D %metafolder%\..\Proto
 
 git pull
 

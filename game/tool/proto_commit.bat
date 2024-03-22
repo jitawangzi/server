@@ -1,7 +1,6 @@
-:: 协议修改后，提交到svn供客户端下载
+:: 协议修改后，提交到svn供客户端下载,这个工程不用了，不用svn
 
-d:
-cd %metafolder%\protos
+cd /D %metafolder%\protos
 
 svn revert * -R
 

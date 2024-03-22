@@ -1,4 +1,4 @@
-c:
+
 :: cd %metafolder%\output
 :: svn cleanup .
 :: svn update .
@@ -10,7 +10,7 @@ c:
 call %workspace%\game\tool\packet_login.bat
 ::  mvn package
 
-cd %workspace%\login
+cd /D %workspace%\login
 
 @echo upload 
 pscp -pw root ./target/login.zip root@test:/server/game

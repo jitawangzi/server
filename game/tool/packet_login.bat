@@ -1,7 +1,6 @@
 ::打包命令，一般不会单独使用 
 
-c:
-cd %workspace%\login
+cd /D %workspace%\login
 mvn clean package
 
 :: pause

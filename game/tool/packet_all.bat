@@ -7,7 +7,7 @@
 
 ::call %workspace%\game\tool\packet-core.bat
 
-:: cd %workspace%\game\tool
+:: cd /D %workspace%\game\tool
 :: 初始化变量
 call %workspace%\game\tool\init_env.bat
 

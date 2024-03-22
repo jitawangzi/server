@@ -1,6 +1,5 @@
-d:
- 
-cd %workspace%\gm
+
+cd /D %workspace%\gm
 
 call %workspace%\game\tool\packet_gm.bat
 

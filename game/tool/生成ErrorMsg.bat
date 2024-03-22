@@ -1,6 +1,5 @@
 
-d:
-cd %metafolder%\dic_generate
+cd /D %metafolder%\dic_generate
 
 java -cp .;lib/*;Gen.jar  x.dic.java.JavaMaker
 

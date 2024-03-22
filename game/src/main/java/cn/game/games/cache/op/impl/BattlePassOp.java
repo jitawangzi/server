@@ -406,4 +406,45 @@ public class BattlePassOp extends BasePlayerModule implements IBattlePassOp {
 
 	}
 
+	public int getExp() {
+		return exp;
+	}
+
+	public void setExp(int exp) {
+		this.exp = exp;
+	}
+
+	public BitSet getGoldRewardIndex() {
+		return goldRewardIndex;
+	}
+
+	public void setGoldRewardIndex(BitSet goldRewardIndex) {
+		this.goldRewardIndex = goldRewardIndex;
+	}
+
+	public BitSet getSilverRewardIndex() {
+		return silverRewardIndex;
+	}
+
+	public void setSilverRewardIndex(BitSet silverRewardIndex) {
+		this.silverRewardIndex = silverRewardIndex;
+	}
+
+	public int getOpenday() {
+		return openday;
+	}
+
+	public void setOpenday(int openday) {
+		this.openday = openday;
+	}
+
+	public void setBattlepassId(int battlepassId) {
+		this.battlepassId = battlepassId;
+	}
+
+	public void setRecharge(boolean recharge) {
+		this.recharge = recharge;
+	}
+	
+
 }

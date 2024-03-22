@@ -1,4 +1,3 @@
-c:
-cd %workspace%\util
+cd /D %workspace%\util
 :: mvn clean install
 if defined clean (mvn clean install ) else ( mvn install)
