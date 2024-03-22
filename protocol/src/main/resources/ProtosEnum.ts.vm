@@ -1,0 +1,19 @@
+// DO NOT EDIT! This is a generated file.
+
+export namespace pbe {
+#foreach($m in $messages)
+#if($m.enum == true)
+    export enum ${m.shortName} {
+#foreach($f in ${m.fields})
+        $f.name = $f.index#if($foreach.hasNext),	#if(${f.desc})//${f.desc}
+#else
+
+#end
+#else
+
+#end
+#end
+    }
+#end
+#end
+}

@@ -1,0 +1,10 @@
+#macro(protoType $type)
+#if($type=='uint32' || $type=='int32'|| $type=='int64' || $type=='uint64')##
+number##
+#elseif($type=='bool')##
+boolean##
+#elseif($type=='string' || $type=='bytes')##
+string##
+#else
+$type##
+#end#end

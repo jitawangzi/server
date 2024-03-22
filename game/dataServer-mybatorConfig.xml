@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<classPathEntry location="D:\maven\repository\mysql\mysql-connector-java\8.0.22\mysql-connector-java-8.0.22.jar" />
+
+	<context id="mysql" defaultModelType="flat" targetRuntime="MyBatis3">
+		<property name="javaRuntimeVersion" value="1.8"/>
+		<property name="autoDelimitKeywords" value="false" />
+		<!-- 生成的Java文件的编码 -->
+		<property name="javaFileEncoding" value="UTF-8" />
+		<!-- 格式化java代码 -->
+		<property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
+		<!-- 格式化XML代码 -->
+		<property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter" />
+		<!-- beginningDelimiter和endingDelimiter：指明数据库的用于标记数据库对象名的符号，比如ORACLE就是双引号，MYSQL默认是`反引号； -->
+		<property name="beginningDelimiter" value="`" />
+		<property name="endingDelimiter" value="`" />
+
+		<!-- xml中生成update语句时，不更新的列。  -->
+		<property name="notUpdateColumns" value="player_id"/>
+    
+		<!-- 使用的插件 -->
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+		<plugin type="org.mybatis.generator.plugins.SelectByIndexPlugin" />
+   		<plugin type="org.mybatis.generator.plugins.BlobColumnTransformPlugin" />
+   		<plugin type="org.mybatis.generator.plugins.DbEntityInterfacePlugin" />
+        <plugin type="org.mybatis.generator.plugins.RootClassProtectedFieldPlugin" />
+        <plugin type="org.mybatis.generator.plugins.BatchInsertPlugin" />
+        <plugin type="org.mybatis.generator.plugins.BatchDeletePlugin" />
+
+		<!-- 自定义生成的注释 -->
+		<commentGenerator type="org.mybatis.generator.internal.CustomCommentGenerator">
+			<!-- 添加 db 表中字段的注释 -->
+			<property name="addRemarkComments" value="true" />
+			<!-- 阻止注释 -->
+			<property name="suppressAllComments" value="false" />
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+			connectionURL="jdbc:mysql://127.0.0.1/game?serverTimezone=Asia/Shanghai" userId="root" password="root">
+			<property name="nullCatalogMeansCurrent" value="true" />
+		</jdbcConnection>
+		<javaTypeResolver>
+   			 <property name="forceBigDecimals" value="false"/>
+    		<property name="primitiveAsObject" value="false"/>
+		</javaTypeResolver>
+		
+		<javaModelGenerator targetPackage="cn.game.games.cache.entity" targetProject="game/src/main/java">
+			<!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false -->
+			<property name="enableSubPackages" value="true" />
+		</javaModelGenerator>
+
+		<sqlMapGenerator targetPackage="mapping" targetProject="game/src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+		<javaClientGenerator targetPackage="cn.game.games.net.data.mapper" targetProject="game/src/main/java" type="XMLMAPPER" />
+		<!-- 生成全部表 ，使用一样的规则 -->
+		<table tableName="%">
+			<domainObjectRenamingRule searchString="^T" replaceString="" />
+		</table>
+		<!-- 如果有特殊的生成规则，写在这里。 现在有java版本问题，暂时不能用。  -->
+		<table tableName="t_item_no_stack" domainObjectName="ItemNoStack">
+			<property name="rootClass" value="cn.game.games.cache.entity.Item" />
+		</table>
+		<table tableName="t_equip" domainObjectName="Equip">
+			<property name="rootClass" value="cn.game.games.cache.entity.ItemNoStack" />
+		</table>
+		<table tableName="t_hero" domainObjectName="Hero">
+			<property name="rootClass" value="cn.game.games.cache.entity.ItemNoStack" />
+		</table>
+		<!-- 数据库字段和业务对象自动转换功能  -->
+		<table tableName="t_player_data"  domainObjectName="PlayerData" >
+			<blobTransformColumn blobColumn="player_hot_data" domainObjectFieldType="cn.game.games.net.game.module.player.PlayerHotData" domainObjectFieldName="hotData" />
+		</table>
+
+	</context>
+</generatorConfiguration>

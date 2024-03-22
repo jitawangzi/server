@@ -1,0 +1,332 @@
+package cn.game.games.net.game.handler;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+
+import com.google.protobuf.ByteString;
+import com.google.protobuf.ProtocolStringList;
+
+import cn.game.core.base.ServerContext;
+import cn.game.core.net.client.NetClient;
+import cn.game.core.net.protocol.object.ProtobufProtocol;
+import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.task.TaskManager;
+import cn.game.games.cache.entity.Player;
+import cn.game.games.net.client.GameClient;
+import cn.game.games.net.data.remote.DataGameServerInterface;
+import cn.game.games.net.game.db.DbTask;
+import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.manager.GameClientManager;
+import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.ServerMsg.CrossGameForwardPush_7d000003;
+import cn.game.protocol.protobuf.ServerMsg.DbTaskProto;
+import cn.game.protocol.protobuf.ServerMsg.GameCrossBroadcast_7d000008;
+import cn.game.protocol.protobuf.ServerMsg.GameCrossForwardPush_7d000002;
+import cn.game.protocol.protobuf.ServerMsg.GameCrossPlayerBroadcast_7d000005;
+import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch2_7d00000c;
+import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch_7d00000b;
+import cn.game.protocol.protobuf.ServerMsg.GameDataPush_7d00000a;
+import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutRequest_7d000101;
+import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutResponse_7d000102;
+import cn.game.protocol.protobuf.ServerMsg.GamePlayerOnlinePush_7d000010;
+import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
+import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
+import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
+import cn.game.protocol.protobuf.ServerMsg.GameTestRequest_7d000500;
+import cn.game.protocol.protobuf.ServerMsg.GameTestResponse_7d000501;
+import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
+import cn.game.util.KryoUtils;
+import cn.game.util.ServerType;
+import cn.game.util.SpringContextLoader;
+import io.vertx.core.Future;
+import io.vertx.core.eventbus.Message;
+
+/**
+ * 服务器之间的消息处理器
+ */
+@Component
+public class ServerHandler extends BaseHandler {
+
+	@Override
+	protected int getModule() {
+		return 0x7d;
+	}
+	@Override
+	protected void inititialize() {
+
+		putInvoker(PbProtocol.GameCrossForwardPush_7d000002, this::forward);
+		putInvoker(PbProtocol.CrossGameForwardPush_7d000003, this::receive);
+		putInvoker(PbProtocol.GameCrossPlayerBroadcast_7d000005, this::broadcastPlayers);
+		putInvoker(PbProtocol.GameCrossBroadcast_7d000008, this::broadcast);
+		putInvoker(PbProtocol.GamePlayerOnlinePush_7d000010, this::online);
+		putInvoker(PbProtocol.GamePlayerPush_7d000100, this::playerPush);
+		putInvoker(PbProtocol.ServerStatusRequest_7d000901, this::alive);
+		putInvoker(PbProtocol.GameTestRequest_7d000500, this::test);
+		putInvoker(PbProtocol.GameDataPush_7d00000a, this::db);
+		putInvoker(PbProtocol.GameDataPushBatch_7d00000b, this::dbBatch);
+		putInvoker(PbProtocol.GameDataPushBatch2_7d00000c, this::dbBatch2);
+		putInvoker(PbProtocol.GamePlayerLogoutRequest_7d000101, this::playerLogout);
+		putInvoker(PbProtocol.GamePlayerRequest_7d000015, this::playerRequest);
+
+//		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
+//		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
+	}
+
+	protected void playerRequest(NetClient client, Object message) {
+		GamePlayerRequest_7d000015 request = (GamePlayerRequest_7d000015) message;
+		GamePlayerResponse_7d000016.Builder resp = GamePlayerResponse_7d000016.newBuilder();
+		long playerId = request.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null || player.isIslogouting()) {
+			resp.setErrorCode(OldErrorMsgEnum.not_online.getId());
+			client.sendProtocol(resp.build());
+			return;
+		}
+		ProtobufProtocol protocol = new ProtobufProtocol(
+				PbProtocol.getInstance().getMsgId("GamePlayerRequest_7d000015"), request, -1);
+		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+		dispatch(gameClient, protocol);
+
+		client.sendProtocol(resp.build());
+	}
+
+	protected void playerLogout(NetClient client, Object message) {
+		GamePlayerLogoutRequest_7d000101 request = (GamePlayerLogoutRequest_7d000101) message;
+		long playerId = request.getPlayerId();
+		PlayerHelper.addTask(playerId, v -> {
+			Future<?> logout = GameClientManager.getInstance().logout(playerId);
+			logout.onComplete(r -> {
+				Throwable cause = r.cause();
+				client.sendProtocol(cause != null ? cause : GamePlayerLogoutResponse_7d000102.getDefaultInstance());
+			});
+		});
+
+	}
+
+	protected void db(NetClient client, Object message) {
+		GameDataPush_7d00000a request = (GameDataPush_7d00000a) message;
+		String mapperClass = request.getMapperClass();
+		String method = request.getMethod();
+		Object arg = KryoUtils.deserializeClassAndObject(request.getArg().toByteArray());
+		Class<?> clazz = null;
+		try {
+			clazz = Class.forName(mapperClass);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		DataGameServerInterface dataGameServerInterface = SpringContextLoader.getContext()
+				.getBean(DataGameServerInterface.class);
+		dataGameServerInterface.exec(clazz, method, arg);
+
+	}
+
+	protected void dbBatch(NetClient client, Object message) {
+		GameDataPushBatch_7d00000b request = (GameDataPushBatch_7d00000b) message;
+		List<DbTaskProto> dbTasksList = request.getDbTasksList();
+		List<DbTask> list = new ArrayList<>();
+
+		for (DbTaskProto proto : dbTasksList) {
+			String mapperClass = proto.getMapperClass();
+			Class<?> clazz = null;
+			try {
+				clazz = Class.forName(mapperClass);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			ByteString arg = proto.getArg();
+			Object obj = KryoUtils.deserializeClassAndObject(arg.toByteArray());
+			DbTask dbTask = new DbTask(clazz, proto.getMethod(), obj);
+			list.add(dbTask);
+		}
+
+		DataGameServerInterface dataGameServerInterface = SpringContextLoader.getContext()
+				.getBean(DataGameServerInterface.class);
+		Object ret = dataGameServerInterface.execMutiTasks(list);
+
+		client.sendProtocol(ret);
+
+	}
+
+	protected void dbBatch2(NetClient client, Object message) {
+		GameDataPushBatch2_7d00000c request = (GameDataPushBatch2_7d00000c) message;
+		List<DbTask> list = (List<DbTask>) KryoUtils.deserializeClassAndObject(request.getArg().toByteArray());
+
+		DataGameServerInterface dataGameServerInterface = SpringContextLoader.getContext()
+				.getBean(DataGameServerInterface.class);
+		Object ret = dataGameServerInterface.execMutiTasks(list);
+
+		client.sendProtocol(ret);
+
+	}
+
+	/**
+	protected void archiveList(NetClient client, Object message) {
+		LoginGameArchiveListRequest_7d000301 req = (LoginGameArchiveListRequest_7d000301) message;
+		LoginGameArchiveListResponse_7d000302.Builder resp = LoginGameArchiveListResponse_7d000302.newBuilder();
+		long userId = req.getUserId();
+	
+		GameServer.getInstance().getDataGameServerInterface().execAsync(PlayerMapper.class, "selectPlayersByUid", userId).onSuccess(
+				p -> {
+					List<Player> list = (List<Player>) p;
+					resp.addAllArchives(PbBuilder.buildPlayerArchiveInfos(list));
+					client.sendProtocol(resp.build());
+	
+				}).onFailure(p -> {
+	//					log.error("pc player session  " + sessionId + " login error ", p);
+	//					client.sendProtocol(resp.build(), ErrorMsgEnum.unknown.getId());
+				});
+	}
+	protected void archiveCreate(NetClient client, Object message) {
+		LoginGameArchiveCreateRequest_7d000303 req = (LoginGameArchiveCreateRequest_7d000303) message;
+		String name = req.getName();
+	
+	}
+	*/
+	protected void alive(NetClient client, Object message) {
+
+		int onlineCount = GameClientManager.getInstance().getOnlineCount();
+		client.sendProtocol(ServerStatusResponse_7d000902.newBuilder().setOnline(onlineCount).build());
+
+	}
+
+	protected void test(NetClient client, Object message) {
+		GameTestRequest_7d000500 req = (GameTestRequest_7d000500) message;
+		int id = req.getId();
+		long arg = 333;
+		VxHolder.vertx.runOnContext(v -> {
+			// xxx logic
+			// 返回结果
+			client.sendProtocol(GameTestResponse_7d000501.newBuilder().setId(id + 100));
+		});
+	}
+
+	protected void playerPush(NetClient client, Object message) {
+		GamePlayerPush_7d000100 req = (GamePlayerPush_7d000100) message;
+		int id = req.getId();
+		long playerId = req.getPlayerId();
+		ByteString data = req.getData();
+		int errorCode = req.getErrorCode();
+
+		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+		if (gameClient != null) {
+			gameClient.sendProtocol(id, data.toByteArray(), errorCode);
+		}
+	}
+
+	protected void online(NetClient client, Object message) {
+		GamePlayerOnlinePush_7d000010 req = (GamePlayerOnlinePush_7d000010) message;
+		long playerId = req.getPlayerId();
+		String serverId = req.getServerId();
+		boolean online = req.getOnline();
+		if (online) {
+			Player oldPlayer = PlayerManager.getInstance().getPlayer(playerId);
+			if (oldPlayer != null) {
+				// 需要通知新登录的服务器，退出当前player
+				Future<Message<Object>> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
+						GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(playerId).build());
+				requestRemoteServer.onFailure(ee -> {
+					PlayerHelper.addTask(playerId, r -> {
+						GameClientManager.getInstance().logout(playerId);
+					});
+				}).onSuccess(r -> {
+					TaskManager.getInstance().scheduleGeneral(() -> {
+						// 重新广播在线信息
+						VxHolder.broadcastRemoteServer(ServerType.Game,
+								GamePlayerOnlinePush_7d000010.newBuilder().setOnline(true)
+										.setServerId(ServerContext.getInstance().getServerId()).build());
+					}, 5000);
+				});
+			}
+		} else {
+			String oldServerId = PlayerManager.getInstance().getServerId(playerId);
+			if (!StringUtils.isEmpty(oldServerId)) {
+				if (online) {
+					PlayerManager.getInstance().online(playerId, serverId);
+				} else {
+					PlayerManager.getInstance().offline(playerId);
+				}
+			}
+		}
+	}
+
+	protected void broadcast(NetClient client, Object message) {
+		GameCrossBroadcast_7d000008 req = (GameCrossBroadcast_7d000008) message;
+		ProtocolStringList serverIdList = req.getServerIdList();
+
+		int id = req.getId();
+		ByteString data = req.getData();
+
+		if (serverIdList.isEmpty()) {
+			VxHolder.broadcastRemoteServer(ServerType.Game, id, data.toByteArray());
+		} else {
+			for (String server : serverIdList) {
+				VxHolder.sendToRemoteServer(server, id, data.toByteArray());
+			}
+		}
+
+	}
+
+	protected void broadcastPlayers(NetClient client, Object message) {
+		GameCrossPlayerBroadcast_7d000005 req = (GameCrossPlayerBroadcast_7d000005) message;
+		ProtocolStringList serverIdList = req.getServerIdList();
+		List<Long> playerIdList = req.getPlayerIdList();
+
+		int id = req.getId();
+		ByteString data = req.getData();
+		int errorCode = req.getErrorCode();
+
+		for (int i = 0; i < playerIdList.size(); i++) {
+
+			CrossGameForwardPush_7d000003.Builder resp = CrossGameForwardPush_7d000003.newBuilder();
+			resp.setId(id);
+			resp.setData(data);
+			resp.setErrorCode(errorCode);
+			resp.setPlayerId(playerIdList.get(i));
+			byte[] byteArray = resp.build().toByteArray();
+
+			VxHolder.sendToRemoteServer(serverIdList.get(i), PbProtocol.CrossGameForwardPush_7d000003, byteArray);
+		}
+
+	}
+
+	protected void forward(NetClient client, Object message) {
+
+		GameCrossForwardPush_7d000002 req = (GameCrossForwardPush_7d000002) message;
+		int id = req.getId();
+		String serverId = req.getServerId();
+		long playerId = req.getPlayerId();
+		ByteString data = req.getData();
+		int errorCode = req.getErrorCode();
+
+		CrossGameForwardPush_7d000003.Builder resp = CrossGameForwardPush_7d000003.newBuilder();
+		resp.setId(id);
+		resp.setData(data);
+		resp.setErrorCode(errorCode);
+		resp.setPlayerId(playerId);
+
+		VxHolder.sendToRemoteServer(serverId, PbProtocol.CrossGameForwardPush_7d000003, resp.build().toByteArray());
+
+	}
+
+	protected void receive(NetClient client, Object message) {
+
+		CrossGameForwardPush_7d000003 req = (CrossGameForwardPush_7d000003) message;
+		int id = req.getId();
+		long playerId = req.getPlayerId();
+		ByteString data = req.getData();
+		int errorCode = req.getErrorCode();
+
+		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+		if (gameClient != null) {
+			gameClient.sendProtocol(id, data.toByteArray(), errorCode);
+		}
+
+	}
+
+}

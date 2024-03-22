@@ -1,0 +1,86 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+
+// 商店、充值 相关协议
+
+//查看商品组里面的商品列表
+message ShopGroupItemListRequest_15000001{
+  uint32 group = 1;
+}
+
+message ShopGroupItemListResponse_15000002{
+	repeated ShopItemProto items = 1;
+}
+
+// 商品
+message ShopItemProto{
+	uint64 id = 1; // 商品唯一id
+	uint32 configId = 2; // 商品表ShopItemid
+	uint32 buyTimes = 3; // 此商品已经购买次数
+	uint32 discount = 4; // 折扣，70代表7折
+}
+
+//购买商品
+message ShopItemBuyRequest_15000003{
+  uint64 id = 1; // 商品唯一id
+}
+
+message ShopItemBuyResponse_15000004{
+
+}
+
+//==================================月卡===============================
+
+//购买月卡
+message MonthCardBuyRequest_15000010{
+  uint32 id = 1; // MonthCard表id
+}
+
+message MonthCardBuyResponse_15000011{
+	MonthCardProto monthCard = 1;
+}
+
+//领取月卡购买奖励，每个月卡只能领取一次
+message MonthCardBuyRewardRequest_15000012{
+  uint32 id = 1; // MonthCard表id
+}
+
+message MonthCardBuyRewardResponse_15000013{
+}
+
+
+//领取月卡每日奖励
+message MonthCardDayRewardRequest_15000014{
+  uint32 id = 1; // MonthCard表id
+}
+
+message MonthCardDayRewardResponse_15000015{
+}
+
+message MonthCardProto{
+	uint32 id = 1; // MonthCard表id
+	uint64 expireTime = 2; // 月卡过期时间（毫秒时间戳）,0表示不过期
+	bool isBuyRewards = 3; // 是否领取了购买奖励
+	bool isDayRewards = 4; // 是否领取了每日奖励
+}
+
+
+//==================================礼包===============================
+
+//购买礼包
+message ShopGiftBuyRequest_15000020{
+  uint32 id = 1; // ShopGift表id
+}
+
+message ShopGiftBuyResponse_15000021{
+}
+
+
+// 广告观看完毕
+message AdvertiseWatchFinishRequest_15000030{
+}
+message AdvertiseWatchFinishResponse_15000031{
+}
+

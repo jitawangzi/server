@@ -1,0 +1,93 @@
+package cache.entity;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.alibaba.fastjson.JSON;
+
+public class Lineup implements Serializable {
+	/**  */
+	private static final long serialVersionUID = -7081452847266423136L;
+
+	/** 角色id */
+    private Long playerId;
+
+    /** 阵容id,1,2,3,4为进攻阵容，5为防守阵容 */
+    private Byte lineupId;
+
+    /** 兵书id */
+    private Integer book;
+
+    /** 阵容里的伙伴id */
+    private String heros;
+
+    /** 阵容里的装备id */
+    private String equips;
+
+	private List<Integer> heroList = new ArrayList<>(0);
+	private List<Long> equipList = new ArrayList<>(0);
+
+    public Long getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(Long playerId) {
+        this.playerId = playerId;
+    }
+
+    public Byte getLineupId() {
+        return lineupId;
+    }
+
+    public void setLineupId(Byte lineupId) {
+        this.lineupId = lineupId;
+    }
+
+    public Integer getBook() {
+        return book;
+    }
+
+    public void setBook(Integer book) {
+        this.book = book;
+    }
+
+	public List<Integer> getHeroList() {
+		return heroList;
+	}
+
+	public void setHeroList(List<Integer> heroList) {
+		this.heroList = heroList;
+	}
+
+	public List<Long> getEquipList() {
+		return equipList;
+	}
+
+	public void setEquipList(List<Long> equipList) {
+		this.equipList = equipList;
+	}
+
+	public String getHeros() {
+
+		return JSON.toJSONString(this.heroList);
+    }
+
+    public void setHeros(String heros) {
+		if (!StringUtils.isEmpty(heros)) {
+			this.heroList = JSON.parseObject(heros, List.class);
+		}
+    }
+
+    public String getEquips() {
+		return JSON.toJSONString(this.equipList);
+    }
+
+    public void setEquips(String equips) {
+		if (!StringUtils.isEmpty(equips)) {
+			this.equipList = JSON.parseObject(equips, List.class);
+		}
+    }
+}

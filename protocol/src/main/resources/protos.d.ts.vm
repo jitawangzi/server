@@ -1,0 +1,18 @@
+// DO NOT EDIT! This is a generated file.
+
+declare namespace pbm {
+#foreach($m in $messages)##
+#if($m.enum == false)##
+    class ${m.shortName} {
+#foreach($f in ${m.fields})
+        public $f.name: #if($f.array)Array<#protoType($f.type)>;
+#else#protoType($f.type);	#if(${f.desc})//${f.desc}
+#else
+
+#end
+#end
+#end
+    }
+#end
+#end
+}

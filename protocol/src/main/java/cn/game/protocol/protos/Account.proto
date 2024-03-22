@@ -1,0 +1,72 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+
+//============================= 登陆服协议 ==============================//
+
+/*** 注册账号 ****/
+message AccountRegister{
+  string account                    = 1;//账号
+  string pwd = 2;						// 密码
+}
+
+message AccountRegisterResponse{
+  HttpResult result                    = 1;//  注册结果
+}
+
+/*** 登陆账号 ****/
+message AccountLogin{
+  AccountChannelType channel                    = 1;//渠道
+  string token = 2;						// 渠道token
+}
+
+message AccountLoginResponse{
+  HttpResult result                    = 1;
+  string passport_session_id = 2;			// 登陆会话id，请求服务器列表时使用
+  string user_id = 3;						//
+}
+
+// 账号的渠道类型
+enum AccountChannelType{
+	NONE=0; //
+	OFFICIAL=1; // 官方渠道
+	WECHAT=2; //	微信渠道
+}
+
+/*** 请求服务器列表****/
+message AccountServerList{
+  string passport_session_id = 1;
+}
+
+message AccountServerListResponse{
+	  HttpResult result                    = 1;
+	  repeated ServerInfo servers = 2;
+}
+
+message ServerInfo {
+	string serverId = 1;  // 服务器唯一id
+	string name = 2;	// 服务器名字
+	string ip = 3;		// ip，建立连接使用
+	int32 port = 4;    // 端口，建立连接使用
+	int32 status = 5;  // 运行状态,1正常开启 2 维护 4 停服，一般只有状态是1才能进入
+	string version = 6;  // 1.0.0.1这样的格式，前3个数字一样才可以进入这个服务器。
+}
+
+
+// 自定义的http结果
+message HttpResult{
+	string errorMsg = 1;   // 错误描述， 如果为空表示没有错误。
+	AccountErrorCode errorCode = 2;   // 具体的错误
+}
+
+// 账号的渠道类型
+enum AccountErrorCode{
+	ACCOUNT_EMPTY=0; // 注册时账号为空
+	ACCOUNT_EXIST=1; //	注册时账号已经存在了
+	ACCOUNT_NOT_EXIST=2; //	登陆时账号不存在
+	PASSWORD_ERROR =3; //	登陆时密码错误
+	CHANNEL_NOT_SUPPORT=4; //不支持的登陆渠道
+	PASSPORT_SESSION_ERROR=5; //错误的sessinon，可能没有登陆，或者过期了。
+	CHANNEL_CHECK_FAIL=6; // 渠道账号校验错误
+}

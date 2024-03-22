@@ -1,0 +1,59 @@
+package cn.game.protocol.protobuf;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.protobuf.Message;
+import com.google.protobuf.Parser;
+import com.google.protobuf.InvalidProtocolBufferException;
+
+import cn.game.protocol.parser.ProtocolParser;
+
+public class PbProtocol implements ProtocolParser {
+
+	public static Map<Integer, Parser<?>> parsersMap = new HashMap<Integer, Parser<?>>();
+	public static Map<String, Integer> nameIdMap = new HashMap<String, Integer>();
+	
+	private static PbProtocol instance = new PbProtocol();
+
+	private PbProtocol() {
+	};
+	public static PbProtocol getInstance() {
+		return instance;
+	}
+#foreach($m in $messages)
+
+	public final static int ${m.shortName} = ${m.id};    #if (${m.comment})//${m.comment}  #end
+#end
+	
+
+	static {	
+#foreach($m in $messages)
+		parsersMap.put(${m.shortName}, ${m.longName}.getDefaultInstance()
+				.getParserForType());
+#end	
+
+#foreach($m in $messages)
+		nameIdMap.put("${m.shortName}", ${m.id});
+#end	
+	}	
+	@Override
+	public Message parseFrom(int msgID,byte[] data){
+		Parser<?> parser = parsersMap.get(msgID);  
+		if (parser == null) {
+			throw new IllegalArgumentException("message not found : "+msgID);
+		}
+		try {
+			return (Message) parser.parseFrom(data);
+		} catch (InvalidProtocolBufferException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	@Override	
+	public int getMsgId(String name){
+		Integer id = nameIdMap.get(name);
+		if (id == null) { 
+			throw new IllegalArgumentException("message id not found : " + name);
+		}
+		return id ;
+	}
+}

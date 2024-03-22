@@ -1,0 +1,3 @@
+%workspace%\game\target\classes\cn
+%workspace%\game\target\classes\apollo
+%workspace%\game\target\classes\config

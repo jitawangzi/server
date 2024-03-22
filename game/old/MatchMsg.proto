@@ -1,0 +1,81 @@
+syntax = "proto3";
+option java_package = "cn.game.net.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+//import "FriendMsg.proto" ;
+// 打开匹配界面，开始匹配玩家
+message MatchRequest_07000001{
+
+}
+
+//  匹配到的玩家数据
+message MatchResponse_07000002{
+
+//	repeated FriendBaseInfo friends = 1;  // 匹配到的其他玩家，不包括自己
+}
+
+//  取消匹配，退出匹配界面
+message MatchExitRequest_07000003{
+
+}
+
+//  退出匹配
+message MatchExitResponse_07000004{
+
+}
+
+
+
+//等待匹配过程中有新的玩家加入,服务端主动下发
+message MatchPlayerJoinResponse_07000005{
+
+//	FriendBaseInfo friends = 1;  // 玩家数据
+
+}
+//等待匹配过程中有玩家退出,服务端主动下发
+message MatchPlayerExitResponse_07000007{
+
+	uint64 id = 1;  // 玩家id
+
+}
+
+
+// 准备进入比赛
+message MatchReadyRequest_07000008{
+
+}
+
+// 准备进入比赛
+message MatchReadyResponse_07000009{
+
+}
+
+
+//某人准备进入比赛了,服务端主动下发
+message MatchPlayerReadyResponse_07000010{
+
+	uint64 id = 1;  // 玩家数据
+
+}
+
+
+// 比赛结束，发送得分
+message MatchRaceFinishRequest_07000013{
+    uint32 score = 1;  //  分数
+
+}
+
+// 比赛结束，发送得分
+message MatchRaceFinishResponse_07000014{
+
+}
+
+// 服务端下发某人的比赛得分，主动下发。
+message MatchRaceScoreResponse_07000015{
+
+	uint64 id = 1;  //  玩家id
+	uint32 score = 2;  //  分数
+
+}
+
+

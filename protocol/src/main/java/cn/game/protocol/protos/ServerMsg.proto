@@ -1,0 +1,137 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+
+//import "PlayerMsg.proto" ;
+// 服务端内部使用的协议
+
+// Game服务器之间的玩家在线状态变更通知,Game-->Game
+message GamePlayerOnlinePush_7d000010{
+	uint64 playerId = 1;		// 玩家id
+	string serverId = 2;		// 玩家所在服务器id
+	bool online = 3 ; 			// 是否在线
+}
+
+// Game收到推送，将里面的具体消息发给指定的玩家,Game-->Game-->Player
+message GamePlayerPush_7d000011{
+	uint64 playerId = 1;		// 玩家id
+	uint32 id = 2;				// 消息id
+	bytes data = 3;				// 消息内容
+	uint32 errorCode = 4;		// 消息错误码
+}
+
+// Game收到推送，将里面的具体消息发给指定的玩家,Game-->Game-->Player
+message GamePlayerPush_7d000100{
+	uint64 playerId = 1;		// 玩家id
+	uint32 id = 2;				// 消息id
+	bytes data = 3;				// 消息内容
+	uint32 errorCode = 4;		// 消息错误码
+}
+
+// 退出某个玩家
+message GamePlayerLogoutRequest_7d000101{
+	uint64 playerId = 1;		// 玩家id
+}
+message GamePlayerLogoutResponse_7d000102{
+}
+
+// 测试的
+message GameTestRequest_7d000500{
+	uint32 id = 1;				// id
+}
+
+message GameTestResponse_7d000501{
+	uint32 id = 1;				// +1
+}
+
+// 获取在线人数等数据
+message ServerStatusRequest_7d000901{
+}
+message ServerStatusResponse_7d000902{
+	uint32 online = 1 ;  // 在线人数
+}
+
+// 向某个服务器的玩家发送消息让玩家处理
+message GamePlayerRequest_7d000015{
+	uint64 playerId = 2;		// 接受消息的玩家id
+	uint32 id = 3;				// 消息id
+	bytes data = 4;				// 消息内容
+}
+
+// 向某个服务器的玩家发送消息让玩家处理，处理后返回
+message GamePlayerResponse_7d000016{
+	uint32 id = 3;				// 消息id
+	bytes data = 4;				// 消息内容
+	uint32 errorCode = 5;		// 消息错误码
+}
+
+// 广播服务器在线人数
+message GameStatusPublish_7d000017{
+	string serverId = 2;		// 服务器id
+	uint32 onlinePlayerCount = 3;				// 当前服务器在线人数
+}
+
+message LoginPlayerUidRequest_7d000018{
+	string passportSessionId = 1;
+}
+message LoginPlayerUidResponse_7d000019{
+	int64 uid = 1;
+}
+
+// ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
+
+// Game向Cross发数据，请求转发消息给指定玩家
+message GameCrossForwardPush_7d000002{
+	string serverId  = 1 ;	 	// 服务器id
+	uint64 playerId = 2;		// 玩家id
+	uint32 id = 3;				// 消息id
+	bytes data = 4;				// 消息内容
+	uint32 errorCode = 5;		// 消息错误码
+}
+
+// Game收到Cross推送，将里面的具体消息发给指定的玩家
+message CrossGameForwardPush_7d000003{
+	uint64 playerId = 2;		// 玩家id
+	uint32 id = 3;				// 消息id
+	bytes data = 4;				// 消息内容
+	uint32 errorCode = 5;		// 消息错误码
+	
+}
+
+// Game向Cross发数据，将数据包广播给不同Game服务器的玩家
+message GameCrossPlayerBroadcast_7d000005{
+	repeated string serverId  = 1 ;	 	// 服务器id
+	repeated uint64 playerId = 2;		// 玩家id
+	uint32 id = 3;				// 消息id
+	bytes data = 4;				// 消息内容
+	uint32 errorCode = 5;		// 消息错误码
+}
+
+// Game向Cross发数据，将里面的消息广播给指定Game，或者所有Game
+message GameCrossBroadcast_7d000008{
+	repeated string serverId  = 1 ;	 	// 接收消息的服务器id
+	uint32 id = 2;				// 消息id
+	bytes data = 3;				// 消息内容
+}
+
+
+// Game向Data发数据，执行数据库操作
+message GameDataPush_7d00000a{
+	string mapperClass  = 1 ;	 	// Mapper  class
+	string method = 2;				// Mapper 里的方法
+	bytes arg = 3;				// Mapper 里的参数
+}
+message DbTaskProto{
+	string mapperClass  = 1 ;	 	// Mapper  class
+	string method = 2;				// Mapper 里的方法
+	bytes arg = 3;				// Mapper 里的参数
+}
+// Game向Data发数据，执行数据库操作
+message GameDataPushBatch_7d00000b{
+	repeated DbTaskProto dbTasks = 1;
+}
+message GameDataPushBatch2_7d00000c{
+	bytes arg = 1;				//
+}
+// ︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼旧协议，不用了︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼

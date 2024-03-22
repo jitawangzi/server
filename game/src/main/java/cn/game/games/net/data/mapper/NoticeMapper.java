@@ -1,0 +1,52 @@
+package cn.game.games.net.data.mapper;
+
+import cn.game.games.cache.entity.Notice;
+import java.util.List;
+
+public interface NoticeMapper {
+
+	/**
+	 * @mbg.generated
+	 */
+	int deleteByPrimaryKey(Integer id);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insert(Notice row);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertSelective(Notice row);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(Notice row);
+
+	/**
+	 * @mbg.generated
+	 */
+	Notice selectByPrimaryKey(Integer id);
+
+	/**
+	 * @mbg.generated
+	 */
+	int updateByPrimaryKeySelective(Notice row);
+
+	/**
+	 * @mbg.generated
+	 */
+	int updateByPrimaryKey(Notice row);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertBatch(List<Notice> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int deleteBatch(List<Notice> records);
+}

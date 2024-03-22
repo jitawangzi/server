@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.game.net.data.mapper.PlayerGroupMapper">
+  <resultMap id="BaseResultMap" type="cn.game.games.cache.entity.PlayerGroup">
+    <!--
+      WARNING - @mbggenerated
+     
+    -->
+    <id column="player_id" jdbcType="BIGINT" property="playerId" />
+    <id column="group_id" jdbcType="BIGINT" property="groupId" />
+    <result column="group_server_id" jdbcType="VARCHAR" property="groupServerId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbggenerated
+     
+    -->
+    player_id, group_id, group_server_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    <!--
+      WARNING - @mbggenerated
+     
+    -->
+    select
+    <include refid="Base_Column_List" />
+    from t_player_groups
+    where player_id = #{playerId,jdbcType=BIGINT}
+      and group_id = #{groupId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    <!--
+      WARNING - @mbggenerated
+     
+    -->
+    delete from t_player_groups
+    where player_id = #{playerId,jdbcType=BIGINT}
+      and group_id = #{groupId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.game.games.cache.entity.PlayerGroup">
+    <!--
+      WARNING - @mbggenerated
+     
+    -->
+    insert into t_player_groups (player_id, group_id, group_server_id
+      )
+    values (#{playerId,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT}, #{groupServerId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.game.games.cache.entity.PlayerGroup">
+    <!--
+      WARNING - @mbggenerated
+     
+    -->
+    insert into t_player_groups
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="playerId != null">player_id,</if>
+      <if test="groupId != null">group_id,</if>
+      <if test="groupServerId != null">group_server_id,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="playerId != null">#{playerId,jdbcType=BIGINT},</if>
+      <if test="groupId != null">#{groupId,jdbcType=BIGINT},</if>
+      <if test="groupServerId != null">#{groupServerId,jdbcType=VARCHAR},</if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.game.games.cache.entity.PlayerGroup">
+    <!--
+      WARNING - @mbggenerated
+     
+    -->
+    update t_player_groups
+    <set>
+      <if test="groupServerId != null">group_server_id = #{groupServerId,jdbcType=VARCHAR},</if>
+    </set>
+    where player_id = #{playerId,jdbcType=BIGINT}
+      and group_id = #{groupId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.game.games.cache.entity.PlayerGroup">
+    <!--
+      WARNING - @mbggenerated
+     
+    -->
+    update t_player_groups
+    set group_server_id = #{groupServerId,jdbcType=VARCHAR}
+    where player_id = #{playerId,jdbcType=BIGINT}
+      and group_id = #{groupId,jdbcType=BIGINT}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_player_groups
+  </select>
+</mapper>

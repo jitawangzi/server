@@ -1,0 +1,68 @@
+package cn.game.core.net.steam;
+
+import cn.game.core.net.vertx.VxHolder;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Handler;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
+
+public class SteamAPI {
+
+	/** steamweb api host, needs key */
+	private static final String HOST = "partner.steam-api.com";
+	public static final String KEY = "8157C7C239EC859582FD3ED14D1A1BC3";
+	public static final int APP_ID = 1692100;
+
+#foreach($interface in ${apis.apilist.interfaces})
+    public static class ${interface.name} {
+#foreach(${method} in ${interface.methods})
+
+		/** 
+#foreach(${parameter} in ${method.parameters})
+		 * @param ${parameter.name}#if(${parameter.description}) -- ${parameter.description}#else
+#end
+
+#end
+		 * @param successHandler -- the handler that will be called with the succeeded result
+		 * @param failedHandler --  failed Handler
+		 */
+		public static void ${method.name}#if(${method.version} > 1)V${method.version}#end(##
+#foreach(${parameter} in ${method.parameters})#if(${parameter.optional})@Nullable #end${parameter.type} ${parameter.name},#{end}Handler<JsonObject> successHandler,Handler<Throwable> failedHandler) {
+			String requestURI = "https://partner.steam-api.com/${interface.name}/${method.name}/v${method.version}";
+#if ((${method.parameters}) && ($method.parameters.size() > 0))
+#set($hasParam = true)
+#end
+#if($hasParam)
+			JsonObject param = new JsonObject();
+#foreach(${parameter} in ${method.parameters})
+#if(${parameter.array})
+			if (${parameter.name} != null) {
+				for (int i = 0; i < ${parameter.name}.length; i++) {
+					param.put("${parameter.name}["+i+"]", ${parameter.name}[i]);
+				}
+			}
+#else
+#if(${parameter.optional})
+#if(${parameter.default0})
+			if(${parameter.name} != 0)
+				param.put("${parameter.name}", ${parameter.name});
+#else
+#if(!${parameter.bool})
+			if(${parameter.name} != null)
+				param.put("${parameter.name}", ${parameter.name});
+#end
+#end
+#else
+			param.put("${parameter.name}", ${parameter.name});
+#end
+##			param.put("${parameter.name}", ${parameter.name});
+#end
+#end
+#end
+			VxHolder.request(HttpMethod.${method.httpmethod}, requestURI, #if($hasParam)param#{else}null#end, successHandler, failedHandler);
+		}
+#end
+	}
+#end
+
+}

@@ -1,0 +1,8 @@
+// DO NOT EDIT! This is a generated file.
+
+export const ProtosMessageName = {
+#foreach($m in $messages)
+    "${m.id}": "${m.shortName}"#if($foreach.hasNext),
+#end#end
+
+}

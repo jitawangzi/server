@@ -1,0 +1,321 @@
+package cn.game.games.cache.entity;
+
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.games.core.BasePlayerModule;
+import cn.game.games.core.GoodsModule;
+import cn.game.games.core.event.EventHandler;
+import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.client.GameClient;
+import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.games.net.game.module.event.EventModule;
+import cn.game.games.net.game.module.hero.HeroModule;
+import cn.game.games.net.game.module.item.ItemModule;
+import cn.game.games.net.game.module.player.PlayerModule;
+import cn.game.games.net.game.module.player.VarModule;
+import cn.game.games.net.game.module.shop.ShopModule;
+import cn.game.protocol.generated.enume.GoodsTypeEnum;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
+import cn.game.util.MapWrapper;
+import cn.game.util.reflect.ClassHelper;
+import io.vertx.core.Handler;
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
+public class Player implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private long playerId;
+	private transient static Set<Class<? extends BasePlayerModule>> allModuleClass;
+	static {
+		allModuleClass = ClassHelper.findSubclasses("cn.game.games", BasePlayerModule.class);
+	}
+	private Map<String, BasePlayerModule> modules = new HashMap<>();
+	private transient Map<Integer, GoodsModule<? extends Item, ? extends Item>> goodsModules = new HashMap<>();
+	/* **************** 内存数据 ******************** */
+	private transient EventModule eventModule = new EventModule();
+	/** TODO 长时间闲置设置false，先不清数据 */
+	private volatile boolean isActive = true;
+	/** 是否正在退出 */
+	private volatile boolean islogouting;
+	/** 玩家基本数据 */
+	private PlayerData data;
+	/** 玩家扩展数据 */
+	private PlayerExt ext;
+	private transient GameClient gameClient;
+	private List<Long> timerTask = new ArrayList<>();
+
+	/** 看完广告后的操作 */
+	private Consumer<?> adsAction;
+
+	public <T extends BasePlayerModule> T getModule(Class<? extends BasePlayerModule> clazz) {
+		return (T) this.modules.get(clazz.getName());
+	}
+
+	public long setPeriodic(long delay, Handler<Long> handler) {
+		long timer = gameClient.getContext().setPeriodic(delay, handler);
+		timerTask.add(timer);
+		return timer;
+	}
+
+	public void cancelTimer(long id) {
+		timerTask.remove(id);
+		VxHolder.vertx.cancelTimer(id);
+	}
+	public void cancelAllTimer() {
+		for (Long id : timerTask) {
+			VxHolder.vertx.cancelTimer(id);
+		}
+		timerTask.clear();
+	}
+
+	/**
+	 * 注册事件处理器
+	 */
+	public void registerEventHandler(EventHandler handler) {
+
+		EventTypeEnum[] eventTypes = handler.getEventTypes();
+		if (eventTypes != null) {
+			eventModule.registerEventHandler(handler);
+		}
+	}
+
+	public void registerEventHandler(EventTypeEnum[] eventTypes, EventHandler handler) {
+		if (eventTypes != null) {
+			eventModule.registerEventHandler(eventTypes, handler);
+		}
+	}
+
+	public void registerEventHandler(EventTypeEnum eventType, EventHandler handler) {
+		if (eventType != null) {
+			eventModule.registerEventHandler(eventType, handler);
+		}
+	}
+
+	public void handleEvent(GameEvent gameEvent) {
+		eventModule.handleEvent(gameEvent);
+	}
+
+	public void handleEvent(EventTypeEnum eventType) {
+		eventModule.handleEvent(new GameEvent(eventType));
+	}
+
+	public void handleEvent(EventTypeEnum eventType, Object... params) {
+		eventModule.handleEvent(new GameEvent(eventType, params));
+	}
+
+	public EventModule getEventModule() {
+		return eventModule;
+	}
+
+	public PlayerModule getPlayerModule() {
+		return getModule(PlayerModule.class);
+	}
+
+	public HeroModule getHeroModule() {
+		return getModule(HeroModule.class);
+	}
+
+	public ItemModule getItemModule() {
+		return getModule(ItemModule.class);
+	}
+
+	public ShopModule getShopModule() {
+		return getModule(ShopModule.class);
+	}
+
+	public VarModule getVarModule() {
+		return getModule(VarModule.class);
+	}
+	public Player() {
+	}
+
+	public Player(PlayerData data) {
+		this.data = data;
+		this.playerId = data.getPlayerId();
+		initPlayerModule();
+	}
+
+	public void initPlayerModule() {
+		for (Class<? extends BasePlayerModule> clazz : allModuleClass) {
+			try {
+				if (Modifier.isAbstract(clazz.getModifiers())) {
+					continue;
+				}
+				BasePlayerModule instance = clazz.getDeclaredConstructor().newInstance();
+				instance.setPlayer(this);
+				instance.initDefault(this);
+				modules.put(clazz.getName(), instance);
+				if (instance instanceof GoodsModule) {
+					GoodsModule goodsModule = (GoodsModule) instance;
+					GoodsTypeEnum goodsTypeEnum = goodsModule.getGoodsTypeEnum();
+					goodsModules.put(goodsTypeEnum.getId(), goodsModule);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public List<BasePlayerModule> getModuleSorted() {
+		List<BasePlayerModule> ret = new ArrayList<BasePlayerModule>();
+		ret.addAll(modules.values());
+		Collections.sort(ret);
+		return ret;
+	}
+
+	/** 
+	 * 获取所有货币数据
+	 * @return
+	 */
+	public MapWrapper getCurrencyMap() {
+		return getData().getHotData().getCurrencyMap();
+	}
+
+	/** 
+	 * 获取所有等级数据
+	 * @return
+	 */
+	public MapWrapper getLevelMap() {
+		return getData().getHotData().getLevelMap();
+	}
+
+	public void setCurrency(int resourceType, long value) {
+		getCurrencyMap().setValue(resourceType, value);
+	}
+
+	public long getCurrency(int resourceType) {
+		return getCurrencyMap().getValue(resourceType);
+	}
+
+	public boolean hasCurrency(int resourceType) {
+		return getCurrencyMap().hasValue(resourceType);
+	}
+
+
+	public boolean isEnough(int id, int count) {
+		int goodsType = ItemHelper.getGoodsType(id);
+		return getGoodsModule(goodsType).isEnough(id, count);
+	}
+
+	public Collection<BasePlayerModule> getAllModule()
+	{
+		return modules.values();
+	}
+
+	public Map<String, BasePlayerModule> getModules() {
+		return modules;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public static Set<Class<? extends BasePlayerModule>> getAllModuleClass() {
+		return allModuleClass;
+	}
+
+	public Map<Integer, GoodsModule<? extends Item, ? extends Item>> getGoodsModules() {
+		return goodsModules;
+	}
+
+	public List<Long> getTimerTask() {
+		return timerTask;
+	}
+
+	public void setModules(Map<String, BasePlayerModule> modules) {
+		this.modules = modules;
+	}
+
+	public GoodsModule getGoodsModule(int goodsType) {
+		return this.goodsModules.get(goodsType);
+	}
+
+	public PlayerInfo toProto() {
+		PlayerInfo.Builder builder = PlayerInfo.newBuilder();
+		builder.setId((int) getData().getPlayerId().longValue());
+		builder.setName(getData().getName());
+		builder.setLevel(getData().getLevel());
+		builder.setExp(getData().getExp());
+		builder.setHead(getData().getHead());
+		builder.setHeadFrame(getData().getHeadFrame());
+		builder.setVipLevel(getData().getVipLevel());
+		builder.setVipExp(getData().getVipExpTotal());
+//		builder.setPowerRecoverTime(PlayerHelper.recoverPower(this) * 1000 + "");
+//		builder.setSpiritReceiveInfo(getData().getSpiritReceiveInfo());
+//		builder.setActionPower(getData().getActionPower());
+//		builder.setActionPowerRecoverTime(PlayerHelper.recoverActionPower(this));
+		builder.setOfflineTime(getData().getOfflineTime().toString());
+		return builder.build();
+	}
+
+	public long getPlayerId() {
+		return playerId;
+	}
+
+	public void setPlayerId(long playerId) {
+		this.playerId = playerId;
+	}
+
+	public PlayerData getData() {
+		return data;
+	}
+
+	public void setData(PlayerData data) {
+		this.data = data;
+	}
+
+	public PlayerExt getExt() {
+		return ext;
+	}
+
+	public void setExt(PlayerExt ext) {
+		this.ext = ext;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public boolean isIslogouting() {
+		return islogouting;
+	}
+
+	public void setIslogouting(boolean islogouting) {
+		this.islogouting = islogouting;
+	}
+
+	public GameClient getGameClient() {
+		return gameClient;
+	}
+
+	public void setGameClient(GameClient gameClient) {
+		this.gameClient = gameClient;
+	}
+
+	public Consumer<?> getAdsAction() {
+		return adsAction;
+	}
+
+	public void setAdsAction(Consumer<?> adsAction) {
+		this.adsAction = adsAction;
+	}
+
+}

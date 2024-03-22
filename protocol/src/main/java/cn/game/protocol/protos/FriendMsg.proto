@@ -1,0 +1,220 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+import "BaseMsg.proto" ;
+
+// 请求好友列表
+message FriendListRequest_30000001{
+
+	bool local = 1;  // true，本服好友，false 跨服好友。 
+}
+
+//  好友数据
+message FriendListResponse_30000002{
+
+	repeated FriendInfo friends = 1;  // 好友列表
+}
+
+// 请求黑名单列表
+message FriendBlackListRequest_30000051{
+
+}
+
+message FriendBlackListResponse_30000052{
+	repeated FriendInfo players = 1;  // 黑名单列表
+}
+
+
+// 请求好友申请列表
+message FriendApplyListRequest_30000053{
+
+}
+
+message FriendApplyListResponse_30000054{
+	repeated SimplePlayerInfo players = 1;    // 好友申请列表
+}
+
+
+// 搜索符合条件的推荐好友，换一批也是此条协议,刷新有时间间隔限制
+message FriendRecommendRequest_30000003{
+	bool refresh = 1 ; //  true，点击换一批； false 打开页面请求，如果没有到刷新时间，则返回上次刷新结果。 
+}
+
+//  推荐好友列表
+message FriendRecommendResponse_30000004{
+   repeated SimplePlayerInfo  friends = 1;
+   int32 nextFreshTime = 2 ; // 当没有到刷新时间点刷新时，返回可以刷新的时间戳（秒）
+}
+
+
+// 按账号id搜索玩家
+message FriendSearchRequest_30000020{
+	 string playerId = 1;
+	 string serverId = 2; // 服id
+}
+
+//  搜索出来的玩家
+message FriendSearchResponse_30000021{
+   SimplePlayerInfo player = 1;
+}
+
+
+//申请成为对方好友或者批量申请好友，从黑名单里加好友也用这个协议
+message FriendApplyRequest_30000005{
+
+   repeated string friendIds = 1;		//向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+   repeated string serverIds = 2;		//玩家所在服务器id，申请跨服好友用到
+}
+
+message FriendApplyResponse_30000006{
+
+}
+
+
+//处理好友申请,包含批量处理
+message FriendApplicationRequest_30000007{
+
+   repeated string friendId = 1;		//处理申请的玩家id
+   bool agree = 2;						//true同意申请，false拒绝
+
+}
+
+message FriendApplicationResponse_30000008{
+
+   repeated string friendIds = 1;				//成功加为好友的玩家id
+   
+}
+
+
+// 删除好友,从黑名单里删除也用这个协议
+message FriendDeleteRequest_30000009 {
+
+	string id = 1; 		// 好友id
+
+}
+message FriendDeleteResponse_3000000a {
+
+}
+
+
+// 将玩家加入到黑名单
+message FriendBlackRequest_30000010 {
+
+	string id = 1; 		// 玩家id
+	string serverId = 2 ; // 玩家所在服务器id
+
+}
+message FriendBlackResponse_30000011 {
+
+}
+
+// 关注好友
+message FriendAttentionRequest_30000030 {
+
+	string id = 1; 		// 好友id
+	bool attention  = 2 ;// true 关注，false 取消关注
+
+}
+message FriendAttentionResponse_30000031 {
+
+}
+
+
+//赠送好友友情点
+message FriendshipRequest_30000012{
+
+   repeated string friendId = 1;		//赠送的好友id
+
+}
+
+message FriendshipResponse_30000013{
+
+}
+
+
+//领取好友赠送的友情点，包含一键领取
+message FriendshipReceiveRequest_30000014{
+
+   repeated string friendId = 1;		//好友id
+}
+
+message FriendshipReceiveResponse_30000015{
+
+}
+
+
+//送好友礼物
+message FriendGiftRequest_30000016{
+
+   string friendId = 1;		//好友id
+   ItemInfo gift = 2;		//送的礼物
+   
+}
+
+message FriendGiftResponse_30000017{
+
+}
+
+
+// 好友的信息
+message FriendInfo {
+
+	SimplePlayerInfo player = 1 ;		// 玩家基本数据
+	FriendRelationInfo relation = 2 ; 	// 好友相关数据
+}
+
+// 好友送礼数据
+message FriendGiftInfo {
+
+	bool gift = 1 ;     	 // 是否给这个好友送过友情点
+	bool gifted = 2  ;      // 好友是否给我送过友情点
+	bool receive = 3  ;      // 如果好友给我送友情点了，我是否领取过
+
+}
+
+// 好友相关数据
+message FriendRelationInfo {
+	int32 relation = 1; 		// 与好友的关系  0 好友 1 特别关注，2 黑名单
+	int32 intimate = 2 ;		// 亲密度
+	int32 intimateLevel = 3 ; 	// 亲密度等级
+}
+
+
+
+
+
+/********** 下面的协议只有服务器用到 ***********/
+
+//玩家收到其他服务器的好友申请
+message FriendApplyPush_30000022{
+
+   int64 playerId = 1;			//收到申请的玩家
+   int64 applyPlayerId = 2;		// 申请人id
+   string applyPlayerServer = 3;  // 申请人所在服务器
+}
+
+
+//增加其他服务器的好友
+message FriendAddPush_30000023{
+
+   int64 playerId = 1;		//待增加的玩家id
+   int64 friendId = 2;		// 新加入的好友id
+   string friendServer = 3;  // 好友所在服务器id
+}
+
+
+//删除其他服务器的好友
+message FriendDelPush_30000024{
+
+   int64 playerId = 1;		//待操作的玩家id
+   int64 friendId = 2;		// 删除的好友id
+}
+
+
+
+
+
+
+
+

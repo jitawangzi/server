@@ -1,0 +1,58 @@
+syntax = "proto3";
+option java_package = "cn.game.net.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+//import "HeroMsg.proto" ;
+//import "RewardMsg.proto" ;
+
+message TestAddItemRequest_7f000008{
+	uint32 id 	= 1 ;		// 想要获取的奖励id
+	uint32 count = 2;		// 数量，如果是0，代表本类奖励的所有奖励，装备数量是1，道具数量999，伙伴数量1
+}
+
+message TestAddItemResponse_7f000009{
+//	repeated RewardInfo resource = 1;	// 获得的奖励
+}
+
+// 测试db插入效率信息
+message TestDbInsertRequest_7f000001{
+
+	uint32 times 	= 1 ;
+}
+
+message TestDbInsertResponse_7f000002{
+
+}
+
+// 字节码
+message TestssitRequest_7f000003{
+
+	uint32 times 	= 1 ;
+
+}
+
+message TestssitResponse_7f000004{
+
+}
+
+message TestCodeRequest_7f000011{
+
+	uint32 arg1 	= 1 ;
+	string arg2 	= 2 ;
+}
+
+message TestCodeResponse_7f000012{
+
+}
+
+message Test_7f000005{
+
+	string name 	= 1 ;
+
+}
+
+message Test_7f000006{
+	string resp 	= 1 ;
+}
+
+

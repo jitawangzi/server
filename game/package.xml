@@ -1,0 +1,83 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+    <id>aof</id> 
+<!--     <appendAssemblyId>false</appendAssemblyId>   -->
+
+    <!--这个id会出现在zip包名称的后面，zip的完整名是：pom.xml中的artifactId-version-id.zip -->
+    <formats>
+    <!--支持的打包格式有zip、tar、tar.gz (or tgz)、tar.bz2 (or tbz2)、jar、dir、war-->
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+<!--         用来定制工程依赖 jar 包的打包方式,依赖包的输出路径 -->
+        <dependencySet>
+<!--             依赖jar包的输出目录 -->
+            <outputDirectory>/lib</outputDirectory> 
+<!--              Determines whether the artifact produced during the current project's build should be included in this dependency set. (Since 2.2-beta-1)
+Default value is: true. 
+			是否把本工程生成的jar包也放到依赖包目录里，也就是上边的lib-->
+            <useProjectArtifact>false</useProjectArtifact>
+<!--              将scope为runtime的依赖包打包 -->
+             <scope>runtime</scope>
+            
+            <!--  include和exclude
+include和exclude用于指定包含文件和排除文件，当一个文件满足所有的include条件和不满足exclude条件下，才会被包含。
+
+在使用depedencySet和moduleSet的时候，include和exclude使用artifacts而非文件名，这样就可以避免我们需要得知artifact在本地的实际存储名字。格式必须为以下三种之一：
+
+groupId:artifactId:type:classifier
+groupId:artifactId
+groupId:artifactId:type:classifier:version
+其中type默认为jar，而classifier在为空时会被忽略。
+
+如果在格式中包含了通配符，那么将会分别计算文件的三种格式的信息，如果任意其一包含了剩余的子串，那么将认为匹配。
+
+比如要匹配所有的war文件，则可以使用*:war:*。
+
+如果没有指定通配符，那么将会拿模式串与三种格式做等值比较。 -->
+             <includes>
+<!--              指定把哪些依赖包放进去,如果不指定  则所有的依赖都会打入，但是有的时候  我们只需要打特定依赖的包 -->
+				<include>cn.game:util</include>
+                <include>cn.game:protocol</include>
+                <include>cn.game:core</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+
+
+ <!-- 压缩包下是否生成和包名相同的根目录-->
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <!--这里指定需要包含的文件集合-->
+    <fileSets>
+        <fileSet>
+        <!--Game classes-->
+            <outputDirectory>./</outputDirectory> <!--目标位置-->
+            <directory>target/classes</directory><!--源目录-->
+            <excludes>
+                <exclude>config/logback.xml</exclude>
+            </excludes>
+<!--             <includes> -->
+<!--                 <include>cn/</include> -->
+<!--             </includes> -->
+        </fileSet>
+        
+<!--         <fileSet> -->
+<!--         配置文件，类似代码 -->
+<!--             <outputDirectory>./resources</outputDirectory> 目标位置 -->
+<!--             <directory>src/main/resources</directory>源目录 -->
+<!--             <excludes> -->
+<!--                 <exclude>apollo/</exclude> -->
+<!--                 <exclude>config/</exclude> -->
+<!--             </excludes> -->
+<!--         </fileSet> -->
+ </fileSets>
+	<files>
+<!-- 	单个文件 -->
+<!-- 		<file> -->
+<!-- 			<source>target/xxx.txt</source> -->
+<!-- 			<outputDirectory>/</outputDirectory> -->
+<!-- 		</file> -->
+	</files>
+    
+</assembly>

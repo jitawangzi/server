@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<quartz xmlns="http://www.opensymphony.com/quartz/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opensymphony.com/quartz/JobSchedulingData
+  http://www.opensymphony.com/quartz/xml/job_scheduling_data_1_5.xsd"
+	version="1.5">
+	<calendar class-name="org.quartz.impl.calendar.HolidayCalendar"
+		replace="true">
+		<name>holidayCalendar</name>
+		<description>HolidayCalendar</description>
+		<base-calendar class-name="org.quartz.impl.calendar.WeeklyCalendar">
+			<name>weeklyCalendar</name>
+			<description>WeeklyCalendar</description>
+			<base-calendar class-name="org.quartz.impl.calendar.AnnualCalendar">
+				<name>annualCalendar</name>
+				<description>AnnualCalendar</description>
+			</base-calendar>
+		</base-calendar>
+	</calendar>
+	<job>
+		<job-detail>
+			<name>NewDayJob</name>
+			<group>group1</group>
+			<description>跨天重置数据</description>
+			<job-class>cn.game.games.net.game.jobs.NewDayJob
+			</job-class>
+			<volatility>false</volatility>
+			<durability>false</durability>
+			<recover>false</recover>
+		</job-detail>
+		<trigger>
+			<cron>
+				<name>NewDayJob</name>
+				<group>group1</group>
+				<description>每日0点</description>
+				<job-name>Job-NewDayJob</job-name>
+				<job-group>job-group1</job-group>
+				<cron-expression>1 0 0 * * ?</cron-expression>
+			</cron>
+		</trigger>
+	</job>
+	<job>
+		<job-detail>
+			<name>OnlineJob</name>
+			<group>group1</group>
+			<description>检查过期时间</description>
+			<job-class>cn.game.games.net.game.jobs.OnlineJob
+			</job-class>
+			<volatility>false</volatility>
+			<durability>false</durability>
+			<recover>false</recover>
+		</job-detail>
+		<trigger>
+			<cron>
+				<name>OnlineJob</name>
+				<group>group1</group>
+				<description>1分钟</description>
+				<job-name>Job-OnlineJob</job-name>
+				<job-group>job-group1</job-group>
+				<cron-expression>0 * * * * ?</cron-expression>
+			</cron>
+		</trigger>
+	</job>
+<!-- 	<JOB> -->
+<!-- 		<JOB-DETAIL> -->
+<!-- 			<NAME>SHOPJOB</NAME> -->
+<!-- 			<GROUP>GROUP2</GROUP> -->
+<!-- 			<DESCRIPTION>定时刷新个人商店</DESCRIPTION> -->
+<!-- 			<JOB-CLASS>NET.GAME.JOBS.SHOPJOB -->
+<!-- 			</JOB-CLASS> -->
+<!-- 			<VOLATILITY>FALSE</VOLATILITY> -->
+<!-- 			<DURABILITY>FALSE</DURABILITY> -->
+<!-- 			<RECOVER>FALSE</RECOVER> -->
+<!-- 		</JOB-DETAIL> -->
+<!-- 		<TRIGGER> -->
+<!-- 			<CRON> -->
+<!-- 				<NAME>SHOPJOB</NAME> -->
+<!-- 				<GROUP>GROUP2</GROUP> -->
+<!-- 				<DESCRIPTION>1分钟</DESCRIPTION> -->
+<!-- 				<JOB-NAME>JOB-SHOPJOB</JOB-NAME> -->
+<!-- 				<JOB-GROUP>JOB-GROUP2</JOB-GROUP> -->
+<!-- 				<CRON-EXPRESSION>0 0 * * * ?</CRON-EXPRESSION> -->
+<!-- 			</CRON> -->
+<!-- 		</TRIGGER> -->
+<!-- 	</JOB> -->
+</quartz>
+ 

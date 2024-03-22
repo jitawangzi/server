@@ -1,0 +1,66 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+// Gm协议
+
+// 关闭服务器
+message GmShutdownServerRequest_77000001{
+
+}
+
+// 关闭服务器响应
+message GmShutdownServerResponse_77000002{
+
+}
+
+
+// 请求封号列表
+message GmForbidAccountListRequest_77000003{
+
+}
+// 响应封号列表
+message GmForbidAccountListResponse_77000004{
+	repeated ForbidAccountInfo accounts = 1; // 被封的账号
+}
+
+// 封号信息
+message ForbidAccountInfo{
+	string playerId 	= 1; 			
+	string name 		= 2; 		
+	uint32 level 		= 3; 		
+	string reason 		= 4; //封禁原因
+	string unblockTime	= 5;//解封时间
+}
+
+
+
+// 请求封号
+message GmForbidAccountRequest_77000005{
+	string playerId 	= 1;
+	string reason 		= 2;//封禁原因
+	string unblockTime	= 3;//解封时间
+}
+// 响应封号
+message GmForbidAccountResponse_77000006{
+	uint32 errorCode = 1;
+}
+
+
+// 请求解封
+message GmUnblockAccountRequest_77000007{
+	string playerId = 1;
+}
+// 响应解封
+message GmUnblockAccountResponse_77000008{
+	uint32 errorCode = 1;
+}
+
+// 请求踢下线
+message GmPlayerLogoutRequest_77000009{
+	string playerId = 1;
+}
+// 响应踢下线
+message GmPlayerLogouttResponse_7700000a{
+	uint32 errorCode = 1;
+}

@@ -1,0 +1,99 @@
+package performance;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import ch.qos.logback.core.joran.spi.JoranException;
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import cn.game.util.LogbackConfig;
+import cn.game.util.RedisUtil;
+
+public class RedisVertxTest {
+
+	public static void main(String[] args) throws Exception {
+
+		String url = "redis://:32SSDgSDFsa3dsdfgg@192.168.1.67:6379/2";
+		try {
+			LogbackConfig.init(true, "config/logback.xml");
+		} catch (JoranException e) {
+			e.printStackTrace();
+		}
+//		new Config().load();
+
+		RedisUtil.main(new String[] { url });
+
+		// 获取vertx基类
+		VertxOptions options = new VertxOptions();
+		options.setEventLoopPoolSize(64);
+		Vertx vertx = Vertx.vertx(options);
+		RedisUtil.setRedisUrl(url);
+		Future<String> deployVerticle = vertx.deployVerticle(new RedisUtil());
+		deployVerticle.onComplete(r -> {
+
+			String key = "abc";
+			String value = "SDFSADFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDSF";
+			for (int i = 0; i < 1000; i++) {
+				RedisUtil.set(key, value);
+			}
+
+			int count = 3;
+			long start = System.currentTimeMillis();
+
+			try {
+//				setAsync(count, value);
+				getSync(count, value);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+//		setSync(count, value);
+
+//		getSync(count, key);
+//		getAsync(count, key);
+
+			System.out.println("花费时间: " + (System.currentTimeMillis() - start));
+
+		});
+
+		Thread.currentThread().join();
+	}
+
+	public static void setAsync(int count, String value) throws InterruptedException {
+
+		CountDownLatch latch = new CountDownLatch(count);
+
+		for (int i = 0; i < count; i++) {
+			RedisUtil.setR(i + "", value, r -> {
+				latch.countDown();
+			});
+		}
+		latch.await(10, TimeUnit.SECONDS);
+		System.err.println(latch.getCount());
+	}
+	public static void setSync(int count, String value) {
+
+		for (int i = 0; i < count; i++) {
+			RedisUtil.set(i + "", value);
+		}
+	}
+
+	public static void getSync(int count, String key) {
+
+		for (int i = 0; i < count; i++) {
+			RedisUtil.getSync(key);
+		}
+	}
+
+//	public static void getAsync(int count, String key) throws InterruptedException {
+//
+//		CountDownLatch latch = new CountDownLatch(count);
+//
+//		for (int i = 0; i < count; i++) {
+//			RedisUtil.getAndRunAsync(key, r -> {
+//				latch.countDown();
+//			});
+//		}
+//		latch.await();
+//	}
+}

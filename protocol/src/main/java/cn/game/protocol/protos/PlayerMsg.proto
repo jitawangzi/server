@@ -1,0 +1,147 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+// import "RewardMsg.proto" ;
+import "BaseMsg.proto" ;
+import "ShopMsg.proto" ;
+//import "MissionMsg.proto";
+
+/*** 登陆****/
+message PlayerLoginRequest_01000001{
+  string sessionId                    = 1;//登陆服产生的会话id
+  bool reconnect = 2;						// 是否是断线重连,true:断线重连，false:普通登陆
+  string verstion = 3;						// 客户端版本，如果版本不匹配不能登陆
+}
+
+/*** 用户登陆,返回游戏数据 ***/
+message PlayerLoginResponse_01000002{
+	PlayerAllInfo info = 1;					// 用户的所有游戏数据
+	bool reconnect = 2;						// 是否是断线重连
+	string time = 3;			// 服务器当前时间,毫秒时间戳
+}
+
+// 退出登录(客户端登录多个账号，或者服务器关闭等)
+message PlayerLogoutPush_01100030{
+}
+
+/*** 修改名字 **/
+message PlayerNameRequest_01000011{
+    string name = 1;
+}
+/*** 修改名字返回 **/
+message PlayerNameResponse_01000012{
+}
+/*** 修改头像 **/
+message PlayerHeadRequest_01000013{
+    int32 head = 1;
+}
+/*** 修改头像返回 **/
+message PlayerHeadResponse_01000014{
+}
+/*** 修改头像框 **/
+message PlayerHeadFrameRequest_01000015{
+    int32 headFrame = 1;
+}
+/*** 修改头像框返回 **/
+message PlayerHeadFrameResponse_01000016{
+}
+
+/*** 断线重连，和手机端通用 **/
+message PlayerReconnecRequest_01000065{
+    string sessionId = 1;//登陆服产生的会话id
+    uint32 playerId = 2;//玩家id
+}
+/*** 断线重连，和手机端通用 **/
+message PlayerReconnecResponse_01000066{
+	PlayerAllInfo playerInfo = 1;					// 用户的所有游戏数据
+	string time = 2;			// 服务器当前时间,毫秒时间戳
+
+}
+
+/*** 心跳 ****/
+message PlayerHeartbeatRequest_01000005{
+
+}
+/*** 心跳返回 ****/
+message PlayerHeartbeatResponse_01000006{
+	string time = 1;			// 服务器当前时间
+}
+
+/*** 获取一组玩家简略信息 本服 ***/
+message PlayerBriefInfoRequest_01000007{
+	repeated string playerIds = 1;
+}
+
+message PlayerBriefInfoResponse_01000008{
+	repeated SimplePlayerInfo players = 1;
+}
+
+/*** 获取一组玩家简略信息 查询本服和跨服 ***/
+message PlayerBriefInfoOtherRequest_01000009{
+	repeated string playerIds = 1;
+	repeated string serverIds = 2; // 服id
+}
+
+message PlayerBriefInfoOtherResponse_0100000a{
+	repeated SimplePlayerInfo players = 1;
+}
+
+
+/*** 获取一个玩家的名片 ***/
+message PlayerShowRequest_01000039{
+	string playerId = 1;
+	string serverId = 2; // 服id
+}
+
+message PlayerShowResponse_0100003a{
+	PlayerShowInfo player = 1;
+}
+
+/*** 通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新 ****/
+message PlayerResetPush_01100016{
+	int32 type = 1 ; 	// 1 表示12点的刷新，  2表示5点的刷新
+}
+
+
+// 请求购买体力物品
+message PlayerBuyPowerItemRequest_01000022{
+	uint32 buyCount = 1; //要购买的数量
+}
+
+// 服务器返回购买结果
+message PlayerBuyPowerItemResponse_01000023{	
+}
+
+/*** 对于客户端的请求，如果服务器处理过程中出现未知异常，导致没有返回对应的响应包时，返回此错误消息 ****/
+message PlayerErrorPush_01000099{
+  string error = 1;    //服务端的异常堆栈 
+}
+
+//用户基本信息
+message PlayerInfo{
+    uint32 id = 1;//用户id
+    string name = 2;//用户名,昵称
+    uint32 exp = 6;//经验值
+    uint32 level = 7;//等级
+    uint32 vipLevel = 8;//vip  等级
+    uint32 vipExp = 9;//vip等级当前经验
+    uint32 head = 10;//头像id
+    uint32 headFrame = 11;//头像框id
+//    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
+//	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
+//    uint32 spiritReceiveInfo = 16;//每天体力领取信息
+	string offlineTime	= 	22;	//上次下线时间的时间戳（毫秒）
+}
+/*** 玩家所有数据，一般在创建用户后，或者登陆后下发 ***/
+message PlayerAllInfo{
+   PlayerInfo player = 1;    	// 用户基本信息。
+   repeated CurrencyInfo currencys = 2;    	// 货币
+   repeated ItemInfo items  = 5;        //道具
+   repeated HeroInfo heros  = 6;        //英雄
+   repeated MonthCardProto monthCards  = 8;        //月卡
+   repeated uint32 shopGift  = 9;        //购买过的商店礼包id(ShopGift表)
+   //repeated MissionInfo mainMissions = 23 ;  // 主线任务数据
+   //repeated MissionInfo branchMissions = 24 ;  // 支线任务数据
+}
+

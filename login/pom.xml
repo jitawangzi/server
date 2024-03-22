@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cn.game</groupId>
+	<artifactId>loginserver</artifactId>
+	<version>1.0</version>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+	<build>
+		<finalName>login</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<release>17</release>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<!-- <version>2.2.1</version> -->
+				<configuration>
+					<!--jar包名字是否在finalName后追加AssemblyId -->
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>package.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<!-- this is used for inheritance merges 绑定到这个生命周期 -->
+						<phase>package</phase>
+						<goals>
+							<!-- 执行一次 -->
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- 有的软件打包成bundle格式，需要这个插件 -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<!-- 拷贝项目依赖包到lib/目录下 -->
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<!-- 间接依赖也拷贝 -->
+							<excludeTransitive>false</excludeTransitive>
+							<!-- 带上版本号 -->
+							<stripVersion>false</stripVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>cn.game</groupId>
+			<artifactId>util</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.game</groupId>
+			<artifactId>protocol</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>cn.game</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.codehaus.janino/commons-compiler -->
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>commons-compiler</artifactId>
+			<version>3.0.9</version>
+		</dependency>
+
+	</dependencies>
+
+</project>

@@ -1,0 +1,27 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+import "BaseMsg.proto" ;
+// 英雄相关协议
+
+//英雄升级
+message HeroUpLevelRequest_16000001{
+  uint64 uid = 1; // 英雄唯一id
+}
+
+message HeroUpLevelResponse_16000002{
+}
+
+
+//英雄合成
+message HeroConflateRequest_16000003{
+  uint64 uid = 1; // 本体英雄唯一id
+  // 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
+  // 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+  repeated uint64 consumedUid = 2;
+}
+
+message HeroConflateResponse_16000004{
+	HeroInfo hero = 1;	// 获得新的英雄。
+}
