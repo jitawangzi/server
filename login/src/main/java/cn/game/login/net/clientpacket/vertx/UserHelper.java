@@ -43,8 +43,16 @@ public class UserHelper {
 //			user.setDeviceUid(device);
 		return VxHolder.vertx.executeBlocking(fut -> {
 			mapper.insert(user);
-			RedissonUtil.setAsync(CacheType.F_USER_NAME_ID.key(account), JSON.toJSONString(user), 7, TimeUnit.DAYS);
+			setUserCache(user); 
 			fut.complete();
 		});
+	}
+	
+	public static void setUserCache(User user) {
+		RedissonUtil.setAsync(CacheType.F_USER_NAME_ID.key(user.getUsername()), JSON.toJSONString(user), 7, TimeUnit.DAYS);
+	}
+	public static String getSessionKey(String sessionId) {
+		User user = RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId),User.class);
+		return user == null? null : user.getSessionKey(); 
 	}
 }

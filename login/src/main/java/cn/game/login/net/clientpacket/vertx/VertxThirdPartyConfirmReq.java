@@ -151,7 +151,15 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 								User user;
 								if (!StringUtils.isEmpty(ret)) {
 									user = JSON.parseObject(ret, User.class);
+									if (!session_key.equals(user.getSessionKey())) {
+										user.setSessionKey(session_key); 
+										UserHelper.setUserCache(user);
+									}
+									user.setLoginDate(DateUtil.nowDateStr());
+									user.setLoginTime(DateUtil.nowTimeStr());
+									mapper.updateByPrimaryKey(user);
 								} else {
+									// 如果没有账号需要直接创建
 									user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
 									if (user == null) {
 										Future<Object> userFuture = UserHelper.createUser(username, "",
@@ -168,7 +176,9 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 										// 更新登录时间
 										user.setLoginDate(DateUtil.nowDateStr());
 										user.setLoginTime(DateUtil.nowTimeStr());
+										user.setSessionKey(session_key);
 										mapper.updateByPrimaryKey(user);
+										UserHelper.setUserCache(user); 
 									}
 								}
 
