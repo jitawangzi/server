@@ -27,9 +27,9 @@
 	<property name="suppressDate" value="true"/>
 	</commentGenerator>
      
-    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/passport" userId="root" password="root" />
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/passport?serverTimezone=Asia/Shanghai" userId="root" password="root" />
     
-    <javaModelGenerator targetPackage="cn.game.login.cache.entity" targetProject="loginserver/src/main/java" >
+    <javaModelGenerator targetPackage="cn.game.login.cache.entity" targetProject="login/src/main/java" >
      <!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false -->
         <property name="enableSubPackages" value="true"/>
       </javaModelGenerator>
