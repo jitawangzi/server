@@ -6,6 +6,8 @@ import java.util.Set;
 import cn.game.login.net.clientpacket.vertx.VertxRegisterReq;
 import cn.game.login.net.clientpacket.vertx.VertxServerListReq;
 import cn.game.login.net.clientpacket.vertx.VertxThirdPartyConfirmReq;
+import cn.game.login.net.clientpacket.vertx.wechat.WechatShipPush;
+import cn.game.login.net.clientpacket.vertx.wechat.WechatTest;
 import cn.game.util.RedisUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
@@ -63,6 +65,8 @@ public class RestServer extends AbstractVerticle {
 		router.route("/account/register").handler(new VertxRegisterReq());
 		router.route("/account/third_party_confirm").handler(new VertxThirdPartyConfirmReq());
 		router.route("/account/server_list").handler(new VertxServerListReq());
+		router.route("/wechat/ship/push").handler(new WechatShipPush());
+		router.route("/wechat/test").handler(new WechatTest());
 //		router.get().handler(this::handleGet2);
 		// 创建一个httpserver，监听8080端口，并交由路由器分发处理用户请求
 		vertx.createHttpServer().requestHandler(router::handle).listen(port);

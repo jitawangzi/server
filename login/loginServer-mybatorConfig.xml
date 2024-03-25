@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration >
-<classPathEntry location="D:\work\lib\lib\mysql-connector-java-5.1.30.jar" /> 
+<classPathEntry location="D:\maven\repository\mysql\mysql-connector-java\8.0.22\mysql-connector-java-8.0.22.jar" /> 
 
   <context id="mysql" defaultModelType="flat" targetRuntime="MyBatis3" >
   	<property name="autoDelimitKeywords" value="false"/>
@@ -16,6 +16,8 @@
     <property name="endingDelimiter" value="`"/>
     
    	<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+   	<plugin type="org.mybatis.generator.plugins.BlobColumnTransformPlugin" />
+   	
     
 <!--     阻止注释 -->
     <commentGenerator>
@@ -37,19 +39,9 @@
    		 <property name="enableSubPackages" value="true" />
     </sqlMapGenerator>
     <javaClientGenerator targetPackage="cn.game.login.mapper" targetProject="login/src/main/java" type="XMLMAPPER" />
-<!--   	 	 <table tableName="t_role"> -->
-<!--             <generatedKey column="id" sqlStatement="Mysql"/> -->
-<!--         </table> -->
-<!--         去掉Example -->
-        <table tableName="t_server_list"  
-         	domainObjectName="ServerList" 
-        	enableInsert="true" enableSelectByPrimaryKey="true"
-		    enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true"
-			enableCountByExample="false" enableUpdateByExample="false"
-			enableDeleteByExample="false" enableSelectByExample="false"
-			selectByExampleQueryId="false">
-<!-- 			<generatedKey column="id" sqlStatement="Mysql" identity="true"/> -->
+		<!-- 生成全部表 ，使用一样的规则 -->
+		<table tableName="%">
+			<domainObjectRenamingRule searchString="^T" replaceString="" />
 		</table>
-		
   </context>
 </generatorConfiguration>

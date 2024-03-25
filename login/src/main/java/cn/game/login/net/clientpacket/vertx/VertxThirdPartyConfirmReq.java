@@ -17,6 +17,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
+import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;
 import cn.game.protocol.protobuf.Account.AccountChannelType;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountLogin;
@@ -36,8 +37,6 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 
 	protected static final Logger log = LoggerFactory.getLogger(VertxThirdPartyConfirmReq.class);
 
-	private static final String WX_URL_STRING = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code";
-	
 	@Override
 	public void handle(RoutingContext context) {
 
@@ -128,7 +127,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 			String appid = null;
 			String secret = null;
 //			String grant_type = "authorization_code";
-			String url = String.format(WX_URL_STRING, appid, secret, code);
+			String url = String.format(WechatHelper.WX_AUTH_URL_STRING, appid, secret, code);
 			VxHolder.get(url, r -> {
 				int errcode = r.getInteger("errcode");
 				String errmsg = r.getString("errmsg");

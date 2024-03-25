@@ -187,8 +187,7 @@ public class DAO {
 						}
 						break;
 					}
-					System.out
-							.println(String.format("Found change - key: %s, oldValue: %s, newValue: %s, changeType: %s",
+					System.out.println(String.format("Found change - key: %s, oldValue: %s, newValue: %s, changeType: %s",
 									change.getPropertyName(), change.getOldValue(), change.getNewValue(),
 									change.getChangeType()));
 				}

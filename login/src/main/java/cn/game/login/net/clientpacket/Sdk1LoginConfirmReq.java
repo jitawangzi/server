@@ -1,7 +1,5 @@
 package cn.game.login.net.clientpacket;
 
-import cn.game.core.util.IdUtil;
-import cn.game.login.cache.entity.PassportSession;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
 import cn.game.util.DateUtil;
@@ -78,9 +76,9 @@ public class Sdk1LoginConfirmReq {
 		
 		//创建session
 //		PassportSessionCache c = CacheFactory.getCache(PassportSessionCache.class);
-		PassportSession session = new PassportSession() ; 
-		session.setUid(user.getId()) ; 
-		session.setSessionId(IdUtil.getId());
+//		PassportSession session = new PassportSession() ; 
+//		session.setUid(user.getId()) ; 
+//		session.setSessionId(IdUtil.getId());
 //		CacheManager.getInstance().put(user, CacheType.PASSPORT_SESSION, session.getSessionId()) ; 
 //		CacheManager.getInstance().addUser(session.getSessionId(), user);
 		

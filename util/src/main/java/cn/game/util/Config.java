@@ -98,6 +98,10 @@ public final class Config {
 	public static boolean isTest;
 
 	public static int[] modulesDisabled;
+	
+	/** 微信发货消息推送相关参数 */
+	public static String  wechat_push_token;
+	public static String  wechat_push_EncodingAESKey;
 
 	/**
 	 *
@@ -146,6 +150,11 @@ public final class Config {
 			remoteCallTimeOut = Integer.parseInt(initialProp.getProperty("remoteCallTimeOut", "5"));
 			isTest = initialProp.getBooleanProperty("isTest", false);
 			String[] modules = initialProp.getArrayProperty("modulesDisabled", ",", new String[] {});
+			
+			wechat_push_token = initialProp.getProperty("wechat_push_token", "");
+			wechat_push_EncodingAESKey = initialProp.getProperty("wechat_push_EncodingAESKey", "");
+			
+			
 			if (modules.length > 0) {
 				modulesDisabled = new int[modules.length];
 				for (int i = 0; i < modules.length; i++) {

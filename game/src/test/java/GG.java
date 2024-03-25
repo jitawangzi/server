@@ -4,41 +4,20 @@ import java.util.List;
 
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.op.impl.BattlePassOp;
+import cn.game.util.ByteHelp;
 import cn.game.util.JsonUtil;
 
 public class GG {
 
-	static class BT {
-		BitSet biSet ; 
-		String name ;
-		@Override
-		public String toString() {
-			return "BT [bSet=" + biSet + ", name=" + name + "]";
-		} 
-			
-	}
-	
 	public static void main(String[] args) throws Exception {
 
-		
-		List<Integer> list = new ArrayList<>();
-		list.add(3); 
-		System.out.println(list.contains(3));
-		
-		BT op = new BT() ; 
-		
-		BitSet bitSet = new BitSet();
-		bitSet.set(1, true);
-		bitSet.set(5, true);
-		
-		op.biSet = bitSet; 
-		op.name = "ddd" ; 
-
-		String jsonString2 = JsonUtil.toJsonString(op);
-		System.out.println(jsonString2);
-		
-		GG.BT object = JsonUtil.parseObject(jsonString2, BT.class); 
-		System.out.println(object);
-
+		long pid = 241070001L ; 
+		System.out.println(ByteHelp.toBinaryStringWithZero(pid));
+		long id = pid << 32 | 255 ; 
+		System.out.println(ByteHelp.toBinaryStringWithZero(id));
+		System.out.println(id>>32);
+//		System.out.println(241070001);
+//		System.out.println(Integer.MAX_VALUE);
+		System.out.println();
 	}
 }

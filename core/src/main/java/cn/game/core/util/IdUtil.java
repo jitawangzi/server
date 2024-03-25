@@ -35,7 +35,7 @@ public class IdUtil {
 	// 记录号段，号段内使用自增的id
 	public static enum IdType {
 
-		PLAYER, HERO, ITEM, UNION;
+		PLAYER, HERO, ITEM, UNION, ORDER;
 	}
 
 	/** 
@@ -54,6 +54,14 @@ public class IdUtil {
 	 */
 	public static long getId() {
 		return worker.nextId();
+	}
+	/** 
+	 * 生成一个唯一的订单id，把playerId拼进去
+	 * @param playerId
+	 * @return
+	 */
+	public static long genOrderId(long playerId) {
+		return playerId << 33|getIdAutoIncrease(IdType.ORDER);
 	}
 
 	public static void init() throws Exception {
