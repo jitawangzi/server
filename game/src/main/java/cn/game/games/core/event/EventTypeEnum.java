@@ -25,6 +25,8 @@ public enum EventTypeEnum {
 	ResourceAdd(120, "ResourceAdd", "新添加了某种资源"),
 	/** 某种资源被移除 */
 	ResourceRemove(120, "ResourceRemove", "某种资源被移除"),
+	
+	WatchAds(130, "WatchAds", "看了一次广告"),
 
 	/** 升级 */
 	LevelUp(2, "LevelUp", "升级"),

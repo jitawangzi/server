@@ -4,7 +4,6 @@
 	<classPathEntry location="D:\maven\repository\mysql\mysql-connector-java\8.0.22\mysql-connector-java-8.0.22.jar" />
 
 	<context id="mysql" defaultModelType="flat" targetRuntime="MyBatis3">
-		<property name="javaRuntimeVersion" value="1.8"/>
 		<property name="autoDelimitKeywords" value="false" />
 		<!-- 生成的Java文件的编码 -->
 		<property name="javaFileEncoding" value="UTF-8" />
@@ -41,10 +40,6 @@
 			connectionURL="jdbc:mysql://127.0.0.1/game?serverTimezone=Asia/Shanghai" userId="root" password="root">
 			<property name="nullCatalogMeansCurrent" value="true" />
 		</jdbcConnection>
-		<javaTypeResolver>
-   			 <property name="forceBigDecimals" value="false"/>
-    		<property name="primitiveAsObject" value="false"/>
-		</javaTypeResolver>
 		
 		<javaModelGenerator targetPackage="cn.game.games.cache.entity" targetProject="game/src/main/java">
 			<!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false -->

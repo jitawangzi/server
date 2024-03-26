@@ -264,12 +264,14 @@ public class VxHolder {
 				param.stream().forEach(entry -> request.addQueryParam(entry.getKey(), entry.getValue().toString()));
 			}
 			responseFutrue = request.send();
-		} else {
+		}else if (method == HttpMethod.POST) {
 			responseFutrue = request.sendJsonObject(param);
+		} 
+		else {
+			throw new IllegalArgumentException("没有实现的http方法:  "+ method);
 		}
 		responseFutrue.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));
-
 	}
 
 	/** 

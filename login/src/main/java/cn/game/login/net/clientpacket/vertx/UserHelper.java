@@ -37,7 +37,7 @@ public class UserHelper {
 		user.setPass(pwd);
 		user.setCreateDate(DateUtil.nowDateStr());
 		user.setCreateTime(DateUtil.nowTimeStr());
-		user.setIsGm(0);
+		user.setIsGm(false);
 		user.setLoginDate(DateUtil.nowDateStr());
 		user.setLoginTime(DateUtil.nowTimeStr());
 //			user.setDeviceUid(device);
@@ -55,4 +55,14 @@ public class UserHelper {
 		User user = RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId),User.class);
 		return user == null? null : user.getSessionKey(); 
 	}
+	public static User getUser(String sessionId) {
+		return RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId),User.class);
+	}
+	public static User getUserByName(String username) {
+		return RedissonUtil.get(CacheType.F_USER_NAME_ID.key(username),User.class);
+	}
+	public static String getServerId(long playerId) {
+		return RedissonUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
+	}
+
 }

@@ -2,7 +2,7 @@ syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
-
+import "BaseMsg.proto" ;
 // 商店、充值 相关协议
 
 //查看商品组里面的商品列表
@@ -77,6 +77,12 @@ message ShopGiftBuyRequest_15000020{
 message ShopGiftBuyResponse_15000021{
 }
 
+
+
+// 支付订单相关参数，客户端收到这个协议就可以利用里面的参数发起支付了
+message PaymentOrderPush_15010020{
+	PaymentOrderProto order = 1;
+}
 
 // 广告观看完毕
 message AdvertiseWatchFinishRequest_15000030{

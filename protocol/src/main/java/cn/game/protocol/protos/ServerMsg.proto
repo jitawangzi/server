@@ -2,7 +2,7 @@ syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
-
+import "BaseMsg.proto" ;
 //import "PlayerMsg.proto" ;
 // 服务端内部使用的协议
 
@@ -77,6 +77,26 @@ message LoginPlayerUidRequest_7d000018{
 }
 message LoginPlayerUidResponse_7d000019{
 	int64 uid = 1;
+}
+
+// 请求创建支付订单
+message PaymentOrderCreateRequest_7d000020{
+	uint64 playerId = 1; // 玩家id
+	string sessionId = 2; //
+	uint32 goodsPrice = 4; // 单价（分）
+}
+message PaymentOrderCreateResponse_7d000021{
+	// 订单参数
+	PaymentOrderProto order = 1;
+	uint64 orderId = 3; // 订单唯一id
+}
+// 通知game，给玩家发货，执行支付后的流程
+message PaymentOrderShipRequest_7d000022{
+	uint64 playerId = 1; // 玩家id
+	uint64 uid = 3; //
+}
+message PaymentOrderShipResponse_7d000023{
+	bool success = 1; //是否发货成功
 }
 
 // ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻

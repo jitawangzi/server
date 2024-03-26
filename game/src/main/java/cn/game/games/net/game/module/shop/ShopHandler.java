@@ -1,15 +1,17 @@
 package cn.game.games.net.game.module.shop;
 
 import java.util.Collection;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.ShopItem;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.player.IdConstant;
@@ -24,6 +26,8 @@ import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
+import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.protocol.protobuf.ShopMsg.AdvertiseWatchFinishRequest_15000030;
 import cn.game.protocol.protobuf.ShopMsg.AdvertiseWatchFinishResponse_15000031;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRequest_15000010;
@@ -32,12 +36,16 @@ import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardResponse_15000013;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardRequest_15000014;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardResponse_15000015;
+import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
 import cn.game.protocol.protobuf.ShopMsg.ShopGiftBuyRequest_15000020;
 import cn.game.protocol.protobuf.ShopMsg.ShopGiftBuyResponse_15000021;
 import cn.game.protocol.protobuf.ShopMsg.ShopGroupItemListRequest_15000001;
 import cn.game.protocol.protobuf.ShopMsg.ShopGroupItemListResponse_15000002;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyResponse_15000004;
+import cn.game.util.ServerType;
+import io.vertx.core.Future;
+import io.vertx.core.eventbus.Message;
 
 @Component
 public class ShopHandler extends BaseHandler {
@@ -81,7 +89,7 @@ public class ShopHandler extends BaseHandler {
 		}
 
 		final int[][] itemsAdd = items;
-		Consumer<?> addItemAction = r -> {
+		Supplier<Boolean> addItemAction = () -> {
 
 			PlayerHelper.addResources(player.getPlayerId(), itemsAdd);
 
@@ -90,30 +98,22 @@ public class ShopHandler extends BaseHandler {
 				shopItem.update();
 			}
 			client.sendProtocol(resp);
+			return true; 
 		};
 		if (shopItemConfig.buyType == 3 && shopItem.getItemBuyTimes() == 0) { // 首次免费
-
+			addItemAction.get();
 		} else {
 			int[] cost = shopItemConfig.cost;
 			if (shopItem.getItemDiscount() > 0) {
 				cost = ShopHelper.discount(cost, shopItem.getItemDiscount());
 			}
-			int costType = cost[0];
-			if (costType == ShopHelper.COST_TYPE_RESOURCE) {
-				boolean delResources = PlayerHelper.delResources(player.getPlayerId(), cost[1], cost[2],
-						ResourceConsumeEnum.BuyGoods);
-				if (!delResources) {
-					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-					return;
+			Future<Boolean> pay = player.pay(cost); 
+			pay.onComplete(t -> {
+				if (t.result()) {
+					addItemAction.get();
 				}
-			} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
-
-			} else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {
-				player.setAdsAction(addItemAction);
-				return;
-			}
+			}) ;
 		}
-		addItemAction.accept(null);
 	}
 
 	private void shopItemGroupList(NetClient client, Object message) {
@@ -147,24 +147,15 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		int[] cost = monthCardConfig.cost;
-		if (cost.length > 0) {
-			if (cost[0] == 1) { // 普通消耗
-				boolean delResources = PlayerHelper.delResources(player.getPlayerId(), cost[1], cost[2],
-						ResourceConsumeEnum.BuyGoods);
-				if (!delResources) {
-					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-					return;
-				}
-			} else if (cost[0] == 2) { // 充值
-				// TODO
-			} else if (cost[0] == 3) { // 看广告
-				// TODO
-			}
-		}
 		
-		monthCard = monthCardModule.buyMonthCard(id);
-		resp.setMonthCard(monthCard.toProto());
-		client.sendProtocol(resp.build());
+		Future<Boolean> pay = player.pay(cost); 
+		pay.onComplete(t -> {
+			if (t.result()) {
+				MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
+				resp.setMonthCard(newMonthCard.toProto());
+				client.sendProtocol(resp.build());
+			}
+		}) ;
 	}
 
 	private void monthCardBuyReward(NetClient client, Object message) {
@@ -238,34 +229,26 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		int[] cost = shopGiftConfig.cost;
-		if (cost.length > 0) {
-			if (cost[0] == 1) { // 普通消耗
-				boolean delResources = PlayerHelper.delResources(player.getPlayerId(), cost[1], cost[2],
-						ResourceConsumeEnum.BuyGoods);
-				if (!delResources) {
-					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-					return;
-				}
-			} else if (cost[0] == 2) { // 充值
-				// TODO
-			} else if (cost[0] == 3) { // 看广告
-				// TODO
+		
+		Future<Boolean> pay = player.pay(cost); 
+		pay.onComplete(t -> {
+			if (t.result()) {
+				playerModule.addId(IdConstant.SHOP_GIFT, id);
+				PlayerHelper.addResources(player.getPlayerId(), shopGiftConfig.items) ; 
+				client.sendProtocol(resp.build());
 			}
-		}
-
-		playerModule.addId(IdConstant.SHOP_GIFT, id);
-		client.sendProtocol(resp.build());
+		}) ;
 	}
 
 	private void advertise(NetClient client, Object message) {
 		AdvertiseWatchFinishRequest_15000030 req = (AdvertiseWatchFinishRequest_15000030) message;
 		AdvertiseWatchFinishResponse_15000031.Builder resp = AdvertiseWatchFinishResponse_15000031.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		Consumer<?> adsAction = player.getAdsAction();
-		if (adsAction != null) {
-			adsAction.accept(null);
-			player.setAdsAction(null);
-		}
+//		Consumer<?> adsAction = player.getAdsAction();
+//		if (adsAction != null) {
+//			adsAction.accept(null);
+//			player.setAdsAction(null);
+//		}
 		client.sendProtocol(resp.build());
 	}
 }

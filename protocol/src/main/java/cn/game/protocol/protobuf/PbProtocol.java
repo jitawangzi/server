@@ -157,6 +157,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int GameStatusPublish_7d000017 = 0x7d000017;    //广播服务器在线人数  
 	public final static int LoginPlayerUidRequest_7d000018 = 0x7d000018;    
 	public final static int LoginPlayerUidResponse_7d000019 = 0x7d000019;    
+	public final static int PaymentOrderCreateRequest_7d000020 = 0x7d000020;    //请求创建支付订单  
+	public final static int PaymentOrderCreateResponse_7d000021 = 0x7d000021;    
+	public final static int PaymentOrderShipRequest_7d000022 = 0x7d000022;    //通知game，给玩家发货，执行支付后的流程  
+	public final static int PaymentOrderShipResponse_7d000023 = 0x7d000023;    
 	public final static int GameCrossForwardPush_7d000002 = 0x7d000002;    //Game向Cross发数据，请求转发消息给指定玩家  
 	public final static int CrossGameForwardPush_7d000003 = 0x7d000003;    //Game收到Cross推送，将里面的具体消息发给指定的玩家  
 	public final static int GameCrossPlayerBroadcast_7d000005 = 0x7d000005;    //Game向Cross发数据，将数据包广播给不同Game服务器的玩家  
@@ -176,6 +180,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int MonthCardDayRewardResponse_15000015 = 0x15000015;    
 	public final static int ShopGiftBuyRequest_15000020 = 0x15000020;    //购买礼包  
 	public final static int ShopGiftBuyResponse_15000021 = 0x15000021;    
+	public final static int PaymentOrderPush_15010020 = 0x15010020;    //支付订单相关参数，客户端收到这个协议就可以利用里面的参数发起支付了  
 	public final static int AdvertiseWatchFinishRequest_15000030 = 0x15000030;    //广告观看完毕  
 	public final static int AdvertiseWatchFinishResponse_15000031 = 0x15000031;    
 	public final static int TestGmCmdRequest_6f000001 = 0x6f000001;    //gm指令  
@@ -504,6 +509,14 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(LoginPlayerUidResponse_7d000019, cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PaymentOrderCreateRequest_7d000020, cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PaymentOrderCreateResponse_7d000021, cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PaymentOrderShipRequest_7d000022, cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PaymentOrderShipResponse_7d000023, cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(GameCrossForwardPush_7d000002, cn.game.protocol.protobuf.ServerMsg.GameCrossForwardPush_7d000002.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(CrossGameForwardPush_7d000003, cn.game.protocol.protobuf.ServerMsg.CrossGameForwardPush_7d000003.getDefaultInstance()
@@ -541,6 +554,8 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(ShopGiftBuyRequest_15000020, cn.game.protocol.protobuf.ShopMsg.ShopGiftBuyRequest_15000020.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ShopGiftBuyResponse_15000021, cn.game.protocol.protobuf.ShopMsg.ShopGiftBuyResponse_15000021.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PaymentOrderPush_15010020, cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(AdvertiseWatchFinishRequest_15000030, cn.game.protocol.protobuf.ShopMsg.AdvertiseWatchFinishRequest_15000030.getDefaultInstance()
 				.getParserForType());
@@ -787,6 +802,10 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("GameStatusPublish_7d000017", 0x7d000017);
 		nameIdMap.put("LoginPlayerUidRequest_7d000018", 0x7d000018);
 		nameIdMap.put("LoginPlayerUidResponse_7d000019", 0x7d000019);
+		nameIdMap.put("PaymentOrderCreateRequest_7d000020", 0x7d000020);
+		nameIdMap.put("PaymentOrderCreateResponse_7d000021", 0x7d000021);
+		nameIdMap.put("PaymentOrderShipRequest_7d000022", 0x7d000022);
+		nameIdMap.put("PaymentOrderShipResponse_7d000023", 0x7d000023);
 		nameIdMap.put("GameCrossForwardPush_7d000002", 0x7d000002);
 		nameIdMap.put("CrossGameForwardPush_7d000003", 0x7d000003);
 		nameIdMap.put("GameCrossPlayerBroadcast_7d000005", 0x7d000005);
@@ -806,6 +825,7 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("MonthCardDayRewardResponse_15000015", 0x15000015);
 		nameIdMap.put("ShopGiftBuyRequest_15000020", 0x15000020);
 		nameIdMap.put("ShopGiftBuyResponse_15000021", 0x15000021);
+		nameIdMap.put("PaymentOrderPush_15010020", 0x15010020);
 		nameIdMap.put("AdvertiseWatchFinishRequest_15000030", 0x15000030);
 		nameIdMap.put("AdvertiseWatchFinishResponse_15000031", 0x15000031);
 		nameIdMap.put("TestGmCmdRequest_6f000001", 0x6f000001);

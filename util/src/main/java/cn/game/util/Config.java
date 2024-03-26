@@ -102,6 +102,11 @@ public final class Config {
 	/** 微信发货消息推送相关参数 */
 	public static String  wechat_push_token;
 	public static String  wechat_push_EncodingAESKey;
+	public static String  wechat_appid;
+	public static String  wechat_secret;
+	public static String  wechat_midas_offerId;
+	public static byte  wechat_midas_env;
+	public static String  wechat_midas_AppKey;
 
 	/**
 	 *
@@ -153,6 +158,11 @@ public final class Config {
 			
 			wechat_push_token = initialProp.getProperty("wechat_push_token", "");
 			wechat_push_EncodingAESKey = initialProp.getProperty("wechat_push_EncodingAESKey", "");
+			wechat_appid = initialProp.getProperty("wechat_appid", "");
+			wechat_secret = initialProp.getProperty("wechat_secret", "");
+			wechat_midas_offerId = initialProp.getProperty("wechat_midas_offerId", "");
+			wechat_midas_env = Byte.parseByte(initialProp.getProperty("wechat_midas_env", ""));
+			wechat_midas_AppKey = initialProp.getProperty("wechat_midas_AppKey", "");
 			
 			
 			if (modules.length > 0) {

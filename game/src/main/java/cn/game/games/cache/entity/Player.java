@@ -1,6 +1,5 @@
 package cn.game.games.cache.entity;
 
-import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,8 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.core.BasePlayerModule;
@@ -22,21 +22,32 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.event.EventModule;
 import cn.game.games.net.game.module.hero.HeroModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarModule;
+import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
+import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
+import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
+import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
 import cn.game.util.MapWrapper;
+import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
+import io.vertx.core.eventbus.Message;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
-public class Player implements Serializable {
-	private static final long serialVersionUID = 1L;
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
+public class Player  {
+	private static  transient Logger log = LoggerFactory.getLogger(Player.class);
 
 	private long playerId;
 	private transient static Set<Class<? extends BasePlayerModule>> allModuleClass;
@@ -47,7 +58,7 @@ public class Player implements Serializable {
 	private transient Map<Integer, GoodsModule<? extends Item, ? extends Item>> goodsModules = new HashMap<>();
 	/* **************** 内存数据 ******************** */
 	private transient EventModule eventModule = new EventModule();
-	/** TODO 长时间闲置设置false，先不清数据 */
+	/** TODO 长时间闲置设置false，先不清数据,暂停定时存库 */
 	private volatile boolean isActive = true;
 	/** 是否正在退出 */
 	private volatile boolean islogouting;
@@ -58,8 +69,8 @@ public class Player implements Serializable {
 	private transient GameClient gameClient;
 	private List<Long> timerTask = new ArrayList<>();
 
-	/** 看完广告后的操作 */
-	private Consumer<?> adsAction;
+	/** 支付后的操作 */
+	private Consumer<?> paymentAction;
 
 	public <T extends BasePlayerModule> T getModule(Class<? extends BasePlayerModule> clazz) {
 		return (T) this.modules.get(clazz.getName());
@@ -220,10 +231,6 @@ public class Player implements Serializable {
 		return modules;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public static Set<Class<? extends BasePlayerModule>> getAllModuleClass() {
 		return allModuleClass;
 	}
@@ -260,6 +267,43 @@ public class Player implements Serializable {
 //		builder.setActionPowerRecoverTime(PlayerHelper.recoverActionPower(this));
 		builder.setOfflineTime(getData().getOfflineTime().toString());
 		return builder.build();
+	}
+	
+	/** 
+	 * 支付，有可能支付普通货币，也有可能支付rmb
+	 * @param cost 
+	 * @return
+	 */
+	public Future<Boolean> pay(int[] cost) {
+		int costType = cost[0] ; 
+		Promise<Boolean> promise = Promise.promise(); 
+		
+		if (costType == ShopHelper.COST_TYPE_RESOURCE) {
+			boolean delResources = PlayerHelper.delResources(getPlayerId(), cost[1], cost[2],ResourceConsumeEnum.BuyGoods);
+			if (!delResources) {
+				PlayerHelper.sendErrorProtcol(getPlayerId(), ErrorMsgEnum.resource_not_enough.getId());
+				promise.complete(false);
+			}else {
+				promise.complete(true);
+			}
+		} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
+			
+			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId()).setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1]).build();
+			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
+			requestRemoteServer.onSuccess(r -> {
+				PaymentOrderPush_15010020 paymentOrderPush_15010020 = PaymentOrderPush_15010020.newBuilder().setOrder(r.body().getOrder()).build(); 
+				getGameClient().sendProtocol(paymentOrderPush_15010020); 
+				getPlayerModule().addPayCallback(r.body().getOrderId(), promise); 
+			}).onFailure(r -> {
+				log.error("",r) ;
+				PlayerHelper.sendErrorProtcol(getPlayerId(), ErrorMsgEnum.unknown.getId()); 
+				promise.complete(false);
+			}); 
+		} else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {
+			handleEvent(EventTypeEnum.WatchAds);
+			promise.complete(true);
+		}
+		return promise.future() ; 
 	}
 
 	public long getPlayerId() {
@@ -310,12 +354,14 @@ public class Player implements Serializable {
 		this.gameClient = gameClient;
 	}
 
-	public Consumer<?> getAdsAction() {
-		return adsAction;
+	public Consumer<?> getPaymentAction() {
+		return paymentAction;
 	}
 
-	public void setAdsAction(Consumer<?> adsAction) {
-		this.adsAction = adsAction;
+	public void setPaymentAction(Consumer<?> paymentAction) {
+		this.paymentAction = paymentAction;
 	}
 
+	
+	
 }

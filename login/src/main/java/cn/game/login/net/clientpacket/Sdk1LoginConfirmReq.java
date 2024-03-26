@@ -56,7 +56,7 @@ public class Sdk1LoginConfirmReq {
 			user.setChannelCode(channelCode);
 			user.setCreateDate(DateUtil.nowDateStr());
 			user.setCreateTime(DateUtil.nowTimeStr());
-			user.setIsGm(0) ; 
+			user.setIsGm(false) ; 
 			user.setDeviceUid(deviceUid) ; 
 			mapper.insert(user) ;
 			//放入缓存

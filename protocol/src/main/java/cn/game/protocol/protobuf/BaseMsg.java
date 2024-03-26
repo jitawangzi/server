@@ -20453,6 +20453,874 @@ public final class BaseMsg {
 
   }
 
+  public interface PaymentOrderProtoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PaymentOrderProto)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string signData = 1;</code>
+     * @return The signData.
+     */
+    java.lang.String getSignData();
+    /**
+     * <code>string signData = 1;</code>
+     * @return The bytes for signData.
+     */
+    com.google.protobuf.ByteString
+        getSignDataBytes();
+
+    /**
+     * <code>string paySig = 2;</code>
+     * @return The paySig.
+     */
+    java.lang.String getPaySig();
+    /**
+     * <code>string paySig = 2;</code>
+     * @return The bytes for paySig.
+     */
+    com.google.protobuf.ByteString
+        getPaySigBytes();
+
+    /**
+     * <code>string signature = 3;</code>
+     * @return The signature.
+     */
+    java.lang.String getSignature();
+    /**
+     * <code>string signature = 3;</code>
+     * @return The bytes for signature.
+     */
+    com.google.protobuf.ByteString
+        getSignatureBytes();
+  }
+  /**
+   * Protobuf type {@code Protos.PaymentOrderProto}
+   */
+  public static final class PaymentOrderProto extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PaymentOrderProto)
+      PaymentOrderProtoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PaymentOrderProto.newBuilder() to construct.
+    private PaymentOrderProto(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PaymentOrderProto() {
+      signData_ = "";
+      paySig_ = "";
+      signature_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PaymentOrderProto();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PaymentOrderProto(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              signData_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              paySig_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              signature_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_PaymentOrderProto_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_PaymentOrderProto_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.class, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder.class);
+    }
+
+    public static final int SIGNDATA_FIELD_NUMBER = 1;
+    private volatile java.lang.Object signData_;
+    /**
+     * <code>string signData = 1;</code>
+     * @return The signData.
+     */
+    @java.lang.Override
+    public java.lang.String getSignData() {
+      java.lang.Object ref = signData_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        signData_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string signData = 1;</code>
+     * @return The bytes for signData.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSignDataBytes() {
+      java.lang.Object ref = signData_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        signData_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PAYSIG_FIELD_NUMBER = 2;
+    private volatile java.lang.Object paySig_;
+    /**
+     * <code>string paySig = 2;</code>
+     * @return The paySig.
+     */
+    @java.lang.Override
+    public java.lang.String getPaySig() {
+      java.lang.Object ref = paySig_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        paySig_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string paySig = 2;</code>
+     * @return The bytes for paySig.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPaySigBytes() {
+      java.lang.Object ref = paySig_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        paySig_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SIGNATURE_FIELD_NUMBER = 3;
+    private volatile java.lang.Object signature_;
+    /**
+     * <code>string signature = 3;</code>
+     * @return The signature.
+     */
+    @java.lang.Override
+    public java.lang.String getSignature() {
+      java.lang.Object ref = signature_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        signature_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string signature = 3;</code>
+     * @return The bytes for signature.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSignatureBytes() {
+      java.lang.Object ref = signature_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        signature_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getSignDataBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, signData_);
+      }
+      if (!getPaySigBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, paySig_);
+      }
+      if (!getSignatureBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, signature_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getSignDataBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, signData_);
+      }
+      if (!getPaySigBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, paySig_);
+      }
+      if (!getSignatureBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, signature_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto other = (cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto) obj;
+
+      if (!getSignData()
+          .equals(other.getSignData())) return false;
+      if (!getPaySig()
+          .equals(other.getPaySig())) return false;
+      if (!getSignature()
+          .equals(other.getSignature())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SIGNDATA_FIELD_NUMBER;
+      hash = (53 * hash) + getSignData().hashCode();
+      hash = (37 * hash) + PAYSIG_FIELD_NUMBER;
+      hash = (53 * hash) + getPaySig().hashCode();
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.PaymentOrderProto}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PaymentOrderProto)
+        cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_PaymentOrderProto_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_PaymentOrderProto_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.class, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        signData_ = "";
+
+        paySig_ = "";
+
+        signature_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_PaymentOrderProto_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto build() {
+        cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto buildPartial() {
+        cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto result = new cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto(this);
+        result.signData_ = signData_;
+        result.paySig_ = paySig_;
+        result.signature_ = signature_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto) {
+          return mergeFrom((cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto other) {
+        if (other == cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.getDefaultInstance()) return this;
+        if (!other.getSignData().isEmpty()) {
+          signData_ = other.signData_;
+          onChanged();
+        }
+        if (!other.getPaySig().isEmpty()) {
+          paySig_ = other.paySig_;
+          onChanged();
+        }
+        if (!other.getSignature().isEmpty()) {
+          signature_ = other.signature_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object signData_ = "";
+      /**
+       * <code>string signData = 1;</code>
+       * @return The signData.
+       */
+      public java.lang.String getSignData() {
+        java.lang.Object ref = signData_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          signData_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string signData = 1;</code>
+       * @return The bytes for signData.
+       */
+      public com.google.protobuf.ByteString
+          getSignDataBytes() {
+        java.lang.Object ref = signData_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          signData_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string signData = 1;</code>
+       * @param value The signData to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSignData(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signData_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string signData = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSignData() {
+        
+        signData_ = getDefaultInstance().getSignData();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string signData = 1;</code>
+       * @param value The bytes for signData to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSignDataBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        signData_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object paySig_ = "";
+      /**
+       * <code>string paySig = 2;</code>
+       * @return The paySig.
+       */
+      public java.lang.String getPaySig() {
+        java.lang.Object ref = paySig_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          paySig_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string paySig = 2;</code>
+       * @return The bytes for paySig.
+       */
+      public com.google.protobuf.ByteString
+          getPaySigBytes() {
+        java.lang.Object ref = paySig_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          paySig_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string paySig = 2;</code>
+       * @param value The paySig to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPaySig(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        paySig_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string paySig = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPaySig() {
+        
+        paySig_ = getDefaultInstance().getPaySig();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string paySig = 2;</code>
+       * @param value The bytes for paySig to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPaySigBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        paySig_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object signature_ = "";
+      /**
+       * <code>string signature = 3;</code>
+       * @return The signature.
+       */
+      public java.lang.String getSignature() {
+        java.lang.Object ref = signature_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          signature_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string signature = 3;</code>
+       * @return The bytes for signature.
+       */
+      public com.google.protobuf.ByteString
+          getSignatureBytes() {
+        java.lang.Object ref = signature_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          signature_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string signature = 3;</code>
+       * @param value The signature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSignature(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string signature = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSignature() {
+        
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string signature = 3;</code>
+       * @param value The bytes for signature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSignatureBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PaymentOrderProto)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PaymentOrderProto)
+    private static final cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto();
+    }
+
+    public static cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PaymentOrderProto>
+        PARSER = new com.google.protobuf.AbstractParser<PaymentOrderProto>() {
+      @java.lang.Override
+      public PaymentOrderProto parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PaymentOrderProto(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PaymentOrderProto> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PaymentOrderProto> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface MainCityBuffInfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.MainCityBuffInfo)
       com.google.protobuf.MessageOrBuilder {
@@ -21147,6 +22015,11 @@ public final class BaseMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_EquipInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PaymentOrderProto_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PaymentOrderProto_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_MainCityBuffInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -21209,13 +22082,15 @@ public final class BaseMsg {
       "\017\n\007getTime\030\010 \001(\r\"$\n\014HomePageInfo\022\024\n\014Post" +
       "erGirlId\030\001 \001(\r\"c\n\tEquipInfo\022\013\n\003uid\030\001 \001(\t" +
       "\022\n\n\002id\030\002 \001(\r\022\016\n\006roleId\030\003 \001(\r\022\014\n\004slot\030\004 \001" +
-      "(\r\022\r\n\005buffs\030\005 \003(\r\022\020\n\010strength\030\006 \001(\r\"1\n\020M" +
-      "ainCityBuffInfo\022\016\n\006buffId\030\001 \001(\r\022\r\n\005count" +
-      "\030\002 \001(\r*3\n\010AttrType\022\r\n\tATTR_NULL\020\000\022\013\n\007OLD" +
-      "ATTR\020\001\022\013\n\007NEWATTR\020\002*0\n\013CoreUnitPos\022\014\n\010PO" +
-      "S_NULL\020\000\022\005\n\001A\020\001\022\005\n\001B\020\002\022\005\n\001C\020\003*-\n\nUpdateT" +
-      "ype\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031" +
-      "cn.game.protocol.protobufb\006proto3"
+      "(\r\022\r\n\005buffs\030\005 \003(\r\022\020\n\010strength\030\006 \001(\r\"H\n\021P" +
+      "aymentOrderProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006pa" +
+      "ySig\030\002 \001(\t\022\021\n\tsignature\030\003 \001(\t\"1\n\020MainCit" +
+      "yBuffInfo\022\016\n\006buffId\030\001 \001(\r\022\r\n\005count\030\002 \001(\r" +
+      "*3\n\010AttrType\022\r\n\tATTR_NULL\020\000\022\013\n\007OLDATTR\020\001" +
+      "\022\013\n\007NEWATTR\020\002*0\n\013CoreUnitPos\022\014\n\010POS_NULL" +
+      "\020\000\022\005\n\001A\020\001\022\005\n\001B\020\002\022\005\n\001C\020\003*-\n\nUpdateType\022\n\n" +
+      "\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031cn.gam" +
+      "e.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -21335,8 +22210,14 @@ public final class BaseMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_EquipInfo_descriptor,
         new java.lang.String[] { "Uid", "Id", "RoleId", "Slot", "Buffs", "Strength", });
-    internal_static_Protos_MainCityBuffInfo_descriptor =
+    internal_static_Protos_PaymentOrderProto_descriptor =
       getDescriptor().getMessageTypes().get(19);
+    internal_static_Protos_PaymentOrderProto_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PaymentOrderProto_descriptor,
+        new java.lang.String[] { "SignData", "PaySig", "Signature", });
+    internal_static_Protos_MainCityBuffInfo_descriptor =
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_MainCityBuffInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_MainCityBuffInfo_descriptor,

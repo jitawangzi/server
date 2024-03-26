@@ -256,7 +256,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 //										user.setPass(pwd);
 									user.setCreateDate(DateUtil.nowDateStr());
 									user.setCreateTime(DateUtil.nowTimeStr());
-									user.setIsGm(0);
+									user.setIsGm(false);
 									user.setLoginDate(DateUtil.nowDateStr());
 									user.setLoginTime(DateUtil.nowTimeStr());
 									mapper.insert(user);

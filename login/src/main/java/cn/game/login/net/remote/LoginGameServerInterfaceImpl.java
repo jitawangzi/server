@@ -91,13 +91,13 @@ public class LoginGameServerInterfaceImpl implements LoginGameServerInterface {
 //			return userByName.getId();
 //		}
 		User user = new User();
-		user.setUserType((byte) 3);
+		user.setUserType((byte) 1);
 		user.setUsername(name);
 		user.setChannelCode("A");
 		user.setPass("");
 		user.setCreateDate(DateUtil.nowDateStr());
 		user.setCreateTime(DateUtil.nowTimeStr());
-		user.setIsGm(0);
+		user.setIsGm(false);
 		user.setLoginDate(DateUtil.nowDateStr());
 		user.setLoginTime(DateUtil.nowTimeStr());
 		user.setDeviceUid("");

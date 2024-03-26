@@ -40,6 +40,8 @@ import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
 import cn.game.protocol.protobuf.ServerMsg.GameTestRequest_7d000500;
 import cn.game.protocol.protobuf.ServerMsg.GameTestResponse_7d000501;
+import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
+import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
 import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
@@ -73,11 +75,31 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.GameDataPushBatch2_7d00000c, this::dbBatch2);
 		putInvoker(PbProtocol.GamePlayerLogoutRequest_7d000101, this::playerLogout);
 		putInvoker(PbProtocol.GamePlayerRequest_7d000015, this::playerRequest);
+		putInvoker(PbProtocol.PaymentOrderShipRequest_7d000022, this::ship);
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
 	}
 
+	protected void ship(NetClient client, Object message) {
+		PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;
+		PaymentOrderShipResponse_7d000023.Builder resp = PaymentOrderShipResponse_7d000023.newBuilder();
+		long playerId = request.getPlayerId();
+		long uid = request.getUid(); 
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null || player.isIslogouting()) {
+			resp.setSuccess(false); 
+			client.sendProtocol(resp.build());
+		
+		} else {
+			PlayerHelper.addTask(playerId, r -> {
+				// 这里只是通知支付后的后续操作，不过一般也不会失败
+				player.getPlayerModule().execPayCallback(uid);
+				resp.setSuccess(true);
+				client.sendProtocol(resp.build());
+			});
+		}
+	}
 	protected void playerRequest(NetClient client, Object message) {
 		GamePlayerRequest_7d000015 request = (GamePlayerRequest_7d000015) message;
 		GamePlayerResponse_7d000016.Builder resp = GamePlayerResponse_7d000016.newBuilder();

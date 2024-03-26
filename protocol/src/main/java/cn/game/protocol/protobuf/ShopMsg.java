@@ -7745,6 +7745,635 @@ public final class ShopMsg {
 
   }
 
+  public interface PaymentOrderPush_15010020OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PaymentOrderPush_15010020)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     * @return Whether the order field is set.
+     */
+    boolean hasOrder();
+    /**
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     * @return The order.
+     */
+    cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getOrder();
+    /**
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder getOrderOrBuilder();
+  }
+  /**
+   * <pre>
+   * 支付订单相关参数，客户端收到这个协议就可以利用里面的参数发起支付了
+   * </pre>
+   *
+   * Protobuf type {@code Protos.PaymentOrderPush_15010020}
+   */
+  public static final class PaymentOrderPush_15010020 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PaymentOrderPush_15010020)
+      PaymentOrderPush_15010020OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PaymentOrderPush_15010020.newBuilder() to construct.
+    private PaymentOrderPush_15010020(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PaymentOrderPush_15010020() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PaymentOrderPush_15010020();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PaymentOrderPush_15010020(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder subBuilder = null;
+              if (order_ != null) {
+                subBuilder = order_.toBuilder();
+              }
+              order_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(order_);
+                order_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_PaymentOrderPush_15010020_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_PaymentOrderPush_15010020_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.class, cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.Builder.class);
+    }
+
+    public static final int ORDER_FIELD_NUMBER = 1;
+    private cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto order_;
+    /**
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     * @return Whether the order field is set.
+     */
+    @java.lang.Override
+    public boolean hasOrder() {
+      return order_ != null;
+    }
+    /**
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     * @return The order.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getOrder() {
+      return order_ == null ? cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.getDefaultInstance() : order_;
+    }
+    /**
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder getOrderOrBuilder() {
+      return getOrder();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (order_ != null) {
+        output.writeMessage(1, getOrder());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (order_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getOrder());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 other = (cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020) obj;
+
+      if (hasOrder() != other.hasOrder()) return false;
+      if (hasOrder()) {
+        if (!getOrder()
+            .equals(other.getOrder())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasOrder()) {
+        hash = (37 * hash) + ORDER_FIELD_NUMBER;
+        hash = (53 * hash) + getOrder().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 支付订单相关参数，客户端收到这个协议就可以利用里面的参数发起支付了
+     * </pre>
+     *
+     * Protobuf type {@code Protos.PaymentOrderPush_15010020}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PaymentOrderPush_15010020)
+        cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_PaymentOrderPush_15010020_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_PaymentOrderPush_15010020_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.class, cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (orderBuilder_ == null) {
+          order_ = null;
+        } else {
+          order_ = null;
+          orderBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_PaymentOrderPush_15010020_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 build() {
+        cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 buildPartial() {
+        cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 result = new cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020(this);
+        if (orderBuilder_ == null) {
+          result.order_ = order_;
+        } else {
+          result.order_ = orderBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020) {
+          return mergeFrom((cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 other) {
+        if (other == cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.getDefaultInstance()) return this;
+        if (other.hasOrder()) {
+          mergeOrder(other.getOrder());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto order_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder> orderBuilder_;
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       * @return Whether the order field is set.
+       */
+      public boolean hasOrder() {
+        return orderBuilder_ != null || order_ != null;
+      }
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       * @return The order.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getOrder() {
+        if (orderBuilder_ == null) {
+          return order_ == null ? cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.getDefaultInstance() : order_;
+        } else {
+          return orderBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public Builder setOrder(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto value) {
+        if (orderBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          order_ = value;
+          onChanged();
+        } else {
+          orderBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public Builder setOrder(
+          cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder builderForValue) {
+        if (orderBuilder_ == null) {
+          order_ = builderForValue.build();
+          onChanged();
+        } else {
+          orderBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public Builder mergeOrder(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto value) {
+        if (orderBuilder_ == null) {
+          if (order_ != null) {
+            order_ =
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.newBuilder(order_).mergeFrom(value).buildPartial();
+          } else {
+            order_ = value;
+          }
+          onChanged();
+        } else {
+          orderBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public Builder clearOrder() {
+        if (orderBuilder_ == null) {
+          order_ = null;
+          onChanged();
+        } else {
+          order_ = null;
+          orderBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder getOrderBuilder() {
+        
+        onChanged();
+        return getOrderFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder getOrderOrBuilder() {
+        if (orderBuilder_ != null) {
+          return orderBuilder_.getMessageOrBuilder();
+        } else {
+          return order_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.getDefaultInstance() : order_;
+        }
+      }
+      /**
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder> 
+          getOrderFieldBuilder() {
+        if (orderBuilder_ == null) {
+          orderBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder>(
+                  getOrder(),
+                  getParentForChildren(),
+                  isClean());
+          order_ = null;
+        }
+        return orderBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PaymentOrderPush_15010020)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PaymentOrderPush_15010020)
+    private static final cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020();
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PaymentOrderPush_15010020>
+        PARSER = new com.google.protobuf.AbstractParser<PaymentOrderPush_15010020>() {
+      @java.lang.Override
+      public PaymentOrderPush_15010020 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PaymentOrderPush_15010020(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PaymentOrderPush_15010020> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PaymentOrderPush_15010020> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface AdvertiseWatchFinishRequest_15000030OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.AdvertiseWatchFinishRequest_15000030)
       com.google.protobuf.MessageOrBuilder {
@@ -8660,6 +9289,11 @@ public final class ShopMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_ShopGiftBuyResponse_15000021_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PaymentOrderPush_15010020_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PaymentOrderPush_15010020_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_AdvertiseWatchFinishRequest_15000030_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -8678,33 +9312,36 @@ public final class ShopMsg {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rShopMsg.proto\022\006Protos\"2\n!ShopGroupItem" +
-      "ListRequest_15000001\022\r\n\005group\030\001 \001(\r\"J\n\"S" +
-      "hopGroupItemListResponse_15000002\022$\n\005ite" +
-      "ms\030\001 \003(\0132\025.Protos.ShopItemProto\"Q\n\rShopI" +
-      "temProto\022\n\n\002id\030\001 \001(\004\022\020\n\010configId\030\002 \001(\r\022\020" +
-      "\n\010buyTimes\030\003 \001(\r\022\020\n\010discount\030\004 \001(\r\")\n\033Sh" +
-      "opItemBuyRequest_15000003\022\n\n\002id\030\001 \001(\004\"\036\n" +
-      "\034ShopItemBuyResponse_15000004\"*\n\034MonthCa" +
-      "rdBuyRequest_15000010\022\n\n\002id\030\001 \001(\r\"J\n\035Mon" +
-      "thCardBuyResponse_15000011\022)\n\tmonthCard\030" +
-      "\001 \001(\0132\026.Protos.MonthCardProto\"0\n\"MonthCa" +
-      "rdBuyRewardRequest_15000012\022\n\n\002id\030\001 \001(\r\"" +
-      "%\n#MonthCardBuyRewardResponse_15000013\"0" +
-      "\n\"MonthCardDayRewardRequest_15000014\022\n\n\002" +
-      "id\030\001 \001(\r\"%\n#MonthCardDayRewardResponse_1" +
-      "5000015\"\\\n\016MonthCardProto\022\n\n\002id\030\001 \001(\r\022\022\n" +
-      "\nexpireTime\030\002 \001(\004\022\024\n\014isBuyRewards\030\003 \001(\010\022" +
-      "\024\n\014isDayRewards\030\004 \001(\010\")\n\033ShopGiftBuyRequ" +
-      "est_15000020\022\n\n\002id\030\001 \001(\r\"\036\n\034ShopGiftBuyR" +
-      "esponse_15000021\"&\n$AdvertiseWatchFinish" +
-      "Request_15000030\"\'\n%AdvertiseWatchFinish" +
-      "Response_15000031B\033\n\031cn.game.protocol.pr" +
-      "otobufb\006proto3"
+      "\n\rShopMsg.proto\022\006Protos\032\rBaseMsg.proto\"2" +
+      "\n!ShopGroupItemListRequest_15000001\022\r\n\005g" +
+      "roup\030\001 \001(\r\"J\n\"ShopGroupItemListResponse_" +
+      "15000002\022$\n\005items\030\001 \003(\0132\025.Protos.ShopIte" +
+      "mProto\"Q\n\rShopItemProto\022\n\n\002id\030\001 \001(\004\022\020\n\010c" +
+      "onfigId\030\002 \001(\r\022\020\n\010buyTimes\030\003 \001(\r\022\020\n\010disco" +
+      "unt\030\004 \001(\r\")\n\033ShopItemBuyRequest_15000003" +
+      "\022\n\n\002id\030\001 \001(\004\"\036\n\034ShopItemBuyResponse_1500" +
+      "0004\"*\n\034MonthCardBuyRequest_15000010\022\n\n\002" +
+      "id\030\001 \001(\r\"J\n\035MonthCardBuyResponse_1500001" +
+      "1\022)\n\tmonthCard\030\001 \001(\0132\026.Protos.MonthCardP" +
+      "roto\"0\n\"MonthCardBuyRewardRequest_150000" +
+      "12\022\n\n\002id\030\001 \001(\r\"%\n#MonthCardBuyRewardResp" +
+      "onse_15000013\"0\n\"MonthCardDayRewardReque" +
+      "st_15000014\022\n\n\002id\030\001 \001(\r\"%\n#MonthCardDayR" +
+      "ewardResponse_15000015\"\\\n\016MonthCardProto" +
+      "\022\n\n\002id\030\001 \001(\r\022\022\n\nexpireTime\030\002 \001(\004\022\024\n\014isBu" +
+      "yRewards\030\003 \001(\010\022\024\n\014isDayRewards\030\004 \001(\010\")\n\033" +
+      "ShopGiftBuyRequest_15000020\022\n\n\002id\030\001 \001(\r\"" +
+      "\036\n\034ShopGiftBuyResponse_15000021\"E\n\031Payme" +
+      "ntOrderPush_15010020\022(\n\005order\030\001 \001(\0132\031.Pr" +
+      "otos.PaymentOrderProto\"&\n$AdvertiseWatch" +
+      "FinishRequest_15000030\"\'\n%AdvertiseWatch" +
+      "FinishResponse_15000031B\033\n\031cn.game.proto" +
+      "col.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          cn.game.protocol.protobuf.BaseMsg.getDescriptor(),
         });
     internal_static_Protos_ShopGroupItemListRequest_15000001_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -8790,18 +9427,25 @@ public final class ShopMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_ShopGiftBuyResponse_15000021_descriptor,
         new java.lang.String[] { });
-    internal_static_Protos_AdvertiseWatchFinishRequest_15000030_descriptor =
+    internal_static_Protos_PaymentOrderPush_15010020_descriptor =
       getDescriptor().getMessageTypes().get(14);
+    internal_static_Protos_PaymentOrderPush_15010020_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PaymentOrderPush_15010020_descriptor,
+        new java.lang.String[] { "Order", });
+    internal_static_Protos_AdvertiseWatchFinishRequest_15000030_descriptor =
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_AdvertiseWatchFinishRequest_15000030_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_AdvertiseWatchFinishRequest_15000030_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_AdvertiseWatchFinishResponse_15000031_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_Protos_AdvertiseWatchFinishResponse_15000031_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_AdvertiseWatchFinishResponse_15000031_descriptor,
         new java.lang.String[] { });
+    cn.game.protocol.protobuf.BaseMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

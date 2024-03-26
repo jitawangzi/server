@@ -195,6 +195,12 @@ message EquipInfo{
 }
 
 
+message PaymentOrderProto{
+	string signData = 1;
+	string paySig = 2;
+	string signature = 3;
+}
+
 enum UpdateType{
   UPDATE = 0; // 更新
   ADD = 1; //增加

@@ -245,9 +245,6 @@
       <if test="userId != null">
         user_id = #{userId,jdbcType=BIGINT},
       </if>
-      <if test="playerId != null">
-        player_id = #{playerId,jdbcType=BIGINT},
-      </if>
       <if test="thirdUid != null">
         third_uid = #{thirdUid,jdbcType=VARCHAR},
       </if>
@@ -297,7 +294,6 @@
       channel_code = #{channelCode,jdbcType=VARCHAR},
       channel_label = #{channelLabel,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=BIGINT},
-      player_id = #{playerId,jdbcType=BIGINT},
       third_uid = #{thirdUid,jdbcType=VARCHAR},
       env = #{env,jdbcType=TINYINT},
       pay_state = #{payState,jdbcType=TINYINT},
@@ -322,7 +318,6 @@
       channel_code = #{channelCode,jdbcType=VARCHAR},
       channel_label = #{channelLabel,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=BIGINT},
-      player_id = #{playerId,jdbcType=BIGINT},
       third_uid = #{thirdUid,jdbcType=VARCHAR},
       env = #{env,jdbcType=TINYINT},
       pay_state = #{payState,jdbcType=TINYINT},

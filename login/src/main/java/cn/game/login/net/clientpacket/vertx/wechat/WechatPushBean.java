@@ -1,5 +1,6 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 
 /**    
  * 微信发货消息参数
@@ -15,6 +16,7 @@ public class WechatPushBean {
     public MiniGame MiniGame;
 
 	public static class MiniGame {
+		@JSONField(serialize = false)
         public String Payload;
         public Payload PayloadObj;
         public String PayEventSig;

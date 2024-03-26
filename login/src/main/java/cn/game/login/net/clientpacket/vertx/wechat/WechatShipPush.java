@@ -1,12 +1,38 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
 
+import java.util.function.Consumer;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.login.cache.entity.PayOrder;
+import cn.game.login.cache.entity.User;
+import cn.game.login.mapper.PayOrderMapper;
+import cn.game.login.net.clientpacket.vertx.UserHelper;
+import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
+import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
+import cn.game.util.DateUtil;
+import cn.game.util.ServerType;
+import cn.game.util.SpringContextLoader;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
+/**    
+ * 微信平台发货推送消息
+ * @date 2024年3月26日 下午2:26:34
+ * @author SYQ
+ */
 public class WechatShipPush implements Handler<RoutingContext> {
 
 	protected static final Logger log = LoggerFactory.getLogger(WechatShipPush.class);
@@ -15,6 +41,72 @@ public class WechatShipPush implements Handler<RoutingContext> {
 	
 	@Override
 	public void handle(RoutingContext context) {
-		
+		HttpServerRequest request = context.request();
+		HttpServerResponse response = context.response().putHeader("content-type", "text/json");
+		JSONObject responseObject = new JSONObject();
+
+		String bodyAsString = context.getBodyAsString();
+		WechatPushBean wechatPushBean = WechatHelper.parseWechatPushBean(bodyAsString);
+
+		PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+		PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(wechatPushBean.MiniGame.PayloadObj.OutTradeNo));
+
+		Consumer<?> successConsumer = r -> {
+			responseObject.put("ErrCode", 0);
+			responseObject.put("ErrMsg", "Success");
+			response.end(Buffer.buffer(responseObject.toJSONString()));
+		};
+		Consumer<?> failConsumer = r -> {
+			responseObject.put("ErrCode", 99999);
+			responseObject.put("ErrMsg", "internal error");
+			response.end(Buffer.buffer(responseObject.toJSONString()));
+		};
+
+		if (payOrder.getIsDeliver()) {
+			successConsumer.accept(null);
+			return;
+		}
+		User user = UserHelper.getUserByName(wechatPushBean.MiniGame.PayloadObj.OpenId);
+		PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = PaymentOrderShipRequest_7d000022
+				.newBuilder().setPlayerId(user.getId()).setUid(payOrder.getId()).build();
+		String serverId = UserHelper.getServerId(user.getId());
+		Future<Message<PaymentOrderShipResponse_7d000023>> future;
+		if (StringUtils.isEmpty(serverId)) {
+			future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);
+		} else {
+			future = VxHolder.requestRemoteServer(serverId, paymentOrderShipRequest_7d000022);
+		}
+		future.onSuccess(r -> {
+			if (r.body().getSuccess()) {
+				successConsumer.accept(null);
+				if (!payOrder.getIsDeliver()) {
+					payOrder.setIsDeliver(true);
+					payOrder.setCompleteDate(DateUtil.nowDateStr()); 
+					payOrder.setCompleteTime(DateUtil.nowTimeStr()) ; 
+				}
+				updatePayOrder(wechatPushBean, payOrder);
+				mapper.updateByPrimaryKey(payOrder);
+			} else {
+				failConsumer.accept(null);
+				updatePayOrder(wechatPushBean, payOrder);
+				mapper.updateByPrimaryKey(payOrder);
+			}
+		}).onFailure(r -> {
+			failConsumer.accept(null);
+			updatePayOrder(wechatPushBean, payOrder);
+			mapper.updateByPrimaryKey(payOrder);
+		});
+
+	}
+
+	private void updatePayOrder(WechatPushBean wechatPushBean, PayOrder payOrder) {
+		if (payOrder.getCallback() == null) {
+			payOrder.setCallback(JSON.toJSONString(wechatPushBean));
+		}
+		if (payOrder.getPayState() == 1) {
+			payOrder.setPayState((byte) 2); 
+			payOrder.setPayDate(DateUtil.nowDateStr()); 
+			payOrder.setPayTime(DateUtil.nowTimeStr()) ; 
+		}
 	}
 }

@@ -8443,6 +8443,2674 @@ public final class ServerMsg {
 
   }
 
+  public interface PaymentOrderCreateRequest_7d000020OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PaymentOrderCreateRequest_7d000020)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 玩家id
+     * </pre>
+     *
+     * <code>uint64 playerId = 1;</code>
+     * @return The playerId.
+     */
+    long getPlayerId();
+
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>string sessionId = 2;</code>
+     * @return The sessionId.
+     */
+    java.lang.String getSessionId();
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>string sessionId = 2;</code>
+     * @return The bytes for sessionId.
+     */
+    com.google.protobuf.ByteString
+        getSessionIdBytes();
+
+    /**
+     * <pre>
+     * 单价（分）
+     * </pre>
+     *
+     * <code>uint32 goodsPrice = 4;</code>
+     * @return The goodsPrice.
+     */
+    int getGoodsPrice();
+  }
+  /**
+   * <pre>
+   * 请求创建支付订单
+   * </pre>
+   *
+   * Protobuf type {@code Protos.PaymentOrderCreateRequest_7d000020}
+   */
+  public static final class PaymentOrderCreateRequest_7d000020 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PaymentOrderCreateRequest_7d000020)
+      PaymentOrderCreateRequest_7d000020OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PaymentOrderCreateRequest_7d000020.newBuilder() to construct.
+    private PaymentOrderCreateRequest_7d000020(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PaymentOrderCreateRequest_7d000020() {
+      sessionId_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PaymentOrderCreateRequest_7d000020();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PaymentOrderCreateRequest_7d000020(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              playerId_ = input.readUInt64();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              sessionId_ = s;
+              break;
+            }
+            case 32: {
+
+              goodsPrice_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateRequest_7d000020_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateRequest_7d000020_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020.class, cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020.Builder.class);
+    }
+
+    public static final int PLAYERID_FIELD_NUMBER = 1;
+    private long playerId_;
+    /**
+     * <pre>
+     * 玩家id
+     * </pre>
+     *
+     * <code>uint64 playerId = 1;</code>
+     * @return The playerId.
+     */
+    @java.lang.Override
+    public long getPlayerId() {
+      return playerId_;
+    }
+
+    public static final int SESSIONID_FIELD_NUMBER = 2;
+    private volatile java.lang.Object sessionId_;
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>string sessionId = 2;</code>
+     * @return The sessionId.
+     */
+    @java.lang.Override
+    public java.lang.String getSessionId() {
+      java.lang.Object ref = sessionId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sessionId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>string sessionId = 2;</code>
+     * @return The bytes for sessionId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSessionIdBytes() {
+      java.lang.Object ref = sessionId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sessionId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int GOODSPRICE_FIELD_NUMBER = 4;
+    private int goodsPrice_;
+    /**
+     * <pre>
+     * 单价（分）
+     * </pre>
+     *
+     * <code>uint32 goodsPrice = 4;</code>
+     * @return The goodsPrice.
+     */
+    @java.lang.Override
+    public int getGoodsPrice() {
+      return goodsPrice_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (playerId_ != 0L) {
+        output.writeUInt64(1, playerId_);
+      }
+      if (!getSessionIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, sessionId_);
+      }
+      if (goodsPrice_ != 0) {
+        output.writeUInt32(4, goodsPrice_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (playerId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, playerId_);
+      }
+      if (!getSessionIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, sessionId_);
+      }
+      if (goodsPrice_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(4, goodsPrice_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 other = (cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020) obj;
+
+      if (getPlayerId()
+          != other.getPlayerId()) return false;
+      if (!getSessionId()
+          .equals(other.getSessionId())) return false;
+      if (getGoodsPrice()
+          != other.getGoodsPrice()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPlayerId());
+      hash = (37 * hash) + SESSIONID_FIELD_NUMBER;
+      hash = (53 * hash) + getSessionId().hashCode();
+      hash = (37 * hash) + GOODSPRICE_FIELD_NUMBER;
+      hash = (53 * hash) + getGoodsPrice();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 请求创建支付订单
+     * </pre>
+     *
+     * Protobuf type {@code Protos.PaymentOrderCreateRequest_7d000020}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PaymentOrderCreateRequest_7d000020)
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateRequest_7d000020_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateRequest_7d000020_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020.class, cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        playerId_ = 0L;
+
+        sessionId_ = "";
+
+        goodsPrice_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateRequest_7d000020_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 build() {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 buildPartial() {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 result = new cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020(this);
+        result.playerId_ = playerId_;
+        result.sessionId_ = sessionId_;
+        result.goodsPrice_ = goodsPrice_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020) {
+          return mergeFrom((cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 other) {
+        if (other == cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020.getDefaultInstance()) return this;
+        if (other.getPlayerId() != 0L) {
+          setPlayerId(other.getPlayerId());
+        }
+        if (!other.getSessionId().isEmpty()) {
+          sessionId_ = other.sessionId_;
+          onChanged();
+        }
+        if (other.getGoodsPrice() != 0) {
+          setGoodsPrice(other.getGoodsPrice());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private long playerId_ ;
+      /**
+       * <pre>
+       * 玩家id
+       * </pre>
+       *
+       * <code>uint64 playerId = 1;</code>
+       * @return The playerId.
+       */
+      @java.lang.Override
+      public long getPlayerId() {
+        return playerId_;
+      }
+      /**
+       * <pre>
+       * 玩家id
+       * </pre>
+       *
+       * <code>uint64 playerId = 1;</code>
+       * @param value The playerId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerId(long value) {
+        
+        playerId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 玩家id
+       * </pre>
+       *
+       * <code>uint64 playerId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlayerId() {
+        
+        playerId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object sessionId_ = "";
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>string sessionId = 2;</code>
+       * @return The sessionId.
+       */
+      public java.lang.String getSessionId() {
+        java.lang.Object ref = sessionId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sessionId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>string sessionId = 2;</code>
+       * @return The bytes for sessionId.
+       */
+      public com.google.protobuf.ByteString
+          getSessionIdBytes() {
+        java.lang.Object ref = sessionId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sessionId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>string sessionId = 2;</code>
+       * @param value The sessionId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSessionId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        sessionId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>string sessionId = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSessionId() {
+        
+        sessionId_ = getDefaultInstance().getSessionId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>string sessionId = 2;</code>
+       * @param value The bytes for sessionId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSessionIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        sessionId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int goodsPrice_ ;
+      /**
+       * <pre>
+       * 单价（分）
+       * </pre>
+       *
+       * <code>uint32 goodsPrice = 4;</code>
+       * @return The goodsPrice.
+       */
+      @java.lang.Override
+      public int getGoodsPrice() {
+        return goodsPrice_;
+      }
+      /**
+       * <pre>
+       * 单价（分）
+       * </pre>
+       *
+       * <code>uint32 goodsPrice = 4;</code>
+       * @param value The goodsPrice to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGoodsPrice(int value) {
+        
+        goodsPrice_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 单价（分）
+       * </pre>
+       *
+       * <code>uint32 goodsPrice = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGoodsPrice() {
+        
+        goodsPrice_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PaymentOrderCreateRequest_7d000020)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PaymentOrderCreateRequest_7d000020)
+    private static final cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020();
+    }
+
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PaymentOrderCreateRequest_7d000020>
+        PARSER = new com.google.protobuf.AbstractParser<PaymentOrderCreateRequest_7d000020>() {
+      @java.lang.Override
+      public PaymentOrderCreateRequest_7d000020 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PaymentOrderCreateRequest_7d000020(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PaymentOrderCreateRequest_7d000020> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PaymentOrderCreateRequest_7d000020> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PaymentOrderCreateResponse_7d000021OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PaymentOrderCreateResponse_7d000021)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 订单参数
+     * </pre>
+     *
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     * @return Whether the order field is set.
+     */
+    boolean hasOrder();
+    /**
+     * <pre>
+     * 订单参数
+     * </pre>
+     *
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     * @return The order.
+     */
+    cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getOrder();
+    /**
+     * <pre>
+     * 订单参数
+     * </pre>
+     *
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder getOrderOrBuilder();
+
+    /**
+     * <pre>
+     * 订单唯一id
+     * </pre>
+     *
+     * <code>uint64 orderId = 3;</code>
+     * @return The orderId.
+     */
+    long getOrderId();
+  }
+  /**
+   * Protobuf type {@code Protos.PaymentOrderCreateResponse_7d000021}
+   */
+  public static final class PaymentOrderCreateResponse_7d000021 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PaymentOrderCreateResponse_7d000021)
+      PaymentOrderCreateResponse_7d000021OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PaymentOrderCreateResponse_7d000021.newBuilder() to construct.
+    private PaymentOrderCreateResponse_7d000021(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PaymentOrderCreateResponse_7d000021() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PaymentOrderCreateResponse_7d000021();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PaymentOrderCreateResponse_7d000021(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder subBuilder = null;
+              if (order_ != null) {
+                subBuilder = order_.toBuilder();
+              }
+              order_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(order_);
+                order_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 24: {
+
+              orderId_ = input.readUInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateResponse_7d000021_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateResponse_7d000021_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021.class, cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021.Builder.class);
+    }
+
+    public static final int ORDER_FIELD_NUMBER = 1;
+    private cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto order_;
+    /**
+     * <pre>
+     * 订单参数
+     * </pre>
+     *
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     * @return Whether the order field is set.
+     */
+    @java.lang.Override
+    public boolean hasOrder() {
+      return order_ != null;
+    }
+    /**
+     * <pre>
+     * 订单参数
+     * </pre>
+     *
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     * @return The order.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getOrder() {
+      return order_ == null ? cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.getDefaultInstance() : order_;
+    }
+    /**
+     * <pre>
+     * 订单参数
+     * </pre>
+     *
+     * <code>.Protos.PaymentOrderProto order = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder getOrderOrBuilder() {
+      return getOrder();
+    }
+
+    public static final int ORDERID_FIELD_NUMBER = 3;
+    private long orderId_;
+    /**
+     * <pre>
+     * 订单唯一id
+     * </pre>
+     *
+     * <code>uint64 orderId = 3;</code>
+     * @return The orderId.
+     */
+    @java.lang.Override
+    public long getOrderId() {
+      return orderId_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (order_ != null) {
+        output.writeMessage(1, getOrder());
+      }
+      if (orderId_ != 0L) {
+        output.writeUInt64(3, orderId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (order_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getOrder());
+      }
+      if (orderId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, orderId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 other = (cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021) obj;
+
+      if (hasOrder() != other.hasOrder()) return false;
+      if (hasOrder()) {
+        if (!getOrder()
+            .equals(other.getOrder())) return false;
+      }
+      if (getOrderId()
+          != other.getOrderId()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasOrder()) {
+        hash = (37 * hash) + ORDER_FIELD_NUMBER;
+        hash = (53 * hash) + getOrder().hashCode();
+      }
+      hash = (37 * hash) + ORDERID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getOrderId());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.PaymentOrderCreateResponse_7d000021}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PaymentOrderCreateResponse_7d000021)
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateResponse_7d000021_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateResponse_7d000021_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021.class, cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (orderBuilder_ == null) {
+          order_ = null;
+        } else {
+          order_ = null;
+          orderBuilder_ = null;
+        }
+        orderId_ = 0L;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderCreateResponse_7d000021_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 build() {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 buildPartial() {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 result = new cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021(this);
+        if (orderBuilder_ == null) {
+          result.order_ = order_;
+        } else {
+          result.order_ = orderBuilder_.build();
+        }
+        result.orderId_ = orderId_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021) {
+          return mergeFrom((cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 other) {
+        if (other == cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021.getDefaultInstance()) return this;
+        if (other.hasOrder()) {
+          mergeOrder(other.getOrder());
+        }
+        if (other.getOrderId() != 0L) {
+          setOrderId(other.getOrderId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto order_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder> orderBuilder_;
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       * @return Whether the order field is set.
+       */
+      public boolean hasOrder() {
+        return orderBuilder_ != null || order_ != null;
+      }
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       * @return The order.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getOrder() {
+        if (orderBuilder_ == null) {
+          return order_ == null ? cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.getDefaultInstance() : order_;
+        } else {
+          return orderBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public Builder setOrder(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto value) {
+        if (orderBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          order_ = value;
+          onChanged();
+        } else {
+          orderBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public Builder setOrder(
+          cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder builderForValue) {
+        if (orderBuilder_ == null) {
+          order_ = builderForValue.build();
+          onChanged();
+        } else {
+          orderBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public Builder mergeOrder(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto value) {
+        if (orderBuilder_ == null) {
+          if (order_ != null) {
+            order_ =
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.newBuilder(order_).mergeFrom(value).buildPartial();
+          } else {
+            order_ = value;
+          }
+          onChanged();
+        } else {
+          orderBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public Builder clearOrder() {
+        if (orderBuilder_ == null) {
+          order_ = null;
+          onChanged();
+        } else {
+          order_ = null;
+          orderBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder getOrderBuilder() {
+        
+        onChanged();
+        return getOrderFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder getOrderOrBuilder() {
+        if (orderBuilder_ != null) {
+          return orderBuilder_.getMessageOrBuilder();
+        } else {
+          return order_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.getDefaultInstance() : order_;
+        }
+      }
+      /**
+       * <pre>
+       * 订单参数
+       * </pre>
+       *
+       * <code>.Protos.PaymentOrderProto order = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder> 
+          getOrderFieldBuilder() {
+        if (orderBuilder_ == null) {
+          orderBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder, cn.game.protocol.protobuf.BaseMsg.PaymentOrderProtoOrBuilder>(
+                  getOrder(),
+                  getParentForChildren(),
+                  isClean());
+          order_ = null;
+        }
+        return orderBuilder_;
+      }
+
+      private long orderId_ ;
+      /**
+       * <pre>
+       * 订单唯一id
+       * </pre>
+       *
+       * <code>uint64 orderId = 3;</code>
+       * @return The orderId.
+       */
+      @java.lang.Override
+      public long getOrderId() {
+        return orderId_;
+      }
+      /**
+       * <pre>
+       * 订单唯一id
+       * </pre>
+       *
+       * <code>uint64 orderId = 3;</code>
+       * @param value The orderId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOrderId(long value) {
+        
+        orderId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 订单唯一id
+       * </pre>
+       *
+       * <code>uint64 orderId = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOrderId() {
+        
+        orderId_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PaymentOrderCreateResponse_7d000021)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PaymentOrderCreateResponse_7d000021)
+    private static final cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021();
+    }
+
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PaymentOrderCreateResponse_7d000021>
+        PARSER = new com.google.protobuf.AbstractParser<PaymentOrderCreateResponse_7d000021>() {
+      @java.lang.Override
+      public PaymentOrderCreateResponse_7d000021 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PaymentOrderCreateResponse_7d000021(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PaymentOrderCreateResponse_7d000021> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PaymentOrderCreateResponse_7d000021> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PaymentOrderShipRequest_7d000022OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PaymentOrderShipRequest_7d000022)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 玩家id
+     * </pre>
+     *
+     * <code>uint64 playerId = 1;</code>
+     * @return The playerId.
+     */
+    long getPlayerId();
+
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>uint64 uid = 3;</code>
+     * @return The uid.
+     */
+    long getUid();
+  }
+  /**
+   * <pre>
+   * 通知game，给玩家发货，执行支付后的流程
+   * </pre>
+   *
+   * Protobuf type {@code Protos.PaymentOrderShipRequest_7d000022}
+   */
+  public static final class PaymentOrderShipRequest_7d000022 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PaymentOrderShipRequest_7d000022)
+      PaymentOrderShipRequest_7d000022OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PaymentOrderShipRequest_7d000022.newBuilder() to construct.
+    private PaymentOrderShipRequest_7d000022(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PaymentOrderShipRequest_7d000022() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PaymentOrderShipRequest_7d000022();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PaymentOrderShipRequest_7d000022(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              playerId_ = input.readUInt64();
+              break;
+            }
+            case 24: {
+
+              uid_ = input.readUInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipRequest_7d000022_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipRequest_7d000022_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.class, cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.Builder.class);
+    }
+
+    public static final int PLAYERID_FIELD_NUMBER = 1;
+    private long playerId_;
+    /**
+     * <pre>
+     * 玩家id
+     * </pre>
+     *
+     * <code>uint64 playerId = 1;</code>
+     * @return The playerId.
+     */
+    @java.lang.Override
+    public long getPlayerId() {
+      return playerId_;
+    }
+
+    public static final int UID_FIELD_NUMBER = 3;
+    private long uid_;
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>uint64 uid = 3;</code>
+     * @return The uid.
+     */
+    @java.lang.Override
+    public long getUid() {
+      return uid_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (playerId_ != 0L) {
+        output.writeUInt64(1, playerId_);
+      }
+      if (uid_ != 0L) {
+        output.writeUInt64(3, uid_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (playerId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, playerId_);
+      }
+      if (uid_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, uid_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 other = (cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022) obj;
+
+      if (getPlayerId()
+          != other.getPlayerId()) return false;
+      if (getUid()
+          != other.getUid()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPlayerId());
+      hash = (37 * hash) + UID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getUid());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 通知game，给玩家发货，执行支付后的流程
+     * </pre>
+     *
+     * Protobuf type {@code Protos.PaymentOrderShipRequest_7d000022}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PaymentOrderShipRequest_7d000022)
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipRequest_7d000022_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipRequest_7d000022_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.class, cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        playerId_ = 0L;
+
+        uid_ = 0L;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipRequest_7d000022_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 build() {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 buildPartial() {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 result = new cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022(this);
+        result.playerId_ = playerId_;
+        result.uid_ = uid_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022) {
+          return mergeFrom((cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 other) {
+        if (other == cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.getDefaultInstance()) return this;
+        if (other.getPlayerId() != 0L) {
+          setPlayerId(other.getPlayerId());
+        }
+        if (other.getUid() != 0L) {
+          setUid(other.getUid());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private long playerId_ ;
+      /**
+       * <pre>
+       * 玩家id
+       * </pre>
+       *
+       * <code>uint64 playerId = 1;</code>
+       * @return The playerId.
+       */
+      @java.lang.Override
+      public long getPlayerId() {
+        return playerId_;
+      }
+      /**
+       * <pre>
+       * 玩家id
+       * </pre>
+       *
+       * <code>uint64 playerId = 1;</code>
+       * @param value The playerId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerId(long value) {
+        
+        playerId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 玩家id
+       * </pre>
+       *
+       * <code>uint64 playerId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlayerId() {
+        
+        playerId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long uid_ ;
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>uint64 uid = 3;</code>
+       * @return The uid.
+       */
+      @java.lang.Override
+      public long getUid() {
+        return uid_;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>uint64 uid = 3;</code>
+       * @param value The uid to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUid(long value) {
+        
+        uid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>uint64 uid = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUid() {
+        
+        uid_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PaymentOrderShipRequest_7d000022)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PaymentOrderShipRequest_7d000022)
+    private static final cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022();
+    }
+
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PaymentOrderShipRequest_7d000022>
+        PARSER = new com.google.protobuf.AbstractParser<PaymentOrderShipRequest_7d000022>() {
+      @java.lang.Override
+      public PaymentOrderShipRequest_7d000022 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PaymentOrderShipRequest_7d000022(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PaymentOrderShipRequest_7d000022> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PaymentOrderShipRequest_7d000022> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PaymentOrderShipResponse_7d000023OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PaymentOrderShipResponse_7d000023)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *是否发货成功
+     * </pre>
+     *
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    boolean getSuccess();
+  }
+  /**
+   * Protobuf type {@code Protos.PaymentOrderShipResponse_7d000023}
+   */
+  public static final class PaymentOrderShipResponse_7d000023 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PaymentOrderShipResponse_7d000023)
+      PaymentOrderShipResponse_7d000023OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PaymentOrderShipResponse_7d000023.newBuilder() to construct.
+    private PaymentOrderShipResponse_7d000023(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PaymentOrderShipResponse_7d000023() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PaymentOrderShipResponse_7d000023();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PaymentOrderShipResponse_7d000023(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              success_ = input.readBool();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipResponse_7d000023_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipResponse_7d000023_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.class, cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.Builder.class);
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 1;
+    private boolean success_;
+    /**
+     * <pre>
+     *是否发货成功
+     * </pre>
+     *
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (success_ != false) {
+        output.writeBool(1, success_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (success_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, success_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 other = (cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023) obj;
+
+      if (getSuccess()
+          != other.getSuccess()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSuccess());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.PaymentOrderShipResponse_7d000023}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PaymentOrderShipResponse_7d000023)
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipResponse_7d000023_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipResponse_7d000023_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.class, cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        success_ = false;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ServerMsg.internal_static_Protos_PaymentOrderShipResponse_7d000023_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 build() {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 buildPartial() {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 result = new cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023(this);
+        result.success_ = success_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023) {
+          return mergeFrom((cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 other) {
+        if (other == cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.getDefaultInstance()) return this;
+        if (other.getSuccess() != false) {
+          setSuccess(other.getSuccess());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private boolean success_ ;
+      /**
+       * <pre>
+       *是否发货成功
+       * </pre>
+       *
+       * <code>bool success = 1;</code>
+       * @return The success.
+       */
+      @java.lang.Override
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <pre>
+       *是否发货成功
+       * </pre>
+       *
+       * <code>bool success = 1;</code>
+       * @param value The success to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSuccess(boolean value) {
+        
+        success_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *是否发货成功
+       * </pre>
+       *
+       * <code>bool success = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSuccess() {
+        
+        success_ = false;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PaymentOrderShipResponse_7d000023)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PaymentOrderShipResponse_7d000023)
+    private static final cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023();
+    }
+
+    public static cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PaymentOrderShipResponse_7d000023>
+        PARSER = new com.google.protobuf.AbstractParser<PaymentOrderShipResponse_7d000023>() {
+      @java.lang.Override
+      public PaymentOrderShipResponse_7d000023 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PaymentOrderShipResponse_7d000023(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PaymentOrderShipResponse_7d000023> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PaymentOrderShipResponse_7d000023> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface GameCrossForwardPush_7d000002OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.GameCrossForwardPush_7d000002)
       com.google.protobuf.MessageOrBuilder {
@@ -15498,6 +18166,26 @@ public final class ServerMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_LoginPlayerUidResponse_7d000019_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PaymentOrderCreateRequest_7d000020_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PaymentOrderCreateRequest_7d000020_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PaymentOrderCreateResponse_7d000021_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PaymentOrderCreateResponse_7d000021_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PaymentOrderShipRequest_7d000022_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PaymentOrderShipRequest_7d000022_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PaymentOrderShipResponse_7d000023_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PaymentOrderShipResponse_7d000023_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_GameCrossForwardPush_7d000002_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -15546,50 +18234,59 @@ public final class ServerMsg {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017ServerMsg.proto\022\006Protos\"S\n\035GamePlayerO" +
-      "nlinePush_7d000010\022\020\n\010playerId\030\001 \001(\004\022\020\n\010" +
-      "serverId\030\002 \001(\t\022\016\n\006online\030\003 \001(\010\"X\n\027GamePl" +
-      "ayerPush_7d000011\022\020\n\010playerId\030\001 \001(\004\022\n\n\002i" +
-      "d\030\002 \001(\r\022\014\n\004data\030\003 \001(\014\022\021\n\terrorCode\030\004 \001(\r" +
-      "\"X\n\027GamePlayerPush_7d000100\022\020\n\010playerId\030" +
-      "\001 \001(\004\022\n\n\002id\030\002 \001(\r\022\014\n\004data\030\003 \001(\014\022\021\n\terror" +
-      "Code\030\004 \001(\r\"4\n GamePlayerLogoutRequest_7d" +
-      "000101\022\020\n\010playerId\030\001 \001(\004\"#\n!GamePlayerLo" +
-      "goutResponse_7d000102\"&\n\030GameTestRequest" +
-      "_7d000500\022\n\n\002id\030\001 \001(\r\"\'\n\031GameTestRespons" +
-      "e_7d000501\022\n\n\002id\030\001 \001(\r\"\036\n\034ServerStatusRe" +
-      "quest_7d000901\"/\n\035ServerStatusResponse_7" +
-      "d000902\022\016\n\006online\030\001 \001(\r\"H\n\032GamePlayerReq" +
-      "uest_7d000015\022\020\n\010playerId\030\002 \001(\004\022\n\n\002id\030\003 " +
-      "\001(\r\022\014\n\004data\030\004 \001(\014\"J\n\033GamePlayerResponse_" +
-      "7d000016\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\ter" +
-      "rorCode\030\005 \001(\r\"I\n\032GameStatusPublish_7d000" +
-      "017\022\020\n\010serverId\030\002 \001(\t\022\031\n\021onlinePlayerCou" +
-      "nt\030\003 \001(\r\";\n\036LoginPlayerUidRequest_7d0000" +
-      "18\022\031\n\021passportSessionId\030\001 \001(\t\".\n\037LoginPl" +
-      "ayerUidResponse_7d000019\022\013\n\003uid\030\001 \001(\003\"p\n" +
-      "\035GameCrossForwardPush_7d000002\022\020\n\010server" +
-      "Id\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014" +
-      "\n\004data\030\004 \001(\014\022\021\n\terrorCode\030\005 \001(\r\"^\n\035Cross" +
-      "GameForwardPush_7d000003\022\020\n\010playerId\030\002 \001" +
-      "(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\terrorCod" +
-      "e\030\005 \001(\r\"t\n!GameCrossPlayerBroadcast_7d00" +
-      "0005\022\020\n\010serverId\030\001 \003(\t\022\020\n\010playerId\030\002 \003(\004" +
-      "\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\terrorCode\030" +
-      "\005 \001(\r\"I\n\033GameCrossBroadcast_7d000008\022\020\n\010" +
-      "serverId\030\001 \003(\t\022\n\n\002id\030\002 \001(\r\022\014\n\004data\030\003 \001(\014" +
-      "\"I\n\025GameDataPush_7d00000a\022\023\n\013mapperClass" +
-      "\030\001 \001(\t\022\016\n\006method\030\002 \001(\t\022\013\n\003arg\030\003 \001(\014\"?\n\013D" +
-      "bTaskProto\022\023\n\013mapperClass\030\001 \001(\t\022\016\n\006metho" +
-      "d\030\002 \001(\t\022\013\n\003arg\030\003 \001(\014\"B\n\032GameDataPushBatc" +
-      "h_7d00000b\022$\n\007dbTasks\030\001 \003(\0132\023.Protos.DbT" +
-      "askProto\"*\n\033GameDataPushBatch2_7d00000c\022" +
-      "\013\n\003arg\030\001 \001(\014B\033\n\031cn.game.protocol.protobu" +
-      "fb\006proto3"
+      "\n\017ServerMsg.proto\022\006Protos\032\rBaseMsg.proto" +
+      "\"S\n\035GamePlayerOnlinePush_7d000010\022\020\n\010pla" +
+      "yerId\030\001 \001(\004\022\020\n\010serverId\030\002 \001(\t\022\016\n\006online\030" +
+      "\003 \001(\010\"X\n\027GamePlayerPush_7d000011\022\020\n\010play" +
+      "erId\030\001 \001(\004\022\n\n\002id\030\002 \001(\r\022\014\n\004data\030\003 \001(\014\022\021\n\t" +
+      "errorCode\030\004 \001(\r\"X\n\027GamePlayerPush_7d0001" +
+      "00\022\020\n\010playerId\030\001 \001(\004\022\n\n\002id\030\002 \001(\r\022\014\n\004data" +
+      "\030\003 \001(\014\022\021\n\terrorCode\030\004 \001(\r\"4\n GamePlayerL" +
+      "ogoutRequest_7d000101\022\020\n\010playerId\030\001 \001(\004\"" +
+      "#\n!GamePlayerLogoutResponse_7d000102\"&\n\030" +
+      "GameTestRequest_7d000500\022\n\n\002id\030\001 \001(\r\"\'\n\031" +
+      "GameTestResponse_7d000501\022\n\n\002id\030\001 \001(\r\"\036\n" +
+      "\034ServerStatusRequest_7d000901\"/\n\035ServerS" +
+      "tatusResponse_7d000902\022\016\n\006online\030\001 \001(\r\"H" +
+      "\n\032GamePlayerRequest_7d000015\022\020\n\010playerId" +
+      "\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\"J\n\033Game" +
+      "PlayerResponse_7d000016\022\n\n\002id\030\003 \001(\r\022\014\n\004d" +
+      "ata\030\004 \001(\014\022\021\n\terrorCode\030\005 \001(\r\"I\n\032GameStat" +
+      "usPublish_7d000017\022\020\n\010serverId\030\002 \001(\t\022\031\n\021" +
+      "onlinePlayerCount\030\003 \001(\r\";\n\036LoginPlayerUi" +
+      "dRequest_7d000018\022\031\n\021passportSessionId\030\001" +
+      " \001(\t\".\n\037LoginPlayerUidResponse_7d000019\022" +
+      "\013\n\003uid\030\001 \001(\003\"]\n\"PaymentOrderCreateReques" +
+      "t_7d000020\022\020\n\010playerId\030\001 \001(\004\022\021\n\tsessionI" +
+      "d\030\002 \001(\t\022\022\n\ngoodsPrice\030\004 \001(\r\"`\n#PaymentOr" +
+      "derCreateResponse_7d000021\022(\n\005order\030\001 \001(" +
+      "\0132\031.Protos.PaymentOrderProto\022\017\n\007orderId\030" +
+      "\003 \001(\004\"A\n PaymentOrderShipRequest_7d00002" +
+      "2\022\020\n\010playerId\030\001 \001(\004\022\013\n\003uid\030\003 \001(\004\"4\n!Paym" +
+      "entOrderShipResponse_7d000023\022\017\n\007success" +
+      "\030\001 \001(\010\"p\n\035GameCrossForwardPush_7d000002\022" +
+      "\020\n\010serverId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\004\022\n\n\002i" +
+      "d\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\terrorCode\030\005 \001(\r" +
+      "\"^\n\035CrossGameForwardPush_7d000003\022\020\n\010pla" +
+      "yerId\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n" +
+      "\terrorCode\030\005 \001(\r\"t\n!GameCrossPlayerBroad" +
+      "cast_7d000005\022\020\n\010serverId\030\001 \003(\t\022\020\n\010playe" +
+      "rId\030\002 \003(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\te" +
+      "rrorCode\030\005 \001(\r\"I\n\033GameCrossBroadcast_7d0" +
+      "00008\022\020\n\010serverId\030\001 \003(\t\022\n\n\002id\030\002 \001(\r\022\014\n\004d" +
+      "ata\030\003 \001(\014\"I\n\025GameDataPush_7d00000a\022\023\n\013ma" +
+      "pperClass\030\001 \001(\t\022\016\n\006method\030\002 \001(\t\022\013\n\003arg\030\003" +
+      " \001(\014\"?\n\013DbTaskProto\022\023\n\013mapperClass\030\001 \001(\t" +
+      "\022\016\n\006method\030\002 \001(\t\022\013\n\003arg\030\003 \001(\014\"B\n\032GameDat" +
+      "aPushBatch_7d00000b\022$\n\007dbTasks\030\001 \003(\0132\023.P" +
+      "rotos.DbTaskProto\"*\n\033GameDataPushBatch2_" +
+      "7d00000c\022\013\n\003arg\030\001 \001(\014B\033\n\031cn.game.protoco" +
+      "l.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          cn.game.protocol.protobuf.BaseMsg.getDescriptor(),
         });
     internal_static_Protos_GamePlayerOnlinePush_7d000010_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -15675,54 +18372,79 @@ public final class ServerMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_LoginPlayerUidResponse_7d000019_descriptor,
         new java.lang.String[] { "Uid", });
-    internal_static_Protos_GameCrossForwardPush_7d000002_descriptor =
+    internal_static_Protos_PaymentOrderCreateRequest_7d000020_descriptor =
       getDescriptor().getMessageTypes().get(14);
+    internal_static_Protos_PaymentOrderCreateRequest_7d000020_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PaymentOrderCreateRequest_7d000020_descriptor,
+        new java.lang.String[] { "PlayerId", "SessionId", "GoodsPrice", });
+    internal_static_Protos_PaymentOrderCreateResponse_7d000021_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_Protos_PaymentOrderCreateResponse_7d000021_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PaymentOrderCreateResponse_7d000021_descriptor,
+        new java.lang.String[] { "Order", "OrderId", });
+    internal_static_Protos_PaymentOrderShipRequest_7d000022_descriptor =
+      getDescriptor().getMessageTypes().get(16);
+    internal_static_Protos_PaymentOrderShipRequest_7d000022_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PaymentOrderShipRequest_7d000022_descriptor,
+        new java.lang.String[] { "PlayerId", "Uid", });
+    internal_static_Protos_PaymentOrderShipResponse_7d000023_descriptor =
+      getDescriptor().getMessageTypes().get(17);
+    internal_static_Protos_PaymentOrderShipResponse_7d000023_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PaymentOrderShipResponse_7d000023_descriptor,
+        new java.lang.String[] { "Success", });
+    internal_static_Protos_GameCrossForwardPush_7d000002_descriptor =
+      getDescriptor().getMessageTypes().get(18);
     internal_static_Protos_GameCrossForwardPush_7d000002_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_GameCrossForwardPush_7d000002_descriptor,
         new java.lang.String[] { "ServerId", "PlayerId", "Id", "Data", "ErrorCode", });
     internal_static_Protos_CrossGameForwardPush_7d000003_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_CrossGameForwardPush_7d000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_CrossGameForwardPush_7d000003_descriptor,
         new java.lang.String[] { "PlayerId", "Id", "Data", "ErrorCode", });
     internal_static_Protos_GameCrossPlayerBroadcast_7d000005_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_GameCrossPlayerBroadcast_7d000005_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_GameCrossPlayerBroadcast_7d000005_descriptor,
         new java.lang.String[] { "ServerId", "PlayerId", "Id", "Data", "ErrorCode", });
     internal_static_Protos_GameCrossBroadcast_7d000008_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_GameCrossBroadcast_7d000008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_GameCrossBroadcast_7d000008_descriptor,
         new java.lang.String[] { "ServerId", "Id", "Data", });
     internal_static_Protos_GameDataPush_7d00000a_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Protos_GameDataPush_7d00000a_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_GameDataPush_7d00000a_descriptor,
         new java.lang.String[] { "MapperClass", "Method", "Arg", });
     internal_static_Protos_DbTaskProto_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_Protos_DbTaskProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DbTaskProto_descriptor,
         new java.lang.String[] { "MapperClass", "Method", "Arg", });
     internal_static_Protos_GameDataPushBatch_7d00000b_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_Protos_GameDataPushBatch_7d00000b_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_GameDataPushBatch_7d00000b_descriptor,
         new java.lang.String[] { "DbTasks", });
     internal_static_Protos_GameDataPushBatch2_7d00000c_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_Protos_GameDataPushBatch2_7d00000c_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_GameDataPushBatch2_7d00000c_descriptor,
         new java.lang.String[] { "Arg", });
+    cn.game.protocol.protobuf.BaseMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

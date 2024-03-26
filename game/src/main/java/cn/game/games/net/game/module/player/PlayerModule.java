@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.base.DbEntity;
@@ -17,6 +20,7 @@ import cn.game.games.net.data.mapper.PlayerIdsMapper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import io.vertx.core.Promise;
 
 public class PlayerModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE,
@@ -24,10 +28,9 @@ public class PlayerModule extends BasePlayerModule {
 
 	/** 玩家拥有的各种id集合，通常是只增加新id，并且id不能重复。 key1:type ,key2:configId*/
 	private Map<Integer, Map<Integer, PlayerIds>> idsMap = new HashMap<Integer, Map<Integer, PlayerIds>>();
-
-	/** 各种等级集合 key:等级对应的经验id，{@link Money} */
-//	private Map<Integer, Integer> levelsMap = new HashMap<Integer, Integer>();
-
+	/** 支付成功后的回调 */
+	private Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
+	
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
 		return new Class[] { PlayerIdsMapper.class };
@@ -101,6 +104,15 @@ public class PlayerModule extends BasePlayerModule {
 	@Override
 	public void autoSaveTasks(List<DbEntity> entities) {
 		entities.add(player.getData());
+	}
+	
+	public void addPayCallback(long uid,Promise<Boolean> callback) {
+		this.payCallback.put(uid, callback); 
+	}
+	
+	public void execPayCallback(long uid) {
+		Promise<Boolean> callback = this.payCallback.remove(uid); 
+		callback.complete(true);; 
 	}
 
 	@Override

@@ -14408,16 +14408,6 @@ public final class PlayerMsg {
 
     /**
      * <pre>
-     *体力值
-     * </pre>
-     *
-     * <code>uint32 power = 5;</code>
-     * @return The power.
-     */
-    int getPower();
-
-    /**
-     * <pre>
      *经验值
      * </pre>
      *
@@ -14478,26 +14468,7 @@ public final class PlayerMsg {
 
     /**
      * <pre>
-     *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-     * </pre>
-     *
-     * <code>string powerRecoverTime = 14;</code>
-     * @return The powerRecoverTime.
-     */
-    java.lang.String getPowerRecoverTime();
-    /**
-     * <pre>
-     *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-     * </pre>
-     *
-     * <code>string powerRecoverTime = 14;</code>
-     * @return The bytes for powerRecoverTime.
-     */
-    com.google.protobuf.ByteString
-        getPowerRecoverTimeBytes();
-
-    /**
-     * <pre>
+     *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
      *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
      *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
      * </pre>
@@ -14508,6 +14479,7 @@ public final class PlayerMsg {
     java.lang.String getOfflineTime();
     /**
      * <pre>
+     *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
      *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
      *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
      * </pre>
@@ -14536,7 +14508,6 @@ public final class PlayerMsg {
     }
     private PlayerInfo() {
       name_ = "";
-      powerRecoverTime_ = "";
       offlineTime_ = "";
     }
 
@@ -14581,11 +14552,6 @@ public final class PlayerMsg {
               name_ = s;
               break;
             }
-            case 40: {
-
-              power_ = input.readUInt32();
-              break;
-            }
             case 48: {
 
               exp_ = input.readUInt32();
@@ -14614,12 +14580,6 @@ public final class PlayerMsg {
             case 88: {
 
               headFrame_ = input.readUInt32();
-              break;
-            }
-            case 114: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              powerRecoverTime_ = s;
               break;
             }
             case 178: {
@@ -14721,21 +14681,6 @@ public final class PlayerMsg {
       }
     }
 
-    public static final int POWER_FIELD_NUMBER = 5;
-    private int power_;
-    /**
-     * <pre>
-     *体力值
-     * </pre>
-     *
-     * <code>uint32 power = 5;</code>
-     * @return The power.
-     */
-    @java.lang.Override
-    public int getPower() {
-      return power_;
-    }
-
     public static final int EXP_FIELD_NUMBER = 6;
     private int exp_;
     /**
@@ -14826,56 +14771,11 @@ public final class PlayerMsg {
       return headFrame_;
     }
 
-    public static final int POWERRECOVERTIME_FIELD_NUMBER = 14;
-    private volatile java.lang.Object powerRecoverTime_;
-    /**
-     * <pre>
-     *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-     * </pre>
-     *
-     * <code>string powerRecoverTime = 14;</code>
-     * @return The powerRecoverTime.
-     */
-    @java.lang.Override
-    public java.lang.String getPowerRecoverTime() {
-      java.lang.Object ref = powerRecoverTime_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        powerRecoverTime_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-     * </pre>
-     *
-     * <code>string powerRecoverTime = 14;</code>
-     * @return The bytes for powerRecoverTime.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPowerRecoverTimeBytes() {
-      java.lang.Object ref = powerRecoverTime_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        powerRecoverTime_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     public static final int OFFLINETIME_FIELD_NUMBER = 22;
     private volatile java.lang.Object offlineTime_;
     /**
      * <pre>
+     *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
      *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
      *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
      * </pre>
@@ -14898,6 +14798,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
+     *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
      *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
      *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
      * </pre>
@@ -14940,9 +14841,6 @@ public final class PlayerMsg {
       if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
-      if (power_ != 0) {
-        output.writeUInt32(5, power_);
-      }
       if (exp_ != 0) {
         output.writeUInt32(6, exp_);
       }
@@ -14960,9 +14858,6 @@ public final class PlayerMsg {
       }
       if (headFrame_ != 0) {
         output.writeUInt32(11, headFrame_);
-      }
-      if (!getPowerRecoverTimeBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 14, powerRecoverTime_);
       }
       if (!getOfflineTimeBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 22, offlineTime_);
@@ -14982,10 +14877,6 @@ public final class PlayerMsg {
       }
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
-      }
-      if (power_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(5, power_);
       }
       if (exp_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -15011,9 +14902,6 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(11, headFrame_);
       }
-      if (!getPowerRecoverTimeBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, powerRecoverTime_);
-      }
       if (!getOfflineTimeBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(22, offlineTime_);
       }
@@ -15036,8 +14924,6 @@ public final class PlayerMsg {
           != other.getId()) return false;
       if (!getName()
           .equals(other.getName())) return false;
-      if (getPower()
-          != other.getPower()) return false;
       if (getExp()
           != other.getExp()) return false;
       if (getLevel()
@@ -15050,8 +14936,6 @@ public final class PlayerMsg {
           != other.getHead()) return false;
       if (getHeadFrame()
           != other.getHeadFrame()) return false;
-      if (!getPowerRecoverTime()
-          .equals(other.getPowerRecoverTime())) return false;
       if (!getOfflineTime()
           .equals(other.getOfflineTime())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -15069,8 +14953,6 @@ public final class PlayerMsg {
       hash = (53 * hash) + getId();
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
-      hash = (37 * hash) + POWER_FIELD_NUMBER;
-      hash = (53 * hash) + getPower();
       hash = (37 * hash) + EXP_FIELD_NUMBER;
       hash = (53 * hash) + getExp();
       hash = (37 * hash) + LEVEL_FIELD_NUMBER;
@@ -15083,8 +14965,6 @@ public final class PlayerMsg {
       hash = (53 * hash) + getHead();
       hash = (37 * hash) + HEADFRAME_FIELD_NUMBER;
       hash = (53 * hash) + getHeadFrame();
-      hash = (37 * hash) + POWERRECOVERTIME_FIELD_NUMBER;
-      hash = (53 * hash) + getPowerRecoverTime().hashCode();
       hash = (37 * hash) + OFFLINETIME_FIELD_NUMBER;
       hash = (53 * hash) + getOfflineTime().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -15228,8 +15108,6 @@ public final class PlayerMsg {
 
         name_ = "";
 
-        power_ = 0;
-
         exp_ = 0;
 
         level_ = 0;
@@ -15241,8 +15119,6 @@ public final class PlayerMsg {
         head_ = 0;
 
         headFrame_ = 0;
-
-        powerRecoverTime_ = "";
 
         offlineTime_ = "";
 
@@ -15274,14 +15150,12 @@ public final class PlayerMsg {
         cn.game.protocol.protobuf.PlayerMsg.PlayerInfo result = new cn.game.protocol.protobuf.PlayerMsg.PlayerInfo(this);
         result.id_ = id_;
         result.name_ = name_;
-        result.power_ = power_;
         result.exp_ = exp_;
         result.level_ = level_;
         result.vipLevel_ = vipLevel_;
         result.vipExp_ = vipExp_;
         result.head_ = head_;
         result.headFrame_ = headFrame_;
-        result.powerRecoverTime_ = powerRecoverTime_;
         result.offlineTime_ = offlineTime_;
         onBuilt();
         return result;
@@ -15338,9 +15212,6 @@ public final class PlayerMsg {
           name_ = other.name_;
           onChanged();
         }
-        if (other.getPower() != 0) {
-          setPower(other.getPower());
-        }
         if (other.getExp() != 0) {
           setExp(other.getExp());
         }
@@ -15358,10 +15229,6 @@ public final class PlayerMsg {
         }
         if (other.getHeadFrame() != 0) {
           setHeadFrame(other.getHeadFrame());
-        }
-        if (!other.getPowerRecoverTime().isEmpty()) {
-          powerRecoverTime_ = other.powerRecoverTime_;
-          onChanged();
         }
         if (!other.getOfflineTime().isEmpty()) {
           offlineTime_ = other.offlineTime_;
@@ -15531,49 +15398,6 @@ public final class PlayerMsg {
   checkByteStringIsUtf8(value);
         
         name_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int power_ ;
-      /**
-       * <pre>
-       *体力值
-       * </pre>
-       *
-       * <code>uint32 power = 5;</code>
-       * @return The power.
-       */
-      @java.lang.Override
-      public int getPower() {
-        return power_;
-      }
-      /**
-       * <pre>
-       *体力值
-       * </pre>
-       *
-       * <code>uint32 power = 5;</code>
-       * @param value The power to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPower(int value) {
-        
-        power_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *体力值
-       * </pre>
-       *
-       * <code>uint32 power = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPower() {
-        
-        power_ = 0;
         onChanged();
         return this;
       }
@@ -15836,105 +15660,10 @@ public final class PlayerMsg {
         return this;
       }
 
-      private java.lang.Object powerRecoverTime_ = "";
-      /**
-       * <pre>
-       *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-       * </pre>
-       *
-       * <code>string powerRecoverTime = 14;</code>
-       * @return The powerRecoverTime.
-       */
-      public java.lang.String getPowerRecoverTime() {
-        java.lang.Object ref = powerRecoverTime_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          powerRecoverTime_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-       * </pre>
-       *
-       * <code>string powerRecoverTime = 14;</code>
-       * @return The bytes for powerRecoverTime.
-       */
-      public com.google.protobuf.ByteString
-          getPowerRecoverTimeBytes() {
-        java.lang.Object ref = powerRecoverTime_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          powerRecoverTime_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-       * </pre>
-       *
-       * <code>string powerRecoverTime = 14;</code>
-       * @param value The powerRecoverTime to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPowerRecoverTime(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        powerRecoverTime_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-       * </pre>
-       *
-       * <code>string powerRecoverTime = 14;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPowerRecoverTime() {
-        
-        powerRecoverTime_ = getDefaultInstance().getPowerRecoverTime();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
-       * </pre>
-       *
-       * <code>string powerRecoverTime = 14;</code>
-       * @param value The bytes for powerRecoverTime to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPowerRecoverTimeBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        powerRecoverTime_ = value;
-        onChanged();
-        return this;
-      }
-
       private java.lang.Object offlineTime_ = "";
       /**
        * <pre>
+       *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
        *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
        *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
        * </pre>
@@ -15956,6 +15685,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
        *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
        *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
        * </pre>
@@ -15978,6 +15708,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
        *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
        *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
        * </pre>
@@ -15998,6 +15729,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
        *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
        *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
        * </pre>
@@ -16013,6 +15745,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *    string powerRecoverTime= 14; //免费体力，下一次刷新的时间戳（毫秒），如果是0表示体力满了不恢复了
        *	uint32 buyPowerCount = 15; //今日购买体力道具的次数，5点刷新
        *    uint32 spiritReceiveInfo = 16;//每天体力领取信息
        * </pre>
@@ -19127,18 +18860,17 @@ public final class PlayerMsg {
       "layerBuyPowerItemRequest_01000022\022\020\n\010buy" +
       "Count\030\001 \001(\r\"%\n#PlayerBuyPowerItemRespons" +
       "e_01000023\")\n\030PlayerErrorPush_01000099\022\r" +
-      "\n\005error\030\001 \001(\t\"\303\001\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r" +
-      "\022\014\n\004name\030\002 \001(\t\022\r\n\005power\030\005 \001(\r\022\013\n\003exp\030\006 \001" +
-      "(\r\022\r\n\005level\030\007 \001(\r\022\020\n\010vipLevel\030\010 \001(\r\022\016\n\006v" +
-      "ipExp\030\t \001(\r\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013" +
-      " \001(\r\022\030\n\020powerRecoverTime\030\016 \001(\t\022\023\n\013offlin" +
-      "eTime\030\026 \001(\t\"\334\001\n\rPlayerAllInfo\022\"\n\006player\030" +
-      "\001 \001(\0132\022.Protos.PlayerInfo\022\'\n\tcurrencys\030\002" +
-      " \003(\0132\024.Protos.CurrencyInfo\022\037\n\005items\030\005 \003(" +
-      "\0132\020.Protos.ItemInfo\022\037\n\005heros\030\006 \003(\0132\020.Pro" +
-      "tos.HeroInfo\022*\n\nmonthCards\030\010 \003(\0132\026.Proto" +
-      "s.MonthCardProto\022\020\n\010shopGift\030\t \003(\rB\033\n\031cn" +
-      ".game.protocol.protobufb\006proto3"
+      "\n\005error\030\001 \001(\t\"\232\001\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r" +
+      "\022\014\n\004name\030\002 \001(\t\022\013\n\003exp\030\006 \001(\r\022\r\n\005level\030\007 \001" +
+      "(\r\022\020\n\010vipLevel\030\010 \001(\r\022\016\n\006vipExp\030\t \001(\r\022\014\n\004" +
+      "head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offline" +
+      "Time\030\026 \001(\t\"\334\001\n\rPlayerAllInfo\022\"\n\006player\030\001" +
+      " \001(\0132\022.Protos.PlayerInfo\022\'\n\tcurrencys\030\002 " +
+      "\003(\0132\024.Protos.CurrencyInfo\022\037\n\005items\030\005 \003(\013" +
+      "2\020.Protos.ItemInfo\022\037\n\005heros\030\006 \003(\0132\020.Prot" +
+      "os.HeroInfo\022*\n\nmonthCards\030\010 \003(\0132\026.Protos" +
+      ".MonthCardProto\022\020\n\010shopGift\030\t \003(\rB\033\n\031cn." +
+      "game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19289,7 +19021,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerInfo_descriptor,
-        new java.lang.String[] { "Id", "Name", "Power", "Exp", "Level", "VipLevel", "VipExp", "Head", "HeadFrame", "PowerRecoverTime", "OfflineTime", });
+        new java.lang.String[] { "Id", "Name", "Exp", "Level", "VipLevel", "VipExp", "Head", "HeadFrame", "OfflineTime", });
     internal_static_Protos_PlayerAllInfo_descriptor =
       getDescriptor().getMessageTypes().get(24);
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new

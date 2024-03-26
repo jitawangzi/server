@@ -100,7 +100,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 //						if (u.getIsGm() == 0 && server.getStatus() != ServerList.STATUS_RUN) {
 //							continue;
 //						}
-						isGm = u.getIsGm() == 1;
+						isGm = u.getIsGm();
 					}
 					item = formatProto(server, status, isGm);
 					serverItems.add(item);
