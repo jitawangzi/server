@@ -111,6 +111,8 @@ public class ShopHandler extends BaseHandler {
 			pay.onComplete(t -> {
 				if (t.result()) {
 					addItemAction.get();
+				}else {
+					client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());
 				}
 			}) ;
 		}
@@ -154,6 +156,8 @@ public class ShopHandler extends BaseHandler {
 				MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
 				resp.setMonthCard(newMonthCard.toProto());
 				client.sendProtocol(resp.build());
+			}else {
+				client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());
 			}
 		}) ;
 	}
@@ -236,6 +240,8 @@ public class ShopHandler extends BaseHandler {
 				playerModule.addId(IdConstant.SHOP_GIFT, id);
 				PlayerHelper.addResources(player.getPlayerId(), shopGiftConfig.items) ; 
 				client.sendProtocol(resp.build());
+			}else {
+				client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());
 			}
 		}) ;
 	}

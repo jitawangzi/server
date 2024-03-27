@@ -45,7 +45,12 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			initAddCache(hero);
 		}
 	}
-
+	@Override
+	public void initFromDbAfter() {
+		for (Hero hero : uid_items.values()) {
+			id_items.put(hero.getConfigId(), hero); 
+		}
+	};
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
 		return GoodsTypeEnum.Hero;

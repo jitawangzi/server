@@ -1,6 +1,5 @@
 package cn.game.login.net.clientpacket.vertx;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,10 +22,10 @@ import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountLogin;
 import cn.game.protocol.protobuf.Account.AccountLoginResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
+import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.RedissonUtil;
 import cn.game.util.SpringContextLoader;
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
@@ -68,19 +67,16 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 			String username = split[0];
 			String pwd = split[1];
 
-			RFuture<Object> future = RedissonUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
+			RFuture<User> future = RedissonUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 			future.onComplete((v, throwable) -> {
 				if (throwable != null) {
 					log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
 				} else {
-					String ret = (String) v;
 					VxHolder.vertx.executeBlocking(fut -> {
 //							String ret = r.result() == null ? null : r.result().toString();
 						UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-						User user;
-						if (!StringUtils.isEmpty(ret)) {
-							user = JSON.parseObject(ret, User.class);
-						} else {
+						User user = v;
+						if (user == null) {
 							user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
 							if (user == null) {
 								HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("账号不存在")
@@ -106,9 +102,8 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 
 						// 创建session
 						long sessionId = IdUtil.getId();
-
-						RedissonUtil.setAsync(CacheType.PASSPORT_SESSION.key(sessionId), JSON.toJSONString(user), 7,
-								TimeUnit.DAYS);
+						user.setSessionId(sessionId);
+						UserHelper.setUserBySession(user);
 						byte[] byteArray = resp.setPassportSessionId(sessionId + "").setUserId(user.getId() + "")
 								.build().toByteArray();
 						Buffer data = Buffer.buffer(byteArray);
@@ -123,68 +118,58 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 			break;
 		}
 		case WECHAT: {
-			String code = token ;
-			String appid = null;
-			String secret = null;
+			String code = token;
 //			String grant_type = "authorization_code";
-			String url = String.format(WechatHelper.WX_AUTH_URL_STRING, appid, secret, code);
+			String url = String.format(WechatHelper.WX_AUTH_URL_STRING, Config.wechat_appid, Config.wechat_secret, code);
 			VxHolder.get(url, r -> {
 				int errcode = r.getInteger("errcode");
 				String errmsg = r.getString("errmsg");
+				log.debug("wechat login errcode", errcode) ; 
+				log.debug("wechat login errmsg", errmsg) ; 
 				if (errcode == 0) { // 微信账号校验成功，执行后续本地账号逻辑
-
 					String openid = r.getString("openid");
 					String session_key = r.getString("session_key");
 					String unionid = r.getString("unionid");
 					String username = openid;
-
-					RFuture<Object> future = RedissonUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
+					RFuture<User> future = RedissonUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 					future.onComplete((v, throwable) -> {
 						if (throwable != null) {
 							log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
 						} else {
-							String ret = (String) v;
 							VxHolder.vertx.executeBlocking(fut -> {
-//									String ret = r.result() == null ? null : r.result().toString();
+								long sessionId = 0;
 								UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-								User user;
-								if (!StringUtils.isEmpty(ret)) {
-									user = JSON.parseObject(ret, User.class);
+								User user = v;
+								if (user != null) {
+									sessionId = user.getSessionId();
 									if (!session_key.equals(user.getSessionKey())) {
-										user.setSessionKey(session_key); 
-										UserHelper.setUserCache(user);
+										user.setSessionKey(session_key);
+										UserHelper.removeUser(sessionId);
+										sessionId = IdUtil.getId();
+										user.setSessionId(sessionId);
+										UserHelper.setUserBySession(user);
 									}
 									user.setLoginDate(DateUtil.nowDateStr());
 									user.setLoginTime(DateUtil.nowTimeStr());
 									mapper.updateByPrimaryKey(user);
 								} else {
-									// 如果没有账号需要直接创建
+									// 从数据库中查询，如果没有账号需要直接创建
+									sessionId = IdUtil.getId();
 									user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
 									if (user == null) {
-										Future<Object> userFuture = UserHelper.createUser(username, "",
-												AccountChannelType.WECHAT.name().toLowerCase(), unionid, session_key);
-										userFuture.onSuccess(rr -> {
-										}).onFailure(e -> {
-											HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("创建账号错误")
-													.setErrorCode(AccountErrorCode.ACCOUNT_EXIST).build();
-											response.end(
-													Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-											return;
-										});
+										user = UserHelper.createUser(username, "",
+												AccountChannelType.WECHAT.name().toLowerCase(), unionid, session_key,
+												sessionId);
 									} else {
+										user.setSessionId(sessionId);
+										UserHelper.setUserNewCache(user);
 										// 更新登录时间
 										user.setLoginDate(DateUtil.nowDateStr());
 										user.setLoginTime(DateUtil.nowTimeStr());
 										user.setSessionKey(session_key);
 										mapper.updateByPrimaryKey(user);
-										UserHelper.setUserCache(user); 
 									}
 								}
-
-								// 创建session
-								long sessionId = IdUtil.getId();
-								RedissonUtil.setAsync(CacheType.PASSPORT_SESSION.key(sessionId),
-										JSON.toJSONString(user), 7, TimeUnit.DAYS);
 								byte[] byteArray = resp.setPassportSessionId(sessionId + "")
 										.setUserId(user.getId() + "").build().toByteArray();
 								Buffer data = Buffer.buffer(byteArray);
@@ -204,7 +189,6 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 							.setErrorCode(AccountErrorCode.CHANNEL_CHECK_FAIL).build();
 					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 					return;
-
 				}
 			}, e -> {
 				HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("渠道通信错误")
@@ -249,7 +233,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 								if (user == null) {
 									// 创建账号
 									user = new User();
-									user.setUserType((byte) 3);
+									user.setUserType((byte) 1);
 									user.setUsername(username);
 									user.setChannelLabel(channel.name().toLowerCase());
 //										user.setChannelCode(channel);
@@ -270,12 +254,11 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 							}
 
 							// 创建session
-							String sessionId = UUID.randomUUID().toString();
-
-							RedissonUtil.setAsync(CacheType.PASSPORT_SESSION.key(sessionId), JSON.toJSONString(user), 7,
-									TimeUnit.DAYS);
-							response.end(Buffer.buffer(resp.setPassportSessionId(sessionId).setUserId(user.getId() + "")
-									.build().toByteArray()));
+							long sessionId = IdUtil.getId();
+							user.setSessionId(sessionId);
+							UserHelper.setUserBySession(user);
+							response.end(Buffer.buffer(resp.setPassportSessionId(sessionId + "")
+									.setUserId(user.getId() + "").build().toByteArray()));
 							return;
 
 						});

@@ -90,7 +90,6 @@ public class ServerHandler extends BaseHandler {
 		if (player == null || player.isIslogouting()) {
 			resp.setSuccess(false); 
 			client.sendProtocol(resp.build());
-		
 		} else {
 			PlayerHelper.addTask(playerId, r -> {
 				// 这里只是通知支付后的后续操作，不过一般也不会失败
@@ -245,6 +244,9 @@ public class ServerHandler extends BaseHandler {
 		GamePlayerOnlinePush_7d000010 req = (GamePlayerOnlinePush_7d000010) message;
 		long playerId = req.getPlayerId();
 		String serverId = req.getServerId();
+		if (serverId.equals(ServerContext.getInstance().getServerId())) {
+			return ; 
+		}
 		boolean online = req.getOnline();
 		if (online) {
 			Player oldPlayer = PlayerManager.getInstance().getPlayer(playerId);
@@ -254,6 +256,7 @@ public class ServerHandler extends BaseHandler {
 						GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(playerId).build());
 				requestRemoteServer.onFailure(ee -> {
 					PlayerHelper.addTask(playerId, r -> {
+						log.warn("multi player found, notify other fail, logout current " + playerId) ; 
 						GameClientManager.getInstance().logout(playerId);
 					});
 				}).onSuccess(r -> {

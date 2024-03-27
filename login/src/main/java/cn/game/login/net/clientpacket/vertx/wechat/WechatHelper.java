@@ -1,15 +1,11 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.alibaba.fastjson2.JSON;
 
 import cn.game.login.net.clientpacket.vertx.wechat.WechatPushBean.Payload;
-import cn.game.util.ByteHelp;
 import cn.game.util.Config;
 
 public class WechatHelper {
@@ -55,7 +51,7 @@ public class WechatHelper {
                 sb.append(String.format("%02x", b));
             }
             return sb.toString();
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

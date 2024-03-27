@@ -18,8 +18,8 @@ import io.vertx.core.Future;
 
 public class UserHelper {
 
-	public static Future<Object> createUser(String account, String pwd, String channelLabel, String thirdUid,
-			String sessionKey) {
+	public static User createUser(String account, String pwd, String channelLabel, String thirdUid,
+			String sessionKey,long sessionId) {
 		int[] createUID = GlobalConst.CreateUID;
 		long playerId = IdUtil.getIdAutoIncrease(IdType.PLAYER);
 		playerId = playerId - 1 + createUID[0] + createUID[1];
@@ -28,7 +28,7 @@ public class UserHelper {
 
 		User user = new User();
 		user.setId(playerId);
-		user.setUserType((byte) 3);
+		user.setUserType((byte) 1);
 		user.setUsername(account);
 		user.setChannelLabel(channelLabel);
 		user.setThirdUid(thirdUid);
@@ -40,29 +40,40 @@ public class UserHelper {
 		user.setIsGm(false);
 		user.setLoginDate(DateUtil.nowDateStr());
 		user.setLoginTime(DateUtil.nowTimeStr());
+		user.setSessionId(sessionId);
 //			user.setDeviceUid(device);
-		return VxHolder.vertx.executeBlocking(fut -> {
-			mapper.insert(user);
-			setUserCache(user); 
-			fut.complete();
-		});
+		mapper.insert(user);
+		setUserNewCache(user); 
+		return user ; 
 	}
 	
-	public static void setUserCache(User user) {
-		RedissonUtil.setAsync(CacheType.F_USER_NAME_ID.key(user.getUsername()), JSON.toJSONString(user), 7, TimeUnit.DAYS);
+	
+	public static void setUserNewCache(User user) {
+		setUserByName(user);
+		setUserBySession(user);
+	}
+	public static void setUserByName(User user) {
+		RedissonUtil.setAsync(CacheType.F_USER_NAME_ID.key(user.getUsername()), user, 30, TimeUnit.DAYS);
+	}
+	public static void setUserBySession(User user) {
+		RedissonUtil.setAsync(CacheType.PASSPORT_SESSION.key(user.getSessionId()), user, 30, TimeUnit.DAYS);
 	}
 	public static String getSessionKey(String sessionId) {
-		User user = RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId),User.class);
+		User user = RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId));
 		return user == null? null : user.getSessionKey(); 
 	}
-	public static User getUser(String sessionId) {
-		return RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId),User.class);
+	public static User getUserBySessionId(String sessionId) {
+		return RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId));
 	}
 	public static User getUserByName(String username) {
-		return RedissonUtil.get(CacheType.F_USER_NAME_ID.key(username),User.class);
+		return RedissonUtil.get(CacheType.F_USER_NAME_ID.key(username));
 	}
 	public static String getServerId(long playerId) {
 		return RedissonUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
+	}
+	
+	public static void removeUser(long sessionId) {
+		RedissonUtil.deleteAsync(CacheType.PASSPORT_SESSION.key(sessionId)); 
 	}
 
 }

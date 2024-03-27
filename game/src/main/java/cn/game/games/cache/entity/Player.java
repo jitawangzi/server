@@ -1,5 +1,6 @@
 package cn.game.games.cache.entity;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -161,12 +162,23 @@ public class Player  {
 	}
 
 	public void initPlayerModule() {
+		initModule(null); 
+	}
+	public void initPlayerModuleFromDb(HashMap<String, BasePlayerModule> modulesFromDb) {
+		initModule(modulesFromDb);
+	}
+
+	private void initModule(HashMap<String, BasePlayerModule> modulesFromDb) {
+		modules.clear(); 
 		for (Class<? extends BasePlayerModule> clazz : allModuleClass) {
 			try {
 				if (Modifier.isAbstract(clazz.getModifiers())) {
 					continue;
 				}
-				BasePlayerModule instance = clazz.getDeclaredConstructor().newInstance();
+				BasePlayerModule instance = createBasePlayerModuleInstance(clazz, modulesFromDb)  ; 
+				if (!instance.isComplete()) {
+					continue;
+				}
 				instance.setPlayer(this);
 				instance.initDefault(this);
 				modules.put(clazz.getName(), instance);
@@ -179,6 +191,17 @@ public class Player  {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public BasePlayerModule  createBasePlayerModuleInstance(Class<? extends BasePlayerModule> clazz,HashMap<String, BasePlayerModule> modulesFromDb) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String name = clazz.getName() ; 
+		if (modulesFromDb !=null) {
+			BasePlayerModule basePlayerModule = modulesFromDb.get(name); 
+			if (basePlayerModule != null) {
+				return basePlayerModule ; 
+			}
+		}
+		return clazz.getDeclaredConstructor().newInstance();
 	}
 
 	public List<BasePlayerModule> getModuleSorted() {
@@ -229,14 +252,6 @@ public class Player  {
 
 	public Map<String, BasePlayerModule> getModules() {
 		return modules;
-	}
-
-	public static Set<Class<? extends BasePlayerModule>> getAllModuleClass() {
-		return allModuleClass;
-	}
-
-	public Map<Integer, GoodsModule<? extends Item, ? extends Item>> getGoodsModules() {
-		return goodsModules;
 	}
 
 	public List<Long> getTimerTask() {

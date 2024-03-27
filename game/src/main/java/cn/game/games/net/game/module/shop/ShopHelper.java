@@ -41,7 +41,7 @@ public class ShopHelper {
 			return array;
 		}
 		int[] ret = new int[array.length];
-
+		ret[0] = array[0];
 		ret[1] = array[1];
 		ret[2] = (int) (array[2] * (discount) / 100f);
 		return ret;

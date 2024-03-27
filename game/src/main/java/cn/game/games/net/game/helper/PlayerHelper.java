@@ -373,13 +373,6 @@ public class PlayerHelper {
 		player.setPeriodic(Config.ONLINE_SAVE * 1000, r -> {
 			PlayerManager.getInstance().saveClientCache(playerId);
 		});
-		boolean singTable = ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
-
-		if (ServerContext.getInstance().getRunMode().isTest()) {
-			player.setPeriodic(Config.ONLINE_SAVE * 1000, r -> {
-				PlayerManager.getInstance().saveClientCacheAllToJson(playerId, false);
-			});
-		}
 		// 上线后生成自己的简单信息
 		try {
 			PlayerManager.getInstance().getAndLoadSimplePlayer(playerId);
@@ -868,11 +861,11 @@ public class PlayerHelper {
 
 			Player player = new Player(dbPlayer);
 			player.setGameClient(gameClient);
-//			获取分布式锁之后再load
 			// load from db
 			PlayerHelper.selectPlayerData(player);
 
 		};
+//		获取分布式锁之后再load
 		RFuture<Boolean> playerLockFuture = PlayerHelper.trySetServerId(playerId);
 		playerLockFuture.onComplete((v, throwable) -> {
 			if (v) {
@@ -986,8 +979,7 @@ public class PlayerHelper {
 	public static List<DbTask> initDbTasks(Player player) {
 		List<DbTask> dbTasks = new ArrayList<>();
 
-		boolean singTable = ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
-		if (singTable) {
+		if (GameServer.getInstance().isSinglePlayerTable()) {
 			return dbTasks;
 		}
 		for (BasePlayerModule module : player.getModuleSorted()) {
@@ -1004,24 +996,13 @@ public class PlayerHelper {
 				PlayerManager.getInstance().initAdd(player);
 				long playerId = player.getData().getPlayerId();
 				ListIterator<?> listIterator = list.listIterator();
-				boolean singTable = ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
-				if (singTable) {
-//					HashMap<String, BasePlayerModule> modules = JSON.parseObject(player.getData().getModules(),
-//							HashMap.class);
-
-//					ObjectMapper objectMapper = new ObjectMapper();
-//					HashMap modules = objectMapper.readValue(player.getData().getModules(),
-//							HashMap.class);
+				if (GameServer.getInstance().isSinglePlayerTable()) {
 					HashMap<String, BasePlayerModule> modules = JsonUtil.parseObject(player.getData().getModules(),
 							HashMap.class);
-
-					player.setModules(modules);
+					player.initPlayerModuleFromDb(modules);
 					for (BasePlayerModule module : player.getModuleSorted()) {
 						module.initFromDbAfter();
 					}
-					ItemModule itemModule = player.getItemModule();
-					long count = itemModule.getCount(22000);
-					System.err.println(count);
 				} else {
 					for (BasePlayerModule module : player.getModuleSorted()) {
 						module.loadFromDb(listIterator);
@@ -1044,7 +1025,7 @@ public class PlayerHelper {
 		};
 	}
 
-	public static void selectPlayerDataFail(Player player, Throwable e) {
+	private static void selectPlayerDataFail(Player player, Throwable e) {
 		log.error("player " + player.getData().getPlayerId() + " login error ", e);
 		PlayerManager.getInstance().deletePlayer(player.getPlayerId());
 		PlayerHelper.sendErrorProtcol(player.getData().getPlayerId(), OldErrorMsgEnum.unknown.getId());

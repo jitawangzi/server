@@ -5,6 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.core.cache.CacheType;
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.IdUtil;
+import cn.game.login.cache.entity.User;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountRegister;
 import cn.game.protocol.protobuf.Account.AccountRegisterResponse;
@@ -17,6 +20,11 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
+/**    
+ * 这里账号没有考虑分表情况，或者先用redis把所有账号都存上并且持久化
+ * @date 2024年3月26日 下午5:53:10
+ * @author SYQ
+ */
 public class VertxRegisterReq implements Handler<RoutingContext> {
 
 	@Override
@@ -54,14 +62,19 @@ public class VertxRegisterReq implements Handler<RoutingContext> {
 				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 				return;
 			}
-			Future<Object> user = UserHelper.createUser(account, pwd, "official", account, "");
-			user.onSuccess(r -> {
-				response.end(Buffer.buffer(resp.build().toByteArray()));
-			}).onFailure(e -> {
-				HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("账号已经存在")
-						.setErrorCode(AccountErrorCode.ACCOUNT_EXIST).build();
-				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-			});
+			VxHolder.vertx.executeBlocking(r -> {
+				try {
+					UserHelper.createUser(account, pwd, "official", account, "",IdUtil.getId());
+					response.end(Buffer.buffer(resp.build().toByteArray()));
+				} catch (Exception e) {
+					e.printStackTrace();
+					HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("账号已经存在")
+							.setErrorCode(AccountErrorCode.ACCOUNT_EXIST).build();
+					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+				
+				}
+			}) ;
+			
 		});
 	}
 }

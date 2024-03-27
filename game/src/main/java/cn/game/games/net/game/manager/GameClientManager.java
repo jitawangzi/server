@@ -476,7 +476,7 @@ public class GameClientManager {
 	 */
 	public void broadcastOnlineToOtherServer(long playerId, boolean online, List<String> serverIds) {
 
-		GamePlayerOnlinePush_7d000010 message = GamePlayerOnlinePush_7d000010.newBuilder().setPlayerId(playerId).setOnline(online)
+		GamePlayerOnlinePush_7d000010 message = GamePlayerOnlinePush_7d000010.newBuilder().setPlayerId(playerId).setOnline(online).setServerId(ServerContext.getInstance().getServerId())
 				.build();
 		broadcastGameServers(message, serverIds);
 	}

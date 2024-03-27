@@ -53,14 +53,14 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 		String passportSessionId = from.getPassportSessionId();
 		AccountServerListResponse.Builder resp = AccountServerListResponse.newBuilder();
 		// 查询用户
-		RedissonUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), retU -> {
-			if (StringUtils.isEmpty((String) retU)) {
+		RedissonUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), user -> {
+			if (user == null) {
 				HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("可能未登陆")
 						.setErrorCode(AccountErrorCode.PASSPORT_SESSION_ERROR).build();
 				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 				return;
 			}
-			User u = JSON.parseObject((String) retU, User.class);
+			User u = (User) user ; 
 			RedissonUtil.getAndRunAsync(CacheType.PLAYER_SERVER_ID.key(u.getId()), serverId -> {
 				String myServerId = (String) serverId;
 				Collection<ServerList> serversList = ServerListManager.getInstance().getServerList();

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -21,10 +22,11 @@ import cn.game.protocol.manual.ResourceConsumeEnum;
  */
 public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends GoodsModule<T, ItemNoStack>
 {
-	// configId => T ,通常用来判断有没有某种东西
-	protected Multimap<Integer, T> id_items = ArrayListMultimap.create();
 	// uid => T
 	protected Map<Long, T> uid_items = new HashMap<>();
+	// configId => T ,通常用来判断有没有某种东西
+	@JsonIgnore
+	protected Multimap<Integer, T> id_items = ArrayListMultimap.create();
 
 	@Override
 	public void initAddCache(T item) {

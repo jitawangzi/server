@@ -313,8 +313,6 @@ public class TestHandler extends BaseHandler {
 	protected void test(NetClient client, Object message) {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
-		PlayerHelper.addResources(playerId, Money.playerExp.ID, 100000);
 		PlayerManager.getInstance().saveClientCache(playerId);
 		
 		System.out.println();

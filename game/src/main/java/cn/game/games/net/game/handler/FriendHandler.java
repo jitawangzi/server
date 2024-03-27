@@ -104,25 +104,6 @@ public class FriendHandler extends BaseHandler {
 
 		FriendOp friendOp = PlayerCacheFactory.getCache(client.getPlayerId(), FriendOp.class);
 		Collection<Friend> allFriends = friendOp.getAllFriends();
-
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		Map<String, BasePlayerModule> modules = player.getModules();
-		String jsonString = JSON.toJSONString(modules, JSONWriter.Feature.FieldBased,
-				JSONWriter.Feature.WriteNonStringKeyAsString);
-//		String jsonString = JSON.toJSONString(modules, JSONWriter.Feature.FieldBased,
-//				JSONWriter.Feature.WriteClassName, JSONWriter.Feature.WriteNonStringKeyAsString,
-//				JSONWriter.Feature.NotWriteSetClassName);
-
-		System.err.println(jsonString);
-		Map<String, BasePlayerModule> object = JSON.parseObject(jsonString, HashMap.class);
-		player.setModules(modules);
-		List<BasePlayerModule> moduleSorted = player.getModuleSorted();
-
-		ItemModule itemModule = player.getItemModule();
-		long count = itemModule.getCount(20002);
-		System.out.println(count);
-		System.out.println(object);
-
 		TaskManager.getInstance().addWorkerTask(() -> {
 
 			try {

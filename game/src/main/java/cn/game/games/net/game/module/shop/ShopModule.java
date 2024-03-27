@@ -9,6 +9,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -30,6 +31,8 @@ public class ShopModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
 
 	private Map<Long, ShopItem> itemsMap = new HashMap<Long, ShopItem>();
+	
+	@JsonIgnore
 	private Multimap<Integer, ShopItem> groupItemsMap = ArrayListMultimap.create();
 
 	@Override
@@ -50,9 +53,17 @@ public class ShopModule extends BasePlayerModule {
 	protected void initFromDb(ListIterator<?> iterator) {
 		List<ShopItem> list = (List<ShopItem>) iterator.next();
 		for (ShopItem item : list) {
-			initAddCache(item);
+//			initAddCache(item);
+			itemsMap.put(item.getId(), item);
 		}
 	}
+	
+	@Override
+	public void initFromDbAfter() {
+		for (ShopItem item : itemsMap.values()) {
+			groupItemsMap.put(item.getGroupId(), item);
+		}
+	};
 
 	public Collection<ShopItem> getShopItems(int group) {
 		return groupItemsMap.get(group);

@@ -309,17 +309,6 @@ public class RedissonUtil {
 		RBucket<V> bucket = redis.getBucket(key);
 		return bucket.get();
 	}
-	/**
-	 * @Description 同步获取key的值
-	 * @param <V>
-	 * @param key
-	 * @param type
-	 * @return
-	 */
-	public static <V> V get(String key, Class<V> type) {
-		RBucket<V> bucket = redis.getBucket(key);
-		return bucket.get();
-	}
 
 	public static void main(String args[]) throws Exception {
 

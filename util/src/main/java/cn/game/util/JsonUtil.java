@@ -9,8 +9,6 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.type.WritableTypeId;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -24,6 +22,7 @@ import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 
 /**    
  * 对jackson的一个封装
@@ -42,6 +41,7 @@ public class JsonUtil {
 		module.addSerializer(BitSet.class, new BitSetSerializer());
 		module.addDeserializer(BitSet.class, new BitSetDeserializer());
 		objectMapper.registerModule(module);
+        objectMapper.registerModule(new GuavaModule()); // 注册 Guava 模块
 
 		// 写入类名
 		PolymorphicTypeValidator ptv = LaissezFaireSubTypeValidator.instance;

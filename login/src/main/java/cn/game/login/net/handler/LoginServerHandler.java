@@ -1,5 +1,6 @@
 package cn.game.login.net.handler;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto;
@@ -72,7 +74,7 @@ public class LoginServerHandler extends BaseHandler {
 		long outTradeNo = IdUtil.genOrderId(playerId); 
 		signData.put("outTradeNo", outTradeNo) ; 
 		
-		User user = UserHelper.getUser(sessionId); 
+		User user = UserHelper.getUserBySessionId(sessionId); 
 		// 创建一个订单
 		PayOrder payOrder = new PayOrder() ; 
 		payOrder.setId(outTradeNo);
@@ -103,6 +105,11 @@ public class LoginServerHandler extends BaseHandler {
 			resp.setOrderId(outTradeNo); 
 			
 			client.sendProtocol(resp.setOrder(newBuilder).build());
+		}).onFailure(e -> {
+			resp.setOrderId(outTradeNo); 
+			client.sendProtocol(resp.build());
+
+//			client.sendProtocol(ExceptionUtils.getFullStackTrace(e),1) ; 
 		});
 	}
 	protected void uid(NetClient client, Object message) {
@@ -111,12 +118,12 @@ public class LoginServerHandler extends BaseHandler {
 
 		// 查询用户
 		RedissonUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), retU -> {
-			if (StringUtils.isEmpty((String) retU)) {
+			if (retU == null) {
 				client.sendProtocol(LoginPlayerUidResponse_7d000019.getDefaultInstance(),
-						OldErrorMsgEnum.session_not_exist.getId());
+						ErrorMsgEnum.session_not_exist.getId());
 				return;
 			}
-			User u = JSON.parseObject((String) retU, User.class);
+			User u = (User) retU;
 			client.sendProtocol(LoginPlayerUidResponse_7d000019.newBuilder().setUid(u.getId()));
 		});
 	}

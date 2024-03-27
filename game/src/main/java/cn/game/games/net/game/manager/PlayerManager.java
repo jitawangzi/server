@@ -29,6 +29,7 @@ import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Group;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.op.impl.FriendOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
@@ -1049,11 +1050,18 @@ public class PlayerManager {
 		Player player = getPlayer(playerId);
 		if (player != null) {
 			if (player.isActive()) {
+				PlayerData data = player.getData();
 				if (logout) {
-					player.getData().setOfflineTime(System.currentTimeMillis());
-					player.getData()
-							.setGameTime(player.getData().getGameTime() + (int) ((player.getData().getOfflineTime()
-									- DateUtil.getDate(player.getData().getLoginDate()).getTime()) / 1000));
+					data.setOfflineTime(System.currentTimeMillis());
+					data.setGameTime(data.getGameTime()
+							+ (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
+				}
+				if (GameServer.getInstance().isSinglePlayerTable()) {
+					data.beforeSave();
+					data.setModules(JsonUtil.toJsonString(player.getModules()));
+					List<DbTask> dbTasks = new ArrayList<>(1);
+					dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKeyWithBLOBs, data));
+					return DAO.execute(dbTasks);
 				}
 				List<DbEntity> entities = new ArrayList<>();
 
@@ -1075,27 +1083,6 @@ public class PlayerManager {
 		return Future.succeededFuture();
 	}
 
-	public Future<@Nullable Object> saveClientCacheAllToJson(long playerId, boolean logout) {
-
-		Player player = getPlayer(playerId);
-		if (player != null) {
-			if (player.isActive()) {
-				if (logout) {
-					player.getData().setOfflineTime(System.currentTimeMillis());
-					player.getData()
-							.setGameTime(player.getData().getGameTime() + (int) ((player.getData().getOfflineTime()
-									- DateUtil.getDate(player.getData().getLoginDate()).getTime()) / 1000));
-				}
-//				player.getData().setModules(JSON.toJSONString(player.getModules(),
-//						JSONWriter.Feature.WriteNonStringKeyAsString, JSONWriter.Feature.FieldBased));
-				player.getData().setModules(JsonUtil.toJsonString(player.getModules()));
-				}
-				Future<@Nullable Object> updateFuture = DAO.updateWithBLOBs(PlayerDataMapper.class, player.getData());
-			return updateFuture;
-		
-			}
-		return Future.succeededFuture();
-	}
 	/**
 	 * @Description 保存在线玩家缓存数据到数据库
 	 * @param playerId

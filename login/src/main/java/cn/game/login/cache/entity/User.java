@@ -83,6 +83,9 @@ public class User implements Serializable {
 	 * @mbg.generated
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/** 登陆时生成的唯一session，不用持久化。 */
+	private long sessionId ; 
 
 	/**
 	 * @mbg.generated
@@ -306,6 +309,14 @@ public class User implements Serializable {
 	 */
 	public void setServers(String servers) {
 		this.servers = servers;
+	}
+
+	public long getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(long sessionId) {
+		this.sessionId = sessionId;
 	}
 
 }

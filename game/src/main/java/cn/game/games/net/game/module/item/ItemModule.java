@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.item;
 import java.util.List;
 import java.util.ListIterator;
 
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -38,7 +39,6 @@ public class ItemModule extends AbstractItemModule<Item> {
 			initAddCache(item);
 		}
 	}
-
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
 		return GoodsTypeEnum.Item;

@@ -59,14 +59,14 @@ public class ShardingSphereUtil {
 
 	public static void main(String[] args) throws Exception {
 
-		genShardingRuleFromSrcDb(false);
+		genShardingRuleFromSrcDb(true);
 //		dropAllRules();
 //		createStorageUnitSql();
 	}
 
 	/** 
 	 * 分成分库分表规则，表名来自于另外的一个数据库,全量生成
-	 * @param autoExecSql 是否自动执行创建分表规则的sql语句,推荐true
+	 * @param autoExecSql 是否自动执行创建分表规则的sql语句,推荐true,有时需要反复执行多次
 	 * @throws Exception
 	 */
 	public static void genShardingRuleFromSrcDb(boolean autoExecSql) throws Exception {

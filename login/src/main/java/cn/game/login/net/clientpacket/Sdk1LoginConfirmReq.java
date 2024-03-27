@@ -51,7 +51,7 @@ public class Sdk1LoginConfirmReq {
 		//用户不存在，创建新用户
 		if(user == null){			
 			user = new User();
-			user.setUserType((byte)3) ; 
+			user.setUserType((byte)1) ; 
 			user.setUsername(channelUsername);
 			user.setChannelCode(channelCode);
 			user.setCreateDate(DateUtil.nowDateStr());

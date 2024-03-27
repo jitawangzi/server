@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.shop.monthcard;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -10,6 +12,7 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.MonthCardMapper;
+import cn.game.protocol.generated.config.InitConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -78,16 +81,27 @@ public class MonthCardModule extends BasePlayerModule {
 
 	@Override
 	protected void initFromDb(ListIterator<?> iterator) {
-		long nowTime = System.currentTimeMillis();
 		List<MonthCard> cardList = (List<MonthCard>) iterator.next();
 		for (MonthCard card : cardList) {
-			if (card.getExpireTime() > 0 && card.getExpireTime() <= nowTime) {
-				card.delete();
-				continue;
-			}
 			monthCards.put(card.getMonthCardId(), card);
 		}
 	}
+	
+	@Override
+	public void initFromDbAfter() {
+		long nowTime = System.currentTimeMillis();
+		Collection<MonthCard> values = monthCards.values(); 
+		List<Integer> removeList = new ArrayList<>();
+		for (MonthCard card : values) {
+			if (card.getExpireTime() > 0 && card.getExpireTime() <= nowTime) {
+				card.delete();
+				removeList.add(card.getMonthCardId()); 
+			}
+		}
+		for (Integer integer : removeList) {
+			monthCards.remove(integer) ; 
+		}
+	};
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
