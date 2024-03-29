@@ -1,8 +1,5 @@
 package cn.game.games.net.game.module.hero;
 
-import java.util.List;
-import java.util.ListIterator;
-
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -38,19 +35,6 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		ObjUtil.setDefaultValue(hero);
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-		List<Hero> list = (List<Hero>) iterator.next();
-		for (Hero hero : list) {
-			initAddCache(hero);
-		}
-	}
-	@Override
-	public void initFromDbAfter() {
-		for (Hero hero : uid_items.values()) {
-			id_items.put(hero.getConfigId(), hero); 
-		}
-	};
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
 		return GoodsTypeEnum.Hero;

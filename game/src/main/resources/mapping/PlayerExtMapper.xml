@@ -302,5 +302,134 @@
   </delete>
   
     <select id="selectMaxId" resultType="java.lang.Long">select MAX(player_id) from t_player_ext</select>
-  
+  <update id="batchUpdate" parameterType="java.util.List">
+    update t_player_ext 
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="player_id =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.playerId !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.playerId,jdbcType=BIGINT}
+          </if>
+          <if test="item.playerId ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.player_id
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="quest_active =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.questActive !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.questActive,jdbcType=INTEGER}
+          </if>
+          <if test="item.questActive ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.quest_active
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="last_explore_role =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.lastExploreRole !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.lastExploreRole,jdbcType=VARCHAR}
+          </if>
+          <if test="item.lastExploreRole ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.last_explore_role
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="branch_group =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.branchGroup !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.branchGroup,jdbcType=INTEGER}
+          </if>
+          <if test="item.branchGroup ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.branch_group
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="main_city_buffs =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.mainCityBuffs !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.mainCityBuffs,jdbcType=VARCHAR}
+          </if>
+          <if test="item.mainCityBuffs ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.main_city_buffs
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="strategycard_group_id =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.strategycardGroupId !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.strategycardGroupId,jdbcType=BIGINT}
+          </if>
+          <if test="item.strategycardGroupId ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.strategycard_group_id
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="event_ids =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.eventIds !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.eventIds,jdbcType=VARCHAR}
+          </if>
+          <if test="item.eventIds ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.event_ids
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="building_add_item_time =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.buildingAddItemTime !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.buildingAddItemTime,jdbcType=BIGINT}
+          </if>
+          <if test="item.buildingAddItemTime ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.building_add_item_time
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="occTalent_node =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.occtalentNode !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.occtalentNode,jdbcType=LONGVARBINARY}
+          </if>
+          <if test="item.occtalentNode ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.occTalent_node
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="illustrate =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.illustrate !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.illustrate,jdbcType=LONGVARBINARY}
+          </if>
+          <if test="item.illustrate ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.illustrate
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="technology_tree_node =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.technologyTreeNode !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.technologyTreeNode,jdbcType=LONGVARBINARY}
+          </if>
+          <if test="item.technologyTreeNode ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.technology_tree_node
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="strategy_cards =case player_id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item">
+          <if test="item.strategyCards !=null ">
+            when #{item.playerId,jdbcType=BIGINT} then #{item.strategyCards,jdbcType=LONGVARBINARY}
+          </if>
+          <if test="item.strategyCards ==null ">
+            when #{item.playerId,jdbcType=BIGINT} then t_player_ext.strategy_cards
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where player_id in(
+    <foreach collection="recordList" index="index" item="item" separator=",">
+      #{item.playerId,jdbcType=BIGINT}
+    </foreach>
+    )
+  </update>
 </mapper>

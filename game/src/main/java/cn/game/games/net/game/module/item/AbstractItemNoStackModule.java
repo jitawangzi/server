@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.net.game.helper.ItemHelper;
@@ -29,9 +31,31 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	protected Multimap<Integer, T> id_items = ArrayListMultimap.create();
 
 	@Override
+	protected void initFromDb(ListIterator<?> iterator) {
+		List<T> list = (List<T>) iterator.next();
+		for (T item : list) {
+			addCacheNoStackable(item);
+		}
+	}
+	@Override
+	public void initFromDbAfter() {
+		for (T item : uid_items.values()) {
+			addCacheStackable(item);
+		}
+	};
+	
+	@Override
 	public void initAddCache(T item) {
-		id_items.put(item.getConfigId(), item);
+		addCacheNoStackable(item);
+		addCacheStackable(item);
+	}
+	@Override
+	public  void addCacheNoStackable(T item) {
 		uid_items.put(item.getId(), item);
+	}
+	@Override
+	public  void addCacheStackable(T item) {
+		id_items.put(item.getConfigId(), item);
 	}
 
 	@Override

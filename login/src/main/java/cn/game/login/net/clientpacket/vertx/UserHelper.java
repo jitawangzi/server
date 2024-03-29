@@ -19,7 +19,7 @@ import io.vertx.core.Future;
 public class UserHelper {
 
 	public static User createUser(String account, String pwd, String channelLabel, String thirdUid,
-			String sessionKey,long sessionId) {
+			String sessionKey) {
 		int[] createUID = GlobalConst.CreateUID;
 		long playerId = IdUtil.getIdAutoIncrease(IdType.PLAYER);
 		playerId = playerId - 1 + createUID[0] + createUID[1];
@@ -40,7 +40,7 @@ public class UserHelper {
 		user.setIsGm(false);
 		user.setLoginDate(DateUtil.nowDateStr());
 		user.setLoginTime(DateUtil.nowTimeStr());
-		user.setSessionId(sessionId);
+		user.setSessionId(IdUtil.getId());
 //			user.setDeviceUid(device);
 		mapper.insert(user);
 		setUserNewCache(user); 

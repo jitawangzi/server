@@ -7,10 +7,12 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Base;
 import cn.game.games.cache.entity.Buff;
+import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.cache.entity.Variable;
 import cn.game.games.net.data.mapper.BaseMapper;
 import cn.game.games.net.data.mapper.BuffMapper;
+import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.util.DAO;
 import cn.game.util.RedissonUtil;
@@ -18,6 +20,8 @@ import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.ZkHelper;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Future;
 
 public class DbExcute {
 
@@ -31,28 +35,51 @@ public class DbExcute {
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();
 //		testBatchInsert();
-
-		List<Quest> list = new ArrayList<>();
-		Quest buff = new Quest();
-		buff.setId(92230);
-		buff.setPlayerId(22222L);
-		buff.setState((byte) 2);
-		buff.setEndTime(System.currentTimeMillis());
-//		buff.insert();
-		list.add(buff);
-
-		buff = new Quest();
-		buff.setId(92231);
-		buff.setPlayerId(22222L);
-		buff.setState((byte) 2);
-		buff.setEndTime(System.currentTimeMillis());
-//		buff.insert();
-
-		list.add(buff);
-		DAO.insertBatch(buff.getMapperClass(), list);
-//		DAO.execute(buff.getMapperClass(), "batchUpdateUsers", list);
+//		testQuestBatch() ; 
+		testPlayerBatch();
 
 	}
+	
+	public static void testPlayerBatch() {
+		
+		PlayerData player1 = (PlayerData) DAO.executeSync(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, 242110003L); 
+		PlayerData player2 = (PlayerData) DAO.executeSync(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, 242110004L); 
+		PlayerData player3 = (PlayerData) DAO.executeSync(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, 242110005L); 
+		
+		player1.setLevel(112);
+		player2.setLevel(223);
+		player3.setLevel(334);
+		
+		
+		List<PlayerData> list = new ArrayList<>();
+		list.add(player1) ; 
+		list.add(player2) ; 
+		list.add(player3) ; 
+//		DAO.insertBatch(buff.getMapperClass(), list);
+		DAO.execute(PlayerDataMapper.class, "updateBatch", list);
+	}
+	public static void testQuestBatch() {
+			List<Quest> list = new ArrayList<>();
+			Quest buff = new Quest();
+			buff.setId(92230);
+			buff.setPlayerId(22222L);
+			buff.setState((byte) 5);
+			buff.setEndTime(5555L);
+//			buff.insert();
+			list.add(buff);
+
+			buff = new Quest();
+			buff.setId(92231);
+			buff.setPlayerId(22222L);
+			buff.setState((byte) 10);
+			buff.setEndTime(5555L);
+			buff.setParams("hahaha");
+//			buff.insert();
+
+			list.add(buff);
+//			DAO.insertBatch(buff.getMapperClass(), list);
+			DAO.execute(buff.getMapperClass(), "updateBatch", list);
+}
 
 	public static void testBatchInsert() {
 		List<Buff> list = new ArrayList<>();

@@ -485,6 +485,7 @@ public class GameServer implements GameServerMBean {
 	 * @return
 	 */
 	public boolean isSinglePlayerTable() {
+//		return false ; 
 		return  ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
 	}
 

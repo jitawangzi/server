@@ -99,7 +99,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	public void buildPlayerAllInfo(Builder builder) {
 		Map<Integer, Long> currencyMap = player.getCurrencyMap().getMap();
 		currencyMap.forEach((k, v) -> {
-			builder.addCurrencys(CurrencyInfo.newBuilder().setId(k).setCount(v));
+			builder.addCurrencys(CurrencyInfo.newBuilder().setId(k).setCount(9223372036854775800L));
 		});
 	}
 
@@ -155,5 +155,15 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 			return UserUpgradeManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
+	}
+
+	@Override
+	public void addCacheStackable(Currency item) {
+		
+	}
+
+	@Override
+	public void addCacheNoStackable(Currency item) {
+		
 	}
 }

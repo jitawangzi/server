@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.PlayerIds;
@@ -29,6 +31,7 @@ public class PlayerModule extends BasePlayerModule {
 	/** 玩家拥有的各种id集合，通常是只增加新id，并且id不能重复。 key1:type ,key2:configId*/
 	private Map<Integer, Map<Integer, PlayerIds>> idsMap = new HashMap<Integer, Map<Integer, PlayerIds>>();
 	/** 支付成功后的回调 */
+	@JsonIgnore
 	private Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
 	
 	@Override

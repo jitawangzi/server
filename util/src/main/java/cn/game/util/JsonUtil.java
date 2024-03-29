@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -36,17 +37,17 @@ public class JsonUtil {
 		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		objectMapper.disable(SerializationFeature.FAIL_ON_SELF_REFERENCES);
 		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		// 忽略不存在的属性
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		SimpleModule module = new SimpleModule();
 		module.addSerializer(BitSet.class, new BitSetSerializer());
 		module.addDeserializer(BitSet.class, new BitSetDeserializer());
 		objectMapper.registerModule(module);
         objectMapper.registerModule(new GuavaModule()); // 注册 Guava 模块
-
 		// 写入类名
 		PolymorphicTypeValidator ptv = LaissezFaireSubTypeValidator.instance;
 		objectMapper.activateDefaultTyping(ptv, DefaultTyping.NON_FINAL);
-//
 		objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
 				.withFieldVisibility(JsonAutoDetect.Visibility.ANY).withGetterVisibility(JsonAutoDetect.Visibility.NONE)
 				.withSetterVisibility(JsonAutoDetect.Visibility.NONE)

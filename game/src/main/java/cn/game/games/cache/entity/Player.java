@@ -179,7 +179,6 @@ public class Player  {
 				if (!instance.isComplete()) {
 					continue;
 				}
-				instance.setPlayer(this);
 				instance.initDefault(this);
 				modules.put(clazz.getName(), instance);
 				if (instance instanceof GoodsModule) {

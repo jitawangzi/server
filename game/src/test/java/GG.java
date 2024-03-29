@@ -17,6 +17,8 @@ public class GG {
 	
 	public static void main(String[] args) throws Exception {
 		
+		System.out.println(Long.MAX_VALUE);
+		
 		ShopItem shopItem = new ShopItem(); 
 		shopItem.setCreateDay(3333);
 		shopItem.setId(3323232L);

@@ -573,8 +573,8 @@ public class PlayerHandler extends BaseHandler {
 		} ; 
 		int canLogin = GameServerStatus.getInstance().canLogin(req.getVerstion());
 		if (canLogin > 0) {
-			failHandler.handle(canLogin);
-			return;
+//			failHandler.handle(canLogin);
+//			return;
 		}
 		
 		GameClient newGameClient = (GameClient) client;
@@ -832,7 +832,7 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setVipExpTotal(0);
 		playerData.setVipLevel(1); // 好感度默认1级
 		playerData.setRefreshDay(DateUtil.getDay(0));
-		playerData.setModules("{}");
+		playerData.setModules("[]");
 		playerExt.setPlayerId(id);
 
 		ObjUtil.setDefaultValue(playerData);

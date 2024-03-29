@@ -84,8 +84,10 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 								response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 								return;
 							}
-							RedissonUtil.setAsync(CacheType.F_USER_NAME_ID.key(username), JSON.toJSONString(user), 7,
-									TimeUnit.DAYS);
+							// 创建session
+							long sessionId = IdUtil.getId();
+							user.setSessionId(sessionId);
+							UserHelper.setUserNewCache(user); 
 						}
 
 						if (pwd != null && !pwd.equals(user.getPass())) {
@@ -100,11 +102,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 						user.setLoginTime(DateUtil.nowTimeStr());
 						mapper.updateByPrimaryKey(user);
 
-						// 创建session
-						long sessionId = IdUtil.getId();
-						user.setSessionId(sessionId);
-						UserHelper.setUserBySession(user);
-						byte[] byteArray = resp.setPassportSessionId(sessionId + "").setUserId(user.getId() + "")
+						byte[] byteArray = resp.setPassportSessionId(user.getSessionId() + "").setUserId(user.getId() + "")
 								.build().toByteArray();
 						Buffer data = Buffer.buffer(byteArray);
 						response.end(data);
@@ -137,16 +135,13 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 							log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
 						} else {
 							VxHolder.vertx.executeBlocking(fut -> {
-								long sessionId = 0;
 								UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
 								User user = v;
 								if (user != null) {
-									sessionId = user.getSessionId();
 									if (!session_key.equals(user.getSessionKey())) {
 										user.setSessionKey(session_key);
-										UserHelper.removeUser(sessionId);
-										sessionId = IdUtil.getId();
-										user.setSessionId(sessionId);
+										UserHelper.removeUser(user.getSessionId());
+										user.setSessionId(IdUtil.getId());
 										UserHelper.setUserBySession(user);
 									}
 									user.setLoginDate(DateUtil.nowDateStr());
@@ -154,14 +149,12 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 									mapper.updateByPrimaryKey(user);
 								} else {
 									// 从数据库中查询，如果没有账号需要直接创建
-									sessionId = IdUtil.getId();
 									user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
 									if (user == null) {
 										user = UserHelper.createUser(username, "",
-												AccountChannelType.WECHAT.name().toLowerCase(), unionid, session_key,
-												sessionId);
+												AccountChannelType.WECHAT.name().toLowerCase(), unionid, session_key);
 									} else {
-										user.setSessionId(sessionId);
+										user.setSessionId(IdUtil.getId());
 										UserHelper.setUserNewCache(user);
 										// 更新登录时间
 										user.setLoginDate(DateUtil.nowDateStr());
@@ -170,7 +163,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 										mapper.updateByPrimaryKey(user);
 									}
 								}
-								byte[] byteArray = resp.setPassportSessionId(sessionId + "")
+								byte[] byteArray = resp.setPassportSessionId(user.getSessionId() + "")
 										.setUserId(user.getId() + "").build().toByteArray();
 								Buffer data = Buffer.buffer(byteArray);
 								response.end(data);

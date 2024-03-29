@@ -93,6 +93,9 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	public abstract GoodsTypeEnum getGoodsTypeEnum();
 
 	public abstract void initAddCache(E item);
+	
+	public abstract void addCacheStackable(E item);
+	public abstract void addCacheNoStackable(E item);
 
 	public abstract void removeCache(E item);
 }

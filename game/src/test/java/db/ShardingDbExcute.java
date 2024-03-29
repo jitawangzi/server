@@ -19,6 +19,11 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.ZkHelper;
 
+/**    
+ * shardingsphere对于;分隔的多sql执行不支持。
+ * @date 2024年3月28日 下午4:40:04
+ * @author SYQ
+ */
 public class ShardingDbExcute {
 
 	public static void main(String[] args) throws Exception {
@@ -36,7 +41,7 @@ public class ShardingDbExcute {
 		Quest item = new Quest();
 		item.setId(92230);
 		item.setPlayerId(22222L);
-		item.setState((byte) 3);
+		item.setState((byte) 4);
 		item.setEndTime(System.currentTimeMillis());
 //		buff.insert();
 		list.add(item);
@@ -44,7 +49,7 @@ public class ShardingDbExcute {
 		item = new Quest();
 		item.setId(92231);
 		item.setPlayerId(22222L);
-		item.setState((byte) 3);
+		item.setState((byte) 6);
 		item.setEndTime(System.currentTimeMillis());
 //		buff.insert();
 
@@ -52,7 +57,7 @@ public class ShardingDbExcute {
 		item = new Quest();
 		item.setId(92232);
 		item.setPlayerId(22222L);
-		item.setState((byte) 3);
+		item.setState((byte) 8);
 		item.setEndTime(System.currentTimeMillis());
 //		buff.insert();
 

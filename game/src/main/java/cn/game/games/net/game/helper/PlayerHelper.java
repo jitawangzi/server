@@ -844,7 +844,7 @@ public class PlayerHelper {
 			player.handleEvent(EventTypeEnum.Reconnect);
 			PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
 			resp2.setReconnect(reconnect);
-//			resp2.setInfo(PbBuilder.buildPlayerInfo(player));
+			resp2.setInfo(PbBuilder.buildPlayerInfo(player));
 			resp2.setTime(System.currentTimeMillis() + "");
 			newGameClient.sendProtocol(resp2);
 			return true;

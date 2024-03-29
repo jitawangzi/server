@@ -22,7 +22,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	protected transient Player player;
 	protected transient long playerId;
 	protected transient Class<?>[] defaultDbMapperClass;
-	transient int tableCount = 0;
+	private transient int tableCount = 0;
 	/**
 	 * 是否初始化过
 	 */
@@ -31,50 +31,27 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	public BasePlayerModule() {
 	}
 
-	public Player getPlayer() {
-		return this.player;
-	}
-
 	public abstract void buildPlayerAllInfo(PlayerAllInfo.Builder builder);
-
-	/**
-	 * 初始化方法逻辑，默认不实现，如有逻辑需要自行实现
-	 */
-	public final void playerInit(Player player) {
-		if (!this.initial) {
-			this.player = player;
-			if (this instanceof EventHandler) {
-				player.registerEventHandler((EventHandler) this);
-			}
-			initAfter(player);
-			initial = true;
-		}
-	}
-
-	/**
-	 * 需要执行一些数据转换的操作
-	 */
-	public void beforeSave() {
-	}
-
-	protected void initAfter(Player player) {
-
-	};
-
-	public void init() {
-	};
 
 	public final void initDefault(Player player) {
 		if (!this.initial) {
+			this.player = player;
+			this.playerId = player.getPlayerId();
 			setDefaultDbMapperClass();
 			if (this instanceof EventHandler) {
 				player.registerEventHandler((EventHandler) this);
 			}
 			init();
-			initAfter(player);
+			initAfter();
 			initial = true;
 		}
 	}
+
+	public void init() {
+	};
+	protected void initAfter() {
+
+	};
 
 	private void setDefaultDbMapperClass() {
 		this.defaultDbMapperClass = defaultDbMapperClass();
@@ -148,11 +125,6 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
-		this.playerId = player.getPlayerId();
-	}
-
 	@Override
 	public String toString() {
 		return super.toString() + "[playerId=" + player.getData().getPlayerId() + "]";
@@ -172,16 +144,11 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 		return getInitOrder() - o.getInitOrder();
 	}
 
+	/** 
+	 * 模块是否开发完毕，如果还在开发中的，返回false，运行时不会初始化
+	 * @return
+	 */
 	public boolean isComplete() {
 		return true; 
 	}
-//	@Override
-//	public EventTypeEnum[] getEventTypes() {
-//		return null;
-//	}
-//
-//	@Override
-//	public void handleEvent(GameEvent event) {
-//	}
-
 }

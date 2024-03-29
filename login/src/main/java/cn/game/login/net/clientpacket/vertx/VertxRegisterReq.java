@@ -64,7 +64,7 @@ public class VertxRegisterReq implements Handler<RoutingContext> {
 			}
 			VxHolder.vertx.executeBlocking(r -> {
 				try {
-					UserHelper.createUser(account, pwd, "official", account, "",IdUtil.getId());
+					UserHelper.createUser(account, pwd, "official", account, "");
 					response.end(Buffer.buffer(resp.build().toByteArray()));
 				} catch (Exception e) {
 					e.printStackTrace();

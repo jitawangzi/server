@@ -56,7 +56,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 	private transient EventHandler eventHandler;
 
 	@Override
-	public void initAfter(Player player) {
+	public void initAfter() {
 		for (int i = 0; i < buffArrayMap.length; i++) {
 			buffArrayMap[i] = HashMultimap.create();
 		}
