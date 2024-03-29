@@ -57,6 +57,11 @@ public interface StoreMapper {
 	 */
 	int deleteBatch(List<Store> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Store> recordList);
+
 	int deleteByPlayerId(Long playerId);
 
 }

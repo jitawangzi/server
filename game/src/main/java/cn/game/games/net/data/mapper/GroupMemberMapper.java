@@ -57,6 +57,11 @@ public interface GroupMemberMapper {
 	 */
 	int deleteBatch(List<GroupMember> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<GroupMember> recordList);
+
 	List<GroupMember> selectAll();
 	
 	int deleteByGroupKey(Long groupId);

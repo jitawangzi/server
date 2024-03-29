@@ -2,6 +2,7 @@ package cn.game.games.net.data.mapper;
 
 import cn.game.games.cache.entity.Draw;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface DrawMapper {
 
@@ -49,4 +50,9 @@ public interface DrawMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<Draw> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Draw> recordList);
 }

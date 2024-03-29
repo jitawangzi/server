@@ -63,5 +63,10 @@ public interface RoleMapper {
 	 */
 	int deleteBatch(List<Role> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Role> recordList);
+
 
 }

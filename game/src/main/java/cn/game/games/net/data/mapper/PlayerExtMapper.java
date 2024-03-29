@@ -63,10 +63,10 @@ public interface PlayerExtMapper {
 	 */
 	int deleteBatch(List<PlayerExt> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<PlayerExt> recordList);
+
 	Long selectMaxId();
-	
-    /**
-     * @mbg.generated
-     */
-    int batchUpdate(@Param("recordList") List<PlayerExt> recordList) ;
 }

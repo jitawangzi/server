@@ -62,4 +62,9 @@ public interface StoreDataMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<StoreData> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<StoreData> recordList);
 }

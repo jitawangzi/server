@@ -2,6 +2,7 @@ package cn.game.games.net.data.mapper;
 
 import cn.game.games.cache.entity.Notice;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface NoticeMapper {
 
@@ -49,4 +50,9 @@ public interface NoticeMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<Notice> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Notice> recordList);
 }

@@ -63,11 +63,11 @@ public interface QuestMapper {
 	 */
 	int deleteBatch(List<Quest> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Quest> recordList);
+
 	int batchUpdateTest(List<Quest> records);
-	
-    /**
-     * @mbg.generated
-     */
-    int updateBatch(@Param("recordList") List<Quest> recordList);
 
 }

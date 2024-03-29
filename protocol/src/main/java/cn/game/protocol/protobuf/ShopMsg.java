@@ -1312,10 +1312,20 @@ public final class ShopMsg {
      * 商品唯一id
      * </pre>
      *
-     * <code>uint64 id = 1;</code>
+     * <code>string id = 1;</code>
      * @return The id.
      */
-    long getId();
+    java.lang.String getId();
+    /**
+     * <pre>
+     * 商品唯一id
+     * </pre>
+     *
+     * <code>string id = 1;</code>
+     * @return The bytes for id.
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
 
     /**
      * <pre>
@@ -1364,6 +1374,7 @@ public final class ShopMsg {
       super(builder);
     }
     private ShopItemProto() {
+      id_ = "";
     }
 
     @java.lang.Override
@@ -1396,9 +1407,10 @@ public final class ShopMsg {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              id_ = input.readUInt64();
+              id_ = s;
               break;
             }
             case 16: {
@@ -1449,18 +1461,49 @@ public final class ShopMsg {
     }
 
     public static final int ID_FIELD_NUMBER = 1;
-    private long id_;
+    private volatile java.lang.Object id_;
     /**
      * <pre>
      * 商品唯一id
      * </pre>
      *
-     * <code>uint64 id = 1;</code>
+     * <code>string id = 1;</code>
      * @return The id.
      */
     @java.lang.Override
-    public long getId() {
-      return id_;
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 商品唯一id
+     * </pre>
+     *
+     * <code>string id = 1;</code>
+     * @return The bytes for id.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int CONFIGID_FIELD_NUMBER = 2;
@@ -1522,8 +1565,8 @@ public final class ShopMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0L) {
-        output.writeUInt64(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
       if (configId_ != 0) {
         output.writeUInt32(2, configId_);
@@ -1543,9 +1586,8 @@ public final class ShopMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
       if (configId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -1574,8 +1616,8 @@ public final class ShopMsg {
       }
       cn.game.protocol.protobuf.ShopMsg.ShopItemProto other = (cn.game.protocol.protobuf.ShopMsg.ShopItemProto) obj;
 
-      if (getId()
-          != other.getId()) return false;
+      if (!getId()
+          .equals(other.getId())) return false;
       if (getConfigId()
           != other.getConfigId()) return false;
       if (getBuyTimes()
@@ -1594,8 +1636,7 @@ public final class ShopMsg {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getId());
+      hash = (53 * hash) + getId().hashCode();
       hash = (37 * hash) + CONFIGID_FIELD_NUMBER;
       hash = (53 * hash) + getConfigId();
       hash = (37 * hash) + BUYTIMES_FIELD_NUMBER;
@@ -1739,7 +1780,7 @@ public final class ShopMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0L;
+        id_ = "";
 
         configId_ = 0;
 
@@ -1825,8 +1866,9 @@ public final class ShopMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopItemProto other) {
         if (other == cn.game.protocol.protobuf.ShopMsg.ShopItemProto.getDefaultInstance()) return this;
-        if (other.getId() != 0L) {
-          setId(other.getId());
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
         }
         if (other.getConfigId() != 0) {
           setConfigId(other.getConfigId());
@@ -1866,30 +1908,63 @@ public final class ShopMsg {
         return this;
       }
 
-      private long id_ ;
+      private java.lang.Object id_ = "";
       /**
        * <pre>
        * 商品唯一id
        * </pre>
        *
-       * <code>uint64 id = 1;</code>
+       * <code>string id = 1;</code>
        * @return The id.
        */
-      @java.lang.Override
-      public long getId() {
-        return id_;
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        * 商品唯一id
        * </pre>
        *
-       * <code>uint64 id = 1;</code>
+       * <code>string id = 1;</code>
+       * @return The bytes for id.
+       */
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 商品唯一id
+       * </pre>
+       *
+       * <code>string id = 1;</code>
        * @param value The id to set.
        * @return This builder for chaining.
        */
-      public Builder setId(long value) {
-        
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         id_ = value;
         onChanged();
         return this;
@@ -1899,12 +1974,32 @@ public final class ShopMsg {
        * 商品唯一id
        * </pre>
        *
-       * <code>uint64 id = 1;</code>
+       * <code>string id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
         
-        id_ = 0L;
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品唯一id
+       * </pre>
+       *
+       * <code>string id = 1;</code>
+       * @param value The bytes for id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
         onChanged();
         return this;
       }
@@ -2099,10 +2194,20 @@ public final class ShopMsg {
      * 商品唯一id
      * </pre>
      *
-     * <code>uint64 id = 1;</code>
+     * <code>string id = 1;</code>
      * @return The id.
      */
-    long getId();
+    java.lang.String getId();
+    /**
+     * <pre>
+     * 商品唯一id
+     * </pre>
+     *
+     * <code>string id = 1;</code>
+     * @return The bytes for id.
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
   }
   /**
    * <pre>
@@ -2121,6 +2226,7 @@ public final class ShopMsg {
       super(builder);
     }
     private ShopItemBuyRequest_15000003() {
+      id_ = "";
     }
 
     @java.lang.Override
@@ -2153,9 +2259,10 @@ public final class ShopMsg {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              id_ = input.readUInt64();
+              id_ = s;
               break;
             }
             default: {
@@ -2191,18 +2298,49 @@ public final class ShopMsg {
     }
 
     public static final int ID_FIELD_NUMBER = 1;
-    private long id_;
+    private volatile java.lang.Object id_;
     /**
      * <pre>
      * 商品唯一id
      * </pre>
      *
-     * <code>uint64 id = 1;</code>
+     * <code>string id = 1;</code>
      * @return The id.
      */
     @java.lang.Override
-    public long getId() {
-      return id_;
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 商品唯一id
+     * </pre>
+     *
+     * <code>string id = 1;</code>
+     * @return The bytes for id.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2219,8 +2357,8 @@ public final class ShopMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0L) {
-        output.writeUInt64(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
       unknownFields.writeTo(output);
     }
@@ -2231,9 +2369,8 @@ public final class ShopMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(1, id_);
+      if (!getIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2250,8 +2387,8 @@ public final class ShopMsg {
       }
       cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003 other = (cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003) obj;
 
-      if (getId()
-          != other.getId()) return false;
+      if (!getId()
+          .equals(other.getId())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2264,8 +2401,7 @@ public final class ShopMsg {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getId());
+      hash = (53 * hash) + getId().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2403,7 +2539,7 @@ public final class ShopMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0L;
+        id_ = "";
 
         return this;
       }
@@ -2480,8 +2616,9 @@ public final class ShopMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003 other) {
         if (other == cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003.getDefaultInstance()) return this;
-        if (other.getId() != 0L) {
-          setId(other.getId());
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2512,30 +2649,63 @@ public final class ShopMsg {
         return this;
       }
 
-      private long id_ ;
+      private java.lang.Object id_ = "";
       /**
        * <pre>
        * 商品唯一id
        * </pre>
        *
-       * <code>uint64 id = 1;</code>
+       * <code>string id = 1;</code>
        * @return The id.
        */
-      @java.lang.Override
-      public long getId() {
-        return id_;
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        * 商品唯一id
        * </pre>
        *
-       * <code>uint64 id = 1;</code>
+       * <code>string id = 1;</code>
+       * @return The bytes for id.
+       */
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 商品唯一id
+       * </pre>
+       *
+       * <code>string id = 1;</code>
        * @param value The id to set.
        * @return This builder for chaining.
        */
-      public Builder setId(long value) {
-        
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         id_ = value;
         onChanged();
         return this;
@@ -2545,12 +2715,32 @@ public final class ShopMsg {
        * 商品唯一id
        * </pre>
        *
-       * <code>uint64 id = 1;</code>
+       * <code>string id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
         
-        id_ = 0L;
+        id_ = getDefaultInstance().getId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品唯一id
+       * </pre>
+       *
+       * <code>string id = 1;</code>
+       * @param value The bytes for id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        id_ = value;
         onChanged();
         return this;
       }
@@ -6046,13 +6236,13 @@ public final class ShopMsg {
 
     /**
      * <pre>
-     * 月卡过期时间（毫秒时间戳）,0表示不过期
+     * 月卡过期时间（秒时间戳）,0表示不过期
      * </pre>
      *
-     * <code>uint64 expireTime = 2;</code>
+     * <code>uint32 expireTime = 2;</code>
      * @return The expireTime.
      */
-    long getExpireTime();
+    int getExpireTime();
 
     /**
      * <pre>
@@ -6126,7 +6316,7 @@ public final class ShopMsg {
             }
             case 16: {
 
-              expireTime_ = input.readUInt64();
+              expireTime_ = input.readUInt32();
               break;
             }
             case 24: {
@@ -6187,17 +6377,17 @@ public final class ShopMsg {
     }
 
     public static final int EXPIRETIME_FIELD_NUMBER = 2;
-    private long expireTime_;
+    private int expireTime_;
     /**
      * <pre>
-     * 月卡过期时间（毫秒时间戳）,0表示不过期
+     * 月卡过期时间（秒时间戳）,0表示不过期
      * </pre>
      *
-     * <code>uint64 expireTime = 2;</code>
+     * <code>uint32 expireTime = 2;</code>
      * @return The expireTime.
      */
     @java.lang.Override
-    public long getExpireTime() {
+    public int getExpireTime() {
       return expireTime_;
     }
 
@@ -6248,8 +6438,8 @@ public final class ShopMsg {
       if (id_ != 0) {
         output.writeUInt32(1, id_);
       }
-      if (expireTime_ != 0L) {
-        output.writeUInt64(2, expireTime_);
+      if (expireTime_ != 0) {
+        output.writeUInt32(2, expireTime_);
       }
       if (isBuyRewards_ != false) {
         output.writeBool(3, isBuyRewards_);
@@ -6270,9 +6460,9 @@ public final class ShopMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(1, id_);
       }
-      if (expireTime_ != 0L) {
+      if (expireTime_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(2, expireTime_);
+          .computeUInt32Size(2, expireTime_);
       }
       if (isBuyRewards_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -6319,8 +6509,7 @@ public final class ShopMsg {
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
       hash = (37 * hash) + EXPIRETIME_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getExpireTime());
+      hash = (53 * hash) + getExpireTime();
       hash = (37 * hash) + ISBUYREWARDS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getIsBuyRewards());
@@ -6462,7 +6651,7 @@ public final class ShopMsg {
         super.clear();
         id_ = 0;
 
-        expireTime_ = 0L;
+        expireTime_ = 0;
 
         isBuyRewards_ = false;
 
@@ -6549,7 +6738,7 @@ public final class ShopMsg {
         if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.getExpireTime() != 0L) {
+        if (other.getExpireTime() != 0) {
           setExpireTime(other.getExpireTime());
         }
         if (other.getIsBuyRewards() != false) {
@@ -6630,29 +6819,29 @@ public final class ShopMsg {
         return this;
       }
 
-      private long expireTime_ ;
+      private int expireTime_ ;
       /**
        * <pre>
-       * 月卡过期时间（毫秒时间戳）,0表示不过期
+       * 月卡过期时间（秒时间戳）,0表示不过期
        * </pre>
        *
-       * <code>uint64 expireTime = 2;</code>
+       * <code>uint32 expireTime = 2;</code>
        * @return The expireTime.
        */
       @java.lang.Override
-      public long getExpireTime() {
+      public int getExpireTime() {
         return expireTime_;
       }
       /**
        * <pre>
-       * 月卡过期时间（毫秒时间戳）,0表示不过期
+       * 月卡过期时间（秒时间戳）,0表示不过期
        * </pre>
        *
-       * <code>uint64 expireTime = 2;</code>
+       * <code>uint32 expireTime = 2;</code>
        * @param value The expireTime to set.
        * @return This builder for chaining.
        */
-      public Builder setExpireTime(long value) {
+      public Builder setExpireTime(int value) {
         
         expireTime_ = value;
         onChanged();
@@ -6660,15 +6849,15 @@ public final class ShopMsg {
       }
       /**
        * <pre>
-       * 月卡过期时间（毫秒时间戳）,0表示不过期
+       * 月卡过期时间（秒时间戳）,0表示不过期
        * </pre>
        *
-       * <code>uint64 expireTime = 2;</code>
+       * <code>uint32 expireTime = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearExpireTime() {
         
-        expireTime_ = 0L;
+        expireTime_ = 0;
         onChanged();
         return this;
       }
@@ -9316,10 +9505,10 @@ public final class ShopMsg {
       "\n!ShopGroupItemListRequest_15000001\022\r\n\005g" +
       "roup\030\001 \001(\r\"J\n\"ShopGroupItemListResponse_" +
       "15000002\022$\n\005items\030\001 \003(\0132\025.Protos.ShopIte" +
-      "mProto\"Q\n\rShopItemProto\022\n\n\002id\030\001 \001(\004\022\020\n\010c" +
+      "mProto\"Q\n\rShopItemProto\022\n\n\002id\030\001 \001(\t\022\020\n\010c" +
       "onfigId\030\002 \001(\r\022\020\n\010buyTimes\030\003 \001(\r\022\020\n\010disco" +
       "unt\030\004 \001(\r\")\n\033ShopItemBuyRequest_15000003" +
-      "\022\n\n\002id\030\001 \001(\004\"\036\n\034ShopItemBuyResponse_1500" +
+      "\022\n\n\002id\030\001 \001(\t\"\036\n\034ShopItemBuyResponse_1500" +
       "0004\"*\n\034MonthCardBuyRequest_15000010\022\n\n\002" +
       "id\030\001 \001(\r\"J\n\035MonthCardBuyResponse_1500001" +
       "1\022)\n\tmonthCard\030\001 \001(\0132\026.Protos.MonthCardP" +
@@ -9328,7 +9517,7 @@ public final class ShopMsg {
       "onse_15000013\"0\n\"MonthCardDayRewardReque" +
       "st_15000014\022\n\n\002id\030\001 \001(\r\"%\n#MonthCardDayR" +
       "ewardResponse_15000015\"\\\n\016MonthCardProto" +
-      "\022\n\n\002id\030\001 \001(\r\022\022\n\nexpireTime\030\002 \001(\004\022\024\n\014isBu" +
+      "\022\n\n\002id\030\001 \001(\r\022\022\n\nexpireTime\030\002 \001(\r\022\024\n\014isBu" +
       "yRewards\030\003 \001(\010\022\024\n\014isDayRewards\030\004 \001(\010\")\n\033" +
       "ShopGiftBuyRequest_15000020\022\n\n\002id\030\001 \001(\r\"" +
       "\036\n\034ShopGiftBuyResponse_15000021\"E\n\031Payme" +

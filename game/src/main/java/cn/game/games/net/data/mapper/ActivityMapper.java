@@ -58,6 +58,11 @@ public interface ActivityMapper {
 	 */
 	int deleteBatch(List<Activity> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Activity> recordList);
+
 	List<Activity> selectByPlayerId(Long playerId);
 
 }

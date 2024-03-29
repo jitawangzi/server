@@ -3,6 +3,7 @@ package cn.game.games.net.data.mapper;
 import java.util.List;
 
 import cn.game.games.cache.entity.Union;
+import org.apache.ibatis.annotations.Param;
 
 
 
@@ -56,6 +57,11 @@ public interface UnionMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<Union> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Union> recordList);
 
 	List<Union> selectAll();
     

@@ -62,4 +62,9 @@ public interface RoleTagQuestMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<RoleTagQuest> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<RoleTagQuest> recordList);
 }

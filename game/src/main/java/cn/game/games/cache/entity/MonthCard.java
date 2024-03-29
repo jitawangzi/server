@@ -154,7 +154,7 @@ public class MonthCard implements Serializable, DbEntity {
 	}
 
 	public MonthCardProto toProto() {
-		return MonthCardProto.newBuilder().setId(monthCardId).setExpireTime(expireTime).setIsBuyRewards(isBuyRewards)
+		return MonthCardProto.newBuilder().setId(monthCardId).setExpireTime((int) (expireTime/1000)).setIsBuyRewards(isBuyRewards)
 				.setIsDayRewards(isDayRewards).build();
 	}
 }

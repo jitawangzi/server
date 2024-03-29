@@ -60,4 +60,9 @@ public interface PlayerTestMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<PlayerTest> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<PlayerTest> recordList);
 }

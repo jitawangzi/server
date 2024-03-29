@@ -58,4 +58,9 @@ public interface SkillMapper {
 	 */
 	int deleteBatch(List<Skill> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Skill> recordList);
+
 }

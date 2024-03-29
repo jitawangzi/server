@@ -99,7 +99,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	public void buildPlayerAllInfo(Builder builder) {
 		Map<Integer, Long> currencyMap = player.getCurrencyMap().getMap();
 		currencyMap.forEach((k, v) -> {
-			builder.addCurrencys(CurrencyInfo.newBuilder().setId(k).setCount(9223372036854775800L));
+			builder.addCurrencys(CurrencyInfo.newBuilder().setId(k).setCount(v));
 		});
 	}
 

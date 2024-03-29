@@ -58,5 +58,10 @@ public interface ForbidAccountMapper {
 	 */
 	int deleteBatch(List<ForbidAccount> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<ForbidAccount> recordList);
+
 	List<ForbidAccount> selectAll();
 }

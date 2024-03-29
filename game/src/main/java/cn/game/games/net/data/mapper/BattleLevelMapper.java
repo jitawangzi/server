@@ -58,5 +58,10 @@ public interface BattleLevelMapper {
 	 */
 	int deleteBatch(List<BattleLevel> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<BattleLevel> recordList);
+
 
 }

@@ -10,8 +10,11 @@ import "ItemMsg.proto" ;
 // gm指令
 message TestGmCmdRequest_6f000001{
 	string cmd = 1;  // 指令格式:  指令类型空格参数空格参数。。。不同类型的指令有不同的参数类型和数量 例如：item id 数量
-	//具体的指令有：
+	//具体的指令有：1
 	// item 增加物品或者资源 ,参数1 为表id 参数2为数量
+//	string test = 2;
+	string test3 = 2;
+	string teddddst3 = 3;
 }
 
 message TestGmCmdResponse_6f000002{

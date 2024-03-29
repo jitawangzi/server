@@ -58,4 +58,9 @@ public interface SkinMapper {
 	 */
 	int deleteBatch(List<Skin> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Skin> recordList);
+
 }

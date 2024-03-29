@@ -26,6 +26,7 @@
         <plugin type="org.mybatis.generator.plugins.RootClassProtectedFieldPlugin" />
         <plugin type="org.mybatis.generator.plugins.BatchInsertPlugin" />
         <plugin type="org.mybatis.generator.plugins.BatchDeletePlugin" />
+        <plugin type="org.mybatis.generator.plugins.MysqlBatchUpdatePlugin" />
 
 		<!-- 自定义生成的注释 -->
 		<commentGenerator type="org.mybatis.generator.internal.CustomCommentGenerator">

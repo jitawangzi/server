@@ -52,14 +52,14 @@ public class CrossServer {
 
 		log.info("中心服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 	}
+
 	public static void main(String args[]) {
 		try {
 			instance.start(args);
 		} catch (Throwable e) {
 			e.printStackTrace();
 			try {
-				MailUtil.reportException("Cross服务器【 " + " 】启动失败", ExceptionUtils.getFullStackTrace(
-						e));
+				MailUtil.reportException("Cross服务器【 " + " 】启动失败", ExceptionUtils.getFullStackTrace(e));
 			} catch (Throwable e1) {
 				e1.printStackTrace();
 			}

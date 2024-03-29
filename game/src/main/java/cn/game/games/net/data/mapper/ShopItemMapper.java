@@ -55,4 +55,9 @@ public interface ShopItemMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<ShopItem> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<ShopItem> recordList);
 }

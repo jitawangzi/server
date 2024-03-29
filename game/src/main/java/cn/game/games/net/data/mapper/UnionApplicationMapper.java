@@ -63,5 +63,10 @@ public interface UnionApplicationMapper {
 	 */
 	int deleteBatch(List<UnionApplication> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<UnionApplication> recordList);
+
 	List<UnionApplication> selectAll();
 }

@@ -2849,10 +2849,20 @@ public final class BaseMsg {
      *英雄唯一id
      * </pre>
      *
-     * <code>uint64 uid = 1;</code>
+     * <code>string uid = 1;</code>
      * @return The uid.
      */
-    long getUid();
+    java.lang.String getUid();
+    /**
+     * <pre>
+     *英雄唯一id
+     * </pre>
+     *
+     * <code>string uid = 1;</code>
+     * @return The bytes for uid.
+     */
+    com.google.protobuf.ByteString
+        getUidBytes();
 
     /**
      * <pre>
@@ -2911,6 +2921,7 @@ public final class BaseMsg {
       super(builder);
     }
     private HeroInfo() {
+      uid_ = "";
     }
 
     @java.lang.Override
@@ -2943,9 +2954,10 @@ public final class BaseMsg {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              uid_ = input.readUInt64();
+              uid_ = s;
               break;
             }
             case 16: {
@@ -3001,18 +3013,49 @@ public final class BaseMsg {
     }
 
     public static final int UID_FIELD_NUMBER = 1;
-    private long uid_;
+    private volatile java.lang.Object uid_;
     /**
      * <pre>
      *英雄唯一id
      * </pre>
      *
-     * <code>uint64 uid = 1;</code>
+     * <code>string uid = 1;</code>
      * @return The uid.
      */
     @java.lang.Override
-    public long getUid() {
-      return uid_;
+    public java.lang.String getUid() {
+      java.lang.Object ref = uid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        uid_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *英雄唯一id
+     * </pre>
+     *
+     * <code>string uid = 1;</code>
+     * @return The bytes for uid.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUidBytes() {
+      java.lang.Object ref = uid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        uid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int CONFIGID_FIELD_NUMBER = 2;
@@ -3089,8 +3132,8 @@ public final class BaseMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (uid_ != 0L) {
-        output.writeUInt64(1, uid_);
+      if (!getUidBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uid_);
       }
       if (configId_ != 0) {
         output.writeUInt32(2, configId_);
@@ -3113,9 +3156,8 @@ public final class BaseMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (uid_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(1, uid_);
+      if (!getUidBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uid_);
       }
       if (configId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -3148,8 +3190,8 @@ public final class BaseMsg {
       }
       cn.game.protocol.protobuf.BaseMsg.HeroInfo other = (cn.game.protocol.protobuf.BaseMsg.HeroInfo) obj;
 
-      if (getUid()
-          != other.getUid()) return false;
+      if (!getUid()
+          .equals(other.getUid())) return false;
       if (getConfigId()
           != other.getConfigId()) return false;
       if (getLevel()
@@ -3170,8 +3212,7 @@ public final class BaseMsg {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + UID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getUid());
+      hash = (53 * hash) + getUid().hashCode();
       hash = (37 * hash) + CONFIGID_FIELD_NUMBER;
       hash = (53 * hash) + getConfigId();
       hash = (37 * hash) + LEVEL_FIELD_NUMBER;
@@ -3317,7 +3358,7 @@ public final class BaseMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        uid_ = 0L;
+        uid_ = "";
 
         configId_ = 0;
 
@@ -3406,8 +3447,9 @@ public final class BaseMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BaseMsg.HeroInfo other) {
         if (other == cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance()) return this;
-        if (other.getUid() != 0L) {
-          setUid(other.getUid());
+        if (!other.getUid().isEmpty()) {
+          uid_ = other.uid_;
+          onChanged();
         }
         if (other.getConfigId() != 0) {
           setConfigId(other.getConfigId());
@@ -3450,30 +3492,63 @@ public final class BaseMsg {
         return this;
       }
 
-      private long uid_ ;
+      private java.lang.Object uid_ = "";
       /**
        * <pre>
        *英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
        * @return The uid.
        */
-      @java.lang.Override
-      public long getUid() {
-        return uid_;
+      public java.lang.String getUid() {
+        java.lang.Object ref = uid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          uid_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
+       * @return The bytes for uid.
+       */
+      public com.google.protobuf.ByteString
+          getUidBytes() {
+        java.lang.Object ref = uid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          uid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *英雄唯一id
+       * </pre>
+       *
+       * <code>string uid = 1;</code>
        * @param value The uid to set.
        * @return This builder for chaining.
        */
-      public Builder setUid(long value) {
-        
+      public Builder setUid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         uid_ = value;
         onChanged();
         return this;
@@ -3483,12 +3558,32 @@ public final class BaseMsg {
        *英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearUid() {
         
-        uid_ = 0L;
+        uid_ = getDefaultInstance().getUid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *英雄唯一id
+       * </pre>
+       *
+       * <code>string uid = 1;</code>
+       * @param value The bytes for uid to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        uid_ = value;
         onChanged();
         return this;
       }
@@ -22038,7 +22133,7 @@ public final class BaseMsg {
       "\n\002id\030\001 \001(\r\022\r\n\005count\030\002 \001(\004\")\n\014ResourceInf" +
       "o\022\n\n\002id\030\001 \001(\r\022\r\n\005count\030\002 \001(\004\"&\n\tGoodsInf" +
       "o\022\n\n\002id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\"W\n\010HeroInfo" +
-      "\022\013\n\003uid\030\001 \001(\004\022\020\n\010configId\030\002 \001(\r\022\r\n\005level" +
+      "\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022\r\n\005level" +
       "\030\003 \001(\r\022\014\n\004star\030\004 \001(\r\022\017\n\007getTime\030\013 \001(\r\"\227\004" +
       "\n\010RoleInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004star\030\004 \001(\r\022\027\n\017" +
       "occupationTrees\030\005 \003(\r\0222\n\016occupationNode\030" +

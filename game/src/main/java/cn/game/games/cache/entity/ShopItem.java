@@ -170,7 +170,7 @@ public class ShopItem implements Serializable, DbEntity {
 		builder.setBuyTimes(itemBuyTimes);
 		builder.setConfigId(itemId);
 		builder.setDiscount(itemDiscount);
-		builder.setId(id);
+		builder.setId(id+"");
 		return builder.build();
 	}
 }

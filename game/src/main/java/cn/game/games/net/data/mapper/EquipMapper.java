@@ -63,5 +63,10 @@ public interface EquipMapper {
 	 */
 	int deleteBatch(List<Equip> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Equip> recordList);
+
 	int deleteByIds(ArrayList<Long> ids);
 }

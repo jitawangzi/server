@@ -58,5 +58,10 @@ public interface BattleRandomEventMapper {
 	 */
 	int deleteBatch(List<BattleRandomEvent> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<BattleRandomEvent> recordList);
+
 
 }

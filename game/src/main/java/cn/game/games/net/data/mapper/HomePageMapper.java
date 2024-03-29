@@ -2,6 +2,7 @@ package cn.game.games.net.data.mapper;
 
 import cn.game.games.cache.entity.HomePage;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface HomePageMapper {
 
@@ -49,4 +50,9 @@ public interface HomePageMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<HomePage> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<HomePage> recordList);
 }

@@ -23,10 +23,20 @@ public final class HeroMsg {
      * 英雄唯一id
      * </pre>
      *
-     * <code>uint64 uid = 1;</code>
+     * <code>string uid = 1;</code>
      * @return The uid.
      */
-    long getUid();
+    java.lang.String getUid();
+    /**
+     * <pre>
+     * 英雄唯一id
+     * </pre>
+     *
+     * <code>string uid = 1;</code>
+     * @return The bytes for uid.
+     */
+    com.google.protobuf.ByteString
+        getUidBytes();
   }
   /**
    * <pre>
@@ -45,6 +55,7 @@ public final class HeroMsg {
       super(builder);
     }
     private HeroUpLevelRequest_16000001() {
+      uid_ = "";
     }
 
     @java.lang.Override
@@ -77,9 +88,10 @@ public final class HeroMsg {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              uid_ = input.readUInt64();
+              uid_ = s;
               break;
             }
             default: {
@@ -115,18 +127,49 @@ public final class HeroMsg {
     }
 
     public static final int UID_FIELD_NUMBER = 1;
-    private long uid_;
+    private volatile java.lang.Object uid_;
     /**
      * <pre>
      * 英雄唯一id
      * </pre>
      *
-     * <code>uint64 uid = 1;</code>
+     * <code>string uid = 1;</code>
      * @return The uid.
      */
     @java.lang.Override
-    public long getUid() {
-      return uid_;
+    public java.lang.String getUid() {
+      java.lang.Object ref = uid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        uid_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 英雄唯一id
+     * </pre>
+     *
+     * <code>string uid = 1;</code>
+     * @return The bytes for uid.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUidBytes() {
+      java.lang.Object ref = uid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        uid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -143,8 +186,8 @@ public final class HeroMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (uid_ != 0L) {
-        output.writeUInt64(1, uid_);
+      if (!getUidBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uid_);
       }
       unknownFields.writeTo(output);
     }
@@ -155,9 +198,8 @@ public final class HeroMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (uid_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(1, uid_);
+      if (!getUidBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uid_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -174,8 +216,8 @@ public final class HeroMsg {
       }
       cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001 other = (cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001) obj;
 
-      if (getUid()
-          != other.getUid()) return false;
+      if (!getUid()
+          .equals(other.getUid())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -188,8 +230,7 @@ public final class HeroMsg {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + UID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getUid());
+      hash = (53 * hash) + getUid().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -327,7 +368,7 @@ public final class HeroMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        uid_ = 0L;
+        uid_ = "";
 
         return this;
       }
@@ -404,8 +445,9 @@ public final class HeroMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001 other) {
         if (other == cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.getDefaultInstance()) return this;
-        if (other.getUid() != 0L) {
-          setUid(other.getUid());
+        if (!other.getUid().isEmpty()) {
+          uid_ = other.uid_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -436,30 +478,63 @@ public final class HeroMsg {
         return this;
       }
 
-      private long uid_ ;
+      private java.lang.Object uid_ = "";
       /**
        * <pre>
        * 英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
        * @return The uid.
        */
-      @java.lang.Override
-      public long getUid() {
-        return uid_;
+      public java.lang.String getUid() {
+        java.lang.Object ref = uid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          uid_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        * 英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
+       * @return The bytes for uid.
+       */
+      public com.google.protobuf.ByteString
+          getUidBytes() {
+        java.lang.Object ref = uid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          uid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 英雄唯一id
+       * </pre>
+       *
+       * <code>string uid = 1;</code>
        * @param value The uid to set.
        * @return This builder for chaining.
        */
-      public Builder setUid(long value) {
-        
+      public Builder setUid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         uid_ = value;
         onChanged();
         return this;
@@ -469,12 +544,32 @@ public final class HeroMsg {
        * 英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearUid() {
         
-        uid_ = 0L;
+        uid_ = getDefaultInstance().getUid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 英雄唯一id
+       * </pre>
+       *
+       * <code>string uid = 1;</code>
+       * @param value The bytes for uid to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        uid_ = value;
         onChanged();
         return this;
       }
@@ -958,10 +1053,20 @@ public final class HeroMsg {
      * 本体英雄唯一id
      * </pre>
      *
-     * <code>uint64 uid = 1;</code>
+     * <code>string uid = 1;</code>
      * @return The uid.
      */
-    long getUid();
+    java.lang.String getUid();
+    /**
+     * <pre>
+     * 本体英雄唯一id
+     * </pre>
+     *
+     * <code>string uid = 1;</code>
+     * @return The bytes for uid.
+     */
+    com.google.protobuf.ByteString
+        getUidBytes();
 
     /**
      * <pre>
@@ -969,17 +1074,18 @@ public final class HeroMsg {
      * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
      * </pre>
      *
-     * <code>repeated uint64 consumedUid = 2;</code>
+     * <code>repeated string consumedUid = 2;</code>
      * @return A list containing the consumedUid.
      */
-    java.util.List<java.lang.Long> getConsumedUidList();
+    java.util.List<java.lang.String>
+        getConsumedUidList();
     /**
      * <pre>
      * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
      * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
      * </pre>
      *
-     * <code>repeated uint64 consumedUid = 2;</code>
+     * <code>repeated string consumedUid = 2;</code>
      * @return The count of consumedUid.
      */
     int getConsumedUidCount();
@@ -989,11 +1095,23 @@ public final class HeroMsg {
      * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
      * </pre>
      *
-     * <code>repeated uint64 consumedUid = 2;</code>
+     * <code>repeated string consumedUid = 2;</code>
      * @param index The index of the element to return.
      * @return The consumedUid at the given index.
      */
-    long getConsumedUid(int index);
+    java.lang.String getConsumedUid(int index);
+    /**
+     * <pre>
+     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
+     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * </pre>
+     *
+     * <code>repeated string consumedUid = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the consumedUid at the given index.
+     */
+    com.google.protobuf.ByteString
+        getConsumedUidBytes(int index);
   }
   /**
    * <pre>
@@ -1012,7 +1130,8 @@ public final class HeroMsg {
       super(builder);
     }
     private HeroConflateRequest_16000003() {
-      consumedUid_ = emptyLongList();
+      uid_ = "";
+      consumedUid_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
@@ -1046,30 +1165,19 @@ public final class HeroMsg {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              uid_ = input.readUInt64();
-              break;
-            }
-            case 16: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                consumedUid_ = newLongList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              consumedUid_.addLong(input.readUInt64());
+              uid_ = s;
               break;
             }
             case 18: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                consumedUid_ = newLongList();
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                consumedUid_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000001;
               }
-              while (input.getBytesUntilLimit() > 0) {
-                consumedUid_.addLong(input.readUInt64());
-              }
-              input.popLimit(limit);
+              consumedUid_.add(s);
               break;
             }
             default: {
@@ -1088,7 +1196,7 @@ public final class HeroMsg {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          consumedUid_.makeImmutable(); // C
+          consumedUid_ = consumedUid_.getUnmodifiableView();
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1108,33 +1216,63 @@ public final class HeroMsg {
     }
 
     public static final int UID_FIELD_NUMBER = 1;
-    private long uid_;
+    private volatile java.lang.Object uid_;
     /**
      * <pre>
      * 本体英雄唯一id
      * </pre>
      *
-     * <code>uint64 uid = 1;</code>
+     * <code>string uid = 1;</code>
      * @return The uid.
      */
     @java.lang.Override
-    public long getUid() {
-      return uid_;
+    public java.lang.String getUid() {
+      java.lang.Object ref = uid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        uid_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 本体英雄唯一id
+     * </pre>
+     *
+     * <code>string uid = 1;</code>
+     * @return The bytes for uid.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUidBytes() {
+      java.lang.Object ref = uid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        uid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int CONSUMEDUID_FIELD_NUMBER = 2;
-    private com.google.protobuf.Internal.LongList consumedUid_;
+    private com.google.protobuf.LazyStringList consumedUid_;
     /**
      * <pre>
      * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
      * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
      * </pre>
      *
-     * <code>repeated uint64 consumedUid = 2;</code>
+     * <code>repeated string consumedUid = 2;</code>
      * @return A list containing the consumedUid.
      */
-    @java.lang.Override
-    public java.util.List<java.lang.Long>
+    public com.google.protobuf.ProtocolStringList
         getConsumedUidList() {
       return consumedUid_;
     }
@@ -1144,7 +1282,7 @@ public final class HeroMsg {
      * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
      * </pre>
      *
-     * <code>repeated uint64 consumedUid = 2;</code>
+     * <code>repeated string consumedUid = 2;</code>
      * @return The count of consumedUid.
      */
     public int getConsumedUidCount() {
@@ -1156,14 +1294,27 @@ public final class HeroMsg {
      * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
      * </pre>
      *
-     * <code>repeated uint64 consumedUid = 2;</code>
+     * <code>repeated string consumedUid = 2;</code>
      * @param index The index of the element to return.
      * @return The consumedUid at the given index.
      */
-    public long getConsumedUid(int index) {
-      return consumedUid_.getLong(index);
+    public java.lang.String getConsumedUid(int index) {
+      return consumedUid_.get(index);
     }
-    private int consumedUidMemoizedSerializedSize = -1;
+    /**
+     * <pre>
+     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
+     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * </pre>
+     *
+     * <code>repeated string consumedUid = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the consumedUid at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getConsumedUidBytes(int index) {
+      return consumedUid_.getByteString(index);
+    }
 
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
@@ -1179,16 +1330,11 @@ public final class HeroMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
-      if (uid_ != 0L) {
-        output.writeUInt64(1, uid_);
-      }
-      if (getConsumedUidList().size() > 0) {
-        output.writeUInt32NoTag(18);
-        output.writeUInt32NoTag(consumedUidMemoizedSerializedSize);
+      if (!getUidBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uid_);
       }
       for (int i = 0; i < consumedUid_.size(); i++) {
-        output.writeUInt64NoTag(consumedUid_.getLong(i));
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, consumedUid_.getRaw(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1199,23 +1345,16 @@ public final class HeroMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (uid_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(1, uid_);
+      if (!getUidBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uid_);
       }
       {
         int dataSize = 0;
         for (int i = 0; i < consumedUid_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeUInt64SizeNoTag(consumedUid_.getLong(i));
+          dataSize += computeStringSizeNoTag(consumedUid_.getRaw(i));
         }
         size += dataSize;
-        if (!getConsumedUidList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        consumedUidMemoizedSerializedSize = dataSize;
+        size += 1 * getConsumedUidList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1232,8 +1371,8 @@ public final class HeroMsg {
       }
       cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003 other = (cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003) obj;
 
-      if (getUid()
-          != other.getUid()) return false;
+      if (!getUid()
+          .equals(other.getUid())) return false;
       if (!getConsumedUidList()
           .equals(other.getConsumedUidList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -1248,8 +1387,7 @@ public final class HeroMsg {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + UID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getUid());
+      hash = (53 * hash) + getUid().hashCode();
       if (getConsumedUidCount() > 0) {
         hash = (37 * hash) + CONSUMEDUID_FIELD_NUMBER;
         hash = (53 * hash) + getConsumedUidList().hashCode();
@@ -1391,9 +1529,9 @@ public final class HeroMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        uid_ = 0L;
+        uid_ = "";
 
-        consumedUid_ = emptyLongList();
+        consumedUid_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -1424,7 +1562,7 @@ public final class HeroMsg {
         int from_bitField0_ = bitField0_;
         result.uid_ = uid_;
         if (((bitField0_ & 0x00000001) != 0)) {
-          consumedUid_.makeImmutable();
+          consumedUid_ = consumedUid_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.consumedUid_ = consumedUid_;
@@ -1476,8 +1614,9 @@ public final class HeroMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003 other) {
         if (other == cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003.getDefaultInstance()) return this;
-        if (other.getUid() != 0L) {
-          setUid(other.getUid());
+        if (!other.getUid().isEmpty()) {
+          uid_ = other.uid_;
+          onChanged();
         }
         if (!other.consumedUid_.isEmpty()) {
           if (consumedUid_.isEmpty()) {
@@ -1519,30 +1658,63 @@ public final class HeroMsg {
       }
       private int bitField0_;
 
-      private long uid_ ;
+      private java.lang.Object uid_ = "";
       /**
        * <pre>
        * 本体英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
        * @return The uid.
        */
-      @java.lang.Override
-      public long getUid() {
-        return uid_;
+      public java.lang.String getUid() {
+        java.lang.Object ref = uid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          uid_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        * 本体英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
+       * @return The bytes for uid.
+       */
+      public com.google.protobuf.ByteString
+          getUidBytes() {
+        java.lang.Object ref = uid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          uid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 本体英雄唯一id
+       * </pre>
+       *
+       * <code>string uid = 1;</code>
        * @param value The uid to set.
        * @return This builder for chaining.
        */
-      public Builder setUid(long value) {
-        
+      public Builder setUid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         uid_ = value;
         onChanged();
         return this;
@@ -1552,20 +1724,40 @@ public final class HeroMsg {
        * 本体英雄唯一id
        * </pre>
        *
-       * <code>uint64 uid = 1;</code>
+       * <code>string uid = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearUid() {
         
-        uid_ = 0L;
+        uid_ = getDefaultInstance().getUid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 本体英雄唯一id
+       * </pre>
+       *
+       * <code>string uid = 1;</code>
+       * @param value The bytes for uid to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        uid_ = value;
         onChanged();
         return this;
       }
 
-      private com.google.protobuf.Internal.LongList consumedUid_ = emptyLongList();
+      private com.google.protobuf.LazyStringList consumedUid_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       private void ensureConsumedUidIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          consumedUid_ = mutableCopy(consumedUid_);
+          consumedUid_ = new com.google.protobuf.LazyStringArrayList(consumedUid_);
           bitField0_ |= 0x00000001;
          }
       }
@@ -1575,13 +1767,12 @@ public final class HeroMsg {
        * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
        * </pre>
        *
-       * <code>repeated uint64 consumedUid = 2;</code>
+       * <code>repeated string consumedUid = 2;</code>
        * @return A list containing the consumedUid.
        */
-      public java.util.List<java.lang.Long>
+      public com.google.protobuf.ProtocolStringList
           getConsumedUidList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(consumedUid_) : consumedUid_;
+        return consumedUid_.getUnmodifiableView();
       }
       /**
        * <pre>
@@ -1589,7 +1780,7 @@ public final class HeroMsg {
        * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
        * </pre>
        *
-       * <code>repeated uint64 consumedUid = 2;</code>
+       * <code>repeated string consumedUid = 2;</code>
        * @return The count of consumedUid.
        */
       public int getConsumedUidCount() {
@@ -1601,12 +1792,12 @@ public final class HeroMsg {
        * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
        * </pre>
        *
-       * <code>repeated uint64 consumedUid = 2;</code>
+       * <code>repeated string consumedUid = 2;</code>
        * @param index The index of the element to return.
        * @return The consumedUid at the given index.
        */
-      public long getConsumedUid(int index) {
-        return consumedUid_.getLong(index);
+      public java.lang.String getConsumedUid(int index) {
+        return consumedUid_.get(index);
       }
       /**
        * <pre>
@@ -1614,15 +1805,32 @@ public final class HeroMsg {
        * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
        * </pre>
        *
-       * <code>repeated uint64 consumedUid = 2;</code>
+       * <code>repeated string consumedUid = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the consumedUid at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getConsumedUidBytes(int index) {
+        return consumedUid_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
+       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * </pre>
+       *
+       * <code>repeated string consumedUid = 2;</code>
        * @param index The index to set the value at.
        * @param value The consumedUid to set.
        * @return This builder for chaining.
        */
       public Builder setConsumedUid(
-          int index, long value) {
-        ensureConsumedUidIsMutable();
-        consumedUid_.setLong(index, value);
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureConsumedUidIsMutable();
+        consumedUid_.set(index, value);
         onChanged();
         return this;
       }
@@ -1632,13 +1840,17 @@ public final class HeroMsg {
        * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
        * </pre>
        *
-       * <code>repeated uint64 consumedUid = 2;</code>
+       * <code>repeated string consumedUid = 2;</code>
        * @param value The consumedUid to add.
        * @return This builder for chaining.
        */
-      public Builder addConsumedUid(long value) {
-        ensureConsumedUidIsMutable();
-        consumedUid_.addLong(value);
+      public Builder addConsumedUid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureConsumedUidIsMutable();
+        consumedUid_.add(value);
         onChanged();
         return this;
       }
@@ -1648,12 +1860,12 @@ public final class HeroMsg {
        * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
        * </pre>
        *
-       * <code>repeated uint64 consumedUid = 2;</code>
+       * <code>repeated string consumedUid = 2;</code>
        * @param values The consumedUid to add.
        * @return This builder for chaining.
        */
       public Builder addAllConsumedUid(
-          java.lang.Iterable<? extends java.lang.Long> values) {
+          java.lang.Iterable<java.lang.String> values) {
         ensureConsumedUidIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
             values, consumedUid_);
@@ -1666,12 +1878,33 @@ public final class HeroMsg {
        * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
        * </pre>
        *
-       * <code>repeated uint64 consumedUid = 2;</code>
+       * <code>repeated string consumedUid = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearConsumedUid() {
-        consumedUid_ = emptyLongList();
+        consumedUid_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
+       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * </pre>
+       *
+       * <code>repeated string consumedUid = 2;</code>
+       * @param value The bytes of the consumedUid to add.
+       * @return This builder for chaining.
+       */
+      public Builder addConsumedUidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureConsumedUidIsMutable();
+        consumedUid_.add(value);
         onChanged();
         return this;
       }
@@ -2440,9 +2673,9 @@ public final class HeroMsg {
     java.lang.String[] descriptorData = {
       "\n\rHeroMsg.proto\022\006Protos\032\rBaseMsg.proto\"*" +
       "\n\033HeroUpLevelRequest_16000001\022\013\n\003uid\030\001 \001" +
-      "(\004\"\036\n\034HeroUpLevelResponse_16000002\"@\n\034He" +
-      "roConflateRequest_16000003\022\013\n\003uid\030\001 \001(\004\022" +
-      "\023\n\013consumedUid\030\002 \003(\004\"?\n\035HeroConflateResp" +
+      "(\t\"\036\n\034HeroUpLevelResponse_16000002\"@\n\034He" +
+      "roConflateRequest_16000003\022\013\n\003uid\030\001 \001(\t\022" +
+      "\023\n\013consumedUid\030\002 \003(\t\"?\n\035HeroConflateResp" +
       "onse_16000004\022\036\n\004hero\030\001 \001(\0132\020.Protos.Her" +
       "oInfoB\033\n\031cn.game.protocol.protobufb\006prot" +
       "o3"

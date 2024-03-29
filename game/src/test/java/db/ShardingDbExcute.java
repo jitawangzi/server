@@ -41,8 +41,9 @@ public class ShardingDbExcute {
 		Quest item = new Quest();
 		item.setId(92230);
 		item.setPlayerId(22222L);
-		item.setState((byte) 4);
+		item.setState((byte) 0);
 		item.setEndTime(System.currentTimeMillis());
+		item.setStartTime(System.currentTimeMillis());
 //		buff.insert();
 		list.add(item);
 
@@ -58,13 +59,13 @@ public class ShardingDbExcute {
 		item.setId(92232);
 		item.setPlayerId(22222L);
 		item.setState((byte) 8);
-		item.setEndTime(System.currentTimeMillis());
+		item.setEndTime(2223333L);
 //		buff.insert();
 
 		list.add(item);
 //		DAO.insertBatch(item.getMapperClass(), list);
-//		DAO.deleteBatch(item.getMapperClass(), list);
-		DAO.execute(item.getMapperClass(), "batchUpdateUsers", list);
+		DAO.deleteBatch(item.getMapperClass(), list);
+//		DAO.execute(item.getMapperClass(), "updateBatch", list);
 
 	}
 

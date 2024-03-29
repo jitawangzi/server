@@ -58,4 +58,9 @@ public interface QuestChallengeMapper {
 	 */
 	int deleteBatch(List<QuestChallenge> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<QuestChallenge> recordList);
+
 }

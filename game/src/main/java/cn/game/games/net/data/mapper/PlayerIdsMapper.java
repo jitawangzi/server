@@ -57,4 +57,9 @@ public interface PlayerIdsMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<PlayerIds> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<PlayerIds> recordList);
 }

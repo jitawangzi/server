@@ -15851,7 +15851,7 @@ public final class PlayerMsg {
 
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -15860,7 +15860,7 @@ public final class PlayerMsg {
         getCurrencysList();
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -15868,7 +15868,7 @@ public final class PlayerMsg {
     cn.game.protocol.protobuf.BaseMsg.CurrencyInfo getCurrencys(int index);
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -15876,7 +15876,7 @@ public final class PlayerMsg {
     int getCurrencysCount();
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -15885,7 +15885,7 @@ public final class PlayerMsg {
         getCurrencysOrBuilderList();
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -15895,7 +15895,7 @@ public final class PlayerMsg {
 
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -15904,7 +15904,7 @@ public final class PlayerMsg {
         getItemsList();
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -15912,7 +15912,7 @@ public final class PlayerMsg {
     cn.game.protocol.protobuf.BaseMsg.ItemInfo getItems(int index);
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -15920,7 +15920,7 @@ public final class PlayerMsg {
     int getItemsCount();
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -15929,7 +15929,7 @@ public final class PlayerMsg {
         getItemsOrBuilderList();
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -15939,7 +15939,7 @@ public final class PlayerMsg {
 
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -15948,7 +15948,7 @@ public final class PlayerMsg {
         getHerosList();
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -15956,7 +15956,7 @@ public final class PlayerMsg {
     cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index);
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -15964,7 +15964,7 @@ public final class PlayerMsg {
     int getHerosCount();
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -15973,7 +15973,7 @@ public final class PlayerMsg {
         getHerosOrBuilderList();
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -16268,7 +16268,7 @@ public final class PlayerMsg {
     private java.util.List<cn.game.protocol.protobuf.BaseMsg.CurrencyInfo> currencys_;
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -16279,7 +16279,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -16291,7 +16291,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -16302,7 +16302,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -16313,7 +16313,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     * 货币
+     * 货币  Money表
      * </pre>
      *
      * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -16328,7 +16328,7 @@ public final class PlayerMsg {
     private java.util.List<cn.game.protocol.protobuf.BaseMsg.ItemInfo> items_;
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -16339,7 +16339,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -16351,7 +16351,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -16362,7 +16362,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -16373,7 +16373,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     *道具
+     *道具  Item表
      * </pre>
      *
      * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -16388,7 +16388,7 @@ public final class PlayerMsg {
     private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_;
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -16399,7 +16399,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -16411,7 +16411,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -16422,7 +16422,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -16433,7 +16433,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     *英雄
+     *英雄 Hero表
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -17299,7 +17299,7 @@ public final class PlayerMsg {
 
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17313,7 +17313,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17327,7 +17327,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17341,7 +17341,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17362,7 +17362,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17380,7 +17380,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17400,7 +17400,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17421,7 +17421,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17439,7 +17439,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17457,7 +17457,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17476,7 +17476,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17493,7 +17493,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17510,7 +17510,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17521,7 +17521,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17535,7 +17535,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17550,7 +17550,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17561,7 +17561,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17573,7 +17573,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 货币
+       * 货币  Money表
        * </pre>
        *
        * <code>repeated .Protos.CurrencyInfo currencys = 2;</code>
@@ -17611,7 +17611,7 @@ public final class PlayerMsg {
 
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17625,7 +17625,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17639,7 +17639,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17653,7 +17653,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17674,7 +17674,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17692,7 +17692,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17712,7 +17712,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17733,7 +17733,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17751,7 +17751,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17769,7 +17769,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17788,7 +17788,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17805,7 +17805,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17822,7 +17822,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17833,7 +17833,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17847,7 +17847,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17862,7 +17862,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17873,7 +17873,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17885,7 +17885,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *道具
+       *道具  Item表
        * </pre>
        *
        * <code>repeated .Protos.ItemInfo items = 5;</code>
@@ -17923,7 +17923,7 @@ public final class PlayerMsg {
 
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -17937,7 +17937,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -17951,7 +17951,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -17965,7 +17965,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -17986,7 +17986,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18004,7 +18004,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18024,7 +18024,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18045,7 +18045,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18063,7 +18063,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18081,7 +18081,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18100,7 +18100,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18117,7 +18117,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18134,7 +18134,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18145,7 +18145,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18159,7 +18159,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18174,7 +18174,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18185,7 +18185,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>
@@ -18197,7 +18197,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *英雄
+       *英雄 Hero表
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 6;</code>

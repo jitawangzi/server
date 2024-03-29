@@ -60,5 +60,10 @@ public interface RoleActionBattleMapper {
 	 */
 	int deleteBatch(List<RoleActionBattle> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<RoleActionBattle> recordList);
+
 
 }

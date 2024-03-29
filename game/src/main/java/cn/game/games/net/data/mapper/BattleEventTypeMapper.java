@@ -58,4 +58,9 @@ public interface BattleEventTypeMapper {
 	 */
 	int deleteBatch(List<BattleEventType> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<BattleEventType> recordList);
+
 }

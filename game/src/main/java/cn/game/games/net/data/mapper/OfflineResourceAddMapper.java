@@ -58,5 +58,10 @@ public interface OfflineResourceAddMapper {
 	 */
 	int deleteBatch(List<OfflineResourceAdd> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<OfflineResourceAdd> recordList);
+
 
 }

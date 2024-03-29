@@ -57,4 +57,9 @@ public interface BuffMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<Buff> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Buff> recordList);
 }

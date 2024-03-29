@@ -16,7 +16,7 @@ message ShopGroupItemListResponse_15000002{
 
 // 商品
 message ShopItemProto{
-	uint64 id = 1; // 商品唯一id
+	string id = 1; // 商品唯一id
 	uint32 configId = 2; // 商品表ShopItemid
 	uint32 buyTimes = 3; // 此商品已经购买次数
 	uint32 discount = 4; // 折扣，70代表7折
@@ -24,7 +24,7 @@ message ShopItemProto{
 
 //购买商品
 message ShopItemBuyRequest_15000003{
-  uint64 id = 1; // 商品唯一id
+  string id = 1; // 商品唯一id
 }
 
 message ShopItemBuyResponse_15000004{
@@ -61,7 +61,7 @@ message MonthCardDayRewardResponse_15000015{
 
 message MonthCardProto{
 	uint32 id = 1; // MonthCard表id
-	uint64 expireTime = 2; // 月卡过期时间（毫秒时间戳）,0表示不过期
+	uint32 expireTime = 2; // 月卡过期时间（秒时间戳）,0表示不过期
 	bool isBuyRewards = 3; // 是否领取了购买奖励
 	bool isDayRewards = 4; // 是否领取了每日奖励
 }

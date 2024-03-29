@@ -3,6 +3,7 @@ package cn.game.games.net.data.mapper;
 import java.util.List;
 
 import cn.game.games.cache.entity.Group;
+import org.apache.ibatis.annotations.Param;
 
 public interface GroupMapper {
     /**
@@ -49,6 +50,11 @@ public interface GroupMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<Group> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Group> recordList);
 
 	List<Group> selectAll();
 }

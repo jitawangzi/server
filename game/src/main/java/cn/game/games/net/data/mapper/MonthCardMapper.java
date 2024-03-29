@@ -58,4 +58,9 @@ public interface MonthCardMapper {
 	 */
 	int deleteBatch(List<MonthCard> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<MonthCard> recordList);
+
 }

@@ -65,6 +65,11 @@ public interface PlayerDataMapper {
 	 */
 	int deleteBatch(List<PlayerData> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<PlayerData> recordList);
+
 	List<Player> selectPlayersByUid(Long uid);
 
 	int discardPlayer(Long id);

@@ -57,6 +57,11 @@ public interface FriendMapper {
 	 */
 	int deleteBatch(List<Friend> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Friend> recordList);
+
 	int selectFriendLocalCount(@Param("playerId") Long playerId, @Param("serverId") String serverId);
 
 	int selectFriendOtherCount(@Param("playerId") Long playerId, @Param("serverId") String serverId);

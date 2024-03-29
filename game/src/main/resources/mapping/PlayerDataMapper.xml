@@ -552,7 +552,6 @@
       #{item.playerId}
     </foreach>
   </delete>
-  
   <update id="updateBatch" parameterType="java.util.List">
     <!--
       WARNING - @mbg.generated

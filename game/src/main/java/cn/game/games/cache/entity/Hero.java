@@ -314,7 +314,7 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 	public HeroInfo toHeroInfo() {
 		HeroInfo.Builder builder = HeroInfo.newBuilder();
 
-		builder.setUid(id);
+		builder.setUid(id.toString());
 		builder.setConfigId(configId);
 		builder.setStar(star);
 		builder.setLevel(level);

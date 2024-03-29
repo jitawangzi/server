@@ -2,6 +2,7 @@ package cn.game.games.net.data.mapper;
 
 import cn.game.games.cache.entity.Base;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface BaseMapper {
 
@@ -49,4 +50,9 @@ public interface BaseMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<Base> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Base> recordList);
 }

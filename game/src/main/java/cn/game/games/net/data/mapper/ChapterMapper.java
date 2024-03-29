@@ -58,5 +58,10 @@ public interface ChapterMapper {
 	 */
 	int deleteBatch(List<Chapter> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Chapter> recordList);
+
 
 }

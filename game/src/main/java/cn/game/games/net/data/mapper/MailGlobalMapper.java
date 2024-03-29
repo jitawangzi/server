@@ -2,6 +2,7 @@ package cn.game.games.net.data.mapper;
 
 import cn.game.games.cache.entity.MailGlobal;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface MailGlobalMapper {
 
@@ -49,4 +50,9 @@ public interface MailGlobalMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<MailGlobal> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<MailGlobal> recordList);
 }

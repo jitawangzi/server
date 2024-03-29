@@ -41,11 +41,11 @@ public class HeroHandler extends BaseHandler {
 	private void conflate(NetClient client, Object message) {
 		HeroConflateRequest_16000003 req = (HeroConflateRequest_16000003) message;
 		HeroConflateResponse_16000004.Builder resp = HeroConflateResponse_16000004.newBuilder();
-		long uid = req.getUid();
-		List<Long> consumedUidList = req.getConsumedUidList();
+		String uid = req.getUid();
+		List<String> consumedUidList = req.getConsumedUidList();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HeroModule heroModule = player.getHeroModule();
-		Hero hero = heroModule.get(uid);
+		Hero hero = heroModule.get(Long.parseLong(uid));
 		if (hero == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
@@ -56,7 +56,7 @@ public class HeroHandler extends BaseHandler {
 		int powerfulCostIdCount = 0;
 		boolean check = true;
 		for (int i = 0; i < consumedUidList.size(); i++) {
-			long consumedUid = consumedUidList.get(i);
+			long consumedUid = Long.parseLong(consumedUidList.get(i));
 			if (consumedUid == 0) {
 				powerfulCostIdCount++;
 				continue;
@@ -102,11 +102,11 @@ public class HeroHandler extends BaseHandler {
 			return;
 		}
 		// 扣除耗材
-		for (Long consumedUid : consumedUidList) {
-			if (consumedUid == 0) {
+		for (String consumedUid : consumedUidList) {
+			if (consumedUid == null) {
 				continue;
 			}
-			heroModule.del(consumedUid, ResourceConsumeEnum.HeroConflate);
+			heroModule.del(Long.parseLong(consumedUid), ResourceConsumeEnum.HeroConflate);
 		}
 		// 合成
 
@@ -125,7 +125,7 @@ public class HeroHandler extends BaseHandler {
 	private void upLevel(NetClient client, Object message) {
 		HeroUpLevelRequest_16000001 req = (HeroUpLevelRequest_16000001) message;
 		HeroUpLevelResponse_16000002.Builder resp = HeroUpLevelResponse_16000002.newBuilder();
-		long uid = req.getUid();
+		long uid = Long.parseLong(req.getUid());
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HeroModule heroModule = player.getHeroModule();
 		Hero hero = heroModule.get(uid);

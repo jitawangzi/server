@@ -2,6 +2,7 @@ package cn.game.games.net.data.mapper;
 
 import cn.game.games.cache.entity.BattlePass;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface BattlePassMapper {
 
@@ -49,4 +50,9 @@ public interface BattlePassMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<BattlePass> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<BattlePass> recordList);
 }

@@ -70,7 +70,7 @@ public class ShopHandler extends BaseHandler {
 	private void buyShopItem(NetClient client, Object message) {
 		ShopItemBuyRequest_15000003 req = (ShopItemBuyRequest_15000003) message;
 		ShopItemBuyResponse_15000004.Builder resp = ShopItemBuyResponse_15000004.newBuilder();
-		long id = req.getId();
+		long id = Long.parseLong(req.getId());
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ShopModule shopModule = player.getShopModule();
 		ShopItem shopItem = shopModule.getShopItem(id);

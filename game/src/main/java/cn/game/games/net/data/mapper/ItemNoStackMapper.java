@@ -35,4 +35,9 @@ public interface ItemNoStackMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<ItemNoStack> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<ItemNoStack> recordList);
 }

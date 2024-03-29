@@ -55,4 +55,9 @@ public interface VariableMapper {
 	 * @mbg.generated
 	 */
 	int deleteBatch(List<Variable> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Variable> recordList);
 }

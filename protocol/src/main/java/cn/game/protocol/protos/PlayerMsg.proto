@@ -136,9 +136,9 @@ message PlayerInfo{
 /*** 玩家所有数据，一般在创建用户后，或者登陆后下发 ***/
 message PlayerAllInfo{
    PlayerInfo player = 1;    	// 用户基本信息。
-   repeated CurrencyInfo currencys = 2;    	// 货币
-   repeated ItemInfo items  = 5;        //道具
-   repeated HeroInfo heros  = 6;        //英雄
+   repeated CurrencyInfo currencys = 2;    	// 货币  Money表
+   repeated ItemInfo items  = 5;        //道具  Item表
+   repeated HeroInfo heros  = 6;        //英雄 Hero表
    repeated MonthCardProto monthCards  = 8;        //月卡
    repeated uint32 shopGift  = 9;        //购买过的商店礼包id(ShopGift表)
    //repeated MissionInfo mainMissions = 23 ;  // 主线任务数据

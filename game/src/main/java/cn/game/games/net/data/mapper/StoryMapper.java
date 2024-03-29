@@ -58,4 +58,9 @@ public interface StoryMapper {
 	 */
 	int deleteBatch(List<Story> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<Story> recordList);
+
 }

@@ -58,6 +58,11 @@ public interface DayOperationMapper {
 	 */
 	int deleteBatch(List<DayOperation> records);
 
+	/**
+	 * @mbg.generated
+	 */
+	int batchUpdate(@Param("recordList") List<DayOperation> recordList);
+
 	int updateByPlayerId(Long playerId);
 
 	int deleteByPlayerId(Long playerId);

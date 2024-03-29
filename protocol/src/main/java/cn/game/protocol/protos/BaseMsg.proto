@@ -32,7 +32,7 @@ message GoodsInfo{
 
 // 英雄信息
 message HeroInfo{
-	uint64 uid = 1;//英雄唯一id
+	string uid = 1;//英雄唯一id
 	uint32 configId = 2;//Hero配置表id
 	uint32 level = 3;//等级
 	uint32 star = 4 ;// 星级
