@@ -15,47 +15,23 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.BattleLevel;
-import cn.game.games.cache.entity.Buff;
-import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.PlayerExt;
-import cn.game.games.cache.entity.Role;
-import cn.game.games.cache.op.impl.BuffOp;
 import cn.game.games.cache.op.impl.ChapterOp;
-import cn.game.games.cache.op.impl.RoleOp;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.helper.BattleHelper;
-import cn.game.games.net.game.helper.BuffHelper;
-import cn.game.games.net.game.helper.EventHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.award.RewardItem;
-import cn.game.games.net.game.module.buff.BuffValue;
-import cn.game.games.util.PbBuilder;
 import cn.game.games.util.RandomUtil;
-import cn.game.protocol.generated.config.BattleChapterConfig;
 import cn.game.protocol.generated.config.BattleLevelConfig;
-import cn.game.protocol.generated.config.MonsterConfig;
 import cn.game.protocol.generated.config.RandomRewardConfig;
-import cn.game.protocol.generated.enume.AttributeTypeEnum;
 import cn.game.protocol.generated.enume.DungeonTypeEnum;
-import cn.game.protocol.generated.enume.EffectEnum;
-import cn.game.protocol.generated.enume.EffectTargetTypeEnum;
-import cn.game.protocol.generated.enume.ResourceEnum;
-import cn.game.protocol.generated.manager.BattleChapterManager;
 import cn.game.protocol.generated.manager.BattleLevelManager;
-import cn.game.protocol.generated.manager.MonsterManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
-import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
-import cn.game.protocol.protobuf.BuffMsg.BuffInfo;
-import cn.game.protocol.protobuf.BuildingMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.ByteHelp;
@@ -94,7 +70,6 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-	
 		ExploreAct exploreAct = chapterOp.getExploreAct(id);
 		if (exploreAct != null && exploreAct.getReward()) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
@@ -241,7 +216,7 @@ public class ChapterHandler extends BaseHandler {
 //			}
 //		}
 		//触发事件
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.BattleStart, levelConfig.getId(), 0));
+		player.handleEvent(EventTypeEnum.BattleStart, levelConfig.getId(), 0);
 //		resp.setRandomSeed(randomSeed + "");
 		client.sendProtocol(resp, errorCode);
 	}
@@ -323,8 +298,6 @@ public class ChapterHandler extends BaseHandler {
 			if (win) {
 				//exploreOp.calcExploreBattleResource(levelConfig, lineupId, resp);
 				//加晋升点
-				RoleOp roleOp = PlayerCacheFactory.getCache(playerId, RoleOp.class);
-				roleOp.addPromotionPoint(levelConfig.getPromotionPoint());
 			}
 		}
 		//基础奖励
@@ -341,38 +314,13 @@ public class ChapterHandler extends BaseHandler {
 		List<RewardInfo> rewardItems = PlayerHelper.addResources(client.getPlayerId(), rewards);
 		resp.addAllRandomRewards(rewardItems);
 
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.BattleEnd, lineupId, win, levelConfig.getId()));
+		player.handleEvent(new GameEvent(EventTypeEnum.BattleEnd, lineupId, win, levelConfig.getId()));
 		chapterOp.setAttackingData(0, 0, 0, 0, 0, 0);
 		
 		client.sendProtocol(resp);
 
 	}
 	
-	/**
-	 * 战斗结束处理前端传来的buff
-	 * @param updates 要更新的buff
-	 * @param adds    要添加的buff
-	 * @param dels    要删除的buff
-	 */
-	private void battleEndProcessBuff(long playerId, List<BuffInfo> updates, List<BuffInfo> adds, List<BuffInfo> dels) {
-		BuffOp buffOp = PlayerCacheFactory.getCache(playerId, BuffOp.class);
-		for (BuffInfo buffInfo : adds) {
-			buffOp.add(buffInfo.getId(), Arrays.asList(Long.parseLong(buffInfo.getTarget())));
-		}
-		for (BuffInfo buffInfo : dels) {
-			buffOp.remove(buffInfo.getId(), Long.parseLong(buffInfo.getTarget()));
-		}
-		for (BuffInfo buffInfo : updates) {
-			Buff buff = buffOp.get(buffInfo.getId(), Long.parseLong(buffInfo.getTarget()));
-			if (buff == null) {
-				continue;
-			}
-			buff.setUseNum(buffInfo.getUse());
-			buff.setRound(buffInfo.getRound());
-			BuffHelper.pushBuffUpdate(buff, UpdateType.UPDATE);
-		}
-	}
-
 	/*private void addExp(BattleFieldEndResponse_13000004.Builder resp, Player player, int lineupId, int apCost) {
 		if (apCost == 0) {
 			return ; 

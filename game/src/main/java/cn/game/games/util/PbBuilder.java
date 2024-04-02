@@ -34,7 +34,6 @@ import cn.game.games.cache.entity.Role;
 import cn.game.games.cache.entity.Story;
 import cn.game.games.cache.entity.Union;
 import cn.game.games.cache.op.impl.EquipOp;
-import cn.game.games.cache.op.impl.HomePageOp;
 import cn.game.games.cache.op.impl.RoleOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
