@@ -38,8 +38,6 @@ import cn.game.protocol.generated.manager.OldItemManager;
 import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
-import cn.game.protocol.protobuf.ItemMsg.BagGridInfo;
-import cn.game.protocol.protobuf.ItemMsg.ItemBagGridPush_0b000320;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
@@ -55,15 +53,15 @@ public class ItemHelper {
 		GoodsTypeEnum goodsTypeEnum = GoodsTypeEnum.get(getGoodsType(id));
 		switch (goodsTypeEnum) {
 		case Resource: {
-			Money.get(id); 
+			Money.get(id);
 			break;
 		}
 		case Item: {
-			ItemManager.instance().get(id) ;  
+			ItemManager.instance().get(id);
 			break;
 		}
 		case Hero: {
-			HeroManager.instance().get(id); 
+			HeroManager.instance().get(id);
 			break;
 		}
 		default:
@@ -76,16 +74,15 @@ public class ItemHelper {
 
 	public static class ItemChange {
 
-		public static final int ITEM_ADD = 1;//物品添加
+		public static final int ITEM_ADD = 1;// 物品添加
 
-		public static final int ITEM_DEL = 2;//物品删除
+		public static final int ITEM_DEL = 2;// 物品删除
 
-		public static final int ITEM_UPDATE = 3;//物品改变
+		public static final int ITEM_UPDATE = 3;// 物品改变
 
 		private int op;
 
 		private Item item;
-
 
 		public ItemChange(int op, Item item) {
 			this.op = op;
@@ -107,7 +104,7 @@ public class ItemHelper {
 //		}
 
 	}
-	
+
 	/**
 	 * 获取物品数量
 	 * 
@@ -132,10 +129,10 @@ public class ItemHelper {
 
 	public static int getBattlePassId() {
 		int passid = 0;
-		List<BattlePassConfig> collect = BattlePassManager.getInstance().list().stream().
-				filter(e -> DateUtil.between(e.getUpTime(), e.getDownTime())).collect(Collectors.toList());
+		List<BattlePassConfig> collect = BattlePassManager.getInstance().list().stream()
+				.filter(e -> DateUtil.between(e.getUpTime(), e.getDownTime())).collect(Collectors.toList());
 		if (collect != null && collect.size() > 0) {
-			//设置周期
+			// 设置周期
 			passid = collect.get(0).getId();
 		}
 		return passid;
@@ -153,7 +150,7 @@ public class ItemHelper {
 		}
 		Date upTime = battlePassConfig.getUpTime();
 		Date date = new Date(System.currentTimeMillis());
-		//day = DateUtil.calcBetweenDays(date, upTime);
+		// day = DateUtil.calcBetweenDays(date, upTime);
 		return DateUtil.calcBetweenDays(date, upTime) + 1;
 	}
 
@@ -166,7 +163,8 @@ public class ItemHelper {
 		return config;
 	}
 
-	public static List<Map.Entry<Integer, Integer>> getExtraRewardList(List<Map.Entry<Integer, Integer>> rewards, float extraNum) {
+	public static List<Map.Entry<Integer, Integer>> getExtraRewardList(List<Map.Entry<Integer, Integer>> rewards,
+			float extraNum) {
 		if (rewards == null || rewards.size() == 0) {
 			return null;
 		}
@@ -178,10 +176,12 @@ public class ItemHelper {
 				public Integer setValue(Integer value) {
 					return null;
 				}
+
 				@Override
 				public Integer getValue() {
 					return Math.round(reward.getValue() * extraNum);
 				}
+
 				@Override
 				public Integer getKey() {
 					return reward.getKey();
@@ -191,7 +191,7 @@ public class ItemHelper {
 		}
 		return nowRewards;
 	}
-	
+
 	/**
 	 * 队伍道具使用校验
 	 * @param lineupId
@@ -216,7 +216,7 @@ public class ItemHelper {
 
 		return 0;
 	}
-	
+
 	public static List<Goods> copy(List<Goods> list) {
 		List<Goods> copy = new ArrayList<>(list.size());
 		for (Goods g : list) {
@@ -234,7 +234,7 @@ public class ItemHelper {
 		OldItemConfig itemConfig = OldItemManager.getInstance().getItemConfig(itemId);
 		return itemConfig.getStack();
 	}
-	
+
 	/**
 	 * 获取排序规则
 	 * @param itemId
@@ -244,7 +244,7 @@ public class ItemHelper {
 		OldItemConfig itemConfig = OldItemManager.getInstance().getItemConfig(itemId);
 		return itemConfig.getSortType();
 	}
-	
+
 	/**
 	 * 检查玩家背包临时奖励,如果存在奖励,推送选取
 	 * @param playerId
@@ -255,7 +255,7 @@ public class ItemHelper {
 		ItemModule itemModule = player.getModule(ItemModule.class);
 //		itemModule.checkAndPushBagReward();
 	}
-	
+
 	/**
 	 * 道具是否是自动使用
 	 * @param itemId
@@ -265,7 +265,7 @@ public class ItemHelper {
 		OldItemConfig itemConfig = OldItemManager.getInstance().getItemConfigNullable(itemId);
 		return itemConfig.getIsAutoUse();
 	}
-	
+
 	/**
 	 * 自动使用道具
 	 * @param playerId
@@ -289,7 +289,7 @@ public class ItemHelper {
 		}
 		return;
 	}
-	
+
 	/**
 	 * 根据是否在探索中，判断仓库或背包道具是否足够
 	 * @param playerId
@@ -303,7 +303,7 @@ public class ItemHelper {
 		ItemModule itemModule = player.getModule(ItemModule.class);
 		return itemModule.isEnough(itemId, count);
 	}
-	
+
 	/**
 	 * @param playerId
 	 * @param itemId
@@ -316,15 +316,15 @@ public class ItemHelper {
 		ItemModule itemModule = player.getModule(ItemModule.class);
 		return itemModule.del(itemId, count);
 	}
-	
+
 	/**
 	 * 推送背包格子数据
 	 * @param playerId
 	 * @param list
-	 */
-	public static void pushBagGrid(long playerId, List<BagGrid> list) {
+	 *//*
+		public static void pushBagGrid(long playerId, List<BagGrid> list) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
+		
 		EquipOp equipOp = player.getModule(EquipOp.class);
 		ItemBagGridPush_0b000320.Builder builder = ItemBagGridPush_0b000320.newBuilder();
 		for (BagGrid bagGrid : list) {
@@ -332,7 +332,7 @@ public class ItemHelper {
 			int itemId = bagGrid.getItemId();
 			int itemCount = bagGrid.getItemCount();
 			long equipId = bagGrid.getEquipId();
-
+		
 			BagGridInfo.Builder newBuilder = BagGridInfo.newBuilder();
 			if (bagGrid.isEmpty()) {
 				newBuilder.setId(gridId);
@@ -349,7 +349,7 @@ public class ItemHelper {
 			builder.addBagGridInfos(newBuilder);
 		}
 		PlayerHelper.sendProtcol(playerId, builder.build());
-	}
+		}*/
 
 	/**
 	 * @Description 增加奖励
@@ -366,6 +366,7 @@ public class ItemHelper {
 		}
 		return ret;
 	}
+
 	@Deprecated
 	public static List<RewardInfo> addRewards(long playerId, int rewardId) {
 

@@ -12,9 +12,7 @@ import "BaseMsg.proto" ;
 message RewardInfo{
 
 	ItemInfo item = 1;			    // 道具类型的奖励
-    RoleInfo role = 2;				// 角色奖励
-    SkinInfo skin = 4;				// 皮肤奖励
-    CoreUnitInfo core = 5;			// 核心奖励
+    HeroInfo role = 2;				// 角色奖励
     ResourceInfo resource = 6;		// 资源奖励
     EquipInfo equip = 7;  //装备奖励
 }

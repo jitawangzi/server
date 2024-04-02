@@ -50,7 +50,7 @@ public final class RewardMsg {
      * 角色奖励
      * </pre>
      *
-     * <code>.Protos.RoleInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 2;</code>
      * @return Whether the role field is set.
      */
     boolean hasRole();
@@ -59,72 +59,18 @@ public final class RewardMsg {
      * 角色奖励
      * </pre>
      *
-     * <code>.Protos.RoleInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 2;</code>
      * @return The role.
      */
-    cn.game.protocol.protobuf.BaseMsg.RoleInfo getRole();
+    cn.game.protocol.protobuf.BaseMsg.HeroInfo getRole();
     /**
      * <pre>
      * 角色奖励
      * </pre>
      *
-     * <code>.Protos.RoleInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 2;</code>
      */
-    cn.game.protocol.protobuf.BaseMsg.RoleInfoOrBuilder getRoleOrBuilder();
-
-    /**
-     * <pre>
-     * 皮肤奖励
-     * </pre>
-     *
-     * <code>.Protos.SkinInfo skin = 4;</code>
-     * @return Whether the skin field is set.
-     */
-    boolean hasSkin();
-    /**
-     * <pre>
-     * 皮肤奖励
-     * </pre>
-     *
-     * <code>.Protos.SkinInfo skin = 4;</code>
-     * @return The skin.
-     */
-    cn.game.protocol.protobuf.BaseMsg.SkinInfo getSkin();
-    /**
-     * <pre>
-     * 皮肤奖励
-     * </pre>
-     *
-     * <code>.Protos.SkinInfo skin = 4;</code>
-     */
-    cn.game.protocol.protobuf.BaseMsg.SkinInfoOrBuilder getSkinOrBuilder();
-
-    /**
-     * <pre>
-     * 核心奖励
-     * </pre>
-     *
-     * <code>.Protos.CoreUnitInfo core = 5;</code>
-     * @return Whether the core field is set.
-     */
-    boolean hasCore();
-    /**
-     * <pre>
-     * 核心奖励
-     * </pre>
-     *
-     * <code>.Protos.CoreUnitInfo core = 5;</code>
-     * @return The core.
-     */
-    cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo getCore();
-    /**
-     * <pre>
-     * 核心奖励
-     * </pre>
-     *
-     * <code>.Protos.CoreUnitInfo core = 5;</code>
-     */
-    cn.game.protocol.protobuf.BaseMsg.CoreUnitInfoOrBuilder getCoreOrBuilder();
+    cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getRoleOrBuilder();
 
     /**
      * <pre>
@@ -246,40 +192,14 @@ public final class RewardMsg {
               break;
             }
             case 18: {
-              cn.game.protocol.protobuf.BaseMsg.RoleInfo.Builder subBuilder = null;
+              cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder subBuilder = null;
               if (role_ != null) {
                 subBuilder = role_.toBuilder();
               }
-              role_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.RoleInfo.parser(), extensionRegistry);
+              role_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.HeroInfo.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(role_);
                 role_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 34: {
-              cn.game.protocol.protobuf.BaseMsg.SkinInfo.Builder subBuilder = null;
-              if (skin_ != null) {
-                subBuilder = skin_.toBuilder();
-              }
-              skin_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.SkinInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(skin_);
-                skin_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 42: {
-              cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.Builder subBuilder = null;
-              if (core_ != null) {
-                subBuilder = core_.toBuilder();
-              }
-              core_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(core_);
-                core_ = subBuilder.buildPartial();
               }
 
               break;
@@ -381,13 +301,13 @@ public final class RewardMsg {
     }
 
     public static final int ROLE_FIELD_NUMBER = 2;
-    private cn.game.protocol.protobuf.BaseMsg.RoleInfo role_;
+    private cn.game.protocol.protobuf.BaseMsg.HeroInfo role_;
     /**
      * <pre>
      * 角色奖励
      * </pre>
      *
-     * <code>.Protos.RoleInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 2;</code>
      * @return Whether the role field is set.
      */
     @java.lang.Override
@@ -399,99 +319,23 @@ public final class RewardMsg {
      * 角色奖励
      * </pre>
      *
-     * <code>.Protos.RoleInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 2;</code>
      * @return The role.
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.RoleInfo getRole() {
-      return role_ == null ? cn.game.protocol.protobuf.BaseMsg.RoleInfo.getDefaultInstance() : role_;
+    public cn.game.protocol.protobuf.BaseMsg.HeroInfo getRole() {
+      return role_ == null ? cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance() : role_;
     }
     /**
      * <pre>
      * 角色奖励
      * </pre>
      *
-     * <code>.Protos.RoleInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 2;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.RoleInfoOrBuilder getRoleOrBuilder() {
+    public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getRoleOrBuilder() {
       return getRole();
-    }
-
-    public static final int SKIN_FIELD_NUMBER = 4;
-    private cn.game.protocol.protobuf.BaseMsg.SkinInfo skin_;
-    /**
-     * <pre>
-     * 皮肤奖励
-     * </pre>
-     *
-     * <code>.Protos.SkinInfo skin = 4;</code>
-     * @return Whether the skin field is set.
-     */
-    @java.lang.Override
-    public boolean hasSkin() {
-      return skin_ != null;
-    }
-    /**
-     * <pre>
-     * 皮肤奖励
-     * </pre>
-     *
-     * <code>.Protos.SkinInfo skin = 4;</code>
-     * @return The skin.
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.SkinInfo getSkin() {
-      return skin_ == null ? cn.game.protocol.protobuf.BaseMsg.SkinInfo.getDefaultInstance() : skin_;
-    }
-    /**
-     * <pre>
-     * 皮肤奖励
-     * </pre>
-     *
-     * <code>.Protos.SkinInfo skin = 4;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.SkinInfoOrBuilder getSkinOrBuilder() {
-      return getSkin();
-    }
-
-    public static final int CORE_FIELD_NUMBER = 5;
-    private cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo core_;
-    /**
-     * <pre>
-     * 核心奖励
-     * </pre>
-     *
-     * <code>.Protos.CoreUnitInfo core = 5;</code>
-     * @return Whether the core field is set.
-     */
-    @java.lang.Override
-    public boolean hasCore() {
-      return core_ != null;
-    }
-    /**
-     * <pre>
-     * 核心奖励
-     * </pre>
-     *
-     * <code>.Protos.CoreUnitInfo core = 5;</code>
-     * @return The core.
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo getCore() {
-      return core_ == null ? cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.getDefaultInstance() : core_;
-    }
-    /**
-     * <pre>
-     * 核心奖励
-     * </pre>
-     *
-     * <code>.Protos.CoreUnitInfo core = 5;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.CoreUnitInfoOrBuilder getCoreOrBuilder() {
-      return getCore();
     }
 
     public static final int RESOURCE_FIELD_NUMBER = 6;
@@ -590,12 +434,6 @@ public final class RewardMsg {
       if (role_ != null) {
         output.writeMessage(2, getRole());
       }
-      if (skin_ != null) {
-        output.writeMessage(4, getSkin());
-      }
-      if (core_ != null) {
-        output.writeMessage(5, getCore());
-      }
       if (resource_ != null) {
         output.writeMessage(6, getResource());
       }
@@ -618,14 +456,6 @@ public final class RewardMsg {
       if (role_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getRole());
-      }
-      if (skin_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getSkin());
-      }
-      if (core_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getCore());
       }
       if (resource_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -660,16 +490,6 @@ public final class RewardMsg {
         if (!getRole()
             .equals(other.getRole())) return false;
       }
-      if (hasSkin() != other.hasSkin()) return false;
-      if (hasSkin()) {
-        if (!getSkin()
-            .equals(other.getSkin())) return false;
-      }
-      if (hasCore() != other.hasCore()) return false;
-      if (hasCore()) {
-        if (!getCore()
-            .equals(other.getCore())) return false;
-      }
       if (hasResource() != other.hasResource()) return false;
       if (hasResource()) {
         if (!getResource()
@@ -698,14 +518,6 @@ public final class RewardMsg {
       if (hasRole()) {
         hash = (37 * hash) + ROLE_FIELD_NUMBER;
         hash = (53 * hash) + getRole().hashCode();
-      }
-      if (hasSkin()) {
-        hash = (37 * hash) + SKIN_FIELD_NUMBER;
-        hash = (53 * hash) + getSkin().hashCode();
-      }
-      if (hasCore()) {
-        hash = (37 * hash) + CORE_FIELD_NUMBER;
-        hash = (53 * hash) + getCore().hashCode();
       }
       if (hasResource()) {
         hash = (37 * hash) + RESOURCE_FIELD_NUMBER;
@@ -867,18 +679,6 @@ public final class RewardMsg {
           role_ = null;
           roleBuilder_ = null;
         }
-        if (skinBuilder_ == null) {
-          skin_ = null;
-        } else {
-          skin_ = null;
-          skinBuilder_ = null;
-        }
-        if (coreBuilder_ == null) {
-          core_ = null;
-        } else {
-          core_ = null;
-          coreBuilder_ = null;
-        }
         if (resourceBuilder_ == null) {
           resource_ = null;
         } else {
@@ -926,16 +726,6 @@ public final class RewardMsg {
           result.role_ = role_;
         } else {
           result.role_ = roleBuilder_.build();
-        }
-        if (skinBuilder_ == null) {
-          result.skin_ = skin_;
-        } else {
-          result.skin_ = skinBuilder_.build();
-        }
-        if (coreBuilder_ == null) {
-          result.core_ = core_;
-        } else {
-          result.core_ = coreBuilder_.build();
         }
         if (resourceBuilder_ == null) {
           result.resource_ = resource_;
@@ -1000,12 +790,6 @@ public final class RewardMsg {
         }
         if (other.hasRole()) {
           mergeRole(other.getRole());
-        }
-        if (other.hasSkin()) {
-          mergeSkin(other.getSkin());
-        }
-        if (other.hasCore()) {
-          mergeCore(other.getCore());
         }
         if (other.hasResource()) {
           mergeResource(other.getResource());
@@ -1197,15 +981,15 @@ public final class RewardMsg {
         return itemBuilder_;
       }
 
-      private cn.game.protocol.protobuf.BaseMsg.RoleInfo role_;
+      private cn.game.protocol.protobuf.BaseMsg.HeroInfo role_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.RoleInfo, cn.game.protocol.protobuf.BaseMsg.RoleInfo.Builder, cn.game.protocol.protobuf.BaseMsg.RoleInfoOrBuilder> roleBuilder_;
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> roleBuilder_;
       /**
        * <pre>
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        * @return Whether the role field is set.
        */
       public boolean hasRole() {
@@ -1216,12 +1000,12 @@ public final class RewardMsg {
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        * @return The role.
        */
-      public cn.game.protocol.protobuf.BaseMsg.RoleInfo getRole() {
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo getRole() {
         if (roleBuilder_ == null) {
-          return role_ == null ? cn.game.protocol.protobuf.BaseMsg.RoleInfo.getDefaultInstance() : role_;
+          return role_ == null ? cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance() : role_;
         } else {
           return roleBuilder_.getMessage();
         }
@@ -1231,9 +1015,9 @@ public final class RewardMsg {
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        */
-      public Builder setRole(cn.game.protocol.protobuf.BaseMsg.RoleInfo value) {
+      public Builder setRole(cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
         if (roleBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1251,10 +1035,10 @@ public final class RewardMsg {
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        */
       public Builder setRole(
-          cn.game.protocol.protobuf.BaseMsg.RoleInfo.Builder builderForValue) {
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
         if (roleBuilder_ == null) {
           role_ = builderForValue.build();
           onChanged();
@@ -1269,13 +1053,13 @@ public final class RewardMsg {
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        */
-      public Builder mergeRole(cn.game.protocol.protobuf.BaseMsg.RoleInfo value) {
+      public Builder mergeRole(cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
         if (roleBuilder_ == null) {
           if (role_ != null) {
             role_ =
-              cn.game.protocol.protobuf.BaseMsg.RoleInfo.newBuilder(role_).mergeFrom(value).buildPartial();
+              cn.game.protocol.protobuf.BaseMsg.HeroInfo.newBuilder(role_).mergeFrom(value).buildPartial();
           } else {
             role_ = value;
           }
@@ -1291,7 +1075,7 @@ public final class RewardMsg {
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        */
       public Builder clearRole() {
         if (roleBuilder_ == null) {
@@ -1309,9 +1093,9 @@ public final class RewardMsg {
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.RoleInfo.Builder getRoleBuilder() {
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder getRoleBuilder() {
         
         onChanged();
         return getRoleFieldBuilder().getBuilder();
@@ -1321,14 +1105,14 @@ public final class RewardMsg {
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.RoleInfoOrBuilder getRoleOrBuilder() {
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getRoleOrBuilder() {
         if (roleBuilder_ != null) {
           return roleBuilder_.getMessageOrBuilder();
         } else {
           return role_ == null ?
-              cn.game.protocol.protobuf.BaseMsg.RoleInfo.getDefaultInstance() : role_;
+              cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance() : role_;
         }
       }
       /**
@@ -1336,330 +1120,20 @@ public final class RewardMsg {
        * 角色奖励
        * </pre>
        *
-       * <code>.Protos.RoleInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.RoleInfo, cn.game.protocol.protobuf.BaseMsg.RoleInfo.Builder, cn.game.protocol.protobuf.BaseMsg.RoleInfoOrBuilder> 
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
           getRoleFieldBuilder() {
         if (roleBuilder_ == null) {
           roleBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.BaseMsg.RoleInfo, cn.game.protocol.protobuf.BaseMsg.RoleInfo.Builder, cn.game.protocol.protobuf.BaseMsg.RoleInfoOrBuilder>(
+              cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder>(
                   getRole(),
                   getParentForChildren(),
                   isClean());
           role_ = null;
         }
         return roleBuilder_;
-      }
-
-      private cn.game.protocol.protobuf.BaseMsg.SkinInfo skin_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.SkinInfo, cn.game.protocol.protobuf.BaseMsg.SkinInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SkinInfoOrBuilder> skinBuilder_;
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       * @return Whether the skin field is set.
-       */
-      public boolean hasSkin() {
-        return skinBuilder_ != null || skin_ != null;
-      }
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       * @return The skin.
-       */
-      public cn.game.protocol.protobuf.BaseMsg.SkinInfo getSkin() {
-        if (skinBuilder_ == null) {
-          return skin_ == null ? cn.game.protocol.protobuf.BaseMsg.SkinInfo.getDefaultInstance() : skin_;
-        } else {
-          return skinBuilder_.getMessage();
-        }
-      }
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       */
-      public Builder setSkin(cn.game.protocol.protobuf.BaseMsg.SkinInfo value) {
-        if (skinBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          skin_ = value;
-          onChanged();
-        } else {
-          skinBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       */
-      public Builder setSkin(
-          cn.game.protocol.protobuf.BaseMsg.SkinInfo.Builder builderForValue) {
-        if (skinBuilder_ == null) {
-          skin_ = builderForValue.build();
-          onChanged();
-        } else {
-          skinBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       */
-      public Builder mergeSkin(cn.game.protocol.protobuf.BaseMsg.SkinInfo value) {
-        if (skinBuilder_ == null) {
-          if (skin_ != null) {
-            skin_ =
-              cn.game.protocol.protobuf.BaseMsg.SkinInfo.newBuilder(skin_).mergeFrom(value).buildPartial();
-          } else {
-            skin_ = value;
-          }
-          onChanged();
-        } else {
-          skinBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       */
-      public Builder clearSkin() {
-        if (skinBuilder_ == null) {
-          skin_ = null;
-          onChanged();
-        } else {
-          skin_ = null;
-          skinBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.SkinInfo.Builder getSkinBuilder() {
-        
-        onChanged();
-        return getSkinFieldBuilder().getBuilder();
-      }
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.SkinInfoOrBuilder getSkinOrBuilder() {
-        if (skinBuilder_ != null) {
-          return skinBuilder_.getMessageOrBuilder();
-        } else {
-          return skin_ == null ?
-              cn.game.protocol.protobuf.BaseMsg.SkinInfo.getDefaultInstance() : skin_;
-        }
-      }
-      /**
-       * <pre>
-       * 皮肤奖励
-       * </pre>
-       *
-       * <code>.Protos.SkinInfo skin = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.SkinInfo, cn.game.protocol.protobuf.BaseMsg.SkinInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SkinInfoOrBuilder> 
-          getSkinFieldBuilder() {
-        if (skinBuilder_ == null) {
-          skinBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.BaseMsg.SkinInfo, cn.game.protocol.protobuf.BaseMsg.SkinInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SkinInfoOrBuilder>(
-                  getSkin(),
-                  getParentForChildren(),
-                  isClean());
-          skin_ = null;
-        }
-        return skinBuilder_;
-      }
-
-      private cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo core_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo, cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.Builder, cn.game.protocol.protobuf.BaseMsg.CoreUnitInfoOrBuilder> coreBuilder_;
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       * @return Whether the core field is set.
-       */
-      public boolean hasCore() {
-        return coreBuilder_ != null || core_ != null;
-      }
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       * @return The core.
-       */
-      public cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo getCore() {
-        if (coreBuilder_ == null) {
-          return core_ == null ? cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.getDefaultInstance() : core_;
-        } else {
-          return coreBuilder_.getMessage();
-        }
-      }
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       */
-      public Builder setCore(cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo value) {
-        if (coreBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          core_ = value;
-          onChanged();
-        } else {
-          coreBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       */
-      public Builder setCore(
-          cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.Builder builderForValue) {
-        if (coreBuilder_ == null) {
-          core_ = builderForValue.build();
-          onChanged();
-        } else {
-          coreBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       */
-      public Builder mergeCore(cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo value) {
-        if (coreBuilder_ == null) {
-          if (core_ != null) {
-            core_ =
-              cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.newBuilder(core_).mergeFrom(value).buildPartial();
-          } else {
-            core_ = value;
-          }
-          onChanged();
-        } else {
-          coreBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       */
-      public Builder clearCore() {
-        if (coreBuilder_ == null) {
-          core_ = null;
-          onChanged();
-        } else {
-          core_ = null;
-          coreBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.Builder getCoreBuilder() {
-        
-        onChanged();
-        return getCoreFieldBuilder().getBuilder();
-      }
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.CoreUnitInfoOrBuilder getCoreOrBuilder() {
-        if (coreBuilder_ != null) {
-          return coreBuilder_.getMessageOrBuilder();
-        } else {
-          return core_ == null ?
-              cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.getDefaultInstance() : core_;
-        }
-      }
-      /**
-       * <pre>
-       * 核心奖励
-       * </pre>
-       *
-       * <code>.Protos.CoreUnitInfo core = 5;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo, cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.Builder, cn.game.protocol.protobuf.BaseMsg.CoreUnitInfoOrBuilder> 
-          getCoreFieldBuilder() {
-        if (coreBuilder_ == null) {
-          coreBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo, cn.game.protocol.protobuf.BaseMsg.CoreUnitInfo.Builder, cn.game.protocol.protobuf.BaseMsg.CoreUnitInfoOrBuilder>(
-                  getCore(),
-                  getParentForChildren(),
-                  isClean());
-          core_ = null;
-        }
-        return coreBuilder_;
       }
 
       private cn.game.protocol.protobuf.BaseMsg.ResourceInfo resource_;
@@ -4795,17 +4269,16 @@ public final class RewardMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017RewardMsg.proto\022\006Protos\032\rBaseMsg.proto" +
-      "\"\332\001\n\nRewardInfo\022\036\n\004item\030\001 \001(\0132\020.Protos.I" +
-      "temInfo\022\036\n\004role\030\002 \001(\0132\020.Protos.RoleInfo\022" +
-      "\036\n\004skin\030\004 \001(\0132\020.Protos.SkinInfo\022\"\n\004core\030" +
-      "\005 \001(\0132\024.Protos.CoreUnitInfo\022&\n\010resource\030" +
-      "\006 \001(\0132\024.Protos.ResourceInfo\022 \n\005equip\030\007 \001" +
-      "(\0132\021.Protos.EquipInfo\":\n\023RewardPush_5500" +
-      "0501\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInf" +
-      "o\"6\n\022SpendPush_55001501\022 \n\005goods\030\001 \003(\0132\021" +
-      ".Protos.GoodsInfo\">\n\027RewardShowPush_5500" +
-      "2501\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInf" +
-      "oB\033\n\031cn.game.protocol.protobufb\006proto3"
+      "\"\226\001\n\nRewardInfo\022\036\n\004item\030\001 \001(\0132\020.Protos.I" +
+      "temInfo\022\036\n\004role\030\002 \001(\0132\020.Protos.HeroInfo\022" +
+      "&\n\010resource\030\006 \001(\0132\024.Protos.ResourceInfo\022" +
+      " \n\005equip\030\007 \001(\0132\021.Protos.EquipInfo\":\n\023Rew" +
+      "ardPush_55000501\022#\n\007rewards\030\001 \003(\0132\022.Prot" +
+      "os.RewardInfo\"6\n\022SpendPush_55001501\022 \n\005g" +
+      "oods\030\001 \003(\0132\021.Protos.GoodsInfo\">\n\027RewardS" +
+      "howPush_55002501\022#\n\007rewards\030\001 \003(\0132\022.Prot" +
+      "os.RewardInfoB\033\n\031cn.game.protocol.protob" +
+      "ufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4817,7 +4290,7 @@ public final class RewardMsg {
     internal_static_Protos_RewardInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_RewardInfo_descriptor,
-        new java.lang.String[] { "Item", "Role", "Skin", "Core", "Resource", "Equip", });
+        new java.lang.String[] { "Item", "Role", "Resource", "Equip", });
     internal_static_Protos_RewardPush_55000501_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_RewardPush_55000501_fieldAccessorTable = new

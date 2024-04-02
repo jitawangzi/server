@@ -72,7 +72,7 @@ public abstract class BaseHandler implements Handler {
 //						throw new IllegalArgumentException("no support protocol " + protocol.getClass().getSimpleName());
 //					}
 					if (Config.recordRecvData) {
-						if (cmd != PbProtocol.PlayerHeartbeatRequest_01000005 && cmd != PbProtocol.TestExploreMapRequest_6f000035) {
+						if (cmd != PbProtocol.PlayerHeartbeatRequest_01000005) {
 							this.gamerecvLog.info("opType[recv]{}receive msg[{}]data[{}]seq[{}]", client, message.getClass()
 									.getSimpleName(),
 									message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message)

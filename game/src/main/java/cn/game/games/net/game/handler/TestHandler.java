@@ -67,15 +67,9 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.TestMsg;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemResponse_6f000009;
-import cn.game.protocol.protobuf.TestMsg.TestAddOrDelBagItemRequest_6f000032;
-import cn.game.protocol.protobuf.TestMsg.TestAddOrDelBagItemResponse_6f000033;
-import cn.game.protocol.protobuf.TestMsg.TestCommandRequest_6f000095;
-import cn.game.protocol.protobuf.TestMsg.TestMailRequest_6f000010;
 import cn.game.protocol.protobuf.TestMsg.TestMessageRequest_6f000080;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishRequest_6f000022;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishResponse_6f000023;
-import cn.game.protocol.protobuf.TestMsg.TestStoryFinishRequest_6f000024;
-import cn.game.protocol.protobuf.TestMsg.TestStoryFinishResponse_6f000025;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
@@ -111,21 +105,21 @@ public class TestHandler extends BaseHandler {
 		logger.warn("===================================test command is enable =================================");
 		putInvoker(PbProtocol.TestGmCmdRequest_6f000001, this::gmCmd);
 		putInvoker(PbProtocol.TestAddItemRequest_6f000008, this::addItem);
-		putInvoker(PbProtocol.TestMailRequest_6f000010, this::mail);
+//		putInvoker(PbProtocol.TestMailRequest_6f000010, this::mail);
 		putInvoker(PbProtocol.TestRequest_6f000020, this::test);
-		putInvoker(PbProtocol.TestDbRequest_6f000041, this::testDBinsert);
+//		putInvoker(PbProtocol.TestDbRequest_6f000041, this::testDBinsert);
 		putInvoker(PbProtocol.TestMissionFinishRequest_6f000022, this::finishMission);
-		putInvoker(PbProtocol.TestStoryFinishRequest_6f000024, this::finishStory);
+//		putInvoker(PbProtocol.TestStoryFinishRequest_6f000024, this::finishStory);
 
-		putInvoker(PbProtocol.TestAddOrDelBagItemRequest_6f000032, this::bagTest);
+//		putInvoker(PbProtocol.TestAddOrDelBagItemRequest_6f000032, this::bagTest);
 
-		putInvoker(PbProtocol.TestMessageRequest_6f000080, this::testMessage);
+//		putInvoker(PbProtocol.TestMessageRequest_6f000080, this::testMessage);
 
-		putInvoker(PbProtocol.TestCommandRequest_6f000095, this::command);
-		putInvoker(PbProtocol.TestRoleAttributeRequest_6f000100, this::getRoleAttribute);
-		putInvoker(PbProtocol.TestGameEventTriggerRequest_6f000105, this::triggerEvent);
-		putInvoker(PbProtocol.TestRolePromotionRequest_6f00010b, this::rolePromotion);
-		putInvoker(PbProtocol.TestRoleUnlockOccupationTalentNodeRequest_6f00010d, this::unlockOccupationTalentNode);
+//		putInvoker(PbProtocol.TestCommandRequest_6f000095, this::command);
+//		putInvoker(PbProtocol.TestRoleAttributeRequest_6f000100, this::getRoleAttribute);
+//		putInvoker(PbProtocol.TestGameEventTriggerRequest_6f000105, this::triggerEvent);
+//		putInvoker(PbProtocol.TestRolePromotionRequest_6f00010b, this::rolePromotion);
+//		putInvoker(PbProtocol.TestRoleUnlockOccupationTalentNodeRequest_6f00010d, this::unlockOccupationTalentNode);
 	}
 
 	//角色晋升
@@ -149,116 +143,104 @@ public class TestHandler extends BaseHandler {
 		client.sendProtocol(resp.build());
 	}
 
-	// 角色晋升
-	private void rolePromotion(NetClient client, Object message) {
-		TestMsg.TestRolePromotionRequest_6f00010b req = (TestMsg.TestRolePromotionRequest_6f00010b) message;
-		TestMsg.TestRolePromotionResponse_6f00010c.Builder resp = TestMsg.TestRolePromotionResponse_6f00010c.newBuilder();
-		int roleId = req.getRoleId();
-		int level = req.getLevel();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		RoleOp roleOp = player.getModule(RoleOp.class);
-		Role role = roleOp.get(roleId);
-		for (int i = role.getPromotionLevel() + 1; i <= level; i++) {
-			roleOp.changeRolePromotionLevel(roleId, i);
-		}
-		client.sendProtocol(resp.build());
-	}
-
-	// 直接完成探索区域目标,方便进入局间
-
-	private void triggerEvent(NetClient client, Object message) {
-		TestMsg.TestGameEventTriggerRequest_6f000105 req = (TestMsg.TestGameEventTriggerRequest_6f000105) message;
-		TestMsg.TestGameEventTriggerResponse_6f000106.Builder resp = TestMsg.TestGameEventTriggerResponse_6f000106.newBuilder();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		int id = req.getId();
-		GameEventConfig gameEventConfig = GameEventManager.getInstance().getGameEventConfig(id);
-		int[] ids = gameEventConfig.getGenarateIds();
-
-		client.sendProtocol(resp.build());
-	}
-	private void getRoleAttribute(NetClient client, Object message) {
-		TestMsg.TestRoleAttributeRequest_6f000100 req = (TestMsg.TestRoleAttributeRequest_6f000100) message;
-		TestMsg.TestRoleAttributeResponse_6f000101.Builder resp = TestMsg.TestRoleAttributeResponse_6f000101.newBuilder();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		int id = req.getId();
-		int uid = req.getUid();
-		int attrType = req.getAttrType();
-		PropertyOp propertyOp = player.getModule(PropertyOp.class);
-		propertyOp.init();
-		TestMsg.TestRoleAttrValue.Builder value = TestMsg.TestRoleAttrValue.newBuilder();
-		value.setAttrSubType(AttributeSubTypeEnum.cur.getId());
-		RoleOp roleOp = player.getModule(RoleOp.class);
-		Role role = roleOp.get(uid);
-		value.setValue(role.getHp());
-		resp.addAttrs(value);
-
-		value.setAttrSubType(AttributeSubTypeEnum.curTotal.getId());
-		value.setValue(role.getHpCurMax());
-		resp.addAttrs(value);
-
-		value.setAttrSubType(AttributeSubTypeEnum.total.getId());
-		int attrMax = roleOp.getAttrMax(role, AttributeTypeEnum.hp, AttributeSubTypeEnum.total);
-		value.setValue(attrMax);
-		resp.addAttrs(value);
-
-		client.sendProtocol(resp.build());
-	}
-
-	private void command(NetClient client, Object message) {
-		TestCommandRequest_6f000095 req = (TestCommandRequest_6f000095) message;
-		int command = req.getCommand();
-		PlayerHelper.command(client.getPlayerId(), command);
-	}
-	private void bagTest(NetClient client, Object message) {
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		TestAddOrDelBagItemRequest_6f000032 request = (TestAddOrDelBagItemRequest_6f000032) message;
-		TestAddOrDelBagItemResponse_6f000033.Builder response = TestAddOrDelBagItemResponse_6f000033.newBuilder();
-		ItemModule itemModule = player.getModule(ItemModule.class);
-
-		int id = request.getId();
-		int count = request.getCount();
-//		ItemConfig itemConfig = ItemManager.getInstance().getItemConfig(id);
-//
-//		if (count > 0) {
-////			PlayerHelper.addResources(playerId, id, count);
-//			ErrorMsgEnum addBagItem = itemModule.addBagItem(id, count, true);
-//		} else if (count == 0) {
-//			itemModule.clearBag();
-//		} else {
-//			if (itemModule.bagItemEnough(id, count)) {
-//				List<BagGrid> delBagItem = itemModule.delBagItem(id, Math.abs(count));
-//				ItemHelper.pushBagGrid(playerId, delBagItem);
-//			}
-//		}
-
-		response.setBag(PbBuilder.buildBagInfo(playerId));
-		client.sendProtocol(response.build());
-
-	}
-
-	private void finishStory(NetClient client, Object message) {
-		TestStoryFinishRequest_6f000024 request = (TestStoryFinishRequest_6f000024) message;
-		TestStoryFinishResponse_6f000025.Builder response = TestStoryFinishResponse_6f000025.newBuilder();
-		List<Integer> idList = request.getIdList();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		StoryOp storyOp = player.getModule(StoryOp.class);
-
-		for (Integer id : idList) {
-			storyOp.update(id, 10, false);
-
-			StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
-
-			boolean finish = storyOp.finish(id);
-			if (finish) {
-				List<RewardInfo> addResources = PlayerHelper.addResources(playerId, storyConfig.getReward());
-				response.addAllResource(addResources);
-				PlayerHelper.command(playerId, storyConfig.getCommandList());
+	/*
+		// 角色晋升
+		private void rolePromotion(NetClient client, Object message) {
+			TestMsg.TestRolePromotionRequest_6f00010b req = (TestMsg.TestRolePromotionRequest_6f00010b) message;
+			TestMsg.TestRolePromotionResponse_6f00010c.Builder resp = TestMsg.TestRolePromotionResponse_6f00010c.newBuilder();
+			int roleId = req.getRoleId();
+			int level = req.getLevel();
+			long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+			RoleOp roleOp = player.getModule(RoleOp.class);
+			Role role = roleOp.get(roleId);
+			for (int i = role.getPromotionLevel() + 1; i <= level; i++) {
+				roleOp.changeRolePromotionLevel(roleId, i);
 			}
-
+			client.sendProtocol(resp.build());
 		}
-		client.sendProtocol(response.build());
-
-	}
+	
+		// 直接完成探索区域目标,方便进入局间
+	
+		private void triggerEvent(NetClient client, Object message) {
+			TestMsg.TestGameEventTriggerRequest_6f000105 req = (TestMsg.TestGameEventTriggerRequest_6f000105) message;
+			TestMsg.TestGameEventTriggerResponse_6f000106.Builder resp = TestMsg.TestGameEventTriggerResponse_6f000106.newBuilder();
+			long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+			int id = req.getId();
+			GameEventConfig gameEventConfig = GameEventManager.getInstance().getGameEventConfig(id);
+			int[] ids = gameEventConfig.getGenarateIds();
+	
+			client.sendProtocol(resp.build());
+		}
+		private void getRoleAttribute(NetClient client, Object message) {
+			TestMsg.TestRoleAttributeRequest_6f000100 req = (TestMsg.TestRoleAttributeRequest_6f000100) message;
+			TestMsg.TestRoleAttributeResponse_6f000101.Builder resp = TestMsg.TestRoleAttributeResponse_6f000101.newBuilder();
+			long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+			int id = req.getId();
+			int uid = req.getUid();
+			int attrType = req.getAttrType();
+			PropertyOp propertyOp = player.getModule(PropertyOp.class);
+			propertyOp.init();
+			TestMsg.TestRoleAttrValue.Builder value = TestMsg.TestRoleAttrValue.newBuilder();
+			value.setAttrSubType(AttributeSubTypeEnum.cur.getId());
+			RoleOp roleOp = player.getModule(RoleOp.class);
+			Role role = roleOp.get(uid);
+			value.setValue(role.getHp());
+			resp.addAttrs(value);
+	
+			value.setAttrSubType(AttributeSubTypeEnum.curTotal.getId());
+			value.setValue(role.getHpCurMax());
+			resp.addAttrs(value);
+	
+			value.setAttrSubType(AttributeSubTypeEnum.total.getId());
+			int attrMax = roleOp.getAttrMax(role, AttributeTypeEnum.hp, AttributeSubTypeEnum.total);
+			value.setValue(attrMax);
+			resp.addAttrs(value);
+	
+			client.sendProtocol(resp.build());
+		}
+	
+		private void command(NetClient client, Object message) {
+			TestCommandRequest_6f000095 req = (TestCommandRequest_6f000095) message;
+			int command = req.getCommand();
+			PlayerHelper.command(client.getPlayerId(), command);
+		}
+		private void bagTest(NetClient client, Object message) {
+			long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+			TestAddOrDelBagItemRequest_6f000032 request = (TestAddOrDelBagItemRequest_6f000032) message;
+			TestAddOrDelBagItemResponse_6f000033.Builder response = TestAddOrDelBagItemResponse_6f000033.newBuilder();
+			ItemModule itemModule = player.getModule(ItemModule.class);
+	
+			int id = request.getId();
+			int count = request.getCount();
+	
+			response.setBag(PbBuilder.buildBagInfo(playerId));
+			client.sendProtocol(response.build());
+	
+		}
+	
+		private void finishStory(NetClient client, Object message) {
+			TestStoryFinishRequest_6f000024 request = (TestStoryFinishRequest_6f000024) message;
+			TestStoryFinishResponse_6f000025.Builder response = TestStoryFinishResponse_6f000025.newBuilder();
+			List<Integer> idList = request.getIdList();
+			long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+			StoryOp storyOp = player.getModule(StoryOp.class);
+	
+			for (Integer id : idList) {
+				storyOp.update(id, 10, false);
+	
+				StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
+	
+				boolean finish = storyOp.finish(id);
+				if (finish) {
+					List<RewardInfo> addResources = PlayerHelper.addResources(playerId, storyConfig.getReward());
+					response.addAllResource(addResources);
+					PlayerHelper.command(playerId, storyConfig.getCommandList());
+				}
+	
+			}
+			client.sendProtocol(response.build());
+	
+		}*/
 	private void finishMission(NetClient client, Object message) {
 		TestMissionFinishRequest_6f000022 request = (TestMissionFinishRequest_6f000022) message;
 		TestMissionFinishResponse_6f000023.Builder response = TestMissionFinishResponse_6f000023.newBuilder();
@@ -401,93 +383,22 @@ public class TestHandler extends BaseHandler {
 		}
 	}
 
+	/*
 	protected void mail(NetClient client, Object message) {
 		TestMailRequest_6f000010 req = (TestMailRequest_6f000010) message;
-
+		
 		int receiveId = req.getReceiveId();
 		List<GoodsInfo> attachmentsList = req.getAttachmentsList();
 		List<Goods> attachmentList = new ArrayList<Goods>();
 		for (GoodsInfo goodsInfo : attachmentsList) {
-			Goods g = new Goods();
-			g.setId(goodsInfo.getId());
-			g.setCount(goodsInfo.getCount());
-			attachmentList.add(g);
+		Goods g = new Goods();
+		g.setId(goodsInfo.getId());
+		g.setCount(goodsInfo.getCount());
+		attachmentList.add(g);
 		}
 		MailHelper.sendMail(receiveId, req.getSender(), req.getTitle(), req.getContent(), (byte) 0, attachmentList);
-	}
+		}*/
 
-//	protected void test(NetClient client, Object message) {
-//		Player player =  PlayerManager.getInstance().getPlayer(client.getPlayerId()) ;
-//		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-
-	// TODO Auto-generated method stub
-	// this.dataGameServerInterface =
-	// RpcFactory.getImpl(DataGameServerInterface.class, dbRpcClient, true);
-
-	// Collection<RewardItem> drop = PlayerHelper.drop(client.getPlayer(),
-	// 270000015);
-	// for (RewardItem e : drop) {
-	// System.out.println(e.getId());
-	// }
-	// 测试发送事件
-	// EventOp eventOp = PlayerCacheFactory.getCache(playerId,
-	// EventOp.class);
-	// player.handleEvent(new GameEvent(EventTypeEnum.Level, player,
-	// 333333));
-
-	// 测试QuestCondition 序列化
-	// QuestOp questOp = PlayerCacheFactory.getCache(playerId,
-	// QuestOp.class);
-	// Quest quest = questOp.get(1);
-	// if (quest != null) {
-	// List<QuestCondition> requires = quest.getRequires();
-	// String jsonString = JSON.toJSONString(requires);
-	// System.out.println(jsonString);
-	// }
-
-	// PlayerHelper.addExp(PlayerManager.getInstance().getPlayer(client.getPlayerId()),
-	// 30000);
-
-	// PlayerHelper.dropAndBuild(client.getPlayer(), 270000015);
-	// Object exec =
-	// DAO.execute(TTttMapper.class,
-	// "selectByPrimaryKey", 1);
-	// System.out.println(exec);
-
-	// 900100001
-
-	// HeroOp heroOp = PlayerCacheFactory.getCache(client.getPlayerId(),
-	// HeroOp.class);
-	// heroOp.newHero(900000013);
-
-	// heroOp.addExp(heroOp.get(900100001), 50000);
-	// Story story = new Story();
-	// story.setPlayerId(11211L);
-	// story.setStory(222);
-	// story.setOpt(333);
-	//
-	// DAO.execute(StoryMapper.class,
-	// MapperConstant.insert, story);
-
-	// List<Integer> list = new ArrayList<>();
-	// list.add(276002101);
-	// List<RewardInfo> dropAndBuild = PlayerHelper.dropAndBuild(null,
-	// list);
-	// System.out.println(dropAndBuild);
-	//
-	// List<Long> ids = new ArrayList<Long>();
-	// ids.add(231584987068108802L);
-	// DAO.execute(EquipMapper.class,
-	// "deleteByIds", ids);
-
-	// long nanoTime = System.currentTimeMillis();
-	// for (int i = 0; i < 100000000; i++) {
-	// lll.info("测试日志效率");
-	// }
-	// System.out.println("日志耗时 : " + (System.currentTimeMillis() -
-	// nanoTime));
-
-//	}
 
 	protected void addItem(NetClient client, Object message) {
 		TestAddItemRequest_6f000008 req = (TestAddItemRequest_6f000008) message;

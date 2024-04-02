@@ -64,15 +64,11 @@ import cn.game.protocol.generated.manager.OldBuffManager;
 import cn.game.protocol.generated.manager.OldSkillManager;
 import cn.game.protocol.generated.manager.RoleExpManager;
 import cn.game.protocol.generated.manager.RoleManager;
-import cn.game.protocol.generated.manager.RolePromotionManager;
 import cn.game.protocol.generated.manager.RoleRisingStarManager;
 import cn.game.protocol.generated.manager.RoleTagManager;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
-import cn.game.protocol.protobuf.RoleMsg;
-import cn.game.protocol.protobuf.RoleMsg.RoleState;
-import cn.game.protocol.protobuf.RoleMsg.RoleTagPush_02001001;
 import cn.game.util.ByteHelp;
 import cn.game.util.MapUtil;
 import cn.game.util.Rnd;
@@ -289,7 +285,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 		role.setGiftCardUnlock(flag);
 
 		// 如果是佣兵随机名字
-		if (roleConfig.getType() == RoleMsg.RoleType.MERCENARY_VALUE) {
+		if (roleConfig.getType() == 1) {
 			List<MercenaryNameConfig> nameIdList = MercenaryNameManager.getInstance().getNameIdList(roleId);
 			if (nameIdList != null && nameIdList.size() > 0) {
 				int index = Rnd.get(0, nameIdList.size() - 1);
@@ -723,26 +719,26 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 			BuffOp buffOp = player.getModule(BuffOp.class);
 			
 			Byte state = role.getState();
-			if (value == 0) {
-				if (state == (byte) RoleState.NORMAL_VALUE) {
-					// 置为濒死状态
-					role.setState((byte) RoleState.NEAR_DEATH_VALUE);
-					role.setHp(1);
-					// 增加一层创伤buff
+			/*	if (value == 0) {
+					if (state == (byte) RoleState.NORMAL_VALUE) {
+						// 置为濒死状态
+						role.setState((byte) RoleState.NEAR_DEATH_VALUE);
+						role.setHp(1);
+						// 增加一层创伤buff
+						
+					} else {
+						// 置为死亡状态
+						role.setState((byte) RoleState.DIE_VALUE);
+						role.setHp(0);
+						role.setSan(0);
+					} 
 					
 				} else {
-					// 置为死亡状态
-					role.setState((byte) RoleState.DIE_VALUE);
-					role.setHp(0);
-					role.setSan(0);
-				} 
-				
-			} else {
-				role.setHp(value);
-				if (state == RoleState.NEAR_DEATH_VALUE && value > 1) {
-					role.setState((byte) RoleState.NORMAL_VALUE);
-				}
-			}
+					role.setHp(value);
+					if (state == RoleState.NEAR_DEATH_VALUE && value > 1) {
+						role.setState((byte) RoleState.NORMAL_VALUE);
+					}
+				}*/
 			break;
 
 //			case ep:
@@ -1149,8 +1145,8 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 			DAO.updateSelective(RoleMapper.class, update);
 		}
 
-		PlayerHelper.sendProtcol(playerId,
-				RoleTagPush_02001001.newBuilder().setRoleId(role.getDictId()).setTagId(tagId).build());
+//		PlayerHelper.sendProtcol(playerId,
+//				RoleTagPush_02001001.newBuilder().setRoleId(role.getDictId()).setTagId(tagId).build());
 	}
 
 	public void update(RoleTagQuest quest) {
@@ -1470,72 +1466,6 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 	}
 
 	@Override
-	public List<RoleMsg.RolePromotionInfo> rolePromotion(List<Integer> roleIdList) {
-		List<RoleMsg.RolePromotionInfo> infos = new ArrayList<>();
-		for (Integer roleId : roleIdList) {
-			Role role = this.id_roles.get(roleId);
-		//	if (role.getState() != (byte) RoleMsg.RoleState.DIE_VALUE) {
-			RoleMsg.RolePromotionInfo.Builder info = RoleMsg.RolePromotionInfo.newBuilder();
-
-			RolePromotionConfig config = RolePromotionManager.getInstance().getRolePromotionConfigNullable(role.getPromotionLevel());
-			if (config == null) {
-				continue;
-			}
-			RolePromotionConfig nextConfig = RolePromotionManager.getInstance().getRolePromotionConfigNullable(role.getPromotionLevel() + 1);
-//			ExploreOp exploreOp = player.getModule(ExploreOp.class);
-//			HashMap<Integer, Integer> promotionPointMap = exploreOp.getExploreChapter().getPromotionPointMap();
-//			if (promotionPointMap.isEmpty()) {
-//				continue;
-//			}
-//			int curCost = promotionPointMap.get(roleId) + role.getPromotionPoint();
-//
-//			boolean ret = false;
-//			while (nextConfig != null && config.getCost() <= curCost) {
-//				role.setPromotionLevel((byte) (role.getPromotionLevel() + 1));
-//				role.setPromotionPoint(curCost - config.getCost());
-//				// 晋升可能会新增技能
-//				int newSkill = promotionAddNewSkill(role);
-//				if (newSkill != -1) {
-//					info.addSkillIds(newSkill);
-//				}
-//				curCost = role.getPromotionPoint();
-//				config = RolePromotionManager.getInstance().getRolePromotionConfigNullable(role.getPromotionLevel());
-//				nextConfig = RolePromotionManager.getInstance().getRolePromotionConfigNullable(role.getPromotionLevel() + 1);
-//				ret = true;
-//			}
-//			if (curCost > config.getCost()) {
-//				curCost = config.getCost();
-//			}
-//			role.setPromotionPoint(curCost);
-//			if (!ret) {
-//				//只加晋升点数
-//				Role update = new Role();
-//				update.setId(role.getId());
-//				update.setPromotionPoint(role.getPromotionPoint());
-//				DAO.updateSelective(RoleMapper.class, update);
-//				continue;
-//			}
-			role.save();
-			Role update = new Role();
-			update.setPromotionPoint(role.getPromotionPoint());
-			update.setPromotionLevel(role.getPromotionLevel());
-			update.setId(role.getId());
-			update.setSkills(role.getSkills());
-			DAO.updateSelective(RoleMapper.class, update);
-
-			info.setRoleId(roleId);
-			info.setPromotionLevel(role.getPromotionLevel());
-			info.setPromotionPoint(role.getPromotionPoint());
-			infos.add(info.build());
-
-			PropertyOp propertyOp = player.getModule(PropertyOp.class);
-			propertyOp.initPropertyById(roleId);
-		//	}
-		}
-		return infos;
-	}
-
-	@Override
 	public void addPromotionPoint(int promotionPoint) {
 		if (promotionPoint == 0) {
 			return;
@@ -1546,9 +1476,9 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 	@Override
 	public void addPromotionPoint(List<Integer> roleIdList, int promotionPoint) {
 		//List<RoleMsg.RolePromotionInfo> outRolePromotionInfos = new ArrayList<>();
-		roleIdList.forEach(e -> {
-			Role role = this.id_roles.get(e);
-			if (role.getState() != (byte) RoleMsg.RoleState.DIE_VALUE) {
+//		roleIdList.forEach(e -> {
+//			Role role = this.id_roles.get(e);
+//			if (role.getState() != (byte) RoleMsg.RoleState.DIE_VALUE) {
 				//role.setPromotionPoint(role.getPromotionPoint() + promotionPoint);
 //				ExploreOp exploreOp = player.getModule(ExploreOp.class);
 //				if(exploreOp.getExploreChapter() != null) {
@@ -1565,8 +1495,8 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 //				info.setPromotionLevel(role.getPromotionLevel());
 //				info.setPromotionPoint(role.getPromotionPoint());
 //				outRolePromotionInfos.add(info.build());
-			}
-		});
+//			}
+//		});
 //		RoleMsg.RolePromotionInfoPush_52011130.Builder response = RoleMsg.RolePromotionInfoPush_52011130.newBuilder();
 //		response.addAllPromotionInfos(outRolePromotionInfos);
 //		GameClientManager.getInstance().noticeOne(response.build(), this.playerId);
@@ -1582,38 +1512,6 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 			}
 		}
 		return false;
-	}
-
-	public void changeRolePromotionLevel(int roleId, int level) {
-		Role role = this.get(roleId);
-		role.setPromotionLevel((byte) level);
-		// 晋升可能会新增技能
-		int newSkill = this.promotionAddNewSkill(role);
-
-		Role update = new Role();
-		update.setPromotionLevel(role.getPromotionLevel());
-		update.setId(role.getId());
-		if (newSkill != -1) {
-			update.setSkills(role.skillsMaptoString());
-		}
-		DAO.updateSelective(RoleMapper.class, update);
-
-		RoleMsg.RolePromotionInfoPush_52011130.Builder response = RoleMsg.RolePromotionInfoPush_52011130.newBuilder();
-		RoleMsg.RolePromotionInfo.Builder info = RoleMsg.RolePromotionInfo.newBuilder();
-		List<RoleMsg.RolePromotionInfo> infos = new ArrayList<>();
-		info.setRoleId(roleId);
-		info.setPromotionLevel(role.getPromotionLevel());
-		info.setPromotionPoint(role.getPromotionPoint());
-		if (newSkill != -1) {
-			info.addSkillIds(newSkill);
-		}
-		infos.add(info.build());
-
-		response.addAllPromotionInfos(infos);
-		GameClientManager.getInstance().noticeOne(response.build(), playerId);
-
-		PropertyOp propertyOp = player.getModule(PropertyOp.class);
-		propertyOp.initPropertyById(roleId);
 	}
 
 	@Override

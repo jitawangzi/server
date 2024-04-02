@@ -33,13 +33,9 @@ import cn.game.protocol.generated.enume.EffectTargetTypeEnum;
 import cn.game.protocol.generated.manager.OldBuffManager;
 import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
-import cn.game.protocol.protobuf.BattleChapterMsg.BattleExplorectiveType;
-import cn.game.protocol.protobuf.BattleChapterMsg.BattleLevelStartPush_13000100;
 import cn.game.protocol.protobuf.BuffMsg.BuffPush_0100010b;
 import cn.game.protocol.protobuf.BuffMsg.BuffShowPush_0100010d;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.protocol.protobuf.RoleMsg.RoleUpdateInfo;
-import cn.game.protocol.protobuf.RoleMsg.RoleUpdatePush_02001003;
 import cn.game.util.GameUtil;
 import cn.game.util.Rnd;
 
@@ -227,24 +223,6 @@ public class BuffHelper {
 		}
 			break;
 
-		case AddRoleLevel: {
-			RoleUpdatePush_02001003.Builder rolePush = RoleUpdatePush_02001003.newBuilder();
-			// 升级
-			for (Number roleId : targetIds) {
-
-				Role role = roleOp.addLevel(roleId.intValue(), numParam);
-				RoleUpdateInfo.Builder levelInfo = RoleUpdateInfo.newBuilder().setId(role.getDictId());
-//						.setLevel(role.getLevel());
-				rolePush.addUpdates(levelInfo.build());
-			}
-			buffLog.info("player[{}],buff[{}]效果,给角色[{}]升了[{}]级", playerId, buff, targetIds.toString(), numParam);
-			GameClientManager.getInstance().noticeOne(rolePush.build(), playerId);
-			break;
-
-		}
-
-
-
 		case ChangeRoleAttribute: {
 			changeRoleAttr(idParam, numParam, mode, targetIds, playerId, buff);
 			break;
@@ -277,9 +255,9 @@ public class BuffHelper {
 //					buffLog.info("player[{}],buff[{}]效果,移除了角色[{}]的重伤状态", playerId, buff, role.getId());
 //				}
 			}
-			RoleUpdatePush_02001003.Builder response = RoleUpdatePush_02001003.newBuilder();
-			response.addAllUpdates(PbBuilder.buildRoleUpdateInfo(roles));
-			GameClientManager.getInstance().noticeOne(response.build(), playerId);
+//			RoleUpdatePush_02001003.Builder response = RoleUpdatePush_02001003.newBuilder();
+//			response.addAllUpdates(PbBuilder.buildRoleUpdateInfo(roles));
+//			GameClientManager.getInstance().noticeOne(response.build(), playerId);
 			break;
 		}
 		case GetRandomGoods: {
@@ -335,14 +313,14 @@ public class BuffHelper {
 			break;
 
 
-		case AddBattleLevel:
-			BattleLevelStartPush_13000100.Builder push = BattleLevelStartPush_13000100.newBuilder();
-			push.setType(DungeonTypeEnum.ExploreBattle.getId());
-			push.setDungeonId(BattleExplorectiveType.Buff_VALUE);
-			push.setId(idParam);
-			PlayerHelper.sendProtcol(playerId, push.build());
-			buffLog.info("player[{}]buff[{}]效果,推送一场战斗[{}]", playerId, buff, idParam);
-			break;
+//		case AddBattleLevel:
+//			BattleLevelStartPush_13000100.Builder push = BattleLevelStartPush_13000100.newBuilder();
+//			push.setType(DungeonTypeEnum.ExploreBattle.getId());
+//			push.setDungeonId(BattleExplorectiveType.Buff_VALUE);
+//			push.setId(idParam);
+//			PlayerHelper.sendProtcol(playerId, push.build());
+//			buffLog.info("player[{}]buff[{}]效果,推送一场战斗[{}]", playerId, buff, idParam);
+//			break;
 
 		case RestoreLife:
 			break;
@@ -487,11 +465,6 @@ public class BuffHelper {
 		buffLog.info("player[{}],buff效果,修改角色[{}][{}][{}],模式[{}],值[{}]", playerId, roleId, attrType.getDesc(), subType.getDesc(), GameConstants.modeString(mode), value);
 	}
 
-	private static void pushRoleAttr(List<RoleUpdateInfo> list, long playerId) {
-		RoleUpdatePush_02001003.Builder push = RoleUpdatePush_02001003.newBuilder();
-		push.addAllUpdates(list);
-		GameClientManager.getInstance().noticeOne(push.build(), playerId);
-	}
 
 	/**
 	 * 获取buff奖励倍数

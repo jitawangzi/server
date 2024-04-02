@@ -76,22 +76,22 @@ public class FriendHandler extends BaseHandler {
 	@Override
 	protected void inititialize() {
 
-		putInvoker(PbProtocol.FriendListRequest_30000001, this::list);
-		putInvoker(PbProtocol.FriendBlackListRequest_30000051, this::blackList);
-		putInvoker(PbProtocol.FriendApplyListRequest_30000053, this::applyList);
-		putInvoker(PbProtocol.FriendRecommendRequest_30000003, this::recommend);
-		putInvoker(PbProtocol.FriendSearchRequest_30000020, this::search);
-		putInvoker(PbProtocol.FriendApplyRequest_30000005, this::apply);
-		putInvoker(PbProtocol.FriendApplicationRequest_30000007, this::application);
-		putInvoker(PbProtocol.FriendDeleteRequest_30000009, this::delete);
-		putInvoker(PbProtocol.FriendBlackRequest_30000010, this::black);
-		putInvoker(PbProtocol.FriendshipRequest_30000012, this::friendship);
-		putInvoker(PbProtocol.FriendshipReceiveRequest_30000014, this::friendshipReceive);
-		putInvoker(PbProtocol.FriendGiftRequest_30000016, this::gift);
-		putInvoker(PbProtocol.FriendAttentionRequest_30000030, this::attention);
-		putInvoker(PbProtocol.FriendApplyPush_30000022, this::remoteApply);
-		putInvoker(PbProtocol.FriendAddPush_30000023, this::remoteAdd);
-		putInvoker(PbProtocol.FriendDelPush_30000024, this::remoteDelete);
+//		putInvoker(PbProtocol.FriendListRequest_30000001, this::list);
+//		putInvoker(PbProtocol.FriendBlackListRequest_30000051, this::blackList);
+//		putInvoker(PbProtocol.FriendApplyListRequest_30000053, this::applyList);
+//		putInvoker(PbProtocol.FriendRecommendRequest_30000003, this::recommend);
+//		putInvoker(PbProtocol.FriendSearchRequest_30000020, this::search);
+//		putInvoker(PbProtocol.FriendApplyRequest_30000005, this::apply);
+//		putInvoker(PbProtocol.FriendApplicationRequest_30000007, this::application);
+//		putInvoker(PbProtocol.FriendDeleteRequest_30000009, this::delete);
+//		putInvoker(PbProtocol.FriendBlackRequest_30000010, this::black);
+//		putInvoker(PbProtocol.FriendshipRequest_30000012, this::friendship);
+//		putInvoker(PbProtocol.FriendshipReceiveRequest_30000014, this::friendshipReceive);
+//		putInvoker(PbProtocol.FriendGiftRequest_30000016, this::gift);
+//		putInvoker(PbProtocol.FriendAttentionRequest_30000030, this::attention);
+//		putInvoker(PbProtocol.FriendApplyPush_30000022, this::remoteApply);
+//		putInvoker(PbProtocol.FriendAddPush_30000023, this::remoteAdd);
+//		putInvoker(PbProtocol.FriendDelPush_30000024, this::remoteDelete);
 
 	}
 

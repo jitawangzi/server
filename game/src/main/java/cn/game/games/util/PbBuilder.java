@@ -61,20 +61,12 @@ import cn.game.protocol.generated.manager.RoleAttributeManager;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
-import cn.game.protocol.protobuf.BaseMsg.HomePageInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
-import cn.game.protocol.protobuf.BaseMsg.OccupationNodeInfo;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.ResourceInfo;
 import cn.game.protocol.protobuf.BaseMsg.ResourceInfo.Builder;
-import cn.game.protocol.protobuf.BaseMsg.RoleAttrInfo;
-import cn.game.protocol.protobuf.BaseMsg.RoleAttrPointInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.BaseMsg.SkillInfo;
-import cn.game.protocol.protobuf.BaseMsg.SkinInfo;
-import cn.game.protocol.protobuf.BattleChapterMsg;
-import cn.game.protocol.protobuf.BattleChapterMsg.BattleChapterInfo;
-import cn.game.protocol.protobuf.BattleChapterMsg.BattleEventInfo;
 import cn.game.protocol.protobuf.BuffMsg;
 import cn.game.protocol.protobuf.BuffMsg.BuffInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupBriefInfo;
@@ -83,8 +75,6 @@ import cn.game.protocol.protobuf.ClimbingTowerMsg.TowerPlayerInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo;
 import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
-import cn.game.protocol.protobuf.ItemMsg.BagGridInfo;
-import cn.game.protocol.protobuf.ItemMsg.BagInfo;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupInfo;
 import cn.game.protocol.protobuf.MissionMsg.MissionInfo;
@@ -92,7 +82,6 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
-import cn.game.protocol.protobuf.RoleMsg.RoleUpdateInfo;
 import cn.game.protocol.protobuf.StoreMsg.StoreGoodsInfo;
 import cn.game.protocol.protobuf.StoreMsg.StoreRecommendInfo;
 import cn.game.protocol.protobuf.StoryMsg.StoryInfo;
@@ -114,48 +103,48 @@ public class PbBuilder {
 	}
 
 
-	public static BagInfo buildBagInfo(long playerId) {
+	/*public static BagInfo buildBagInfo(long playerId) {
 		BagInfo.Builder builder = BagInfo.newBuilder();
 		// 背包格子数据
 		builder.addAllBagGridInfos(buildBagGridInfo(playerId));
 		//(背包已满)待选择的奖励
-//		builder.setReward(buildBagRewardNeedChooseInfo(playerId));
+	//		builder.setReward(buildBagRewardNeedChooseInfo(playerId));
 		
 		return builder.build();
 	}
 	
 	public static List<BagGridInfo> buildBagGridInfo(long playerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
+	
 		ItemModule itemModule = player.getModule(ItemModule.class);
 		EquipOp equipOp = player.getModule(EquipOp.class);
 		List<BagGridInfo> res = new ArrayList<>();
 		// 背包格子数据
-//		Map<Integer, BagGrid> bagGridMap = itemModule.getBagGridMap();
-//		for (int gridId : bagGridMap.keySet()) {
-//			BagGrid bagGrid = bagGridMap.get(gridId);
-//			int itemId = bagGrid.getItemId();
-//			int itemCount = bagGrid.getItemCount();
-//			long equipId = bagGrid.getEquipId();
-//
-//			BagGridInfo.Builder newBuilder = BagGridInfo.newBuilder();
-//			if (bagGrid.isItem()) {
-//				newBuilder.setId(gridId);
-//				newBuilder.setItem(ItemInfo.newBuilder().setId(itemId).setCount(itemCount));
-//				
-//			} else if (bagGrid.isEquip()) {
-//				Equip equip = equipOp.get(equipId);
-//				newBuilder.setId(gridId);
-//				newBuilder.setEquip(buildEquipInfo(equip));
-//				
-//			} else if(bagGrid.isEmpty()) {
-//				continue;
-//			}
-//			res.add(newBuilder.build());
-//		}
-//		
+	//		Map<Integer, BagGrid> bagGridMap = itemModule.getBagGridMap();
+	//		for (int gridId : bagGridMap.keySet()) {
+	//			BagGrid bagGrid = bagGridMap.get(gridId);
+	//			int itemId = bagGrid.getItemId();
+	//			int itemCount = bagGrid.getItemCount();
+	//			long equipId = bagGrid.getEquipId();
+	//
+	//			BagGridInfo.Builder newBuilder = BagGridInfo.newBuilder();
+	//			if (bagGrid.isItem()) {
+	//				newBuilder.setId(gridId);
+	//				newBuilder.setItem(ItemInfo.newBuilder().setId(itemId).setCount(itemCount));
+	//				
+	//			} else if (bagGrid.isEquip()) {
+	//				Equip equip = equipOp.get(equipId);
+	//				newBuilder.setId(gridId);
+	//				newBuilder.setEquip(buildEquipInfo(equip));
+	//				
+	//			} else if(bagGrid.isEmpty()) {
+	//				continue;
+	//			}
+	//			res.add(newBuilder.build());
+	//		}
+	//		
 		return res;
-	}
+	}*/
 
 	public static EquipInfo buildEquipInfo(Equip e) {
 		EquipInfo.Builder builder = EquipInfo.newBuilder();
@@ -171,37 +160,6 @@ public class PbBuilder {
 	}
 
 	
-	private static HomePageInfo buildHomePageInfo(HomePageOp homePageOp) {
-		HomePageInfo.Builder builder = HomePageInfo.newBuilder();
-		builder.setPosterGirlId(homePageOp.getPosterGirlId());
-		
-		return builder.build();
-	}
-
-
-	public static BattleChapterMsg.BattleLevelInfo buildBattleLevelInfo(BattleLevel battleLevel) {
-		BattleChapterMsg.BattleLevelInfo.Builder builder = BattleChapterMsg.BattleLevelInfo.newBuilder();
-		builder.setId(battleLevel.getLevelId());
-
-		builder.addAllStar(ByteHelp.binary1List(battleLevel.getStar()));
-		return builder.build();
-	}
-	public static BattleChapterInfo buildBattleChapterInfo(Chapter chapter) {
-		BattleChapterInfo.Builder builder = BattleChapterInfo.newBuilder();
-		builder.setId(chapter.getChapterId());
-		builder.addAllStarRewardIndex(ByteHelp.binary1List(chapter.getRewards()));
-		return builder.build();
-	}
-	public static BattleEventInfo buildBattleEventInfo(BattleRandomEvent event) {
-		BattleEventInfo.Builder builder = BattleEventInfo.newBuilder();
-		builder.setUid(event.getId() + "");
-		builder.setId(event.getRandomId());
-//		builder.setChapterId(event.getChapterId());
-//		builder.setPos(event.getPos());
-		long time = OldGlobalConst.randomEventTimer - (System.currentTimeMillis() - event.getCreateTime());
-		builder.setExpireTime((int) time);
-		return builder.build();
-	}
 
 
 	public static List<ResourceInfo> buildResourceInfo(Map<Integer, Integer> map) {
@@ -212,7 +170,6 @@ public class PbBuilder {
 		}
 		return list;
 	}
-
 
 	public static FriendInfo buildFriendInfo(Friend friend) throws Exception {
 
@@ -352,7 +309,7 @@ public class PbBuilder {
 		return itemInfo.build();
 
 	}
-
+	/*
 	public static BaseMsg.RoleInfo buildRoleInfo(Role role) {
 		EquipOp equipOp = PlayerCacheFactory.getCache(role.getPlayerId(), EquipOp.class);
 		BaseMsg.RoleInfo.Builder builder = BaseMsg.RoleInfo.newBuilder();
@@ -429,48 +386,48 @@ public class PbBuilder {
 		return list;
 	}
 
-
-	public static BaseMsg.ChipInfo buildChipInfo(Chip chip) {
-
-		BaseMsg.ChipInfo.Builder builder = BaseMsg.ChipInfo.newBuilder();
-		builder.setUid(String.valueOf(chip.getId()));
-		builder.setId(chip.getDictId());
-		builder.setRoleId(chip.getRoleId());
-		builder.setGrade(chip.getGrade());
-		builder.setPosition(chip.getPosition());
-
-//		chip.getCommonAttrList().forEach(e -> {
-//			BaseMsg.ChipCommonAttrInfo.Builder attrinfo = BaseMsg.ChipCommonAttrInfo.newBuilder();
-//			attrinfo.setAttr(e.first);
-//			attrinfo.setInitvalue(e.second);
-//			attrinfo.setGrowthvalue(e.third);
-//			builder.addCommonAttrs(attrinfo);
-//		});
-
-//		builder.addAllAffixAttrs(buildAffixInfo(chip.getAffixAttrList(), BaseMsg.AttrType.OLDATTR));
-
-//		builder.addAllAffixAttrs(buildAffixInfo(chip.getNewaffixAttrList(), BaseMsg.AttrType.NEWATTR));
-		builder.setLock(chip.getChecklock() == null || chip.getChecklock() == 0 ? false : true);
-		builder.setGetTime((int) (chip.getGetTime() / 1000));
-
-		return builder.build();
-	}
-
-
-	public static List<BaseMsg.ChipAffixAttrInfo> buildAffixInfo(List<FourTuple<Integer,Integer,Integer,Integer>> affixAttr, BaseMsg.AttrType type) {
-		List<BaseMsg.ChipAffixAttrInfo> builders = new ArrayList<>();
-
-		affixAttr.forEach(e -> {
-			BaseMsg.ChipAffixAttrInfo.Builder info = BaseMsg.ChipAffixAttrInfo.newBuilder();
-			info.setType(type);
-			info.setAttr(e.first);
-			info.setValue(e.second);
-			info.setMinValue(e.third);
-			info.setMaxValue(e.fourth);
-			builders.add(info.build());
-		});
-		return builders;
-	}
+	
+		public static BaseMsg.ChipInfo buildChipInfo(Chip chip) {
+	
+			BaseMsg.ChipInfo.Builder builder = BaseMsg.ChipInfo.newBuilder();
+			builder.setUid(String.valueOf(chip.getId()));
+			builder.setId(chip.getDictId());
+			builder.setRoleId(chip.getRoleId());
+			builder.setGrade(chip.getGrade());
+			builder.setPosition(chip.getPosition());
+	
+	//		chip.getCommonAttrList().forEach(e -> {
+	//			BaseMsg.ChipCommonAttrInfo.Builder attrinfo = BaseMsg.ChipCommonAttrInfo.newBuilder();
+	//			attrinfo.setAttr(e.first);
+	//			attrinfo.setInitvalue(e.second);
+	//			attrinfo.setGrowthvalue(e.third);
+	//			builder.addCommonAttrs(attrinfo);
+	//		});
+	
+	//		builder.addAllAffixAttrs(buildAffixInfo(chip.getAffixAttrList(), BaseMsg.AttrType.OLDATTR));
+	
+	//		builder.addAllAffixAttrs(buildAffixInfo(chip.getNewaffixAttrList(), BaseMsg.AttrType.NEWATTR));
+			builder.setLock(chip.getChecklock() == null || chip.getChecklock() == 0 ? false : true);
+			builder.setGetTime((int) (chip.getGetTime() / 1000));
+	
+			return builder.build();
+		}
+	
+	
+		public static List<BaseMsg.ChipAffixAttrInfo> buildAffixInfo(List<FourTuple<Integer,Integer,Integer,Integer>> affixAttr, BaseMsg.AttrType type) {
+			List<BaseMsg.ChipAffixAttrInfo> builders = new ArrayList<>();
+	
+			affixAttr.forEach(e -> {
+				BaseMsg.ChipAffixAttrInfo.Builder info = BaseMsg.ChipAffixAttrInfo.newBuilder();
+				info.setType(type);
+				info.setAttr(e.first);
+				info.setValue(e.second);
+				info.setMinValue(e.third);
+				info.setMaxValue(e.fourth);
+				builders.add(info.build());
+			});
+			return builders;
+		}*/
 
 	public static List<RewardInfo> buildRewardInfo(List<RewardItem> list) {
 
@@ -507,11 +464,7 @@ public class PbBuilder {
 				itemInfo.setCount(item.getCount());
 				reward.setItem(itemInfo);
 			}
-		} else if (item.getRole() != null) {
-			reward.setRole(buildRoleInfo(item.getRole()));
-		} else if (item.getSkin() > 0) {
-			reward.setSkin(SkinInfo.newBuilder().setId(item.getSkin()));
-		} else if (item.getEquip() != null) {
+		}  else if (item.getEquip() != null) {
 			reward.setEquip(buildEquipInfo(item.getEquip()));
 		}
 		return reward.build();
@@ -849,69 +802,82 @@ public class PbBuilder {
 		
 	}
 
-
-	public static List<RoleAttrInfo> buildRoleAttrInfo(Role role) {
-		List<RoleAttrInfo> list = new ArrayList<>();
-		List<RoleAttributeConfig> typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.hp, AttributeSubTypeEnum.cur);
-		int hpCurId = typesubTypeList.get(0).getId();
-		RoleAttrInfo.Builder rHp = RoleAttrInfo.newBuilder();
-		rHp.setId(hpCurId);
-		rHp.setValue(role.getHp());
-		list.add(rHp.build());
-
-		typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.hp, AttributeSubTypeEnum.curTotal);
-		int hpCurMaxId = typesubTypeList.get(0).getId();
-		RoleAttrInfo.Builder hpCurMaxInfo = RoleAttrInfo.newBuilder();
-		hpCurMaxInfo.setId(hpCurMaxId);
-		hpCurMaxInfo.setValue(role.getHpCurMax());
-		list.add(hpCurMaxInfo.build());
-
-//		RoleAttrInfo.Builder rEp = RoleAttrInfo.newBuilder();
-//		rEp.setId(AttributeTypeEnum.ep.getId());
-//		rEp.setValue(role.getEp());
-//		list.add(rEp.build());
-		
-		typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.san, AttributeSubTypeEnum.cur);
-		int sanCurId = typesubTypeList.get(0).getId();
-		RoleAttrInfo.Builder rSan = RoleAttrInfo.newBuilder();
-		rSan.setId(sanCurId);
-		rSan.setValue(role.getSan());
-		list.add(rSan.build());
-		
-		typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.san, AttributeSubTypeEnum.curTotal);
-		int sanCurMaxId = typesubTypeList.get(0).getId();
-		RoleAttrInfo.Builder sanCurMaxInfo = RoleAttrInfo.newBuilder();
-		sanCurMaxInfo.setId(sanCurMaxId);
-		sanCurMaxInfo.setValue(role.getSanCurMax());
-		list.add(sanCurMaxInfo.build());
-		
-		return list;
-	}
-
-	public static StoryInfo buildStoryInfo(Story story) {
-		StoryInfo.Builder builder = StoryInfo.newBuilder();
-		builder.setId(story.getStory());
-		builder.setCount(story.getStartConditionCount());
-		builder.setFinish(story.getFinish());
-		return builder.build();
-	}
-
-
-	public static List<TowerPlayerInfo> buildClimbingTowerGroupInfo(List<SimplePlayer> s_players, Collection<ClimbingTower> players) {
-		List<TowerPlayerInfo> res = new ArrayList<>(20);
-		int index = 0;
-		for (ClimbingTower climbingTower : players) {
-			SimplePlayer s_player = s_players.get(index++);
-			TowerPlayerInfo.Builder builder = TowerPlayerInfo.newBuilder();
-			builder.setHead(s_player.head);
-			builder.setName(s_player.name);
-			builder.setScore(climbingTower.getScore());
-			builder.setScoreTime((int) (climbingTower.getScoreTime() / 1000));
-			res.add(builder.build());
+	/*
+		public static List<RoleAttrInfo> buildRoleAttrInfo(Role role) {
+			List<RoleAttrInfo> list = new ArrayList<>();
+			List<RoleAttributeConfig> typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.hp, AttributeSubTypeEnum.cur);
+			int hpCurId = typesubTypeList.get(0).getId();
+			RoleAttrInfo.Builder rHp = RoleAttrInfo.newBuilder();
+			rHp.setId(hpCurId);
+			rHp.setValue(role.getHp());
+			list.add(rHp.build());
+	
+			typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.hp, AttributeSubTypeEnum.curTotal);
+			int hpCurMaxId = typesubTypeList.get(0).getId();
+			RoleAttrInfo.Builder hpCurMaxInfo = RoleAttrInfo.newBuilder();
+			hpCurMaxInfo.setId(hpCurMaxId);
+			hpCurMaxInfo.setValue(role.getHpCurMax());
+			list.add(hpCurMaxInfo.build());
+	
+	//		RoleAttrInfo.Builder rEp = RoleAttrInfo.newBuilder();
+	//		rEp.setId(AttributeTypeEnum.ep.getId());
+	//		rEp.setValue(role.getEp());
+	//		list.add(rEp.build());
+			
+			typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.san, AttributeSubTypeEnum.cur);
+			int sanCurId = typesubTypeList.get(0).getId();
+			RoleAttrInfo.Builder rSan = RoleAttrInfo.newBuilder();
+			rSan.setId(sanCurId);
+			rSan.setValue(role.getSan());
+			list.add(rSan.build());
+			
+			typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.san, AttributeSubTypeEnum.curTotal);
+			int sanCurMaxId = typesubTypeList.get(0).getId();
+			RoleAttrInfo.Builder sanCurMaxInfo = RoleAttrInfo.newBuilder();
+			sanCurMaxInfo.setId(sanCurMaxId);
+			sanCurMaxInfo.setValue(role.getSanCurMax());
+			list.add(sanCurMaxInfo.build());
+			
+			return list;
 		}
-		return res;
-	}
-
+	
+		public static StoryInfo buildStoryInfo(Story story) {
+			StoryInfo.Builder builder = StoryInfo.newBuilder();
+			builder.setId(story.getStory());
+			builder.setCount(story.getStartConditionCount());
+			builder.setFinish(story.getFinish());
+			return builder.build();
+		}
+	
+	
+		public static List<TowerPlayerInfo> buildClimbingTowerGroupInfo(List<SimplePlayer> s_players, Collection<ClimbingTower> players) {
+			List<TowerPlayerInfo> res = new ArrayList<>(20);
+			int index = 0;
+			for (ClimbingTower climbingTower : players) {
+				SimplePlayer s_player = s_players.get(index++);
+				TowerPlayerInfo.Builder builder = TowerPlayerInfo.newBuilder();
+				builder.setHead(s_player.head);
+				builder.setName(s_player.name);
+				builder.setScore(climbingTower.getScore());
+				builder.setScoreTime((int) (climbingTower.getScoreTime() / 1000));
+				res.add(builder.build());
+			}
+			return res;
+		}
+	
+	
+		public static List<RoleAttrPointInfo> buidRoleAttrInfo(Map<Integer, Integer> map) {
+			List<RoleAttrPointInfo> list = new ArrayList<>(4);
+			for (Integer key : map.keySet()) {
+				RoleAttrPointInfo.Builder builder = RoleAttrPointInfo.newBuilder();
+				builder.setId(key);
+				builder.setValue(map.get(key));
+				list.add(builder.build());
+			}
+			return list;
+		}
+		*/
+	
 
 	public static List<ForbidAccountInfo> buildForbidAccount(List<ForbidAccount> accounts) {
 		List<ForbidAccountInfo> res = new ArrayList<>();
@@ -928,18 +894,6 @@ public class PbBuilder {
 		return res;
 	}
 
-
-	public static List<RoleAttrPointInfo> buidRoleAttrInfo(Map<Integer, Integer> map) {
-		List<RoleAttrPointInfo> list = new ArrayList<>(4);
-		for (Integer key : map.keySet()) {
-			RoleAttrPointInfo.Builder builder = RoleAttrPointInfo.newBuilder();
-			builder.setId(key);
-			builder.setValue(map.get(key));
-			list.add(builder.build());
-		}
-		return list;
-	}
-	
 	public static List<GoodsInfo> buildGoodsInfo(Map<Integer, Integer> map) {
 		List<GoodsInfo> list = new ArrayList<>();
 
@@ -964,17 +918,6 @@ public class PbBuilder {
 		return list;
 	}
 
-
-	private static List<BaseMsg.MainCityBuffInfo> buildMainCityBuff(Map<Integer, Integer> buffs) {
-		List<BaseMsg.MainCityBuffInfo> list = new ArrayList<>();
-		for (Entry<Integer, Integer> entry : buffs.entrySet()) {
-			BaseMsg.MainCityBuffInfo.Builder buffInfo = BaseMsg.MainCityBuffInfo.newBuilder();
-			buffInfo.setBuffId(entry.getKey());
-			buffInfo.setCount(buffs.get(entry.getValue()));
-			list.add(buffInfo.build());
-		}
-		return list;
-	}
 	private static List<BuffMsg.BuffInfo> buildBuffs(Multimap<Long, Buff> buffs) {
 		List<BuffMsg.BuffInfo> list = new ArrayList<>();
 		buffs.asMap().forEach((k, v) -> {
@@ -1040,29 +983,29 @@ public class PbBuilder {
 		return build.build();
 	}
 
-
-	public static List<RoleUpdateInfo> buildRoleUpdateInfo(List<? extends Role> infos){
-		List<RoleUpdateInfo> roleUpdateInfos = new ArrayList<RoleUpdateInfo>();
-		for (Role roleInfo : infos) {
-			RoleUpdateInfo.Builder builder = RoleUpdateInfo.newBuilder();
-			builder.setId(roleInfo.getDictId());
-			builder.setStateValue(roleInfo.getState());
-			builder.addAllRoleAttrs(buildRoleAttrInfo(roleInfo));
-			roleUpdateInfos.add(builder.build());
+	/*
+		public static List<RoleUpdateInfo> buildRoleUpdateInfo(List<? extends Role> infos){
+			List<RoleUpdateInfo> roleUpdateInfos = new ArrayList<RoleUpdateInfo>();
+			for (Role roleInfo : infos) {
+				RoleUpdateInfo.Builder builder = RoleUpdateInfo.newBuilder();
+				builder.setId(roleInfo.getDictId());
+				builder.setStateValue(roleInfo.getState());
+				builder.addAllRoleAttrs(buildRoleAttrInfo(roleInfo));
+				roleUpdateInfos.add(builder.build());
+			}
+			return roleUpdateInfos;
 		}
-		return roleUpdateInfos;
-	}
-	//	public static PlayerArchiveInfo buildPlayerArchiveInfo(Player player) {
-	//		PlayerArchiveInfo.Builder builder = PlayerArchiveInfo.newBuilder();
-	//		builder.setId(player.getData().getPlayerId().intValue()) ; 
-	//		builder.setName(player.getData().getName()) ; 
-	//		builder.setGameTime(player.getData().getGameTime());
-	//		builder.setOfflineTime((player.getData().getOfflineTime().toString()));
-	//		builder.setLoginTime(DateUtil.parse(player.getData().getLoginDate()).getTime() + "");
-	//		return builder.build();
-	//	}
-	//	public static List<PlayerArchiveInfo> buildPlayerArchiveInfos(List<Player> players) {
-	//		return players.stream().map(PbBuilder::buildPlayerArchiveInfo).collect(toList());
-	//	}
-
+			public static PlayerArchiveInfo buildPlayerArchiveInfo(Player player) {
+				PlayerArchiveInfo.Builder builder = PlayerArchiveInfo.newBuilder();
+				builder.setId(player.getData().getPlayerId().intValue()) ; 
+				builder.setName(player.getData().getName()) ; 
+				builder.setGameTime(player.getData().getGameTime());
+				builder.setOfflineTime((player.getData().getOfflineTime().toString()));
+				builder.setLoginTime(DateUtil.parse(player.getData().getLoginDate()).getTime() + "");
+				return builder.build();
+			}
+			public static List<PlayerArchiveInfo> buildPlayerArchiveInfos(List<Player> players) {
+				return players.stream().map(PbBuilder::buildPlayerArchiveInfo).collect(toList());
+			}
+	*/
 }

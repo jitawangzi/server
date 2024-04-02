@@ -104,15 +104,6 @@ message PlayerResetPush_01100016{
 }
 
 
-// 请求购买体力物品
-message PlayerBuyPowerItemRequest_01000022{
-	uint32 buyCount = 1; //要购买的数量
-}
-
-// 服务器返回购买结果
-message PlayerBuyPowerItemResponse_01000023{	
-}
-
 /*** 对于客户端的请求，如果服务器处理过程中出现未知异常，导致没有返回对应的响应包时，返回此错误消息 ****/
 message PlayerErrorPush_01000099{
   string error = 1;    //服务端的异常堆栈 

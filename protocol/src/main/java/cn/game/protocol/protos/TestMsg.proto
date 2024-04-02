@@ -2,9 +2,9 @@ syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
-import "BaseMsg.proto" ;
+//import "BaseMsg.proto" ;
 import "RewardMsg.proto" ;
-import "ItemMsg.proto" ;
+//import "ItemMsg.proto" ;
 
 
 // gm指令
@@ -12,9 +12,6 @@ message TestGmCmdRequest_6f000001{
 	string cmd = 1;  // 指令格式:  指令类型空格参数空格参数。。。不同类型的指令有不同的参数类型和数量 例如：item id 数量
 	//具体的指令有：1
 	// item 增加物品或者资源 ,参数1 为表id 参数2为数量
-//	string test = 2;
-	string test3 = 2;
-	string teddddst3 = 3;
 }
 
 message TestGmCmdResponse_6f000002{
@@ -40,46 +37,6 @@ message TestMissionFinishResponse_6f000023{
 	repeated RewardInfo resource = 1;	// 获得的奖励
 }
 
-// 直接完成剧情
-message TestStoryFinishRequest_6f000024{
-	repeated uint32 id 	= 1 ;		// 剧情表id，完成多个剧情注意先后顺序
-}
-
-message TestStoryFinishResponse_6f000025{
-	repeated RewardInfo resource = 1;	// 获得的奖励
-}
-
-
-// 传送到某地图
-message TestMapTransmitRequest_6f000026{
-	uint32 id 	= 1 ;		// 地图id
-	uint32 x 	= 2 ;		// x坐标
-}
-
-message TestMapTransmitResponse_6f000027{
-}
-
-// 修改玩家在地图上的位置
-message TestExplorePosPush_6f000088{
-	uint64 playerId = 3;
-	uint32 x 	= 1 ;		// x坐标
-	uint32 y 	= 2 ;		// y坐标
-}
-
-// 测试发送邮件
-message TestMailRequest_6f000010{
-
-	uint32 receiveId = 1 ; 		// 收件人id
-	string sender = 2;			//发件人
-	string title = 3;  			//标题
-	string content = 4;  		//内容
-	repeated GoodsInfo attachments = 9;	//附件奖励
-}
-
-message TestMailResponse_6f000011{
-}
-
-
 
 // 只是测试
 message TestRequest_6f000020{
@@ -91,77 +48,6 @@ message TestResponse_6f000021{
 
 }
 
-
-// 
-message TestDbRequest_6f000041{
-	uint32 id 	= 1 ;		//
-}
-
-message TestDbResponse_6f000042{
-	uint32 data 	= 1 ;		//
-
-}
-
-//挑战副本 获取各种物品
-message TestAddExploreItemRequest_6f000030{
-
-}
-
-message TestAddExploreItemResponse_6f000031{
-	uint32 supply		= 1; //增加的补给
-	repeated ResourceInfo resources = 2; //增加的探索类资源(探索内)
-	uint32 teamExp	= 3; //增加的经验池经验
-	uint32 strategyPoint= 4; //增加策略点
-}
-
-//请求增加或减少背包道具
-message TestAddOrDelBagItemRequest_6f000032{
-	uint32 id 	= 1 ;		// 想要获取道具id
-	uint32 count = 2;		// 正数加,负数减
-}
-//响应背包道具
-message TestAddOrDelBagItemResponse_6f000033{
-	BagInfo bag = 1 ;  	// 背包数据
-}
-//查看某人探索地图数据
-message TestExploreMapRequest_6f000035{
-	string playerId 	= 1 ;		// 被查看人id
-}
-message TestExploreMapResponse_6f000036{
-	bytes data = 1;
-}
-
-//清除当前探索地图所有怪物
-message TestExploreDeleteMonsterRequest_6f000037{
-
-}
-//清除怪物响应(响应之前推送 ExploreFloorObjectDeleteByIdPush_52100907)
-message TestExploreDeleteMonsterResponse_6f000038{
-
-}
-
-//清除探索地图某位置的物体
-message TestExploreDeleteObjectRequest_6f000039{
-	int32 x = 1;
-	int32 y = 2;
-}
-message TestExploreDeleteObjectResponse_6f00003a{
-}
-//探索指定位置添加障碍
-message TestExploreAddBarrierRequest_6f000050{
-	int32 x = 1;
-	int32 y = 2;
-}
-message TestExploreAddBarrierResponse_6f000051{
-}
-
-//恢复探索角色血量到最大值
-message TestExploreFixRoleHp1000Request_6f000052{
-}
-message TestExploreFixRoleHp1000Response_6f000053{
-}
-
-
 //模拟测试某玩家发送协议
 message TestMessageRequest_6f000080{
 	uint64 playerId = 2;		// 玩家id
@@ -171,80 +57,4 @@ message TestMessageRequest_6f000080{
 message TestMessageResponse_6f000081{
 
 }
-
-//测试添加buff
-message TestAddBuffRequest_6f00003b{
-	int32 buffId = 1;
-	repeated string targets = 2;
-}
-message TestAddBuffResponse_6f00003c{
-}
-//直接进入探索第二阶段
-message TestEnterPhaseTwoRequest_6f000091{
-}
-message TestEnterPhaseTwoResponse_6f000092{
-}
-//直接完成探索区域目标
-message TestExploreLevelGoalsFinishRequest_6f000093{
-}
-message TestExploreLevelGoalsFinishResponse_6f000094{
-}
-//测试执行命令
-message TestCommandRequest_6f000095{
-	int32 command = 1;
-}
-message TestCommandResponse_6f000096{
-}
-
-//查看角色相关属性，方便前后端比对
-message TestRoleAttributeRequest_6f000100{
-//	两个id看情况使用，一般是使用uid
-	uint32 uid = 1;	// 探索角色唯一id
-	uint32 id = 2;  // Role表id，表里世界通用角色数据
-	uint32 attrType = 3 ; // AttributeTypeEnum 枚举的id，查看哪种属性
-}
-message TestRoleAttributeResponse_6f000101{
-	repeated TestRoleAttrValue attrs = 1;	// 属性值
-}
-
-message TestRoleAttrValue{
-	uint32 attrSubType = 4 ;  // AttributeSubTypeEnum 子属性类型，服务端有哪种类型的就发哪种类型的
-	uint32 value = 1;	// 属性值
-}
-
-
-message TestGameEventTriggerRequest_6f000105{
-	uint32 id = 1;	// 事件id
-}
-
-message TestGameEventTriggerResponse_6f000106{
-}
-
-message TestGenObjectRequest_6f000107{
-}
-
-message TestGenObjectResponse_6f000108{
-}
-
-
-message TestStoreDiscountResponse_6f00010a {
-	float discount = 1; // 最终折扣(每个折扣/100后相乘,最后四舍五入保留两位小数)
-}
-// 增加角色晋升等级。
-message TestRolePromotionRequest_6f00010b{
-	uint32 roleId = 1; // 角色配置表id
-	uint32 level = 2;  // 改变后的晋升等级。
-}
-message TestRolePromotionResponse_6f00010c {
-
-}
-
-// 解锁所有天赋节点
-message TestRoleUnlockOccupationTalentNodeRequest_6f00010d{
-}
-message TestRoleUnlockOccupationTalentNodeResponse_6f00010e {
-
-}
-
-
 

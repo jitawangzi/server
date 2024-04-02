@@ -12,7 +12,6 @@ import cn.game.protocol.generated.enume.AttributeSubTypeEnum;
 import cn.game.protocol.generated.enume.AttributeTypeEnum;
 import cn.game.protocol.generated.enume.OldConditionTypeEnum;
 import cn.game.protocol.generated.enume.RoleTagEnum;
-import cn.game.protocol.protobuf.RoleMsg;
 
 /**
  * @Description 角色（队员）数据
@@ -377,12 +376,6 @@ public interface IRoleOp {
 	 */
 	public void rolePromotion();
 
-	/**
-	 * 探索队伍晋升
-	 * @param roleIdList
-	 * @return
-	 */
-	public List<RoleMsg.RolePromotionInfo> rolePromotion(List<Integer> roleIdList);
 
 	/**
 	 * 加晋升点

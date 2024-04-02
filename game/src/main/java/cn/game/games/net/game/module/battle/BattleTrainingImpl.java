@@ -11,7 +11,7 @@ import cn.game.protocol.generated.enume.DungeonTypeEnum;
 import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.generated.manager.RoutineTrainingManager;
 import cn.game.protocol.manual.OldErrorMsgEnum;
-import cn.game.protocol.protobuf.BattleChapterMsg.BattleLevelEndResponse_13000004;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.util.DateUtil;
 
 /**
@@ -60,7 +60,7 @@ public class BattleTrainingImpl implements IBattleHandler {
 	}
 
 	@Override
-	public int battleEnd(long playerId, boolean win, List<Integer> starList, BattleLevelEndResponse_13000004.Builder resp) {
+	public int battleEnd(long playerId, boolean win, List<Integer> starList, BattleFieldEndResponse_13000004.Builder resp) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterOp chapterOp = player.getModule(ChapterOp.class);
 		int id = chapterOp.getAttackingId();

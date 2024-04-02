@@ -2,7 +2,7 @@ package cn.game.games.net.game.module.battle;
 
 import java.util.List;
 
-import cn.game.protocol.protobuf.BattleChapterMsg.BattleLevelEndResponse_13000004;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 
 /**
  * @Description 战斗接口
@@ -23,7 +23,7 @@ public interface IBattleHandler {
 	 */
 	int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid);
 	
-	int battleEnd(long playerId, boolean win, List<Integer> starList, BattleLevelEndResponse_13000004.Builder resp);
+	int battleEnd(long playerId, boolean win, List<Integer> starList, BattleFieldEndResponse_13000004.Builder resp);
 
 	int getType();
 }
