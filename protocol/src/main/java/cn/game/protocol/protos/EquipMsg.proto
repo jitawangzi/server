@@ -1,0 +1,45 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+package Protos;
+
+// 装备协议
+//装备/替换
+message EquipmentWearRequest_09000001 {
+  string uid = 1; //唯一id
+  uint32 roleId = 2;
+  uint32 slot = 3;
+}
+
+message EquipmentWearResponse_09000002 {
+
+}
+
+//卸下
+message EquipmentTeardownRequest_09000003 {
+  uint32 roleId = 1; //角色id
+  uint32 slot = 2; //槽位
+}
+
+message EquipmentTeardownResponse_09000004 {
+
+}
+
+//强化
+message EquipmentStrengthRequest_09000007 {
+  uint32 roleId = 1; //角色id
+  uint32 slot = 2; //槽位
+}
+
+message EquipmentStrengthResponse_09000008 {
+
+}
+
+enum EquipSlot{
+  EQUIPSLOT_NULL = 0;
+  ONE = 1;
+  TWO = 2;
+  THREE = 3;
+  FOUR = 4;
+}
+
+

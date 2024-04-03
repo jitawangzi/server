@@ -6,13 +6,12 @@ import java.util.Map;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.Role;
 import cn.game.games.cache.op.impl.BuffOp;
-import cn.game.games.cache.op.impl.EquipOp;
 import cn.game.games.cache.op.impl.PropertyOp;
 import cn.game.games.cache.op.impl.RoleOp;
 import cn.game.games.net.game.helper.RoleHelper;
-import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.buff.BuffValue;
+import cn.game.games.net.game.module.equip.EquipModule;
 import cn.game.games.net.game.module.prop.RolePropFromType;
 import cn.game.games.net.game.module.prop.RoleProperty;
 import cn.game.protocol.generated.config.RoleConfig;
@@ -82,11 +81,11 @@ public abstract class PropertyEffectorFactory {
 
             prop.clear();
             //装备固定属性
-            EquipOp equipOp = player.getModule(EquipOp.class);
-            Map<Integer, Integer> equipAttrValByType = equipOp.getEquipAttrValByType(id, GameConstants.EQUIP_FIXEDVAL);
-            for (Map.Entry<Integer,Integer> entry : equipAttrValByType.entrySet()) {
-                prop.add(entry.getKey(), entry.getValue());
-            }
+            EquipModule equipOp = player.getModule(EquipModule.class);
+//            Map<Integer, Integer> equipAttrValByType = equipOp.getEquipAttrValByType(id, GameConstants.EQUIP_FIXEDVAL);
+//            for (Map.Entry<Integer,Integer> entry : equipAttrValByType.entrySet()) {
+//                prop.add(entry.getKey(), entry.getValue());
+//            }
             return prop;
         }
     };

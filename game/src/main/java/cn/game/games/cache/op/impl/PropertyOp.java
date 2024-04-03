@@ -9,26 +9,26 @@ import java.util.Map;
 import com.google.common.collect.Multimap;
 
 import cn.game.games.cache.base.PlayerCacheFactory;
-import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Role;
 import cn.game.games.cache.op.face.IPropertyOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.RoleHelper;
+import cn.game.games.net.game.module.equip.EquipModule;
 import cn.game.games.net.game.module.prop.RolePropFromType;
 import cn.game.games.net.game.module.prop.RoleProperty;
 import cn.game.protocol.generated.config.OldBuffConfig;
+import cn.game.protocol.generated.config.OldSkillConfig;
 import cn.game.protocol.generated.config.RoleConfig;
 import cn.game.protocol.generated.config.RoleTagConfig;
-import cn.game.protocol.generated.config.OldSkillConfig;
 import cn.game.protocol.generated.enume.AttributeSubTypeEnum;
 import cn.game.protocol.generated.enume.AttributeTypeEnum;
 import cn.game.protocol.generated.enume.EffectEnum;
 import cn.game.protocol.generated.manager.OldBuffManager;
+import cn.game.protocol.generated.manager.OldSkillManager;
 import cn.game.protocol.generated.manager.RoleManager;
 import cn.game.protocol.generated.manager.RoleTagManager;
-import cn.game.protocol.generated.manager.OldSkillManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 public class PropertyOp extends BasePlayerModule implements IPropertyOp {
@@ -204,21 +204,21 @@ public class PropertyOp extends BasePlayerModule implements IPropertyOp {
     }
 
     public int getEquipBuffValue(int roleId, int attribteId) {
-        EquipOp equipOp = player.getModule(EquipOp.class);
+        EquipModule equipOp = player.getModule(EquipModule.class);
         RoleOp roleOp = player.getModule(RoleOp.class);
+		int addBuff = 0;
         Role role = roleOp.get(roleId);
-        Map<Byte, Equip> roleEquipByRoleId = equipOp.getRoleEquipByRoleId(role.getDictId());
-        int addBuff = 0;
-        if (roleEquipByRoleId != null && roleEquipByRoleId.size() > 0) {
-            for (Equip equip : roleEquipByRoleId.values()) {
-                List<Integer> buffList = equip.getBuffList();
-                if (buffList != null && buffList.size() > 0) {
-                    for (Integer buff : buffList) {
-                        addBuff += getBuffAddValue(attribteId, buff);
-                    }
-                }
-            }
-        }
+//        Map<Byte, Equip> roleEquipByRoleId = equipOp.getRoleEquipByRoleId(role.getDictId());
+//        if (roleEquipByRoleId != null && roleEquipByRoleId.size() > 0) {
+//            for (Equip equip : roleEquipByRoleId.values()) {
+//                List<Integer> buffList = equip.getBuffList();
+//                if (buffList != null && buffList.size() > 0) {
+//                    for (Integer buff : buffList) {
+//                        addBuff += getBuffAddValue(attribteId, buff);
+//                    }
+//                }
+//            }
+//        }
         return addBuff;
     }
 

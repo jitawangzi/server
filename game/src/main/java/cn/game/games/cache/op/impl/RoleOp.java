@@ -33,7 +33,6 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BuffHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.RoleHelper;
-import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.RewardItem;
 import cn.game.games.net.game.module.buff.BuffValue;
@@ -50,7 +49,6 @@ import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.config.OldSkillConfig;
 import cn.game.protocol.generated.config.RoleConfig;
 import cn.game.protocol.generated.config.RoleExpConfig;
-import cn.game.protocol.generated.config.RolePromotionConfig;
 import cn.game.protocol.generated.config.RoleRisingStarConfig;
 import cn.game.protocol.generated.config.RoleTagConfig;
 import cn.game.protocol.generated.enume.AttributeSubTypeEnum;
@@ -262,10 +260,10 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 		id_roles.put(role.getDictId(), role);
 		// 添加固有装备
 		List<Integer> equipmentId = roleConfig.getEquipmentId();
-		for (int i = 0; i < equipmentId.size(); i++) {
-			EquipOp equipOp = player.getModule(EquipOp.class);
-			equipOp.addRoleFixedEquip(equipmentId.get(i), roleId, i + 1);
-		}
+//		for (int i = 0; i < equipmentId.size(); i++) {
+//			EquipModule equipOp = player.getModule(EquipModule.class);
+//			equipOp.addRoleFixedEquip(equipmentId.get(i), roleId, i + 1);
+//		}
 
 		if (passiveSkillList.size() > 0) {
 			role.addSkillsUsed(passiveSkillList.get(0));
