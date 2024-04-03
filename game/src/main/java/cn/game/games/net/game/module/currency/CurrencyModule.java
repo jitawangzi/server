@@ -82,7 +82,10 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	protected void initFromDb(ListIterator<?> iterator) {
 
 	}
+	@Override
+	public void initFromDbAfter() {
 
+	};
 	@Override
 	public Currency newInstance() {
 		return new Currency();

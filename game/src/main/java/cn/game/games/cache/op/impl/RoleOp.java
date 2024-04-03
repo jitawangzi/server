@@ -135,7 +135,10 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 		}
 
 	}
+	@Override
+	public void initFromDbAfter() {
 
+	};
 	private Map<Integer, RoleTagQuest> getRoleTagQuestMap(int roleDictId) {
 		Map<Integer, RoleTagQuest> map = this.roleTagQuests.get(roleDictId);
 		if (map == null) {

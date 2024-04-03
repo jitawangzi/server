@@ -199,7 +199,10 @@ public class SkillOp extends BasePlayerModule implements ISkillOp {
 		// TODO Auto-generated method stub
 
 	}
+	@Override
+	public void initFromDbAfter() {
 
+	};
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		// TODO Auto-generated method stub

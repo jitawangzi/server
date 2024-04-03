@@ -130,7 +130,10 @@ public class SignOp extends BasePlayerModule implements ISignOp {
 		// TODO Auto-generated method stub
 
 	}
+	@Override
+	public void initFromDbAfter() {
 
+	};
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		// TODO Auto-generated method stub

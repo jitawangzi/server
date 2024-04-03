@@ -31,6 +31,10 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 		}
 	}
 	@Override
+	public void initFromDbAfter() {
+
+	};
+	@Override
 	public void initAddCache(T item) {
 		addCacheStackable(item);
 	}

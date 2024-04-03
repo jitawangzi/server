@@ -46,7 +46,10 @@ public class PlayerModule extends BasePlayerModule {
 			idsMap.computeIfAbsent(playerIds.getType(), key -> new HashMap<>()).put(playerIds.getConfigId(), playerIds);
 		}
 	}
+	@Override
+	public void initFromDbAfter() {
 
+	};
 	public void addId(int type, int configId) {
 		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
 		if (map.containsKey(configId)) {

@@ -107,6 +107,10 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 		// 重载已开启过的爬塔活动数据
 //		reloadClimbingTowerData();
 	}
+	@Override
+	public void initFromDbAfter() {
+
+	};
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {

@@ -1,4 +1,4 @@
-package cn.game.games.net.game.handler;
+package cn.game.games.net.game.module.mail;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +11,6 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Mail;
-import cn.game.games.cache.op.impl.MailOp;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.MailMsg.MailDeleteRequest_12000007;
@@ -46,7 +45,7 @@ public class MailHandler extends BaseHandler {
 
 		String uid = req.getUid();
 		long id = StringUtils.isEmpty(uid) ? 0 : Long.parseLong(uid);
-		MailOp mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailOp.class);
+		MailModule mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailModule.class);
 
 		if (id > 0) {
 			Mail mail = mailOp.get(id);
@@ -67,7 +66,7 @@ public class MailHandler extends BaseHandler {
 
 		String uid = req.getUid();
 		long id = StringUtils.isEmpty(uid) ? 0 : Long.parseLong(uid);
-		MailOp mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailOp.class);
+		MailModule mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailModule.class);
 		List<RewardInfo> ret = null;
 		if (id > 0) {
 			ret = mailOp.receive(id);
@@ -82,7 +81,7 @@ public class MailHandler extends BaseHandler {
 		MailDeleteRequest_12000007 req = (MailDeleteRequest_12000007) message;
 		String uid = req.getUid();
 		long id = StringUtils.isEmpty(uid) ? 0 : Long.parseLong(uid);
-		MailOp mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailOp.class);
+		MailModule mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailModule.class);
 
 		if (id > 0) {
 			Mail mail = mailOp.get(id);
@@ -103,7 +102,7 @@ public class MailHandler extends BaseHandler {
 	private void list(NetClient client, Object message) {
 
 		MailListResponse_12000002.Builder resp = MailListResponse_12000002.newBuilder();
-		MailOp mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailOp.class);
+		MailModule mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailModule.class);
 		Collection<Mail> list = mailOp.list();
 		resp.addAllMails(PbBuilder.buildAllMailInfo(list));
 

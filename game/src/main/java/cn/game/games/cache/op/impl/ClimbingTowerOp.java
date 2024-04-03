@@ -292,7 +292,12 @@ public class ClimbingTowerOp extends BasePlayerModule implements IClimbTowerOp {
 	protected void initFromDb(ListIterator<?> iterator) {
 		// TODO Auto-generated method stub
 
+
 	}
+	@Override
+	public void initFromDbAfter() {
+
+	};
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {

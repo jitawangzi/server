@@ -725,6 +725,11 @@ public final class DateUtil {
 		calendar.set(Calendar.MILLISECOND, 0);
 		return calendar.getTime();
 	}
+	
+	public static int currentTimeSeconds() {
+		
+		return (int) (System.currentTimeMillis() / 1000); 
+	}
 
 	/**
 	 * @param args

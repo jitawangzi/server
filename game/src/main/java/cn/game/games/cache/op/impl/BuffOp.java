@@ -710,6 +710,10 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 		// TODO Auto-generated method stub
 
 	}
+	@Override
+	public void initFromDbAfter() {
+
+	};
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {

@@ -133,6 +133,10 @@ public class MoneyRecoverModule extends BasePlayerModule {
 
 	}
 	@Override
+	public void initFromDbAfter() {
+
+	};
+	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 
 	}

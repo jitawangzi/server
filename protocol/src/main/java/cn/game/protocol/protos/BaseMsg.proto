@@ -26,7 +26,7 @@ message ResourceInfo{
 // 物品信息，一般用来显示使用，不能代表最终获取的物品
 message GoodsInfo{
 
-     uint32 id = 1;		//id，可以是Role表的id，Item表的id等等
+     uint32 id = 1;		//id，可以是Hero表的id，Item表的id等等
      uint32 count = 2;		//数量
 }
 

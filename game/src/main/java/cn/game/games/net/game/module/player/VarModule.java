@@ -90,7 +90,10 @@ public class VarModule extends BasePlayerModule {
 			varMap.put(variable.getType(), variable.getValue());
 		}
 	}
+	@Override
+	public void initFromDbAfter() {
 
+	};
 	@Override
 	public void handleEvent(GameEvent event) {
 

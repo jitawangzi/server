@@ -295,10 +295,12 @@ public class TestHandler extends BaseHandler {
 	protected void test(NetClient client, Object message) {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-//		PlayerManager.getInstance().saveClientCache(playerId);
-		GameClientManager.getInstance().logout((GameClient)client); 
-		
-		System.out.println();
+//		GameClientManager.getInstance().logout((GameClient)client); 
+		List<Goods> list = new ArrayList<Goods>(); 
+		list.add(new Goods(1,66666)) ; 
+		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
+		PlayerManager.getInstance().saveClientCache(playerId);
+//		System.out.println();
 //		PlayerHelper.refresh(player);
 //		for (int i = 0; i < 100000; i++) {
 //			player.getData().setLevel(1001 + i);

@@ -64,6 +64,7 @@ import cn.game.protocol.generated.manager.GameCommandManager;
 import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -840,6 +841,11 @@ public class PlayerHelper {
 			GameClientManager.getInstance().addGameClientPlayer(newGameClient);
 
 			Player player = PlayerManager.getInstance().getPlayer(oldGameClient.getPlayerId());
+			if (player == null) {
+				newGameClient.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
+				return true; 
+			}
+					
 			PlayerHelper.refresh(player);
 			player.handleEvent(EventTypeEnum.Reconnect);
 			PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
@@ -979,11 +985,10 @@ public class PlayerHelper {
 	public static List<DbTask> initDbTasks(Player player) {
 		List<DbTask> dbTasks = new ArrayList<>();
 
-		if (GameServer.getInstance().isSinglePlayerTable()) {
-			return dbTasks;
-		}
 		for (BasePlayerModule module : player.getModuleSorted()) {
-			module.initDbTasks(dbTasks);
+			if (!GameServer.getInstance().isSinglePlayerTable() || module.alwaysStoreDataInStandaloneTable()) {
+				module.initDbTasks(dbTasks);
+			}
 		}
 		return dbTasks;
 	}
@@ -997,10 +1002,10 @@ public class PlayerHelper {
 				long playerId = player.getData().getPlayerId();
 				ListIterator<?> listIterator = list.listIterator();
 				if (GameServer.getInstance().isSinglePlayerTable()) {
-					HashMap<String, BasePlayerModule> modules = JsonUtil.parseObject(player.getData().getModules(),
-							HashMap.class);
-					player.initPlayerModuleFromDb(modules);
 					for (BasePlayerModule module : player.getModuleSorted()) {
+						if (module.alwaysStoreDataInStandaloneTable()) {
+							module.loadFromDb(listIterator);
+						}
 						module.initFromDbAfter();
 					}
 				} else {

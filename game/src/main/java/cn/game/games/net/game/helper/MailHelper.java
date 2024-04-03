@@ -7,14 +7,11 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Mail;
-import cn.game.games.cache.op.impl.MailOp;
-import cn.game.games.net.data.mapper.MailMapper;
-import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.util.DAO;
+import cn.game.games.net.game.module.mail.MailModule;
 
 /**
  * @Description 邮件帮助类
@@ -34,10 +31,11 @@ public class MailHelper {
 
 		Mail mail = Mail.valueOf(receiverId, sender, title, content, type, attachmentList);
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
-			MailOp mailOp = PlayerCacheFactory.getCache(receiverId, MailOp.class);
-			mailOp.sendOnline(mail);
+			Player player = PlayerManager.getInstance().getPlayer(receiverId); 
+			MailModule mailModule = player.getMailModule() ;
+			mailModule.sendOnline(mail);
 		} else {
-			insert(mail);
+			mail.insert() ; 
 		}
 	}
 	public static void sendMail2(long receiverId, String sender, String title, String content, byte type,
@@ -68,10 +66,4 @@ public class MailHelper {
 			List<Entry<Integer, Integer>> rewards) {
 		sendMail2(receiverId, senderId + "", titleId + "", contentId + "", type, rewards);
 	}
-
-	public static void insert(Mail mail) {
-
-		DAO.execute(MailMapper.class, MapperConstant.insert, mail);
-	}
-
 }

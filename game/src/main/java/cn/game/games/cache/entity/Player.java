@@ -22,11 +22,13 @@ import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.event.EventModule;
 import cn.game.games.net.game.module.hero.HeroModule;
 import cn.game.games.net.game.module.item.ItemModule;
+import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarModule;
 import cn.game.games.net.game.module.shop.ShopHelper;
@@ -38,6 +40,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
+import cn.game.util.JsonUtil;
 import cn.game.util.MapWrapper;
 import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
@@ -152,22 +155,27 @@ public class Player  {
 	public VarModule getVarModule() {
 		return getModule(VarModule.class);
 	}
+	public MailModule getMailModule() {
+		return getModule(MailModule.class);
+	}
 	public Player() {
 	}
 
 	public Player(PlayerData data) {
 		this.data = data;
 		this.playerId = data.getPlayerId();
-		initPlayerModule();
+		initPlayerModule() ; 
 	}
 
 	public void initPlayerModule() {
-		initModule(null); 
+		
+		if (GameServer.getInstance().isSinglePlayerTable()) {
+			HashMap<String, BasePlayerModule> modules = JsonUtil.parseObject(getData().getModules(),HashMap.class);
+			initModule(modules);
+		}else {
+			initModule(null); 
+		}
 	}
-	public void initPlayerModuleFromDb(HashMap<String, BasePlayerModule> modulesFromDb) {
-		initModule(modulesFromDb);
-	}
-
 	private void initModule(HashMap<String, BasePlayerModule> modulesFromDb) {
 		modules.clear(); 
 		for (Class<? extends BasePlayerModule> clazz : allModuleClass) {

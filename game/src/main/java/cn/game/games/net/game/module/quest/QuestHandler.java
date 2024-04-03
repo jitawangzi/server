@@ -1,4 +1,4 @@
-package cn.game.games.net.game.handler;
+package cn.game.games.net.game.module.quest;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,6 @@ import cn.game.games.net.data.mapper.PlayerExtMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
@@ -75,7 +74,8 @@ public class QuestHandler extends BaseHandler {
 	protected void update(NetClient client, Object message) {
 		MissionUpdateRequest_20000030 req = (MissionUpdateRequest_20000030) message;
 		MissionUpdateResponse_20000031.Builder resp = MissionUpdateResponse_20000031.newBuilder();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		int id = req.getId();
 		int index = req.getIndex();
 		int count = req.getCount();
@@ -103,7 +103,8 @@ public class QuestHandler extends BaseHandler {
 	protected void branchPriority(NetClient client, Object message) {
 		MissionBranchPriorityRequest_20000028 req = (MissionBranchPriorityRequest_20000028) message;
 		MissionBranchPriorityResponse_20000029.Builder resp = MissionBranchPriorityResponse_20000029.newBuilder();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		int group = req.getGroup();
 		QuestModule questOp = player.getModule(QuestModule.class);
 		boolean hasBranchGroup = questOp.hasBranchGroup(group);
@@ -123,7 +124,8 @@ public class QuestHandler extends BaseHandler {
 	protected void accept(NetClient client, Object message) {
 		MissionAcceptRequest_20000026 req = (MissionAcceptRequest_20000026) message;
 		MissionAcceptResponse_20000027.Builder resp = MissionAcceptResponse_20000027.newBuilder();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		int id = req.getId();
 		QuestModule questOp = player.getModule(QuestModule.class);
 		Quest quest = questOp.get(id);
@@ -145,7 +147,10 @@ public class QuestHandler extends BaseHandler {
 		MissionChallengeGroupDetailRequest_20000022 req = (MissionChallengeGroupDetailRequest_20000022) message;
 		MissionChallengeGroupDetailResponse_20000023.Builder resp = MissionChallengeGroupDetailResponse_20000023.newBuilder();
 		int id = req.getId();
-		QuestModule questOp = PlayerCacheFactory.getCache(client.getPlayerId(), QuestModule.class);
+		
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		QuestModule questOp = player.getModule(QuestModule.class);
+
 		Map<Integer, QuestChallenge> challenges = questOp.getChallenges();
 		QuestChallenge questChallenge = challenges.get(id);
 		if (questChallenge != null) {
@@ -166,8 +171,8 @@ public class QuestHandler extends BaseHandler {
 		MissionChallengeGroupRequest_20000020 req = (MissionChallengeGroupRequest_20000020) message;
 		MissionChallengeGroupResponse_20000021.Builder resp = MissionChallengeGroupResponse_20000021.newBuilder();
 		int type = req.getType();
-
-		QuestModule questOp = PlayerCacheFactory.getCache(client.getPlayerId(), QuestModule.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		QuestModule questOp = player.getModule(QuestModule.class);
 		Map<Integer, QuestChallenge> challenges = questOp.getChallenges();
 
 		List<MissionChallengeGroupConfig> typeList = MissionChallengeGroupManager.getInstance().getTypeList(type);
@@ -224,7 +229,8 @@ public class QuestHandler extends BaseHandler {
 	}
 	protected void active(NetClient client, Object message) {
 		MissionActiveResponse_20000007.Builder resp = MissionActiveResponse_20000007.newBuilder();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId(); 
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
 		List<Integer> binary1List = ByteHelp.binary1List(playerExt.getQuestActive());
 		resp.addAllId(binary1List);
@@ -235,7 +241,8 @@ public class QuestHandler extends BaseHandler {
 		MissionListRequest_20000001 req = (MissionListRequest_20000001) message;
 		MissionListResponse_20000002.Builder resp = MissionListResponse_20000002.newBuilder();
 		int group = req.getType();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		resp.addAllMissions(PbBuilder.buildQuestByGroup(playerId, MissionTypeEnum.get(group)));
 		if (group == MissionTypeEnum.BranchLine.getId()) {
 			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
@@ -253,7 +260,8 @@ public class QuestHandler extends BaseHandler {
 
 		int id = req.getId();
 		int index = req.getIndex();
-		QuestModule questOp = PlayerCacheFactory.getCache(client.getPlayerId(), QuestModule.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		QuestModule questOp = player.getModule(QuestModule.class);
 
 		List<RewardInfo> rewards = questOp.receive(id, index);
 		if (rewards.isEmpty()) {
@@ -269,7 +277,8 @@ public class QuestHandler extends BaseHandler {
 
 		List<Integer> ids = req.getIdsList();
 //		int group = req.getGroup();
-		QuestModule questOp = PlayerCacheFactory.getCache(client.getPlayerId(), QuestModule.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		QuestModule questOp = player.getModule(QuestModule.class);
 
 //		List<Integer> ret = new ArrayList<>();
 //		if (id > 0) {
