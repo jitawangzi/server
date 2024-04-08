@@ -49,7 +49,6 @@ import cn.game.util.JsonUtil;
 import cn.game.util.Pair;
 import cn.game.util.RedissonUtil;
 import cn.game.util.Rnd;
-import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -1086,9 +1085,10 @@ public class PlayerManager {
 	/**
 	 * @Description 保存在线玩家缓存数据到数据库
 	 * @param playerId
+	 * @return 
 	 */
-	public void saveClientCache(long playerId) {
-		saveClientCache(playerId, false);
+	public Future<List<Object>> saveClientCache(long playerId) {
+		return saveClientCache(playerId, false);
 	}
 
 	/** 

@@ -102,6 +102,11 @@ public class DAO {
 		return invoke(mapper, method, args);
 	}
 
+	/** 
+	 * 一次性执行多个任务，注意这些任务都是在一个线程顺序执行的。 
+	 * @param tasks
+	 * @return
+	 */
 	public static Future<List<Object>> execute(List<DbTask> tasks) {
 		Future<List<Object>> future = VxHolder.vertx.executeBlocking(promise -> {
 			List<Object> ret = new ArrayList<>();

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class Player  {
 	}
 	private Map<String, BasePlayerModule> modules = new HashMap<>();
 	private transient Map<Integer, GoodsModule<? extends Item, ? extends Item>> goodsModules = new HashMap<>();
-	/* **************** 内存数据 ******************** */
+	/* ******************** 内存数据 ******************** */
 	private transient EventModule eventModule = new EventModule();
 	/** TODO 长时间闲置设置false，先不清数据,暂停定时存库 */
 	private volatile boolean isActive = true;
@@ -167,16 +168,18 @@ public class Player  {
 	}
 
 	public void initPlayerModule() {
-		
 		if (GameServer.getInstance().isSinglePlayerTable()) {
-			HashMap<String, BasePlayerModule> modules = JsonUtil.parseObject(getData().getModules(),HashMap.class);
+			HashMap<String, BasePlayerModule> modules = null;
+			String modules2 = getData().getModules();
+			if (!StringUtils.isEmpty(modules2) && !"[]".equals(modules2)) {
+				modules = JsonUtil.parseObject(modules2, HashMap.class);
+			}
 			initModule(modules);
 		}else {
 			initModule(null); 
 		}
 	}
 	private void initModule(HashMap<String, BasePlayerModule> modulesFromDb) {
-		modules.clear(); 
 		for (Class<? extends BasePlayerModule> clazz : allModuleClass) {
 			try {
 				if (Modifier.isAbstract(clazz.getModifiers())) {

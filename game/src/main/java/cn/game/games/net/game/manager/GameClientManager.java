@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -30,8 +31,8 @@ import cn.game.protocol.protobuf.ServerMsg.GamePlayerOnlinePush_7d000010;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 public class GameClientManager {
 	private static Logger log = LoggerFactory.getLogger(GameClientManager.class);
@@ -225,18 +226,37 @@ public class GameClientManager {
 //		}
 //		MoreExecutors.shutdownAndAwaitTermination(executorService, Config.shutdownWaitTime, TimeUnit.SECONDS);
 
-		List<Future> futures = new ArrayList<>();
+//		List<Future> futures = new ArrayList<>();
+		int onLineCount = lists.size();
+		AtomicInteger finishCount = new AtomicInteger(0);
+		Promise<Object> promise = Promise.promise();
+		Future<Object> future = promise.future();
+
 		for (GameClient gameClient : lists) {
-			Future<?> logout = logout(gameClient);
-			futures.add(logout);
+			gameClient.getContext().runOnContext(r -> {
+				Future<?> logout = logout(gameClient);
+//				futures.add(logout);
+				logout.onComplete(ar -> {
+					if (ar.succeeded()) {
+					} else {
+						log.error(gameClient.getPlayerId() + " logout fail : ", ar.cause());
+					}
+					finishCount.getAndIncrement();
+					if (finishCount.intValue() == onLineCount) {
+						promise.complete();
+					}
+				});
+			});
 		}
-		CompositeFuture all = CompositeFuture.join(futures);
+
+//		CompositeFuture all = CompositeFuture.join(futures);
 		try {
-			all.toCompletionStage().toCompletableFuture().get(Config.shutdownWaitTime, TimeUnit.SECONDS);
+			future.toCompletionStage().toCompletableFuture().get(Config.shutdownWaitTime, TimeUnit.SECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("storeAllPlayers error", e);
+			log.error("storeAllPlayers error,maybe time out ", e);
 		}
+
 		watch.stop();
 		log.info("Store GameClient Total Size : [{}] usedTime[{}]ms", lists.size(), watch.getTime());
 	}
