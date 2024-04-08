@@ -23,68 +23,77 @@ import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 
+/**    
+ * 一些数据库操作的方便封装
+ * @date 2024年4月8日 下午6:54:11
+ * @author SYQ
+ */
 public class DAO {
 	private static final Logger log = LoggerFactory.getLogger("dbLog");
 
 	private static LinkedBlockingQueue<DbTask> dbTasksQueue = new LinkedBlockingQueue<DbTask>();
 	private static volatile boolean pauseUpdateDb = false;
 
-	public static Future<@Nullable Object> insert(Class<?> mapper, DbEntity arg) {
-		return execute(mapper, MapperConstant.insert, arg);
+	public static Future<@Nullable Object> insert(DbEntity arg) {
+		arg.beforeSave();
+		return execute(arg.getMapperClass(), MapperConstant.insert, arg);
 	}
 
-	public static Future<@Nullable Object> insertBatch(Class<?> mapper, List<? extends DbEntity> list) {
-		return execute(mapper, MapperConstant.insertBatch, list);
+	public static Future<@Nullable Object> insertSelective(DbEntity arg) {
+		arg.beforeSave();
+		return execute(arg.getMapperClass(), MapperConstant.insertSelective, arg);
 	}
 
-	public static Future<@Nullable Object> insertOrUpdate(Class<?> mapper, DbEntity arg) {
-		return execute(mapper, MapperConstant.insertOrUpdate, arg);
+	public static Future<@Nullable Object> insertOrUpdate(DbEntity arg) {
+		arg.beforeSave();
+		return execute(arg.getMapperClass(), MapperConstant.insertOrUpdate, arg);
 	}
 
-	public static Future<@Nullable Object> insertSelective(Class<?> mapper, DbEntity arg) {
-		return execute(mapper, MapperConstant.insertSelective, arg);
-	}
-
-	/**
-	 * @Description 更新整行数据,注意不包含blob字段
-	 * @param mapper
+	/** 
+	 * 更新整行数据,注意不包含blob字段
 	 * @param arg
-	 * @return 
+	 * @return
 	 */
-	public static Future<@Nullable Object> update(Class<?> mapper, DbEntity arg) {
-		return execute(mapper, MapperConstant.updateByPrimaryKey, arg);
-
-//		GameDataPush_7d00000a.Builder builder = GameDataPush_7d00000a.newBuilder();
-//		builder.setMapperClass(mapper.getName());
-//		builder.setMethod(MapperConstant.updateByPrimaryKey);
-//		builder.setArg(UnsafeByteOperations.unsafeWrap(KryoUtils.serializeClassAndObject(arg)));
-//		RocketMQRpcClient.send(GameServer.getInstance().getServerId(ServerType.Data), builder.build());
-
+	public static Future<@Nullable Object> update(DbEntity arg) {
+		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKey, arg);
 	}
 
 	/**
 	 * @Description 更新整行数据，包含blob字段。
-	 * @param mapper
 	 * @param arg
 	 * @return 
 	 */
-	public static Future<@Nullable Object> updateWithBLOBs(Class<?> mapper, DbEntity arg) {
-		return execute(mapper, MapperConstant.updateByPrimaryKeySelective, arg);
+	public static Future<@Nullable Object> updateWithBLOBs(DbEntity arg) {
+		arg.beforeSave();
+		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKeySelective, arg);
 	}
 
 	/**
 	 * @Description 更新部分字段，可以包含blob
-	 * @param mapper
 	 * @param arg
 	 * @return 
 	 */
-	public static Future<@Nullable Object> updateSelective(Class<?> mapper, DbEntity arg) {
-		return execute(mapper, MapperConstant.updateByPrimaryKeySelective, arg);
-
+	public static Future<@Nullable Object> updateSelective(DbEntity arg) {
+		arg.beforeSave();
+		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKeySelective, arg);
 	}
 
-	public static Future<@Nullable Object> delete(Class<?> mapper, Object... arg) {
-		return execute(mapper, MapperConstant.deleteByPrimaryKey, arg);
+	public static Future<@Nullable Object> delete(DbEntity arg) {
+
+		Class<?> mapperClass = arg.getMapperClass();
+		Object primaryKey = arg.primaryKey();
+		if (primaryKey.getClass() == Object[].class) {
+			return execute(mapperClass, MapperConstant.deleteByPrimaryKey, (Object[]) primaryKey);
+		}
+		return execute(mapperClass, MapperConstant.deleteByPrimaryKey, primaryKey);
+	}
+
+
+	public static Future<@Nullable Object> insertBatch(Class<?> mapper, List<? extends DbEntity> list) {
+		for (DbEntity dbEntity : list) {
+			dbEntity.beforeSave();
+		}
+		return execute(mapper, MapperConstant.insertBatch, list);
 	}
 
 	public static Future<@Nullable Object> deleteBatch(Class<?> mapper, List<? extends DbEntity> list) {
@@ -144,6 +153,14 @@ public class DAO {
 		return future;
 	}
 
+	public static Object invoke(Class<?> mapperClass, String method, Object... args) {
+		Object targetObject = SpringContextLoader.getContext().getBean(mapperClass);
+		Method method2 = MapperConstant.getMethod(mapperClass, method);
+		Object result = ReflectionUtils.invokeMethod(method2, targetObject, args);
+		return result;
+	}
+
+	@Deprecated
 	public static Future<List<Object>> update(List<DbTask> tasks) {
 
 //		if (pauseUpdateDb) {
@@ -166,13 +183,7 @@ public class DAO {
 		return future;
 	}
 
-	public static Object invoke(Class<?> mapperClass, String method, Object... args) {
-		Object targetObject = SpringContextLoader.getContext().getBean(mapperClass);
-		Method method2 = MapperConstant.getMethod(mapperClass, method);
-		Object result = ReflectionUtils.invokeMethod(method2, targetObject, args);
-		return result;
-	}
-
+	@Deprecated
 	public static void listenPauseUpdateDb() {
 
 		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig();
@@ -200,6 +211,7 @@ public class DAO {
 		});
 	}
 
+	@Deprecated
 	private static void saveAndClearCacheTask() {
 		DbTask task;
 		List<Future> futures = new ArrayList<>();

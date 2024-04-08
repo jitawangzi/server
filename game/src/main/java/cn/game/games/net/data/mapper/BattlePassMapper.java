@@ -54,5 +54,5 @@ public interface BattlePassMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<BattlePass> recordList);
+	int updateBatch(@Param("recordList") List<BattlePass> recordList);
 }

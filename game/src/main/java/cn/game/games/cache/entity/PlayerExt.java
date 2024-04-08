@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cn.game.games.cache.base.DbEntity;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.PlayerExtMapper;
 import cn.game.games.net.game.helper.EventHelper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.OldGlobalConst;
@@ -23,8 +23,6 @@ import cn.game.protocol.protobuf.BuildingMsg;
 import cn.game.util.KryoUtils;
 import cn.game.util.Rnd;
 import cn.game.util.StrUtil;
-import java.util.Date;
-import cn.game.games.cache.base.DbEntity;
 
 public class PlayerExt implements Serializable, DbEntity {
 
@@ -353,7 +351,7 @@ public class PlayerExt implements Serializable, DbEntity {
 			this.illustrate = makeIllustrateInfo().build().toByteArray();
 			PlayerExt update = PlayerExt.valueOf(playerId);
 			update.setIllustrate(this.illustrate);
-			DAO.updateSelective(PlayerExtMapper.class, update);
+			DAO.updateSelective(update);
 			//触发事件
 			EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.CollectAtlas));
 		}
@@ -450,7 +448,7 @@ public class PlayerExt implements Serializable, DbEntity {
 		}
 		PlayerExt update = PlayerExt.valueOf(playerId);
 		update.setStrategyCards(strategyCards);
-		DAO.updateSelective(PlayerExtMapper.class, update);
+		DAO.updateSelective(update);
 	}
 
 	/**

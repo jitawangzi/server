@@ -7,7 +7,6 @@ import cn.game.games.cache.op.face.ISignOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.SignMapper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.DateUtil;
@@ -86,12 +85,12 @@ public class SignOp extends BasePlayerModule implements ISignOp {
 
 	@Override
 	public void insert() {
-		DAO.insert(SignMapper.class, this.sign);
+		DAO.insert(this.sign);
 	}
 
 	@Override
 	public void update() {
-		DAO.update(SignMapper.class, this.sign);
+		DAO.update(this.sign);
 	}
 
 	/**

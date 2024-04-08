@@ -61,6 +61,6 @@ public interface SkillMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Skill> recordList);
+	int updateBatch(@Param("recordList") List<Skill> recordList);
 
 }

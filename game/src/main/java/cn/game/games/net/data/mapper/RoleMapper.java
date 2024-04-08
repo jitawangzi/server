@@ -66,7 +66,7 @@ public interface RoleMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Role> recordList);
+	int updateBatch(@Param("recordList") List<Role> recordList);
 
 
 }

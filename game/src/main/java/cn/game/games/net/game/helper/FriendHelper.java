@@ -63,7 +63,7 @@ public class FriendHelper {
 			if (count < FriendOp.maxFriends) {
 
 				Friend add = Friend.valueOf(playerId, friendId, relation);
-				DAO.insert(FriendMapper.class, add);
+				DAO.insert(add);
 				return true;
 			}
 		}

@@ -54,5 +54,5 @@ public interface DrawMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Draw> recordList);
+	int updateBatch(@Param("recordList") List<Draw> recordList);
 }

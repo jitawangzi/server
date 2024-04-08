@@ -61,5 +61,5 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Mail> recordList);
+	int updateBatch(@Param("recordList") List<Mail> recordList);
 }

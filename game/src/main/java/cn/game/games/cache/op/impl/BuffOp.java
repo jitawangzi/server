@@ -18,15 +18,12 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import cn.game.games.cache.entity.Buff;
-import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerExt;
 import cn.game.games.cache.op.face.IBuffOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.BuffMapper;
-import cn.game.games.net.data.mapper.PlayerExtMapper;
 import cn.game.games.net.game.helper.BuffHelper;
 import cn.game.games.net.game.helper.EventHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -155,7 +152,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 			buff.init(player);
 			putBuff(target, buff);
 
-			DAO.insert(BuffMapper.class, buff);
+			DAO.insert(buff);
 			ret.add(buff);
 		}
 
@@ -369,7 +366,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 		Multimap<Long, Buff> multimap = buffArrayMap[targetType.ordinal()];
 		for (Buff buff : multimap.values()) {
 			buff.unregisterEventHandler();
-			DAO.delete(BuffMapper.class, buff.getId());
+			DAO.delete(buff);
 			BuffHelper.pushBuffUpdate(buff, UpdateType.DELETE);
 			printDelLog(buff);
 		}
@@ -433,7 +430,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 			if (buff.getBuffId() == buffId) {
 				iterator.remove();
 				buff.unregisterEventHandler();
-				DAO.delete(BuffMapper.class, buff.getId());
+				DAO.delete(buff);
 				BuffHelper.pushBuffUpdate(buff, UpdateType.DELETE);
 				printDelLog(buff);
 			}
@@ -453,7 +450,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 			if (buffConfig.getType().getId() == buffType) {
 				iterator.remove();
 				buff.unregisterEventHandler();
-				DAO.delete(BuffMapper.class, buff.getId());
+				DAO.delete(buff);
 				BuffHelper.pushBuffUpdate(buff, UpdateType.DELETE);
 				printDelLog(buff);
 //				buffLog.info("player[{}],移除目标[{}]身上,类型为[{}],id为[{}]的buff", playerId, target, buffType, buff.getBuffId());
@@ -470,7 +467,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 		Collection<Buff> removeAll = multimap.removeAll(target);
 		for (Buff buff : removeAll) {
 			buff.unregisterEventHandler();
-			DAO.delete(BuffMapper.class, buff.getId());
+			DAO.delete(buff);
 			BuffHelper.pushBuffUpdate(buff, UpdateType.DELETE);
 			printDelLog(buff);
 		}
@@ -587,7 +584,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 				OldBuffConfig buffConfig = OldBuffManager.getInstance().getBuffConfig(buff.getBuffId());
 				if (buffConfig.getTargetType().getDestroyType() == type) {
 					iterator.remove();
-					DAO.delete(BuffMapper.class, buff.getId());
+					DAO.delete(buff);
 					BuffHelper.pushBuffUpdate(buff, UpdateType.DELETE);
 					printDelLog(buff);
 				}
@@ -617,7 +614,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 			playerExt.addEventId(eventId);
 			PlayerExt update = PlayerExt.valueOf(playerId);
 			update.setEventIds(playerExt.getEventIds());
-			DAO.updateSelective(PlayerExtMapper.class, update);
+			DAO.updateSelective(update);
 
 			BuffMsg.EventPush_01001100.Builder response = BuffMsg.EventPush_01001100.newBuilder();
 			response.setEventId(eventId);
@@ -662,7 +659,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 				Buff buff = pair.second;
 				multimap.remove(targetId, buff);
 				buff.unregisterEventHandler();
-				DAO.delete(BuffMapper.class, buff.getId());
+				DAO.delete(buff);
 				BuffHelper.pushBuffUpdate(buff, UpdateType.DELETE);
 				printDelLog(buff);
 				if (i + 1 == EffectTargetTypeEnum.Role.getId()) {

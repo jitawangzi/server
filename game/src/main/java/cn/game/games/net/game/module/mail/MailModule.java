@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import com.fasterxml.aalto.util.DataUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.Mail;
@@ -17,10 +16,9 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.MailMapper;
-import cn.game.games.net.game.GameServer;
-import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.util.DAO;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -33,7 +31,8 @@ public class MailModule extends BasePlayerModule  {
 	public void sendOnline(Mail mail) {
 
 		mails.put(mail.getId(), mail) ; 
-		mail.insert() ; 
+		DAO.insert(mail);
+//		mail.insert() ; 
 	}
 
 	public Mail get(long id) {
@@ -45,6 +44,7 @@ public class MailModule extends BasePlayerModule  {
 		Mail remove = this.mails.remove(id); 
 		if (remove!= null) {
 			remove.delete() ; 
+//			DAO.dele
 		}
 	}
 

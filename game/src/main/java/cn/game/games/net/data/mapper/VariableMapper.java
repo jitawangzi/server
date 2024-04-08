@@ -59,5 +59,5 @@ public interface VariableMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Variable> recordList);
+	int updateBatch(@Param("recordList") List<Variable> recordList);
 }

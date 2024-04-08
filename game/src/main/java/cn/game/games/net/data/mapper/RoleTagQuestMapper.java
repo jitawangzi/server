@@ -66,5 +66,5 @@ public interface RoleTagQuestMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<RoleTagQuest> recordList);
+	int updateBatch(@Param("recordList") List<RoleTagQuest> recordList);
 }

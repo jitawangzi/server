@@ -59,5 +59,5 @@ public interface ShopItemMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<ShopItem> recordList);
+	int updateBatch(@Param("recordList") List<ShopItem> recordList);
 }

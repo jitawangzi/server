@@ -42,11 +42,9 @@ import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.EventOptionConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.OldBuffConfig;
-import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.config.RandomNameConfig;
 import cn.game.protocol.generated.enume.EffectEnum;
 import cn.game.protocol.generated.enume.Money;
-import cn.game.protocol.generated.enume.ResourceEnum;
 import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.HeadBoxManager;
 import cn.game.protocol.generated.manager.HeadPortraitManager;
@@ -54,7 +52,6 @@ import cn.game.protocol.generated.manager.OldBuffManager;
 import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.BuffMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
@@ -336,7 +333,7 @@ public class PlayerHandler extends BaseHandler {
 		playerExt.removeEventId(eventId);
 		PlayerExt update = PlayerExt.valueOf(playerId);
 		update.setEventIds(playerExt.getEventIds());
-		DAO.updateSelective(PlayerExtMapper.class, update);
+		DAO.updateSelective(update);
 		// 添加事件
 		Map<Integer, Integer> addResources = new HashMap<>();
 		for (Buff buff : buffs) {

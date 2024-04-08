@@ -61,6 +61,6 @@ public interface QuestChallengeMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<QuestChallenge> recordList);
+	int updateBatch(@Param("recordList") List<QuestChallenge> recordList);
 
 }

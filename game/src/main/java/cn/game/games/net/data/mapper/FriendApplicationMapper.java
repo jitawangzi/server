@@ -66,7 +66,7 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<FriendApplication> recordList);
+	int updateBatch(@Param("recordList") List<FriendApplication> recordList);
 
 
 }

@@ -63,7 +63,7 @@ public interface RoleActionMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<RoleAction> recordList);
+	int updateBatch(@Param("recordList") List<RoleAction> recordList);
 
 
 }

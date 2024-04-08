@@ -54,5 +54,5 @@ public interface BaseMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Base> recordList);
+	int updateBatch(@Param("recordList") List<Base> recordList);
 }

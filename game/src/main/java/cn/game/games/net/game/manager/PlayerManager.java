@@ -913,7 +913,7 @@ public class PlayerManager {
 				continue;
 			}
 			it.remove();
-			DAO.delete(ForbidAccountMapper.class, account.getPlayerId());
+			DAO.delete(account);
 		}
 		
 		return res;
@@ -948,7 +948,7 @@ public class PlayerManager {
 				GameClientManager.getInstance().logout(playerId);
 			});
 			ForbidAccount insert = ForbidAccount.valueOf(player, reason, unblock);
-			DAO.insert(ForbidAccountMapper.class, insert);
+			DAO.insert(insert);
 			this.forbidAccounts.put(playerId, insert);
 			return 0;
 		}
@@ -960,7 +960,7 @@ public class PlayerManager {
 				return OldErrorMsgEnum.player_not_found.getId();
 			}
 			ForbidAccount insert = ForbidAccount.valueOf(p, reason, unblock);
-			DAO.insert(ForbidAccountMapper.class, insert);
+			DAO.insert(insert);
 			this.forbidAccounts.put(playerId, insert);
 
 			return 0;
@@ -981,8 +981,8 @@ public class PlayerManager {
 		if (!isForbidAccount(playerId)) {
 			return 0;
 		}
-		this.forbidAccounts.remove(playerId);
-		DAO.delete(ForbidAccountMapper.class, playerId);
+		ForbidAccount remove = this.forbidAccounts.remove(playerId);
+		DAO.delete(remove);
 		return 0;
 	}
 	

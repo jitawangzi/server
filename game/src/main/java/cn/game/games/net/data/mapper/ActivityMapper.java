@@ -61,7 +61,7 @@ public interface ActivityMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Activity> recordList);
+	int updateBatch(@Param("recordList") List<Activity> recordList);
 
 	List<Activity> selectByPlayerId(Long playerId);
 

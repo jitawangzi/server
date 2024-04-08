@@ -171,7 +171,7 @@ public class DbExcute2 {
 			row.setStringField19(i * 3 + Rnd.get(1, 1000000) + "test");
 			row.setStringField20(i * 3 + Rnd.get(1, 1000000) + "test");
 
-			DAO.insert(BaseMapper.class, row);
+			DAO.insert(row);
 		}
 
 	}

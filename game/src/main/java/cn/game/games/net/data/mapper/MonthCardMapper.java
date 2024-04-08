@@ -61,6 +61,6 @@ public interface MonthCardMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<MonthCard> recordList);
+	int updateBatch(@Param("recordList") List<MonthCard> recordList);
 
 }

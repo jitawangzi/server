@@ -235,16 +235,16 @@
     </foreach>
     )
   </update>
-<!--       &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;update id="batchUpate" parameterType="java.util.List"&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt; -->
+<!--       &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;update id="batchUpate" parameterType="java.util.List"&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt; -->
 <!--                 update t_buff -->
 <!--         使用动态SQL生成批量更新的SQL语句 -->
-<!--         &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;foreach collection="list" item="item" separator=","&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt; -->
+<!--         &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;foreach collection="list" item="item" separator=","&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt; -->
 <!-- 			    set buff_id = #{item.buffId,jdbcType=INTEGER}, -->
 <!-- 			      use_num = #{item.useNum,jdbcType=INTEGER}, -->
 <!-- 			      level = #{item.level,jdbcType=INTEGER}, -->
 <!-- 			      round = #{item.round,jdbcType=INTEGER}, -->
 <!-- 			      target = #{item.target,jdbcType=BIGINT} -->
 <!-- 			    where id = #{item.id,jdbcType=BIGINT} -->
-<!--         &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;/foreach&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt; -->
-<!--     &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;/update&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt; -->
+<!--         &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;/foreach&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt; -->
+<!--     &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;lt;/update&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;gt; -->
 </mapper>

@@ -61,6 +61,6 @@ public interface StoryMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Story> recordList);
+	int updateBatch(@Param("recordList") List<Story> recordList);
 
 }

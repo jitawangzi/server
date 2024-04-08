@@ -7,12 +7,10 @@ import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerExt;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.cache.entity.QuestChallenge;
-import cn.game.games.net.data.mapper.PlayerExtMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -117,7 +115,7 @@ public class QuestHandler extends BaseHandler {
 
 		PlayerExt update = PlayerExt.valueOf(playerId);
 		update.setBranchGroup(group);
-		DAO.updateSelective(PlayerExtMapper.class, update);
+		DAO.updateSelective(update);
 
 		client.sendProtocol(resp);
 	}
@@ -223,7 +221,7 @@ public class QuestHandler extends BaseHandler {
 
 		PlayerExt update = PlayerExt.valueOf(playerId);
 		update.setQuestActive(playerExt.getQuestActive());
-		DAO.updateSelective(PlayerExtMapper.class, update);
+		DAO.updateSelective(update);
 
 		client.sendProtocol(resp.build());
 	}

@@ -39,5 +39,5 @@ public interface ItemNoStackMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<ItemNoStack> recordList);
+	int updateBatch(@Param("recordList") List<ItemNoStack> recordList);
 }

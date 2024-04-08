@@ -22,6 +22,7 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ActivityMapper;
+import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -175,7 +176,7 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 		if (activityBase != null) {
 			activity.setParams(activityBase.toSaveString());
 		}
-		DAO.insert(ActivityMapper.class, activity);
+		DAO.insert(activity);
 	}
 
 
@@ -189,7 +190,7 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 		ActivityBase activityBase = this.activities.get(id);
 		activity.setParams(activityBase.toSaveString());
 
-		DAO.updateWithBLOBs(ActivityMapper.class, activity);
+		DAO.updateWithBLOBs(activity);
 	}
 	@Override
 	public void updateAll() {
@@ -206,7 +207,7 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 			activity.setStat((byte) 0);
 			activity.setParams(saveString);
 
-			DAO.updateWithBLOBs(ActivityMapper.class, activity);
+			DAO.updateWithBLOBs(activity);
 		}
 	}
 
@@ -226,7 +227,7 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 
 	@Override
 	public void delete(int id) {
-		DAO.delete(ActivityMapper.class, new Object[] { playerId, id });
+		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { playerId, id });
 	}
 
 	@Override

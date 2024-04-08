@@ -61,7 +61,7 @@ public interface OfflineResourceAddMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<OfflineResourceAdd> recordList);
+	int updateBatch(@Param("recordList") List<OfflineResourceAdd> recordList);
 
 
 }

@@ -61,5 +61,5 @@ public interface ItemMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Item> recordList);
+	int updateBatch(@Param("recordList") List<Item> recordList);
 }

@@ -2,7 +2,6 @@ package cn.game.games.net.game.helper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map.Entry;
@@ -17,7 +16,6 @@ import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ctrip.framework.apollo.ConfigService;
 import com.google.protobuf.MessageLite.Builder;
 import com.google.protobuf.UnsafeByteOperations;
 
@@ -47,7 +45,6 @@ import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.buff.BuffValue;
-import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
@@ -82,7 +79,6 @@ import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
-import cn.game.util.JsonUtil;
 import cn.game.util.KryoUtils;
 import cn.game.util.Pair;
 import cn.game.util.RedissonUtil;
@@ -697,7 +693,7 @@ public class PlayerHelper {
 		}
 	}
 
-	private static boolean operator(int value, int configValue, int operator) {
+	public static boolean operator(int value, int configValue, int operator) {
 		switch (operator) {
 		case 1:
 			return value > configValue;

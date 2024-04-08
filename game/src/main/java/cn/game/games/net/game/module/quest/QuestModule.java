@@ -10,13 +10,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import cn.game.games.cache.entity.ConditionCount;
 import cn.game.games.cache.entity.PlayerExt;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.cache.entity.QuestChallenge;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.PlayerExtMapper;
+import cn.game.games.net.data.mapper.ConditionCountMapper;
 import cn.game.games.net.data.mapper.QuestChallengeMapper;
 import cn.game.games.net.data.mapper.QuestMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -51,19 +54,24 @@ public class QuestModule extends BasePlayerModule {
 
 	/** 当前激活的任务 */
 	private Map<Integer, Quest>[] quests;
+	@JsonIgnore
 	/** 已完成的任务 ， 不需要这个了，不用查看历史任务 */
 	private Map<Integer, Quest>[] competeQuests;
+	@JsonIgnore
 	// 支线任务保留最后一个任务id
 	private Map<Integer, QuestChallenge> challenges;
+
+	private Map<Integer, ConditionCount> conditionCountMap = new HashMap<Integer, ConditionCount>();
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
-		return new Class[] { QuestMapper.class };
+		return new Class[] { QuestMapper.class, ConditionCountMapper.class };
 	}
 
 	protected void initFromDb(ListIterator<?> iterator) {
 		List<Quest> list = (List<Quest>) iterator.next();
+		List<ConditionCount> conditionList = (List<ConditionCount>) iterator.next();
 		for (Quest e : list) {
 //			if (e.getState() == QuestHelper.RECEIVED) {
 //				competeQuests[e.getQuestGroup()].put(e.getId(), e);
@@ -72,6 +80,10 @@ public class QuestModule extends BasePlayerModule {
 //			}
 			MissionConfig missionConfig = QuestHelper.getMissionConfig(e.getId());
 			quests[missionConfig.getType().ordinal()].put(e.getId(), e);
+		}
+
+		for (ConditionCount conditionCount : conditionList) {
+			conditionCountMap.put(conditionCount.getConditionType(), conditionCount);
 		}
 	}
 
@@ -655,7 +667,7 @@ public class QuestModule extends BasePlayerModule {
 
 		PlayerExt update = PlayerExt.valueOf(playerId);
 		update.setBranchGroup(playerExt.getBranchGroup());
-		DAO.updateSelective(PlayerExtMapper.class, update);
+		DAO.updateSelective(update);
 
 		PlayerHelper.sendProtcol(playerId,
 				MissionBranchPriorityPush_20300000.newBuilder().setGroup(playerExt.getBranchGroup()).build());

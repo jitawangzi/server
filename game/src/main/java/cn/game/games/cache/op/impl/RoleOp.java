@@ -24,7 +24,6 @@ import cn.game.games.cache.op.face.IRoleOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.PlayerExtMapper;
 import cn.game.games.net.data.mapper.RoleActionBattleMapper;
 import cn.game.games.net.data.mapper.RoleActionMapper;
 import cn.game.games.net.data.mapper.RoleMapper;
@@ -991,11 +990,11 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 			}
 		}
 		if (insert) {
-			DAO.insert(mapper, ac);
+//			DAO.insert(mapper, ac);
 			roleActionMap.put(type.getId(), ac);
 		} else {
 			ac.setCount(ac.getCount() + 1);
-			DAO.update(mapper, ac);
+//			DAO.update(mapper, ac);
 		}
 	}
 
@@ -1143,7 +1142,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 
 			Role update = Role.valueOf(role.getId());
 			update.setTags(role.getTags());
-			DAO.updateSelective(RoleMapper.class, update);
+			DAO.updateSelective(update);
 		}
 
 //		PlayerHelper.sendProtcol(playerId,
@@ -1252,7 +1251,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 
 		PlayerExt update = PlayerExt.valueOf(playerId);
 		update.setOcctalentNode(playerExt.getOcctalentNode());
-		DAO.updateSelective(PlayerExtMapper.class, update);
+		DAO.updateSelective(update);
 
 		return OldErrorMsgEnum.ok.getId();
 	}

@@ -54,5 +54,5 @@ public interface SignMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Sign> recordList);
+	int updateBatch(@Param("recordList") List<Sign> recordList);
 }

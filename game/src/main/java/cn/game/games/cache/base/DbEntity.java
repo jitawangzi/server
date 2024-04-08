@@ -1,27 +1,31 @@
 package cn.game.games.cache.base;
 
+import cn.game.games.net.game.GameServer;
 import cn.game.games.util.DAO;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 
+/**    
+ * 这里面的方法，都在多表(每个功能单独表)情况下使用。 
+ * 单表不用处理数据库，会忽略这些方法调用。 
+ * 单表里面的单独表，用DAO类的方法更新数据。 
+ * @date 2024年4月8日 下午6:45:47
+ * @author SYQ
+ */
 public interface DbEntity {
 
 	public default Future<@Nullable Object> insert() {
-		Class<?> mapperClass = getMapperClass();
-		if (mapperClass == null) {
+		if (GameServer.getInstance().isSinglePlayerTable()) {
 			return Future.succeededFuture();
 		}
-		this.beforeSave();
-		return DAO.insert(mapperClass, this);
+		return DAO.insert(this);
 	}
 
 	public default Future<@Nullable Object> insertOrUpdate() {
-		Class<?> mapperClass = getMapperClass();
-		if (mapperClass == null) {
+		if (GameServer.getInstance().isSinglePlayerTable()) {
 			return Future.succeededFuture();
 		}
-		this.beforeSave();
-		return DAO.insertOrUpdate(mapperClass, this);
+		return DAO.insertOrUpdate(this);
 	}
 
 	/** 
@@ -29,12 +33,10 @@ public interface DbEntity {
 	 * @return
 	 */
 	public default Future<@Nullable Object> update() {
-		Class<?> mapperClass = getMapperClass();
-		if (mapperClass == null) {
+		if (GameServer.getInstance().isSinglePlayerTable()) {
 			return Future.succeededFuture();
 		}
-		this.beforeSave();
-		return DAO.update(mapperClass, this);
+		return DAO.update(this);
 	}
 
 	/** 
@@ -42,35 +44,30 @@ public interface DbEntity {
 	 * @return
 	 */
 	public default Future<@Nullable Object> updateWithBlobs() {
-		Class<?> mapperClass = getMapperClass();
-		if (mapperClass == null) {
+		if (GameServer.getInstance().isSinglePlayerTable()) {
 			return Future.succeededFuture();
 		}
-		this.beforeSave();
-		return DAO.updateWithBLOBs(mapperClass, this);
+		return DAO.updateWithBLOBs(this);
 	}
 
 	public default Future<@Nullable Object> delete() {
-		Class<?> mapperClass = getMapperClass();
-		if (mapperClass == null) {
+		if (GameServer.getInstance().isSinglePlayerTable()) {
 			return Future.succeededFuture();
 		}
-		Object primaryKey = this.primaryKey();
-		if (primaryKey.getClass() == Object[].class) {
-			return DAO.delete(mapperClass, (Object[]) primaryKey);
-		} else {
-			return DAO.delete(mapperClass, primaryKey);
-		}
+		return DAO.delete(this);
 	}
 
 	public default Class<?> getMapperClass() {
 		return null ; 
 	}
 
+	/** 
+	 * 这里为什么要单独抽取出来方法，是因为希望这个方法在客户端loop线程执行， 
+	 * 而不是在vertx的worker线程池里执行，否则会多个线程同时读写map之类，容易有线程安全问题。 
+	 * 这里这类对象都是在同一个进程里读写的。  
+	 */
 	public default void beforeSave() {
 	};
 
-	public default Object primaryKey() {
-		return null;
-	};
+	public Object primaryKey();
 }

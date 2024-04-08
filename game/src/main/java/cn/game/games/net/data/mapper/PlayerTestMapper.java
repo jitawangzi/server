@@ -64,5 +64,5 @@ public interface PlayerTestMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<PlayerTest> recordList);
+	int updateBatch(@Param("recordList") List<PlayerTest> recordList);
 }

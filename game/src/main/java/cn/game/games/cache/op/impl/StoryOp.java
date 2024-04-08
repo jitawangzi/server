@@ -11,7 +11,6 @@ import cn.game.games.cache.op.face.IStoryOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.StoryMapper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.StoryConfig;
 import cn.game.protocol.generated.manager.StoryManager;
@@ -40,7 +39,7 @@ public class StoryOp extends BasePlayerModule implements IStoryOp {
 			story = Story.valueOf(playerId, id);
 			story.setStartConditionCount(count);
 			story.setFinish(finish);
-			DAO.insert(StoryMapper.class, story);
+			DAO.insert(story);
 			this.storys.put(id, story);
 		} else {
 			if (story.getFinish()) {
@@ -53,7 +52,7 @@ public class StoryOp extends BasePlayerModule implements IStoryOp {
 			if (count > 0) {
 				story.setStartConditionCount(story.getStartConditionCount() + count);
 			}
-			DAO.update(StoryMapper.class, story);
+			DAO.update(story);
 		}
 		return true;
 	}

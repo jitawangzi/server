@@ -61,7 +61,7 @@ public interface DayOperationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<DayOperation> recordList);
+	int updateBatch(@Param("recordList") List<DayOperation> recordList);
 
 	int updateByPlayerId(Long playerId);
 

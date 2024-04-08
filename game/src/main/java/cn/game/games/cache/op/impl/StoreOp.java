@@ -17,8 +17,6 @@ import cn.game.games.cache.op.face.IStoreOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.StoreDataMapper;
-import cn.game.games.net.data.mapper.StoreMapper;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.StoreHelper;
@@ -90,7 +88,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		if (data == null) {
 			StoreData s = new StoreData();
 			s.setPlayerId(this.playerId);
-			DAO.insert(StoreDataMapper.class, s);
+			DAO.insert(s);
 			
 		} else {
 			this.storeData = data;
@@ -148,15 +146,15 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 	}
 
 	private void update(Store store) {
-		DAO.update(StoreMapper.class, store);
+		DAO.update(store);
 	}
 
 	private void insert(Store store) {
-		DAO.insert(StoreMapper.class, store);
+		DAO.insert(store);
 	}
 
 	public void delete(int goodsId) {
-		DAO.delete(StoreMapper.class, new Object[] { playerId, goodsId });
+//		DAO.delete(StoreMapper.class, new Object[] { playerId, goodsId });
 	}
 
 
@@ -285,7 +283,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		for (StoreType storeType : types) {
 			setStoreData(data, storeType);
 		}
-		DAO.updateSelective(StoreDataMapper.class, data);
+		DAO.updateSelective(data);
 	}
 
 	private void setStoreData(StoreData update, StoreType type) {
@@ -498,7 +496,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 	public void insertStoreData() {
 		StoreData data = new StoreData();
 		data.setPlayerId(this.playerId);
-		DAO.insert(StoreDataMapper.class, data);
+		DAO.insert(data);
 		this.storeData = data;
 	}
 

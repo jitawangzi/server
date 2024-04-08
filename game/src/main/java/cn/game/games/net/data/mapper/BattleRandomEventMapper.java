@@ -61,7 +61,7 @@ public interface BattleRandomEventMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<BattleRandomEvent> recordList);
+	int updateBatch(@Param("recordList") List<BattleRandomEvent> recordList);
 
 
 }

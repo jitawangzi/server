@@ -181,7 +181,7 @@ public class mysql单字段多字段更新区别 {
 			row.setStringField19(i * 3 + Rnd.get(1, 1000000) + "test");
 			row.setStringField20(i * 3 + Rnd.get(1, 1000000) + "test");
 
-			DAO.insert(BaseMapper.class, row);
+			DAO.insert(row);
 		}
 
 	}

@@ -61,7 +61,7 @@ public interface ChapterMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Chapter> recordList);
+	int updateBatch(@Param("recordList") List<Chapter> recordList);
 
 
 }

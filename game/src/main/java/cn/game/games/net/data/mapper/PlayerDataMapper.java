@@ -68,7 +68,7 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<PlayerData> recordList);
+	int updateBatch(@Param("recordList") List<PlayerData> recordList);
 
 	List<Player> selectPlayersByUid(Long uid);
 

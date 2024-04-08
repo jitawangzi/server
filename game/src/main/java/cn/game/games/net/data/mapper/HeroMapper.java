@@ -59,5 +59,5 @@ public interface HeroMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Hero> recordList);
+	int updateBatch(@Param("recordList") List<Hero> recordList);
 }

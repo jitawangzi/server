@@ -61,6 +61,6 @@ public interface BattleEventTypeMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<BattleEventType> recordList);
+	int updateBatch(@Param("recordList") List<BattleEventType> recordList);
 
 }

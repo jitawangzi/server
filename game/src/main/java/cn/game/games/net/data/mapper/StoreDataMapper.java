@@ -66,5 +66,5 @@ public interface StoreDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<StoreData> recordList);
+	int updateBatch(@Param("recordList") List<StoreData> recordList);
 }

@@ -61,7 +61,7 @@ public interface PlayerGroupApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<PlayerGroupApplication> recordList);
+	int updateBatch(@Param("recordList") List<PlayerGroupApplication> recordList);
 
 	List<PlayerGroupApplication> selectAll();
 }

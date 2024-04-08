@@ -66,7 +66,7 @@ public interface QuestMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Quest> recordList);
+	int updateBatch(@Param("recordList") List<Quest> recordList);
 
 	int batchUpdateTest(List<Quest> records);
 

@@ -54,5 +54,5 @@ public interface MailGlobalMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<MailGlobal> recordList);
+	int updateBatch(@Param("recordList") List<MailGlobal> recordList);
 }

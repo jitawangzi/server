@@ -59,7 +59,7 @@ public interface MemberMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Member> recordList);
+	int updateBatch(@Param("recordList") List<Member> recordList);
 
 	List<Member> selectAll();
 }

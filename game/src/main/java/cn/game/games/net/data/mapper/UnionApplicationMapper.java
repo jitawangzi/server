@@ -66,7 +66,7 @@ public interface UnionApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<UnionApplication> recordList);
+	int updateBatch(@Param("recordList") List<UnionApplication> recordList);
 
 	List<UnionApplication> selectAll();
 }

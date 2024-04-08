@@ -54,7 +54,7 @@ public interface GroupMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int batchUpdate(@Param("recordList") List<Group> recordList);
+	int updateBatch(@Param("recordList") List<Group> recordList);
 
 	List<Group> selectAll();
 }
