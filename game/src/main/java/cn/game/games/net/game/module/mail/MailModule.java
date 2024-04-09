@@ -44,7 +44,7 @@ public class MailModule extends BasePlayerModule  {
 		Mail remove = this.mails.remove(id); 
 		if (remove!= null) {
 			remove.delete() ; 
-//			DAO.dele
+			DAO.delete(remove);
 		}
 	}
 
@@ -74,7 +74,8 @@ public class MailModule extends BasePlayerModule  {
 		if (!mail.getSee()) {
 			mail.setSee(true);
 			mail.setSeeTime((int) (System.currentTimeMillis() / 1000));
-			mail.update(); 
+//			mail.update(); 
+			DAO.update(mail);
 		}
 		return mail ; 
 	}
@@ -103,8 +104,8 @@ public class MailModule extends BasePlayerModule  {
 					mail.setSee(true);
 					mail.setSeeTime(DateUtil.currentTimeSeconds());
 				}
-				mail.update() ; 
-
+//				mail.update() ; 
+				DAO.update(mail);
 				/*for (Goods goods : attachmentList) {
 					List<RewardItem> addResources = PlayerHelper.addResources(playerId, goods.getId(), goods.getCount(), false);
 					list.addAll(addResources);
@@ -165,7 +166,8 @@ public class MailModule extends BasePlayerModule  {
 		while (iterator.hasNext()) {
 			Mail mail = (Mail) iterator.next();
 			if (mail.getCreateTime() < expiredStartTime) {
-				mail.delete() ; 
+//				mail.delete() ; 
+				DAO.delete(mail);
 				iterator.remove(); 
 			}
 		}

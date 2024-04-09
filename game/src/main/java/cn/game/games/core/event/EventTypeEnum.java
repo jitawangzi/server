@@ -98,8 +98,6 @@ public enum EventTypeEnum {
 	/** 探索角色复活,参数，探索角色uid */
 	ExploreRoleResurrection(39, "ExploreRoleResurrection", "探索角色复活"),
 	
-	/** 参数： lineup id */
-	LineupDelete(40, "LineupDelete", "队伍里的角色都死亡了，删除这个阵容"),
 	/** 9-战斗中损失属性值 参数1:角色uid 参数2:属性id 参数3:损失值 */
 	ExploreWoundedInBattle(41, "WoundedInBattle", "战斗中损失属性值"),
 	/** 10-战斗胜利 */
@@ -114,10 +112,6 @@ public enum EventTypeEnum {
 	ExploreGetCoin(45, "ExploreGetCoin", "获得金币"),
 	/** 补给值小于某值,参数： 补给值 */
 	SupplyLessThanOneValue(46, "SupplyLessThanOneValue", "补给值小于某值"),
-	/** 参数： 怪物  */
-	HitExploreMonster(48, "HitExploreMonster", "探索中击败怪物"),
-	/** 参数：type ，uid，dataId  */
-	InteractiveObject(49, "InteractiveObject", "与某探索物体交互"),
 	/** 忽略,啥也不干,只是占位,为了配置数据正确 */
 	Ignore(50, "Ignore", "忽略"),
 
@@ -130,8 +124,6 @@ public enum EventTypeEnum {
 	ExploreGetResources(62, "ExploreGetResources", "探索后获得资源"),
 	/** 使用道具 */
 	ItemUse(68, "ItemUse", "使用道具"),
-	/** 探索意志解锁 */
-	BuffTreeUnlock(69, "BuffTreeUnlock", "探索意志解锁"),
 	/** 收集图鉴 */
 	CollectAtlas(70, "CollectAtlas", "收集图鉴"),
 	/** 固定装备升级 */

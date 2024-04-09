@@ -19,7 +19,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
  * @author SYQ
  */
 public class VarModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] {};
+	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 
 	private Map<Integer, Integer> varMap = new HashMap<Integer, Integer>();
 

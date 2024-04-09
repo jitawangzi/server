@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.ConditionCount;
@@ -32,6 +34,7 @@ import cn.game.protocol.generated.config.AchievementMissionConfig;
 import cn.game.protocol.generated.config.MainlineMissionConfig;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.MissionConfig;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.MissionTypeEnum;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
@@ -61,7 +64,8 @@ public class QuestModule extends BasePlayerModule {
 	// 支线任务保留最后一个任务id
 	private Map<Integer, QuestChallenge> challenges;
 
-	private Map<Integer, ConditionCount> conditionCountMap = new HashMap<Integer, ConditionCount>();
+	/** 一些累计的计数 */
+	private MultiKeyMap<Integer, ConditionCount> conditionCountMap = new MultiKeyMap<Integer, ConditionCount>();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -83,7 +87,8 @@ public class QuestModule extends BasePlayerModule {
 		}
 
 		for (ConditionCount conditionCount : conditionList) {
-			conditionCountMap.put(conditionCount.getConditionType(), conditionCount);
+			conditionCountMap.put(conditionCount.getConditionType(), conditionCount.getArg1(), conditionCount.getArg2(),
+					conditionCount);
 		}
 	}
 
@@ -726,6 +731,26 @@ public class QuestModule extends BasePlayerModule {
 			quests[i] = new HashMap<>();
 		}
 		challenges = new HashMap<>();
+	}
+
+	public void addConditionCount(ConditionTypeEnum type, int count, int... args) {
+		int id = type.ID;
+		int arg1 = args.length > 0 ? args[0] : 0;
+		int arg2 = args.length > 1 ? args[1] : 0;
+		ConditionCount conditionCount = this.conditionCountMap.get(id, arg1, arg2);
+		if (conditionCount == null) {
+			conditionCount = new ConditionCount();
+			conditionCount.setPlayerId(playerId);
+			conditionCount.setConditionType(id);
+			conditionCount.setCount(count);
+			conditionCount.setArg1(arg1);
+			conditionCount.setArg2(arg2);
+			conditionCount.insert();
+			this.conditionCountMap.put(id, arg1, arg2, conditionCount);
+		} else {
+			conditionCount.setCount(conditionCount.getCount() + count);
+			conditionCount.update();
+		}
 	}
 
 	@Override
