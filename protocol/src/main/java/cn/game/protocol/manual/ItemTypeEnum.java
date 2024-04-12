@@ -1,4 +1,4 @@
-package cn.game.protocol.generated.enume;
+package cn.game.protocol.manual;
 
 /**
  * 道具类型

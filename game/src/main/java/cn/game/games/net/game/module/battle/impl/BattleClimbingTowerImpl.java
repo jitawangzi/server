@@ -1,11 +1,10 @@
-package cn.game.games.net.game.module.battle;
-
-import java.util.List;
+package cn.game.games.net.game.module.battle.impl;
 
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.impl.ChapterOp;
 import cn.game.games.cache.op.impl.ClimbingTowerOp;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.battle.ChapterOp;
+import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.protocol.generated.enume.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 
@@ -27,7 +26,7 @@ public class BattleClimbingTowerImpl implements IBattleHandler {
 	}
 
 	@Override
-	public int battleEnd(long playerId, boolean win, List<Integer> starList,BattleFieldEndResponse_13000004.Builder resp) {
+	public int battleEnd(long playerId, boolean win, int killMonsterCount, int hpPercent, BattleFieldEndResponse_13000004.Builder resp) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ChapterOp chapterOp = player.getModule(ChapterOp.class);

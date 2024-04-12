@@ -65,7 +65,7 @@ public class QuestModule extends BasePlayerModule {
 	private Map<Integer, QuestChallenge> challenges;
 
 	/** 一些累计的计数 */
-	private MultiKeyMap<Integer, ConditionCount> conditionCountMap = new MultiKeyMap<Integer, ConditionCount>();
+	private MultiKeyMap<Integer, Integer> conditionCountMap = new MultiKeyMap<Integer, Integer>();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -88,7 +88,7 @@ public class QuestModule extends BasePlayerModule {
 
 		for (ConditionCount conditionCount : conditionList) {
 			conditionCountMap.put(conditionCount.getConditionType(), conditionCount.getArg1(), conditionCount.getArg2(),
-					conditionCount);
+					conditionCount.getCount());
 		}
 	}
 
@@ -401,7 +401,7 @@ public class QuestModule extends BasePlayerModule {
 		this.quests[group].put(id, quest);
 
 		if (notify) {
-			PlayerHelper.sendProtcol(playerId,
+			PlayerHelper.sendProtocol(playerId,
 					MissionGroupPush_20100008.newBuilder().setType(questConfig.getType().getId()).build());
 			QuestHelper.notifyQuestChange(quest, UpdateType.ADD);
 		}
@@ -636,7 +636,7 @@ public class QuestModule extends BasePlayerModule {
 					MissionRewardPush_20600008.Builder builder = MissionRewardPush_20600008.newBuilder();
 					builder.setId(quest.getId());
 					builder.addAllRewards(receive);
-					PlayerHelper.sendProtcol(playerId, builder.build());
+					PlayerHelper.sendProtocol(playerId, builder.build());
 				}
 			}
 			break;
@@ -673,7 +673,7 @@ public class QuestModule extends BasePlayerModule {
 		update.setBranchGroup(playerExt.getBranchGroup());
 		DAO.updateSelective(update);
 
-		PlayerHelper.sendProtcol(playerId,
+		PlayerHelper.sendProtocol(playerId,
 				MissionBranchPriorityPush_20300000.newBuilder().setGroup(playerExt.getBranchGroup()).build());
 
 	}
@@ -736,23 +736,26 @@ public class QuestModule extends BasePlayerModule {
 		int id = type.ID;
 		int arg1 = args.length > 0 ? args[0] : 0;
 		int arg2 = args.length > 1 ? args[1] : 0;
-		ConditionCount conditionCount = this.conditionCountMap.get(id, arg1, arg2);
-		if (conditionCount == null) {
-			conditionCount = new ConditionCount();
-			conditionCount.setPlayerId(playerId);
-			conditionCount.setConditionType(id);
-			conditionCount.setCount(count);
-			conditionCount.setArg1(arg1);
-			conditionCount.setArg2(arg2);
-			conditionCount.insert();
-			this.conditionCountMap.put(id, arg1, arg2, conditionCount);
-		} else {
-			conditionCount.setCount(conditionCount.getCount() + count);
-			conditionCount.update();
-		}
+		Integer oldCount = this.conditionCountMap.get(id, arg1, arg2);
+		int newCount = oldCount == null ? count : oldCount + count;
+		this.conditionCountMap.put(id, arg1, arg2, newCount);
+		// TODO 似乎这里如果带参数，应该把不带参数的数量也增加一下。
+//		if (oldCount == null) {
+//			conditionCount = new ConditionCount();
+//			conditionCount.setPlayerId(playerId);
+//			conditionCount.setConditionType(id);
+//			conditionCount.setCount(count);
+//			conditionCount.setArg1(arg1);
+//			conditionCount.setArg2(arg2);
+//			conditionCount.insert();
+//			this.conditionCountMap.put(id, arg1, arg2, count);
+//		} else {
+//			conditionCount.setCount(conditionCount.getCount() + count);
+//			conditionCount.update();
+//		}
 	}
 
-	public MultiKeyMap<Integer, ConditionCount> getConditionCountMap() {
+	public MultiKeyMap<Integer, Integer> getConditionCountMap() {
 		return conditionCountMap;
 	}
 

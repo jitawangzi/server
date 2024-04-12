@@ -7,10 +7,9 @@ import "RewardMsg.proto" ;
 // 开始关卡战斗请求
 message BattleFieldStartRequest_13000001{
 
-	uint32 type = 1; 	// DungeonTypeEnum 的id，属于哪个玩法的关卡
-	uint32 dungeonId = 2; //type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
-	uint32 id = 3;	// 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
-	string uid = 5;	// 当type = 3 时，dungeonId不能区分了，需要用uid
+	uint32 type = 1; 	// 玩法类型，主线推图，日常训练等。
+	uint32 typeId = 2; // 玩法类型对应的配置表id
+	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，需要区分
 }
 
 // 开始关卡战斗返回
@@ -20,24 +19,17 @@ message BattleFieldStartResponse_13000002{
 
 // 结束关卡战斗请求
 message BattleFieldEndRequest_13000003{
-	uint32 type = 1; 	// DungeonTypeEnum 的id，属于哪个玩法的关卡
-	uint32 dungeonId = 2; //type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id
-	uint32 id = 3;	// 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
-	repeated uint32 star = 5;	// 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-	string uid = 6;	// 当type = 3 时，id不能区分了，需要用uid
+	uint32 type = 1; 	// 玩法类型，主线推图，日常训练等。
+	uint32 typeId = 2; // 玩法类型对应的配置表id
+	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，需要区分
+	uint32 killMonsterCount = 5;	// 击杀怪物数量
+	uint32 hpPercent = 6;	// 剩余血量百分比，如剩余40%血量，则为40
 	bool win = 10;	        // 战斗是否成功
 }
 
 // 结束关卡战斗
 message BattleFieldEndResponse_13000004{
-	repeated RewardInfo starRewards = 1;		// 星级评价奖励，每个评价获取一次
-	repeated RewardInfo commonRewards = 2;		// 一般奖励，每次打关卡都会获得
-	repeated RewardInfo specialRewards = 3;		// 特殊奖励，特定条件下才会获取
-	repeated RewardInfo dungeonRewards = 4;		// 系统奖励，参照DungeonTypeEnum 玩法。
-	repeated RewardInfo randomRewards = 9; //随机奖励
-
-	int32 playerExp = 5 ;  // 增加的玩家经验 (处理显示,更新本地数据)
-	int32 coin = 7 ; 		// 增加玩家金币
+	repeated RewardInfo rewards = 1;		// 获得的奖励
 }
 
 //领取章通关奖励

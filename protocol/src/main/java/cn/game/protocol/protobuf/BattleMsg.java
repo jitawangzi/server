@@ -20,7 +20,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * DungeonTypeEnum 的id，属于哪个玩法的关卡
+     * 玩法类型，主线推图，日常训练等。
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -30,43 +30,23 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
+     * 玩法类型对应的配置表id
      * </pre>
      *
-     * <code>uint32 dungeonId = 2;</code>
-     * @return The dungeonId.
+     * <code>uint32 typeId = 2;</code>
+     * @return The typeId.
      */
-    int getDungeonId();
+    int getTypeId();
 
     /**
      * <pre>
-     * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+     * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
      * </pre>
      *
-     * <code>uint32 id = 3;</code>
-     * @return The id.
+     * <code>uint32 fieldId = 3;</code>
+     * @return The fieldId.
      */
-    int getId();
-
-    /**
-     * <pre>
-     * 当type = 3 时，dungeonId不能区分了，需要用uid
-     * </pre>
-     *
-     * <code>string uid = 5;</code>
-     * @return The uid.
-     */
-    java.lang.String getUid();
-    /**
-     * <pre>
-     * 当type = 3 时，dungeonId不能区分了，需要用uid
-     * </pre>
-     *
-     * <code>string uid = 5;</code>
-     * @return The bytes for uid.
-     */
-    com.google.protobuf.ByteString
-        getUidBytes();
+    int getFieldId();
   }
   /**
    * <pre>
@@ -85,7 +65,6 @@ public final class BattleMsg {
       super(builder);
     }
     private BattleFieldStartRequest_13000001() {
-      uid_ = "";
     }
 
     @java.lang.Override
@@ -125,18 +104,12 @@ public final class BattleMsg {
             }
             case 16: {
 
-              dungeonId_ = input.readUInt32();
+              typeId_ = input.readUInt32();
               break;
             }
             case 24: {
 
-              id_ = input.readUInt32();
-              break;
-            }
-            case 42: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              uid_ = s;
+              fieldId_ = input.readUInt32();
               break;
             }
             default: {
@@ -175,7 +148,7 @@ public final class BattleMsg {
     private int type_;
     /**
      * <pre>
-     * DungeonTypeEnum 的id，属于哪个玩法的关卡
+     * 玩法类型，主线推图，日常训练等。
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -186,80 +159,34 @@ public final class BattleMsg {
       return type_;
     }
 
-    public static final int DUNGEONID_FIELD_NUMBER = 2;
-    private int dungeonId_;
+    public static final int TYPEID_FIELD_NUMBER = 2;
+    private int typeId_;
     /**
      * <pre>
-     *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
+     * 玩法类型对应的配置表id
      * </pre>
      *
-     * <code>uint32 dungeonId = 2;</code>
-     * @return The dungeonId.
+     * <code>uint32 typeId = 2;</code>
+     * @return The typeId.
      */
     @java.lang.Override
-    public int getDungeonId() {
-      return dungeonId_;
+    public int getTypeId() {
+      return typeId_;
     }
 
-    public static final int ID_FIELD_NUMBER = 3;
-    private int id_;
+    public static final int FIELDID_FIELD_NUMBER = 3;
+    private int fieldId_;
     /**
      * <pre>
-     * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+     * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
      * </pre>
      *
-     * <code>uint32 id = 3;</code>
-     * @return The id.
+     * <code>uint32 fieldId = 3;</code>
+     * @return The fieldId.
      */
     @java.lang.Override
-    public int getId() {
-      return id_;
-    }
-
-    public static final int UID_FIELD_NUMBER = 5;
-    private volatile java.lang.Object uid_;
-    /**
-     * <pre>
-     * 当type = 3 时，dungeonId不能区分了，需要用uid
-     * </pre>
-     *
-     * <code>string uid = 5;</code>
-     * @return The uid.
-     */
-    @java.lang.Override
-    public java.lang.String getUid() {
-      java.lang.Object ref = uid_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        uid_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 当type = 3 时，dungeonId不能区分了，需要用uid
-     * </pre>
-     *
-     * <code>string uid = 5;</code>
-     * @return The bytes for uid.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getUidBytes() {
-      java.lang.Object ref = uid_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        uid_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getFieldId() {
+      return fieldId_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -279,14 +206,11 @@ public final class BattleMsg {
       if (type_ != 0) {
         output.writeUInt32(1, type_);
       }
-      if (dungeonId_ != 0) {
-        output.writeUInt32(2, dungeonId_);
+      if (typeId_ != 0) {
+        output.writeUInt32(2, typeId_);
       }
-      if (id_ != 0) {
-        output.writeUInt32(3, id_);
-      }
-      if (!getUidBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, uid_);
+      if (fieldId_ != 0) {
+        output.writeUInt32(3, fieldId_);
       }
       unknownFields.writeTo(output);
     }
@@ -301,16 +225,13 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(1, type_);
       }
-      if (dungeonId_ != 0) {
+      if (typeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, dungeonId_);
+          .computeUInt32Size(2, typeId_);
       }
-      if (id_ != 0) {
+      if (fieldId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, id_);
-      }
-      if (!getUidBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, uid_);
+          .computeUInt32Size(3, fieldId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -329,12 +250,10 @@ public final class BattleMsg {
 
       if (getType()
           != other.getType()) return false;
-      if (getDungeonId()
-          != other.getDungeonId()) return false;
-      if (getId()
-          != other.getId()) return false;
-      if (!getUid()
-          .equals(other.getUid())) return false;
+      if (getTypeId()
+          != other.getTypeId()) return false;
+      if (getFieldId()
+          != other.getFieldId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -348,12 +267,10 @@ public final class BattleMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getType();
-      hash = (37 * hash) + DUNGEONID_FIELD_NUMBER;
-      hash = (53 * hash) + getDungeonId();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
-      hash = (37 * hash) + UID_FIELD_NUMBER;
-      hash = (53 * hash) + getUid().hashCode();
+      hash = (37 * hash) + TYPEID_FIELD_NUMBER;
+      hash = (53 * hash) + getTypeId();
+      hash = (37 * hash) + FIELDID_FIELD_NUMBER;
+      hash = (53 * hash) + getFieldId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -493,11 +410,9 @@ public final class BattleMsg {
         super.clear();
         type_ = 0;
 
-        dungeonId_ = 0;
+        typeId_ = 0;
 
-        id_ = 0;
-
-        uid_ = "";
+        fieldId_ = 0;
 
         return this;
       }
@@ -526,9 +441,8 @@ public final class BattleMsg {
       public cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001 result = new cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001(this);
         result.type_ = type_;
-        result.dungeonId_ = dungeonId_;
-        result.id_ = id_;
-        result.uid_ = uid_;
+        result.typeId_ = typeId_;
+        result.fieldId_ = fieldId_;
         onBuilt();
         return result;
       }
@@ -580,15 +494,11 @@ public final class BattleMsg {
         if (other.getType() != 0) {
           setType(other.getType());
         }
-        if (other.getDungeonId() != 0) {
-          setDungeonId(other.getDungeonId());
+        if (other.getTypeId() != 0) {
+          setTypeId(other.getTypeId());
         }
-        if (other.getId() != 0) {
-          setId(other.getId());
-        }
-        if (!other.getUid().isEmpty()) {
-          uid_ = other.uid_;
-          onChanged();
+        if (other.getFieldId() != 0) {
+          setFieldId(other.getFieldId());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -622,7 +532,7 @@ public final class BattleMsg {
       private int type_ ;
       /**
        * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
+       * 玩法类型，主线推图，日常训练等。
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -634,7 +544,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
+       * 玩法类型，主线推图，日常训练等。
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -649,7 +559,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
+       * 玩法类型，主线推图，日常训练等。
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -662,184 +572,88 @@ public final class BattleMsg {
         return this;
       }
 
-      private int dungeonId_ ;
+      private int typeId_ ;
       /**
        * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
+       * 玩法类型对应的配置表id
        * </pre>
        *
-       * <code>uint32 dungeonId = 2;</code>
-       * @return The dungeonId.
+       * <code>uint32 typeId = 2;</code>
+       * @return The typeId.
        */
       @java.lang.Override
-      public int getDungeonId() {
-        return dungeonId_;
+      public int getTypeId() {
+        return typeId_;
       }
       /**
        * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
+       * 玩法类型对应的配置表id
        * </pre>
        *
-       * <code>uint32 dungeonId = 2;</code>
-       * @param value The dungeonId to set.
+       * <code>uint32 typeId = 2;</code>
+       * @param value The typeId to set.
        * @return This builder for chaining.
        */
-      public Builder setDungeonId(int value) {
+      public Builder setTypeId(int value) {
         
-        dungeonId_ = value;
+        typeId_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
+       * 玩法类型对应的配置表id
        * </pre>
        *
-       * <code>uint32 dungeonId = 2;</code>
+       * <code>uint32 typeId = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearDungeonId() {
+      public Builder clearTypeId() {
         
-        dungeonId_ = 0;
+        typeId_ = 0;
         onChanged();
         return this;
       }
 
-      private int id_ ;
+      private int fieldId_ ;
       /**
        * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
        * </pre>
        *
-       * <code>uint32 id = 3;</code>
-       * @return The id.
+       * <code>uint32 fieldId = 3;</code>
+       * @return The fieldId.
        */
       @java.lang.Override
-      public int getId() {
-        return id_;
+      public int getFieldId() {
+        return fieldId_;
       }
       /**
        * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
        * </pre>
        *
-       * <code>uint32 id = 3;</code>
-       * @param value The id to set.
+       * <code>uint32 fieldId = 3;</code>
+       * @param value The fieldId to set.
        * @return This builder for chaining.
        */
-      public Builder setId(int value) {
+      public Builder setFieldId(int value) {
         
-        id_ = value;
+        fieldId_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
        * </pre>
        *
-       * <code>uint32 id = 3;</code>
+       * <code>uint32 fieldId = 3;</code>
        * @return This builder for chaining.
        */
-      public Builder clearId() {
+      public Builder clearFieldId() {
         
-        id_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object uid_ = "";
-      /**
-       * <pre>
-       * 当type = 3 时，dungeonId不能区分了，需要用uid
-       * </pre>
-       *
-       * <code>string uid = 5;</code>
-       * @return The uid.
-       */
-      public java.lang.String getUid() {
-        java.lang.Object ref = uid_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          uid_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 当type = 3 时，dungeonId不能区分了，需要用uid
-       * </pre>
-       *
-       * <code>string uid = 5;</code>
-       * @return The bytes for uid.
-       */
-      public com.google.protobuf.ByteString
-          getUidBytes() {
-        java.lang.Object ref = uid_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          uid_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 当type = 3 时，dungeonId不能区分了，需要用uid
-       * </pre>
-       *
-       * <code>string uid = 5;</code>
-       * @param value The uid to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUid(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        uid_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 当type = 3 时，dungeonId不能区分了，需要用uid
-       * </pre>
-       *
-       * <code>string uid = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearUid() {
-        
-        uid_ = getDefaultInstance().getUid();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 当type = 3 时，dungeonId不能区分了，需要用uid
-       * </pre>
-       *
-       * <code>string uid = 5;</code>
-       * @param value The bytes for uid to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUidBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        uid_ = value;
+        fieldId_ = 0;
         onChanged();
         return this;
       }
@@ -1328,7 +1142,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * DungeonTypeEnum 的id，属于哪个玩法的关卡
+     * 玩法类型，主线推图，日常训练等。
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -1338,72 +1152,43 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id
+     * 玩法类型对应的配置表id
      * </pre>
      *
-     * <code>uint32 dungeonId = 2;</code>
-     * @return The dungeonId.
+     * <code>uint32 typeId = 2;</code>
+     * @return The typeId.
      */
-    int getDungeonId();
+    int getTypeId();
 
     /**
      * <pre>
-     * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+     * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
      * </pre>
      *
-     * <code>uint32 id = 3;</code>
-     * @return The id.
+     * <code>uint32 fieldId = 3;</code>
+     * @return The fieldId.
      */
-    int getId();
+    int getFieldId();
 
     /**
      * <pre>
-     * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
+     * 击杀怪物数量
      * </pre>
      *
-     * <code>repeated uint32 star = 5;</code>
-     * @return A list containing the star.
+     * <code>uint32 killMonsterCount = 5;</code>
+     * @return The killMonsterCount.
      */
-    java.util.List<java.lang.Integer> getStarList();
-    /**
-     * <pre>
-     * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-     * </pre>
-     *
-     * <code>repeated uint32 star = 5;</code>
-     * @return The count of star.
-     */
-    int getStarCount();
-    /**
-     * <pre>
-     * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-     * </pre>
-     *
-     * <code>repeated uint32 star = 5;</code>
-     * @param index The index of the element to return.
-     * @return The star at the given index.
-     */
-    int getStar(int index);
+    int getKillMonsterCount();
 
     /**
      * <pre>
-     * 当type = 3 时，id不能区分了，需要用uid
+     * 剩余血量百分比，如剩余40%血量，则为40
      * </pre>
      *
-     * <code>string uid = 6;</code>
-     * @return The uid.
+     * <code>uint32 hpPercent = 6;</code>
+     * @return The hpPercent.
      */
-    java.lang.String getUid();
-    /**
-     * <pre>
-     * 当type = 3 时，id不能区分了，需要用uid
-     * </pre>
-     *
-     * <code>string uid = 6;</code>
-     * @return The bytes for uid.
-     */
-    com.google.protobuf.ByteString
-        getUidBytes();
+    int getHpPercent();
 
     /**
      * <pre>
@@ -1432,8 +1217,6 @@ public final class BattleMsg {
       super(builder);
     }
     private BattleFieldEndRequest_13000003() {
-      star_ = emptyIntList();
-      uid_ = "";
     }
 
     @java.lang.Override
@@ -1456,7 +1239,6 @@ public final class BattleMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -1474,39 +1256,22 @@ public final class BattleMsg {
             }
             case 16: {
 
-              dungeonId_ = input.readUInt32();
+              typeId_ = input.readUInt32();
               break;
             }
             case 24: {
 
-              id_ = input.readUInt32();
+              fieldId_ = input.readUInt32();
               break;
             }
             case 40: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                star_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              star_.addInt(input.readUInt32());
-              break;
-            }
-            case 42: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                star_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                star_.addInt(input.readUInt32());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            case 50: {
-              java.lang.String s = input.readStringRequireUtf8();
 
-              uid_ = s;
+              killMonsterCount_ = input.readUInt32();
+              break;
+            }
+            case 48: {
+
+              hpPercent_ = input.readUInt32();
               break;
             }
             case 80: {
@@ -1529,9 +1294,6 @@ public final class BattleMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          star_.makeImmutable(); // C
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -1553,7 +1315,7 @@ public final class BattleMsg {
     private int type_;
     /**
      * <pre>
-     * DungeonTypeEnum 的id，属于哪个玩法的关卡
+     * 玩法类型，主线推图，日常训练等。
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -1564,120 +1326,64 @@ public final class BattleMsg {
       return type_;
     }
 
-    public static final int DUNGEONID_FIELD_NUMBER = 2;
-    private int dungeonId_;
+    public static final int TYPEID_FIELD_NUMBER = 2;
+    private int typeId_;
     /**
      * <pre>
-     *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id
+     * 玩法类型对应的配置表id
      * </pre>
      *
-     * <code>uint32 dungeonId = 2;</code>
-     * @return The dungeonId.
+     * <code>uint32 typeId = 2;</code>
+     * @return The typeId.
      */
     @java.lang.Override
-    public int getDungeonId() {
-      return dungeonId_;
+    public int getTypeId() {
+      return typeId_;
     }
 
-    public static final int ID_FIELD_NUMBER = 3;
-    private int id_;
+    public static final int FIELDID_FIELD_NUMBER = 3;
+    private int fieldId_;
     /**
      * <pre>
-     * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+     * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
      * </pre>
      *
-     * <code>uint32 id = 3;</code>
-     * @return The id.
+     * <code>uint32 fieldId = 3;</code>
+     * @return The fieldId.
      */
     @java.lang.Override
-    public int getId() {
-      return id_;
+    public int getFieldId() {
+      return fieldId_;
     }
 
-    public static final int STAR_FIELD_NUMBER = 5;
-    private com.google.protobuf.Internal.IntList star_;
+    public static final int KILLMONSTERCOUNT_FIELD_NUMBER = 5;
+    private int killMonsterCount_;
     /**
      * <pre>
-     * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
+     * 击杀怪物数量
      * </pre>
      *
-     * <code>repeated uint32 star = 5;</code>
-     * @return A list containing the star.
+     * <code>uint32 killMonsterCount = 5;</code>
+     * @return The killMonsterCount.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getStarList() {
-      return star_;
+    public int getKillMonsterCount() {
+      return killMonsterCount_;
     }
-    /**
-     * <pre>
-     * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-     * </pre>
-     *
-     * <code>repeated uint32 star = 5;</code>
-     * @return The count of star.
-     */
-    public int getStarCount() {
-      return star_.size();
-    }
-    /**
-     * <pre>
-     * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-     * </pre>
-     *
-     * <code>repeated uint32 star = 5;</code>
-     * @param index The index of the element to return.
-     * @return The star at the given index.
-     */
-    public int getStar(int index) {
-      return star_.getInt(index);
-    }
-    private int starMemoizedSerializedSize = -1;
 
-    public static final int UID_FIELD_NUMBER = 6;
-    private volatile java.lang.Object uid_;
+    public static final int HPPERCENT_FIELD_NUMBER = 6;
+    private int hpPercent_;
     /**
      * <pre>
-     * 当type = 3 时，id不能区分了，需要用uid
+     * 剩余血量百分比，如剩余40%血量，则为40
      * </pre>
      *
-     * <code>string uid = 6;</code>
-     * @return The uid.
+     * <code>uint32 hpPercent = 6;</code>
+     * @return The hpPercent.
      */
     @java.lang.Override
-    public java.lang.String getUid() {
-      java.lang.Object ref = uid_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        uid_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 当type = 3 时，id不能区分了，需要用uid
-     * </pre>
-     *
-     * <code>string uid = 6;</code>
-     * @return The bytes for uid.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getUidBytes() {
-      java.lang.Object ref = uid_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        uid_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getHpPercent() {
+      return hpPercent_;
     }
 
     public static final int WIN_FIELD_NUMBER = 10;
@@ -1709,25 +1415,20 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
       if (type_ != 0) {
         output.writeUInt32(1, type_);
       }
-      if (dungeonId_ != 0) {
-        output.writeUInt32(2, dungeonId_);
+      if (typeId_ != 0) {
+        output.writeUInt32(2, typeId_);
       }
-      if (id_ != 0) {
-        output.writeUInt32(3, id_);
+      if (fieldId_ != 0) {
+        output.writeUInt32(3, fieldId_);
       }
-      if (getStarList().size() > 0) {
-        output.writeUInt32NoTag(42);
-        output.writeUInt32NoTag(starMemoizedSerializedSize);
+      if (killMonsterCount_ != 0) {
+        output.writeUInt32(5, killMonsterCount_);
       }
-      for (int i = 0; i < star_.size(); i++) {
-        output.writeUInt32NoTag(star_.getInt(i));
-      }
-      if (!getUidBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, uid_);
+      if (hpPercent_ != 0) {
+        output.writeUInt32(6, hpPercent_);
       }
       if (win_ != false) {
         output.writeBool(10, win_);
@@ -1745,30 +1446,21 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(1, type_);
       }
-      if (dungeonId_ != 0) {
+      if (typeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, dungeonId_);
+          .computeUInt32Size(2, typeId_);
       }
-      if (id_ != 0) {
+      if (fieldId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, id_);
+          .computeUInt32Size(3, fieldId_);
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < star_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeUInt32SizeNoTag(star_.getInt(i));
-        }
-        size += dataSize;
-        if (!getStarList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        starMemoizedSerializedSize = dataSize;
+      if (killMonsterCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(5, killMonsterCount_);
       }
-      if (!getUidBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, uid_);
+      if (hpPercent_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(6, hpPercent_);
       }
       if (win_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -1791,14 +1483,14 @@ public final class BattleMsg {
 
       if (getType()
           != other.getType()) return false;
-      if (getDungeonId()
-          != other.getDungeonId()) return false;
-      if (getId()
-          != other.getId()) return false;
-      if (!getStarList()
-          .equals(other.getStarList())) return false;
-      if (!getUid()
-          .equals(other.getUid())) return false;
+      if (getTypeId()
+          != other.getTypeId()) return false;
+      if (getFieldId()
+          != other.getFieldId()) return false;
+      if (getKillMonsterCount()
+          != other.getKillMonsterCount()) return false;
+      if (getHpPercent()
+          != other.getHpPercent()) return false;
       if (getWin()
           != other.getWin()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -1814,16 +1506,14 @@ public final class BattleMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getType();
-      hash = (37 * hash) + DUNGEONID_FIELD_NUMBER;
-      hash = (53 * hash) + getDungeonId();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
-      if (getStarCount() > 0) {
-        hash = (37 * hash) + STAR_FIELD_NUMBER;
-        hash = (53 * hash) + getStarList().hashCode();
-      }
-      hash = (37 * hash) + UID_FIELD_NUMBER;
-      hash = (53 * hash) + getUid().hashCode();
+      hash = (37 * hash) + TYPEID_FIELD_NUMBER;
+      hash = (53 * hash) + getTypeId();
+      hash = (37 * hash) + FIELDID_FIELD_NUMBER;
+      hash = (53 * hash) + getFieldId();
+      hash = (37 * hash) + KILLMONSTERCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getKillMonsterCount();
+      hash = (37 * hash) + HPPERCENT_FIELD_NUMBER;
+      hash = (53 * hash) + getHpPercent();
       hash = (37 * hash) + WIN_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getWin());
@@ -1966,13 +1656,13 @@ public final class BattleMsg {
         super.clear();
         type_ = 0;
 
-        dungeonId_ = 0;
+        typeId_ = 0;
 
-        id_ = 0;
+        fieldId_ = 0;
 
-        star_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        uid_ = "";
+        killMonsterCount_ = 0;
+
+        hpPercent_ = 0;
 
         win_ = false;
 
@@ -2002,16 +1692,11 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003 result = new cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003(this);
-        int from_bitField0_ = bitField0_;
         result.type_ = type_;
-        result.dungeonId_ = dungeonId_;
-        result.id_ = id_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          star_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.star_ = star_;
-        result.uid_ = uid_;
+        result.typeId_ = typeId_;
+        result.fieldId_ = fieldId_;
+        result.killMonsterCount_ = killMonsterCount_;
+        result.hpPercent_ = hpPercent_;
         result.win_ = win_;
         onBuilt();
         return result;
@@ -2064,25 +1749,17 @@ public final class BattleMsg {
         if (other.getType() != 0) {
           setType(other.getType());
         }
-        if (other.getDungeonId() != 0) {
-          setDungeonId(other.getDungeonId());
+        if (other.getTypeId() != 0) {
+          setTypeId(other.getTypeId());
         }
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (other.getFieldId() != 0) {
+          setFieldId(other.getFieldId());
         }
-        if (!other.star_.isEmpty()) {
-          if (star_.isEmpty()) {
-            star_ = other.star_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureStarIsMutable();
-            star_.addAll(other.star_);
-          }
-          onChanged();
+        if (other.getKillMonsterCount() != 0) {
+          setKillMonsterCount(other.getKillMonsterCount());
         }
-        if (!other.getUid().isEmpty()) {
-          uid_ = other.uid_;
-          onChanged();
+        if (other.getHpPercent() != 0) {
+          setHpPercent(other.getHpPercent());
         }
         if (other.getWin() != false) {
           setWin(other.getWin());
@@ -2115,12 +1792,11 @@ public final class BattleMsg {
         }
         return this;
       }
-      private int bitField0_;
 
       private int type_ ;
       /**
        * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
+       * 玩法类型，主线推图，日常训练等。
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -2132,7 +1808,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
+       * 玩法类型，主线推图，日常训练等。
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -2147,7 +1823,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
+       * 玩法类型，主线推图，日常训练等。
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -2160,291 +1836,174 @@ public final class BattleMsg {
         return this;
       }
 
-      private int dungeonId_ ;
+      private int typeId_ ;
       /**
        * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id
+       * 玩法类型对应的配置表id
        * </pre>
        *
-       * <code>uint32 dungeonId = 2;</code>
-       * @return The dungeonId.
+       * <code>uint32 typeId = 2;</code>
+       * @return The typeId.
        */
       @java.lang.Override
-      public int getDungeonId() {
-        return dungeonId_;
+      public int getTypeId() {
+        return typeId_;
       }
       /**
        * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id
+       * 玩法类型对应的配置表id
        * </pre>
        *
-       * <code>uint32 dungeonId = 2;</code>
-       * @param value The dungeonId to set.
+       * <code>uint32 typeId = 2;</code>
+       * @param value The typeId to set.
        * @return This builder for chaining.
        */
-      public Builder setDungeonId(int value) {
+      public Builder setTypeId(int value) {
         
-        dungeonId_ = value;
+        typeId_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id
+       * 玩法类型对应的配置表id
        * </pre>
        *
-       * <code>uint32 dungeonId = 2;</code>
+       * <code>uint32 typeId = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearDungeonId() {
+      public Builder clearTypeId() {
         
-        dungeonId_ = 0;
+        typeId_ = 0;
         onChanged();
         return this;
       }
 
-      private int id_ ;
+      private int fieldId_ ;
       /**
        * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
        * </pre>
        *
-       * <code>uint32 id = 3;</code>
-       * @return The id.
+       * <code>uint32 fieldId = 3;</code>
+       * @return The fieldId.
        */
       @java.lang.Override
-      public int getId() {
-        return id_;
+      public int getFieldId() {
+        return fieldId_;
       }
       /**
        * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
        * </pre>
        *
-       * <code>uint32 id = 3;</code>
-       * @param value The id to set.
+       * <code>uint32 fieldId = 3;</code>
+       * @param value The fieldId to set.
        * @return This builder for chaining.
        */
-      public Builder setId(int value) {
+      public Builder setFieldId(int value) {
         
-        id_ = value;
+        fieldId_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
        * </pre>
        *
-       * <code>uint32 id = 3;</code>
+       * <code>uint32 fieldId = 3;</code>
        * @return This builder for chaining.
        */
-      public Builder clearId() {
+      public Builder clearFieldId() {
         
-        id_ = 0;
+        fieldId_ = 0;
         onChanged();
         return this;
       }
 
-      private com.google.protobuf.Internal.IntList star_ = emptyIntList();
-      private void ensureStarIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          star_ = mutableCopy(star_);
-          bitField0_ |= 0x00000001;
-         }
-      }
+      private int killMonsterCount_ ;
       /**
        * <pre>
-       * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
+       * 击杀怪物数量
        * </pre>
        *
-       * <code>repeated uint32 star = 5;</code>
-       * @return A list containing the star.
+       * <code>uint32 killMonsterCount = 5;</code>
+       * @return The killMonsterCount.
        */
-      public java.util.List<java.lang.Integer>
-          getStarList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(star_) : star_;
+      @java.lang.Override
+      public int getKillMonsterCount() {
+        return killMonsterCount_;
       }
       /**
        * <pre>
-       * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
+       * 击杀怪物数量
        * </pre>
        *
-       * <code>repeated uint32 star = 5;</code>
-       * @return The count of star.
-       */
-      public int getStarCount() {
-        return star_.size();
-      }
-      /**
-       * <pre>
-       * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-       * </pre>
-       *
-       * <code>repeated uint32 star = 5;</code>
-       * @param index The index of the element to return.
-       * @return The star at the given index.
-       */
-      public int getStar(int index) {
-        return star_.getInt(index);
-      }
-      /**
-       * <pre>
-       * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-       * </pre>
-       *
-       * <code>repeated uint32 star = 5;</code>
-       * @param index The index to set the value at.
-       * @param value The star to set.
+       * <code>uint32 killMonsterCount = 5;</code>
+       * @param value The killMonsterCount to set.
        * @return This builder for chaining.
        */
-      public Builder setStar(
-          int index, int value) {
-        ensureStarIsMutable();
-        star_.setInt(index, value);
+      public Builder setKillMonsterCount(int value) {
+        
+        killMonsterCount_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
+       * 击杀怪物数量
        * </pre>
        *
-       * <code>repeated uint32 star = 5;</code>
-       * @param value The star to add.
+       * <code>uint32 killMonsterCount = 5;</code>
        * @return This builder for chaining.
        */
-      public Builder addStar(int value) {
-        ensureStarIsMutable();
-        star_.addInt(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-       * </pre>
-       *
-       * <code>repeated uint32 star = 5;</code>
-       * @param values The star to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllStar(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureStarIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, star_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 通关评价，几星，实际为关卡的评价条件索引，用0，1，2代表完成的关卡星级条件
-       * </pre>
-       *
-       * <code>repeated uint32 star = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearStar() {
-        star_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+      public Builder clearKillMonsterCount() {
+        
+        killMonsterCount_ = 0;
         onChanged();
         return this;
       }
 
-      private java.lang.Object uid_ = "";
+      private int hpPercent_ ;
       /**
        * <pre>
-       * 当type = 3 时，id不能区分了，需要用uid
+       * 剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>string uid = 6;</code>
-       * @return The uid.
+       * <code>uint32 hpPercent = 6;</code>
+       * @return The hpPercent.
        */
-      public java.lang.String getUid() {
-        java.lang.Object ref = uid_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          uid_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      @java.lang.Override
+      public int getHpPercent() {
+        return hpPercent_;
       }
       /**
        * <pre>
-       * 当type = 3 时，id不能区分了，需要用uid
+       * 剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>string uid = 6;</code>
-       * @return The bytes for uid.
-       */
-      public com.google.protobuf.ByteString
-          getUidBytes() {
-        java.lang.Object ref = uid_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          uid_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 当type = 3 时，id不能区分了，需要用uid
-       * </pre>
-       *
-       * <code>string uid = 6;</code>
-       * @param value The uid to set.
+       * <code>uint32 hpPercent = 6;</code>
+       * @param value The hpPercent to set.
        * @return This builder for chaining.
        */
-      public Builder setUid(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        uid_ = value;
+      public Builder setHpPercent(int value) {
+        
+        hpPercent_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 当type = 3 时，id不能区分了，需要用uid
+       * 剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>string uid = 6;</code>
+       * <code>uint32 hpPercent = 6;</code>
        * @return This builder for chaining.
        */
-      public Builder clearUid() {
+      public Builder clearHpPercent() {
         
-        uid_ = getDefaultInstance().getUid();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 当type = 3 时，id不能区分了，需要用uid
-       * </pre>
-       *
-       * <code>string uid = 6;</code>
-       * @param value The bytes for uid to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUidBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        uid_ = value;
+        hpPercent_ = 0;
         onChanged();
         return this;
       }
@@ -2550,243 +2109,47 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
     java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
-        getStarRewardsList();
+        getRewardsList();
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfo getStarRewards(int index);
+    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
-    int getStarRewardsCount();
+    int getRewardsCount();
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
-     */
-    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getStarRewardsOrBuilderList();
-    /**
-     * <pre>
-     * 星级评价奖励，每个评价获取一次
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getStarRewardsOrBuilder(
-        int index);
-
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-     */
-    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
-        getCommonRewardsList();
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfo getCommonRewards(int index);
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-     */
-    int getCommonRewardsCount();
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
     java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getCommonRewardsOrBuilderList();
+        getRewardsOrBuilderList();
     /**
      * <pre>
-     * 一般奖励，每次打关卡都会获得
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getCommonRewardsOrBuilder(
+    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
         int index);
-
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
-        getSpecialRewardsList();
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfo getSpecialRewards(int index);
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    int getSpecialRewardsCount();
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getSpecialRewardsOrBuilderList();
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getSpecialRewardsOrBuilder(
-        int index);
-
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
-        getDungeonRewardsList();
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfo getDungeonRewards(int index);
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    int getDungeonRewardsCount();
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getDungeonRewardsOrBuilderList();
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getDungeonRewardsOrBuilder(
-        int index);
-
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
-        getRandomRewardsList();
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRandomRewards(int index);
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    int getRandomRewardsCount();
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getRandomRewardsOrBuilderList();
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRandomRewardsOrBuilder(
-        int index);
-
-    /**
-     * <pre>
-     * 增加的玩家经验 (处理显示,更新本地数据)
-     * </pre>
-     *
-     * <code>int32 playerExp = 5;</code>
-     * @return The playerExp.
-     */
-    int getPlayerExp();
-
-    /**
-     * <pre>
-     * 增加玩家金币
-     * </pre>
-     *
-     * <code>int32 coin = 7;</code>
-     * @return The coin.
-     */
-    int getCoin();
   }
   /**
    * <pre>
@@ -2805,11 +2168,7 @@ public final class BattleMsg {
       super(builder);
     }
     private BattleFieldEndResponse_13000004() {
-      starRewards_ = java.util.Collections.emptyList();
-      commonRewards_ = java.util.Collections.emptyList();
-      specialRewards_ = java.util.Collections.emptyList();
-      dungeonRewards_ = java.util.Collections.emptyList();
-      randomRewards_ = java.util.Collections.emptyList();
+      rewards_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -2845,56 +2204,10 @@ public final class BattleMsg {
               break;
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                starRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
+                rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              starRewards_.add(
-                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
-              break;
-            }
-            case 18: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                commonRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              commonRewards_.add(
-                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
-              break;
-            }
-            case 26: {
-              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                specialRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
-                mutable_bitField0_ |= 0x00000004;
-              }
-              specialRewards_.add(
-                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
-              break;
-            }
-            case 34: {
-              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
-                dungeonRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
-                mutable_bitField0_ |= 0x00000008;
-              }
-              dungeonRewards_.add(
-                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
-              break;
-            }
-            case 40: {
-
-              playerExp_ = input.readInt32();
-              break;
-            }
-            case 56: {
-
-              coin_ = input.readInt32();
-              break;
-            }
-            case 74: {
-              if (!((mutable_bitField0_ & 0x00000010) != 0)) {
-                randomRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
-                mutable_bitField0_ |= 0x00000010;
-              }
-              randomRewards_.add(
+              rewards_.add(
                   input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
               break;
             }
@@ -2914,19 +2227,7 @@ public final class BattleMsg {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          starRewards_ = java.util.Collections.unmodifiableList(starRewards_);
-        }
-        if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          commonRewards_ = java.util.Collections.unmodifiableList(commonRewards_);
-        }
-        if (((mutable_bitField0_ & 0x00000004) != 0)) {
-          specialRewards_ = java.util.Collections.unmodifiableList(specialRewards_);
-        }
-        if (((mutable_bitField0_ & 0x00000008) != 0)) {
-          dungeonRewards_ = java.util.Collections.unmodifiableList(dungeonRewards_);
-        }
-        if (((mutable_bitField0_ & 0x00000010) != 0)) {
-          randomRewards_ = java.util.Collections.unmodifiableList(randomRewards_);
+          rewards_ = java.util.Collections.unmodifiableList(rewards_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -2945,334 +2246,64 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004.class, cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004.Builder.class);
     }
 
-    public static final int STARREWARDS_FIELD_NUMBER = 1;
-    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> starRewards_;
+    public static final int REWARDS_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getStarRewardsList() {
-      return starRewards_;
+    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+      return rewards_;
     }
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
     @java.lang.Override
     public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getStarRewardsOrBuilderList() {
-      return starRewards_;
+        getRewardsOrBuilderList() {
+      return rewards_;
     }
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
     @java.lang.Override
-    public int getStarRewardsCount() {
-      return starRewards_.size();
+    public int getRewardsCount() {
+      return rewards_.size();
     }
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getStarRewards(int index) {
-      return starRewards_.get(index);
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+      return rewards_.get(index);
     }
     /**
      * <pre>
-     * 星级评价奖励，每个评价获取一次
+     * 获得的奖励
      * </pre>
      *
-     * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getStarRewardsOrBuilder(
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
         int index) {
-      return starRewards_.get(index);
-    }
-
-    public static final int COMMONREWARDS_FIELD_NUMBER = 2;
-    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> commonRewards_;
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-     */
-    @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getCommonRewardsList() {
-      return commonRewards_;
-    }
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getCommonRewardsOrBuilderList() {
-      return commonRewards_;
-    }
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-     */
-    @java.lang.Override
-    public int getCommonRewardsCount() {
-      return commonRewards_.size();
-    }
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getCommonRewards(int index) {
-      return commonRewards_.get(index);
-    }
-    /**
-     * <pre>
-     * 一般奖励，每次打关卡都会获得
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getCommonRewardsOrBuilder(
-        int index) {
-      return commonRewards_.get(index);
-    }
-
-    public static final int SPECIALREWARDS_FIELD_NUMBER = 3;
-    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> specialRewards_;
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getSpecialRewardsList() {
-      return specialRewards_;
-    }
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getSpecialRewardsOrBuilderList() {
-      return specialRewards_;
-    }
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    @java.lang.Override
-    public int getSpecialRewardsCount() {
-      return specialRewards_.size();
-    }
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getSpecialRewards(int index) {
-      return specialRewards_.get(index);
-    }
-    /**
-     * <pre>
-     * 特殊奖励，特定条件下才会获取
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getSpecialRewardsOrBuilder(
-        int index) {
-      return specialRewards_.get(index);
-    }
-
-    public static final int DUNGEONREWARDS_FIELD_NUMBER = 4;
-    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> dungeonRewards_;
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getDungeonRewardsList() {
-      return dungeonRewards_;
-    }
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getDungeonRewardsOrBuilderList() {
-      return dungeonRewards_;
-    }
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    @java.lang.Override
-    public int getDungeonRewardsCount() {
-      return dungeonRewards_.size();
-    }
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getDungeonRewards(int index) {
-      return dungeonRewards_.get(index);
-    }
-    /**
-     * <pre>
-     * 系统奖励，参照DungeonTypeEnum 玩法。
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getDungeonRewardsOrBuilder(
-        int index) {
-      return dungeonRewards_.get(index);
-    }
-
-    public static final int RANDOMREWARDS_FIELD_NUMBER = 9;
-    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> randomRewards_;
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRandomRewardsList() {
-      return randomRewards_;
-    }
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getRandomRewardsOrBuilderList() {
-      return randomRewards_;
-    }
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    @java.lang.Override
-    public int getRandomRewardsCount() {
-      return randomRewards_.size();
-    }
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRandomRewards(int index) {
-      return randomRewards_.get(index);
-    }
-    /**
-     * <pre>
-     *随机奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRandomRewardsOrBuilder(
-        int index) {
-      return randomRewards_.get(index);
-    }
-
-    public static final int PLAYEREXP_FIELD_NUMBER = 5;
-    private int playerExp_;
-    /**
-     * <pre>
-     * 增加的玩家经验 (处理显示,更新本地数据)
-     * </pre>
-     *
-     * <code>int32 playerExp = 5;</code>
-     * @return The playerExp.
-     */
-    @java.lang.Override
-    public int getPlayerExp() {
-      return playerExp_;
-    }
-
-    public static final int COIN_FIELD_NUMBER = 7;
-    private int coin_;
-    /**
-     * <pre>
-     * 增加玩家金币
-     * </pre>
-     *
-     * <code>int32 coin = 7;</code>
-     * @return The coin.
-     */
-    @java.lang.Override
-    public int getCoin() {
-      return coin_;
+      return rewards_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3289,26 +2320,8 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < starRewards_.size(); i++) {
-        output.writeMessage(1, starRewards_.get(i));
-      }
-      for (int i = 0; i < commonRewards_.size(); i++) {
-        output.writeMessage(2, commonRewards_.get(i));
-      }
-      for (int i = 0; i < specialRewards_.size(); i++) {
-        output.writeMessage(3, specialRewards_.get(i));
-      }
-      for (int i = 0; i < dungeonRewards_.size(); i++) {
-        output.writeMessage(4, dungeonRewards_.get(i));
-      }
-      if (playerExp_ != 0) {
-        output.writeInt32(5, playerExp_);
-      }
-      if (coin_ != 0) {
-        output.writeInt32(7, coin_);
-      }
-      for (int i = 0; i < randomRewards_.size(); i++) {
-        output.writeMessage(9, randomRewards_.get(i));
+      for (int i = 0; i < rewards_.size(); i++) {
+        output.writeMessage(1, rewards_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -3319,33 +2332,9 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
-      for (int i = 0; i < starRewards_.size(); i++) {
+      for (int i = 0; i < rewards_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, starRewards_.get(i));
-      }
-      for (int i = 0; i < commonRewards_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, commonRewards_.get(i));
-      }
-      for (int i = 0; i < specialRewards_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, specialRewards_.get(i));
-      }
-      for (int i = 0; i < dungeonRewards_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, dungeonRewards_.get(i));
-      }
-      if (playerExp_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, playerExp_);
-      }
-      if (coin_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(7, coin_);
-      }
-      for (int i = 0; i < randomRewards_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, randomRewards_.get(i));
+          .computeMessageSize(1, rewards_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3362,20 +2351,8 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004 other = (cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004) obj;
 
-      if (!getStarRewardsList()
-          .equals(other.getStarRewardsList())) return false;
-      if (!getCommonRewardsList()
-          .equals(other.getCommonRewardsList())) return false;
-      if (!getSpecialRewardsList()
-          .equals(other.getSpecialRewardsList())) return false;
-      if (!getDungeonRewardsList()
-          .equals(other.getDungeonRewardsList())) return false;
-      if (!getRandomRewardsList()
-          .equals(other.getRandomRewardsList())) return false;
-      if (getPlayerExp()
-          != other.getPlayerExp()) return false;
-      if (getCoin()
-          != other.getCoin()) return false;
+      if (!getRewardsList()
+          .equals(other.getRewardsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3387,30 +2364,10 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getStarRewardsCount() > 0) {
-        hash = (37 * hash) + STARREWARDS_FIELD_NUMBER;
-        hash = (53 * hash) + getStarRewardsList().hashCode();
+      if (getRewardsCount() > 0) {
+        hash = (37 * hash) + REWARDS_FIELD_NUMBER;
+        hash = (53 * hash) + getRewardsList().hashCode();
       }
-      if (getCommonRewardsCount() > 0) {
-        hash = (37 * hash) + COMMONREWARDS_FIELD_NUMBER;
-        hash = (53 * hash) + getCommonRewardsList().hashCode();
-      }
-      if (getSpecialRewardsCount() > 0) {
-        hash = (37 * hash) + SPECIALREWARDS_FIELD_NUMBER;
-        hash = (53 * hash) + getSpecialRewardsList().hashCode();
-      }
-      if (getDungeonRewardsCount() > 0) {
-        hash = (37 * hash) + DUNGEONREWARDS_FIELD_NUMBER;
-        hash = (53 * hash) + getDungeonRewardsList().hashCode();
-      }
-      if (getRandomRewardsCount() > 0) {
-        hash = (37 * hash) + RANDOMREWARDS_FIELD_NUMBER;
-        hash = (53 * hash) + getRandomRewardsList().hashCode();
-      }
-      hash = (37 * hash) + PLAYEREXP_FIELD_NUMBER;
-      hash = (53 * hash) + getPlayerExp();
-      hash = (37 * hash) + COIN_FIELD_NUMBER;
-      hash = (53 * hash) + getCoin();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3543,50 +2500,18 @@ public final class BattleMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getStarRewardsFieldBuilder();
-          getCommonRewardsFieldBuilder();
-          getSpecialRewardsFieldBuilder();
-          getDungeonRewardsFieldBuilder();
-          getRandomRewardsFieldBuilder();
+          getRewardsFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (starRewardsBuilder_ == null) {
-          starRewards_ = java.util.Collections.emptyList();
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          starRewardsBuilder_.clear();
+          rewardsBuilder_.clear();
         }
-        if (commonRewardsBuilder_ == null) {
-          commonRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        } else {
-          commonRewardsBuilder_.clear();
-        }
-        if (specialRewardsBuilder_ == null) {
-          specialRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
-        } else {
-          specialRewardsBuilder_.clear();
-        }
-        if (dungeonRewardsBuilder_ == null) {
-          dungeonRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
-        } else {
-          dungeonRewardsBuilder_.clear();
-        }
-        if (randomRewardsBuilder_ == null) {
-          randomRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000010);
-        } else {
-          randomRewardsBuilder_.clear();
-        }
-        playerExp_ = 0;
-
-        coin_ = 0;
-
         return this;
       }
 
@@ -3614,53 +2539,15 @@ public final class BattleMsg {
       public cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004 result = new cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004(this);
         int from_bitField0_ = bitField0_;
-        if (starRewardsBuilder_ == null) {
+        if (rewardsBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
-            starRewards_ = java.util.Collections.unmodifiableList(starRewards_);
+            rewards_ = java.util.Collections.unmodifiableList(rewards_);
             bitField0_ = (bitField0_ & ~0x00000001);
           }
-          result.starRewards_ = starRewards_;
+          result.rewards_ = rewards_;
         } else {
-          result.starRewards_ = starRewardsBuilder_.build();
+          result.rewards_ = rewardsBuilder_.build();
         }
-        if (commonRewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0)) {
-            commonRewards_ = java.util.Collections.unmodifiableList(commonRewards_);
-            bitField0_ = (bitField0_ & ~0x00000002);
-          }
-          result.commonRewards_ = commonRewards_;
-        } else {
-          result.commonRewards_ = commonRewardsBuilder_.build();
-        }
-        if (specialRewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0)) {
-            specialRewards_ = java.util.Collections.unmodifiableList(specialRewards_);
-            bitField0_ = (bitField0_ & ~0x00000004);
-          }
-          result.specialRewards_ = specialRewards_;
-        } else {
-          result.specialRewards_ = specialRewardsBuilder_.build();
-        }
-        if (dungeonRewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) != 0)) {
-            dungeonRewards_ = java.util.Collections.unmodifiableList(dungeonRewards_);
-            bitField0_ = (bitField0_ & ~0x00000008);
-          }
-          result.dungeonRewards_ = dungeonRewards_;
-        } else {
-          result.dungeonRewards_ = dungeonRewardsBuilder_.build();
-        }
-        if (randomRewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) != 0)) {
-            randomRewards_ = java.util.Collections.unmodifiableList(randomRewards_);
-            bitField0_ = (bitField0_ & ~0x00000010);
-          }
-          result.randomRewards_ = randomRewards_;
-        } else {
-          result.randomRewards_ = randomRewardsBuilder_.build();
-        }
-        result.playerExp_ = playerExp_;
-        result.coin_ = coin_;
         onBuilt();
         return result;
       }
@@ -3709,141 +2596,31 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004.getDefaultInstance()) return this;
-        if (starRewardsBuilder_ == null) {
-          if (!other.starRewards_.isEmpty()) {
-            if (starRewards_.isEmpty()) {
-              starRewards_ = other.starRewards_;
+        if (rewardsBuilder_ == null) {
+          if (!other.rewards_.isEmpty()) {
+            if (rewards_.isEmpty()) {
+              rewards_ = other.rewards_;
               bitField0_ = (bitField0_ & ~0x00000001);
             } else {
-              ensureStarRewardsIsMutable();
-              starRewards_.addAll(other.starRewards_);
+              ensureRewardsIsMutable();
+              rewards_.addAll(other.rewards_);
             }
             onChanged();
           }
         } else {
-          if (!other.starRewards_.isEmpty()) {
-            if (starRewardsBuilder_.isEmpty()) {
-              starRewardsBuilder_.dispose();
-              starRewardsBuilder_ = null;
-              starRewards_ = other.starRewards_;
+          if (!other.rewards_.isEmpty()) {
+            if (rewardsBuilder_.isEmpty()) {
+              rewardsBuilder_.dispose();
+              rewardsBuilder_ = null;
+              rewards_ = other.rewards_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              starRewardsBuilder_ = 
+              rewardsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getStarRewardsFieldBuilder() : null;
+                   getRewardsFieldBuilder() : null;
             } else {
-              starRewardsBuilder_.addAllMessages(other.starRewards_);
+              rewardsBuilder_.addAllMessages(other.rewards_);
             }
           }
-        }
-        if (commonRewardsBuilder_ == null) {
-          if (!other.commonRewards_.isEmpty()) {
-            if (commonRewards_.isEmpty()) {
-              commonRewards_ = other.commonRewards_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-            } else {
-              ensureCommonRewardsIsMutable();
-              commonRewards_.addAll(other.commonRewards_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.commonRewards_.isEmpty()) {
-            if (commonRewardsBuilder_.isEmpty()) {
-              commonRewardsBuilder_.dispose();
-              commonRewardsBuilder_ = null;
-              commonRewards_ = other.commonRewards_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-              commonRewardsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getCommonRewardsFieldBuilder() : null;
-            } else {
-              commonRewardsBuilder_.addAllMessages(other.commonRewards_);
-            }
-          }
-        }
-        if (specialRewardsBuilder_ == null) {
-          if (!other.specialRewards_.isEmpty()) {
-            if (specialRewards_.isEmpty()) {
-              specialRewards_ = other.specialRewards_;
-              bitField0_ = (bitField0_ & ~0x00000004);
-            } else {
-              ensureSpecialRewardsIsMutable();
-              specialRewards_.addAll(other.specialRewards_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.specialRewards_.isEmpty()) {
-            if (specialRewardsBuilder_.isEmpty()) {
-              specialRewardsBuilder_.dispose();
-              specialRewardsBuilder_ = null;
-              specialRewards_ = other.specialRewards_;
-              bitField0_ = (bitField0_ & ~0x00000004);
-              specialRewardsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getSpecialRewardsFieldBuilder() : null;
-            } else {
-              specialRewardsBuilder_.addAllMessages(other.specialRewards_);
-            }
-          }
-        }
-        if (dungeonRewardsBuilder_ == null) {
-          if (!other.dungeonRewards_.isEmpty()) {
-            if (dungeonRewards_.isEmpty()) {
-              dungeonRewards_ = other.dungeonRewards_;
-              bitField0_ = (bitField0_ & ~0x00000008);
-            } else {
-              ensureDungeonRewardsIsMutable();
-              dungeonRewards_.addAll(other.dungeonRewards_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.dungeonRewards_.isEmpty()) {
-            if (dungeonRewardsBuilder_.isEmpty()) {
-              dungeonRewardsBuilder_.dispose();
-              dungeonRewardsBuilder_ = null;
-              dungeonRewards_ = other.dungeonRewards_;
-              bitField0_ = (bitField0_ & ~0x00000008);
-              dungeonRewardsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getDungeonRewardsFieldBuilder() : null;
-            } else {
-              dungeonRewardsBuilder_.addAllMessages(other.dungeonRewards_);
-            }
-          }
-        }
-        if (randomRewardsBuilder_ == null) {
-          if (!other.randomRewards_.isEmpty()) {
-            if (randomRewards_.isEmpty()) {
-              randomRewards_ = other.randomRewards_;
-              bitField0_ = (bitField0_ & ~0x00000010);
-            } else {
-              ensureRandomRewardsIsMutable();
-              randomRewards_.addAll(other.randomRewards_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.randomRewards_.isEmpty()) {
-            if (randomRewardsBuilder_.isEmpty()) {
-              randomRewardsBuilder_.dispose();
-              randomRewardsBuilder_ = null;
-              randomRewards_ = other.randomRewards_;
-              bitField0_ = (bitField0_ & ~0x00000010);
-              randomRewardsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getRandomRewardsFieldBuilder() : null;
-            } else {
-              randomRewardsBuilder_.addAllMessages(other.randomRewards_);
-            }
-          }
-        }
-        if (other.getPlayerExp() != 0) {
-          setPlayerExp(other.getPlayerExp());
-        }
-        if (other.getCoin() != 0) {
-          setCoin(other.getCoin());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3875,1650 +2652,316 @@ public final class BattleMsg {
       }
       private int bitField0_;
 
-      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> starRewards_ =
+      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_ =
         java.util.Collections.emptyList();
-      private void ensureStarRewardsIsMutable() {
+      private void ensureRewardsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          starRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(starRewards_);
+          rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(rewards_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> starRewardsBuilder_;
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
 
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getStarRewardsList() {
-        if (starRewardsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(starRewards_);
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+        if (rewardsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(rewards_);
         } else {
-          return starRewardsBuilder_.getMessageList();
+          return rewardsBuilder_.getMessageList();
         }
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public int getStarRewardsCount() {
-        if (starRewardsBuilder_ == null) {
-          return starRewards_.size();
+      public int getRewardsCount() {
+        if (rewardsBuilder_ == null) {
+          return rewards_.size();
         } else {
-          return starRewardsBuilder_.getCount();
+          return rewardsBuilder_.getCount();
         }
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getStarRewards(int index) {
-        if (starRewardsBuilder_ == null) {
-          return starRewards_.get(index);
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);
         } else {
-          return starRewardsBuilder_.getMessage(index);
+          return rewardsBuilder_.getMessage(index);
         }
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder setStarRewards(
+      public Builder setRewards(
           int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (starRewardsBuilder_ == null) {
+        if (rewardsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureStarRewardsIsMutable();
-          starRewards_.set(index, value);
+          ensureRewardsIsMutable();
+          rewards_.set(index, value);
           onChanged();
         } else {
-          starRewardsBuilder_.setMessage(index, value);
+          rewardsBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder setStarRewards(
+      public Builder setRewards(
           int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (starRewardsBuilder_ == null) {
-          ensureStarRewardsIsMutable();
-          starRewards_.set(index, builderForValue.build());
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.set(index, builderForValue.build());
           onChanged();
         } else {
-          starRewardsBuilder_.setMessage(index, builderForValue.build());
+          rewardsBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder addStarRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (starRewardsBuilder_ == null) {
+      public Builder addRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureStarRewardsIsMutable();
-          starRewards_.add(value);
+          ensureRewardsIsMutable();
+          rewards_.add(value);
           onChanged();
         } else {
-          starRewardsBuilder_.addMessage(value);
+          rewardsBuilder_.addMessage(value);
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder addStarRewards(
+      public Builder addRewards(
           int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (starRewardsBuilder_ == null) {
+        if (rewardsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureStarRewardsIsMutable();
-          starRewards_.add(index, value);
+          ensureRewardsIsMutable();
+          rewards_.add(index, value);
           onChanged();
         } else {
-          starRewardsBuilder_.addMessage(index, value);
+          rewardsBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder addStarRewards(
+      public Builder addRewards(
           cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (starRewardsBuilder_ == null) {
-          ensureStarRewardsIsMutable();
-          starRewards_.add(builderForValue.build());
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(builderForValue.build());
           onChanged();
         } else {
-          starRewardsBuilder_.addMessage(builderForValue.build());
+          rewardsBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder addStarRewards(
+      public Builder addRewards(
           int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (starRewardsBuilder_ == null) {
-          ensureStarRewardsIsMutable();
-          starRewards_.add(index, builderForValue.build());
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(index, builderForValue.build());
           onChanged();
         } else {
-          starRewardsBuilder_.addMessage(index, builderForValue.build());
+          rewardsBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder addAllStarRewards(
+      public Builder addAllRewards(
           java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
-        if (starRewardsBuilder_ == null) {
-          ensureStarRewardsIsMutable();
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, starRewards_);
+              values, rewards_);
           onChanged();
         } else {
-          starRewardsBuilder_.addAllMessages(values);
+          rewardsBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder clearStarRewards() {
-        if (starRewardsBuilder_ == null) {
-          starRewards_ = java.util.Collections.emptyList();
+      public Builder clearRewards() {
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          starRewardsBuilder_.clear();
+          rewardsBuilder_.clear();
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public Builder removeStarRewards(int index) {
-        if (starRewardsBuilder_ == null) {
-          ensureStarRewardsIsMutable();
-          starRewards_.remove(index);
+      public Builder removeRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.remove(index);
           onChanged();
         } else {
-          starRewardsBuilder_.remove(index);
+          rewardsBuilder_.remove(index);
         }
         return this;
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getStarRewardsBuilder(
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder(
           int index) {
-        return getStarRewardsFieldBuilder().getBuilder(index);
+        return getRewardsFieldBuilder().getBuilder(index);
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getStarRewardsOrBuilder(
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
           int index) {
-        if (starRewardsBuilder_ == null) {
-          return starRewards_.get(index);  } else {
-          return starRewardsBuilder_.getMessageOrBuilder(index);
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);  } else {
+          return rewardsBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
       public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-           getStarRewardsOrBuilderList() {
-        if (starRewardsBuilder_ != null) {
-          return starRewardsBuilder_.getMessageOrBuilderList();
+           getRewardsOrBuilderList() {
+        if (rewardsBuilder_ != null) {
+          return rewardsBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(starRewards_);
+          return java.util.Collections.unmodifiableList(rewards_);
         }
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addStarRewardsBuilder() {
-        return getStarRewardsFieldBuilder().addBuilder(
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder() {
+        return getRewardsFieldBuilder().addBuilder(
             cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addStarRewardsBuilder(
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder(
           int index) {
-        return getStarRewardsFieldBuilder().addBuilder(
+        return getRewardsFieldBuilder().addBuilder(
             index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
       }
       /**
        * <pre>
-       * 星级评价奖励，每个评价获取一次
+       * 获得的奖励
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo starRewards = 1;</code>
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
        */
       public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
-           getStarRewardsBuilderList() {
-        return getStarRewardsFieldBuilder().getBuilderList();
+           getRewardsBuilderList() {
+        return getRewardsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
           cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-          getStarRewardsFieldBuilder() {
-        if (starRewardsBuilder_ == null) {
-          starRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          getRewardsFieldBuilder() {
+        if (rewardsBuilder_ == null) {
+          rewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
-                  starRewards_,
+                  rewards_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
-          starRewards_ = null;
+          rewards_ = null;
         }
-        return starRewardsBuilder_;
-      }
-
-      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> commonRewards_ =
-        java.util.Collections.emptyList();
-      private void ensureCommonRewardsIsMutable() {
-        if (!((bitField0_ & 0x00000002) != 0)) {
-          commonRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(commonRewards_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> commonRewardsBuilder_;
-
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getCommonRewardsList() {
-        if (commonRewardsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(commonRewards_);
-        } else {
-          return commonRewardsBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public int getCommonRewardsCount() {
-        if (commonRewardsBuilder_ == null) {
-          return commonRewards_.size();
-        } else {
-          return commonRewardsBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getCommonRewards(int index) {
-        if (commonRewardsBuilder_ == null) {
-          return commonRewards_.get(index);
-        } else {
-          return commonRewardsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder setCommonRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (commonRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCommonRewardsIsMutable();
-          commonRewards_.set(index, value);
-          onChanged();
-        } else {
-          commonRewardsBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder setCommonRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (commonRewardsBuilder_ == null) {
-          ensureCommonRewardsIsMutable();
-          commonRewards_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          commonRewardsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder addCommonRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (commonRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCommonRewardsIsMutable();
-          commonRewards_.add(value);
-          onChanged();
-        } else {
-          commonRewardsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder addCommonRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (commonRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCommonRewardsIsMutable();
-          commonRewards_.add(index, value);
-          onChanged();
-        } else {
-          commonRewardsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder addCommonRewards(
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (commonRewardsBuilder_ == null) {
-          ensureCommonRewardsIsMutable();
-          commonRewards_.add(builderForValue.build());
-          onChanged();
-        } else {
-          commonRewardsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder addCommonRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (commonRewardsBuilder_ == null) {
-          ensureCommonRewardsIsMutable();
-          commonRewards_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          commonRewardsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder addAllCommonRewards(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
-        if (commonRewardsBuilder_ == null) {
-          ensureCommonRewardsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, commonRewards_);
-          onChanged();
-        } else {
-          commonRewardsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder clearCommonRewards() {
-        if (commonRewardsBuilder_ == null) {
-          commonRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-          onChanged();
-        } else {
-          commonRewardsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public Builder removeCommonRewards(int index) {
-        if (commonRewardsBuilder_ == null) {
-          ensureCommonRewardsIsMutable();
-          commonRewards_.remove(index);
-          onChanged();
-        } else {
-          commonRewardsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getCommonRewardsBuilder(
-          int index) {
-        return getCommonRewardsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getCommonRewardsOrBuilder(
-          int index) {
-        if (commonRewardsBuilder_ == null) {
-          return commonRewards_.get(index);  } else {
-          return commonRewardsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-           getCommonRewardsOrBuilderList() {
-        if (commonRewardsBuilder_ != null) {
-          return commonRewardsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(commonRewards_);
-        }
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addCommonRewardsBuilder() {
-        return getCommonRewardsFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addCommonRewardsBuilder(
-          int index) {
-        return getCommonRewardsFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 一般奖励，每次打关卡都会获得
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo commonRewards = 2;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
-           getCommonRewardsBuilderList() {
-        return getCommonRewardsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-          getCommonRewardsFieldBuilder() {
-        if (commonRewardsBuilder_ == null) {
-          commonRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
-                  commonRewards_,
-                  ((bitField0_ & 0x00000002) != 0),
-                  getParentForChildren(),
-                  isClean());
-          commonRewards_ = null;
-        }
-        return commonRewardsBuilder_;
-      }
-
-      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> specialRewards_ =
-        java.util.Collections.emptyList();
-      private void ensureSpecialRewardsIsMutable() {
-        if (!((bitField0_ & 0x00000004) != 0)) {
-          specialRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(specialRewards_);
-          bitField0_ |= 0x00000004;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> specialRewardsBuilder_;
-
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getSpecialRewardsList() {
-        if (specialRewardsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(specialRewards_);
-        } else {
-          return specialRewardsBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public int getSpecialRewardsCount() {
-        if (specialRewardsBuilder_ == null) {
-          return specialRewards_.size();
-        } else {
-          return specialRewardsBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getSpecialRewards(int index) {
-        if (specialRewardsBuilder_ == null) {
-          return specialRewards_.get(index);
-        } else {
-          return specialRewardsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder setSpecialRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (specialRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureSpecialRewardsIsMutable();
-          specialRewards_.set(index, value);
-          onChanged();
-        } else {
-          specialRewardsBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder setSpecialRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (specialRewardsBuilder_ == null) {
-          ensureSpecialRewardsIsMutable();
-          specialRewards_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          specialRewardsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder addSpecialRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (specialRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureSpecialRewardsIsMutable();
-          specialRewards_.add(value);
-          onChanged();
-        } else {
-          specialRewardsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder addSpecialRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (specialRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureSpecialRewardsIsMutable();
-          specialRewards_.add(index, value);
-          onChanged();
-        } else {
-          specialRewardsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder addSpecialRewards(
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (specialRewardsBuilder_ == null) {
-          ensureSpecialRewardsIsMutable();
-          specialRewards_.add(builderForValue.build());
-          onChanged();
-        } else {
-          specialRewardsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder addSpecialRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (specialRewardsBuilder_ == null) {
-          ensureSpecialRewardsIsMutable();
-          specialRewards_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          specialRewardsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder addAllSpecialRewards(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
-        if (specialRewardsBuilder_ == null) {
-          ensureSpecialRewardsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, specialRewards_);
-          onChanged();
-        } else {
-          specialRewardsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder clearSpecialRewards() {
-        if (specialRewardsBuilder_ == null) {
-          specialRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
-          onChanged();
-        } else {
-          specialRewardsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public Builder removeSpecialRewards(int index) {
-        if (specialRewardsBuilder_ == null) {
-          ensureSpecialRewardsIsMutable();
-          specialRewards_.remove(index);
-          onChanged();
-        } else {
-          specialRewardsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getSpecialRewardsBuilder(
-          int index) {
-        return getSpecialRewardsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getSpecialRewardsOrBuilder(
-          int index) {
-        if (specialRewardsBuilder_ == null) {
-          return specialRewards_.get(index);  } else {
-          return specialRewardsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-           getSpecialRewardsOrBuilderList() {
-        if (specialRewardsBuilder_ != null) {
-          return specialRewardsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(specialRewards_);
-        }
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addSpecialRewardsBuilder() {
-        return getSpecialRewardsFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addSpecialRewardsBuilder(
-          int index) {
-        return getSpecialRewardsFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 特殊奖励，特定条件下才会获取
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo specialRewards = 3;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
-           getSpecialRewardsBuilderList() {
-        return getSpecialRewardsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-          getSpecialRewardsFieldBuilder() {
-        if (specialRewardsBuilder_ == null) {
-          specialRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
-                  specialRewards_,
-                  ((bitField0_ & 0x00000004) != 0),
-                  getParentForChildren(),
-                  isClean());
-          specialRewards_ = null;
-        }
-        return specialRewardsBuilder_;
-      }
-
-      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> dungeonRewards_ =
-        java.util.Collections.emptyList();
-      private void ensureDungeonRewardsIsMutable() {
-        if (!((bitField0_ & 0x00000008) != 0)) {
-          dungeonRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(dungeonRewards_);
-          bitField0_ |= 0x00000008;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> dungeonRewardsBuilder_;
-
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getDungeonRewardsList() {
-        if (dungeonRewardsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(dungeonRewards_);
-        } else {
-          return dungeonRewardsBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public int getDungeonRewardsCount() {
-        if (dungeonRewardsBuilder_ == null) {
-          return dungeonRewards_.size();
-        } else {
-          return dungeonRewardsBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getDungeonRewards(int index) {
-        if (dungeonRewardsBuilder_ == null) {
-          return dungeonRewards_.get(index);
-        } else {
-          return dungeonRewardsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder setDungeonRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (dungeonRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureDungeonRewardsIsMutable();
-          dungeonRewards_.set(index, value);
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder setDungeonRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (dungeonRewardsBuilder_ == null) {
-          ensureDungeonRewardsIsMutable();
-          dungeonRewards_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder addDungeonRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (dungeonRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureDungeonRewardsIsMutable();
-          dungeonRewards_.add(value);
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder addDungeonRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (dungeonRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureDungeonRewardsIsMutable();
-          dungeonRewards_.add(index, value);
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder addDungeonRewards(
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (dungeonRewardsBuilder_ == null) {
-          ensureDungeonRewardsIsMutable();
-          dungeonRewards_.add(builderForValue.build());
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder addDungeonRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (dungeonRewardsBuilder_ == null) {
-          ensureDungeonRewardsIsMutable();
-          dungeonRewards_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder addAllDungeonRewards(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
-        if (dungeonRewardsBuilder_ == null) {
-          ensureDungeonRewardsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, dungeonRewards_);
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder clearDungeonRewards() {
-        if (dungeonRewardsBuilder_ == null) {
-          dungeonRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public Builder removeDungeonRewards(int index) {
-        if (dungeonRewardsBuilder_ == null) {
-          ensureDungeonRewardsIsMutable();
-          dungeonRewards_.remove(index);
-          onChanged();
-        } else {
-          dungeonRewardsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getDungeonRewardsBuilder(
-          int index) {
-        return getDungeonRewardsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getDungeonRewardsOrBuilder(
-          int index) {
-        if (dungeonRewardsBuilder_ == null) {
-          return dungeonRewards_.get(index);  } else {
-          return dungeonRewardsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-           getDungeonRewardsOrBuilderList() {
-        if (dungeonRewardsBuilder_ != null) {
-          return dungeonRewardsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(dungeonRewards_);
-        }
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addDungeonRewardsBuilder() {
-        return getDungeonRewardsFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addDungeonRewardsBuilder(
-          int index) {
-        return getDungeonRewardsFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 系统奖励，参照DungeonTypeEnum 玩法。
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo dungeonRewards = 4;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
-           getDungeonRewardsBuilderList() {
-        return getDungeonRewardsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-          getDungeonRewardsFieldBuilder() {
-        if (dungeonRewardsBuilder_ == null) {
-          dungeonRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
-                  dungeonRewards_,
-                  ((bitField0_ & 0x00000008) != 0),
-                  getParentForChildren(),
-                  isClean());
-          dungeonRewards_ = null;
-        }
-        return dungeonRewardsBuilder_;
-      }
-
-      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> randomRewards_ =
-        java.util.Collections.emptyList();
-      private void ensureRandomRewardsIsMutable() {
-        if (!((bitField0_ & 0x00000010) != 0)) {
-          randomRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(randomRewards_);
-          bitField0_ |= 0x00000010;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> randomRewardsBuilder_;
-
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRandomRewardsList() {
-        if (randomRewardsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(randomRewards_);
-        } else {
-          return randomRewardsBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public int getRandomRewardsCount() {
-        if (randomRewardsBuilder_ == null) {
-          return randomRewards_.size();
-        } else {
-          return randomRewardsBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRandomRewards(int index) {
-        if (randomRewardsBuilder_ == null) {
-          return randomRewards_.get(index);
-        } else {
-          return randomRewardsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder setRandomRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (randomRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRandomRewardsIsMutable();
-          randomRewards_.set(index, value);
-          onChanged();
-        } else {
-          randomRewardsBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder setRandomRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (randomRewardsBuilder_ == null) {
-          ensureRandomRewardsIsMutable();
-          randomRewards_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          randomRewardsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder addRandomRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (randomRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRandomRewardsIsMutable();
-          randomRewards_.add(value);
-          onChanged();
-        } else {
-          randomRewardsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder addRandomRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (randomRewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRandomRewardsIsMutable();
-          randomRewards_.add(index, value);
-          onChanged();
-        } else {
-          randomRewardsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder addRandomRewards(
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (randomRewardsBuilder_ == null) {
-          ensureRandomRewardsIsMutable();
-          randomRewards_.add(builderForValue.build());
-          onChanged();
-        } else {
-          randomRewardsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder addRandomRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (randomRewardsBuilder_ == null) {
-          ensureRandomRewardsIsMutable();
-          randomRewards_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          randomRewardsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder addAllRandomRewards(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
-        if (randomRewardsBuilder_ == null) {
-          ensureRandomRewardsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, randomRewards_);
-          onChanged();
-        } else {
-          randomRewardsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder clearRandomRewards() {
-        if (randomRewardsBuilder_ == null) {
-          randomRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000010);
-          onChanged();
-        } else {
-          randomRewardsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public Builder removeRandomRewards(int index) {
-        if (randomRewardsBuilder_ == null) {
-          ensureRandomRewardsIsMutable();
-          randomRewards_.remove(index);
-          onChanged();
-        } else {
-          randomRewardsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRandomRewardsBuilder(
-          int index) {
-        return getRandomRewardsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRandomRewardsOrBuilder(
-          int index) {
-        if (randomRewardsBuilder_ == null) {
-          return randomRewards_.get(index);  } else {
-          return randomRewardsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-           getRandomRewardsOrBuilderList() {
-        if (randomRewardsBuilder_ != null) {
-          return randomRewardsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(randomRewards_);
-        }
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRandomRewardsBuilder() {
-        return getRandomRewardsFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRandomRewardsBuilder(
-          int index) {
-        return getRandomRewardsFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       *随机奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo randomRewards = 9;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
-           getRandomRewardsBuilderList() {
-        return getRandomRewardsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-          getRandomRewardsFieldBuilder() {
-        if (randomRewardsBuilder_ == null) {
-          randomRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
-                  randomRewards_,
-                  ((bitField0_ & 0x00000010) != 0),
-                  getParentForChildren(),
-                  isClean());
-          randomRewards_ = null;
-        }
-        return randomRewardsBuilder_;
-      }
-
-      private int playerExp_ ;
-      /**
-       * <pre>
-       * 增加的玩家经验 (处理显示,更新本地数据)
-       * </pre>
-       *
-       * <code>int32 playerExp = 5;</code>
-       * @return The playerExp.
-       */
-      @java.lang.Override
-      public int getPlayerExp() {
-        return playerExp_;
-      }
-      /**
-       * <pre>
-       * 增加的玩家经验 (处理显示,更新本地数据)
-       * </pre>
-       *
-       * <code>int32 playerExp = 5;</code>
-       * @param value The playerExp to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPlayerExp(int value) {
-        
-        playerExp_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 增加的玩家经验 (处理显示,更新本地数据)
-       * </pre>
-       *
-       * <code>int32 playerExp = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPlayerExp() {
-        
-        playerExp_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int coin_ ;
-      /**
-       * <pre>
-       * 增加玩家金币
-       * </pre>
-       *
-       * <code>int32 coin = 7;</code>
-       * @return The coin.
-       */
-      @java.lang.Override
-      public int getCoin() {
-        return coin_;
-      }
-      /**
-       * <pre>
-       * 增加玩家金币
-       * </pre>
-       *
-       * <code>int32 coin = 7;</code>
-       * @param value The coin to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCoin(int value) {
-        
-        coin_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 增加玩家金币
-       * </pre>
-       *
-       * <code>int32 coin = 7;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearCoin() {
-        
-        coin_ = 0;
-        onChanged();
-        return this;
+        return rewardsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -9802,30 +7245,25 @@ public final class BattleMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017BattleMsg.proto\022\006Protos\032\017RewardMsg.pro" +
-      "to\"\\\n BattleFieldStartRequest_13000001\022\014" +
-      "\n\004type\030\001 \001(\r\022\021\n\tdungeonId\030\002 \001(\r\022\n\n\002id\030\003 " +
-      "\001(\r\022\013\n\003uid\030\005 \001(\t\"#\n!BattleFieldStartResp" +
-      "onse_13000002\"u\n\036BattleFieldEndRequest_1" +
-      "3000003\022\014\n\004type\030\001 \001(\r\022\021\n\tdungeonId\030\002 \001(\r" +
-      "\022\n\n\002id\030\003 \001(\r\022\014\n\004star\030\005 \003(\r\022\013\n\003uid\030\006 \001(\t\022" +
-      "\013\n\003win\030\n \001(\010\"\231\002\n\037BattleFieldEndResponse_" +
-      "13000004\022\'\n\013starRewards\030\001 \003(\0132\022.Protos.R" +
-      "ewardInfo\022)\n\rcommonRewards\030\002 \003(\0132\022.Proto" +
-      "s.RewardInfo\022*\n\016specialRewards\030\003 \003(\0132\022.P" +
-      "rotos.RewardInfo\022*\n\016dungeonRewards\030\004 \003(\013" +
-      "2\022.Protos.RewardInfo\022)\n\rrandomRewards\030\t " +
-      "\003(\0132\022.Protos.RewardInfo\022\021\n\tplayerExp\030\005 \001" +
-      "(\005\022\014\n\004coin\030\007 \001(\005\"1\n#BattleChapterRewardR" +
-      "equest_13000022\022\n\n\002id\030\001 \001(\r\"J\n$BattleCha" +
-      "pterRewardResponse_13000023\022\"\n\006reward\030\001 " +
-      "\003(\0132\022.Protos.RewardInfo\"+\n\017BattleFieldIn" +
-      "fo\022\n\n\002id\030\001 \001(\005\022\014\n\004star\030\002 \003(\005\"3\n\021BattleCh" +
-      "apterInfo\022\n\n\002id\030\001 \001(\005\022\022\n\npassReward\030\002 \001(" +
-      "\010\">\n\017BattleEventInfo\022\013\n\003uid\030\001 \001(\t\022\n\n\002id\030" +
-      "\002 \001(\005\022\022\n\nexpireTime\030\003 \001(\005\"L\n\035BattleField" +
-      "StartPush_13000100\022\014\n\004type\030\001 \001(\r\022\021\n\tdung" +
-      "eonId\030\002 \001(\r\022\n\n\002id\030\003 \001(\rB\033\n\031cn.game.proto" +
-      "col.protobufb\006proto3"
+      "to\"Q\n BattleFieldStartRequest_13000001\022\014" +
+      "\n\004type\030\001 \001(\r\022\016\n\006typeId\030\002 \001(\r\022\017\n\007fieldId\030" +
+      "\003 \001(\r\"#\n!BattleFieldStartResponse_130000" +
+      "02\"\211\001\n\036BattleFieldEndRequest_13000003\022\014\n" +
+      "\004type\030\001 \001(\r\022\016\n\006typeId\030\002 \001(\r\022\017\n\007fieldId\030\003" +
+      " \001(\r\022\030\n\020killMonsterCount\030\005 \001(\r\022\021\n\thpPerc" +
+      "ent\030\006 \001(\r\022\013\n\003win\030\n \001(\010\"F\n\037BattleFieldEnd" +
+      "Response_13000004\022#\n\007rewards\030\001 \003(\0132\022.Pro" +
+      "tos.RewardInfo\"1\n#BattleChapterRewardReq" +
+      "uest_13000022\022\n\n\002id\030\001 \001(\r\"J\n$BattleChapt" +
+      "erRewardResponse_13000023\022\"\n\006reward\030\001 \003(" +
+      "\0132\022.Protos.RewardInfo\"+\n\017BattleFieldInfo" +
+      "\022\n\n\002id\030\001 \001(\005\022\014\n\004star\030\002 \003(\005\"3\n\021BattleChap" +
+      "terInfo\022\n\n\002id\030\001 \001(\005\022\022\n\npassReward\030\002 \001(\010\"" +
+      ">\n\017BattleEventInfo\022\013\n\003uid\030\001 \001(\t\022\n\n\002id\030\002 " +
+      "\001(\005\022\022\n\nexpireTime\030\003 \001(\005\"L\n\035BattleFieldSt" +
+      "artPush_13000100\022\014\n\004type\030\001 \001(\r\022\021\n\tdungeo" +
+      "nId\030\002 \001(\r\022\n\n\002id\030\003 \001(\rB\033\n\031cn.game.protoco" +
+      "l.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9837,7 +7275,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleFieldStartRequest_13000001_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldStartRequest_13000001_descriptor,
-        new java.lang.String[] { "Type", "DungeonId", "Id", "Uid", });
+        new java.lang.String[] { "Type", "TypeId", "FieldId", });
     internal_static_Protos_BattleFieldStartResponse_13000002_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_BattleFieldStartResponse_13000002_fieldAccessorTable = new
@@ -9849,13 +7287,13 @@ public final class BattleMsg {
     internal_static_Protos_BattleFieldEndRequest_13000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldEndRequest_13000003_descriptor,
-        new java.lang.String[] { "Type", "DungeonId", "Id", "Star", "Uid", "Win", });
+        new java.lang.String[] { "Type", "TypeId", "FieldId", "KillMonsterCount", "HpPercent", "Win", });
     internal_static_Protos_BattleFieldEndResponse_13000004_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Protos_BattleFieldEndResponse_13000004_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldEndResponse_13000004_descriptor,
-        new java.lang.String[] { "StarRewards", "CommonRewards", "SpecialRewards", "DungeonRewards", "RandomRewards", "PlayerExp", "Coin", });
+        new java.lang.String[] { "Rewards", });
     internal_static_Protos_BattleChapterRewardRequest_13000022_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_Protos_BattleChapterRewardRequest_13000022_fieldAccessorTable = new

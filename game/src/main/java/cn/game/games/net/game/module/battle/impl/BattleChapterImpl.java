@@ -1,12 +1,11 @@
-package cn.game.games.net.game.module.battle;
-
-import java.util.List;
+package cn.game.games.net.game.module.battle.impl;
 
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.impl.ChapterOp;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.battle.ChapterOp;
+import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.protocol.generated.config.BattleChapterConfig;
 import cn.game.protocol.generated.config.BattleLevelConfig;
 import cn.game.protocol.generated.enume.DungeonTypeEnum;
@@ -14,7 +13,6 @@ import cn.game.protocol.generated.manager.BattleChapterManager;
 import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**
  * @Description 意识空间战斗
@@ -59,7 +57,7 @@ public class BattleChapterImpl implements IBattleHandler {
 	}
 
 	@Override
-	public int battleEnd(long playerId, boolean win, List<Integer> starList, BattleFieldEndResponse_13000004.Builder resp) {
+	public int battleEnd(long playerId, boolean win, int killMonsterCount, int hpPercent, BattleFieldEndResponse_13000004.Builder resp) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ChapterOp chapterOp = player.getModule(ChapterOp.class);
@@ -70,11 +68,11 @@ public class BattleChapterImpl implements IBattleHandler {
 			return 0 ; 
 		}
 		
-		boolean first = chapterOp.addBattleLevelPass(id, starList);
-		if (first) {
-			List<RewardInfo> rewardItems = PlayerHelper.addResources(playerId, levelConfig.getSpecialReward());
-			resp.addAllSpecialRewards(rewardItems);
-		}
+		boolean first = chapterOp.addBattleLevelPass(id, null);
+//		if (first) {
+//			List<RewardInfo> rewardItems = PlayerHelper.addResources(playerId, levelConfig.getSpecialReward());
+//			resp.addAllSpecialRewards(rewardItems);
+//		}
 
 		return 0;
 	}

@@ -1374,7 +1374,7 @@ public final class BaseMsg {
 
     /**
      * <pre>
-     *id，可以是Hero表的id，Item表的id等等
+     *id，可以是Asset表id、Hero表的id、Item表的id等等
      * </pre>
      *
      * <code>uint32 id = 1;</code>
@@ -1394,7 +1394,7 @@ public final class BaseMsg {
   }
   /**
    * <pre>
-   * 物品信息，一般用来显示使用，不能代表最终获取的物品
+   * 物品信息
    * </pre>
    *
    * Protobuf type {@code Protos.GoodsInfo}
@@ -1487,7 +1487,7 @@ public final class BaseMsg {
     private int id_;
     /**
      * <pre>
-     *id，可以是Hero表的id，Item表的id等等
+     *id，可以是Asset表id、Hero表的id、Item表的id等等
      * </pre>
      *
      * <code>uint32 id = 1;</code>
@@ -1681,7 +1681,7 @@ public final class BaseMsg {
     }
     /**
      * <pre>
-     * 物品信息，一般用来显示使用，不能代表最终获取的物品
+     * 物品信息
      * </pre>
      *
      * Protobuf type {@code Protos.GoodsInfo}
@@ -1839,7 +1839,7 @@ public final class BaseMsg {
       private int id_ ;
       /**
        * <pre>
-       *id，可以是Hero表的id，Item表的id等等
+       *id，可以是Asset表id、Hero表的id、Item表的id等等
        * </pre>
        *
        * <code>uint32 id = 1;</code>
@@ -1851,7 +1851,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       *id，可以是Hero表的id，Item表的id等等
+       *id，可以是Asset表id、Hero表的id、Item表的id等等
        * </pre>
        *
        * <code>uint32 id = 1;</code>
@@ -1866,7 +1866,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       *id，可以是Hero表的id，Item表的id等等
+       *id，可以是Asset表id、Hero表的id、Item表的id等等
        * </pre>
        *
        * <code>uint32 id = 1;</code>

@@ -27,7 +27,6 @@ import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.op.impl.BuffOp;
-import cn.game.games.cache.op.impl.ChapterOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
@@ -44,6 +43,7 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.battle.ChapterOp;
 import cn.game.games.net.game.module.buff.BuffValue;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.util.DAO;
@@ -137,9 +137,6 @@ public class PlayerHelper {
 	 * @return
 	 */
 	private static List<RewardInfo> addResources(long playerId, int id, int value, boolean notify) {
-		if (value < 0) {
-			return Collections.EMPTY_LIST;
-		}
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		// 发邮件
 		if (!PlayerManager.getInstance().hasCache(playerId)) {
@@ -151,14 +148,20 @@ public class PlayerHelper {
 //			DAO.execute(OfflineResourceAddMapper.class, MapperConstant.insert, add);
 			return Collections.EMPTY_LIST;
 		}
+		return addResources(player, id, value, notify);
+	}
 
+	private static List<RewardInfo> addResources(Player player, int id, int value, boolean notify) {
+		if (value < 0) {
+			return Collections.EMPTY_LIST;
+		}
 		int type = ItemHelper.getGoodsType(id);
 		GoodsModule goodsModule = player.getGoodsModule(type);
 		List<RewardInfo> rewards = goodsModule.addReward(id, value);
-		log.info("player[{}] addReward  type[{}]id[{}]count[{}]", playerId, type, id, value);
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.GetItem, id, value));
+		log.info("player[{}] addReward  type[{}]id[{}]count[{}]", player.getPlayerId(), type, id, value);
+		player.handleEvent(EventTypeEnum.GetItem, id, value);
 		if (notify && !rewards.isEmpty()) {
-			PlayerHelper.sendProtcol(playerId, PbBuilder.buildRewardPush(rewards));
+			player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
 		}
 		return rewards;
 	}
@@ -247,7 +250,7 @@ public class PlayerHelper {
 			if (notify) {
 				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
-				PlayerHelper.sendProtcol(playerId, spendPush.build());
+				PlayerHelper.sendProtocol(playerId, spendPush.build());
 			}
 		}
 		return ret;
@@ -273,7 +276,7 @@ public class PlayerHelper {
 				delResources(playerId, entry.getKey(), entry.getValue(), consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
 			}
-			PlayerHelper.sendProtcol(playerId, spendPush.build());
+			PlayerHelper.sendProtocol(playerId, spendPush.build());
 			return true;
 		}
 		return false;
@@ -292,7 +295,7 @@ public class PlayerHelper {
 				delResources(playerId, list[i][0], list[i][1], consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
 			}
-			PlayerHelper.sendProtcol(playerId, spendPush.build());
+			PlayerHelper.sendProtocol(playerId, spendPush.build());
 			return true;
 		}
 		return false;
@@ -482,7 +485,7 @@ public class PlayerHelper {
 				List<RewardInfo> rewardItem = addResources(playerId, entry.getKey(), entry.getValue(), false);
 				rewardItems.addAll(rewardItem);
 			}
-			PlayerHelper.sendProtcol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 		}
 		return rewardItems;
 	}
@@ -494,7 +497,7 @@ public class PlayerHelper {
 				List<RewardInfo> rewardItem = addResources(playerId, rewards[i][0], rewards[i][1], false);
 				rewardItems.addAll(rewardItem);
 			}
-			PlayerHelper.sendProtcol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 		}
 		return rewardItems;
 	}
@@ -511,7 +514,7 @@ public class PlayerHelper {
 				List<RewardInfo> rewardItem = addResources(playerId, pair.first, pair.second, false);
 				rewardItems.addAll(rewardItem);
 			}
-			PlayerHelper.sendProtcol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 		}
 		return rewardItems;
 	}
@@ -521,19 +524,19 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @param message
 	 */
-	public static void sendProtcol(long playerId, Object message) {
+	public static void sendProtocol(long playerId, Object message) {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
 			gameClientByPlayer.sendProtocol(message);
 		}
 	}
-	public static void sendProtcol(long playerId, Object message, int errorCode) {
+	public static void sendProtocol(long playerId, Object message, int errorCode) {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
 			gameClientByPlayer.sendProtocol(message, errorCode);
 		}
 	}
-	public static void sendErrorProtcol(long playerId, int errorCode) {
+	public static void sendErrorProtocol(long playerId, int errorCode) {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
 			gameClientByPlayer.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), errorCode);
@@ -1012,7 +1015,7 @@ public class PlayerHelper {
 				resp.setInfo(PbBuilder.buildPlayerInfo(player));
 //				resp.setConfigFileVersion(PlayerHelper.getServerConfigVersion());
 
-				PlayerHelper.sendProtcol(playerId, resp);
+				PlayerHelper.sendProtocol(playerId, resp);
 
 				GameClientManager.getInstance().broadcastOnlineToOtherServer(playerId, true, null);
 
@@ -1026,7 +1029,7 @@ public class PlayerHelper {
 	private static void selectPlayerDataFail(Player player, Throwable e) {
 		log.error("player " + player.getData().getPlayerId() + " login error ", e);
 		PlayerManager.getInstance().deletePlayer(player.getPlayerId());
-		PlayerHelper.sendErrorProtcol(player.getData().getPlayerId(), OldErrorMsgEnum.unknown.getId());
+		PlayerHelper.sendErrorProtocol(player.getData().getPlayerId(), OldErrorMsgEnum.unknown.getId());
 	}
 
 	public static String getServerConfigVersion() {
@@ -1041,7 +1044,7 @@ public class PlayerHelper {
 	 * @param code 错误码
 	 */
 	public static void pushError(long playerId, int code) {
-		sendProtcol(playerId, PlayerErrorPush_01000099.newBuilder(), code);
+		sendProtocol(playerId, PlayerErrorPush_01000099.newBuilder(), code);
 	}
 
 	/** 

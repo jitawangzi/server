@@ -249,7 +249,7 @@ public class Quest implements Serializable, DbEntity {
 		};
 		Consumer<Condition> condAchieveAction = c -> {
 			QuestHelper.conditionCmd(this, c.getCondition());
-			PlayerHelper.sendProtcol(this.getPlayerId(), MissionConditionCompletePush_20500001.newBuilder().setId(this.getId())
+			PlayerHelper.sendProtocol(this.getPlayerId(), MissionConditionCompletePush_20500001.newBuilder().setId(this.getId())
 					.setIndex(c.getIndex()).build());
 			QuestHelper.updateParams(this);
 		};

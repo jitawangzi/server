@@ -22,7 +22,6 @@ import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.base.PlayerCacheFactory;
-import cn.game.games.cache.entity.ConditionCount;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
@@ -290,7 +289,7 @@ public class TestHandler extends BaseHandler {
 		
 //		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
 
-		MultiKeyMap<Integer, ConditionCount> conditionCountMap = player.getQuestModule().getConditionCountMap();
+		MultiKeyMap<Integer, Integer> conditionCountMap = player.getQuestModule().getConditionCountMap();
 		System.out.println(conditionCountMap);
 
 		new Thread(() -> {

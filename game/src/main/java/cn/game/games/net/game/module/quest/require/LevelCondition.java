@@ -1,8 +1,8 @@
 package cn.game.games.net.game.module.quest.require;
 
-import cn.game.games.cache.op.impl.ChapterOp;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.module.battle.ChapterOp;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.OldConditionTypeEnum;

@@ -134,7 +134,7 @@ public class QuestHelper {
 		long playerId = quest.getPlayerId();
 		MissionPush_20200008 msg = MissionPush_20200008.newBuilder().setType(type).setMission(PbBuilder.buildMissionInfo(quest))
 				.build();
-		PlayerHelper.sendProtcol(playerId, msg);
+		PlayerHelper.sendProtocol(playerId, msg);
 	}
 
 	/** 

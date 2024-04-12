@@ -34,6 +34,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.RoleHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.RewardItem;
+import cn.game.games.net.game.module.battle.ChapterOp;
 import cn.game.games.net.game.module.buff.BuffValue;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.prop.RolePropFromType;

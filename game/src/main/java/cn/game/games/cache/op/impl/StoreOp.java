@@ -430,7 +430,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 			List<RewardInfo> ret = new ArrayList<>();
 			reward.setEquip(equip);
 //			ret.add(reward);
-			PlayerHelper.sendProtcol(playerId, PbBuilder.buildRewardPush(ret));
+			PlayerHelper.sendProtocol(playerId, PbBuilder.buildRewardPush(ret));
 
 		//自动/非自动使用型的道具
 		} else {

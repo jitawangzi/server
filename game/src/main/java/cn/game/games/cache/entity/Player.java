@@ -311,7 +311,7 @@ public class Player  {
 		if (costType == ShopHelper.COST_TYPE_RESOURCE) {
 			boolean delResources = PlayerHelper.delResources(getPlayerId(), cost[1], cost[2],ResourceConsumeEnum.BuyGoods);
 			if (!delResources) {
-				PlayerHelper.sendErrorProtcol(getPlayerId(), ErrorMsgEnum.resource_not_enough.getId());
+				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.resource_not_enough.getId());
 				promise.complete(false);
 			}else {
 				promise.complete(true);
@@ -326,7 +326,7 @@ public class Player  {
 				getPlayerModule().addPayCallback(r.body().getOrderId(), promise); 
 			}).onFailure(r -> {
 				log.error("",r) ;
-				PlayerHelper.sendErrorProtcol(getPlayerId(), ErrorMsgEnum.unknown.getId()); 
+				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.unknown.getId()); 
 				promise.complete(false);
 			}); 
 		} else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {

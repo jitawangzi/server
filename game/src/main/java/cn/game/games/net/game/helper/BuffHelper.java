@@ -561,7 +561,7 @@ public class BuffHelper {
 		BuffPush_0100010b.Builder push = BuffPush_0100010b.newBuilder();
 		push.setType(type);
 		push.setBuff(PbBuilder.buildBuffInfo(buff));
-		PlayerHelper.sendProtcol(playerId, push);
+		PlayerHelper.sendProtocol(playerId, push);
 	}
 	
 	/**

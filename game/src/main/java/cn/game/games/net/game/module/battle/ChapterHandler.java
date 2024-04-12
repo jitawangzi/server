@@ -1,30 +1,15 @@
 package cn.game.games.net.game.module.battle;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.base.PlayerCacheFactory;
-import cn.game.games.cache.entity.BattleLevel;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.impl.ChapterOp;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.util.RandomUtil;
 import cn.game.protocol.generated.config.BattleLevelConfig;
-import cn.game.protocol.generated.config.RandomRewardConfig;
-import cn.game.protocol.generated.enume.DungeonTypeEnum;
 import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022;
@@ -33,9 +18,6 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.ByteHelp;
-import cn.game.util.Pair;
 
 @Component
 public class ChapterHandler extends BaseHandler {
@@ -171,11 +153,11 @@ public class ChapterHandler extends BaseHandler {
 		BattleFieldStartRequest_13000001 req = (BattleFieldStartRequest_13000001) message;
 		BattleFieldEndResponse_13000004.Builder resp = BattleFieldEndResponse_13000004.newBuilder();
 
-		int dungeonId = req.getDungeonId();
-		int id = req.getId();
+		int dungeonId = req.getTypeId();
+		int id = req.getFieldId();
 		int type = req.getType();
-		String uidString = req.getUid();
-		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
+//		String uidString = req.getUid();
+//		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
 		long playerId = client.getPlayerId();
 		ChapterOp chapterOp = PlayerCacheFactory.getCache(playerId, ChapterOp.class);
 		
@@ -193,10 +175,10 @@ public class ChapterHandler extends BaseHandler {
 		}*/
 		long randomSeed = System.currentTimeMillis() ; 
 		IBattleHandler battleHandler = BattleFactory.getBattleHandler(type);
-		int errorCode = battleHandler.battleStart(playerId, type, dungeonId, id, 0, uid);
+		int errorCode = battleHandler.battleStart(playerId, type, dungeonId, id, 0, 0);
 		if (errorCode == 0) {
 			// 设置当前在打的关卡数据
-			chapterOp.setAttackingData(0, type, dungeonId, id, uid,randomSeed);
+			chapterOp.setAttackingData(0, type, dungeonId, id, 0, randomSeed);
 		}
 		//添加怪物图鉴
 //		List<Integer> monsterSequence = levelConfig.getMonsterSequence();
@@ -225,17 +207,15 @@ public class ChapterHandler extends BaseHandler {
 		BattleFieldEndRequest_13000003 req = (BattleFieldEndRequest_13000003) message;
 		BattleFieldEndResponse_13000004.Builder resp = BattleFieldEndResponse_13000004.newBuilder();
 		int type = req.getType();
-		int dungeonId = req.getDungeonId();
-		int id = req.getId();
+		int dungeonId = req.getTypeId();
+		int id = req.getFieldId();
 		boolean win = req.getWin(); 
-		String uidString = req.getUid();
-		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
+//		String uidString = req.getUid();
+//		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
 		long playerId = client.getPlayerId();
-		List<Integer> starList = req.getStarList();
-		// 战报数据 [
-//		  { "roleId": 410201, "hp": 10, "ep": 10, "san": 10 ,"uid" : 1000410201},
-//		  { "roleId": 410202, "hp": 10, "ep": 10, "san": 10 ,"uid" : 2000410202}
-//		]
+		int hpPercent = req.getHpPercent();
+		int killMonsterCount = req.getKillMonsterCount();
+
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ChapterOp chapterOp = PlayerCacheFactory.getCache(playerId, ChapterOp.class);
@@ -243,14 +223,14 @@ public class ChapterHandler extends BaseHandler {
 		int attackingType = chapterOp.getAttackingType();
 		long attackingUid = chapterOp.getAttackingUid();
 		int lineupId = chapterOp.getLineupId();
-		if (attackingId == 0 || attackingId != id || attackingType != type || uid != attackingUid) {
+		if (attackingId == 0 || attackingId != id || attackingType != type) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 
 //		List<BattleReportItemInfo> report = req.getReport().getItemsList();
 		IBattleHandler battleHandler = BattleFactory.getBattleHandler(attackingType);
-		int errorCode = battleHandler.battleEnd(playerId, win, starList, resp);
+		int errorCode = battleHandler.battleEnd(playerId, win, killMonsterCount, hpPercent, resp);
 		if (errorCode > 0) {
 			client.sendProtocol(resp, errorCode);
 			return;
@@ -267,52 +247,52 @@ public class ChapterHandler extends BaseHandler {
 //			}
 //		}
 		
-		if (attackingType != DungeonTypeEnum.ExploreBattle.getId()) {
-			// 除了探索战斗，其他的战斗基本都用到了BattleField，计算体力消耗等等
-			if (win) {
-				List<Map.Entry<Integer, Integer>> starLevelReward = levelConfig.getStarLevelReward();
-				if (!starLevelReward.isEmpty()) {
-					//星级奖励 只有首次可以领
-					BattleLevel BattleField = chapterOp.getBattleLevel(id);
-					List<Integer> currstars = ByteHelp.binary1List(BattleField == null ? 0 : BattleField.getStar());
-					List<Map.Entry<Integer, Integer>> starRewards = new ArrayList<>();
-					for (Integer star : starList) {
-						if (!currstars.contains(star)) {
-							starRewards.add(starLevelReward.get(star));
-						}
-					}
-					resp.addAllStarRewards(PlayerHelper.addResources(playerId, starRewards));
-				}
-				
-				player.handleEvent(new GameEvent(EventTypeEnum.Level, player, attackingId, 5, 5));
-			} else {// 失败会返回一半体力,向下取
-//				int energyExpend = levelConfig.getEnergyExpend();
-//				if (energyExpend > 0) {
-//					int lose = energyExpend / 2;
-//					PlayerHelper.addResources(playerId, ResourceEnum.Brawn.getId()0, energyExpend - lose);
-//					apCost = lose;
+//		if (attackingType != DungeonTypeEnum.ExploreBattle.getId()) {
+//			// 除了探索战斗，其他的战斗基本都用到了BattleField，计算体力消耗等等
+//			if (win) {
+//				List<Map.Entry<Integer, Integer>> starLevelReward = levelConfig.getStarLevelReward();
+//				if (!starLevelReward.isEmpty()) {
+//					//星级奖励 只有首次可以领
+//					BattleLevel BattleField = chapterOp.getBattleLevel(id);
+//					List<Integer> currstars = ByteHelp.binary1List(BattleField == null ? 0 : BattleField.getStar());
+//					List<Map.Entry<Integer, Integer>> starRewards = new ArrayList<>();
+//					for (Integer star : starList) {
+//						if (!currstars.contains(star)) {
+//							starRewards.add(starLevelReward.get(star));
+//						}
+//					}
+//					resp.addAllStarRewards(PlayerHelper.addResources(playerId, starRewards));
 //				}
-			}
-//			addExp(resp, player, lineupId, apCost);
-		} else { //探索战斗
-			if (win) {
-				//exploreOp.calcExploreBattleResource(levelConfig, lineupId, resp);
-				//加晋升点
-			}
-		}
+//				
+//				player.handleEvent(new GameEvent(EventTypeEnum.Level, player, attackingId, 5, 5));
+//			} else {// 失败会返回一半体力,向下取
+////				int energyExpend = levelConfig.getEnergyExpend();
+////				if (energyExpend > 0) {
+////					int lose = energyExpend / 2;
+////					PlayerHelper.addResources(playerId, ResourceEnum.Brawn.getId()0, energyExpend - lose);
+////					apCost = lose;
+////				}
+//			}
+////			addExp(resp, player, lineupId, apCost);
+//		} else { //探索战斗
+//			if (win) {
+//				//exploreOp.calcExploreBattleResource(levelConfig, lineupId, resp);
+//				//加晋升点
+//			}
+//		}
 		//基础奖励
-		resp.addAllCommonRewards(PlayerHelper.addResources(client.getPlayerId(), levelConfig.getBaseReward()));
+//		resp.addAllCommonRewards(PlayerHelper.addResources(client.getPlayerId(), levelConfig.getBaseReward()));
 		//随机奖励
-		int[] randomReward = levelConfig.getRandomReward();
-		Set<Pair<Integer, Integer>> rewards = new HashSet<>();
-		for (Integer reward : randomReward) {
-			List<RandomRewardConfig> randomGroupIdItemsByGroupId = RandomUtil.randomGroupIdItemsByGroupId(reward);
-			for (RandomRewardConfig config : randomGroupIdItemsByGroupId) {
-				rewards.add(new Pair<Integer, Integer>(config.getItemId(), config.getNum()));
-			}
-		}
-		List<RewardInfo> rewardItems = PlayerHelper.addResources(client.getPlayerId(), rewards);
-		resp.addAllRandomRewards(rewardItems);
+//		int[] randomReward = levelConfig.getRandomReward();
+//		Set<Pair<Integer, Integer>> rewards = new HashSet<>();
+//		for (Integer reward : randomReward) {
+//			List<RandomRewardConfig> randomGroupIdItemsByGroupId = RandomUtil.randomGroupIdItemsByGroupId(reward);
+//			for (RandomRewardConfig config : randomGroupIdItemsByGroupId) {
+//				rewards.add(new Pair<Integer, Integer>(config.getItemId(), config.getNum()));
+//			}
+//		}
+////		List<RewardInfo> rewardItems = PlayerHelper.addResources(client.getPlayerId(), rewards);
+////		resp.addAllRandomRewards(rewardItems);
 
 		player.handleEvent(new GameEvent(EventTypeEnum.BattleEnd, lineupId, win, levelConfig.getId()));
 		chapterOp.setAttackingData(0, 0, 0, 0, 0, 0);

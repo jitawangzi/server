@@ -16,10 +16,10 @@ message AssetInfo{
      uint64 count = 2;		//资源数量
 }
 
-// 物品信息，一般用来显示使用，不能代表最终获取的物品
+// 物品信息
 message GoodsInfo{
 
-     uint32 id = 1;		//id，可以是Hero表的id，Item表的id等等
+     uint32 id = 1;		//id，可以是Asset表id、Hero表的id、Item表的id等等
      uint32 count = 2;		//数量
 }
 
