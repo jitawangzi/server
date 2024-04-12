@@ -20,7 +20,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 玩法类型，主线推图，日常训练等。
+     * 玩法类型，主线战役推图，日常挑战等。 1代表战役Battle表
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -30,7 +30,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 玩法类型对应的配置表id
+     * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id
      * </pre>
      *
      * <code>uint32 typeId = 2;</code>
@@ -40,7 +40,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
+     * BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。
      * </pre>
      *
      * <code>uint32 fieldId = 3;</code>
@@ -50,6 +50,7 @@ public final class BattleMsg {
   }
   /**
    * <pre>
+   * 章节关卡协议
    * 开始关卡战斗请求
    * </pre>
    *
@@ -148,7 +149,7 @@ public final class BattleMsg {
     private int type_;
     /**
      * <pre>
-     * 玩法类型，主线推图，日常训练等。
+     * 玩法类型，主线战役推图，日常挑战等。 1代表战役Battle表
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -163,7 +164,7 @@ public final class BattleMsg {
     private int typeId_;
     /**
      * <pre>
-     * 玩法类型对应的配置表id
+     * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id
      * </pre>
      *
      * <code>uint32 typeId = 2;</code>
@@ -178,7 +179,7 @@ public final class BattleMsg {
     private int fieldId_;
     /**
      * <pre>
-     * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
+     * BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。
      * </pre>
      *
      * <code>uint32 fieldId = 3;</code>
@@ -368,6 +369,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
+     * 章节关卡协议
      * 开始关卡战斗请求
      * </pre>
      *
@@ -532,7 +534,7 @@ public final class BattleMsg {
       private int type_ ;
       /**
        * <pre>
-       * 玩法类型，主线推图，日常训练等。
+       * 玩法类型，主线战役推图，日常挑战等。 1代表战役Battle表
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -544,7 +546,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型，主线推图，日常训练等。
+       * 玩法类型，主线战役推图，日常挑战等。 1代表战役Battle表
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -559,7 +561,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型，主线推图，日常训练等。
+       * 玩法类型，主线战役推图，日常挑战等。 1代表战役Battle表
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -575,7 +577,7 @@ public final class BattleMsg {
       private int typeId_ ;
       /**
        * <pre>
-       * 玩法类型对应的配置表id
+       * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id
        * </pre>
        *
        * <code>uint32 typeId = 2;</code>
@@ -587,7 +589,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型对应的配置表id
+       * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id
        * </pre>
        *
        * <code>uint32 typeId = 2;</code>
@@ -602,7 +604,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型对应的配置表id
+       * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id
        * </pre>
        *
        * <code>uint32 typeId = 2;</code>
@@ -618,7 +620,7 @@ public final class BattleMsg {
       private int fieldId_ ;
       /**
        * <pre>
-       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
+       * BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。
        * </pre>
        *
        * <code>uint32 fieldId = 3;</code>
@@ -630,7 +632,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
+       * BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。
        * </pre>
        *
        * <code>uint32 fieldId = 3;</code>
@@ -645,7 +647,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
+       * BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。
        * </pre>
        *
        * <code>uint32 fieldId = 3;</code>
@@ -1142,40 +1144,10 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 玩法类型，主线推图，日常训练等。
-     * </pre>
-     *
-     * <code>uint32 type = 1;</code>
-     * @return The type.
-     */
-    int getType();
-
-    /**
-     * <pre>
-     * 玩法类型对应的配置表id
-     * </pre>
-     *
-     * <code>uint32 typeId = 2;</code>
-     * @return The typeId.
-     */
-    int getTypeId();
-
-    /**
-     * <pre>
-     * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
-     * </pre>
-     *
-     * <code>uint32 fieldId = 3;</code>
-     * @return The fieldId.
-     */
-    int getFieldId();
-
-    /**
-     * <pre>
      * 击杀怪物数量
      * </pre>
      *
-     * <code>uint32 killMonsterCount = 5;</code>
+     * <code>uint32 killMonsterCount = 1;</code>
      * @return The killMonsterCount.
      */
     int getKillMonsterCount();
@@ -1185,17 +1157,17 @@ public final class BattleMsg {
      * 剩余血量百分比，如剩余40%血量，则为40
      * </pre>
      *
-     * <code>uint32 hpPercent = 6;</code>
+     * <code>uint32 hpPercent = 2;</code>
      * @return The hpPercent.
      */
     int getHpPercent();
 
     /**
      * <pre>
-     * 战斗是否成功
+     * 战斗是否成功，用血量百分比可能有误差。
      * </pre>
      *
-     * <code>bool win = 10;</code>
+     * <code>bool win = 3;</code>
      * @return The win.
      */
     boolean getWin();
@@ -1251,30 +1223,15 @@ public final class BattleMsg {
               break;
             case 8: {
 
-              type_ = input.readUInt32();
+              killMonsterCount_ = input.readUInt32();
               break;
             }
             case 16: {
 
-              typeId_ = input.readUInt32();
-              break;
-            }
-            case 24: {
-
-              fieldId_ = input.readUInt32();
-              break;
-            }
-            case 40: {
-
-              killMonsterCount_ = input.readUInt32();
-              break;
-            }
-            case 48: {
-
               hpPercent_ = input.readUInt32();
               break;
             }
-            case 80: {
+            case 24: {
 
               win_ = input.readBool();
               break;
@@ -1311,59 +1268,14 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003.class, cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003.Builder.class);
     }
 
-    public static final int TYPE_FIELD_NUMBER = 1;
-    private int type_;
-    /**
-     * <pre>
-     * 玩法类型，主线推图，日常训练等。
-     * </pre>
-     *
-     * <code>uint32 type = 1;</code>
-     * @return The type.
-     */
-    @java.lang.Override
-    public int getType() {
-      return type_;
-    }
-
-    public static final int TYPEID_FIELD_NUMBER = 2;
-    private int typeId_;
-    /**
-     * <pre>
-     * 玩法类型对应的配置表id
-     * </pre>
-     *
-     * <code>uint32 typeId = 2;</code>
-     * @return The typeId.
-     */
-    @java.lang.Override
-    public int getTypeId() {
-      return typeId_;
-    }
-
-    public static final int FIELDID_FIELD_NUMBER = 3;
-    private int fieldId_;
-    /**
-     * <pre>
-     * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
-     * </pre>
-     *
-     * <code>uint32 fieldId = 3;</code>
-     * @return The fieldId.
-     */
-    @java.lang.Override
-    public int getFieldId() {
-      return fieldId_;
-    }
-
-    public static final int KILLMONSTERCOUNT_FIELD_NUMBER = 5;
+    public static final int KILLMONSTERCOUNT_FIELD_NUMBER = 1;
     private int killMonsterCount_;
     /**
      * <pre>
      * 击杀怪物数量
      * </pre>
      *
-     * <code>uint32 killMonsterCount = 5;</code>
+     * <code>uint32 killMonsterCount = 1;</code>
      * @return The killMonsterCount.
      */
     @java.lang.Override
@@ -1371,14 +1283,14 @@ public final class BattleMsg {
       return killMonsterCount_;
     }
 
-    public static final int HPPERCENT_FIELD_NUMBER = 6;
+    public static final int HPPERCENT_FIELD_NUMBER = 2;
     private int hpPercent_;
     /**
      * <pre>
      * 剩余血量百分比，如剩余40%血量，则为40
      * </pre>
      *
-     * <code>uint32 hpPercent = 6;</code>
+     * <code>uint32 hpPercent = 2;</code>
      * @return The hpPercent.
      */
     @java.lang.Override
@@ -1386,14 +1298,14 @@ public final class BattleMsg {
       return hpPercent_;
     }
 
-    public static final int WIN_FIELD_NUMBER = 10;
+    public static final int WIN_FIELD_NUMBER = 3;
     private boolean win_;
     /**
      * <pre>
-     * 战斗是否成功
+     * 战斗是否成功，用血量百分比可能有误差。
      * </pre>
      *
-     * <code>bool win = 10;</code>
+     * <code>bool win = 3;</code>
      * @return The win.
      */
     @java.lang.Override
@@ -1415,23 +1327,14 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (type_ != 0) {
-        output.writeUInt32(1, type_);
-      }
-      if (typeId_ != 0) {
-        output.writeUInt32(2, typeId_);
-      }
-      if (fieldId_ != 0) {
-        output.writeUInt32(3, fieldId_);
-      }
       if (killMonsterCount_ != 0) {
-        output.writeUInt32(5, killMonsterCount_);
+        output.writeUInt32(1, killMonsterCount_);
       }
       if (hpPercent_ != 0) {
-        output.writeUInt32(6, hpPercent_);
+        output.writeUInt32(2, hpPercent_);
       }
       if (win_ != false) {
-        output.writeBool(10, win_);
+        output.writeBool(3, win_);
       }
       unknownFields.writeTo(output);
     }
@@ -1442,29 +1345,17 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (type_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(1, type_);
-      }
-      if (typeId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, typeId_);
-      }
-      if (fieldId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, fieldId_);
-      }
       if (killMonsterCount_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(5, killMonsterCount_);
+          .computeUInt32Size(1, killMonsterCount_);
       }
       if (hpPercent_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(6, hpPercent_);
+          .computeUInt32Size(2, hpPercent_);
       }
       if (win_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(10, win_);
+          .computeBoolSize(3, win_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1481,12 +1372,6 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003 other = (cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003) obj;
 
-      if (getType()
-          != other.getType()) return false;
-      if (getTypeId()
-          != other.getTypeId()) return false;
-      if (getFieldId()
-          != other.getFieldId()) return false;
       if (getKillMonsterCount()
           != other.getKillMonsterCount()) return false;
       if (getHpPercent()
@@ -1504,12 +1389,6 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + getType();
-      hash = (37 * hash) + TYPEID_FIELD_NUMBER;
-      hash = (53 * hash) + getTypeId();
-      hash = (37 * hash) + FIELDID_FIELD_NUMBER;
-      hash = (53 * hash) + getFieldId();
       hash = (37 * hash) + KILLMONSTERCOUNT_FIELD_NUMBER;
       hash = (53 * hash) + getKillMonsterCount();
       hash = (37 * hash) + HPPERCENT_FIELD_NUMBER;
@@ -1654,12 +1533,6 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        type_ = 0;
-
-        typeId_ = 0;
-
-        fieldId_ = 0;
-
         killMonsterCount_ = 0;
 
         hpPercent_ = 0;
@@ -1692,9 +1565,6 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003 result = new cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003(this);
-        result.type_ = type_;
-        result.typeId_ = typeId_;
-        result.fieldId_ = fieldId_;
         result.killMonsterCount_ = killMonsterCount_;
         result.hpPercent_ = hpPercent_;
         result.win_ = win_;
@@ -1746,15 +1616,6 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003.getDefaultInstance()) return this;
-        if (other.getType() != 0) {
-          setType(other.getType());
-        }
-        if (other.getTypeId() != 0) {
-          setTypeId(other.getTypeId());
-        }
-        if (other.getFieldId() != 0) {
-          setFieldId(other.getFieldId());
-        }
         if (other.getKillMonsterCount() != 0) {
           setKillMonsterCount(other.getKillMonsterCount());
         }
@@ -1793,142 +1654,13 @@ public final class BattleMsg {
         return this;
       }
 
-      private int type_ ;
-      /**
-       * <pre>
-       * 玩法类型，主线推图，日常训练等。
-       * </pre>
-       *
-       * <code>uint32 type = 1;</code>
-       * @return The type.
-       */
-      @java.lang.Override
-      public int getType() {
-        return type_;
-      }
-      /**
-       * <pre>
-       * 玩法类型，主线推图，日常训练等。
-       * </pre>
-       *
-       * <code>uint32 type = 1;</code>
-       * @param value The type to set.
-       * @return This builder for chaining.
-       */
-      public Builder setType(int value) {
-        
-        type_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 玩法类型，主线推图，日常训练等。
-       * </pre>
-       *
-       * <code>uint32 type = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearType() {
-        
-        type_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int typeId_ ;
-      /**
-       * <pre>
-       * 玩法类型对应的配置表id
-       * </pre>
-       *
-       * <code>uint32 typeId = 2;</code>
-       * @return The typeId.
-       */
-      @java.lang.Override
-      public int getTypeId() {
-        return typeId_;
-      }
-      /**
-       * <pre>
-       * 玩法类型对应的配置表id
-       * </pre>
-       *
-       * <code>uint32 typeId = 2;</code>
-       * @param value The typeId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTypeId(int value) {
-        
-        typeId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 玩法类型对应的配置表id
-       * </pre>
-       *
-       * <code>uint32 typeId = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearTypeId() {
-        
-        typeId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int fieldId_ ;
-      /**
-       * <pre>
-       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
-       * </pre>
-       *
-       * <code>uint32 fieldId = 3;</code>
-       * @return The fieldId.
-       */
-      @java.lang.Override
-      public int getFieldId() {
-        return fieldId_;
-      }
-      /**
-       * <pre>
-       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
-       * </pre>
-       *
-       * <code>uint32 fieldId = 3;</code>
-       * @param value The fieldId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setFieldId(int value) {
-        
-        fieldId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * BattleField关卡id，有的玩法可能包含多个关卡，需要区分
-       * </pre>
-       *
-       * <code>uint32 fieldId = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearFieldId() {
-        
-        fieldId_ = 0;
-        onChanged();
-        return this;
-      }
-
       private int killMonsterCount_ ;
       /**
        * <pre>
        * 击杀怪物数量
        * </pre>
        *
-       * <code>uint32 killMonsterCount = 5;</code>
+       * <code>uint32 killMonsterCount = 1;</code>
        * @return The killMonsterCount.
        */
       @java.lang.Override
@@ -1940,7 +1672,7 @@ public final class BattleMsg {
        * 击杀怪物数量
        * </pre>
        *
-       * <code>uint32 killMonsterCount = 5;</code>
+       * <code>uint32 killMonsterCount = 1;</code>
        * @param value The killMonsterCount to set.
        * @return This builder for chaining.
        */
@@ -1955,7 +1687,7 @@ public final class BattleMsg {
        * 击杀怪物数量
        * </pre>
        *
-       * <code>uint32 killMonsterCount = 5;</code>
+       * <code>uint32 killMonsterCount = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearKillMonsterCount() {
@@ -1971,7 +1703,7 @@ public final class BattleMsg {
        * 剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>uint32 hpPercent = 6;</code>
+       * <code>uint32 hpPercent = 2;</code>
        * @return The hpPercent.
        */
       @java.lang.Override
@@ -1983,7 +1715,7 @@ public final class BattleMsg {
        * 剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>uint32 hpPercent = 6;</code>
+       * <code>uint32 hpPercent = 2;</code>
        * @param value The hpPercent to set.
        * @return This builder for chaining.
        */
@@ -1998,7 +1730,7 @@ public final class BattleMsg {
        * 剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>uint32 hpPercent = 6;</code>
+       * <code>uint32 hpPercent = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearHpPercent() {
@@ -2011,10 +1743,10 @@ public final class BattleMsg {
       private boolean win_ ;
       /**
        * <pre>
-       * 战斗是否成功
+       * 战斗是否成功，用血量百分比可能有误差。
        * </pre>
        *
-       * <code>bool win = 10;</code>
+       * <code>bool win = 3;</code>
        * @return The win.
        */
       @java.lang.Override
@@ -2023,10 +1755,10 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 战斗是否成功
+       * 战斗是否成功，用血量百分比可能有误差。
        * </pre>
        *
-       * <code>bool win = 10;</code>
+       * <code>bool win = 3;</code>
        * @param value The win to set.
        * @return This builder for chaining.
        */
@@ -2038,10 +1770,10 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 战斗是否成功
+       * 战斗是否成功，用血量百分比可能有误差。
        * </pre>
        *
-       * <code>bool win = 10;</code>
+       * <code>bool win = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearWin() {
@@ -3016,44 +2748,54 @@ public final class BattleMsg {
 
   }
 
-  public interface BattleChapterRewardRequest_13000022OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.BattleChapterRewardRequest_13000022)
+  public interface BattleRewardRequest_13000022OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleRewardRequest_13000022)
       com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
-     * ExploreChapter 的id
+     * Battle表的id
      * </pre>
      *
      * <code>uint32 id = 1;</code>
      * @return The id.
      */
     int getId();
+
+    /**
+     * <pre>
+     * 0、1、2   代表首次，半血、无损奖励
+     * </pre>
+     *
+     * <code>uint32 index = 2;</code>
+     * @return The index.
+     */
+    int getIndex();
   }
   /**
    * <pre>
-   *领取章通关奖励
+   *领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励
    * </pre>
    *
-   * Protobuf type {@code Protos.BattleChapterRewardRequest_13000022}
+   * Protobuf type {@code Protos.BattleRewardRequest_13000022}
    */
-  public static final class BattleChapterRewardRequest_13000022 extends
+  public static final class BattleRewardRequest_13000022 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.BattleChapterRewardRequest_13000022)
-      BattleChapterRewardRequest_13000022OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.BattleRewardRequest_13000022)
+      BattleRewardRequest_13000022OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use BattleChapterRewardRequest_13000022.newBuilder() to construct.
-    private BattleChapterRewardRequest_13000022(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use BattleRewardRequest_13000022.newBuilder() to construct.
+    private BattleRewardRequest_13000022(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private BattleChapterRewardRequest_13000022() {
+    private BattleRewardRequest_13000022() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new BattleChapterRewardRequest_13000022();
+      return new BattleRewardRequest_13000022();
     }
 
     @java.lang.Override
@@ -3061,7 +2803,7 @@ public final class BattleMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private BattleChapterRewardRequest_13000022(
+    private BattleRewardRequest_13000022(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3082,6 +2824,11 @@ public final class BattleMsg {
             case 8: {
 
               id_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+
+              index_ = input.readUInt32();
               break;
             }
             default: {
@@ -3105,22 +2852,22 @@ public final class BattleMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardRequest_13000022_descriptor;
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardRequest_13000022_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardRequest_13000022_fieldAccessorTable
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardRequest_13000022_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022.class, cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022.Builder.class);
+              cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.class, cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.Builder.class);
     }
 
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
      * <pre>
-     * ExploreChapter 的id
+     * Battle表的id
      * </pre>
      *
      * <code>uint32 id = 1;</code>
@@ -3129,6 +2876,21 @@ public final class BattleMsg {
     @java.lang.Override
     public int getId() {
       return id_;
+    }
+
+    public static final int INDEX_FIELD_NUMBER = 2;
+    private int index_;
+    /**
+     * <pre>
+     * 0、1、2   代表首次，半血、无损奖励
+     * </pre>
+     *
+     * <code>uint32 index = 2;</code>
+     * @return The index.
+     */
+    @java.lang.Override
+    public int getIndex() {
+      return index_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3148,6 +2910,9 @@ public final class BattleMsg {
       if (id_ != 0) {
         output.writeUInt32(1, id_);
       }
+      if (index_ != 0) {
+        output.writeUInt32(2, index_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -3161,6 +2926,10 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(1, id_);
       }
+      if (index_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, index_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -3171,13 +2940,15 @@ public final class BattleMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 other = (cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022) obj;
+      cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 other = (cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022) obj;
 
       if (getId()
           != other.getId()) return false;
+      if (getIndex()
+          != other.getIndex()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3191,74 +2962,76 @@ public final class BattleMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
+      hash = (37 * hash) + INDEX_FIELD_NUMBER;
+      hash = (53 * hash) + getIndex();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3271,7 +3044,7 @@ public final class BattleMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -3288,29 +3061,29 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *领取章通关奖励
+     *领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励
      * </pre>
      *
-     * Protobuf type {@code Protos.BattleChapterRewardRequest_13000022}
+     * Protobuf type {@code Protos.BattleRewardRequest_13000022}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.BattleChapterRewardRequest_13000022)
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.BattleRewardRequest_13000022)
+        cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardRequest_13000022_descriptor;
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardRequest_13000022_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardRequest_13000022_fieldAccessorTable
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardRequest_13000022_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022.class, cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022.Builder.class);
+                cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.class, cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022.newBuilder()
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3330,23 +3103,25 @@ public final class BattleMsg {
         super.clear();
         id_ = 0;
 
+        index_ = 0;
+
         return this;
       }
 
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardRequest_13000022_descriptor;
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardRequest_13000022_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022.getDefaultInstance();
+      public cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 build() {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 result = buildPartial();
+      public cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -3354,9 +3129,10 @@ public final class BattleMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 buildPartial() {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 result = new cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022(this);
+      public cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 result = new cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022(this);
         result.id_ = id_;
+        result.index_ = index_;
         onBuilt();
         return result;
       }
@@ -3395,18 +3171,21 @@ public final class BattleMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022) {
-          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022)other);
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 other) {
-        if (other == cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.getDefaultInstance()) return this;
         if (other.getId() != 0) {
           setId(other.getId());
+        }
+        if (other.getIndex() != 0) {
+          setIndex(other.getIndex());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3423,11 +3202,11 @@ public final class BattleMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 parsedMessage = null;
+        cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3440,7 +3219,7 @@ public final class BattleMsg {
       private int id_ ;
       /**
        * <pre>
-       * ExploreChapter 的id
+       * Battle表的id
        * </pre>
        *
        * <code>uint32 id = 1;</code>
@@ -3452,7 +3231,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * ExploreChapter 的id
+       * Battle表的id
        * </pre>
        *
        * <code>uint32 id = 1;</code>
@@ -3467,7 +3246,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * ExploreChapter 的id
+       * Battle表的id
        * </pre>
        *
        * <code>uint32 id = 1;</code>
@@ -3476,6 +3255,49 @@ public final class BattleMsg {
       public Builder clearId() {
         
         id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int index_ ;
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励
+       * </pre>
+       *
+       * <code>uint32 index = 2;</code>
+       * @return The index.
+       */
+      @java.lang.Override
+      public int getIndex() {
+        return index_;
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励
+       * </pre>
+       *
+       * <code>uint32 index = 2;</code>
+       * @param value The index to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIndex(int value) {
+        
+        index_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励
+       * </pre>
+       *
+       * <code>uint32 index = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIndex() {
+        
+        index_ = 0;
         onChanged();
         return this;
       }
@@ -3492,48 +3314,48 @@ public final class BattleMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.BattleChapterRewardRequest_13000022)
+      // @@protoc_insertion_point(builder_scope:Protos.BattleRewardRequest_13000022)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.BattleChapterRewardRequest_13000022)
-    private static final cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.BattleRewardRequest_13000022)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022();
     }
 
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<BattleChapterRewardRequest_13000022>
-        PARSER = new com.google.protobuf.AbstractParser<BattleChapterRewardRequest_13000022>() {
+    private static final com.google.protobuf.Parser<BattleRewardRequest_13000022>
+        PARSER = new com.google.protobuf.AbstractParser<BattleRewardRequest_13000022>() {
       @java.lang.Override
-      public BattleChapterRewardRequest_13000022 parsePartialFrom(
+      public BattleRewardRequest_13000022 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new BattleChapterRewardRequest_13000022(input, extensionRegistry);
+        return new BattleRewardRequest_13000022(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<BattleChapterRewardRequest_13000022> parser() {
+    public static com.google.protobuf.Parser<BattleRewardRequest_13000022> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<BattleChapterRewardRequest_13000022> getParserForType() {
+    public com.google.protobuf.Parser<BattleRewardRequest_13000022> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface BattleChapterRewardResponse_13000023OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.BattleChapterRewardResponse_13000023)
+  public interface BattleRewardResponse_13000023OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleRewardResponse_13000023)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -3561,18 +3383,18 @@ public final class BattleMsg {
         int index);
   }
   /**
-   * Protobuf type {@code Protos.BattleChapterRewardResponse_13000023}
+   * Protobuf type {@code Protos.BattleRewardResponse_13000023}
    */
-  public static final class BattleChapterRewardResponse_13000023 extends
+  public static final class BattleRewardResponse_13000023 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.BattleChapterRewardResponse_13000023)
-      BattleChapterRewardResponse_13000023OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.BattleRewardResponse_13000023)
+      BattleRewardResponse_13000023OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use BattleChapterRewardResponse_13000023.newBuilder() to construct.
-    private BattleChapterRewardResponse_13000023(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use BattleRewardResponse_13000023.newBuilder() to construct.
+    private BattleRewardResponse_13000023(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private BattleChapterRewardResponse_13000023() {
+    private BattleRewardResponse_13000023() {
       reward_ = java.util.Collections.emptyList();
     }
 
@@ -3580,7 +3402,7 @@ public final class BattleMsg {
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new BattleChapterRewardResponse_13000023();
+      return new BattleRewardResponse_13000023();
     }
 
     @java.lang.Override
@@ -3588,7 +3410,7 @@ public final class BattleMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private BattleChapterRewardResponse_13000023(
+    private BattleRewardResponse_13000023(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3640,15 +3462,15 @@ public final class BattleMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardResponse_13000023_descriptor;
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardResponse_13000023_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardResponse_13000023_fieldAccessorTable
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardResponse_13000023_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.class, cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.Builder.class);
+              cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.class, cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.Builder.class);
     }
 
     public static final int REWARD_FIELD_NUMBER = 1;
@@ -3731,10 +3553,10 @@ public final class BattleMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 other = (cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023) obj;
+      cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 other = (cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023) obj;
 
       if (!getRewardList()
           .equals(other.getRewardList())) return false;
@@ -3758,69 +3580,69 @@ public final class BattleMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3833,7 +3655,7 @@ public final class BattleMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -3849,26 +3671,26 @@ public final class BattleMsg {
       return builder;
     }
     /**
-     * Protobuf type {@code Protos.BattleChapterRewardResponse_13000023}
+     * Protobuf type {@code Protos.BattleRewardResponse_13000023}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.BattleChapterRewardResponse_13000023)
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.BattleRewardResponse_13000023)
+        cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardResponse_13000023_descriptor;
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardResponse_13000023_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardResponse_13000023_fieldAccessorTable
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardResponse_13000023_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.class, cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.Builder.class);
+                cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.class, cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.newBuilder()
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3899,17 +3721,17 @@ public final class BattleMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterRewardResponse_13000023_descriptor;
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleRewardResponse_13000023_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.getDefaultInstance();
+      public cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 build() {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 result = buildPartial();
+      public cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -3917,8 +3739,8 @@ public final class BattleMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 buildPartial() {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 result = new cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023(this);
+      public cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 result = new cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023(this);
         int from_bitField0_ = bitField0_;
         if (rewardBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
@@ -3967,16 +3789,16 @@ public final class BattleMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023) {
-          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023)other);
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 other) {
-        if (other == cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.getDefaultInstance()) return this;
         if (rewardBuilder_ == null) {
           if (!other.reward_.isEmpty()) {
             if (reward_.isEmpty()) {
@@ -4018,11 +3840,11 @@ public final class BattleMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 parsedMessage = null;
+        cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -4285,53 +4107,53 @@ public final class BattleMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.BattleChapterRewardResponse_13000023)
+      // @@protoc_insertion_point(builder_scope:Protos.BattleRewardResponse_13000023)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.BattleChapterRewardResponse_13000023)
-    private static final cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.BattleRewardResponse_13000023)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023();
     }
 
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<BattleChapterRewardResponse_13000023>
-        PARSER = new com.google.protobuf.AbstractParser<BattleChapterRewardResponse_13000023>() {
+    private static final com.google.protobuf.Parser<BattleRewardResponse_13000023>
+        PARSER = new com.google.protobuf.AbstractParser<BattleRewardResponse_13000023>() {
       @java.lang.Override
-      public BattleChapterRewardResponse_13000023 parsePartialFrom(
+      public BattleRewardResponse_13000023 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new BattleChapterRewardResponse_13000023(input, extensionRegistry);
+        return new BattleRewardResponse_13000023(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<BattleChapterRewardResponse_13000023> parser() {
+    public static com.google.protobuf.Parser<BattleRewardResponse_13000023> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<BattleChapterRewardResponse_13000023> getParserForType() {
+    public com.google.protobuf.Parser<BattleRewardResponse_13000023> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface BattleFieldInfoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.BattleFieldInfo)
+  public interface BattleInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleInfo)
       com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
-     *关卡id
+     *Battle表的id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -4341,58 +4163,48 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
+     * 打完剩余血量百分比，如剩余40%血量，则为40
      * </pre>
      *
-     * <code>repeated int32 star = 2;</code>
-     * @return A list containing the star.
+     * <code>uint32 hpPercent = 2;</code>
+     * @return The hpPercent.
      */
-    java.util.List<java.lang.Integer> getStarList();
+    int getHpPercent();
+
     /**
      * <pre>
-     * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
+     * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
      * </pre>
      *
-     * <code>repeated int32 star = 2;</code>
-     * @return The count of star.
+     * <code>int32 rewardIndex = 3;</code>
+     * @return The rewardIndex.
      */
-    int getStarCount();
-    /**
-     * <pre>
-     * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-     * </pre>
-     *
-     * <code>repeated int32 star = 2;</code>
-     * @param index The index of the element to return.
-     * @return The star at the given index.
-     */
-    int getStar(int index);
+    int getRewardIndex();
   }
   /**
    * <pre>
-   * 已通关的关卡信息，包含BattleField
+   * 战役信息
    * </pre>
    *
-   * Protobuf type {@code Protos.BattleFieldInfo}
+   * Protobuf type {@code Protos.BattleInfo}
    */
-  public static final class BattleFieldInfo extends
+  public static final class BattleInfo extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.BattleFieldInfo)
-      BattleFieldInfoOrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.BattleInfo)
+      BattleInfoOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use BattleFieldInfo.newBuilder() to construct.
-    private BattleFieldInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use BattleInfo.newBuilder() to construct.
+    private BattleInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private BattleFieldInfo() {
-      star_ = emptyIntList();
+    private BattleInfo() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new BattleFieldInfo();
+      return new BattleInfo();
     }
 
     @java.lang.Override
@@ -4400,752 +4212,7 @@ public final class BattleMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private BattleFieldInfo(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-
-              id_ = input.readInt32();
-              break;
-            }
-            case 16: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                star_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              star_.addInt(input.readInt32());
-              break;
-            }
-            case 18: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                star_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                star_.addInt(input.readInt32());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          star_.makeImmutable(); // C
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldInfo_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldInfo_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo.class, cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo.Builder.class);
-    }
-
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
-    /**
-     * <pre>
-     *关卡id
-     * </pre>
-     *
-     * <code>int32 id = 1;</code>
-     * @return The id.
-     */
-    @java.lang.Override
-    public int getId() {
-      return id_;
-    }
-
-    public static final int STAR_FIELD_NUMBER = 2;
-    private com.google.protobuf.Internal.IntList star_;
-    /**
-     * <pre>
-     * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-     * </pre>
-     *
-     * <code>repeated int32 star = 2;</code>
-     * @return A list containing the star.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getStarList() {
-      return star_;
-    }
-    /**
-     * <pre>
-     * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-     * </pre>
-     *
-     * <code>repeated int32 star = 2;</code>
-     * @return The count of star.
-     */
-    public int getStarCount() {
-      return star_.size();
-    }
-    /**
-     * <pre>
-     * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-     * </pre>
-     *
-     * <code>repeated int32 star = 2;</code>
-     * @param index The index of the element to return.
-     * @return The star at the given index.
-     */
-    public int getStar(int index) {
-      return star_.getInt(index);
-    }
-    private int starMemoizedSerializedSize = -1;
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
-      }
-      if (getStarList().size() > 0) {
-        output.writeUInt32NoTag(18);
-        output.writeUInt32NoTag(starMemoizedSerializedSize);
-      }
-      for (int i = 0; i < star_.size(); i++) {
-        output.writeInt32NoTag(star_.getInt(i));
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < star_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(star_.getInt(i));
-        }
-        size += dataSize;
-        if (!getStarList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        starMemoizedSerializedSize = dataSize;
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo other = (cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo) obj;
-
-      if (getId()
-          != other.getId()) return false;
-      if (!getStarList()
-          .equals(other.getStarList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
-      if (getStarCount() > 0) {
-        hash = (37 * hash) + STAR_FIELD_NUMBER;
-        hash = (53 * hash) + getStarList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 已通关的关卡信息，包含BattleField
-     * </pre>
-     *
-     * Protobuf type {@code Protos.BattleFieldInfo}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.BattleFieldInfo)
-        cn.game.protocol.protobuf.BattleMsg.BattleFieldInfoOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldInfo_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldInfo_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo.class, cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        id_ = 0;
-
-        star_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldInfo_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo build() {
-        cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo buildPartial() {
-        cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo result = new cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo(this);
-        int from_bitField0_ = bitField0_;
-        result.id_ = id_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          star_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.star_ = star_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo) {
-          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo other) {
-        if (other == cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
-        }
-        if (!other.star_.isEmpty()) {
-          if (star_.isEmpty()) {
-            star_ = other.star_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureStarIsMutable();
-            star_.addAll(other.star_);
-          }
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private int id_ ;
-      /**
-       * <pre>
-       *关卡id
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @return The id.
-       */
-      @java.lang.Override
-      public int getId() {
-        return id_;
-      }
-      /**
-       * <pre>
-       *关卡id
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @param value The id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setId(int value) {
-        
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *关卡id
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearId() {
-        
-        id_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Internal.IntList star_ = emptyIntList();
-      private void ensureStarIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          star_ = mutableCopy(star_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-      /**
-       * <pre>
-       * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-       * </pre>
-       *
-       * <code>repeated int32 star = 2;</code>
-       * @return A list containing the star.
-       */
-      public java.util.List<java.lang.Integer>
-          getStarList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(star_) : star_;
-      }
-      /**
-       * <pre>
-       * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-       * </pre>
-       *
-       * <code>repeated int32 star = 2;</code>
-       * @return The count of star.
-       */
-      public int getStarCount() {
-        return star_.size();
-      }
-      /**
-       * <pre>
-       * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-       * </pre>
-       *
-       * <code>repeated int32 star = 2;</code>
-       * @param index The index of the element to return.
-       * @return The star at the given index.
-       */
-      public int getStar(int index) {
-        return star_.getInt(index);
-      }
-      /**
-       * <pre>
-       * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-       * </pre>
-       *
-       * <code>repeated int32 star = 2;</code>
-       * @param index The index to set the value at.
-       * @param value The star to set.
-       * @return This builder for chaining.
-       */
-      public Builder setStar(
-          int index, int value) {
-        ensureStarIsMutable();
-        star_.setInt(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-       * </pre>
-       *
-       * <code>repeated int32 star = 2;</code>
-       * @param value The star to add.
-       * @return This builder for chaining.
-       */
-      public Builder addStar(int value) {
-        ensureStarIsMutable();
-        star_.addInt(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-       * </pre>
-       *
-       * <code>repeated int32 star = 2;</code>
-       * @param values The star to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllStar(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureStarIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, star_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-       * </pre>
-       *
-       * <code>repeated int32 star = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearStar() {
-        star_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.BattleFieldInfo)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.BattleFieldInfo)
-    private static final cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo();
-    }
-
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<BattleFieldInfo>
-        PARSER = new com.google.protobuf.AbstractParser<BattleFieldInfo>() {
-      @java.lang.Override
-      public BattleFieldInfo parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new BattleFieldInfo(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<BattleFieldInfo> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<BattleFieldInfo> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BattleMsg.BattleFieldInfo getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface BattleChapterInfoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.BattleChapterInfo)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     *  章节id
-     * </pre>
-     *
-     * <code>int32 id = 1;</code>
-     * @return The id.
-     */
-    int getId();
-
-    /**
-     * <pre>
-     * 是否领取过章节通关奖励
-     * </pre>
-     *
-     * <code>bool passReward = 2;</code>
-     * @return The passReward.
-     */
-    boolean getPassReward();
-  }
-  /**
-   * <pre>
-   * 章节信息
-   * </pre>
-   *
-   * Protobuf type {@code Protos.BattleChapterInfo}
-   */
-  public static final class BattleChapterInfo extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.BattleChapterInfo)
-      BattleChapterInfoOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use BattleChapterInfo.newBuilder() to construct.
-    private BattleChapterInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private BattleChapterInfo() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new BattleChapterInfo();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private BattleChapterInfo(
+    private BattleInfo(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -5170,7 +4237,12 @@ public final class BattleMsg {
             }
             case 16: {
 
-              passReward_ = input.readBool();
+              hpPercent_ = input.readUInt32();
+              break;
+            }
+            case 24: {
+
+              rewardIndex_ = input.readInt32();
               break;
             }
             default: {
@@ -5194,22 +4266,22 @@ public final class BattleMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterInfo_descriptor;
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleInfo_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterInfo_fieldAccessorTable
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo.class, cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo.Builder.class);
+              cn.game.protocol.protobuf.BattleMsg.BattleInfo.class, cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder.class);
     }
 
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
      * <pre>
-     *  章节id
+     *Battle表的id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -5220,19 +4292,34 @@ public final class BattleMsg {
       return id_;
     }
 
-    public static final int PASSREWARD_FIELD_NUMBER = 2;
-    private boolean passReward_;
+    public static final int HPPERCENT_FIELD_NUMBER = 2;
+    private int hpPercent_;
     /**
      * <pre>
-     * 是否领取过章节通关奖励
+     * 打完剩余血量百分比，如剩余40%血量，则为40
      * </pre>
      *
-     * <code>bool passReward = 2;</code>
-     * @return The passReward.
+     * <code>uint32 hpPercent = 2;</code>
+     * @return The hpPercent.
      */
     @java.lang.Override
-    public boolean getPassReward() {
-      return passReward_;
+    public int getHpPercent() {
+      return hpPercent_;
+    }
+
+    public static final int REWARDINDEX_FIELD_NUMBER = 3;
+    private int rewardIndex_;
+    /**
+     * <pre>
+     * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+     * </pre>
+     *
+     * <code>int32 rewardIndex = 3;</code>
+     * @return The rewardIndex.
+     */
+    @java.lang.Override
+    public int getRewardIndex() {
+      return rewardIndex_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -5252,8 +4339,11 @@ public final class BattleMsg {
       if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (passReward_ != false) {
-        output.writeBool(2, passReward_);
+      if (hpPercent_ != 0) {
+        output.writeUInt32(2, hpPercent_);
+      }
+      if (rewardIndex_ != 0) {
+        output.writeInt32(3, rewardIndex_);
       }
       unknownFields.writeTo(output);
     }
@@ -5268,9 +4358,13 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      if (passReward_ != false) {
+      if (hpPercent_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, passReward_);
+          .computeUInt32Size(2, hpPercent_);
+      }
+      if (rewardIndex_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, rewardIndex_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5282,15 +4376,17 @@ public final class BattleMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleInfo)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo other = (cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo) obj;
+      cn.game.protocol.protobuf.BattleMsg.BattleInfo other = (cn.game.protocol.protobuf.BattleMsg.BattleInfo) obj;
 
       if (getId()
           != other.getId()) return false;
-      if (getPassReward()
-          != other.getPassReward()) return false;
+      if (getHpPercent()
+          != other.getHpPercent()) return false;
+      if (getRewardIndex()
+          != other.getRewardIndex()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -5304,77 +4400,78 @@ public final class BattleMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
-      hash = (37 * hash) + PASSREWARD_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getPassReward());
+      hash = (37 * hash) + HPPERCENT_FIELD_NUMBER;
+      hash = (53 * hash) + getHpPercent();
+      hash = (37 * hash) + REWARDINDEX_FIELD_NUMBER;
+      hash = (53 * hash) + getRewardIndex();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parseFrom(
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -5387,7 +4484,7 @@ public final class BattleMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleInfo prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -5404,29 +4501,29 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     * 章节信息
+     * 战役信息
      * </pre>
      *
-     * Protobuf type {@code Protos.BattleChapterInfo}
+     * Protobuf type {@code Protos.BattleInfo}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.BattleChapterInfo)
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterInfoOrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.BattleInfo)
+        cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterInfo_descriptor;
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleInfo_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterInfo_fieldAccessorTable
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo.class, cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo.Builder.class);
+                cn.game.protocol.protobuf.BattleMsg.BattleInfo.class, cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo.newBuilder()
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleInfo.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -5446,7 +4543,9 @@ public final class BattleMsg {
         super.clear();
         id_ = 0;
 
-        passReward_ = false;
+        hpPercent_ = 0;
+
+        rewardIndex_ = 0;
 
         return this;
       }
@@ -5454,17 +4553,17 @@ public final class BattleMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleChapterInfo_descriptor;
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleInfo_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo.getDefaultInstance();
+      public cn.game.protocol.protobuf.BattleMsg.BattleInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleInfo.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo build() {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo result = buildPartial();
+      public cn.game.protocol.protobuf.BattleMsg.BattleInfo build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleInfo result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -5472,10 +4571,11 @@ public final class BattleMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo buildPartial() {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo result = new cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo(this);
+      public cn.game.protocol.protobuf.BattleMsg.BattleInfo buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleInfo result = new cn.game.protocol.protobuf.BattleMsg.BattleInfo(this);
         result.id_ = id_;
-        result.passReward_ = passReward_;
+        result.hpPercent_ = hpPercent_;
+        result.rewardIndex_ = rewardIndex_;
         onBuilt();
         return result;
       }
@@ -5514,21 +4614,24 @@ public final class BattleMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo) {
-          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo)other);
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleInfo)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo other) {
-        if (other == cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleInfo other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleInfo.getDefaultInstance()) return this;
         if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.getPassReward() != false) {
-          setPassReward(other.getPassReward());
+        if (other.getHpPercent() != 0) {
+          setHpPercent(other.getHpPercent());
+        }
+        if (other.getRewardIndex() != 0) {
+          setRewardIndex(other.getRewardIndex());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5545,11 +4648,11 @@ public final class BattleMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo parsedMessage = null;
+        cn.game.protocol.protobuf.BattleMsg.BattleInfo parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleInfo) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -5562,7 +4665,7 @@ public final class BattleMsg {
       private int id_ ;
       /**
        * <pre>
-       *  章节id
+       *Battle表的id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -5574,7 +4677,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  章节id
+       *Battle表的id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -5589,7 +4692,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  章节id
+       *Battle表的id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -5602,45 +4705,88 @@ public final class BattleMsg {
         return this;
       }
 
-      private boolean passReward_ ;
+      private int hpPercent_ ;
       /**
        * <pre>
-       * 是否领取过章节通关奖励
+       * 打完剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>bool passReward = 2;</code>
-       * @return The passReward.
+       * <code>uint32 hpPercent = 2;</code>
+       * @return The hpPercent.
        */
       @java.lang.Override
-      public boolean getPassReward() {
-        return passReward_;
+      public int getHpPercent() {
+        return hpPercent_;
       }
       /**
        * <pre>
-       * 是否领取过章节通关奖励
+       * 打完剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>bool passReward = 2;</code>
-       * @param value The passReward to set.
+       * <code>uint32 hpPercent = 2;</code>
+       * @param value The hpPercent to set.
        * @return This builder for chaining.
        */
-      public Builder setPassReward(boolean value) {
+      public Builder setHpPercent(int value) {
         
-        passReward_ = value;
+        hpPercent_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 是否领取过章节通关奖励
+       * 打完剩余血量百分比，如剩余40%血量，则为40
        * </pre>
        *
-       * <code>bool passReward = 2;</code>
+       * <code>uint32 hpPercent = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearPassReward() {
+      public Builder clearHpPercent() {
         
-        passReward_ = false;
+        hpPercent_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int rewardIndex_ ;
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+       * </pre>
+       *
+       * <code>int32 rewardIndex = 3;</code>
+       * @return The rewardIndex.
+       */
+      @java.lang.Override
+      public int getRewardIndex() {
+        return rewardIndex_;
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+       * </pre>
+       *
+       * <code>int32 rewardIndex = 3;</code>
+       * @param value The rewardIndex to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRewardIndex(int value) {
+        
+        rewardIndex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+       * </pre>
+       *
+       * <code>int32 rewardIndex = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRewardIndex() {
+        
+        rewardIndex_ = 0;
         onChanged();
         return this;
       }
@@ -5657,1529 +4803,41 @@ public final class BattleMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.BattleChapterInfo)
+      // @@protoc_insertion_point(builder_scope:Protos.BattleInfo)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.BattleChapterInfo)
-    private static final cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.BattleInfo)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleInfo DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleInfo();
     }
 
-    public static cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo getDefaultInstance() {
+    public static cn.game.protocol.protobuf.BattleMsg.BattleInfo getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<BattleChapterInfo>
-        PARSER = new com.google.protobuf.AbstractParser<BattleChapterInfo>() {
+    private static final com.google.protobuf.Parser<BattleInfo>
+        PARSER = new com.google.protobuf.AbstractParser<BattleInfo>() {
       @java.lang.Override
-      public BattleChapterInfo parsePartialFrom(
+      public BattleInfo parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new BattleChapterInfo(input, extensionRegistry);
+        return new BattleInfo(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<BattleChapterInfo> parser() {
+    public static com.google.protobuf.Parser<BattleInfo> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<BattleChapterInfo> getParserForType() {
+    public com.google.protobuf.Parser<BattleInfo> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.BattleMsg.BattleChapterInfo getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface BattleEventInfoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.BattleEventInfo)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     *事件唯一id,多个事件可能都是一个BattleEvent id
-     * </pre>
-     *
-     * <code>string uid = 1;</code>
-     * @return The uid.
-     */
-    java.lang.String getUid();
-    /**
-     * <pre>
-     *事件唯一id,多个事件可能都是一个BattleEvent id
-     * </pre>
-     *
-     * <code>string uid = 1;</code>
-     * @return The bytes for uid.
-     */
-    com.google.protobuf.ByteString
-        getUidBytes();
-
-    /**
-     * <pre>
-     *事件id， BattleEvent.xlsm
-     * </pre>
-     *
-     * <code>int32 id = 2;</code>
-     * @return The id.
-     */
-    int getId();
-
-    /**
-     * <pre>
-     * 距离事件消失还有多少秒
-     * </pre>
-     *
-     * <code>int32 expireTime = 3;</code>
-     * @return The expireTime.
-     */
-    int getExpireTime();
-  }
-  /**
-   * <pre>
-   * 突发事件
-   * </pre>
-   *
-   * Protobuf type {@code Protos.BattleEventInfo}
-   */
-  public static final class BattleEventInfo extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.BattleEventInfo)
-      BattleEventInfoOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use BattleEventInfo.newBuilder() to construct.
-    private BattleEventInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private BattleEventInfo() {
-      uid_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new BattleEventInfo();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private BattleEventInfo(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              uid_ = s;
-              break;
-            }
-            case 16: {
-
-              id_ = input.readInt32();
-              break;
-            }
-            case 24: {
-
-              expireTime_ = input.readInt32();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleEventInfo_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleEventInfo_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.BattleMsg.BattleEventInfo.class, cn.game.protocol.protobuf.BattleMsg.BattleEventInfo.Builder.class);
-    }
-
-    public static final int UID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object uid_;
-    /**
-     * <pre>
-     *事件唯一id,多个事件可能都是一个BattleEvent id
-     * </pre>
-     *
-     * <code>string uid = 1;</code>
-     * @return The uid.
-     */
-    @java.lang.Override
-    public java.lang.String getUid() {
-      java.lang.Object ref = uid_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        uid_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     *事件唯一id,多个事件可能都是一个BattleEvent id
-     * </pre>
-     *
-     * <code>string uid = 1;</code>
-     * @return The bytes for uid.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getUidBytes() {
-      java.lang.Object ref = uid_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        uid_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int ID_FIELD_NUMBER = 2;
-    private int id_;
-    /**
-     * <pre>
-     *事件id， BattleEvent.xlsm
-     * </pre>
-     *
-     * <code>int32 id = 2;</code>
-     * @return The id.
-     */
-    @java.lang.Override
-    public int getId() {
-      return id_;
-    }
-
-    public static final int EXPIRETIME_FIELD_NUMBER = 3;
-    private int expireTime_;
-    /**
-     * <pre>
-     * 距离事件消失还有多少秒
-     * </pre>
-     *
-     * <code>int32 expireTime = 3;</code>
-     * @return The expireTime.
-     */
-    @java.lang.Override
-    public int getExpireTime() {
-      return expireTime_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getUidBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uid_);
-      }
-      if (id_ != 0) {
-        output.writeInt32(2, id_);
-      }
-      if (expireTime_ != 0) {
-        output.writeInt32(3, expireTime_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getUidBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uid_);
-      }
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, id_);
-      }
-      if (expireTime_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, expireTime_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleEventInfo)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.BattleMsg.BattleEventInfo other = (cn.game.protocol.protobuf.BattleMsg.BattleEventInfo) obj;
-
-      if (!getUid()
-          .equals(other.getUid())) return false;
-      if (getId()
-          != other.getId()) return false;
-      if (getExpireTime()
-          != other.getExpireTime()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + UID_FIELD_NUMBER;
-      hash = (53 * hash) + getUid().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
-      hash = (37 * hash) + EXPIRETIME_FIELD_NUMBER;
-      hash = (53 * hash) + getExpireTime();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleEventInfo prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 突发事件
-     * </pre>
-     *
-     * Protobuf type {@code Protos.BattleEventInfo}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.BattleEventInfo)
-        cn.game.protocol.protobuf.BattleMsg.BattleEventInfoOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleEventInfo_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleEventInfo_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.BattleMsg.BattleEventInfo.class, cn.game.protocol.protobuf.BattleMsg.BattleEventInfo.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleEventInfo.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        uid_ = "";
-
-        id_ = 0;
-
-        expireTime_ = 0;
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleEventInfo_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleEventInfo getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.BattleMsg.BattleEventInfo.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleEventInfo build() {
-        cn.game.protocol.protobuf.BattleMsg.BattleEventInfo result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleEventInfo buildPartial() {
-        cn.game.protocol.protobuf.BattleMsg.BattleEventInfo result = new cn.game.protocol.protobuf.BattleMsg.BattleEventInfo(this);
-        result.uid_ = uid_;
-        result.id_ = id_;
-        result.expireTime_ = expireTime_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleEventInfo) {
-          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleEventInfo)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleEventInfo other) {
-        if (other == cn.game.protocol.protobuf.BattleMsg.BattleEventInfo.getDefaultInstance()) return this;
-        if (!other.getUid().isEmpty()) {
-          uid_ = other.uid_;
-          onChanged();
-        }
-        if (other.getId() != 0) {
-          setId(other.getId());
-        }
-        if (other.getExpireTime() != 0) {
-          setExpireTime(other.getExpireTime());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.BattleMsg.BattleEventInfo parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleEventInfo) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object uid_ = "";
-      /**
-       * <pre>
-       *事件唯一id,多个事件可能都是一个BattleEvent id
-       * </pre>
-       *
-       * <code>string uid = 1;</code>
-       * @return The uid.
-       */
-      public java.lang.String getUid() {
-        java.lang.Object ref = uid_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          uid_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       *事件唯一id,多个事件可能都是一个BattleEvent id
-       * </pre>
-       *
-       * <code>string uid = 1;</code>
-       * @return The bytes for uid.
-       */
-      public com.google.protobuf.ByteString
-          getUidBytes() {
-        java.lang.Object ref = uid_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          uid_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *事件唯一id,多个事件可能都是一个BattleEvent id
-       * </pre>
-       *
-       * <code>string uid = 1;</code>
-       * @param value The uid to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUid(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        uid_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *事件唯一id,多个事件可能都是一个BattleEvent id
-       * </pre>
-       *
-       * <code>string uid = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearUid() {
-        
-        uid_ = getDefaultInstance().getUid();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *事件唯一id,多个事件可能都是一个BattleEvent id
-       * </pre>
-       *
-       * <code>string uid = 1;</code>
-       * @param value The bytes for uid to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUidBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        uid_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int id_ ;
-      /**
-       * <pre>
-       *事件id， BattleEvent.xlsm
-       * </pre>
-       *
-       * <code>int32 id = 2;</code>
-       * @return The id.
-       */
-      @java.lang.Override
-      public int getId() {
-        return id_;
-      }
-      /**
-       * <pre>
-       *事件id， BattleEvent.xlsm
-       * </pre>
-       *
-       * <code>int32 id = 2;</code>
-       * @param value The id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setId(int value) {
-        
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *事件id， BattleEvent.xlsm
-       * </pre>
-       *
-       * <code>int32 id = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearId() {
-        
-        id_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int expireTime_ ;
-      /**
-       * <pre>
-       * 距离事件消失还有多少秒
-       * </pre>
-       *
-       * <code>int32 expireTime = 3;</code>
-       * @return The expireTime.
-       */
-      @java.lang.Override
-      public int getExpireTime() {
-        return expireTime_;
-      }
-      /**
-       * <pre>
-       * 距离事件消失还有多少秒
-       * </pre>
-       *
-       * <code>int32 expireTime = 3;</code>
-       * @param value The expireTime to set.
-       * @return This builder for chaining.
-       */
-      public Builder setExpireTime(int value) {
-        
-        expireTime_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 距离事件消失还有多少秒
-       * </pre>
-       *
-       * <code>int32 expireTime = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearExpireTime() {
-        
-        expireTime_ = 0;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.BattleEventInfo)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.BattleEventInfo)
-    private static final cn.game.protocol.protobuf.BattleMsg.BattleEventInfo DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleEventInfo();
-    }
-
-    public static cn.game.protocol.protobuf.BattleMsg.BattleEventInfo getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<BattleEventInfo>
-        PARSER = new com.google.protobuf.AbstractParser<BattleEventInfo>() {
-      @java.lang.Override
-      public BattleEventInfo parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new BattleEventInfo(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<BattleEventInfo> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<BattleEventInfo> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BattleMsg.BattleEventInfo getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface BattleFieldStartPush_13000100OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.BattleFieldStartPush_13000100)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * DungeonTypeEnum 的id，属于哪个玩法的关卡
-     * </pre>
-     *
-     * <code>uint32 type = 1;</code>
-     * @return The type.
-     */
-    int getType();
-
-    /**
-     * <pre>
-     *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
-     * </pre>
-     *
-     * <code>uint32 dungeonId = 2;</code>
-     * @return The dungeonId.
-     */
-    int getDungeonId();
-
-    /**
-     * <pre>
-     * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
-     * </pre>
-     *
-     * <code>uint32 id = 3;</code>
-     * @return The id.
-     */
-    int getId();
-  }
-  /**
-   * <pre>
-   * 战斗开始推送
-   * </pre>
-   *
-   * Protobuf type {@code Protos.BattleFieldStartPush_13000100}
-   */
-  public static final class BattleFieldStartPush_13000100 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.BattleFieldStartPush_13000100)
-      BattleFieldStartPush_13000100OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use BattleFieldStartPush_13000100.newBuilder() to construct.
-    private BattleFieldStartPush_13000100(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private BattleFieldStartPush_13000100() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new BattleFieldStartPush_13000100();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private BattleFieldStartPush_13000100(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-
-              type_ = input.readUInt32();
-              break;
-            }
-            case 16: {
-
-              dungeonId_ = input.readUInt32();
-              break;
-            }
-            case 24: {
-
-              id_ = input.readUInt32();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldStartPush_13000100_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldStartPush_13000100_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.class, cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.Builder.class);
-    }
-
-    public static final int TYPE_FIELD_NUMBER = 1;
-    private int type_;
-    /**
-     * <pre>
-     * DungeonTypeEnum 的id，属于哪个玩法的关卡
-     * </pre>
-     *
-     * <code>uint32 type = 1;</code>
-     * @return The type.
-     */
-    @java.lang.Override
-    public int getType() {
-      return type_;
-    }
-
-    public static final int DUNGEONID_FIELD_NUMBER = 2;
-    private int dungeonId_;
-    /**
-     * <pre>
-     *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
-     * </pre>
-     *
-     * <code>uint32 dungeonId = 2;</code>
-     * @return The dungeonId.
-     */
-    @java.lang.Override
-    public int getDungeonId() {
-      return dungeonId_;
-    }
-
-    public static final int ID_FIELD_NUMBER = 3;
-    private int id_;
-    /**
-     * <pre>
-     * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
-     * </pre>
-     *
-     * <code>uint32 id = 3;</code>
-     * @return The id.
-     */
-    @java.lang.Override
-    public int getId() {
-      return id_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (type_ != 0) {
-        output.writeUInt32(1, type_);
-      }
-      if (dungeonId_ != 0) {
-        output.writeUInt32(2, dungeonId_);
-      }
-      if (id_ != 0) {
-        output.writeUInt32(3, id_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (type_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(1, type_);
-      }
-      if (dungeonId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, dungeonId_);
-      }
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, id_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 other = (cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100) obj;
-
-      if (getType()
-          != other.getType()) return false;
-      if (getDungeonId()
-          != other.getDungeonId()) return false;
-      if (getId()
-          != other.getId()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + getType();
-      hash = (37 * hash) + DUNGEONID_FIELD_NUMBER;
-      hash = (53 * hash) + getDungeonId();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 战斗开始推送
-     * </pre>
-     *
-     * Protobuf type {@code Protos.BattleFieldStartPush_13000100}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.BattleFieldStartPush_13000100)
-        cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldStartPush_13000100_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldStartPush_13000100_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.class, cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        type_ = 0;
-
-        dungeonId_ = 0;
-
-        id_ = 0;
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleFieldStartPush_13000100_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 build() {
-        cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 buildPartial() {
-        cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 result = new cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100(this);
-        result.type_ = type_;
-        result.dungeonId_ = dungeonId_;
-        result.id_ = id_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100) {
-          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 other) {
-        if (other == cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.getDefaultInstance()) return this;
-        if (other.getType() != 0) {
-          setType(other.getType());
-        }
-        if (other.getDungeonId() != 0) {
-          setDungeonId(other.getDungeonId());
-        }
-        if (other.getId() != 0) {
-          setId(other.getId());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private int type_ ;
-      /**
-       * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
-       * </pre>
-       *
-       * <code>uint32 type = 1;</code>
-       * @return The type.
-       */
-      @java.lang.Override
-      public int getType() {
-        return type_;
-      }
-      /**
-       * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
-       * </pre>
-       *
-       * <code>uint32 type = 1;</code>
-       * @param value The type to set.
-       * @return This builder for chaining.
-       */
-      public Builder setType(int value) {
-        
-        type_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * DungeonTypeEnum 的id，属于哪个玩法的关卡
-       * </pre>
-       *
-       * <code>uint32 type = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearType() {
-        
-        type_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int dungeonId_ ;
-      /**
-       * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
-       * </pre>
-       *
-       * <code>uint32 dungeonId = 2;</code>
-       * @return The dungeonId.
-       */
-      @java.lang.Override
-      public int getDungeonId() {
-        return dungeonId_;
-      }
-      /**
-       * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
-       * </pre>
-       *
-       * <code>uint32 dungeonId = 2;</code>
-       * @param value The dungeonId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setDungeonId(int value) {
-        
-        dungeonId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
-       * </pre>
-       *
-       * <code>uint32 dungeonId = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearDungeonId() {
-        
-        dungeonId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int id_ ;
-      /**
-       * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
-       * </pre>
-       *
-       * <code>uint32 id = 3;</code>
-       * @return The id.
-       */
-      @java.lang.Override
-      public int getId() {
-        return id_;
-      }
-      /**
-       * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
-       * </pre>
-       *
-       * <code>uint32 id = 3;</code>
-       * @param value The id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setId(int value) {
-        
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
-       * </pre>
-       *
-       * <code>uint32 id = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearId() {
-        
-        id_ = 0;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.BattleFieldStartPush_13000100)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.BattleFieldStartPush_13000100)
-    private static final cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100();
-    }
-
-    public static cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<BattleFieldStartPush_13000100>
-        PARSER = new com.google.protobuf.AbstractParser<BattleFieldStartPush_13000100>() {
-      @java.lang.Override
-      public BattleFieldStartPush_13000100 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new BattleFieldStartPush_13000100(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<BattleFieldStartPush_13000100> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<BattleFieldStartPush_13000100> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.BattleMsg.BattleInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -7206,35 +4864,20 @@ public final class BattleMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_BattleFieldEndResponse_13000004_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_BattleChapterRewardRequest_13000022_descriptor;
+    internal_static_Protos_BattleRewardRequest_13000022_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_BattleChapterRewardRequest_13000022_fieldAccessorTable;
+      internal_static_Protos_BattleRewardRequest_13000022_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_BattleChapterRewardResponse_13000023_descriptor;
+    internal_static_Protos_BattleRewardResponse_13000023_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_BattleChapterRewardResponse_13000023_fieldAccessorTable;
+      internal_static_Protos_BattleRewardResponse_13000023_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_BattleFieldInfo_descriptor;
+    internal_static_Protos_BattleInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_BattleFieldInfo_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_BattleChapterInfo_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_BattleChapterInfo_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_BattleEventInfo_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_BattleEventInfo_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_BattleFieldStartPush_13000100_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_BattleFieldStartPush_13000100_fieldAccessorTable;
+      internal_static_Protos_BattleInfo_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -7248,22 +4891,16 @@ public final class BattleMsg {
       "to\"Q\n BattleFieldStartRequest_13000001\022\014" +
       "\n\004type\030\001 \001(\r\022\016\n\006typeId\030\002 \001(\r\022\017\n\007fieldId\030" +
       "\003 \001(\r\"#\n!BattleFieldStartResponse_130000" +
-      "02\"\211\001\n\036BattleFieldEndRequest_13000003\022\014\n" +
-      "\004type\030\001 \001(\r\022\016\n\006typeId\030\002 \001(\r\022\017\n\007fieldId\030\003" +
-      " \001(\r\022\030\n\020killMonsterCount\030\005 \001(\r\022\021\n\thpPerc" +
-      "ent\030\006 \001(\r\022\013\n\003win\030\n \001(\010\"F\n\037BattleFieldEnd" +
-      "Response_13000004\022#\n\007rewards\030\001 \003(\0132\022.Pro" +
-      "tos.RewardInfo\"1\n#BattleChapterRewardReq" +
-      "uest_13000022\022\n\n\002id\030\001 \001(\r\"J\n$BattleChapt" +
-      "erRewardResponse_13000023\022\"\n\006reward\030\001 \003(" +
-      "\0132\022.Protos.RewardInfo\"+\n\017BattleFieldInfo" +
-      "\022\n\n\002id\030\001 \001(\005\022\014\n\004star\030\002 \003(\005\"3\n\021BattleChap" +
-      "terInfo\022\n\n\002id\030\001 \001(\005\022\022\n\npassReward\030\002 \001(\010\"" +
-      ">\n\017BattleEventInfo\022\013\n\003uid\030\001 \001(\t\022\n\n\002id\030\002 " +
-      "\001(\005\022\022\n\nexpireTime\030\003 \001(\005\"L\n\035BattleFieldSt" +
-      "artPush_13000100\022\014\n\004type\030\001 \001(\r\022\021\n\tdungeo" +
-      "nId\030\002 \001(\r\022\n\n\002id\030\003 \001(\rB\033\n\031cn.game.protoco" +
-      "l.protobufb\006proto3"
+      "02\"Z\n\036BattleFieldEndRequest_13000003\022\030\n\020" +
+      "killMonsterCount\030\001 \001(\r\022\021\n\thpPercent\030\002 \001(" +
+      "\r\022\013\n\003win\030\003 \001(\010\"F\n\037BattleFieldEndResponse" +
+      "_13000004\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rewa" +
+      "rdInfo\"9\n\034BattleRewardRequest_13000022\022\n" +
+      "\n\002id\030\001 \001(\r\022\r\n\005index\030\002 \001(\r\"C\n\035BattleRewar" +
+      "dResponse_13000023\022\"\n\006reward\030\001 \003(\0132\022.Pro" +
+      "tos.RewardInfo\"@\n\nBattleInfo\022\n\n\002id\030\001 \001(\005" +
+      "\022\021\n\thpPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003 \001(\005" +
+      "B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7287,49 +4924,31 @@ public final class BattleMsg {
     internal_static_Protos_BattleFieldEndRequest_13000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldEndRequest_13000003_descriptor,
-        new java.lang.String[] { "Type", "TypeId", "FieldId", "KillMonsterCount", "HpPercent", "Win", });
+        new java.lang.String[] { "KillMonsterCount", "HpPercent", "Win", });
     internal_static_Protos_BattleFieldEndResponse_13000004_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Protos_BattleFieldEndResponse_13000004_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldEndResponse_13000004_descriptor,
         new java.lang.String[] { "Rewards", });
-    internal_static_Protos_BattleChapterRewardRequest_13000022_descriptor =
+    internal_static_Protos_BattleRewardRequest_13000022_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_Protos_BattleChapterRewardRequest_13000022_fieldAccessorTable = new
+    internal_static_Protos_BattleRewardRequest_13000022_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_BattleChapterRewardRequest_13000022_descriptor,
-        new java.lang.String[] { "Id", });
-    internal_static_Protos_BattleChapterRewardResponse_13000023_descriptor =
+        internal_static_Protos_BattleRewardRequest_13000022_descriptor,
+        new java.lang.String[] { "Id", "Index", });
+    internal_static_Protos_BattleRewardResponse_13000023_descriptor =
       getDescriptor().getMessageTypes().get(5);
-    internal_static_Protos_BattleChapterRewardResponse_13000023_fieldAccessorTable = new
+    internal_static_Protos_BattleRewardResponse_13000023_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_BattleChapterRewardResponse_13000023_descriptor,
+        internal_static_Protos_BattleRewardResponse_13000023_descriptor,
         new java.lang.String[] { "Reward", });
-    internal_static_Protos_BattleFieldInfo_descriptor =
+    internal_static_Protos_BattleInfo_descriptor =
       getDescriptor().getMessageTypes().get(6);
-    internal_static_Protos_BattleFieldInfo_fieldAccessorTable = new
+    internal_static_Protos_BattleInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_BattleFieldInfo_descriptor,
-        new java.lang.String[] { "Id", "Star", });
-    internal_static_Protos_BattleChapterInfo_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_Protos_BattleChapterInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_BattleChapterInfo_descriptor,
-        new java.lang.String[] { "Id", "PassReward", });
-    internal_static_Protos_BattleEventInfo_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_Protos_BattleEventInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_BattleEventInfo_descriptor,
-        new java.lang.String[] { "Uid", "Id", "ExpireTime", });
-    internal_static_Protos_BattleFieldStartPush_13000100_descriptor =
-      getDescriptor().getMessageTypes().get(9);
-    internal_static_Protos_BattleFieldStartPush_13000100_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_BattleFieldStartPush_13000100_descriptor,
-        new java.lang.String[] { "Type", "DungeonId", "Id", });
+        internal_static_Protos_BattleInfo_descriptor,
+        new java.lang.String[] { "Id", "HpPercent", "RewardIndex", });
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }
 

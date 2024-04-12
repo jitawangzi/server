@@ -12,11 +12,11 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.BattleLevelConfig;
 import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022;
-import cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
+import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
+import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.PbProtocol;
 
 @Component
@@ -34,7 +34,7 @@ public class ChapterHandler extends BaseHandler {
 //		putInvoker(PbProtocol.BattleFieldSweepRequest_13000005, (client, message) -> sweep(client, message));
 //		putInvoker(PbProtocol.BattleChapterRewardRequest_13000022, (client, message) -> reward(client, message));
 //		putInvoker(PbProtocol.ExploreActRewardRequest_13000020, (client, message) -> exploreActReward(client, message));
-		putInvoker(PbProtocol.BattleChapterRewardRequest_13000022, (client, message) -> chapterReward(client, message));
+		putInvoker(PbProtocol.BattleRewardRequest_13000022, (client, message) -> chapterReward(client, message));
 
 	}
 
@@ -73,13 +73,13 @@ public class ChapterHandler extends BaseHandler {
 	*/
 	protected void chapterReward(NetClient client, Object message) {
 	
-		BattleChapterRewardRequest_13000022 req = (BattleChapterRewardRequest_13000022) message;
-		BattleChapterRewardResponse_13000023.Builder resp = BattleChapterRewardResponse_13000023.newBuilder();
+		BattleRewardRequest_13000022 req = (BattleRewardRequest_13000022) message;
+		BattleRewardResponse_13000023.Builder resp = BattleRewardResponse_13000023.newBuilder();
 	
 		int id = req.getId();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		long playerId = player.getPlayerId();
-		ChapterOp chapterOp = PlayerCacheFactory.getCache(playerId, ChapterOp.class);
+		ChapterModule chapterOp = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
 		boolean pass = chapterOp.isExploreChapterPass(id);
 		if (!pass) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
@@ -159,7 +159,7 @@ public class ChapterHandler extends BaseHandler {
 //		String uidString = req.getUid();
 //		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
 		long playerId = client.getPlayerId();
-		ChapterOp chapterOp = PlayerCacheFactory.getCache(playerId, ChapterOp.class);
+		ChapterModule chapterOp = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
 		
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(id);
@@ -206,9 +206,6 @@ public class ChapterHandler extends BaseHandler {
 	protected void end(NetClient client, Object message) {
 		BattleFieldEndRequest_13000003 req = (BattleFieldEndRequest_13000003) message;
 		BattleFieldEndResponse_13000004.Builder resp = BattleFieldEndResponse_13000004.newBuilder();
-		int type = req.getType();
-		int dungeonId = req.getTypeId();
-		int id = req.getFieldId();
 		boolean win = req.getWin(); 
 //		String uidString = req.getUid();
 //		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
@@ -218,12 +215,12 @@ public class ChapterHandler extends BaseHandler {
 
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		ChapterOp chapterOp = PlayerCacheFactory.getCache(playerId, ChapterOp.class);
+		ChapterModule chapterOp = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
 		int attackingId = chapterOp.getAttackingId();
 		int attackingType = chapterOp.getAttackingType();
 		long attackingUid = chapterOp.getAttackingUid();
 		int lineupId = chapterOp.getLineupId();
-		if (attackingId == 0 || attackingId != id || attackingType != type) {
+		if (attackingId == 0 || attackingType == 0) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
@@ -235,7 +232,7 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, errorCode);
 			return;
 		}
-		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(id);
+		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(0);
 
 		int apCost = levelConfig.getEnergyExpend();
 

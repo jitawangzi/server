@@ -30,9 +30,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
 	public final static int BattleFieldEndRequest_13000003 = 0x13000003;    //结束关卡战斗请求  
 	public final static int BattleFieldEndResponse_13000004 = 0x13000004;    //结束关卡战斗  
-	public final static int BattleChapterRewardRequest_13000022 = 0x13000022;    //领取章通关奖励  
-	public final static int BattleChapterRewardResponse_13000023 = 0x13000023;    
-	public final static int BattleFieldStartPush_13000100 = 0x13000100;    //战斗开始推送  
+	public final static int BattleRewardRequest_13000022 = 0x13000022;    //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励  
+	public final static int BattleRewardResponse_13000023 = 0x13000023;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    //龙解锁  
 	public final static int DragonUnlockResponse_17000002 = 0x17000002;    
 	public final static int DragonStarUpRequest_17000003 = 0x17000003;    //龙升星  
@@ -204,11 +203,9 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(BattleFieldEndResponse_13000004, cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(BattleChapterRewardRequest_13000022, cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000022.getDefaultInstance()
+		parsersMap.put(BattleRewardRequest_13000022, cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(BattleChapterRewardResponse_13000023, cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(BattleFieldStartPush_13000100, cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.getDefaultInstance()
+		parsersMap.put(BattleRewardResponse_13000023, cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DragonUnlockRequest_17000001, cn.game.protocol.protobuf.DragonMsg.DragonUnlockRequest_17000001.getDefaultInstance()
 				.getParserForType());
@@ -522,9 +519,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleFieldStartResponse_13000002", 0x13000002);
 		nameIdMap.put("BattleFieldEndRequest_13000003", 0x13000003);
 		nameIdMap.put("BattleFieldEndResponse_13000004", 0x13000004);
-		nameIdMap.put("BattleChapterRewardRequest_13000022", 0x13000022);
-		nameIdMap.put("BattleChapterRewardResponse_13000023", 0x13000023);
-		nameIdMap.put("BattleFieldStartPush_13000100", 0x13000100);
+		nameIdMap.put("BattleRewardRequest_13000022", 0x13000022);
+		nameIdMap.put("BattleRewardResponse_13000023", 0x13000023);
 		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
 		nameIdMap.put("DragonUnlockResponse_17000002", 0x17000002);
 		nameIdMap.put("DragonStarUpRequest_17000003", 0x17000003);

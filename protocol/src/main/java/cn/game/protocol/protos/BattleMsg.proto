@@ -3,13 +3,11 @@ option java_package = "cn.game.protocol.protobuf";
 package Protos;
 import "RewardMsg.proto" ;
 // 章节关卡协议
-
 // 开始关卡战斗请求
 message BattleFieldStartRequest_13000001{
-
-	uint32 type = 1; 	// 玩法类型，主线推图，日常训练等。
-	uint32 typeId = 2; // 玩法类型对应的配置表id
-	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，需要区分
+	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表战役Battle表
+	uint32 typeId = 2; // 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id
+	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。
 }
 
 // 开始关卡战斗返回
@@ -19,12 +17,9 @@ message BattleFieldStartResponse_13000002{
 
 // 结束关卡战斗请求
 message BattleFieldEndRequest_13000003{
-	uint32 type = 1; 	// 玩法类型，主线推图，日常训练等。
-	uint32 typeId = 2; // 玩法类型对应的配置表id
-	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，需要区分
-	uint32 killMonsterCount = 5;	// 击杀怪物数量
-	uint32 hpPercent = 6;	// 剩余血量百分比，如剩余40%血量，则为40
-	bool win = 10;	        // 战斗是否成功
+	uint32 killMonsterCount = 1;	// 击杀怪物数量
+	uint32 hpPercent = 2;	// 剩余血量百分比，如剩余40%血量，则为40
+	bool win = 3;	        // 战斗是否成功，用血量百分比可能有误差。
 }
 
 // 结束关卡战斗
@@ -32,41 +27,18 @@ message BattleFieldEndResponse_13000004{
 	repeated RewardInfo rewards = 1;		// 获得的奖励
 }
 
-//领取章通关奖励
-message BattleChapterRewardRequest_13000022{
-   uint32 id = 1; 			// ExploreChapter 的id
+//领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励
+message BattleRewardRequest_13000022{
+   uint32 id = 1; 			// Battle表的id
+   uint32 index = 2; 			// 0、1、2   代表首次，半血、无损奖励
 }
-message BattleChapterRewardResponse_13000023{
+message BattleRewardResponse_13000023{
    repeated RewardInfo reward = 1;
 }
 
-
-// 已通关的关卡信息，包含BattleField
-message BattleFieldInfo{
-
-	int32 id = 1;	//关卡id
-	repeated int32 star = 2; // 关卡通关评价,已经完成的星级条件索引，完成几个表示几星，目前可能只有BattleField有这个
-}
-
-// 章节信息
-message BattleChapterInfo{
-	int32 id = 1;				//  章节id
-	bool passReward = 2;		// 是否领取过章节通关奖励
-}
-
-
-// 突发事件
-message BattleEventInfo{
-	string uid = 1  ; 			//事件唯一id,多个事件可能都是一个BattleEvent id
-	int32 id = 2  ; 			//事件id， BattleEvent.xlsm
-	int32 expireTime = 3  ; 	// 距离事件消失还有多少秒
-	// int32 chapterId = 4  ;		// 事件所在章节id
-}
-
-
-// 战斗开始推送
-message BattleFieldStartPush_13000100{
-	uint32 type = 1; 	// DungeonTypeEnum 的id，属于哪个玩法的关卡
-	uint32 dungeonId = 2; //type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id，type=4时,BattleExplorectiveType的id，type=5时传MainlineNpc.xlsm表id
-	uint32 id = 3;	// 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleField.xlsm表id
+// 战役信息
+message BattleInfo{
+	int32 id = 1;	//Battle表的id
+	uint32 hpPercent = 2;	// 打完剩余血量百分比，如剩余40%血量，则为40
+	int32 rewardIndex = 3; // 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
 }

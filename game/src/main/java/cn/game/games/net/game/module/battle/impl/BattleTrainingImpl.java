@@ -4,7 +4,7 @@ import java.util.List;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.ChapterOp;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.protocol.generated.config.BattleLevelConfig;
 import cn.game.protocol.generated.config.RoutineTrainingConfig;
@@ -26,7 +26,7 @@ public class BattleTrainingImpl implements IBattleHandler {
 	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		ChapterOp chapterOp = player.getModule(ChapterOp.class);
+		ChapterModule chapterOp = player.getModule(ChapterModule.class);
 
 		RoutineTrainingConfig routineTrainingConfig = RoutineTrainingManager.getInstance().getRoutineTrainingConfig(dungeonId);
 		if (routineTrainingConfig == null) {
@@ -63,7 +63,7 @@ public class BattleTrainingImpl implements IBattleHandler {
 	@Override
 	public int battleEnd(long playerId, boolean win, int killMonsterCount, int hpPercent, BattleFieldEndResponse_13000004.Builder resp) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		ChapterOp chapterOp = player.getModule(ChapterOp.class);
+		ChapterModule chapterOp = player.getModule(ChapterModule.class);
 		int id = chapterOp.getAttackingId();
 		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(id);
 

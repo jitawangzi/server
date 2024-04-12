@@ -8,13 +8,14 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.BattleEventType;
 import cn.game.games.cache.entity.BattleLevel;
 import cn.game.games.cache.entity.BattleRandomEvent;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.face.IChapterOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -44,17 +45,25 @@ import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
 import cn.game.util.Rnd;
 
-public class ChapterOp extends BasePlayerModule implements IChapterOp {
+/**    
+ * 战役、章
+ * @date 2024年4月12日 下午4:29:43
+ * @author SYQ
+ */
+public class ChapterModule extends BasePlayerModule  {
 
-	/** 意识空间相关数据 */
-	private Map<Integer, Chapter> chapters;
+	/** 主线战役 */
+	private Map<Integer, Chapter> chapters = new HashMap<>();;
 
+	@JsonIgnore
 	/** 打过的关卡数据,这里是统一的关卡id，关卡可能包括剧情关卡，普通关卡，战旗关卡等，id按段区分。 */
 	private Map<Integer, BattleLevel> levels;
 
+	@JsonIgnore
 	/** 产生的随机事件，过期没有通过的，或者成功通过的，不在此列表中 */
 	private List<BattleRandomEvent> battleRandomEvents;
 
+	@JsonIgnore
 	/** 各种类型的随机事件，每天产生了多少次 */
 	private Map<Integer, Integer> eventTypeMap;
 
@@ -68,16 +77,12 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 	private long randomSeed;
 
 	@Override
-	
 	public void init() {
-		chapters = new HashMap<>();
 		levels = new HashMap<>();
 		eventTypeMap = new HashMap<Integer, Integer>();
 		battleRandomEvents = new ArrayList<BattleRandomEvent>();
-
 	}
 
-	@Override
 	public void initLoadData(List<Chapter> chapters,
 			List<BattleLevel> battleBattleLevels, List<BattleEventType> eventTypes,
 			List<BattleRandomEvent> battleRandomEvents) {
@@ -94,25 +99,21 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		checkBattleEvent();
 	}
 
-	@Override
 	public void updateChapter(Chapter chapter) {
 		DAO.execute(ChapterMapper.class, MapperConstant.updateByPrimaryKey,
 				chapter);
 	}
-	@Override
 	public void addChapter(Chapter chapter) {
 		chapters.put(chapter.getChapterId(), chapter);
 		DAO.execute(ChapterMapper.class, MapperConstant.insert, chapter);
 	}
 
-	@Override
 	public void insertBattleEvent(BattleRandomEvent event) {
 
 		DAO.execute(BattleRandomEventMapper.class, MapperConstant.insert,
 				event);
 	}
 
-	@Override
 	public void removeBattleEvent(long id) {
 
 		for (int i = 0; i < battleRandomEvents.size(); i++) {
@@ -130,7 +131,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		}
 
 	}
-	@Override
 	public boolean hasBattleEvent(long id) {
 		checkBattleEvent();
 		for (int i = 0; i < battleRandomEvents.size(); i++) {
@@ -140,7 +140,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		}
 		return false;
 	}
-	@Override
 	public BattleRandomEvent getBattleEvent(long id) {
 		for (int i = 0; i < battleRandomEvents.size(); i++) {
 			if (battleRandomEvents.get(i).getId() == id) { 
@@ -150,22 +149,18 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return null;
 	}
 
-	@Override
 	public void updateBattleLevel(BattleLevel level) {
 		DAO.execute(BattleLevelMapper.class, MapperConstant.updateByPrimaryKey,
 				level);
 	}
 
-	@Override
 	public boolean isBattleLevelPass(int levelId) {
 		return this.levels.get(levelId) != null;
 	}
-	@Override
 	public boolean isExploreActPass(int id) {
 
 		return false;
 	}
-	@Override
 	public boolean isChapterPass(int chapterId) {
 		BattleChapterConfig battleChapterConfig = BattleChapterManager.getInstance().getBattleChapterConfig(chapterId);
 		List<BattleLevelConfig> battleChapterIdList = BattleLevelManager.getInstance().getBattleChapterIdList(battleChapterConfig
@@ -178,7 +173,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return true;
 	}
 
-	@Override
 	public void setAttackingData(int lineupId, int type, int dungeonId, int id, long uid, long randomSeed) {
 		this.type = type;
 		this.id = id;
@@ -188,12 +182,10 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		this.randomSeed = randomSeed;
 	}
 
-	@Override
 	public boolean isBattleStarted() {
 		return this.id > 0;
 	}
 
-	@Override
 	public boolean addBattleLevelPass(int levelId, List<Integer> starList) {
 		BattleLevel level = this.levels.get(levelId);
 		if (level == null) {
@@ -223,22 +215,18 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 
 		}
 	}
-	@Override
 	public boolean addBattleLevelPass(int levelId) {
 		return addBattleLevelPass(levelId, null);
 	}
 
-	@Override
 	public int getLineupId() {
 		return this.lineupId;
 	}
 
-	@Override
 	public BattleLevel getBattleLevel(int levelId) {
 		return this.levels.get(levelId);
 	}
 
-	@Override
 	public BattleLevel getBattleLevelAndInit(int levelId) {
 		BattleLevel level = this.levels.get(levelId);
 		if (level == null) {
@@ -253,7 +241,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return level;
 	}
 
-	@Override
 	public int getAllStars() {
 
 		int ret = 0;
@@ -266,12 +253,10 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return ret;
 	}
 
-	@Override
 	public int getAttackingId() {
 		return this.id;
 	}
 
-	@Override
 	public int getStars(int zoneId) {
 
 		int ret = 0;
@@ -285,35 +270,28 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return ret;
 	}
 
-	@Override
 	public Chapter getChapter(int chapterId) {
 		return this.chapters.get(chapterId);
 	}
-	@Override
 	public Collection<Chapter> listChapter() {
 		return this.chapters.values();
 	}
 
-	@Override
 	public Collection<BattleLevel> listBattleLevels() {
 		return this.levels.values();
 	}
 
-	@Override
 	public int getAttackingType() {
 		return this.type;
 	}
-	@Override
 	public int getAttackingDungeonId() {
 		return this.dungeonId;
 	}
 
-	@Override
 	public long getAttackingUid() {
 		return this.uid;
 	}
 
-	@Override
 	public boolean checkProfession(long playerId, int profession, int lineupId, int type) {
 
 		return true;
@@ -330,7 +308,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return true;
 	}
 
-	@Override
 	public int nextBattleEventTime() {
 
 		checkBattleEvent();
@@ -348,7 +325,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return nextTime < 0 ? 0 : nextTime;
 	}
 
-	@Override
 	public boolean createBattleEvent() {
 		checkBattleEvent();
 		if (battleRandomEvents.size() >= OldGlobalConst.randomEventNumMax) {
@@ -461,7 +437,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return true;
 	}
 
-	@Override
 	public void checkBattleEvent() {
 
 		long now = System.currentTimeMillis() ; 
@@ -478,7 +453,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		}
 	}
 
-	@Override
 	public int getNewChapter() {
 		// 当前打过的章节里，如果没有通关的，就是最新章节 
 		for (Chapter chapter : this.chapters.values()) {
@@ -509,25 +483,21 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 		return 0;
 	}
 
-	@Override
 	public List<BattleRandomEvent> listBattleEvents() {
 		return this.battleRandomEvents;
 	}
 
 
-	@Override
 	public boolean isExploreChapterPass(int id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean exploreActReward(int id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean exploreChapterReward(int id) {
 		// TODO Auto-generated method stub
 		return false;
@@ -547,13 +517,11 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected void initFromDb(ListIterator<?> iterator) {
-		// TODO Auto-generated method stub
 
 	}
 	@Override
@@ -563,7 +531,6 @@ public class ChapterOp extends BasePlayerModule implements IChapterOp {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-		// TODO Auto-generated method stub
 
 	}
 

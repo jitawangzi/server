@@ -4,7 +4,7 @@ import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.ChapterOp;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.protocol.generated.config.BattleChapterConfig;
 import cn.game.protocol.generated.config.BattleLevelConfig;
@@ -25,7 +25,7 @@ public class BattleChapterImpl implements IBattleHandler {
 	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		ChapterOp chapterOp = player.getModule(ChapterOp.class);
+		ChapterModule chapterOp = player.getModule(ChapterModule.class);
 
 		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(id);
 		if (levelConfig == null) {
@@ -60,7 +60,7 @@ public class BattleChapterImpl implements IBattleHandler {
 	public int battleEnd(long playerId, boolean win, int killMonsterCount, int hpPercent, BattleFieldEndResponse_13000004.Builder resp) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		ChapterOp chapterOp = player.getModule(ChapterOp.class);
+		ChapterModule chapterOp = player.getModule(ChapterModule.class);
 		int id = chapterOp.getAttackingId();
 		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(id);
 

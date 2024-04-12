@@ -17737,10 +17737,54 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.BattleMsg.BattleInfo> 
+        getBattlesList();
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    cn.game.protocol.protobuf.BattleMsg.BattleInfo getBattles(int index);
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    int getBattlesCount();
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder> 
+        getBattlesOrBuilderList();
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder getBattlesOrBuilder(
+        int index);
+
+    /**
+     * <pre>
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> 
         getMonthCardsList();
@@ -17749,7 +17793,7 @@ public final class PlayerMsg {
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     cn.game.protocol.protobuf.ShopMsg.MonthCardProto getMonthCards(int index);
     /**
@@ -17757,7 +17801,7 @@ public final class PlayerMsg {
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     int getMonthCardsCount();
     /**
@@ -17765,7 +17809,7 @@ public final class PlayerMsg {
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder> 
         getMonthCardsOrBuilderList();
@@ -17774,7 +17818,7 @@ public final class PlayerMsg {
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder getMonthCardsOrBuilder(
         int index);
@@ -17784,7 +17828,7 @@ public final class PlayerMsg {
      *购买过的商店礼包id(ShopGift表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 31;</code>
+     * <code>repeated uint32 shopGift = 41;</code>
      * @return A list containing the shopGift.
      */
     java.util.List<java.lang.Integer> getShopGiftList();
@@ -17793,7 +17837,7 @@ public final class PlayerMsg {
      *购买过的商店礼包id(ShopGift表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 31;</code>
+     * <code>repeated uint32 shopGift = 41;</code>
      * @return The count of shopGift.
      */
     int getShopGiftCount();
@@ -17802,7 +17846,7 @@ public final class PlayerMsg {
      *购买过的商店礼包id(ShopGift表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 31;</code>
+     * <code>repeated uint32 shopGift = 41;</code>
      * @param index The index of the element to return.
      * @return The shopGift at the given index.
      */
@@ -17833,6 +17877,7 @@ public final class PlayerMsg {
       gems_ = java.util.Collections.emptyList();
       equips_ = java.util.Collections.emptyList();
       equipParts_ = java.util.Collections.emptyList();
+      battles_ = java.util.Collections.emptyList();
       monthCards_ = java.util.Collections.emptyList();
       shopGift_ = emptyIntList();
     }
@@ -18030,27 +18075,36 @@ public final class PlayerMsg {
             }
             case 242: {
               if (!((mutable_bitField0_ & 0x00002000) != 0)) {
-                monthCards_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.MonthCardProto>();
+                battles_ = new java.util.ArrayList<cn.game.protocol.protobuf.BattleMsg.BattleInfo>();
                 mutable_bitField0_ |= 0x00002000;
+              }
+              battles_.add(
+                  input.readMessage(cn.game.protocol.protobuf.BattleMsg.BattleInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 322: {
+              if (!((mutable_bitField0_ & 0x00004000) != 0)) {
+                monthCards_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.MonthCardProto>();
+                mutable_bitField0_ |= 0x00004000;
               }
               monthCards_.add(
                   input.readMessage(cn.game.protocol.protobuf.ShopMsg.MonthCardProto.parser(), extensionRegistry));
               break;
             }
-            case 248: {
-              if (!((mutable_bitField0_ & 0x00004000) != 0)) {
+            case 328: {
+              if (!((mutable_bitField0_ & 0x00008000) != 0)) {
                 shopGift_ = newIntList();
-                mutable_bitField0_ |= 0x00004000;
+                mutable_bitField0_ |= 0x00008000;
               }
               shopGift_.addInt(input.readUInt32());
               break;
             }
-            case 250: {
+            case 330: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00004000) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00008000) != 0) && input.getBytesUntilLimit() > 0) {
                 shopGift_ = newIntList();
-                mutable_bitField0_ |= 0x00004000;
+                mutable_bitField0_ |= 0x00008000;
               }
               while (input.getBytesUntilLimit() > 0) {
                 shopGift_.addInt(input.readUInt32());
@@ -18095,9 +18149,12 @@ public final class PlayerMsg {
           equipParts_ = java.util.Collections.unmodifiableList(equipParts_);
         }
         if (((mutable_bitField0_ & 0x00002000) != 0)) {
-          monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
+          battles_ = java.util.Collections.unmodifiableList(battles_);
         }
         if (((mutable_bitField0_ & 0x00004000) != 0)) {
+          monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
+        }
+        if (((mutable_bitField0_ & 0x00008000) != 0)) {
           shopGift_.makeImmutable(); // C
         }
         this.unknownFields = unknownFields.build();
@@ -19225,14 +19282,74 @@ public final class PlayerMsg {
       return map.get(key);
     }
 
-    public static final int MONTHCARDS_FIELD_NUMBER = 30;
+    public static final int BATTLES_FIELD_NUMBER = 30;
+    private java.util.List<cn.game.protocol.protobuf.BattleMsg.BattleInfo> battles_;
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.BattleMsg.BattleInfo> getBattlesList() {
+      return battles_;
+    }
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder> 
+        getBattlesOrBuilderList() {
+      return battles_;
+    }
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    @java.lang.Override
+    public int getBattlesCount() {
+      return battles_.size();
+    }
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleInfo getBattles(int index) {
+      return battles_.get(index);
+    }
+    /**
+     * <pre>
+     *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+     * </pre>
+     *
+     * <code>repeated .Protos.BattleInfo battles = 30;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder getBattlesOrBuilder(
+        int index) {
+      return battles_.get(index);
+    }
+
+    public static final int MONTHCARDS_FIELD_NUMBER = 40;
     private java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> monthCards_;
     /**
      * <pre>
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     @java.lang.Override
     public java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> getMonthCardsList() {
@@ -19243,7 +19360,7 @@ public final class PlayerMsg {
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     @java.lang.Override
     public java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder> 
@@ -19255,7 +19372,7 @@ public final class PlayerMsg {
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     @java.lang.Override
     public int getMonthCardsCount() {
@@ -19266,7 +19383,7 @@ public final class PlayerMsg {
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     @java.lang.Override
     public cn.game.protocol.protobuf.ShopMsg.MonthCardProto getMonthCards(int index) {
@@ -19277,7 +19394,7 @@ public final class PlayerMsg {
      *月卡
      * </pre>
      *
-     * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+     * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
      */
     @java.lang.Override
     public cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder getMonthCardsOrBuilder(
@@ -19285,14 +19402,14 @@ public final class PlayerMsg {
       return monthCards_.get(index);
     }
 
-    public static final int SHOPGIFT_FIELD_NUMBER = 31;
+    public static final int SHOPGIFT_FIELD_NUMBER = 41;
     private com.google.protobuf.Internal.IntList shopGift_;
     /**
      * <pre>
      *购买过的商店礼包id(ShopGift表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 31;</code>
+     * <code>repeated uint32 shopGift = 41;</code>
      * @return A list containing the shopGift.
      */
     @java.lang.Override
@@ -19305,7 +19422,7 @@ public final class PlayerMsg {
      *购买过的商店礼包id(ShopGift表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 31;</code>
+     * <code>repeated uint32 shopGift = 41;</code>
      * @return The count of shopGift.
      */
     public int getShopGiftCount() {
@@ -19316,7 +19433,7 @@ public final class PlayerMsg {
      *购买过的商店礼包id(ShopGift表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 31;</code>
+     * <code>repeated uint32 shopGift = 41;</code>
      * @param index The index of the element to return.
      * @return The shopGift at the given index.
      */
@@ -19403,11 +19520,14 @@ public final class PlayerMsg {
           internalGetDragonSkills(),
           DragonSkillsDefaultEntryHolder.defaultEntry,
           17);
+      for (int i = 0; i < battles_.size(); i++) {
+        output.writeMessage(30, battles_.get(i));
+      }
       for (int i = 0; i < monthCards_.size(); i++) {
-        output.writeMessage(30, monthCards_.get(i));
+        output.writeMessage(40, monthCards_.get(i));
       }
       if (getShopGiftList().size() > 0) {
-        output.writeUInt32NoTag(250);
+        output.writeUInt32NoTag(330);
         output.writeUInt32NoTag(shopGiftMemoizedSerializedSize);
       }
       for (int i = 0; i < shopGift_.size(); i++) {
@@ -19517,9 +19637,13 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(17, dragonSkills__);
       }
+      for (int i = 0; i < battles_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(30, battles_.get(i));
+      }
       for (int i = 0; i < monthCards_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(30, monthCards_.get(i));
+          .computeMessageSize(40, monthCards_.get(i));
       }
       {
         int dataSize = 0;
@@ -19583,6 +19707,8 @@ public final class PlayerMsg {
           other.internalGetDragons())) return false;
       if (!internalGetDragonSkills().equals(
           other.internalGetDragonSkills())) return false;
+      if (!getBattlesList()
+          .equals(other.getBattlesList())) return false;
       if (!getMonthCardsList()
           .equals(other.getMonthCardsList())) return false;
       if (!getShopGiftList()
@@ -19655,6 +19781,10 @@ public final class PlayerMsg {
       if (!internalGetDragonSkills().getMap().isEmpty()) {
         hash = (37 * hash) + DRAGONSKILLS_FIELD_NUMBER;
         hash = (53 * hash) + internalGetDragonSkills().hashCode();
+      }
+      if (getBattlesCount() > 0) {
+        hash = (37 * hash) + BATTLES_FIELD_NUMBER;
+        hash = (53 * hash) + getBattlesList().hashCode();
       }
       if (getMonthCardsCount() > 0) {
         hash = (37 * hash) + MONTHCARDS_FIELD_NUMBER;
@@ -19845,6 +19975,7 @@ public final class PlayerMsg {
           getGemsFieldBuilder();
           getEquipsFieldBuilder();
           getEquipPartsFieldBuilder();
+          getBattlesFieldBuilder();
           getMonthCardsFieldBuilder();
         }
       }
@@ -19907,14 +20038,20 @@ public final class PlayerMsg {
         internalGetMutableAlchemys().clear();
         internalGetMutableDragons().clear();
         internalGetMutableDragonSkills().clear();
+        if (battlesBuilder_ == null) {
+          battles_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00002000);
+        } else {
+          battlesBuilder_.clear();
+        }
         if (monthCardsBuilder_ == null) {
           monthCards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00002000);
+          bitField0_ = (bitField0_ & ~0x00004000);
         } else {
           monthCardsBuilder_.clear();
         }
         shopGift_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00004000);
+        bitField0_ = (bitField0_ & ~0x00008000);
         return this;
       }
 
@@ -20023,18 +20160,27 @@ public final class PlayerMsg {
         result.dragons_.makeImmutable();
         result.dragonSkills_ = internalGetDragonSkills();
         result.dragonSkills_.makeImmutable();
-        if (monthCardsBuilder_ == null) {
+        if (battlesBuilder_ == null) {
           if (((bitField0_ & 0x00002000) != 0)) {
-            monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
+            battles_ = java.util.Collections.unmodifiableList(battles_);
             bitField0_ = (bitField0_ & ~0x00002000);
+          }
+          result.battles_ = battles_;
+        } else {
+          result.battles_ = battlesBuilder_.build();
+        }
+        if (monthCardsBuilder_ == null) {
+          if (((bitField0_ & 0x00004000) != 0)) {
+            monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
+            bitField0_ = (bitField0_ & ~0x00004000);
           }
           result.monthCards_ = monthCards_;
         } else {
           result.monthCards_ = monthCardsBuilder_.build();
         }
-        if (((bitField0_ & 0x00004000) != 0)) {
+        if (((bitField0_ & 0x00008000) != 0)) {
           shopGift_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00004000);
+          bitField0_ = (bitField0_ & ~0x00008000);
         }
         result.shopGift_ = shopGift_;
         onBuilt();
@@ -20286,11 +20432,37 @@ public final class PlayerMsg {
             other.internalGetDragons());
         internalGetMutableDragonSkills().mergeFrom(
             other.internalGetDragonSkills());
+        if (battlesBuilder_ == null) {
+          if (!other.battles_.isEmpty()) {
+            if (battles_.isEmpty()) {
+              battles_ = other.battles_;
+              bitField0_ = (bitField0_ & ~0x00002000);
+            } else {
+              ensureBattlesIsMutable();
+              battles_.addAll(other.battles_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.battles_.isEmpty()) {
+            if (battlesBuilder_.isEmpty()) {
+              battlesBuilder_.dispose();
+              battlesBuilder_ = null;
+              battles_ = other.battles_;
+              bitField0_ = (bitField0_ & ~0x00002000);
+              battlesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getBattlesFieldBuilder() : null;
+            } else {
+              battlesBuilder_.addAllMessages(other.battles_);
+            }
+          }
+        }
         if (monthCardsBuilder_ == null) {
           if (!other.monthCards_.isEmpty()) {
             if (monthCards_.isEmpty()) {
               monthCards_ = other.monthCards_;
-              bitField0_ = (bitField0_ & ~0x00002000);
+              bitField0_ = (bitField0_ & ~0x00004000);
             } else {
               ensureMonthCardsIsMutable();
               monthCards_.addAll(other.monthCards_);
@@ -20303,7 +20475,7 @@ public final class PlayerMsg {
               monthCardsBuilder_.dispose();
               monthCardsBuilder_ = null;
               monthCards_ = other.monthCards_;
-              bitField0_ = (bitField0_ & ~0x00002000);
+              bitField0_ = (bitField0_ & ~0x00004000);
               monthCardsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getMonthCardsFieldBuilder() : null;
@@ -20315,7 +20487,7 @@ public final class PlayerMsg {
         if (!other.shopGift_.isEmpty()) {
           if (shopGift_.isEmpty()) {
             shopGift_ = other.shopGift_;
-            bitField0_ = (bitField0_ & ~0x00004000);
+            bitField0_ = (bitField0_ & ~0x00008000);
           } else {
             ensureShopGiftIsMutable();
             shopGift_.addAll(other.shopGift_);
@@ -23723,12 +23895,324 @@ public final class PlayerMsg {
         return this;
       }
 
+      private java.util.List<cn.game.protocol.protobuf.BattleMsg.BattleInfo> battles_ =
+        java.util.Collections.emptyList();
+      private void ensureBattlesIsMutable() {
+        if (!((bitField0_ & 0x00002000) != 0)) {
+          battles_ = new java.util.ArrayList<cn.game.protocol.protobuf.BattleMsg.BattleInfo>(battles_);
+          bitField0_ |= 0x00002000;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BattleMsg.BattleInfo, cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder, cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder> battlesBuilder_;
+
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BattleMsg.BattleInfo> getBattlesList() {
+        if (battlesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(battles_);
+        } else {
+          return battlesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public int getBattlesCount() {
+        if (battlesBuilder_ == null) {
+          return battles_.size();
+        } else {
+          return battlesBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public cn.game.protocol.protobuf.BattleMsg.BattleInfo getBattles(int index) {
+        if (battlesBuilder_ == null) {
+          return battles_.get(index);
+        } else {
+          return battlesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder setBattles(
+          int index, cn.game.protocol.protobuf.BattleMsg.BattleInfo value) {
+        if (battlesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBattlesIsMutable();
+          battles_.set(index, value);
+          onChanged();
+        } else {
+          battlesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder setBattles(
+          int index, cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder builderForValue) {
+        if (battlesBuilder_ == null) {
+          ensureBattlesIsMutable();
+          battles_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          battlesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder addBattles(cn.game.protocol.protobuf.BattleMsg.BattleInfo value) {
+        if (battlesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBattlesIsMutable();
+          battles_.add(value);
+          onChanged();
+        } else {
+          battlesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder addBattles(
+          int index, cn.game.protocol.protobuf.BattleMsg.BattleInfo value) {
+        if (battlesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBattlesIsMutable();
+          battles_.add(index, value);
+          onChanged();
+        } else {
+          battlesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder addBattles(
+          cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder builderForValue) {
+        if (battlesBuilder_ == null) {
+          ensureBattlesIsMutable();
+          battles_.add(builderForValue.build());
+          onChanged();
+        } else {
+          battlesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder addBattles(
+          int index, cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder builderForValue) {
+        if (battlesBuilder_ == null) {
+          ensureBattlesIsMutable();
+          battles_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          battlesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder addAllBattles(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.BattleMsg.BattleInfo> values) {
+        if (battlesBuilder_ == null) {
+          ensureBattlesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, battles_);
+          onChanged();
+        } else {
+          battlesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder clearBattles() {
+        if (battlesBuilder_ == null) {
+          battles_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00002000);
+          onChanged();
+        } else {
+          battlesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public Builder removeBattles(int index) {
+        if (battlesBuilder_ == null) {
+          ensureBattlesIsMutable();
+          battles_.remove(index);
+          onChanged();
+        } else {
+          battlesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder getBattlesBuilder(
+          int index) {
+        return getBattlesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder getBattlesOrBuilder(
+          int index) {
+        if (battlesBuilder_ == null) {
+          return battles_.get(index);  } else {
+          return battlesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder> 
+           getBattlesOrBuilderList() {
+        if (battlesBuilder_ != null) {
+          return battlesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(battles_);
+        }
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder addBattlesBuilder() {
+        return getBattlesFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.BattleMsg.BattleInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder addBattlesBuilder(
+          int index) {
+        return getBattlesFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.BattleMsg.BattleInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+       * </pre>
+       *
+       * <code>repeated .Protos.BattleInfo battles = 30;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder> 
+           getBattlesBuilderList() {
+        return getBattlesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BattleMsg.BattleInfo, cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder, cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder> 
+          getBattlesFieldBuilder() {
+        if (battlesBuilder_ == null) {
+          battlesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.BattleMsg.BattleInfo, cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder, cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder>(
+                  battles_,
+                  ((bitField0_ & 0x00002000) != 0),
+                  getParentForChildren(),
+                  isClean());
+          battles_ = null;
+        }
+        return battlesBuilder_;
+      }
+
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> monthCards_ =
         java.util.Collections.emptyList();
       private void ensureMonthCardsIsMutable() {
-        if (!((bitField0_ & 0x00002000) != 0)) {
+        if (!((bitField0_ & 0x00004000) != 0)) {
           monthCards_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.MonthCardProto>(monthCards_);
-          bitField0_ |= 0x00002000;
+          bitField0_ |= 0x00004000;
          }
       }
 
@@ -23740,7 +24224,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> getMonthCardsList() {
         if (monthCardsBuilder_ == null) {
@@ -23754,7 +24238,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public int getMonthCardsCount() {
         if (monthCardsBuilder_ == null) {
@@ -23768,7 +24252,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public cn.game.protocol.protobuf.ShopMsg.MonthCardProto getMonthCards(int index) {
         if (monthCardsBuilder_ == null) {
@@ -23782,7 +24266,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder setMonthCards(
           int index, cn.game.protocol.protobuf.ShopMsg.MonthCardProto value) {
@@ -23803,7 +24287,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder setMonthCards(
           int index, cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder builderForValue) {
@@ -23821,7 +24305,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder addMonthCards(cn.game.protocol.protobuf.ShopMsg.MonthCardProto value) {
         if (monthCardsBuilder_ == null) {
@@ -23841,7 +24325,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder addMonthCards(
           int index, cn.game.protocol.protobuf.ShopMsg.MonthCardProto value) {
@@ -23862,7 +24346,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder addMonthCards(
           cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder builderForValue) {
@@ -23880,7 +24364,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder addMonthCards(
           int index, cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder builderForValue) {
@@ -23898,7 +24382,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder addAllMonthCards(
           java.lang.Iterable<? extends cn.game.protocol.protobuf.ShopMsg.MonthCardProto> values) {
@@ -23917,12 +24401,12 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder clearMonthCards() {
         if (monthCardsBuilder_ == null) {
           monthCards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00002000);
+          bitField0_ = (bitField0_ & ~0x00004000);
           onChanged();
         } else {
           monthCardsBuilder_.clear();
@@ -23934,7 +24418,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public Builder removeMonthCards(int index) {
         if (monthCardsBuilder_ == null) {
@@ -23951,7 +24435,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder getMonthCardsBuilder(
           int index) {
@@ -23962,7 +24446,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder getMonthCardsOrBuilder(
           int index) {
@@ -23976,7 +24460,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder> 
            getMonthCardsOrBuilderList() {
@@ -23991,7 +24475,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder addMonthCardsBuilder() {
         return getMonthCardsFieldBuilder().addBuilder(
@@ -24002,7 +24486,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder addMonthCardsBuilder(
           int index) {
@@ -24014,7 +24498,7 @@ public final class PlayerMsg {
        *月卡
        * </pre>
        *
-       * <code>repeated .Protos.MonthCardProto monthCards = 30;</code>
+       * <code>repeated .Protos.MonthCardProto monthCards = 40;</code>
        */
       public java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder> 
            getMonthCardsBuilderList() {
@@ -24027,7 +24511,7 @@ public final class PlayerMsg {
           monthCardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.ShopMsg.MonthCardProto, cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder, cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder>(
                   monthCards_,
-                  ((bitField0_ & 0x00002000) != 0),
+                  ((bitField0_ & 0x00004000) != 0),
                   getParentForChildren(),
                   isClean());
           monthCards_ = null;
@@ -24037,9 +24521,9 @@ public final class PlayerMsg {
 
       private com.google.protobuf.Internal.IntList shopGift_ = emptyIntList();
       private void ensureShopGiftIsMutable() {
-        if (!((bitField0_ & 0x00004000) != 0)) {
+        if (!((bitField0_ & 0x00008000) != 0)) {
           shopGift_ = mutableCopy(shopGift_);
-          bitField0_ |= 0x00004000;
+          bitField0_ |= 0x00008000;
          }
       }
       /**
@@ -24047,12 +24531,12 @@ public final class PlayerMsg {
        *购买过的商店礼包id(ShopGift表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 31;</code>
+       * <code>repeated uint32 shopGift = 41;</code>
        * @return A list containing the shopGift.
        */
       public java.util.List<java.lang.Integer>
           getShopGiftList() {
-        return ((bitField0_ & 0x00004000) != 0) ?
+        return ((bitField0_ & 0x00008000) != 0) ?
                  java.util.Collections.unmodifiableList(shopGift_) : shopGift_;
       }
       /**
@@ -24060,7 +24544,7 @@ public final class PlayerMsg {
        *购买过的商店礼包id(ShopGift表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 31;</code>
+       * <code>repeated uint32 shopGift = 41;</code>
        * @return The count of shopGift.
        */
       public int getShopGiftCount() {
@@ -24071,7 +24555,7 @@ public final class PlayerMsg {
        *购买过的商店礼包id(ShopGift表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 31;</code>
+       * <code>repeated uint32 shopGift = 41;</code>
        * @param index The index of the element to return.
        * @return The shopGift at the given index.
        */
@@ -24083,7 +24567,7 @@ public final class PlayerMsg {
        *购买过的商店礼包id(ShopGift表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 31;</code>
+       * <code>repeated uint32 shopGift = 41;</code>
        * @param index The index to set the value at.
        * @param value The shopGift to set.
        * @return This builder for chaining.
@@ -24100,7 +24584,7 @@ public final class PlayerMsg {
        *购买过的商店礼包id(ShopGift表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 31;</code>
+       * <code>repeated uint32 shopGift = 41;</code>
        * @param value The shopGift to add.
        * @return This builder for chaining.
        */
@@ -24115,7 +24599,7 @@ public final class PlayerMsg {
        *购买过的商店礼包id(ShopGift表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 31;</code>
+       * <code>repeated uint32 shopGift = 41;</code>
        * @param values The shopGift to add.
        * @return This builder for chaining.
        */
@@ -24132,12 +24616,12 @@ public final class PlayerMsg {
        *购买过的商店礼包id(ShopGift表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 31;</code>
+       * <code>repeated uint32 shopGift = 41;</code>
        * @return This builder for chaining.
        */
       public Builder clearShopGift() {
         shopGift_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00004000);
+        bitField0_ = (bitField0_ & ~0x00008000);
         onChanged();
         return this;
       }
@@ -24374,78 +24858,80 @@ public final class PlayerMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017PlayerMsg.proto\022\006Protos\032\rBaseMsg.proto" +
-      "\032\rShopMsg.proto\"U\n\033PlayerLoginRequest_01" +
-      "000001\022\021\n\tsessionId\030\001 \001(\t\022\021\n\treconnect\030\002" +
-      " \001(\010\022\020\n\010verstion\030\003 \001(\t\"d\n\034PlayerLoginRes" +
-      "ponse_01000002\022#\n\004info\030\001 \001(\0132\025.Protos.Pl" +
-      "ayerAllInfo\022\021\n\treconnect\030\002 \001(\010\022\014\n\004time\030\003" +
-      " \001(\t\"\033\n\031PlayerLogoutPush_01100030\"*\n\032Pla" +
-      "yerNameRequest_01000011\022\014\n\004name\030\001 \001(\t\"\035\n" +
-      "\033PlayerNameResponse_01000012\"*\n\032PlayerHe" +
-      "adRequest_01000013\022\014\n\004head\030\001 \001(\005\"\035\n\033Play" +
-      "erHeadResponse_01000014\"4\n\037PlayerHeadFra" +
-      "meRequest_01000015\022\021\n\theadFrame\030\001 \001(\005\"\"\n" +
-      " PlayerHeadFrameResponse_01000016\"-\n\034Pla" +
-      "yerGenderRequest_01000017\022\r\n\005isMan\030\001 \001(\010" +
-      "\"\037\n\035PlayerGenderResponse_01000018\"E\n\036Pla" +
-      "yerReconnecRequest_01000065\022\021\n\tsessionId" +
-      "\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\r\"Z\n\037PlayerReconn" +
-      "ecResponse_01000066\022)\n\nplayerInfo\030\001 \001(\0132" +
-      "\025.Protos.PlayerAllInfo\022\014\n\004time\030\002 \001(\t\"!\n\037" +
-      "PlayerHeartbeatRequest_01000005\"0\n Playe" +
-      "rHeartbeatResponse_01000006\022\014\n\004time\030\001 \001(" +
-      "\t\"4\n\037PlayerBriefInfoRequest_01000007\022\021\n\t" +
-      "playerIds\030\001 \003(\t\"M\n PlayerBriefInfoRespon" +
-      "se_01000008\022)\n\007players\030\001 \003(\0132\030.Protos.Si" +
-      "mplePlayerInfo\"L\n$PlayerBriefInfoOtherRe" +
-      "quest_01000009\022\021\n\tplayerIds\030\001 \003(\t\022\021\n\tser" +
-      "verIds\030\002 \003(\t\"R\n%PlayerBriefInfoOtherResp" +
-      "onse_0100000a\022)\n\007players\030\001 \003(\0132\030.Protos." +
-      "SimplePlayerInfo\"@\n\032PlayerShowRequest_01" +
-      "000039\022\020\n\010playerId\030\001 \001(\t\022\020\n\010serverId\030\002 \001" +
-      "(\t\"E\n\033PlayerShowResponse_0100003a\022&\n\006pla" +
-      "yer\030\001 \001(\0132\026.Protos.PlayerShowInfo\"1\n\035Pla" +
-      "yerAlchemyRequest_01000040\022\020\n\010configId\030\001" +
-      " \001(\r\" \n\036PlayerAlchemyResponse_01000041\"(" +
-      "\n\030PlayerResetPush_01100016\022\014\n\004type\030\001 \001(\005" +
-      "\")\n\030PlayerErrorPush_01000099\022\r\n\005error\030\001 " +
-      "\001(\t\".\n\013AlchemyInfo\022\020\n\010configId\030\001 \001(\r\022\r\n\005" +
-      "level\030\002 \001(\r\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n" +
-      "\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r" +
-      "\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t" +
-      "\"\201\010\n\rPlayerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Pro" +
-      "tos.PlayerInfo\0221\n\006assets\030\002 \003(\0132!.Protos." +
-      "PlayerAllInfo.AssetsEntry\022=\n\014assetRecove" +
-      "r\030\003 \003(\0132\'.Protos.PlayerAllInfo.AssetReco" +
-      "verEntry\0221\n\006levels\030\004 \003(\0132!.Protos.Player" +
-      "AllInfo.LevelsEntry\022\037\n\005items\030\005 \003(\0132\020.Pro" +
-      "tos.ItemInfo\022)\n\010fashions\030\006 \003(\0132\027.Protos." +
-      "HeroFashionInfo\022\037\n\005heros\030\007 \003(\0132\020.Protos." +
-      "HeroInfo\022%\n\006swords\030\010 \003(\0132\025.Protos.HeroSw" +
-      "ordInfo\022\024\n\014heroSwordUid\030\t \001(\t\022\035\n\004gems\030\n " +
-      "\003(\0132\017.Protos.GemInfo\022!\n\006equips\030\013 \003(\0132\021.P" +
-      "rotos.EquipInfo\022)\n\nequipParts\030\014 \003(\0132\025.Pr" +
-      "otos.EquipPartInfo\0225\n\010alchemys\030\016 \003(\0132#.P" +
-      "rotos.PlayerAllInfo.AlchemysEntry\0223\n\007dra" +
-      "gons\030\020 \003(\0132\".Protos.PlayerAllInfo.Dragon" +
-      "sEntry\022=\n\014dragonSkills\030\021 \003(\0132\'.Protos.Pl" +
-      "ayerAllInfo.DragonSkillsEntry\022*\n\nmonthCa" +
-      "rds\030\036 \003(\0132\026.Protos.MonthCardProto\022\020\n\010sho" +
-      "pGift\030\037 \003(\r\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022" +
-      "\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022" +
-      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Level" +
-      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/" +
-      "\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
-      "\001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
-      "value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003" +
-      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game." +
-      "protocol.protobufb\006proto3"
+      "\032\rShopMsg.proto\032\017BattleMsg.proto\"U\n\033Play" +
+      "erLoginRequest_01000001\022\021\n\tsessionId\030\001 \001" +
+      "(\t\022\021\n\treconnect\030\002 \001(\010\022\020\n\010verstion\030\003 \001(\t\"" +
+      "d\n\034PlayerLoginResponse_01000002\022#\n\004info\030" +
+      "\001 \001(\0132\025.Protos.PlayerAllInfo\022\021\n\treconnec" +
+      "t\030\002 \001(\010\022\014\n\004time\030\003 \001(\t\"\033\n\031PlayerLogoutPus" +
+      "h_01100030\"*\n\032PlayerNameRequest_01000011" +
+      "\022\014\n\004name\030\001 \001(\t\"\035\n\033PlayerNameResponse_010" +
+      "00012\"*\n\032PlayerHeadRequest_01000013\022\014\n\004h" +
+      "ead\030\001 \001(\005\"\035\n\033PlayerHeadResponse_01000014" +
+      "\"4\n\037PlayerHeadFrameRequest_01000015\022\021\n\th" +
+      "eadFrame\030\001 \001(\005\"\"\n PlayerHeadFrameRespons" +
+      "e_01000016\"-\n\034PlayerGenderRequest_010000" +
+      "17\022\r\n\005isMan\030\001 \001(\010\"\037\n\035PlayerGenderRespons" +
+      "e_01000018\"E\n\036PlayerReconnecRequest_0100" +
+      "0065\022\021\n\tsessionId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(" +
+      "\r\"Z\n\037PlayerReconnecResponse_01000066\022)\n\n" +
+      "playerInfo\030\001 \001(\0132\025.Protos.PlayerAllInfo\022" +
+      "\014\n\004time\030\002 \001(\t\"!\n\037PlayerHeartbeatRequest_" +
+      "01000005\"0\n PlayerHeartbeatResponse_0100" +
+      "0006\022\014\n\004time\030\001 \001(\t\"4\n\037PlayerBriefInfoReq" +
+      "uest_01000007\022\021\n\tplayerIds\030\001 \003(\t\"M\n Play" +
+      "erBriefInfoResponse_01000008\022)\n\007players\030" +
+      "\001 \003(\0132\030.Protos.SimplePlayerInfo\"L\n$Playe" +
+      "rBriefInfoOtherRequest_01000009\022\021\n\tplaye" +
+      "rIds\030\001 \003(\t\022\021\n\tserverIds\030\002 \003(\t\"R\n%PlayerB" +
+      "riefInfoOtherResponse_0100000a\022)\n\007player" +
+      "s\030\001 \003(\0132\030.Protos.SimplePlayerInfo\"@\n\032Pla" +
+      "yerShowRequest_01000039\022\020\n\010playerId\030\001 \001(" +
+      "\t\022\020\n\010serverId\030\002 \001(\t\"E\n\033PlayerShowRespons" +
+      "e_0100003a\022&\n\006player\030\001 \001(\0132\026.Protos.Play" +
+      "erShowInfo\"1\n\035PlayerAlchemyRequest_01000" +
+      "040\022\020\n\010configId\030\001 \001(\r\" \n\036PlayerAlchemyRe" +
+      "sponse_01000041\"(\n\030PlayerResetPush_01100" +
+      "016\022\014\n\004type\030\001 \001(\005\")\n\030PlayerErrorPush_010" +
+      "00099\022\r\n\005error\030\001 \001(\t\".\n\013AlchemyInfo\022\020\n\010c" +
+      "onfigId\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"k\n\nPlayerIn" +
+      "fo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 " +
+      "\001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013" +
+      "offlineTime\030\026 \001(\t\"\246\010\n\rPlayerAllInfo\022\"\n\006p" +
+      "layer\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006asset" +
+      "s\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsEnt" +
+      "ry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Player" +
+      "AllInfo.AssetRecoverEntry\0221\n\006levels\030\004 \003(" +
+      "\0132!.Protos.PlayerAllInfo.LevelsEntry\022\037\n\005" +
+      "items\030\005 \003(\0132\020.Protos.ItemInfo\022)\n\010fashion" +
+      "s\030\006 \003(\0132\027.Protos.HeroFashionInfo\022\037\n\005hero" +
+      "s\030\007 \003(\0132\020.Protos.HeroInfo\022%\n\006swords\030\010 \003(" +
+      "\0132\025.Protos.HeroSwordInfo\022\024\n\014heroSwordUid" +
+      "\030\t \001(\t\022\035\n\004gems\030\n \003(\0132\017.Protos.GemInfo\022!\n" +
+      "\006equips\030\013 \003(\0132\021.Protos.EquipInfo\022)\n\nequi" +
+      "pParts\030\014 \003(\0132\025.Protos.EquipPartInfo\0225\n\010a" +
+      "lchemys\030\016 \003(\0132#.Protos.PlayerAllInfo.Alc" +
+      "hemysEntry\0223\n\007dragons\030\020 \003(\0132\".Protos.Pla" +
+      "yerAllInfo.DragonsEntry\022=\n\014dragonSkills\030" +
+      "\021 \003(\0132\'.Protos.PlayerAllInfo.DragonSkill" +
+      "sEntry\022#\n\007battles\030\036 \003(\0132\022.Protos.BattleI" +
+      "nfo\022*\n\nmonthCards\030( \003(\0132\026.Protos.MonthCa" +
+      "rdProto\022\020\n\010shopGift\030) \003(\r\032-\n\013AssetsEntry" +
+      "\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021Asse" +
+      "tRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
+      "\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005val" +
+      "ue\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001" +
+      "(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n" +
+      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonS" +
+      "killsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
+      "8\001B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           cn.game.protocol.protobuf.BaseMsg.getDescriptor(),
           cn.game.protocol.protobuf.ShopMsg.getDescriptor(),
+          cn.game.protocol.protobuf.BattleMsg.getDescriptor(),
         });
     internal_static_Protos_PlayerLoginRequest_01000001_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -24614,7 +25100,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "MonthCards", "ShopGift", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "MonthCards", "ShopGift", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
@@ -24653,6 +25139,7 @@ public final class PlayerMsg {
         new java.lang.String[] { "Key", "Value", });
     cn.game.protocol.protobuf.BaseMsg.getDescriptor();
     cn.game.protocol.protobuf.ShopMsg.getDescriptor();
+    cn.game.protocol.protobuf.BattleMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

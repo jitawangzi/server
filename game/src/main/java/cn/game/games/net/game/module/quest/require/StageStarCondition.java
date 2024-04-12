@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.module.battle.ChapterOp;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.OldConditionTypeEnum;
@@ -26,7 +26,7 @@ public class StageStarCondition extends AbstractCondition {
 	@JsonIgnore
 	public long getFinishCount() {
 		if (finishCount == 0) {
-			ChapterOp stageOp = player.getModule(ChapterOp.class);
+			ChapterModule stageOp = player.getModule(ChapterModule.class);
 			finishCount = stageOp.getAllStars();
 		}
 		return finishCount;
@@ -36,7 +36,7 @@ public class StageStarCondition extends AbstractCondition {
 	public void updateRequireCount(GameEvent event) {
 
 		if (finishCount == 0) {
-			ChapterOp stageOp = player.getModule(ChapterOp.class);
+			ChapterModule stageOp = player.getModule(ChapterModule.class);
 			finishCount = stageOp.getAllStars();
 		} else {
 			int p = event.getIntParameter(0);

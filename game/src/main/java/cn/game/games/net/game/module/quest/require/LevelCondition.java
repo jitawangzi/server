@@ -2,7 +2,7 @@ package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.module.battle.ChapterOp;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.OldConditionTypeEnum;
@@ -29,7 +29,7 @@ public class LevelCondition extends AbstractCondition {
 		if (super.isAchieve()) { 
 			return true; 
 		}
-		ChapterOp chapterOp = player.getModule(ChapterOp.class);
+		ChapterModule chapterOp = player.getModule(ChapterModule.class);
 //		ChapterOp chapterOp = player.getModule(ChapterOp.class);
 		boolean pass = chapterOp.isBattleLevelPass(getRequireCount());
 //		if (pass && finishCount == 0) {

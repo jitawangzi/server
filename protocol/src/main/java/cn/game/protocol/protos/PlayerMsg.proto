@@ -5,6 +5,7 @@ package Protos;
 // import "RewardMsg.proto" ;
 import "BaseMsg.proto" ;
 import "ShopMsg.proto" ;
+import "BattleMsg.proto" ;
 //import "MissionMsg.proto";
 
 /*** 登陆****/
@@ -163,9 +164,11 @@ message PlayerAllInfo{
    map<uint32, uint32> dragonSkills = 17;   //龙技能。 key:DragonSkill表id。value：技能等级
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+   repeated BattleInfo battles = 30;        //打过的战役，包括通关的和非通关的。
 
-   repeated MonthCardProto monthCards  = 30;        //月卡
-   repeated uint32 shopGift  = 31;        //购买过的商店礼包id(ShopGift表)
+
+   repeated MonthCardProto monthCards  = 40;        //月卡
+   repeated uint32 shopGift  = 41;        //购买过的商店礼包id(ShopGift表)
    //repeated MissionInfo mainMissions = 23 ;  // 主线任务数据
    //repeated MissionInfo branchMissions = 24 ;  // 支线任务数据
 }

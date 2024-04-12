@@ -34,7 +34,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.RoleHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.RewardItem;
-import cn.game.games.net.game.module.battle.ChapterOp;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.buff.BuffValue;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.prop.RolePropFromType;
@@ -1471,7 +1471,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 		if (promotionPoint == 0) {
 			return;
 		}
-		ChapterOp chapterOp = player.getModule(ChapterOp.class);
+		ChapterModule chapterOp = player.getModule(ChapterModule.class);
 	}
 
 	@Override

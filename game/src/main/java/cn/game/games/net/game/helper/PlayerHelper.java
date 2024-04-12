@@ -43,7 +43,7 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.ChapterOp;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.buff.BuffValue;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.util.DAO;
@@ -167,11 +167,11 @@ public class PlayerHelper {
 	}
 
 	public static List<RewardInfo> addResources(long playerId, int id, int value) {
-		return addResources(playerId, id, value, true);
+		return addResources(playerId, id, value, false);
 	}
 
 	public static List<RewardInfo> addResources(Player player, int id, int value) {
-		return addResources(player.getPlayerId(), id, value, true);
+		return addResources(player.getPlayerId(), id, value, false);
 	}
 
 	/**
@@ -666,7 +666,7 @@ public class PlayerHelper {
 
 		switch (type) {
 			case ChapterFinish: {
-				ChapterOp chapterOp = player.getModule(ChapterOp.class);
+				ChapterModule chapterOp = player.getModule(ChapterModule.class);
 				return chapterOp.isBattleLevelPass(id);
 			}
 			case PlayerLevel: {
