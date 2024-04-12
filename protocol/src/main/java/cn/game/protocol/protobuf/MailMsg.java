@@ -4933,7 +4933,7 @@ public final class MailMsg {
 
     /**
      * <pre>
-     *发件人,  根据右键类型来，可能是id
+     *发件人,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string sender = 2;</code>
@@ -4942,7 +4942,7 @@ public final class MailMsg {
     java.lang.String getSender();
     /**
      * <pre>
-     *发件人,  根据右键类型来，可能是id
+     *发件人,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string sender = 2;</code>
@@ -4953,7 +4953,7 @@ public final class MailMsg {
 
     /**
      * <pre>
-     *标题,  根据右键类型来，可能是id
+     *标题,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string title = 3;</code>
@@ -4962,7 +4962,7 @@ public final class MailMsg {
     java.lang.String getTitle();
     /**
      * <pre>
-     *标题,  根据右键类型来，可能是id
+     *标题,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string title = 3;</code>
@@ -4973,7 +4973,7 @@ public final class MailMsg {
 
     /**
      * <pre>
-     *内容,  根据右键类型来，可能是id
+     *内容,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string content = 4;</code>
@@ -4982,7 +4982,7 @@ public final class MailMsg {
     java.lang.String getContent();
     /**
      * <pre>
-     *内容,  根据右键类型来，可能是id
+     *内容,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string content = 4;</code>
@@ -5327,7 +5327,7 @@ public final class MailMsg {
     private volatile java.lang.Object sender_;
     /**
      * <pre>
-     *发件人,  根据右键类型来，可能是id
+     *发件人,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string sender = 2;</code>
@@ -5348,7 +5348,7 @@ public final class MailMsg {
     }
     /**
      * <pre>
-     *发件人,  根据右键类型来，可能是id
+     *发件人,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string sender = 2;</code>
@@ -5373,7 +5373,7 @@ public final class MailMsg {
     private volatile java.lang.Object title_;
     /**
      * <pre>
-     *标题,  根据右键类型来，可能是id
+     *标题,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string title = 3;</code>
@@ -5394,7 +5394,7 @@ public final class MailMsg {
     }
     /**
      * <pre>
-     *标题,  根据右键类型来，可能是id
+     *标题,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string title = 3;</code>
@@ -5419,7 +5419,7 @@ public final class MailMsg {
     private volatile java.lang.Object content_;
     /**
      * <pre>
-     *内容,  根据右键类型来，可能是id
+     *内容,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string content = 4;</code>
@@ -5440,7 +5440,7 @@ public final class MailMsg {
     }
     /**
      * <pre>
-     *内容,  根据右键类型来，可能是id
+     *内容,  根据邮件类型来，可能是id
      * </pre>
      *
      * <code>string content = 4;</code>
@@ -6296,7 +6296,7 @@ public final class MailMsg {
       private java.lang.Object sender_ = "";
       /**
        * <pre>
-       *发件人,  根据右键类型来，可能是id
+       *发件人,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string sender = 2;</code>
@@ -6316,7 +6316,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发件人,  根据右键类型来，可能是id
+       *发件人,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string sender = 2;</code>
@@ -6337,7 +6337,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发件人,  根据右键类型来，可能是id
+       *发件人,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string sender = 2;</code>
@@ -6356,7 +6356,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发件人,  根据右键类型来，可能是id
+       *发件人,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string sender = 2;</code>
@@ -6370,7 +6370,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发件人,  根据右键类型来，可能是id
+       *发件人,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string sender = 2;</code>
@@ -6392,7 +6392,7 @@ public final class MailMsg {
       private java.lang.Object title_ = "";
       /**
        * <pre>
-       *标题,  根据右键类型来，可能是id
+       *标题,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string title = 3;</code>
@@ -6412,7 +6412,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *标题,  根据右键类型来，可能是id
+       *标题,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string title = 3;</code>
@@ -6433,7 +6433,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *标题,  根据右键类型来，可能是id
+       *标题,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string title = 3;</code>
@@ -6452,7 +6452,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *标题,  根据右键类型来，可能是id
+       *标题,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string title = 3;</code>
@@ -6466,7 +6466,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *标题,  根据右键类型来，可能是id
+       *标题,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string title = 3;</code>
@@ -6488,7 +6488,7 @@ public final class MailMsg {
       private java.lang.Object content_ = "";
       /**
        * <pre>
-       *内容,  根据右键类型来，可能是id
+       *内容,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string content = 4;</code>
@@ -6508,7 +6508,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *内容,  根据右键类型来，可能是id
+       *内容,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string content = 4;</code>
@@ -6529,7 +6529,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *内容,  根据右键类型来，可能是id
+       *内容,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string content = 4;</code>
@@ -6548,7 +6548,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *内容,  根据右键类型来，可能是id
+       *内容,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string content = 4;</code>
@@ -6562,7 +6562,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *内容,  根据右键类型来，可能是id
+       *内容,  根据邮件类型来，可能是id
        * </pre>
        *
        * <code>string content = 4;</code>

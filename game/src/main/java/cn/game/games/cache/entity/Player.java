@@ -31,6 +31,7 @@ import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarModule;
+import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
@@ -158,6 +159,10 @@ public class Player  {
 	public MailModule getMailModule() {
 		return getModule(MailModule.class);
 	}
+
+	public QuestModule getQuestModule() {
+		return getModule(QuestModule.class);
+	}
 	public Player() {
 	}
 
@@ -279,12 +284,13 @@ public class Player  {
 		PlayerInfo.Builder builder = PlayerInfo.newBuilder();
 		builder.setId((int) getData().getPlayerId().longValue());
 		builder.setName(getData().getName());
-		builder.setLevel(getData().getLevel());
-		builder.setExp(getData().getExp());
+//		builder.setLevel(getData().getLevel());
+//		builder.setExp(getData().getExp());
 		builder.setHead(getData().getHead());
 		builder.setHeadFrame(getData().getHeadFrame());
-		builder.setVipLevel(getData().getVipLevel());
-		builder.setVipExp(getData().getVipExpTotal());
+		builder.setIsMan(getData().getGender());
+//		builder.setVipLevel(getData().getVipLevel());
+//		builder.setVipExp(getData().getVipExpTotal());
 //		builder.setPowerRecoverTime(PlayerHelper.recoverPower(this) * 1000 + "");
 //		builder.setSpiritReceiveInfo(getData().getSpiritReceiveInfo());
 //		builder.setActionPower(getData().getActionPower());

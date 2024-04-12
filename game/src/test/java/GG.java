@@ -1,23 +1,33 @@
-import org.apache.commons.collections4.map.MultiKeyMap;
+import cn.game.util.JsonUtil;
 
 public class GG {
 
-	
 	public static void main(String[] args) throws Exception {
-		// 创建一个MultiKeyMap对象，键的类型为String，值的类型为Double
-		MultiKeyMap<Integer, Double> multiKeyMap = new MultiKeyMap<>();
+		GGGG g = new GGGG();
+		g.name = "sadfasdf";
+		String jsonString = JsonUtil.toJsonString(g);
+		System.out.println(jsonString);
+		
+		String string = "[\"GGGG\",{\"name\":\"sadfasdf\",\"age\":33}]";
 
-		// 向MultiKeyMap中添加键值对
-		multiKeyMap.put(1, 2, 10.5);
-		multiKeyMap.put(2, 3, 20.5);
-
-		// 通过多个键来获取值
-		Double value1 = multiKeyMap.get(1, 2);
-		Double value2 = multiKeyMap.get(2, 3);
-
-		System.out.println("Value for key (1, 'A'): " + value1);
-		System.out.println("Value for key (2, 'B'): " + value2);
+		System.out.println(JsonUtil.parseObject(string, GGGG.class));
 
 	}
 	
+}
+
+class GGGG {
+	public String name;
+//	public int age;
+
+	@Override
+	public String toString() {
+		return "GGGG [name=" + name + ", age=" + 0 + "]";
+	}
+
+}
+
+class GGG extends GGGG {
+	public String name;
+
 }

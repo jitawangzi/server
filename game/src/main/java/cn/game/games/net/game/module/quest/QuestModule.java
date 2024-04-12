@@ -220,10 +220,10 @@ public class QuestModule extends BasePlayerModule {
 		}
 		MissionConfig questConfig = QuestHelper.getMissionConfig(id);
 		// 先执行结束命令
-		if (questConfig instanceof MainlineMissionConfig) {
-			MainlineMissionConfig missionConfig = (MainlineMissionConfig) questConfig;
-			PlayerHelper.command(playerId, missionConfig.getEndCommand());
-		}
+//		if (questConfig instanceof MainlineMissionConfig) {
+//			MainlineMissionConfig missionConfig = (MainlineMissionConfig) questConfig;
+//			PlayerHelper.command(playerId, missionConfig.getEndCommand());
+//		}
 
 		setState(quest, QuestHelper.REWARDED);
 //		competeQuests[quest.getQuestGroup()].put(quest.getId(), quest);
@@ -243,8 +243,7 @@ public class QuestModule extends BasePlayerModule {
 
 		addChallengeScore(id);
 
-		boolean lastBranch = questConfig.getClass() == MainlineMissionConfig.class
-				&& questConfig.getOpenTaskId().isEmpty();
+		boolean lastBranch = questConfig.getOpenTaskId().isEmpty();
 		// 分支的最后一个任务保留不删除
 		if (questConfig.getRefreshType() || lastBranch || questConfig.getType() == MissionTypeEnum.Achievement) {
 			quest.close();
@@ -751,6 +750,10 @@ public class QuestModule extends BasePlayerModule {
 			conditionCount.setCount(conditionCount.getCount() + count);
 			conditionCount.update();
 		}
+	}
+
+	public MultiKeyMap<Integer, ConditionCount> getConditionCountMap() {
+		return conditionCountMap;
 	}
 
 	@Override

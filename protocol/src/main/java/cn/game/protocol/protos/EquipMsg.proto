@@ -1,45 +1,64 @@
 syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 package Protos;
+import "BaseMsg.proto" ;
 
-// 装备协议
+// 装备、装备部位协议
 //装备/替换
 message EquipmentWearRequest_09000001 {
   string uid = 1; //唯一id
-  uint32 roleId = 2;
-  uint32 slot = 3;
 }
 
 message EquipmentWearResponse_09000002 {
 
 }
 
-//卸下
+//装备卸下
 message EquipmentTeardownRequest_09000003 {
-  uint32 roleId = 1; //角色id
-  uint32 slot = 2; //槽位
+  string uid = 1; //唯一id
 }
 
 message EquipmentTeardownResponse_09000004 {
 
 }
 
-//强化
-message EquipmentStrengthRequest_09000007 {
-  uint32 roleId = 1; //角色id
-  uint32 slot = 2; //槽位
+//装备部位强化
+message EquipmentPartStrengthRequest_09000007 {
+	 int32 type = 1; //装备部位类型： 1-6，0表示一键强化。
 }
 
-message EquipmentStrengthResponse_09000008 {
+message EquipmentPartStrengthResponse_09000008 {
+	repeated EquipPartInfo parts = 1; // 更新装备部位
+}
+
+//装备部位突破
+message EquipmentPartBreakthroughRequest_09000011 {
+	 int32 type = 1; //装备部位类型： 1-6
+}
+
+message EquipmentPartBreakthroughResponse_09000012 {
 
 }
 
-enum EquipSlot{
-  EQUIPSLOT_NULL = 0;
-  ONE = 1;
-  TWO = 2;
-  THREE = 3;
-  FOUR = 4;
+//武器升星
+message SwordStarUpRequest_09000013 {
+  string uid = 1; //武器唯一id
 }
+
+message SwordStarUpResponse_09000014 {
+
+}
+
+
+//时装升星
+message FashionStarUpRequest_09000015 {
+  string uid = 1; //时装唯一id
+}
+
+message FashionStarUpResponse_09000016 {
+
+}
+
+
 
 

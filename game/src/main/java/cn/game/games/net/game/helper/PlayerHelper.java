@@ -51,6 +51,7 @@ import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.EventOptionConfig;
 import cn.game.protocol.generated.config.GameCommandConfig;
+import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RewardConfig;
 import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.config.versionConfig;
@@ -58,6 +59,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.GameCommandManager;
+import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
@@ -244,7 +246,7 @@ public class PlayerHelper {
 					consumeType.getName());
 			if (notify) {
 				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
-				spendPush.addGoods(PbBuilder.buildGoodsInfo(id, value));
+				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
 				PlayerHelper.sendProtcol(playerId, spendPush.build());
 			}
 		}
@@ -269,7 +271,7 @@ public class PlayerHelper {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (Entry<Integer, Integer> entry : list) {
 				delResources(playerId, entry.getKey(), entry.getValue(), consumeType, false);
-				spendPush.addGoods(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
+				spendPush.addSpend(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
 			}
 			PlayerHelper.sendProtcol(playerId, spendPush.build());
 			return true;
@@ -288,12 +290,17 @@ public class PlayerHelper {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (int i = 0; i < list.length; i++) {
 				delResources(playerId, list[i][0], list[i][1], consumeType, false);
-				spendPush.addGoods(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
+				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
 			}
 			PlayerHelper.sendProtcol(playerId, spendPush.build());
 			return true;
 		}
 		return false;
+	}
+
+	public static void addReward(Player player, int randomRewardId) {
+		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId); 
+		addResources(player.getPlayerId(),randomGivenConfig.MustGiven) ;
 	}
 
 	public static Player addExp(Player player, int exp) {
@@ -316,16 +323,6 @@ public class PlayerHelper {
 		}
 		player.getData().setExp(curExp);
 		return player;
-	}
-	/** 
-	 * 获取最大体力
-	 * @param player
-	 * @return
-	 */
-	public static int energyMax(PlayerData player) {
-		// TODO此处需要加月卡体力
-		UserUpgradeConfig userUpgradeConfig = UserUpgradeManager.instance().get(player.getLevel());
-		return userUpgradeConfig.StaminaMax;
 	}
 
 	/**

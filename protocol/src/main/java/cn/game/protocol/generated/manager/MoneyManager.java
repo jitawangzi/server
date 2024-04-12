@@ -23,12 +23,12 @@ public class MoneyManager extends ResourceListener {
 	private static MoneyManager instance = new MoneyManager();
 	private static final String xmlFileName = "Money";
 	
+	/** 总数据，按id取值 */
 	private Map<Integer, MoneyConfig> moneys = new HashMap<>();
 
-	public static MoneyManager getInstance() {
+	public static MoneyManager instance() {
 		return instance;
 	}
-
 	private MoneyManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -55,13 +55,15 @@ public class MoneyManager extends ResourceListener {
 		return this.moneys.get(id);
 	}
 
+	/**
+	 * 获取所有数据
+	 * @return
+	 */
 	public Collection<MoneyConfig> list() {
 		return this.moneys.values();
 	}
-
 	@Override
 	public void load() {
-
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
@@ -70,7 +72,10 @@ public class MoneyManager extends ResourceListener {
 			Map<Integer, MoneyConfig> moneys = new HashMap<>();
 			for (Element e : list) {
 				MoneyConfig money = new MoneyConfig(e);
-				moneys.put(money.getID(), money);
+				MoneyConfig old = moneys.put(money.ID, money);
+				if (old != null) {
+					throw new IllegalArgumentException("[MoneyConfig]表存在重复的数据id： " + old.ID);
+				}
 			}			
 
 			this.moneys = com.google.common.collect.ImmutableMap.copyOf(moneys);

@@ -12,12 +12,15 @@ public enum GoodsTypeEnum{
 	/** 道具 */
 	Item(2,"Item","道具"),
 	/** 英雄*/
-	Hero(7, "Hero", "英雄"),
-
+	Hero(3, "Hero", "英雄"),
+	/** 装备 */
+	Equipment(6, "Equipment", "装备"),
+	/** 英雄时装 */
+	Fashion(8, "Equipment", "英雄时装"),
+	/** 龙 */
+	Dragon(10, "Dragon", "龙"),
 	/** 角色 */
 	Role(44, "Role", "角色"),
-	/** 装备 */
-	Equipment(55, "Equipment", "装备"),
 	/** 皮肤 */
 	Skin(88, "Skin", "皮肤"),
     ;

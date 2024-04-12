@@ -33,6 +33,32 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleChapterRewardRequest_13000022 = 0x13000022;    //领取章通关奖励  
 	public final static int BattleChapterRewardResponse_13000023 = 0x13000023;    
 	public final static int BattleFieldStartPush_13000100 = 0x13000100;    //战斗开始推送  
+	public final static int DragonUnlockRequest_17000001 = 0x17000001;    //龙解锁  
+	public final static int DragonUnlockResponse_17000002 = 0x17000002;    
+	public final static int DragonStarUpRequest_17000003 = 0x17000003;    //龙升星  
+	public final static int DragonStarUpResponse_17000004 = 0x17000004;    
+	public final static int DragonSkillUpRequest_17000005 = 0x17000005;    //龙技能升级  
+	public final static int DragonSkillUpResponse_17000006 = 0x17000006;    
+	public final static int EquipmentWearRequest_09000001 = 0x09000001;    //装备 替换  
+	public final static int EquipmentWearResponse_09000002 = 0x09000002;    
+	public final static int EquipmentTeardownRequest_09000003 = 0x09000003;    //装备卸下  
+	public final static int EquipmentTeardownResponse_09000004 = 0x09000004;    
+	public final static int EquipmentPartStrengthRequest_09000007 = 0x09000007;    //装备部位强化  
+	public final static int EquipmentPartStrengthResponse_09000008 = 0x09000008;    
+	public final static int EquipmentPartBreakthroughRequest_09000011 = 0x09000011;    //装备部位突破  
+	public final static int EquipmentPartBreakthroughResponse_09000012 = 0x09000012;    
+	public final static int SwordStarUpRequest_09000013 = 0x09000013;    //武器升星  
+	public final static int SwordStarUpResponse_09000014 = 0x09000014;    
+	public final static int FashionStarUpRequest_09000015 = 0x09000015;    //时装升星  
+	public final static int FashionStarUpResponse_09000016 = 0x09000016;    
+	public final static int GemWearRequest_10000001 = 0x10000001;    //宝石镶嵌 替换  
+	public final static int GemWearResponse_10000002 = 0x10000002;    
+	public final static int GemTeardownRequest_10000003 = 0x10000003;    //宝石卸下  
+	public final static int GemTeardownResponse_10000004 = 0x10000004;    
+	public final static int GemLockRequest_10000005 = 0x10000005;    //宝石锁定  
+	public final static int GemLockResponse_10000006 = 0x10000006;    
+	public final static int GemComposeRequest_10000007 = 0x10000007;    //宝石合成 一键合成  
+	public final static int GemComposeResponse_10000008 = 0x10000008;    
 	public final static int GmShutdownServerRequest_77000001 = 0x77000001;    //关闭服务器  
 	public final static int GmShutdownServerResponse_77000002 = 0x77000002;    //关闭服务器响应  
 	public final static int GmForbidAccountListRequest_77000003 = 0x77000003;    //请求封号列表  
@@ -89,6 +115,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerHeadResponse_01000014 = 0x01000014;    //修改头像返回  
 	public final static int PlayerHeadFrameRequest_01000015 = 0x01000015;    //修改头像框  
 	public final static int PlayerHeadFrameResponse_01000016 = 0x01000016;    //修改头像框返回  
+	public final static int PlayerGenderRequest_01000017 = 0x01000017;    //修改性别  
+	public final static int PlayerGenderResponse_01000018 = 0x01000018;    //修改性别返回  
 	public final static int PlayerReconnecRequest_01000065 = 0x01000065;    //断线重连，和手机端通用  
 	public final static int PlayerReconnecResponse_01000066 = 0x01000066;    //断线重连，和手机端通用  
 	public final static int PlayerHeartbeatRequest_01000005 = 0x01000005;    //心跳  
@@ -99,6 +127,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerBriefInfoOtherResponse_0100000a = 0x0100000a;    
 	public final static int PlayerShowRequest_01000039 = 0x01000039;    //获取一个玩家的名片  
 	public final static int PlayerShowResponse_0100003a = 0x0100003a;    
+	public final static int PlayerAlchemyRequest_01000040 = 0x01000040;    //炼金请求  
+	public final static int PlayerAlchemyResponse_01000041 = 0x01000041;    
 	public final static int PlayerResetPush_01100016 = 0x01100016;    //通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新  
 	public final static int PlayerErrorPush_01000099 = 0x01000099;    //对于客户端的请求，如果服务器处理过程中出现未知异常，导致没有返回对应的响应包时，返回此错误消息  
 	public final static int RewardPush_55000501 = 0x55000501;    //奖励推送,客户端收到这个协议之后，将奖励增加到本地。  
@@ -179,6 +209,58 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleChapterRewardResponse_13000023, cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000023.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleFieldStartPush_13000100, cn.game.protocol.protobuf.BattleMsg.BattleFieldStartPush_13000100.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DragonUnlockRequest_17000001, cn.game.protocol.protobuf.DragonMsg.DragonUnlockRequest_17000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DragonUnlockResponse_17000002, cn.game.protocol.protobuf.DragonMsg.DragonUnlockResponse_17000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DragonStarUpRequest_17000003, cn.game.protocol.protobuf.DragonMsg.DragonStarUpRequest_17000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DragonStarUpResponse_17000004, cn.game.protocol.protobuf.DragonMsg.DragonStarUpResponse_17000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DragonSkillUpRequest_17000005, cn.game.protocol.protobuf.DragonMsg.DragonSkillUpRequest_17000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DragonSkillUpResponse_17000006, cn.game.protocol.protobuf.DragonMsg.DragonSkillUpResponse_17000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(EquipmentWearRequest_09000001, cn.game.protocol.protobuf.EquipMsg.EquipmentWearRequest_09000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(EquipmentWearResponse_09000002, cn.game.protocol.protobuf.EquipMsg.EquipmentWearResponse_09000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(EquipmentTeardownRequest_09000003, cn.game.protocol.protobuf.EquipMsg.EquipmentTeardownRequest_09000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(EquipmentTeardownResponse_09000004, cn.game.protocol.protobuf.EquipMsg.EquipmentTeardownResponse_09000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(EquipmentPartStrengthRequest_09000007, cn.game.protocol.protobuf.EquipMsg.EquipmentPartStrengthRequest_09000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(EquipmentPartStrengthResponse_09000008, cn.game.protocol.protobuf.EquipMsg.EquipmentPartStrengthResponse_09000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(EquipmentPartBreakthroughRequest_09000011, cn.game.protocol.protobuf.EquipMsg.EquipmentPartBreakthroughRequest_09000011.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(EquipmentPartBreakthroughResponse_09000012, cn.game.protocol.protobuf.EquipMsg.EquipmentPartBreakthroughResponse_09000012.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(SwordStarUpRequest_09000013, cn.game.protocol.protobuf.EquipMsg.SwordStarUpRequest_09000013.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(SwordStarUpResponse_09000014, cn.game.protocol.protobuf.EquipMsg.SwordStarUpResponse_09000014.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FashionStarUpRequest_09000015, cn.game.protocol.protobuf.EquipMsg.FashionStarUpRequest_09000015.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FashionStarUpResponse_09000016, cn.game.protocol.protobuf.EquipMsg.FashionStarUpResponse_09000016.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GemWearRequest_10000001, cn.game.protocol.protobuf.GemMsg.GemWearRequest_10000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GemWearResponse_10000002, cn.game.protocol.protobuf.GemMsg.GemWearResponse_10000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GemTeardownRequest_10000003, cn.game.protocol.protobuf.GemMsg.GemTeardownRequest_10000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GemTeardownResponse_10000004, cn.game.protocol.protobuf.GemMsg.GemTeardownResponse_10000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GemLockRequest_10000005, cn.game.protocol.protobuf.GemMsg.GemLockRequest_10000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GemLockResponse_10000006, cn.game.protocol.protobuf.GemMsg.GemLockResponse_10000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GemComposeRequest_10000007, cn.game.protocol.protobuf.GemMsg.GemComposeRequest_10000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GemComposeResponse_10000008, cn.game.protocol.protobuf.GemMsg.GemComposeResponse_10000008.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(GmShutdownServerRequest_77000001, cn.game.protocol.protobuf.GmMsg.GmShutdownServerRequest_77000001.getDefaultInstance()
 				.getParserForType());
@@ -292,6 +374,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PlayerHeadFrameResponse_01000016, cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameResponse_01000016.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PlayerGenderRequest_01000017, cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerGenderResponse_01000018, cn.game.protocol.protobuf.PlayerMsg.PlayerGenderResponse_01000018.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(PlayerReconnecRequest_01000065, cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerReconnecResponse_01000066, cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecResponse_01000066.getDefaultInstance()
@@ -311,6 +397,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(PlayerShowRequest_01000039, cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerShowResponse_0100003a, cn.game.protocol.protobuf.PlayerMsg.PlayerShowResponse_0100003a.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerAlchemyRequest_01000040, cn.game.protocol.protobuf.PlayerMsg.PlayerAlchemyRequest_01000040.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerAlchemyResponse_01000041, cn.game.protocol.protobuf.PlayerMsg.PlayerAlchemyResponse_01000041.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerResetPush_01100016, cn.game.protocol.protobuf.PlayerMsg.PlayerResetPush_01100016.getDefaultInstance()
 				.getParserForType());
@@ -435,6 +525,32 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleChapterRewardRequest_13000022", 0x13000022);
 		nameIdMap.put("BattleChapterRewardResponse_13000023", 0x13000023);
 		nameIdMap.put("BattleFieldStartPush_13000100", 0x13000100);
+		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
+		nameIdMap.put("DragonUnlockResponse_17000002", 0x17000002);
+		nameIdMap.put("DragonStarUpRequest_17000003", 0x17000003);
+		nameIdMap.put("DragonStarUpResponse_17000004", 0x17000004);
+		nameIdMap.put("DragonSkillUpRequest_17000005", 0x17000005);
+		nameIdMap.put("DragonSkillUpResponse_17000006", 0x17000006);
+		nameIdMap.put("EquipmentWearRequest_09000001", 0x09000001);
+		nameIdMap.put("EquipmentWearResponse_09000002", 0x09000002);
+		nameIdMap.put("EquipmentTeardownRequest_09000003", 0x09000003);
+		nameIdMap.put("EquipmentTeardownResponse_09000004", 0x09000004);
+		nameIdMap.put("EquipmentPartStrengthRequest_09000007", 0x09000007);
+		nameIdMap.put("EquipmentPartStrengthResponse_09000008", 0x09000008);
+		nameIdMap.put("EquipmentPartBreakthroughRequest_09000011", 0x09000011);
+		nameIdMap.put("EquipmentPartBreakthroughResponse_09000012", 0x09000012);
+		nameIdMap.put("SwordStarUpRequest_09000013", 0x09000013);
+		nameIdMap.put("SwordStarUpResponse_09000014", 0x09000014);
+		nameIdMap.put("FashionStarUpRequest_09000015", 0x09000015);
+		nameIdMap.put("FashionStarUpResponse_09000016", 0x09000016);
+		nameIdMap.put("GemWearRequest_10000001", 0x10000001);
+		nameIdMap.put("GemWearResponse_10000002", 0x10000002);
+		nameIdMap.put("GemTeardownRequest_10000003", 0x10000003);
+		nameIdMap.put("GemTeardownResponse_10000004", 0x10000004);
+		nameIdMap.put("GemLockRequest_10000005", 0x10000005);
+		nameIdMap.put("GemLockResponse_10000006", 0x10000006);
+		nameIdMap.put("GemComposeRequest_10000007", 0x10000007);
+		nameIdMap.put("GemComposeResponse_10000008", 0x10000008);
 		nameIdMap.put("GmShutdownServerRequest_77000001", 0x77000001);
 		nameIdMap.put("GmShutdownServerResponse_77000002", 0x77000002);
 		nameIdMap.put("GmForbidAccountListRequest_77000003", 0x77000003);
@@ -491,6 +607,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerHeadResponse_01000014", 0x01000014);
 		nameIdMap.put("PlayerHeadFrameRequest_01000015", 0x01000015);
 		nameIdMap.put("PlayerHeadFrameResponse_01000016", 0x01000016);
+		nameIdMap.put("PlayerGenderRequest_01000017", 0x01000017);
+		nameIdMap.put("PlayerGenderResponse_01000018", 0x01000018);
 		nameIdMap.put("PlayerReconnecRequest_01000065", 0x01000065);
 		nameIdMap.put("PlayerReconnecResponse_01000066", 0x01000066);
 		nameIdMap.put("PlayerHeartbeatRequest_01000005", 0x01000005);
@@ -501,6 +619,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerBriefInfoOtherResponse_0100000a", 0x0100000a);
 		nameIdMap.put("PlayerShowRequest_01000039", 0x01000039);
 		nameIdMap.put("PlayerShowResponse_0100003a", 0x0100003a);
+		nameIdMap.put("PlayerAlchemyRequest_01000040", 0x01000040);
+		nameIdMap.put("PlayerAlchemyResponse_01000041", 0x01000041);
 		nameIdMap.put("PlayerResetPush_01100016", 0x01100016);
 		nameIdMap.put("PlayerErrorPush_01000099", 0x01000099);
 		nameIdMap.put("RewardPush_55000501", 0x55000501);

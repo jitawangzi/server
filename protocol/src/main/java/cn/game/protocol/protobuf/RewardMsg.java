@@ -20,10 +20,37 @@ public final class RewardMsg {
 
     /**
      * <pre>
+     * 资源奖励
+     * </pre>
+     *
+     * <code>.Protos.AssetInfo asset = 1;</code>
+     * @return Whether the asset field is set.
+     */
+    boolean hasAsset();
+    /**
+     * <pre>
+     * 资源奖励
+     * </pre>
+     *
+     * <code>.Protos.AssetInfo asset = 1;</code>
+     * @return The asset.
+     */
+    cn.game.protocol.protobuf.BaseMsg.AssetInfo getAsset();
+    /**
+     * <pre>
+     * 资源奖励
+     * </pre>
+     *
+     * <code>.Protos.AssetInfo asset = 1;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.AssetInfoOrBuilder getAssetOrBuilder();
+
+    /**
+     * <pre>
      * 道具类型的奖励
      * </pre>
      *
-     * <code>.Protos.ItemInfo item = 1;</code>
+     * <code>.Protos.ItemInfo item = 2;</code>
      * @return Whether the item field is set.
      */
     boolean hasItem();
@@ -32,7 +59,7 @@ public final class RewardMsg {
      * 道具类型的奖励
      * </pre>
      *
-     * <code>.Protos.ItemInfo item = 1;</code>
+     * <code>.Protos.ItemInfo item = 2;</code>
      * @return The item.
      */
     cn.game.protocol.protobuf.BaseMsg.ItemInfo getItem();
@@ -41,63 +68,36 @@ public final class RewardMsg {
      * 道具类型的奖励
      * </pre>
      *
-     * <code>.Protos.ItemInfo item = 1;</code>
+     * <code>.Protos.ItemInfo item = 2;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getItemOrBuilder();
 
     /**
      * <pre>
-     * 角色奖励
+     * 英雄奖励
      * </pre>
      *
-     * <code>.Protos.HeroInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 3;</code>
      * @return Whether the role field is set.
      */
     boolean hasRole();
     /**
      * <pre>
-     * 角色奖励
+     * 英雄奖励
      * </pre>
      *
-     * <code>.Protos.HeroInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 3;</code>
      * @return The role.
      */
     cn.game.protocol.protobuf.BaseMsg.HeroInfo getRole();
     /**
      * <pre>
-     * 角色奖励
+     * 英雄奖励
      * </pre>
      *
-     * <code>.Protos.HeroInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 3;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getRoleOrBuilder();
-
-    /**
-     * <pre>
-     * 资源奖励
-     * </pre>
-     *
-     * <code>.Protos.ResourceInfo resource = 6;</code>
-     * @return Whether the resource field is set.
-     */
-    boolean hasResource();
-    /**
-     * <pre>
-     * 资源奖励
-     * </pre>
-     *
-     * <code>.Protos.ResourceInfo resource = 6;</code>
-     * @return The resource.
-     */
-    cn.game.protocol.protobuf.BaseMsg.ResourceInfo getResource();
-    /**
-     * <pre>
-     * 资源奖励
-     * </pre>
-     *
-     * <code>.Protos.ResourceInfo resource = 6;</code>
-     */
-    cn.game.protocol.protobuf.BaseMsg.ResourceInfoOrBuilder getResourceOrBuilder();
 
     /**
      * <pre>
@@ -125,6 +125,87 @@ public final class RewardMsg {
      * <code>.Protos.EquipInfo equip = 7;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.EquipInfoOrBuilder getEquipOrBuilder();
+
+    /**
+     * <pre>
+     *时装奖励
+     * </pre>
+     *
+     * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+     * @return Whether the fashion field is set.
+     */
+    boolean hasFashion();
+    /**
+     * <pre>
+     *时装奖励
+     * </pre>
+     *
+     * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+     * @return The fashion.
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo getFashion();
+    /**
+     * <pre>
+     *时装奖励
+     * </pre>
+     *
+     * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroFashionInfoOrBuilder getFashionOrBuilder();
+
+    /**
+     * <pre>
+     *装备奖励
+     * </pre>
+     *
+     * <code>.Protos.GemInfo gem = 9;</code>
+     * @return Whether the gem field is set.
+     */
+    boolean hasGem();
+    /**
+     * <pre>
+     *装备奖励
+     * </pre>
+     *
+     * <code>.Protos.GemInfo gem = 9;</code>
+     * @return The gem.
+     */
+    cn.game.protocol.protobuf.BaseMsg.GemInfo getGem();
+    /**
+     * <pre>
+     *装备奖励
+     * </pre>
+     *
+     * <code>.Protos.GemInfo gem = 9;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.GemInfoOrBuilder getGemOrBuilder();
+
+    /**
+     * <pre>
+     *龙奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonInfo dragon = 10;</code>
+     * @return Whether the dragon field is set.
+     */
+    boolean hasDragon();
+    /**
+     * <pre>
+     *龙奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonInfo dragon = 10;</code>
+     * @return The dragon.
+     */
+    cn.game.protocol.protobuf.BaseMsg.DragonInfo getDragon();
+    /**
+     * <pre>
+     *龙奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonInfo dragon = 10;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.DragonInfoOrBuilder getDragonOrBuilder();
   }
   /**
    * <pre>
@@ -179,6 +260,19 @@ public final class RewardMsg {
               done = true;
               break;
             case 10: {
+              cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder subBuilder = null;
+              if (asset_ != null) {
+                subBuilder = asset_.toBuilder();
+              }
+              asset_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.AssetInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(asset_);
+                asset_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
               cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder subBuilder = null;
               if (item_ != null) {
                 subBuilder = item_.toBuilder();
@@ -191,7 +285,7 @@ public final class RewardMsg {
 
               break;
             }
-            case 18: {
+            case 26: {
               cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder subBuilder = null;
               if (role_ != null) {
                 subBuilder = role_.toBuilder();
@@ -200,19 +294,6 @@ public final class RewardMsg {
               if (subBuilder != null) {
                 subBuilder.mergeFrom(role_);
                 role_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 50: {
-              cn.game.protocol.protobuf.BaseMsg.ResourceInfo.Builder subBuilder = null;
-              if (resource_ != null) {
-                subBuilder = resource_.toBuilder();
-              }
-              resource_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.ResourceInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(resource_);
-                resource_ = subBuilder.buildPartial();
               }
 
               break;
@@ -226,6 +307,45 @@ public final class RewardMsg {
               if (subBuilder != null) {
                 subBuilder.mergeFrom(equip_);
                 equip_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 66: {
+              cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.Builder subBuilder = null;
+              if (fashion_ != null) {
+                subBuilder = fashion_.toBuilder();
+              }
+              fashion_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(fashion_);
+                fashion_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 74: {
+              cn.game.protocol.protobuf.BaseMsg.GemInfo.Builder subBuilder = null;
+              if (gem_ != null) {
+                subBuilder = gem_.toBuilder();
+              }
+              gem_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.GemInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(gem_);
+                gem_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 82: {
+              cn.game.protocol.protobuf.BaseMsg.DragonInfo.Builder subBuilder = null;
+              if (dragon_ != null) {
+                subBuilder = dragon_.toBuilder();
+              }
+              dragon_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.DragonInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(dragon_);
+                dragon_ = subBuilder.buildPartial();
               }
 
               break;
@@ -262,14 +382,52 @@ public final class RewardMsg {
               cn.game.protocol.protobuf.RewardMsg.RewardInfo.class, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder.class);
     }
 
-    public static final int ITEM_FIELD_NUMBER = 1;
+    public static final int ASSET_FIELD_NUMBER = 1;
+    private cn.game.protocol.protobuf.BaseMsg.AssetInfo asset_;
+    /**
+     * <pre>
+     * 资源奖励
+     * </pre>
+     *
+     * <code>.Protos.AssetInfo asset = 1;</code>
+     * @return Whether the asset field is set.
+     */
+    @java.lang.Override
+    public boolean hasAsset() {
+      return asset_ != null;
+    }
+    /**
+     * <pre>
+     * 资源奖励
+     * </pre>
+     *
+     * <code>.Protos.AssetInfo asset = 1;</code>
+     * @return The asset.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.AssetInfo getAsset() {
+      return asset_ == null ? cn.game.protocol.protobuf.BaseMsg.AssetInfo.getDefaultInstance() : asset_;
+    }
+    /**
+     * <pre>
+     * 资源奖励
+     * </pre>
+     *
+     * <code>.Protos.AssetInfo asset = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.AssetInfoOrBuilder getAssetOrBuilder() {
+      return getAsset();
+    }
+
+    public static final int ITEM_FIELD_NUMBER = 2;
     private cn.game.protocol.protobuf.BaseMsg.ItemInfo item_;
     /**
      * <pre>
      * 道具类型的奖励
      * </pre>
      *
-     * <code>.Protos.ItemInfo item = 1;</code>
+     * <code>.Protos.ItemInfo item = 2;</code>
      * @return Whether the item field is set.
      */
     @java.lang.Override
@@ -281,7 +439,7 @@ public final class RewardMsg {
      * 道具类型的奖励
      * </pre>
      *
-     * <code>.Protos.ItemInfo item = 1;</code>
+     * <code>.Protos.ItemInfo item = 2;</code>
      * @return The item.
      */
     @java.lang.Override
@@ -293,21 +451,21 @@ public final class RewardMsg {
      * 道具类型的奖励
      * </pre>
      *
-     * <code>.Protos.ItemInfo item = 1;</code>
+     * <code>.Protos.ItemInfo item = 2;</code>
      */
     @java.lang.Override
     public cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getItemOrBuilder() {
       return getItem();
     }
 
-    public static final int ROLE_FIELD_NUMBER = 2;
+    public static final int ROLE_FIELD_NUMBER = 3;
     private cn.game.protocol.protobuf.BaseMsg.HeroInfo role_;
     /**
      * <pre>
-     * 角色奖励
+     * 英雄奖励
      * </pre>
      *
-     * <code>.Protos.HeroInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 3;</code>
      * @return Whether the role field is set.
      */
     @java.lang.Override
@@ -316,10 +474,10 @@ public final class RewardMsg {
     }
     /**
      * <pre>
-     * 角色奖励
+     * 英雄奖励
      * </pre>
      *
-     * <code>.Protos.HeroInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 3;</code>
      * @return The role.
      */
     @java.lang.Override
@@ -328,52 +486,14 @@ public final class RewardMsg {
     }
     /**
      * <pre>
-     * 角色奖励
+     * 英雄奖励
      * </pre>
      *
-     * <code>.Protos.HeroInfo role = 2;</code>
+     * <code>.Protos.HeroInfo role = 3;</code>
      */
     @java.lang.Override
     public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getRoleOrBuilder() {
       return getRole();
-    }
-
-    public static final int RESOURCE_FIELD_NUMBER = 6;
-    private cn.game.protocol.protobuf.BaseMsg.ResourceInfo resource_;
-    /**
-     * <pre>
-     * 资源奖励
-     * </pre>
-     *
-     * <code>.Protos.ResourceInfo resource = 6;</code>
-     * @return Whether the resource field is set.
-     */
-    @java.lang.Override
-    public boolean hasResource() {
-      return resource_ != null;
-    }
-    /**
-     * <pre>
-     * 资源奖励
-     * </pre>
-     *
-     * <code>.Protos.ResourceInfo resource = 6;</code>
-     * @return The resource.
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.ResourceInfo getResource() {
-      return resource_ == null ? cn.game.protocol.protobuf.BaseMsg.ResourceInfo.getDefaultInstance() : resource_;
-    }
-    /**
-     * <pre>
-     * 资源奖励
-     * </pre>
-     *
-     * <code>.Protos.ResourceInfo resource = 6;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.ResourceInfoOrBuilder getResourceOrBuilder() {
-      return getResource();
     }
 
     public static final int EQUIP_FIELD_NUMBER = 7;
@@ -414,6 +534,120 @@ public final class RewardMsg {
       return getEquip();
     }
 
+    public static final int FASHION_FIELD_NUMBER = 8;
+    private cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo fashion_;
+    /**
+     * <pre>
+     *时装奖励
+     * </pre>
+     *
+     * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+     * @return Whether the fashion field is set.
+     */
+    @java.lang.Override
+    public boolean hasFashion() {
+      return fashion_ != null;
+    }
+    /**
+     * <pre>
+     *时装奖励
+     * </pre>
+     *
+     * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+     * @return The fashion.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo getFashion() {
+      return fashion_ == null ? cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.getDefaultInstance() : fashion_;
+    }
+    /**
+     * <pre>
+     *时装奖励
+     * </pre>
+     *
+     * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroFashionInfoOrBuilder getFashionOrBuilder() {
+      return getFashion();
+    }
+
+    public static final int GEM_FIELD_NUMBER = 9;
+    private cn.game.protocol.protobuf.BaseMsg.GemInfo gem_;
+    /**
+     * <pre>
+     *装备奖励
+     * </pre>
+     *
+     * <code>.Protos.GemInfo gem = 9;</code>
+     * @return Whether the gem field is set.
+     */
+    @java.lang.Override
+    public boolean hasGem() {
+      return gem_ != null;
+    }
+    /**
+     * <pre>
+     *装备奖励
+     * </pre>
+     *
+     * <code>.Protos.GemInfo gem = 9;</code>
+     * @return The gem.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.GemInfo getGem() {
+      return gem_ == null ? cn.game.protocol.protobuf.BaseMsg.GemInfo.getDefaultInstance() : gem_;
+    }
+    /**
+     * <pre>
+     *装备奖励
+     * </pre>
+     *
+     * <code>.Protos.GemInfo gem = 9;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.GemInfoOrBuilder getGemOrBuilder() {
+      return getGem();
+    }
+
+    public static final int DRAGON_FIELD_NUMBER = 10;
+    private cn.game.protocol.protobuf.BaseMsg.DragonInfo dragon_;
+    /**
+     * <pre>
+     *龙奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonInfo dragon = 10;</code>
+     * @return Whether the dragon field is set.
+     */
+    @java.lang.Override
+    public boolean hasDragon() {
+      return dragon_ != null;
+    }
+    /**
+     * <pre>
+     *龙奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonInfo dragon = 10;</code>
+     * @return The dragon.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.DragonInfo getDragon() {
+      return dragon_ == null ? cn.game.protocol.protobuf.BaseMsg.DragonInfo.getDefaultInstance() : dragon_;
+    }
+    /**
+     * <pre>
+     *龙奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonInfo dragon = 10;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.DragonInfoOrBuilder getDragonOrBuilder() {
+      return getDragon();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -428,17 +662,26 @@ public final class RewardMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (asset_ != null) {
+        output.writeMessage(1, getAsset());
+      }
       if (item_ != null) {
-        output.writeMessage(1, getItem());
+        output.writeMessage(2, getItem());
       }
       if (role_ != null) {
-        output.writeMessage(2, getRole());
-      }
-      if (resource_ != null) {
-        output.writeMessage(6, getResource());
+        output.writeMessage(3, getRole());
       }
       if (equip_ != null) {
         output.writeMessage(7, getEquip());
+      }
+      if (fashion_ != null) {
+        output.writeMessage(8, getFashion());
+      }
+      if (gem_ != null) {
+        output.writeMessage(9, getGem());
+      }
+      if (dragon_ != null) {
+        output.writeMessage(10, getDragon());
       }
       unknownFields.writeTo(output);
     }
@@ -449,21 +692,33 @@ public final class RewardMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (asset_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getAsset());
+      }
       if (item_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getItem());
+          .computeMessageSize(2, getItem());
       }
       if (role_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getRole());
-      }
-      if (resource_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getResource());
+          .computeMessageSize(3, getRole());
       }
       if (equip_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, getEquip());
+      }
+      if (fashion_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, getFashion());
+      }
+      if (gem_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, getGem());
+      }
+      if (dragon_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, getDragon());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -480,6 +735,11 @@ public final class RewardMsg {
       }
       cn.game.protocol.protobuf.RewardMsg.RewardInfo other = (cn.game.protocol.protobuf.RewardMsg.RewardInfo) obj;
 
+      if (hasAsset() != other.hasAsset()) return false;
+      if (hasAsset()) {
+        if (!getAsset()
+            .equals(other.getAsset())) return false;
+      }
       if (hasItem() != other.hasItem()) return false;
       if (hasItem()) {
         if (!getItem()
@@ -490,15 +750,25 @@ public final class RewardMsg {
         if (!getRole()
             .equals(other.getRole())) return false;
       }
-      if (hasResource() != other.hasResource()) return false;
-      if (hasResource()) {
-        if (!getResource()
-            .equals(other.getResource())) return false;
-      }
       if (hasEquip() != other.hasEquip()) return false;
       if (hasEquip()) {
         if (!getEquip()
             .equals(other.getEquip())) return false;
+      }
+      if (hasFashion() != other.hasFashion()) return false;
+      if (hasFashion()) {
+        if (!getFashion()
+            .equals(other.getFashion())) return false;
+      }
+      if (hasGem() != other.hasGem()) return false;
+      if (hasGem()) {
+        if (!getGem()
+            .equals(other.getGem())) return false;
+      }
+      if (hasDragon() != other.hasDragon()) return false;
+      if (hasDragon()) {
+        if (!getDragon()
+            .equals(other.getDragon())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -511,6 +781,10 @@ public final class RewardMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasAsset()) {
+        hash = (37 * hash) + ASSET_FIELD_NUMBER;
+        hash = (53 * hash) + getAsset().hashCode();
+      }
       if (hasItem()) {
         hash = (37 * hash) + ITEM_FIELD_NUMBER;
         hash = (53 * hash) + getItem().hashCode();
@@ -519,13 +793,21 @@ public final class RewardMsg {
         hash = (37 * hash) + ROLE_FIELD_NUMBER;
         hash = (53 * hash) + getRole().hashCode();
       }
-      if (hasResource()) {
-        hash = (37 * hash) + RESOURCE_FIELD_NUMBER;
-        hash = (53 * hash) + getResource().hashCode();
-      }
       if (hasEquip()) {
         hash = (37 * hash) + EQUIP_FIELD_NUMBER;
         hash = (53 * hash) + getEquip().hashCode();
+      }
+      if (hasFashion()) {
+        hash = (37 * hash) + FASHION_FIELD_NUMBER;
+        hash = (53 * hash) + getFashion().hashCode();
+      }
+      if (hasGem()) {
+        hash = (37 * hash) + GEM_FIELD_NUMBER;
+        hash = (53 * hash) + getGem().hashCode();
+      }
+      if (hasDragon()) {
+        hash = (37 * hash) + DRAGON_FIELD_NUMBER;
+        hash = (53 * hash) + getDragon().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -667,6 +949,12 @@ public final class RewardMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        if (assetBuilder_ == null) {
+          asset_ = null;
+        } else {
+          asset_ = null;
+          assetBuilder_ = null;
+        }
         if (itemBuilder_ == null) {
           item_ = null;
         } else {
@@ -679,17 +967,29 @@ public final class RewardMsg {
           role_ = null;
           roleBuilder_ = null;
         }
-        if (resourceBuilder_ == null) {
-          resource_ = null;
-        } else {
-          resource_ = null;
-          resourceBuilder_ = null;
-        }
         if (equipBuilder_ == null) {
           equip_ = null;
         } else {
           equip_ = null;
           equipBuilder_ = null;
+        }
+        if (fashionBuilder_ == null) {
+          fashion_ = null;
+        } else {
+          fashion_ = null;
+          fashionBuilder_ = null;
+        }
+        if (gemBuilder_ == null) {
+          gem_ = null;
+        } else {
+          gem_ = null;
+          gemBuilder_ = null;
+        }
+        if (dragonBuilder_ == null) {
+          dragon_ = null;
+        } else {
+          dragon_ = null;
+          dragonBuilder_ = null;
         }
         return this;
       }
@@ -717,6 +1017,11 @@ public final class RewardMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.RewardMsg.RewardInfo buildPartial() {
         cn.game.protocol.protobuf.RewardMsg.RewardInfo result = new cn.game.protocol.protobuf.RewardMsg.RewardInfo(this);
+        if (assetBuilder_ == null) {
+          result.asset_ = asset_;
+        } else {
+          result.asset_ = assetBuilder_.build();
+        }
         if (itemBuilder_ == null) {
           result.item_ = item_;
         } else {
@@ -727,15 +1032,25 @@ public final class RewardMsg {
         } else {
           result.role_ = roleBuilder_.build();
         }
-        if (resourceBuilder_ == null) {
-          result.resource_ = resource_;
-        } else {
-          result.resource_ = resourceBuilder_.build();
-        }
         if (equipBuilder_ == null) {
           result.equip_ = equip_;
         } else {
           result.equip_ = equipBuilder_.build();
+        }
+        if (fashionBuilder_ == null) {
+          result.fashion_ = fashion_;
+        } else {
+          result.fashion_ = fashionBuilder_.build();
+        }
+        if (gemBuilder_ == null) {
+          result.gem_ = gem_;
+        } else {
+          result.gem_ = gemBuilder_.build();
+        }
+        if (dragonBuilder_ == null) {
+          result.dragon_ = dragon_;
+        } else {
+          result.dragon_ = dragonBuilder_.build();
         }
         onBuilt();
         return result;
@@ -785,17 +1100,26 @@ public final class RewardMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.RewardMsg.RewardInfo other) {
         if (other == cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance()) return this;
+        if (other.hasAsset()) {
+          mergeAsset(other.getAsset());
+        }
         if (other.hasItem()) {
           mergeItem(other.getItem());
         }
         if (other.hasRole()) {
           mergeRole(other.getRole());
         }
-        if (other.hasResource()) {
-          mergeResource(other.getResource());
-        }
         if (other.hasEquip()) {
           mergeEquip(other.getEquip());
+        }
+        if (other.hasFashion()) {
+          mergeFashion(other.getFashion());
+        }
+        if (other.hasGem()) {
+          mergeGem(other.getGem());
+        }
+        if (other.hasDragon()) {
+          mergeDragon(other.getDragon());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -826,6 +1150,161 @@ public final class RewardMsg {
         return this;
       }
 
+      private cn.game.protocol.protobuf.BaseMsg.AssetInfo asset_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.AssetInfo, cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder, cn.game.protocol.protobuf.BaseMsg.AssetInfoOrBuilder> assetBuilder_;
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       * @return Whether the asset field is set.
+       */
+      public boolean hasAsset() {
+        return assetBuilder_ != null || asset_ != null;
+      }
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       * @return The asset.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.AssetInfo getAsset() {
+        if (assetBuilder_ == null) {
+          return asset_ == null ? cn.game.protocol.protobuf.BaseMsg.AssetInfo.getDefaultInstance() : asset_;
+        } else {
+          return assetBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       */
+      public Builder setAsset(cn.game.protocol.protobuf.BaseMsg.AssetInfo value) {
+        if (assetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          asset_ = value;
+          onChanged();
+        } else {
+          assetBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       */
+      public Builder setAsset(
+          cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder builderForValue) {
+        if (assetBuilder_ == null) {
+          asset_ = builderForValue.build();
+          onChanged();
+        } else {
+          assetBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       */
+      public Builder mergeAsset(cn.game.protocol.protobuf.BaseMsg.AssetInfo value) {
+        if (assetBuilder_ == null) {
+          if (asset_ != null) {
+            asset_ =
+              cn.game.protocol.protobuf.BaseMsg.AssetInfo.newBuilder(asset_).mergeFrom(value).buildPartial();
+          } else {
+            asset_ = value;
+          }
+          onChanged();
+        } else {
+          assetBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       */
+      public Builder clearAsset() {
+        if (assetBuilder_ == null) {
+          asset_ = null;
+          onChanged();
+        } else {
+          asset_ = null;
+          assetBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder getAssetBuilder() {
+        
+        onChanged();
+        return getAssetFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.AssetInfoOrBuilder getAssetOrBuilder() {
+        if (assetBuilder_ != null) {
+          return assetBuilder_.getMessageOrBuilder();
+        } else {
+          return asset_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.AssetInfo.getDefaultInstance() : asset_;
+        }
+      }
+      /**
+       * <pre>
+       * 资源奖励
+       * </pre>
+       *
+       * <code>.Protos.AssetInfo asset = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.AssetInfo, cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder, cn.game.protocol.protobuf.BaseMsg.AssetInfoOrBuilder> 
+          getAssetFieldBuilder() {
+        if (assetBuilder_ == null) {
+          assetBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.AssetInfo, cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder, cn.game.protocol.protobuf.BaseMsg.AssetInfoOrBuilder>(
+                  getAsset(),
+                  getParentForChildren(),
+                  isClean());
+          asset_ = null;
+        }
+        return assetBuilder_;
+      }
+
       private cn.game.protocol.protobuf.BaseMsg.ItemInfo item_;
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> itemBuilder_;
@@ -834,7 +1313,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        * @return Whether the item field is set.
        */
       public boolean hasItem() {
@@ -845,7 +1324,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        * @return The item.
        */
       public cn.game.protocol.protobuf.BaseMsg.ItemInfo getItem() {
@@ -860,7 +1339,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        */
       public Builder setItem(cn.game.protocol.protobuf.BaseMsg.ItemInfo value) {
         if (itemBuilder_ == null) {
@@ -880,7 +1359,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        */
       public Builder setItem(
           cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder builderForValue) {
@@ -898,7 +1377,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        */
       public Builder mergeItem(cn.game.protocol.protobuf.BaseMsg.ItemInfo value) {
         if (itemBuilder_ == null) {
@@ -920,7 +1399,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        */
       public Builder clearItem() {
         if (itemBuilder_ == null) {
@@ -938,7 +1417,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder getItemBuilder() {
         
@@ -950,7 +1429,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getItemOrBuilder() {
         if (itemBuilder_ != null) {
@@ -965,7 +1444,7 @@ public final class RewardMsg {
        * 道具类型的奖励
        * </pre>
        *
-       * <code>.Protos.ItemInfo item = 1;</code>
+       * <code>.Protos.ItemInfo item = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> 
@@ -986,10 +1465,10 @@ public final class RewardMsg {
           cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> roleBuilder_;
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        * @return Whether the role field is set.
        */
       public boolean hasRole() {
@@ -997,10 +1476,10 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        * @return The role.
        */
       public cn.game.protocol.protobuf.BaseMsg.HeroInfo getRole() {
@@ -1012,10 +1491,10 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        */
       public Builder setRole(cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
         if (roleBuilder_ == null) {
@@ -1032,10 +1511,10 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        */
       public Builder setRole(
           cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
@@ -1050,10 +1529,10 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        */
       public Builder mergeRole(cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
         if (roleBuilder_ == null) {
@@ -1072,10 +1551,10 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        */
       public Builder clearRole() {
         if (roleBuilder_ == null) {
@@ -1090,10 +1569,10 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder getRoleBuilder() {
         
@@ -1102,10 +1581,10 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getRoleOrBuilder() {
         if (roleBuilder_ != null) {
@@ -1117,10 +1596,10 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       * 角色奖励
+       * 英雄奖励
        * </pre>
        *
-       * <code>.Protos.HeroInfo role = 2;</code>
+       * <code>.Protos.HeroInfo role = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
@@ -1134,161 +1613,6 @@ public final class RewardMsg {
           role_ = null;
         }
         return roleBuilder_;
-      }
-
-      private cn.game.protocol.protobuf.BaseMsg.ResourceInfo resource_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.ResourceInfo, cn.game.protocol.protobuf.BaseMsg.ResourceInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ResourceInfoOrBuilder> resourceBuilder_;
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       * @return Whether the resource field is set.
-       */
-      public boolean hasResource() {
-        return resourceBuilder_ != null || resource_ != null;
-      }
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       * @return The resource.
-       */
-      public cn.game.protocol.protobuf.BaseMsg.ResourceInfo getResource() {
-        if (resourceBuilder_ == null) {
-          return resource_ == null ? cn.game.protocol.protobuf.BaseMsg.ResourceInfo.getDefaultInstance() : resource_;
-        } else {
-          return resourceBuilder_.getMessage();
-        }
-      }
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       */
-      public Builder setResource(cn.game.protocol.protobuf.BaseMsg.ResourceInfo value) {
-        if (resourceBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          resource_ = value;
-          onChanged();
-        } else {
-          resourceBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       */
-      public Builder setResource(
-          cn.game.protocol.protobuf.BaseMsg.ResourceInfo.Builder builderForValue) {
-        if (resourceBuilder_ == null) {
-          resource_ = builderForValue.build();
-          onChanged();
-        } else {
-          resourceBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       */
-      public Builder mergeResource(cn.game.protocol.protobuf.BaseMsg.ResourceInfo value) {
-        if (resourceBuilder_ == null) {
-          if (resource_ != null) {
-            resource_ =
-              cn.game.protocol.protobuf.BaseMsg.ResourceInfo.newBuilder(resource_).mergeFrom(value).buildPartial();
-          } else {
-            resource_ = value;
-          }
-          onChanged();
-        } else {
-          resourceBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       */
-      public Builder clearResource() {
-        if (resourceBuilder_ == null) {
-          resource_ = null;
-          onChanged();
-        } else {
-          resource_ = null;
-          resourceBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.ResourceInfo.Builder getResourceBuilder() {
-        
-        onChanged();
-        return getResourceFieldBuilder().getBuilder();
-      }
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.ResourceInfoOrBuilder getResourceOrBuilder() {
-        if (resourceBuilder_ != null) {
-          return resourceBuilder_.getMessageOrBuilder();
-        } else {
-          return resource_ == null ?
-              cn.game.protocol.protobuf.BaseMsg.ResourceInfo.getDefaultInstance() : resource_;
-        }
-      }
-      /**
-       * <pre>
-       * 资源奖励
-       * </pre>
-       *
-       * <code>.Protos.ResourceInfo resource = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.ResourceInfo, cn.game.protocol.protobuf.BaseMsg.ResourceInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ResourceInfoOrBuilder> 
-          getResourceFieldBuilder() {
-        if (resourceBuilder_ == null) {
-          resourceBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.BaseMsg.ResourceInfo, cn.game.protocol.protobuf.BaseMsg.ResourceInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ResourceInfoOrBuilder>(
-                  getResource(),
-                  getParentForChildren(),
-                  isClean());
-          resource_ = null;
-        }
-        return resourceBuilder_;
       }
 
       private cn.game.protocol.protobuf.BaseMsg.EquipInfo equip_;
@@ -1444,6 +1768,471 @@ public final class RewardMsg {
           equip_ = null;
         }
         return equipBuilder_;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo fashion_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo, cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroFashionInfoOrBuilder> fashionBuilder_;
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       * @return Whether the fashion field is set.
+       */
+      public boolean hasFashion() {
+        return fashionBuilder_ != null || fashion_ != null;
+      }
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       * @return The fashion.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo getFashion() {
+        if (fashionBuilder_ == null) {
+          return fashion_ == null ? cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.getDefaultInstance() : fashion_;
+        } else {
+          return fashionBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       */
+      public Builder setFashion(cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo value) {
+        if (fashionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          fashion_ = value;
+          onChanged();
+        } else {
+          fashionBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       */
+      public Builder setFashion(
+          cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.Builder builderForValue) {
+        if (fashionBuilder_ == null) {
+          fashion_ = builderForValue.build();
+          onChanged();
+        } else {
+          fashionBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       */
+      public Builder mergeFashion(cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo value) {
+        if (fashionBuilder_ == null) {
+          if (fashion_ != null) {
+            fashion_ =
+              cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.newBuilder(fashion_).mergeFrom(value).buildPartial();
+          } else {
+            fashion_ = value;
+          }
+          onChanged();
+        } else {
+          fashionBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       */
+      public Builder clearFashion() {
+        if (fashionBuilder_ == null) {
+          fashion_ = null;
+          onChanged();
+        } else {
+          fashion_ = null;
+          fashionBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.Builder getFashionBuilder() {
+        
+        onChanged();
+        return getFashionFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroFashionInfoOrBuilder getFashionOrBuilder() {
+        if (fashionBuilder_ != null) {
+          return fashionBuilder_.getMessageOrBuilder();
+        } else {
+          return fashion_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.getDefaultInstance() : fashion_;
+        }
+      }
+      /**
+       * <pre>
+       *时装奖励
+       * </pre>
+       *
+       * <code>.Protos.HeroFashionInfo fashion = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo, cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroFashionInfoOrBuilder> 
+          getFashionFieldBuilder() {
+        if (fashionBuilder_ == null) {
+          fashionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo, cn.game.protocol.protobuf.BaseMsg.HeroFashionInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroFashionInfoOrBuilder>(
+                  getFashion(),
+                  getParentForChildren(),
+                  isClean());
+          fashion_ = null;
+        }
+        return fashionBuilder_;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.GemInfo gem_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.GemInfo, cn.game.protocol.protobuf.BaseMsg.GemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.GemInfoOrBuilder> gemBuilder_;
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       * @return Whether the gem field is set.
+       */
+      public boolean hasGem() {
+        return gemBuilder_ != null || gem_ != null;
+      }
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       * @return The gem.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.GemInfo getGem() {
+        if (gemBuilder_ == null) {
+          return gem_ == null ? cn.game.protocol.protobuf.BaseMsg.GemInfo.getDefaultInstance() : gem_;
+        } else {
+          return gemBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       */
+      public Builder setGem(cn.game.protocol.protobuf.BaseMsg.GemInfo value) {
+        if (gemBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          gem_ = value;
+          onChanged();
+        } else {
+          gemBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       */
+      public Builder setGem(
+          cn.game.protocol.protobuf.BaseMsg.GemInfo.Builder builderForValue) {
+        if (gemBuilder_ == null) {
+          gem_ = builderForValue.build();
+          onChanged();
+        } else {
+          gemBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       */
+      public Builder mergeGem(cn.game.protocol.protobuf.BaseMsg.GemInfo value) {
+        if (gemBuilder_ == null) {
+          if (gem_ != null) {
+            gem_ =
+              cn.game.protocol.protobuf.BaseMsg.GemInfo.newBuilder(gem_).mergeFrom(value).buildPartial();
+          } else {
+            gem_ = value;
+          }
+          onChanged();
+        } else {
+          gemBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       */
+      public Builder clearGem() {
+        if (gemBuilder_ == null) {
+          gem_ = null;
+          onChanged();
+        } else {
+          gem_ = null;
+          gemBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.GemInfo.Builder getGemBuilder() {
+        
+        onChanged();
+        return getGemFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.GemInfoOrBuilder getGemOrBuilder() {
+        if (gemBuilder_ != null) {
+          return gemBuilder_.getMessageOrBuilder();
+        } else {
+          return gem_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.GemInfo.getDefaultInstance() : gem_;
+        }
+      }
+      /**
+       * <pre>
+       *装备奖励
+       * </pre>
+       *
+       * <code>.Protos.GemInfo gem = 9;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.GemInfo, cn.game.protocol.protobuf.BaseMsg.GemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.GemInfoOrBuilder> 
+          getGemFieldBuilder() {
+        if (gemBuilder_ == null) {
+          gemBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.GemInfo, cn.game.protocol.protobuf.BaseMsg.GemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.GemInfoOrBuilder>(
+                  getGem(),
+                  getParentForChildren(),
+                  isClean());
+          gem_ = null;
+        }
+        return gemBuilder_;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.DragonInfo dragon_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.DragonInfo, cn.game.protocol.protobuf.BaseMsg.DragonInfo.Builder, cn.game.protocol.protobuf.BaseMsg.DragonInfoOrBuilder> dragonBuilder_;
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       * @return Whether the dragon field is set.
+       */
+      public boolean hasDragon() {
+        return dragonBuilder_ != null || dragon_ != null;
+      }
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       * @return The dragon.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.DragonInfo getDragon() {
+        if (dragonBuilder_ == null) {
+          return dragon_ == null ? cn.game.protocol.protobuf.BaseMsg.DragonInfo.getDefaultInstance() : dragon_;
+        } else {
+          return dragonBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       */
+      public Builder setDragon(cn.game.protocol.protobuf.BaseMsg.DragonInfo value) {
+        if (dragonBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          dragon_ = value;
+          onChanged();
+        } else {
+          dragonBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       */
+      public Builder setDragon(
+          cn.game.protocol.protobuf.BaseMsg.DragonInfo.Builder builderForValue) {
+        if (dragonBuilder_ == null) {
+          dragon_ = builderForValue.build();
+          onChanged();
+        } else {
+          dragonBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       */
+      public Builder mergeDragon(cn.game.protocol.protobuf.BaseMsg.DragonInfo value) {
+        if (dragonBuilder_ == null) {
+          if (dragon_ != null) {
+            dragon_ =
+              cn.game.protocol.protobuf.BaseMsg.DragonInfo.newBuilder(dragon_).mergeFrom(value).buildPartial();
+          } else {
+            dragon_ = value;
+          }
+          onChanged();
+        } else {
+          dragonBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       */
+      public Builder clearDragon() {
+        if (dragonBuilder_ == null) {
+          dragon_ = null;
+          onChanged();
+        } else {
+          dragon_ = null;
+          dragonBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.DragonInfo.Builder getDragonBuilder() {
+        
+        onChanged();
+        return getDragonFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.DragonInfoOrBuilder getDragonOrBuilder() {
+        if (dragonBuilder_ != null) {
+          return dragonBuilder_.getMessageOrBuilder();
+        } else {
+          return dragon_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.DragonInfo.getDefaultInstance() : dragon_;
+        }
+      }
+      /**
+       * <pre>
+       *龙奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonInfo dragon = 10;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.DragonInfo, cn.game.protocol.protobuf.BaseMsg.DragonInfo.Builder, cn.game.protocol.protobuf.BaseMsg.DragonInfoOrBuilder> 
+          getDragonFieldBuilder() {
+        if (dragonBuilder_ == null) {
+          dragonBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.DragonInfo, cn.game.protocol.protobuf.BaseMsg.DragonInfo.Builder, cn.game.protocol.protobuf.BaseMsg.DragonInfoOrBuilder>(
+                  getDragon(),
+                  getParentForChildren(),
+                  isClean());
+          dragon_ = null;
+        }
+        return dragonBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -2420,43 +3209,43 @@ public final class RewardMsg {
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
     java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> 
-        getGoodsList();
+        getSpendList();
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
-    cn.game.protocol.protobuf.BaseMsg.GoodsInfo getGoods(int index);
+    cn.game.protocol.protobuf.BaseMsg.GoodsInfo getSpend(int index);
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
-    int getGoodsCount();
+    int getSpendCount();
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
     java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> 
-        getGoodsOrBuilderList();
+        getSpendOrBuilderList();
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
-    cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getGoodsOrBuilder(
+    cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getSpendOrBuilder(
         int index);
   }
   /**
@@ -2476,7 +3265,7 @@ public final class RewardMsg {
       super(builder);
     }
     private SpendPush_55001501() {
-      goods_ = java.util.Collections.emptyList();
+      spend_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -2512,10 +3301,10 @@ public final class RewardMsg {
               break;
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                goods_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.GoodsInfo>();
+                spend_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.GoodsInfo>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              goods_.add(
+              spend_.add(
                   input.readMessage(cn.game.protocol.protobuf.BaseMsg.GoodsInfo.parser(), extensionRegistry));
               break;
             }
@@ -2535,7 +3324,7 @@ public final class RewardMsg {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          goods_ = java.util.Collections.unmodifiableList(goods_);
+          spend_ = java.util.Collections.unmodifiableList(spend_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -2554,64 +3343,64 @@ public final class RewardMsg {
               cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501.class, cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501.Builder.class);
     }
 
-    public static final int GOODS_FIELD_NUMBER = 1;
-    private java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> goods_;
+    public static final int SPEND_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> spend_;
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> getGoodsList() {
-      return goods_;
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> getSpendList() {
+      return spend_;
     }
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
     @java.lang.Override
     public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> 
-        getGoodsOrBuilderList() {
-      return goods_;
+        getSpendOrBuilderList() {
+      return spend_;
     }
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
     @java.lang.Override
-    public int getGoodsCount() {
-      return goods_.size();
+    public int getSpendCount() {
+      return spend_.size();
     }
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.GoodsInfo getGoods(int index) {
-      return goods_.get(index);
+    public cn.game.protocol.protobuf.BaseMsg.GoodsInfo getSpend(int index) {
+      return spend_.get(index);
     }
     /**
      * <pre>
      * 消耗的物品
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+     * <code>repeated .Protos.GoodsInfo spend = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getGoodsOrBuilder(
+    public cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getSpendOrBuilder(
         int index) {
-      return goods_.get(index);
+      return spend_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2628,8 +3417,8 @@ public final class RewardMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < goods_.size(); i++) {
-        output.writeMessage(1, goods_.get(i));
+      for (int i = 0; i < spend_.size(); i++) {
+        output.writeMessage(1, spend_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -2640,9 +3429,9 @@ public final class RewardMsg {
       if (size != -1) return size;
 
       size = 0;
-      for (int i = 0; i < goods_.size(); i++) {
+      for (int i = 0; i < spend_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, goods_.get(i));
+          .computeMessageSize(1, spend_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2659,8 +3448,8 @@ public final class RewardMsg {
       }
       cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501 other = (cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501) obj;
 
-      if (!getGoodsList()
-          .equals(other.getGoodsList())) return false;
+      if (!getSpendList()
+          .equals(other.getSpendList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2672,9 +3461,9 @@ public final class RewardMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getGoodsCount() > 0) {
-        hash = (37 * hash) + GOODS_FIELD_NUMBER;
-        hash = (53 * hash) + getGoodsList().hashCode();
+      if (getSpendCount() > 0) {
+        hash = (37 * hash) + SPEND_FIELD_NUMBER;
+        hash = (53 * hash) + getSpendList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -2808,17 +3597,17 @@ public final class RewardMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getGoodsFieldBuilder();
+          getSpendFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (goodsBuilder_ == null) {
-          goods_ = java.util.Collections.emptyList();
+        if (spendBuilder_ == null) {
+          spend_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          goodsBuilder_.clear();
+          spendBuilder_.clear();
         }
         return this;
       }
@@ -2847,14 +3636,14 @@ public final class RewardMsg {
       public cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501 buildPartial() {
         cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501 result = new cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501(this);
         int from_bitField0_ = bitField0_;
-        if (goodsBuilder_ == null) {
+        if (spendBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
-            goods_ = java.util.Collections.unmodifiableList(goods_);
+            spend_ = java.util.Collections.unmodifiableList(spend_);
             bitField0_ = (bitField0_ & ~0x00000001);
           }
-          result.goods_ = goods_;
+          result.spend_ = spend_;
         } else {
-          result.goods_ = goodsBuilder_.build();
+          result.spend_ = spendBuilder_.build();
         }
         onBuilt();
         return result;
@@ -2904,29 +3693,29 @@ public final class RewardMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501 other) {
         if (other == cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501.getDefaultInstance()) return this;
-        if (goodsBuilder_ == null) {
-          if (!other.goods_.isEmpty()) {
-            if (goods_.isEmpty()) {
-              goods_ = other.goods_;
+        if (spendBuilder_ == null) {
+          if (!other.spend_.isEmpty()) {
+            if (spend_.isEmpty()) {
+              spend_ = other.spend_;
               bitField0_ = (bitField0_ & ~0x00000001);
             } else {
-              ensureGoodsIsMutable();
-              goods_.addAll(other.goods_);
+              ensureSpendIsMutable();
+              spend_.addAll(other.spend_);
             }
             onChanged();
           }
         } else {
-          if (!other.goods_.isEmpty()) {
-            if (goodsBuilder_.isEmpty()) {
-              goodsBuilder_.dispose();
-              goodsBuilder_ = null;
-              goods_ = other.goods_;
+          if (!other.spend_.isEmpty()) {
+            if (spendBuilder_.isEmpty()) {
+              spendBuilder_.dispose();
+              spendBuilder_ = null;
+              spend_ = other.spend_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              goodsBuilder_ = 
+              spendBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getGoodsFieldBuilder() : null;
+                   getSpendFieldBuilder() : null;
             } else {
-              goodsBuilder_.addAllMessages(other.goods_);
+              spendBuilder_.addAllMessages(other.spend_);
             }
           }
         }
@@ -2960,30 +3749,30 @@ public final class RewardMsg {
       }
       private int bitField0_;
 
-      private java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> goods_ =
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> spend_ =
         java.util.Collections.emptyList();
-      private void ensureGoodsIsMutable() {
+      private void ensureSpendIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          goods_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.GoodsInfo>(goods_);
+          spend_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.GoodsInfo>(spend_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.GoodsInfo, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder, cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> goodsBuilder_;
+          cn.game.protocol.protobuf.BaseMsg.GoodsInfo, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder, cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> spendBuilder_;
 
       /**
        * <pre>
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> getGoodsList() {
-        if (goodsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(goods_);
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> getSpendList() {
+        if (spendBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(spend_);
         } else {
-          return goodsBuilder_.getMessageList();
+          return spendBuilder_.getMessageList();
         }
       }
       /**
@@ -2991,13 +3780,13 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public int getGoodsCount() {
-        if (goodsBuilder_ == null) {
-          return goods_.size();
+      public int getSpendCount() {
+        if (spendBuilder_ == null) {
+          return spend_.size();
         } else {
-          return goodsBuilder_.getCount();
+          return spendBuilder_.getCount();
         }
       }
       /**
@@ -3005,13 +3794,13 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.GoodsInfo getGoods(int index) {
-        if (goodsBuilder_ == null) {
-          return goods_.get(index);
+      public cn.game.protocol.protobuf.BaseMsg.GoodsInfo getSpend(int index) {
+        if (spendBuilder_ == null) {
+          return spend_.get(index);
         } else {
-          return goodsBuilder_.getMessage(index);
+          return spendBuilder_.getMessage(index);
         }
       }
       /**
@@ -3019,19 +3808,19 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder setGoods(
+      public Builder setSpend(
           int index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo value) {
-        if (goodsBuilder_ == null) {
+        if (spendBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureGoodsIsMutable();
-          goods_.set(index, value);
+          ensureSpendIsMutable();
+          spend_.set(index, value);
           onChanged();
         } else {
-          goodsBuilder_.setMessage(index, value);
+          spendBuilder_.setMessage(index, value);
         }
         return this;
       }
@@ -3040,16 +3829,16 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder setGoods(
+      public Builder setSpend(
           int index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder builderForValue) {
-        if (goodsBuilder_ == null) {
-          ensureGoodsIsMutable();
-          goods_.set(index, builderForValue.build());
+        if (spendBuilder_ == null) {
+          ensureSpendIsMutable();
+          spend_.set(index, builderForValue.build());
           onChanged();
         } else {
-          goodsBuilder_.setMessage(index, builderForValue.build());
+          spendBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
@@ -3058,18 +3847,18 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder addGoods(cn.game.protocol.protobuf.BaseMsg.GoodsInfo value) {
-        if (goodsBuilder_ == null) {
+      public Builder addSpend(cn.game.protocol.protobuf.BaseMsg.GoodsInfo value) {
+        if (spendBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureGoodsIsMutable();
-          goods_.add(value);
+          ensureSpendIsMutable();
+          spend_.add(value);
           onChanged();
         } else {
-          goodsBuilder_.addMessage(value);
+          spendBuilder_.addMessage(value);
         }
         return this;
       }
@@ -3078,19 +3867,19 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder addGoods(
+      public Builder addSpend(
           int index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo value) {
-        if (goodsBuilder_ == null) {
+        if (spendBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureGoodsIsMutable();
-          goods_.add(index, value);
+          ensureSpendIsMutable();
+          spend_.add(index, value);
           onChanged();
         } else {
-          goodsBuilder_.addMessage(index, value);
+          spendBuilder_.addMessage(index, value);
         }
         return this;
       }
@@ -3099,16 +3888,16 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder addGoods(
+      public Builder addSpend(
           cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder builderForValue) {
-        if (goodsBuilder_ == null) {
-          ensureGoodsIsMutable();
-          goods_.add(builderForValue.build());
+        if (spendBuilder_ == null) {
+          ensureSpendIsMutable();
+          spend_.add(builderForValue.build());
           onChanged();
         } else {
-          goodsBuilder_.addMessage(builderForValue.build());
+          spendBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
@@ -3117,16 +3906,16 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder addGoods(
+      public Builder addSpend(
           int index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder builderForValue) {
-        if (goodsBuilder_ == null) {
-          ensureGoodsIsMutable();
-          goods_.add(index, builderForValue.build());
+        if (spendBuilder_ == null) {
+          ensureSpendIsMutable();
+          spend_.add(index, builderForValue.build());
           onChanged();
         } else {
-          goodsBuilder_.addMessage(index, builderForValue.build());
+          spendBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
@@ -3135,17 +3924,17 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder addAllGoods(
+      public Builder addAllSpend(
           java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.GoodsInfo> values) {
-        if (goodsBuilder_ == null) {
-          ensureGoodsIsMutable();
+        if (spendBuilder_ == null) {
+          ensureSpendIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, goods_);
+              values, spend_);
           onChanged();
         } else {
-          goodsBuilder_.addAllMessages(values);
+          spendBuilder_.addAllMessages(values);
         }
         return this;
       }
@@ -3154,15 +3943,15 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder clearGoods() {
-        if (goodsBuilder_ == null) {
-          goods_ = java.util.Collections.emptyList();
+      public Builder clearSpend() {
+        if (spendBuilder_ == null) {
+          spend_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          goodsBuilder_.clear();
+          spendBuilder_.clear();
         }
         return this;
       }
@@ -3171,15 +3960,15 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public Builder removeGoods(int index) {
-        if (goodsBuilder_ == null) {
-          ensureGoodsIsMutable();
-          goods_.remove(index);
+      public Builder removeSpend(int index) {
+        if (spendBuilder_ == null) {
+          ensureSpendIsMutable();
+          spend_.remove(index);
           onChanged();
         } else {
-          goodsBuilder_.remove(index);
+          spendBuilder_.remove(index);
         }
         return this;
       }
@@ -3188,24 +3977,24 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder getGoodsBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder getSpendBuilder(
           int index) {
-        return getGoodsFieldBuilder().getBuilder(index);
+        return getSpendFieldBuilder().getBuilder(index);
       }
       /**
        * <pre>
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getGoodsOrBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getSpendOrBuilder(
           int index) {
-        if (goodsBuilder_ == null) {
-          return goods_.get(index);  } else {
-          return goodsBuilder_.getMessageOrBuilder(index);
+        if (spendBuilder_ == null) {
+          return spend_.get(index);  } else {
+          return spendBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
@@ -3213,14 +4002,14 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
       public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> 
-           getGoodsOrBuilderList() {
-        if (goodsBuilder_ != null) {
-          return goodsBuilder_.getMessageOrBuilderList();
+           getSpendOrBuilderList() {
+        if (spendBuilder_ != null) {
+          return spendBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(goods_);
+          return java.util.Collections.unmodifiableList(spend_);
         }
       }
       /**
@@ -3228,10 +4017,10 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder addGoodsBuilder() {
-        return getGoodsFieldBuilder().addBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder addSpendBuilder() {
+        return getSpendFieldBuilder().addBuilder(
             cn.game.protocol.protobuf.BaseMsg.GoodsInfo.getDefaultInstance());
       }
       /**
@@ -3239,11 +4028,11 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder addGoodsBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder addSpendBuilder(
           int index) {
-        return getGoodsFieldBuilder().addBuilder(
+        return getSpendFieldBuilder().addBuilder(
             index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.getDefaultInstance());
       }
       /**
@@ -3251,25 +4040,25 @@ public final class RewardMsg {
        * 消耗的物品
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo goods = 1;</code>
+       * <code>repeated .Protos.GoodsInfo spend = 1;</code>
        */
       public java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder> 
-           getGoodsBuilderList() {
-        return getGoodsFieldBuilder().getBuilderList();
+           getSpendBuilderList() {
+        return getSpendFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
           cn.game.protocol.protobuf.BaseMsg.GoodsInfo, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder, cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> 
-          getGoodsFieldBuilder() {
-        if (goodsBuilder_ == null) {
-          goodsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          getSpendFieldBuilder() {
+        if (spendBuilder_ == null) {
+          spendBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BaseMsg.GoodsInfo, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder, cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder>(
-                  goods_,
+                  spend_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
-          goods_ = null;
+          spend_ = null;
         }
-        return goodsBuilder_;
+        return spendBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -4269,16 +5058,18 @@ public final class RewardMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017RewardMsg.proto\022\006Protos\032\rBaseMsg.proto" +
-      "\"\226\001\n\nRewardInfo\022\036\n\004item\030\001 \001(\0132\020.Protos.I" +
-      "temInfo\022\036\n\004role\030\002 \001(\0132\020.Protos.HeroInfo\022" +
-      "&\n\010resource\030\006 \001(\0132\024.Protos.ResourceInfo\022" +
-      " \n\005equip\030\007 \001(\0132\021.Protos.EquipInfo\":\n\023Rew" +
-      "ardPush_55000501\022#\n\007rewards\030\001 \003(\0132\022.Prot" +
-      "os.RewardInfo\"6\n\022SpendPush_55001501\022 \n\005g" +
-      "oods\030\001 \003(\0132\021.Protos.GoodsInfo\">\n\027RewardS" +
-      "howPush_55002501\022#\n\007rewards\030\001 \003(\0132\022.Prot" +
-      "os.RewardInfoB\033\n\031cn.game.protocol.protob" +
-      "ufb\006proto3"
+      "\"\374\001\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
+      "AssetInfo\022\036\n\004item\030\002 \001(\0132\020.Protos.ItemInf" +
+      "o\022\036\n\004role\030\003 \001(\0132\020.Protos.HeroInfo\022 \n\005equ" +
+      "ip\030\007 \001(\0132\021.Protos.EquipInfo\022(\n\007fashion\030\010" +
+      " \001(\0132\027.Protos.HeroFashionInfo\022\034\n\003gem\030\t \001" +
+      "(\0132\017.Protos.GemInfo\022\"\n\006dragon\030\n \001(\0132\022.Pr" +
+      "otos.DragonInfo\":\n\023RewardPush_55000501\022#" +
+      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"6\n\022S" +
+      "pendPush_55001501\022 \n\005spend\030\001 \003(\0132\021.Proto" +
+      "s.GoodsInfo\">\n\027RewardShowPush_55002501\022#" +
+      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfoB\033\n\031c" +
+      "n.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4290,7 +5081,7 @@ public final class RewardMsg {
     internal_static_Protos_RewardInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_RewardInfo_descriptor,
-        new java.lang.String[] { "Item", "Role", "Resource", "Equip", });
+        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", });
     internal_static_Protos_RewardPush_55000501_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_RewardPush_55000501_fieldAccessorTable = new
@@ -4302,7 +5093,7 @@ public final class RewardMsg {
     internal_static_Protos_SpendPush_55001501_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_SpendPush_55001501_descriptor,
-        new java.lang.String[] { "Goods", });
+        new java.lang.String[] { "Spend", });
     internal_static_Protos_RewardShowPush_55002501_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Protos_RewardShowPush_55002501_fieldAccessorTable = new

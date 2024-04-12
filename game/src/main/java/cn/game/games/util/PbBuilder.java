@@ -13,13 +13,7 @@ import java.util.Map.Entry;
 import com.google.common.collect.Multimap;
 
 import cn.game.core.base.ServerContext;
-import cn.game.games.cache.base.PlayerCacheFactory;
-import cn.game.games.cache.entity.BattleLevel;
-import cn.game.games.cache.entity.BattleRandomEvent;
 import cn.game.games.cache.entity.Buff;
-import cn.game.games.cache.entity.Chapter;
-import cn.game.games.cache.entity.Chip;
-import cn.game.games.cache.entity.ClimbingTower;
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Friend;
@@ -30,10 +24,7 @@ import cn.game.games.cache.entity.Member;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.cache.entity.QuestChallenge;
-import cn.game.games.cache.entity.Role;
-import cn.game.games.cache.entity.Story;
 import cn.game.games.cache.entity.Union;
-import cn.game.games.cache.op.impl.RoleOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.GameServer;
@@ -45,32 +36,23 @@ import cn.game.games.net.game.manager.UnionManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.award.RewardItem;
 import cn.game.games.net.game.module.chat.GroupAllInfo;
-import cn.game.games.net.game.module.equip.EquipModule;
-import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.store.StoreGoods;
-import cn.game.protocol.generated.config.OldGlobalConst;
-import cn.game.protocol.generated.config.RoleAttributeConfig;
-import cn.game.protocol.generated.enume.AttributeSubTypeEnum;
-import cn.game.protocol.generated.enume.AttributeTypeEnum;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
 import cn.game.protocol.generated.enume.MissionTypeEnum;
-import cn.game.protocol.generated.manager.RoleAttributeManager;
 import cn.game.protocol.protobuf.BaseMsg;
+import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
+import cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder;
 import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
-import cn.game.protocol.protobuf.BaseMsg.ResourceInfo;
-import cn.game.protocol.protobuf.BaseMsg.ResourceInfo.Builder;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
-import cn.game.protocol.protobuf.BaseMsg.SkillInfo;
 import cn.game.protocol.protobuf.BuffMsg;
 import cn.game.protocol.protobuf.BuffMsg.BuffInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupBriefInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
-import cn.game.protocol.protobuf.ClimbingTowerMsg.TowerPlayerInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo;
 import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
@@ -83,11 +65,8 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.StoreMsg.StoreGoodsInfo;
 import cn.game.protocol.protobuf.StoreMsg.StoreRecommendInfo;
-import cn.game.protocol.protobuf.StoryMsg.StoryInfo;
 import cn.game.protocol.protobuf.UnionMsg;
-import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
-import cn.game.util.FourTuple;
 import cn.game.util.Pair;
 
 public class PbBuilder {
@@ -148,24 +127,16 @@ public class PbBuilder {
 	public static EquipInfo buildEquipInfo(Equip e) {
 		EquipInfo.Builder builder = EquipInfo.newBuilder();
 		builder.setUid(e.getId() + "");
-		builder.setId(e.getDictId());
-//		builder.setStorage(e.getStorage());
-		builder.setRoleId(e.getRoleId());
-		builder.setSlot(e.getPos());
-		builder.addAllBuffs(e.getBuffList());
-//		builder.setStrength(e.getStrength());
+//		builder.setId(e.getDictId());
 		// TODO 其他属性
 		return builder.build();
 	}
 
-	
 
-
-	public static List<ResourceInfo> buildResourceInfo(Map<Integer, Integer> map) {
-		List<ResourceInfo> list = new ArrayList<>(map.size());
+	public static List<AssetInfo> buildResourceInfo(Map<Integer, Integer> map) {
+		List<AssetInfo> list = new ArrayList<>(map.size());
 		for (int key : map.keySet()) {
-			Builder b = ResourceInfo.newBuilder().setId(key).setCount(map.get(key));
-			list.add(b.build());
+			list.add(AssetInfo.newBuilder().setId(key).setCount(map.get(key)).build());
 		}
 		return list;
 	}
@@ -454,8 +425,8 @@ public class PbBuilder {
 			int type = ItemHelper.getGoodsType(item.getId());
 
 			if (type == GoodsTypeEnum.Resource.getId()) {
-				Builder b = ResourceInfo.newBuilder().setId(item.getId()).setCount(item.getCount());
-				reward.setResource(b);
+				Builder b = AssetInfo.newBuilder().setId(item.getId()).setCount(item.getCount());
+				reward.setAsset(b);
 
 			} else if (type == GoodsTypeEnum.Item.getId()) {
 				BaseMsg.ItemInfo.Builder itemInfo = BaseMsg.ItemInfo.newBuilder();

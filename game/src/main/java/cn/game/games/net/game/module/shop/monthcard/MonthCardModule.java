@@ -12,7 +12,6 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.MonthCardMapper;
-import cn.game.protocol.generated.config.InitConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -108,5 +107,10 @@ public class MonthCardModule extends BasePlayerModule {
 		for (MonthCard monthCard : monthCards.values()) {
 			builder.addMonthCards(monthCard.toProto());
 		}
+	}
+
+	public boolean hasMonthCard() {
+		return !monthCards.isEmpty();
+
 	}
 }

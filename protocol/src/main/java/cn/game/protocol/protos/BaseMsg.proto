@@ -10,16 +10,9 @@ message ItemInfo{
      uint32 count = 2;		//道具数量
 }
 
-// 货币
-message CurrencyInfo{
-     uint32 id = 1;		//资源id。ResourceEnum的id
-     uint64 count = 2;		//资源数量
-}
-
-// 资源信息，角色资源
-message ResourceInfo{
-
-     uint32 id = 1;		//资源id。ResourceEnum的id
+// 资源数据
+message AssetInfo{
+     uint32 id = 1;		//资源id。Asset表的id
      uint64 count = 2;		//资源数量
 }
 
@@ -30,18 +23,49 @@ message GoodsInfo{
      uint32 count = 2;		//数量
 }
 
+message MoneyRecoverInfo{
+     uint32 id = 1;		//id，Money表id
+     uint32 time = 2;		//上次恢复的时间戳（秒）
+}
+
 // 英雄信息
 message HeroInfo{
 	string uid = 1;//英雄唯一id
-	uint32 configId = 2;//Hero配置表id
+	uint32 configId = 2;//Hero配置表 ID
 	uint32 level = 3;//等级
 	uint32 star = 4 ;// 星级
-	uint32 getTime = 11; // 英雄获取时间（时间戳，秒数）
+	string fashionUid = 5 ;// 穿戴的时装唯一id
+}
+// 英雄武器
+message HeroSwordInfo{
+	string uid = 1;//武器唯一id
+	uint32 configId = 2;//HeroSword配置表 ID
+	uint32 star = 3 ;// 星级
+}
+//英雄装备
+message EquipInfo{
+  string uid	   = 1; //唯一id
+  uint32 configId  = 2; //HeroEquip配置表id
+  map<uint32, uint32> attrs = 6; //装备附加属性条目
+}
+//装备部位，1-头盔2-披风3-衣服4-项链5-戒指6-靴子，对应HeroEquip的ItemType。
+message EquipPartInfo{
+  uint32 type  = 1; //部位类型，1-6
+  uint32 strength = 2; //强化等级
+  uint32 breakthrough = 3; //突破等级
+  string equipUid	 = 4; //这个装备部位上安装的装备唯一id
+  repeated string gemUids	 = 5; //这个装备部位上安装的宝石唯一id
+}
+// 英雄时装
+message HeroFashionInfo{
+	string uid = 1;//时装唯一id
+	uint32 configId = 2;//HeroFashion配置表 ID
+	uint32 star = 3 ;// 星级
 }
 
 //英雄属性信息
 message HeroAttrInfo{
-	uint32 id 	 = 1;// RoleAttribute 表的id
+	uint32 id 	 = 1;//
 	uint32 value = 2;// 属性值
 }
 
@@ -50,6 +74,21 @@ message HeroAttrPointInfo{
 	uint32 id 	 = 1;// AttributeTypeEnum 表的id
 	uint32 value = 2;// 属性点数
 }
+
+// 宝石数据
+message GemInfo{
+  string uid	   = 1; //唯一id
+  uint32 configId  = 2; //Gem配置表id
+  map<uint32, uint32> attrs = 3; //宝石附加属性条目
+  bool isLock = 4;  // 锁定状态，true：锁定了。
+}
+
+// 龙数据
+message DragonInfo{
+  uint32 id  = 1; //Dragon配置表id
+  uint32 star  = 2; //Dragon星级
+}
+
 
 //技能信息
 message SkillInfo{
@@ -77,16 +116,6 @@ message PlayerShowInfo{
 	string guild = 2; 		// 公会名称
 	uint32 combat = 3; 		// 战斗力
 	uint32 praisedCount = 4 ; 		// 被点赞数量
-}
-
-//装备数据
-message EquipInfo{
-  string uid	   = 1; //唯一id
-  uint32 id  = 2; //配置表id
-  uint32 roleId = 3; //所属角色id
-  uint32 slot = 4; //所在槽位
-  repeated uint32 buffs = 5; //效果id
-  uint32 strength = 6; //强化等级
 }
 
 message PaymentOrderProto{

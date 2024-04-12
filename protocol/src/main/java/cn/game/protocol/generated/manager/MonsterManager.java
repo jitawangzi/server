@@ -23,12 +23,12 @@ public class MonsterManager extends ResourceListener {
 	private static MonsterManager instance = new MonsterManager();
 	private static final String xmlFileName = "Monster";
 	
+	/** 总数据，按id取值 */
 	private Map<Integer, MonsterConfig> monsters = new HashMap<>();
 
-	public static MonsterManager getInstance() {
+	public static MonsterManager instance() {
 		return instance;
 	}
-
 	private MonsterManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -55,13 +55,15 @@ public class MonsterManager extends ResourceListener {
 		return this.monsters.get(id);
 	}
 
+	/**
+	 * 获取所有数据
+	 * @return
+	 */
 	public Collection<MonsterConfig> list() {
 		return this.monsters.values();
 	}
-
 	@Override
 	public void load() {
-
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
@@ -70,7 +72,10 @@ public class MonsterManager extends ResourceListener {
 			Map<Integer, MonsterConfig> monsters = new HashMap<>();
 			for (Element e : list) {
 				MonsterConfig monster = new MonsterConfig(e);
-				monsters.put(monster.getID(), monster);
+				MonsterConfig old = monsters.put(monster.ID, monster);
+				if (old != null) {
+					throw new IllegalArgumentException("[MonsterConfig]表存在重复的数据id： " + old.ID);
+				}
 			}			
 
 			this.monsters = com.google.common.collect.ImmutableMap.copyOf(monsters);

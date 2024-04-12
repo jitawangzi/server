@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.player;
 
-import cn.game.protocol.generated.enume.Money;
 import cn.game.util.MapWrapper;
 
 /**    

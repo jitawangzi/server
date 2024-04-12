@@ -57,6 +57,7 @@ import org.w3c.dom.Element;
 					array[j] = temp;
 				}
 				RewardsTemp[i] = array;
+				
 			}
 			Rewards = RewardsTemp ;			
 		} else {
@@ -87,6 +88,7 @@ import org.w3c.dom.Element;
 					array[j] = temp;
 				}
 				ReardListTemp[i] = array;
+				
 			}
 			ReardList = ReardListTemp ;			
 		} else {

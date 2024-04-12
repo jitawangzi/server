@@ -1,14 +1,14 @@
 package cn.game.games.net.game.module.player;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -19,14 +19,17 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.PlayerIdsMapper;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.enume.Money;
+import cn.game.protocol.generated.config.UserUpgradeConfig;
+import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import io.vertx.core.Promise;
 
 public class PlayerModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE,
-			EventTypeEnum.LoginFinish, EventTypeEnum.Reconnect, EventTypeEnum.ResourceRemove };
+			EventTypeEnum.LoginFinish, EventTypeEnum.Reconnect, EventTypeEnum.LevelUp, EventTypeEnum.ResourceRemove };
 
 	/** 玩家拥有的各种id集合，通常是只增加新id，并且id不能重复。 key1:type ,key2:configId*/
 	private Map<Integer, Map<Integer, PlayerIds>> idsMap = new HashMap<Integer, Map<Integer, PlayerIds>>();
@@ -98,6 +101,11 @@ public class PlayerModule extends BasePlayerModule {
 		return map.get(configId);
 	}
 
+	public Collection<PlayerIds> getIds(int type) {
+		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
+		return map.values();
+	}
+
 	public Map<Integer, PlayerIds> getOrCreateIdMap(int type) {
 		Map<Integer, PlayerIds> map = idsMap.get(type);
 		if (map == null) {
@@ -124,6 +132,13 @@ public class PlayerModule extends BasePlayerModule {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.setPlayer(player.toProto());
+		Map<Integer, Long> levelMap = player.getLevelMap().getMap();
+		Iterator<Entry<Integer, Long>> iterator = levelMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<java.lang.Integer, java.lang.Long> entry = (Map.Entry<java.lang.Integer, java.lang.Long>) iterator
+					.next();
+			builder.putLevels(entry.getKey(), entry.getValue().intValue());
+		}
 
 		// 礼包
 		Map<Integer, PlayerIds> map = idsMap.get(IdConstant.SHOP_GIFT);
@@ -145,6 +160,17 @@ public class PlayerModule extends BasePlayerModule {
 		}
 		case Reconnect: {
 			player.setActive(true);
+			break;
+		}
+		case LevelUp: {
+			int exp = event.getIntParameter(0);
+			int level = event.getIntParameter(1);
+			if (exp == Asset.playerExp.ID) {
+				// 给等级奖励
+				UserUpgradeConfig userUpgradeConfig = UserUpgradeManager.instance().get(level);
+				PlayerHelper.addReward(player, userUpgradeConfig.LvRewardID);
+			}
+
 			break;
 		}
 		case ResourceRemove: {

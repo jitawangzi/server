@@ -44,7 +44,6 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.OldBuffConfig;
 import cn.game.protocol.generated.config.RandomNameConfig;
 import cn.game.protocol.generated.enume.EffectEnum;
-import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.HeadBoxManager;
 import cn.game.protocol.generated.manager.HeadPortraitManager;
@@ -60,6 +59,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherResponse_0100000a
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoResponse_01000008;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderResponse_01000018;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameResponse_01000016;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013;
@@ -121,6 +122,7 @@ public class PlayerHandler extends BaseHandler {
 //		putInvoker(PbProtocol.PlayerLoginRequest_01000055, this::pcChoose);
 		putInvoker(PbProtocol.PlayerReconnecRequest_01000065, this::reconnect);
 		putInvoker(PbProtocol.PlayerNameRequest_01000011, this::rename);
+		putInvoker(PbProtocol.PlayerGenderRequest_01000017, this::gender);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
 	}
 
@@ -549,6 +551,25 @@ public class PlayerHandler extends BaseHandler {
 		player.getData().setName(newName);
 		client.sendProtocol(resp);
 	}
+
+	protected void gender(NetClient client, Object message) {
+
+		PlayerGenderRequest_01000017 request = (PlayerGenderRequest_01000017) message;
+		PlayerGenderResponse_01000018.Builder resp = PlayerGenderResponse_01000018.newBuilder();
+		boolean isMan = request.getIsMan();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		int var = player.getVarModule().getVar(VarConstant.GENDER_COUNT);
+		if (var > 0) {
+			// 检查消耗的资源TODO
+//			player.isEnough(var, var); 
+		}
+		if (var == 0) {
+			player.getVarModule().incrVar(VarConstant.GENDER_COUNT);
+		}
+		player.getData().setGender(isMan);
+		client.sendProtocol(resp);
+	}
 	protected void login(NetClient client, Object message) {
 
 		PlayerMsg.PlayerLoginRequest_01000001 req = (PlayerLoginRequest_01000001) message;
@@ -606,7 +627,7 @@ public class PlayerHandler extends BaseHandler {
 				RFuture<Boolean> playerLockFuture = PlayerHelper.trySetServerId(uid.get());
 				playerLockFuture.onComplete((v,throwable) -> {
 					if (v) {
-						createPlayer(client, uid.longValue(), null, false, 0, false, true);
+						createPlayer(client, uid.longValue(), null, true, 0, false, true);
 					}else {
 						failHandler.handle(OldErrorMsgEnum.player_lock.getId());
 						log.error("create player error  ", throwable);
@@ -809,8 +830,8 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setUid(uid);
 		playerData.setGender(isMan);
 		playerData.setCreateDate(DateUtil.getStringDate());
-		playerData.setLevel(1);
-		playerData.getHotData().getLevelMap().setValue(Money.playerExp.ID, 1);
+//		playerData.setLevel(1);
+//		playerData.getHotData().getLevelMap().setValue(Asset.playerExp.ID, 1);
 //		player.getData().setName(create.getName());
 		// 随机一个名字
 		name = randomName();

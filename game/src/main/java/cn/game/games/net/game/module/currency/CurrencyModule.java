@@ -11,12 +11,11 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.generated.config.ExpConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
-import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.ResourceConsumeEnum;
-import cn.game.protocol.protobuf.BaseMsg.CurrencyInfo;
-import cn.game.protocol.protobuf.BaseMsg.ResourceInfo;
+import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.MapWrapper;
@@ -45,7 +44,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 			return new Currency(configId, 0);
 		}
 		ItemHelper.checkConfig(configId);
-		Money money = Money.get(configId);
+		Asset money = Asset.get(configId);
 		if (money.Type == 2) {
 			addExp(configId, count);
 		} else {
@@ -94,22 +93,19 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	@Override
 	public RewardInfo toRewardInfo(Currency reward) {
 		return RewardInfo.newBuilder()
-				.setResource(ResourceInfo.newBuilder().setId(reward.getConfigId()).setCount(reward.getCount())).build();
+				.setAsset(AssetInfo.newBuilder().setId(reward.getConfigId()).setCount(reward.getCount())).build();
 
 	}
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		Map<Integer, Long> currencyMap = player.getCurrencyMap().getMap();
-		currencyMap.forEach((k, v) -> {
-			builder.addCurrencys(CurrencyInfo.newBuilder().setId(k).setCount(v));
-		});
+		builder.putAllAssets(currencyMap);
 	}
 
 	@Override
 	public void initAddCache(Currency item) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -154,7 +150,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	}
 
 	public ExpConfig getExpConfig(int id, int level) {
-		if (id == Money.playerExp.ID) {
+		if (id == Asset.playerExp.ID) {
 			return UserUpgradeManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);

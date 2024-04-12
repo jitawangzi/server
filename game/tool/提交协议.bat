@@ -6,6 +6,6 @@ git pull
 git add all.proto ProtosMessageID.ts ProtosMessageName.ts
 git commit -m "update proto"
 REM 推送到远程仓库
-git push origin main
+git push origin Branch_Almost
 
 pause

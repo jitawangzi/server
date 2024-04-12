@@ -9,35 +9,28 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.equip.EquipModule;
-import cn.game.games.net.game.module.item.BagGrid;
 import cn.game.games.net.game.module.item.ItemModule;
-import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.BattlePassConfig;
 import cn.game.protocol.generated.config.BattlePassPrizeConfig;
-import cn.game.protocol.generated.config.ChipAttributeConfig;
 import cn.game.protocol.generated.config.ItemConsumablesConfig;
 import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.config.OldItemConfig;
 import cn.game.protocol.generated.config.RewardConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
-import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.generated.manager.BattlePassManager;
 import cn.game.protocol.generated.manager.BattlePassPrizeManager;
-import cn.game.protocol.generated.manager.ChipAttributeManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemConsumablesManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OldItemManager;
 import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.manual.OldErrorMsgEnum;
-import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
@@ -53,7 +46,7 @@ public class ItemHelper {
 		GoodsTypeEnum goodsTypeEnum = GoodsTypeEnum.get(getGoodsType(id));
 		switch (goodsTypeEnum) {
 		case Resource: {
-			Money.get(id);
+			Asset.get(id);
 			break;
 		}
 		case Item: {
@@ -116,15 +109,6 @@ public class ItemHelper {
 
 		GoodsModule goodsModule = player.getGoodsModule(ItemHelper.getGoodsType(id));
 		return goodsModule.getCount(id);
-	}
-
-	public static List<ChipAttributeConfig> getAttributeConfigList(int color, int quality, int type) {
-		int attributeId = color * 100 + quality * 10 + type;
-		List<ChipAttributeConfig> attrlist = ChipAttributeManager.getInstance().getIndexList(attributeId);
-		if (attrlist == null || attrlist.size() == 0) {
-			throw new IllegalArgumentException("芯片属性id不存在" + attributeId);
-		}
-		return attrlist;
 	}
 
 	public static int getBattlePassId() {

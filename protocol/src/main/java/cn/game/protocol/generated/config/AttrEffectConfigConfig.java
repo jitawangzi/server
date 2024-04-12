@@ -2,6 +2,7 @@ package cn.game.protocol.generated.config;
 
 import org.w3c.dom.Element;
 
+
 /**
  * 属性Id表
  * 
@@ -9,40 +10,29 @@ import org.w3c.dom.Element;
  */
  public class AttrEffectConfigConfig {
 
-	/** ID */
-	private final int ID;		
-	/** 游戏属性名称 */
-	private final String AttributeName;		
+	/** 属性ID */
+	public final int ID;		
+	/** 属性名称 */
+	public final String AttributeName;		
+	/** 影响技能组ID  调用HeroSkill——HeroSkillGroup#技能组——ID */
+	public final int HeroSkillGroupId;		
 	/** 1-数值 2-百分比 */
-	private final int AttributeType;		
-	/** 战力系数 */
-	private final int CombatEffectiveness;		
+	public final int AttributeType;		
+	/** 战力系数 需要/10000用 */
+	public final int CombatEffectiveness;		
 
 	public AttrEffectConfigConfig (Element element) throws Exception {
 	
-		this.ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // ID
-		this.AttributeName = element.getAttribute("AttributeName"); // 游戏属性名称
-		this.AttributeType = Integer.parseInt(element.getAttribute("AttributeType") == null || element.getAttribute("AttributeType").length() == 0 ? "0"
+		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
+			: element.getAttribute("ID")); // 属性ID
+		AttributeName = element.getAttribute("AttributeName"); // 属性名称
+		HeroSkillGroupId = Integer.parseInt(element.getAttribute("HeroSkillGroupId") == null || element.getAttribute("HeroSkillGroupId").length() == 0 ? "0"
+			: element.getAttribute("HeroSkillGroupId")); // 影响技能组ID  调用HeroSkill——HeroSkillGroup#技能组——ID
+		AttributeType = Integer.parseInt(element.getAttribute("AttributeType") == null || element.getAttribute("AttributeType").length() == 0 ? "0"
 			: element.getAttribute("AttributeType")); // 1-数值 2-百分比
-		this.CombatEffectiveness = Integer.parseInt(element.getAttribute("CombatEffectiveness") == null || element.getAttribute("CombatEffectiveness").length() == 0 ? "0"
-			: element.getAttribute("CombatEffectiveness")); // 战力系数
+		CombatEffectiveness = Integer.parseInt(element.getAttribute("CombatEffectiveness") == null || element.getAttribute("CombatEffectiveness").length() == 0 ? "0"
+			: element.getAttribute("CombatEffectiveness")); // 战力系数 需要/10000用
 	}
 	
-	public int getID() {
-		return ID;
-	}
-	
-	public String getAttributeName() {
-		return AttributeName;
-	}
-	
-	public int getAttributeType() {
-		return AttributeType;
-	}
-	
-	public int getCombatEffectiveness() {
-		return CombatEffectiveness;
-	}
-	
+
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.base.PlayerCacheFactory;
+import cn.game.games.cache.entity.ConditionCount;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
@@ -39,9 +41,9 @@ import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.OccupationTalentNodeConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
 import cn.game.protocol.generated.enume.MissionTypeEnum;
-import cn.game.protocol.generated.enume.ResourceEnum;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OccupationTalentNodeManager;
@@ -286,10 +288,17 @@ public class TestHandler extends BaseHandler {
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
 //		PlayerManager.getInstance().saveClientCache(playerId);
 		
+//		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
+
+		MultiKeyMap<Integer, ConditionCount> conditionCountMap = player.getQuestModule().getConditionCountMap();
+		System.out.println(conditionCountMap);
+
 		new Thread(() -> {
 			GameClientManager.getInstance().storeAllPlayers();
 		}).start();
 		
+
+
 //		System.out.println();
 //		PlayerHelper.refresh(player);
 //		for (int i = 0; i < 100000; i++) {
@@ -429,11 +438,11 @@ public class TestHandler extends BaseHandler {
 					return;
 				}
 				if (goodsType == GoodsTypeEnum.Resource.getId()) {
-					for (ResourceEnum resourceEnum : ResourceEnum.values()) {
+					for (Asset resourceEnum : Asset.values()) {
 //						if (resourceEnum.getType() == 2 && !inExplore) {
 //							continue;
 //						}
-						rewardItems = PlayerHelper.addResources(playerId, resourceEnum.getId(), 1000000);
+						rewardItems = PlayerHelper.addResources(playerId, resourceEnum.ID, 1000000);
 						allRewards.addAll(rewardItems);
 					}
 
@@ -450,6 +459,10 @@ public class TestHandler extends BaseHandler {
 						rewardItems = PlayerHelper.addResources(playerId, e.ID, 1);
 						allRewards.addAll(rewardItems);
 					}
+				} else {
+
+					List<RewardInfo> tmp = PlayerHelper.addResources(playerId, id, count);
+					allRewards.addAll(tmp);
 				}
 //				else if (goodsType == GoodsTypeEnum.Role.getId()) {
 //					Collection<RoleConfig> list = RoleManager.getInstance().list();

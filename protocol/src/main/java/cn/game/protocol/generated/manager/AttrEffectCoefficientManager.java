@@ -23,12 +23,12 @@ public class AttrEffectCoefficientManager extends ResourceListener {
 	private static AttrEffectCoefficientManager instance = new AttrEffectCoefficientManager();
 	private static final String xmlFileName = "AttrEffectCoefficient";
 	
+	/** 总数据，按id取值 */
 	private Map<Integer, AttrEffectCoefficientConfig> attreffectcoefficients = new HashMap<>();
 
-	public static AttrEffectCoefficientManager getInstance() {
+	public static AttrEffectCoefficientManager instance() {
 		return instance;
 	}
-
 	private AttrEffectCoefficientManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -55,13 +55,15 @@ public class AttrEffectCoefficientManager extends ResourceListener {
 		return this.attreffectcoefficients.get(id);
 	}
 
+	/**
+	 * 获取所有数据
+	 * @return
+	 */
 	public Collection<AttrEffectCoefficientConfig> list() {
 		return this.attreffectcoefficients.values();
 	}
-
 	@Override
 	public void load() {
-
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
@@ -70,7 +72,10 @@ public class AttrEffectCoefficientManager extends ResourceListener {
 			Map<Integer, AttrEffectCoefficientConfig> attreffectcoefficients = new HashMap<>();
 			for (Element e : list) {
 				AttrEffectCoefficientConfig attreffectcoefficient = new AttrEffectCoefficientConfig(e);
-				attreffectcoefficients.put(attreffectcoefficient.getID(), attreffectcoefficient);
+				AttrEffectCoefficientConfig old = attreffectcoefficients.put(attreffectcoefficient.ID, attreffectcoefficient);
+				if (old != null) {
+					throw new IllegalArgumentException("[AttrEffectCoefficientConfig]表存在重复的数据id： " + old.ID);
+				}
 			}			
 
 			this.attreffectcoefficients = com.google.common.collect.ImmutableMap.copyOf(attreffectcoefficients);

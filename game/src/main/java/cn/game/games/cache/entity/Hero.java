@@ -319,7 +319,7 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 		builder.setStar(star);
 		builder.setLevel(level);
 //		builder.setExp(this.exp); 
-		builder.setGetTime(getTime.intValue());
+//		builder.setGetTime(getTime.intValue());
 
 		return builder.build();
 	}

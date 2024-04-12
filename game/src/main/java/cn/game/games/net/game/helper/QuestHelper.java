@@ -1,9 +1,7 @@
 package cn.game.games.net.game.helper;
 
 import cn.game.games.cache.entity.Quest;
-import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.generated.config.MainlineMissionConfig;
 import cn.game.protocol.generated.config.MissionConfig;
 import cn.game.protocol.generated.enume.MissionTypeEnum;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
@@ -117,18 +115,18 @@ public class QuestHelper {
 		//  目前只有主线和支线的任务，带命令
 		MissionConfig missionConfig = QuestHelper.getMissionConfig(quest.getId());
 		if (missionConfig != null) {
-			if (missionConfig instanceof MainlineMissionConfig) {
-				MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) missionConfig;
-				if (!mainlineMissionConfig.getConditionalCommand().isEmpty()) {
-					Condition require = quest.getRequire(cond);
-					if (require != null) {
-						int cmd = mainlineMissionConfig.getConditionalCommand().get(require.getIndex());
-						if (cmd != 0) {
-							PlayerHelper.command(quest.getPlayerId(), cmd);
-						}
-					}
-				}
-			}
+//			if (missionConfig instanceof MainlineMissionConfig) {
+//				MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) missionConfig;
+//				if (!mainlineMissionConfig.getConditionalCommand().isEmpty()) {
+//					Condition require = quest.getRequire(cond);
+//					if (require != null) {
+//						int cmd = mainlineMissionConfig.getConditionalCommand().get(require.getIndex());
+//						if (cmd != 0) {
+//							PlayerHelper.command(quest.getPlayerId(), cmd);
+//						}
+//					}
+//				}
+//			}
 		}
 	}
 

@@ -2,84 +2,69 @@ package cn.game.protocol.generated.config;
 
 import org.w3c.dom.Element;
 
+
 /**
- * 怪物
+ * 怪物属性
  * 
  * 工具生成的，不要手动修改
  */
  public class MonsterConfig {
 
-	/** 怪物ID——被关卡表调用 第1位打头： 1-英雄 2-怪物 3-小头目（在小怪中随机出现） 4-大BOSS（头上N个血条，进入会有boss来袭） */
-	private final int ID;		
-	/** 怪物名称 */
-	private final String name;		
-	/** 怪物类型 1-小怪 2-小boss（在小怪中随机出现） 3-大BOSS（头上N个血条，进入会有boss来袭） */
-	private final int CareerType;		
-	/** 怪物职业及固定站位 1-骑士[前排1] 2-战士[前排2] 3-刺客[前排3] 4-法师[后排1] 5-牧师[后排2] 6-射手[后排3] */
-	private final int Career;		
-	/** 怪物i说明 */
-	private final String MonsterTips;		
-	/** 怪物属性id  调用MonsterAttribute#怪物属性第1列id */
-	private final String MonsterAttributeID;		
-	/** 怪物技能 调用skill表中Skill#技能分页id  其中skill表中StatusGroup列，包含星级增长技能效果 */
-	private final int MonsterSkill;		
-	/** 怪物技能装填时间  毫秒 */
-	private final int SkillLoadingTime;		
-	/** 资源id  调用ArtResource表 */
-	private final String ArtResourceID;		
+	/** 怪物ID */
+	public final int ID;		
+	/** 移动速度 */
+	public final int MoveSpeed;		
+	/** 攻击速度 */
+	public final int AtkSpeed;		
+	/** 生命 */
+	public final int HP;		
+	/** 攻击 */
+	public final int Attack;		
+	/** 怪物资源 */
+	public final String EnemyResPath;		
+	/** 技能ID */
+	public final int SkillID;		
+	/** 出生动作 */
+	public final String BornAct;		
+	/** 移动动作 */
+	public final String MoveAct;		
+	/** 攻击动作 */
+	public final String AtkAct;		
+	/** 受击动作 */
+	public final String HurtedAct;		
+	/** 死亡动作 */
+	public final String DieAct;		
+	/** 移动特效 */
+	public final String MoveEffect;		
+	/** 出生特效 */
+	public final String BornEffect;		
+	/** 出生音效 */
+	public final String BornAudio;		
 
 	public MonsterConfig (Element element) throws Exception {
 	
-		this.ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // 怪物ID——被关卡表调用 第1位打头： 1-英雄 2-怪物 3-小头目（在小怪中随机出现） 4-大BOSS（头上N个血条，进入会有boss来袭）
-		this.name = element.getAttribute("name"); // 怪物名称
-		this.CareerType = Integer.parseInt(element.getAttribute("CareerType") == null || element.getAttribute("CareerType").length() == 0 ? "0"
-			: element.getAttribute("CareerType")); // 怪物类型 1-小怪 2-小boss（在小怪中随机出现） 3-大BOSS（头上N个血条，进入会有boss来袭）
-		this.Career = Integer.parseInt(element.getAttribute("Career") == null || element.getAttribute("Career").length() == 0 ? "0"
-			: element.getAttribute("Career")); // 怪物职业及固定站位 1-骑士[前排1] 2-战士[前排2] 3-刺客[前排3] 4-法师[后排1] 5-牧师[后排2] 6-射手[后排3]
-		this.MonsterTips = element.getAttribute("MonsterTips"); // 怪物i说明
-		this.MonsterAttributeID = element.getAttribute("MonsterAttributeID"); // 怪物属性id  调用MonsterAttribute#怪物属性第1列id
-		this.MonsterSkill = Integer.parseInt(element.getAttribute("MonsterSkill") == null || element.getAttribute("MonsterSkill").length() == 0 ? "0"
-			: element.getAttribute("MonsterSkill")); // 怪物技能 调用skill表中Skill#技能分页id  其中skill表中StatusGroup列，包含星级增长技能效果
-		this.SkillLoadingTime = Integer.parseInt(element.getAttribute("SkillLoadingTime") == null || element.getAttribute("SkillLoadingTime").length() == 0 ? "0"
-			: element.getAttribute("SkillLoadingTime")); // 怪物技能装填时间  毫秒
-		this.ArtResourceID = element.getAttribute("ArtResourceID"); // 资源id  调用ArtResource表
+		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
+			: element.getAttribute("ID")); // 怪物ID
+		MoveSpeed = Integer.parseInt(element.getAttribute("MoveSpeed") == null || element.getAttribute("MoveSpeed").length() == 0 ? "0"
+			: element.getAttribute("MoveSpeed")); // 移动速度
+		AtkSpeed = Integer.parseInt(element.getAttribute("AtkSpeed") == null || element.getAttribute("AtkSpeed").length() == 0 ? "0"
+			: element.getAttribute("AtkSpeed")); // 攻击速度
+		HP = Integer.parseInt(element.getAttribute("HP") == null || element.getAttribute("HP").length() == 0 ? "0"
+			: element.getAttribute("HP")); // 生命
+		Attack = Integer.parseInt(element.getAttribute("Attack") == null || element.getAttribute("Attack").length() == 0 ? "0"
+			: element.getAttribute("Attack")); // 攻击
+		EnemyResPath = element.getAttribute("EnemyResPath"); // 怪物资源
+		SkillID = Integer.parseInt(element.getAttribute("SkillID") == null || element.getAttribute("SkillID").length() == 0 ? "0"
+			: element.getAttribute("SkillID")); // 技能ID
+		BornAct = element.getAttribute("BornAct"); // 出生动作
+		MoveAct = element.getAttribute("MoveAct"); // 移动动作
+		AtkAct = element.getAttribute("AtkAct"); // 攻击动作
+		HurtedAct = element.getAttribute("HurtedAct"); // 受击动作
+		DieAct = element.getAttribute("DieAct"); // 死亡动作
+		MoveEffect = element.getAttribute("MoveEffect"); // 移动特效
+		BornEffect = element.getAttribute("BornEffect"); // 出生特效
+		BornAudio = element.getAttribute("BornAudio"); // 出生音效
 	}
 	
-	public int getID() {
-		return ID;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public int getCareerType() {
-		return CareerType;
-	}
-	
-	public int getCareer() {
-		return Career;
-	}
-	
-	public String getMonsterTips() {
-		return MonsterTips;
-	}
-	
-	public String getMonsterAttributeID() {
-		return MonsterAttributeID;
-	}
-	
-	public int getMonsterSkill() {
-		return MonsterSkill;
-	}
-	
-	public int getSkillLoadingTime() {
-		return SkillLoadingTime;
-	}
-	
-	public String getArtResourceID() {
-		return ArtResourceID;
-	}
-	
+
 }

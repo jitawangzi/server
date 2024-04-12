@@ -83,7 +83,6 @@ import org.w3c.dom.Element;
 					array[j] = temp;
 				}
 				HitTypeParamTemp[i] = array;
-				
 			}
 			HitTypeParam = HitTypeParamTemp ;			
 		} else {

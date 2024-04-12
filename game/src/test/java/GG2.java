@@ -1,23 +1,27 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 
-import cn.game.protocol.generated.config.RoleFettersConfig;
-import cn.game.protocol.generated.manager.RoleFettersManager;
-import cn.game.util.BinarySearch;
+import cn.game.util.JsonUtil;
 
 public class GG2 {
 
 	public static void main(String[] args) throws Exception {
 		
-		Collection<RoleFettersConfig> cc = RoleFettersManager.getInstance().list(); 
+		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+		map.put(1, 3);
+		map.put(2, 3);
 		
-		List<RoleFettersConfig> list = new ArrayList<>();
-		list.addAll(cc) ; 
-		RoleFettersConfig config = new RoleFettersConfig(null) ; 
+		String jsonString = JsonUtil.toJsonString(map);
+		System.out.println(jsonString);
 		
-		BinarySearch.searchFirstBig(list, config); 
 		
+//		Collection<RoleFettersConfig> cc = RoleFettersManager.getInstance().list(); 
+//		
+//		List<RoleFettersConfig> list = new ArrayList<>();
+//		list.addAll(cc) ; 
+//		RoleFettersConfig config = new RoleFettersConfig(null) ; 
+//		
+//		BinarySearch.searchFirstBig(list, config); 
+//		
 	}
 
 }

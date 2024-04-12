@@ -23,12 +23,12 @@ public class AttrEffectConfigManager extends ResourceListener {
 	private static AttrEffectConfigManager instance = new AttrEffectConfigManager();
 	private static final String xmlFileName = "AttrEffectConfig";
 	
+	/** 总数据，按id取值 */
 	private Map<Integer, AttrEffectConfigConfig> attreffectconfigs = new HashMap<>();
 
-	public static AttrEffectConfigManager getInstance() {
+	public static AttrEffectConfigManager instance() {
 		return instance;
 	}
-
 	private AttrEffectConfigManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -55,13 +55,15 @@ public class AttrEffectConfigManager extends ResourceListener {
 		return this.attreffectconfigs.get(id);
 	}
 
+	/**
+	 * 获取所有数据
+	 * @return
+	 */
 	public Collection<AttrEffectConfigConfig> list() {
 		return this.attreffectconfigs.values();
 	}
-
 	@Override
 	public void load() {
-
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
@@ -70,7 +72,10 @@ public class AttrEffectConfigManager extends ResourceListener {
 			Map<Integer, AttrEffectConfigConfig> attreffectconfigs = new HashMap<>();
 			for (Element e : list) {
 				AttrEffectConfigConfig attreffectconfig = new AttrEffectConfigConfig(e);
-				attreffectconfigs.put(attreffectconfig.getID(), attreffectconfig);
+				AttrEffectConfigConfig old = attreffectconfigs.put(attreffectconfig.ID, attreffectconfig);
+				if (old != null) {
+					throw new IllegalArgumentException("[AttrEffectConfigConfig]表存在重复的数据id： " + old.ID);
+				}
 			}			
 
 			this.attreffectconfigs = com.google.common.collect.ImmutableMap.copyOf(attreffectconfigs);

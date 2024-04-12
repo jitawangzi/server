@@ -1,0 +1,44 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+package Protos;
+import "BaseMsg.proto" ;
+
+// 宝石协议
+//宝石镶嵌/替换
+message GemWearRequest_10000001 {
+  string uid = 1; //唯一id
+  int32 pos = 2; // 镶嵌位置： 0、1、2、3、4
+}
+
+message GemWearResponse_10000002 {
+
+}
+
+//宝石卸下
+message GemTeardownRequest_10000003 {
+  string uid = 1; //唯一id
+}
+
+message GemTeardownResponse_10000004 {
+
+}
+
+//宝石锁定
+message GemLockRequest_10000005 {
+  string uid = 1; //唯一id
+  bool lock = 2;   // true 锁定,false  解锁
+}
+
+message GemLockResponse_10000006 {
+
+}
+
+
+//宝石合成/一键合成
+message GemComposeRequest_10000007 {
+  repeated string uids = 1; //已有的宝石
+}
+
+message GemComposeResponse_10000008 {
+  repeated GemInfo gems = 1;// 合成的新的宝石
+}

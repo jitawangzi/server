@@ -13,7 +13,10 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.player.IdConstant;
+import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
+import cn.game.protocol.generated.config.AssetRestoreConfig;
 import cn.game.protocol.generated.config.MoneyRecoveryConfig;
+import cn.game.protocol.generated.manager.AssetRestoreManager;
 import cn.game.protocol.generated.manager.MoneyRecoveryManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
@@ -106,11 +109,16 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	 * @return
 	 */
 	private int getRecoverMax(int id) {
-		MoneyRecoveryConfig recoveryConfig = MoneyRecoveryManager.instance().get(id);
-		int max = recoveryConfig.max;
-		if (recoveryConfig.maxType == 1) {
-			max += 0; // 月卡
+		AssetRestoreConfig assetRestoreConfig = AssetRestoreManager.instance().get(id);
+		int max = assetRestoreConfig.maxShow;
+		if (assetRestoreConfig.maxType == 1) {
+			// 此处需要加月卡体力
+			MonthCardModule module = player.getModule(MonthCardModule.class);
+			if (module.hasMonthCard()) {
+				max += assetRestoreConfig.maxValue;
+			}
 		}
+		max *= assetRestoreConfig.maxMultiple;
 		return max;
 	}
 
@@ -139,6 +147,10 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 
+		Collection<PlayerIds> ids = player.getPlayerModule().getIds(IdConstant.MONEY_RECOVERY);
+		for (PlayerIds playerIds : ids) {
+			builder.putAssetRecover(playerIds.getConfigId(), (int) (playerIds.getUpdateTime() / 1000));
+		}
 	}
 
 	@Override

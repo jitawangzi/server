@@ -10,11 +10,13 @@ import "BaseMsg.proto" ;
 // 不做显示。当用在其他协议里时，只做显示,不更新数据（特殊情况除外，需要服务端在具体的奖励字段里边标明，
 // 需要做数据更新。 ）
 message RewardInfo{
-
-	ItemInfo item = 1;			    // 道具类型的奖励
-    HeroInfo role = 2;				// 角色奖励
-    ResourceInfo resource = 6;		// 资源奖励
+    AssetInfo asset = 1;		// 资源奖励
+	ItemInfo item = 2;			// 道具类型的奖励
+    HeroInfo role = 3;		// 英雄奖励
     EquipInfo equip = 7;  //装备奖励
+    HeroFashionInfo fashion = 8;  //时装奖励
+    GemInfo gem = 9;  //装备奖励
+    DragonInfo dragon = 10;  //龙奖励
 }
 
 //奖励推送,客户端收到这个协议之后，将奖励增加到本地。
@@ -24,7 +26,7 @@ message RewardPush_55000501{
 
 //消耗推送，客户端收到这个协议之后，减少本地的物品
 message SpendPush_55001501{
-	repeated GoodsInfo goods = 1;   // 消耗的物品
+	repeated GoodsInfo spend = 1;   // 消耗的物品
 }
 
 //显示奖励推送协议（客户端收到这个协议后，只显示这个奖励，不处理奖励的增加）

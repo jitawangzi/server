@@ -1,20 +1,14 @@
 package cn.game.games.net.game.module.equip;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.impl.PropertyOp;
-import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.config.RoleConfig;
-import cn.game.protocol.generated.manager.RoleManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.EquipMsg;
+import cn.game.protocol.protobuf.PbProtocol;
 
 /**
  * 装备
@@ -32,12 +26,22 @@ public class EquipHandler extends BaseHandler {
 	@Override
 	protected void inititialize() {
 
-//		putInvoker(PbProtocol.EquipmentWearRequest_09000001, this::wear);
-//
-//		putInvoker(PbProtocol.EquipmentTeardownRequest_09000003, this::teardown);
-//
-//		putInvoker(PbProtocol.EquipmentStrengthRequest_09000007, this::equipStrength);
+		putInvoker(PbProtocol.EquipmentWearRequest_09000001, this::wear);
+		putInvoker(PbProtocol.EquipmentTeardownRequest_09000003, this::teardown);
+//		putInvoker(PbProtocol.EquipmentPartStrengthRequest_09000007, this::partStrength);
+		putInvoker(PbProtocol.EquipmentPartBreakthroughRequest_09000011, this::equipStrength);
+		putInvoker(PbProtocol.SwordStarUpRequest_09000013, this::equipStrength);
+		putInvoker(PbProtocol.FashionStarUpRequest_09000015, this::equipStrength);
 	}
+
+//	protected void teardown(NetClient client, Object message) {
+//		EquipMsg.EquipmentTeardownRequest_09000003 req = (EquipMsg.EquipmentTeardownRequest_09000003) message;
+//		EquipMsg.EquipmentTeardownResponse_09000004.Builder resp = EquipMsg.EquipmentTeardownResponse_09000004
+//				.newBuilder();
+//		long playerId = client.getPlayerId();
+//
+//		client.sendProtocol(resp.build());
+//	}
 
 
 	/**
@@ -50,9 +54,7 @@ public class EquipHandler extends BaseHandler {
 		EquipMsg.EquipmentTeardownResponse_09000004.Builder resp = EquipMsg.EquipmentTeardownResponse_09000004.newBuilder();
 		long playerId = client.getPlayerId();
 
-		int roleId = req.getRoleId();
-		int slot = req.getSlot();
-		RoleConfig roleConfig = RoleManager.getInstance().getRoleConfig(roleId);
+		/*RoleConfig roleConfig = RoleManager.getInstance().getRoleConfig(roleId);
 		if (roleConfig == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
 			return;
@@ -66,15 +68,9 @@ public class EquipHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 			return;
 		}
-//		EquipOp equipOp = PlayerCacheFactory.getCache(playerId, EquipOp.class);
-//
-//		if (!equipOp.teardown(roleId, slot)) {
-//			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
-//			return ;
-//		}
-
+		
 		PropertyOp propertyOp = PlayerCacheFactory.getCache(playerId, PropertyOp.class);
-		propertyOp.initPropertyById(roleId);
+		propertyOp.initPropertyById(roleId);*/
 
 		client.sendProtocol(resp.build());
 	}
@@ -95,7 +91,7 @@ public class EquipHandler extends BaseHandler {
 			client.sendProtocol(response, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		int roleId = request.getRoleId();
+		/*int roleId = request.getRoleId();
 		int slot = request.getSlot();
 		RoleConfig roleConfig = RoleManager.getInstance().getRoleConfig(roleId);
 		if (roleConfig == null) {
@@ -117,40 +113,35 @@ public class EquipHandler extends BaseHandler {
 			PropertyOp propertyOp = PlayerCacheFactory.getCache(playerId, PropertyOp.class);
 			propertyOp.initPropertyById(roleId);
 			//触发事件
-//			EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.EquipmentOrReplace, Long.parseLong(uid)));
-		}
-		client.sendProtocol(response, code);
+		//			EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.EquipmentOrReplace, Long.parseLong(uid)));
+		}*/
+//		client.sendProtocol(response, code);
 	}
 
 	private void equipStrength(NetClient client, Object message) {
-		EquipMsg.EquipmentStrengthRequest_09000007 request = (EquipMsg.EquipmentStrengthRequest_09000007) message;
-		EquipMsg.EquipmentStrengthResponse_09000008.Builder response = EquipMsg.EquipmentStrengthResponse_09000008.newBuilder();
-		long playerId = client.getPlayerId();
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
-		int roleId = request.getRoleId();
-		int slot = request.getSlot();
-		RoleConfig roleConfig = RoleManager.getInstance().getRoleConfig(roleId);
-		if (roleConfig == null) {
-			client.sendProtocol(response, ErrorMsgEnum.config_data_not_found.getId());
-			return;
-		}
-		List<Integer> equipmentSlot = roleConfig.getEquipmentSlot();
-		if (slot <= 0 || slot > equipmentSlot.size()) {
-			client.sendProtocol(response, ErrorMsgEnum.illegal_request.getId());
-			return;
-		}
-		if (equipmentSlot.get(slot - 1) == GameConstants.DECORATION_EQUIP) {
-			client.sendProtocol(response, ErrorMsgEnum.illegal_request.getId());
-			return;
-		}
-		EquipModule equipOp = player.getModule(EquipModule.class);
-//		int code = equipOp.equipStrength(roleId, slot);
-//		if (code == ErrorMsgEnum.ok.getId()) {
-//			PropertyOp propertyOp = PlayerCacheFactory.getCache(playerId, PropertyOp.class);
-//			propertyOp.initPropertyById(roleId);
-//		}
-		client.sendProtocol(response, 1);
+		/*	EquipMsg.EquipmentStrengthRequest_09000007 request = (EquipMsg.EquipmentStrengthRequest_09000007) message;
+			EquipMsg.EquipmentStrengthResponse_09000008.Builder response = EquipMsg.EquipmentStrengthResponse_09000008.newBuilder();
+			long playerId = client.getPlayerId();
+			Player player = PlayerManager.getInstance().getPlayer(playerId);
+		
+			int roleId = request.getRoleId();
+			int slot = request.getSlot();
+			RoleConfig roleConfig = RoleManager.getInstance().getRoleConfig(roleId);
+			if (roleConfig == null) {
+				client.sendProtocol(response, ErrorMsgEnum.config_data_not_found.getId());
+				return;
+			}
+			List<Integer> equipmentSlot = roleConfig.getEquipmentSlot();
+			if (slot <= 0 || slot > equipmentSlot.size()) {
+				client.sendProtocol(response, ErrorMsgEnum.illegal_request.getId());
+				return;
+			}
+			if (equipmentSlot.get(slot - 1) == GameConstants.DECORATION_EQUIP) {
+				client.sendProtocol(response, ErrorMsgEnum.illegal_request.getId());
+				return;
+			}
+			EquipModule equipOp = player.getModule(EquipModule.class);
+			client.sendProtocol(response, 1);*/
 	}
 
 	/*private void equipStrength(NetClient client, Object message) {
