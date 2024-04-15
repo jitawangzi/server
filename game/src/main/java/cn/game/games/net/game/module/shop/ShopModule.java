@@ -107,51 +107,51 @@ public class ShopModule extends BasePlayerModule {
 	private int randomDiscount(int itemId) {
 		int discount = 0;
 		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
-		if (shopItemConfig.buyType == 2) { // 带折扣的
-			discount = Rnd.randomId(shopItemConfig.discount);
+		if (shopItemConfig.PurchaseType == 2) { // 带折扣的
+			discount = Rnd.randomId(shopItemConfig.Discount);
 		}
 		return discount;
 	}
 
 	private List<Integer> calcItemIdList(ShopItemGroupConfig config) {
 		List<Integer> ret = new ArrayList<>(); 
-		if (config.shopType == 1) { // 直接配置商品id的
-			if (config.item1.length > 0) {
-				ret.add(config.item1[0][0]);
+		if (config.ShopType == 1) { // 直接配置商品id的
+			if (config.ID1.length > 0) {
+				ret.add(config.ID1[0][0]);
 			}
-			if (config.item2.length > 0) {
-				ret.add(config.item2[0][0]);
+			if (config.ID2.length > 0) {
+				ret.add(config.ID2[0][0]);
 			}
-			if (config.item3.length > 0) {
-				ret.add(config.item3[0][0]);
+			if (config.ID3.length > 0) {
+				ret.add(config.ID3[0][0]);
 			}
-			if (config.item4.length > 0) {
-				ret.add(config.item4[0][0]);
+			if (config.ID4.length > 0) {
+				ret.add(config.ID4[0][0]);
 			}
-			if (config.item5.length > 0) {
-				ret.add(config.item5[0][0]);
+			if (config.ID5.length > 0) {
+				ret.add(config.ID5[0][0]);
 			}
-			if (config.item6.length > 0) {
-				ret.add(config.item6[0][0]);
+			if (config.ID6.length > 0) {
+				ret.add(config.ID6[0][0]);
 			}
-		} else if (config.shopType == 2) { // 随机商品id
-			if (config.item1.length > 0) {
-				ret.add(Rnd.randomId(config.item1));
+		} else if (config.ShopType == 2) { // 随机商品id
+			if (config.ID1.length > 0) {
+				ret.add(Rnd.randomId(config.ID1));
 			}
-			if (config.item2.length > 0) {
-				ret.add(Rnd.randomId(config.item2));
+			if (config.ID2.length > 0) {
+				ret.add(Rnd.randomId(config.ID2));
 			}
-			if (config.item3.length > 0) {
-				ret.add(Rnd.randomId(config.item3));
+			if (config.ID3.length > 0) {
+				ret.add(Rnd.randomId(config.ID3));
 			}
-			if (config.item4.length > 0) {
-				ret.add(Rnd.randomId(config.item4));
+			if (config.ID4.length > 0) {
+				ret.add(Rnd.randomId(config.ID4));
 			}
-			if (config.item5.length > 0) {
-				ret.add(Rnd.randomId(config.item5));
+			if (config.ID5.length > 0) {
+				ret.add(Rnd.randomId(config.ID5));
 			}
-			if (config.item6.length > 0) {
-				ret.add(Rnd.randomId(config.item6));
+			if (config.ID6.length > 0) {
+				ret.add(Rnd.randomId(config.ID6));
 			}
 		}
 		return ret;
@@ -161,7 +161,7 @@ public class ShopModule extends BasePlayerModule {
 		Set<Integer> keySet = new HashSet<Integer>(groupItemsMap.keySet());
 		for (Integer group : keySet) {
 			ShopItemGroupConfig groupConfig = ShopItemGroupManager.instance().get(group);
-			if (groupConfig.resetType == 1) { // 按天重置
+			if (groupConfig.ResetType == 1) { // 按天重置
 				Collection<ShopItem> groupItems = groupItemsMap.get(group);
 				int createDay = 0;
 				for (ShopItem item : groupItems) {
@@ -169,11 +169,11 @@ public class ShopModule extends BasePlayerModule {
 					break;
 				}
 				int nowDay = DateUtil.getDay();
-				boolean needRefresh = nowDay - createDay >= groupConfig.resetParam;
+				boolean needRefresh = nowDay - createDay >= groupConfig.ResetParameter;
 				if (!needRefresh) {
 					continue;
 				}
-				if (groupConfig.shopType == 1) { // 直接配置商品id的
+				if (groupConfig.ShopType == 1) { // 直接配置商品id的
 					for (ShopItem item : groupItems) {
 						int discount = randomDiscount(item.getItemId());
 						if (item.getItemBuyTimes() > 0 || item.getItemDiscount() != discount) {
@@ -182,7 +182,7 @@ public class ShopModule extends BasePlayerModule {
 							item.update();
 						}
 					}
-				} else if (groupConfig.shopType == 2) {
+				} else if (groupConfig.ShopType == 2) {
 					// 随机商品id的，一般商品id会变,先删除旧的在创建新的
 					for (ShopItem item : groupItems) {
 						item.delete();

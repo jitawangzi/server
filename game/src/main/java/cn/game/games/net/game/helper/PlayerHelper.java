@@ -49,6 +49,7 @@ import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
+import cn.game.protocol.generated.config.ConsumeConfig;
 import cn.game.protocol.generated.config.EventOptionConfig;
 import cn.game.protocol.generated.config.GameCommandConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
@@ -57,6 +58,7 @@ import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.config.versionConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.ConditionManager;
+import cn.game.protocol.generated.manager.ConsumeManager;
 import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.GameCommandManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
@@ -108,13 +110,46 @@ public class PlayerHelper {
 		return true;
 	}
 
-	public static boolean isEnough(Player player, int[][] list) {
+	public static boolean isEnoughOld(Player player, int[][] list) {
 
 		if (list == null || list.length == 0) {
 			return true;
 		}
 		for (int i = 0; i < list.length; i++) {
 			if (!isEnough(player, list[i][0], list[i][1])) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/** 
+	 * 二维数组，用or的关系判断
+	 * @param player
+	 * @param list
+	 * @return
+	 */
+	public static boolean isEnough(Player player, int[][] list) {
+
+		if (list == null || list.length == 0) {
+			return true;
+		}
+		for (int i = 0; i < list.length; i++) {
+			for (int j = 0; j < list.length; j++) {
+				if (isEnough(player, list[i])) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean isEnough(Player player, int[] list) {
+		if (list == null || list.length == 0) {
+			return true;
+		}
+		for (int i = 0; i + 1 < list.length; i++) {
+			if (!isEnough(player, list[i], list[++i])) {
 				return false;
 			}
 		}
@@ -204,6 +239,14 @@ public class PlayerHelper {
 		return delResources(playerId, id, value, consumeType, true);
 	}
 
+	public static boolean delResources(long playerId, int consumeId, ResourceConsumeEnum consumeType) {
+		if (consumeId == 0) {
+			return true;
+		}
+		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
+		return delResources(playerId, consumeConfig.cost, consumeType);
+	}
+
 	public static boolean delResources(Player player, int id, int value, ResourceConsumeEnum consumeType) {
 		return delResources(player.getPlayerId(), id, value, consumeType, true);
 	}
@@ -282,6 +325,32 @@ public class PlayerHelper {
 		return false;
 	}
 
+	public static boolean delResourcesOld(long playerId, int[][] list, ResourceConsumeEnum consumeType) {
+
+		if (list == null || list.length == 0) {
+			return true;
+		}
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		if (isEnough(player, list)) {
+			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
+			for (int i = 0; i < list.length; i++) {
+				delResources(playerId, list[i][0], list[i][1], consumeType, false);
+				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
+			}
+			PlayerHelper.sendProtocol(playerId, spendPush.build());
+			return true;
+		}
+		return false;
+	}
+
+	/** 
+	 * 二维数组用或的关系扣东西
+	 * @param playerId
+	 * @param list
+	 * @param consumeType
+	 * @return
+	 */
 	public static boolean delResources(long playerId, int[][] list, ResourceConsumeEnum consumeType) {
 
 		if (list == null || list.length == 0) {
@@ -301,9 +370,9 @@ public class PlayerHelper {
 		return false;
 	}
 
-	public static void addReward(Player player, int randomRewardId) {
+	public static List<RewardInfo> addReward(Player player, int randomRewardId) {
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId); 
-		addResources(player.getPlayerId(),randomGivenConfig.MustGiven) ;
+		return addResources(player.getPlayerId(), randomGivenConfig.MustGiven);
 	}
 
 	public static Player addExp(Player player, int exp) {
@@ -501,6 +570,10 @@ public class PlayerHelper {
 		}
 		return rewardItems;
 	}
+
+	public static List<RewardInfo> addResources(long playerId, int[] rewards) {
+		return addResources(playerId, rewards[0], rewards[1]);
+	}
 	/** 
 	 * 一次性增加多个奖励，增加完奖励后推送给客户端一次。
 	 * @param playerId
@@ -650,7 +723,7 @@ public class PlayerHelper {
 	 *            需要传入待检查的一些参数
 	 * @return
 	 */
-	public static boolean checkCondition(long playerId, int condition, GameEvent param) {
+	public static boolean checkCondition(long playerId, int condition, Object... param) {
 		if (condition == 0) {
 			return true;
 		}

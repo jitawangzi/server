@@ -23,12 +23,12 @@ public class ArtResourceManager extends ResourceListener {
 	private static ArtResourceManager instance = new ArtResourceManager();
 	private static final String xmlFileName = "ArtResource";
 	
+	/** 总数据，按id取值 */
 	private Map<Integer, ArtResourceConfig> artresources = new HashMap<>();
 
-	public static ArtResourceManager getInstance() {
+	public static ArtResourceManager instance() {
 		return instance;
 	}
-
 	private ArtResourceManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -55,13 +55,15 @@ public class ArtResourceManager extends ResourceListener {
 		return this.artresources.get(id);
 	}
 
+	/**
+	 * 获取所有数据
+	 * @return
+	 */
 	public Collection<ArtResourceConfig> list() {
 		return this.artresources.values();
 	}
-
 	@Override
 	public void load() {
-
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
@@ -70,7 +72,10 @@ public class ArtResourceManager extends ResourceListener {
 			Map<Integer, ArtResourceConfig> artresources = new HashMap<>();
 			for (Element e : list) {
 				ArtResourceConfig artresource = new ArtResourceConfig(e);
-				artresources.put(artresource.getID(), artresource);
+				ArtResourceConfig old = artresources.put(artresource.ID, artresource);
+				if (old != null) {
+					throw new IllegalArgumentException("[ArtResourceConfig]表存在重复的数据id： " + old.ID);
+				}
 			}			
 
 			this.artresources = com.google.common.collect.ImmutableMap.copyOf(artresources);

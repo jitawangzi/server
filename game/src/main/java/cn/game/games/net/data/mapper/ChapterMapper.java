@@ -11,7 +11,7 @@ public interface ChapterMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("chapterId") Integer chapterId);
+	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("battleId") Integer battleId);
 
 	/**
 	 * @mbg.generated
@@ -31,7 +31,7 @@ public interface ChapterMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Chapter selectByPrimaryKey(@Param("playerId") Long playerId, @Param("chapterId") Integer chapterId);
+	Chapter selectByPrimaryKey(@Param("playerId") Long playerId, @Param("battleId") Integer battleId);
 
 	/**
 	 * @mbg.generated

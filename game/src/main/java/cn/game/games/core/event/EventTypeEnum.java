@@ -56,7 +56,7 @@ public enum EventTypeEnum {
 	RoleTrain(14, "RoleTrain", "伙伴培养"),
 	/** 获得伙伴 */
 	Role(15, "Role", "获得伙伴"),
-	/** 一场战斗结束，参数,阵容id */
+	/** 一场战斗结束，参数,战役id，关卡id，输赢， 阵容id */
 	BattleEnd(16, "BattleEnd", "一场战斗结束"),
 
 	// 任务相关
@@ -116,7 +116,7 @@ public enum EventTypeEnum {
 	Ignore(50, "Ignore", "忽略"),
 
 	//成就相关
-	/** 开启战斗 */
+	/** 开启战斗 : 战役id，关卡id*/
 	BattleStart(54, "BattleStart", "开启战斗"),
 	/** 角色更换技能 */
 	SwitchSkills(61, "SwitchSkills", "角色更换技能"),

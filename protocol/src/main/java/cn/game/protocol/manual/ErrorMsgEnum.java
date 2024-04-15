@@ -45,8 +45,17 @@ public enum ErrorMsgEnum{
 	player_level_not_enough(56,"player_level_not_enough","等级不足"),
 	/** 请求参数校验错误 */
 	request_parameter_error(57,"request_parameter_error","请求参数校验错误"),
+
+	/** 条件校验错误 */
+	condition_check_error(58, "condition_check_error", "条件校验错误"),
+	/** 功能未开启，或者时间未到之类未开启 */
+	not_open(59, "not_open", "功能未开启，或者时间未到之类未开启"),
+
 	/** 玩家名字不合法  */
 	player_name_illegal(60, "player_name_illegal", "玩家名字不合法"),
+	/** 次数不足 */
+	times_limit(62, "times_limit", "次数不足"),
+
 	/** 创建角色名字重复 */
 	player_name_repeat(100,"player_name_repeat","创建角色名字重复"),
 	/** 等级已达上限 */

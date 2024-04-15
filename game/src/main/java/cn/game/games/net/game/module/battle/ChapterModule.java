@@ -22,13 +22,13 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.BattleEventTypeMapper;
 import cn.game.games.net.data.mapper.BattleLevelMapper;
 import cn.game.games.net.data.mapper.BattleRandomEventMapper;
-import cn.game.games.net.data.mapper.ChapterMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleChapterConfig;
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.BattleEventConfig;
 import cn.game.protocol.generated.config.BattleLevelConfig;
 import cn.game.protocol.generated.config.EventRankIntervalConfig;
@@ -38,11 +38,13 @@ import cn.game.protocol.generated.config.RoutineTrainingConfig;
 import cn.game.protocol.generated.manager.BattleChapterManager;
 import cn.game.protocol.generated.manager.BattleEventManager;
 import cn.game.protocol.generated.manager.BattleLevelManager;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.EventRankIntervalManager;
 import cn.game.protocol.generated.manager.EventTriggerManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
+import cn.game.util.MapWrapper;
 import cn.game.util.Rnd;
 
 /**    
@@ -67,6 +69,8 @@ public class ChapterModule extends BasePlayerModule  {
 	/** 各种类型的随机事件，每天产生了多少次 */
 	private Map<Integer, Integer> eventTypeMap;
 
+	private MapWrapper dailyCount = new MapWrapper();
+
 	// 战斗相关数据
 	private int type;
 	private int dungeonId;
@@ -87,7 +91,7 @@ public class ChapterModule extends BasePlayerModule  {
 			List<BattleLevel> battleBattleLevels, List<BattleEventType> eventTypes,
 			List<BattleRandomEvent> battleRandomEvents) {
 		for (Chapter c : chapters) {
-			this.chapters.put(c.getChapterId(), c);
+			this.chapters.put(c.getBattleId(), c);
 		}
 		for (BattleLevel s : battleBattleLevels) {
 			this.levels.put(s.getLevelId(), s);
@@ -100,18 +104,53 @@ public class ChapterModule extends BasePlayerModule  {
 	}
 
 	public void updateChapter(Chapter chapter) {
-		DAO.execute(ChapterMapper.class, MapperConstant.updateByPrimaryKey,
-				chapter);
+//		DAO.execute(ChapterMapper.class, MapperConstant.updateByPrimaryKey,
+//				chapter);
 	}
-	public void addChapter(Chapter chapter) {
-		chapters.put(chapter.getChapterId(), chapter);
-		DAO.execute(ChapterMapper.class, MapperConstant.insert, chapter);
+
+	public void addChapter(int battleId) {
+		Chapter chapter = chapters.get(battleId);
+		if (chapter == null) {
+			chapter = Chapter.valueOf(playerId, dungeonId);
+			chapters.put(chapter.getBattleId(), chapter);
+		}
+//		DAO.execute(ChapterMapper.class, MapperConstant.insert, chapter);
+	}
+
+	public void addChapterTimes(int battleId) {
+		BattleConfig battleConfig = BattleManager.instance().get(battleId);
+		if (battleConfig.timesLimit.length > 0) {
+			if (battleConfig.timesLimit[0] == 1) {
+				dailyCount.add(battleConfig.BattleType, 1);
+			}
+		} else if (battleConfig.timesLimit[0] == 2) {
+
+		}
+	}
+
+	public boolean checkChapterTimes(int battleId) {
+		BattleConfig battleConfig = BattleManager.instance().get(battleId);
+		boolean ret = true;
+		if (battleConfig.timesLimit.length > 0) {
+			if (battleConfig.timesLimit[0] == 1) {
+				ret = dailyCount.getValue(battleConfig.BattleType) < battleConfig.timesLimit[1];
+			}
+		} else if (battleConfig.timesLimit[0] == 2) {
+
+		}
+		return ret;
+	}
+
+
+	public boolean isBattlePass(int battleId) {
+		Chapter chapter = this.chapters.get(battleId);
+		return chapter != null && chapter.getPass();
 	}
 
 	public void insertBattleEvent(BattleRandomEvent event) {
 
-		DAO.execute(BattleRandomEventMapper.class, MapperConstant.insert,
-				event);
+//		DAO.execute(BattleRandomEventMapper.class, MapperConstant.insert,
+//				event);
 	}
 
 	public void removeBattleEvent(long id) {
@@ -457,14 +496,14 @@ public class ChapterModule extends BasePlayerModule  {
 		// 当前打过的章节里，如果没有通关的，就是最新章节 
 		for (Chapter chapter : this.chapters.values()) {
 			List<BattleLevelConfig> battleChapterIdList = BattleLevelManager.getInstance().getBattleChapterIdList(chapter
-					.getChapterId());
+					.getBattleId());
 			for (BattleLevelConfig levelConfig : battleChapterIdList) {
 				if (levelConfig == null || levelConfig.getType() != 1) {
 					continue;
 				}
 				boolean battleLevelPass = isBattleLevelPass(levelConfig.getId());
 				if (!battleLevelPass) {
-					return chapter.getChapterId() ; 
+					return chapter.getBattleId();
 				}
 			}
 		}
@@ -481,6 +520,14 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		
 		return 0;
+	}
+
+	public MapWrapper getDailyCount() {
+		return dailyCount;
+	}
+
+	public void setDailyCount(MapWrapper dailyCount) {
+		this.dailyCount = dailyCount;
 	}
 
 	public List<BattleRandomEvent> listBattleEvents() {

@@ -4,7 +4,8 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.IBattleHandler;
-import cn.game.protocol.generated.enume.DungeonTypeEnum;
+import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 
 /**
@@ -39,7 +40,7 @@ public class BattleMainlineImpl implements IBattleHandler {
 	}
 
 	@Override
-	public int battleEnd(long playerId, boolean win, int killMonsterCount, int hpPercent, BattleFieldEndResponse_13000004.Builder resp) {
+	public int battleEnd(long playerId, BattleFieldEndRequest_13000003 request, BattleFieldEndResponse_13000004.Builder resp) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterOp = player.getModule(ChapterModule.class);
 		int id = chapterOp.getAttackingId();

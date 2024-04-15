@@ -38,8 +38,8 @@ public class MonthCardModule extends BasePlayerModule {
 		long buyTime = DateUtil.getDayHourTimestamp(0);
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(cardId);
 		long expireTime = 0;
-		if (monthCardConfig.effectiveDays > 0) {
-			expireTime = buyTime + monthCardConfig.effectiveDays * DateUtil.DAY_MILLIS;
+		if (monthCardConfig.Expiration > 0) {
+			expireTime = buyTime + monthCardConfig.Expiration * DateUtil.DAY_MILLIS;
 		}
 		MonthCard newCard = MonthCard.valueOf(this.playerId, cardId, buyTime, expireTime);
 		monthCards.put(cardId, newCard);

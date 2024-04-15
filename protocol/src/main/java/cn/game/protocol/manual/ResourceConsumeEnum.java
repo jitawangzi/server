@@ -58,6 +58,8 @@ public enum ResourceConsumeEnum{
 	HeroLevelUp(50, "HeroLevelUp", "英雄升级"),
 	HeroConflate(51, "HeroConflate", "英雄合成"),
 
+	None(999, "None", "未定义"),
+
     ;
 	private int id ; 
 	private String name ; 

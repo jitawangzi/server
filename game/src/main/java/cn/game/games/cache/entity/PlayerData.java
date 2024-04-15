@@ -608,8 +608,7 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	@Override
 	public void beforeSave() {
-		this.playerHotData = com.alibaba.fastjson.JSON.toJSONString(this.hotData,
-				com.alibaba.fastjson.serializer.SerializerFeature.WriteNonStringKeyAsString);
+		this.playerHotData = com.alibaba.fastjson.JSON.toJSONString(this.hotData, com.alibaba.fastjson.serializer.SerializerFeature.WriteNonStringKeyAsString);
 	}
 
 	/**

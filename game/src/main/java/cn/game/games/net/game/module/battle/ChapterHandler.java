@@ -7,17 +7,22 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.config.BattleLevelConfig;
-import cn.game.protocol.generated.manager.BattleLevelManager;
+import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.BattleFieldConfig;
+import cn.game.protocol.generated.manager.BattleFieldManager;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.util.DateUtil;
+import cn.game.util.GameUtil;
 
 @Component
 public class ChapterHandler extends BaseHandler {
@@ -46,19 +51,19 @@ public class ChapterHandler extends BaseHandler {
 		int id = req.getId();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		long playerId = player.getPlayerId();
-		ChapterOp chapterOp = PlayerCacheFactory.getCache(playerId, ChapterOp.class);
-		boolean pass = chapterOp.isExploreActPass(id);
+		chapterModule chapterModule = PlayerCacheFactory.getCache(playerId, chapterModule.class);
+		boolean pass = chapterModule.isExploreActPass(id);
 		if (!pass) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		ExploreAct exploreAct = chapterOp.getExploreAct(id);
+		ExploreAct exploreAct = chapterModule.getExploreAct(id);
 		if (exploreAct != null && exploreAct.getReward()) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 	
-		boolean reward = chapterOp.exploreActReward(id);
+		boolean reward = chapterModule.exploreActReward(id);
 		if (!reward) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
@@ -79,20 +84,20 @@ public class ChapterHandler extends BaseHandler {
 		int id = req.getId();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		long playerId = player.getPlayerId();
-		ChapterModule chapterOp = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
-		boolean pass = chapterOp.isExploreChapterPass(id);
+		ChapterModule chapterModule = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
+		boolean pass = chapterModule.isExploreChapterPass(id);
 		if (!pass) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 	
-//		ExploreChapterComplete exploreChapter = chapterOp.getExploreChapter(id);
+//		ExploreChapterComplete exploreChapter = chapterModule.getExploreChapter(id);
 //		if (exploreChapter != null && exploreChapter.getReward()) {
 //			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 //			return;
 //		}
 //	
-//		boolean reward = chapterOp.exploreChapterReward(id);
+//		boolean reward = chapterModule.exploreChapterReward(id);
 //		if (!reward) {
 //			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 //			return;
@@ -114,11 +119,11 @@ public class ChapterHandler extends BaseHandler {
 		int index = req.getIndex();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		long playerId = player.getPlayerId();
-		ChapterOp chapterOp = PlayerCacheFactory.getCache(playerId, ChapterOp.class);
-		Chapter chapter = chapterOp.getChapter(chapterId);
+		chapterModule chapterModule = PlayerCacheFactory.getCache(playerId, chapterModule.class);
+		Chapter chapter = chapterModule.getChapter(chapterId);
 		BattleChapterConfig chapterConfig = BattleChapterManager.getInstance().getBattleChapterConfig(chapterId);
 	
-		int allStar = chapterOp.getStars(chapterId);
+		int allStar = chapterModule.getStars(chapterId);
 	
 		List<Integer> stars = chapterConfig.getStar();
 		int ret = -1;
@@ -144,7 +149,7 @@ public class ChapterHandler extends BaseHandler {
 		List<RewardItem> addRewards = PlayerHelper.addRewards(playerId, rewardId);
 		resp.addAllReward(PbBuilder.buildRewardInfo(addRewards));
 		chapter.setRewards(ByteHelp.modifyBit(rewards, index));
-		chapterOp.updateChapter(chapter);
+		chapterModule.updateChapter(chapter);
 	
 		client.sendProtocol(resp);
 	
@@ -159,26 +164,50 @@ public class ChapterHandler extends BaseHandler {
 //		String uidString = req.getUid();
 //		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
 		long playerId = client.getPlayerId();
-		ChapterModule chapterOp = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
-		
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(id);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		
+		BattleConfig battleConfig = BattleManager.instance().get(dungeonId);
+		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);
+		if (battleConfig.BattleFieldID != id) {
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
 
-		// 检查体力消耗 探索的战斗不需要
-	/*	if(type != DungeonTypeEnum.ExploreBattle.getId()) {
-			if (levelConfig != null && levelConfig.getEnergyExpend() > 0 && !PlayerHelper.isEnough(player.getId(), ResourceEnum.Brawn
-					.getId(), levelConfig.getEnergyExpend())) {
-
-				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+		int[] openDay = battleConfig.openDay;
+		if (openDay.length > 0) {
+			int dayOfWeek = DateUtil.getDayOfWeek();
+			if (!GameUtil.contains(openDay, dayOfWeek)) {
+				client.sendProtocol(resp, ErrorMsgEnum.not_open.getId());
 				return;
 			}
-		}*/
-		long randomSeed = System.currentTimeMillis() ; 
+		}
+		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(dungeonId)) {
+			client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
+			return;
+		}
+		if (!chapterModule.checkChapterTimes(dungeonId)) {
+			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+
+		if (!PlayerHelper.checkCondition(playerId, battleConfig.enterCondtion)) {
+			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+			return;
+		}
+
+		if (!PlayerHelper.delResources(playerId, battleConfig.cost, ResourceConsumeEnum.None)) {
+			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+//		long randomSeed = System.currentTimeMillis() ; 
 		IBattleHandler battleHandler = BattleFactory.getBattleHandler(type);
 		int errorCode = battleHandler.battleStart(playerId, type, dungeonId, id, 0, 0);
 		if (errorCode == 0) {
 			// 设置当前在打的关卡数据
-			chapterOp.setAttackingData(0, type, dungeonId, id, 0, randomSeed);
+			chapterModule.setAttackingData(0, type, dungeonId, id, 0, 0);
+			// 触发事件
+			player.handleEvent(EventTypeEnum.BattleStart, battleConfig.ID, battleConfig.BattleFieldID);
 		}
 		//添加怪物图鉴
 //		List<Integer> monsterSequence = levelConfig.getMonsterSequence();
@@ -197,8 +226,7 @@ public class ChapterHandler extends BaseHandler {
 //				}
 //			}
 //		}
-		//触发事件
-		player.handleEvent(EventTypeEnum.BattleStart, levelConfig.getId(), 0);
+
 //		resp.setRandomSeed(randomSeed + "");
 		client.sendProtocol(resp, errorCode);
 	}
@@ -215,11 +243,12 @@ public class ChapterHandler extends BaseHandler {
 
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		ChapterModule chapterOp = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
-		int attackingId = chapterOp.getAttackingId();
-		int attackingType = chapterOp.getAttackingType();
-		long attackingUid = chapterOp.getAttackingUid();
-		int lineupId = chapterOp.getLineupId();
+		ChapterModule chapterModule = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
+		int attackingId = chapterModule.getAttackingId();
+		int attackingType = chapterModule.getAttackingType();
+		long attackingUid = chapterModule.getAttackingUid();
+		int attackingDungeonId = chapterModule.getAttackingDungeonId();
+		int lineupId = chapterModule.getLineupId();
 		if (attackingId == 0 || attackingType == 0) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
@@ -227,14 +256,13 @@ public class ChapterHandler extends BaseHandler {
 
 //		List<BattleReportItemInfo> report = req.getReport().getItemsList();
 		IBattleHandler battleHandler = BattleFactory.getBattleHandler(attackingType);
-		int errorCode = battleHandler.battleEnd(playerId, win, killMonsterCount, hpPercent, resp);
+		int errorCode = battleHandler.battleEnd(playerId, req, resp);
 		if (errorCode > 0) {
 			client.sendProtocol(resp, errorCode);
 			return;
 		}
-		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(0);
-
-		int apCost = levelConfig.getEnergyExpend();
+//		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(0);
+//		int apCost = levelConfig.getEnergyExpend();
 
 		// 检查体力消耗 探索的战斗不需要
 //		if (type != DungeonTypeEnum.ExploreBattle.getId()) {
@@ -250,7 +278,7 @@ public class ChapterHandler extends BaseHandler {
 //				List<Map.Entry<Integer, Integer>> starLevelReward = levelConfig.getStarLevelReward();
 //				if (!starLevelReward.isEmpty()) {
 //					//星级奖励 只有首次可以领
-//					BattleLevel BattleField = chapterOp.getBattleLevel(id);
+//					BattleLevel BattleField = chapterModule.getBattleLevel(id);
 //					List<Integer> currstars = ByteHelp.binary1List(BattleField == null ? 0 : BattleField.getStar());
 //					List<Map.Entry<Integer, Integer>> starRewards = new ArrayList<>();
 //					for (Integer star : starList) {
@@ -291,8 +319,8 @@ public class ChapterHandler extends BaseHandler {
 ////		List<RewardInfo> rewardItems = PlayerHelper.addResources(client.getPlayerId(), rewards);
 ////		resp.addAllRandomRewards(rewardItems);
 
-		player.handleEvent(new GameEvent(EventTypeEnum.BattleEnd, lineupId, win, levelConfig.getId()));
-		chapterOp.setAttackingData(0, 0, 0, 0, 0, 0);
+		player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, lineupId);
+		chapterModule.setAttackingData(0, 0, 0, 0, 0, 0);
 		
 		client.sendProtocol(resp);
 
@@ -321,8 +349,8 @@ public class ChapterHandler extends BaseHandler {
 		int times = req.getTimes();
 		int type = req.getType();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		ChapterOp chapterOp = PlayerCacheFactory.getCache(player.getPlayerId(), ChapterOp.class);
-		BattleField level2 = chapterOp.getBattleField(level);
+		chapterModule chapterModule = PlayerCacheFactory.getCache(player.getPlayerId(), chapterModule.class);
+		BattleField level2 = chapterModule.getBattleField(level);
 		BattleFieldConfig levelConfig = BattleFieldManager.getInstance().getBattleFieldConfig(level);
 		if (levelConfig == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());

@@ -9,8 +9,7 @@ public interface PlayerIdsMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("type") Integer type,
-			@Param("configId") Integer configId);
+	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("type") Integer type, @Param("configId") Integer configId);
 
 	/**
 	 * @mbg.generated
@@ -30,8 +29,7 @@ public interface PlayerIdsMapper {
 	/**
 	 * @mbg.generated
 	 */
-	PlayerIds selectByPrimaryKey(@Param("playerId") Long playerId, @Param("type") Integer type,
-			@Param("configId") Integer configId);
+	PlayerIds selectByPrimaryKey(@Param("playerId") Long playerId, @Param("type") Integer type, @Param("configId") Integer configId);
 
 	/**
 	 * @mbg.generated

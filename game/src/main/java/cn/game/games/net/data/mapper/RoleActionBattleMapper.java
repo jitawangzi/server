@@ -11,8 +11,7 @@ public interface RoleActionBattleMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("roleId") Integer roleId,
-			@Param("type") Integer type, @Param("subType") Integer subType);
+	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("roleId") Integer roleId, @Param("type") Integer type, @Param("subType") Integer subType);
 
 	/**
 	 * @mbg.generated
@@ -32,8 +31,8 @@ public interface RoleActionBattleMapper {
 	/**
 	 * @mbg.generated
 	 */
-	RoleActionBattle selectByPrimaryKey(@Param("playerId") Long playerId, @Param("roleId") Integer roleId,
-			@Param("type") Integer type, @Param("subType") Integer subType);
+	RoleActionBattle selectByPrimaryKey(@Param("playerId") Long playerId, @Param("roleId") Integer roleId, @Param("type") Integer type,
+			@Param("subType") Integer subType);
 
 	/**
 	 * @mbg.generated

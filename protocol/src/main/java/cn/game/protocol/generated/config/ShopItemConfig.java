@@ -13,69 +13,69 @@ import org.w3c.dom.Element;
 	/** 商品id */
 	public final int ID;		
 	/** 包含物品 */
-	public final int[][] items;		
-	/** 可买次数 */
-	public final int buyCount;		
-	/** 购买类型 1=正常购买 2=随机折扣 3=每次重置首次免费 4=终身首次双倍 */
-	public final int buyType;		
-	/** 购买消耗 */
-	public final int[] cost;		
-	/** 折扣 */
-	public final int[][] discount;		
+	public final int[][] Item;		
+	/** 可买次数 0=不限次 */
+	public final int PurchaseCnt;		
+	/** 购买类型 1=正常购买 2=随机购买 3=每次充值首次免费 4=终身首次双倍 */
+	public final int PurchaseType;		
+	/** 购买参数 */
+	public final int[] PurchaseParameter;		
+	/** 折扣 90=蓝色标签 80=紫色标签 70=黄色标签 60=红色标签 50=大促标签 */
+	public final int[][] Discount;		
 
 	public ShopItemConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 商品id
-		String itemsString = element.getAttribute("items"); // 包含物品
-		if (itemsString != null && itemsString.length() > 0) {
-			String[] itemsStrings = itemsString.split("\\|"); 
-			int[][] itemsTemp = new int[itemsStrings.length][] ; 
-			for (int i = 0; i < itemsStrings.length; i++) {
-				String[] itemsStrings2 = itemsStrings[i].split(";"); 
-				int[] array = new int[itemsStrings2.length];
-				for (int j = 0; j < itemsStrings2.length; j++) {
-					int temp = Integer.parseInt(itemsStrings2[j]);	
+		String ItemString = element.getAttribute("Item"); // 包含物品
+		if (ItemString != null && ItemString.length() > 0) {
+			String[] ItemStrings = ItemString.split("\\|"); 
+			int[][] ItemTemp = new int[ItemStrings.length][] ; 
+			for (int i = 0; i < ItemStrings.length; i++) {
+				String[] ItemStrings2 = ItemStrings[i].split(";"); 
+				int[] array = new int[ItemStrings2.length];
+				for (int j = 0; j < ItemStrings2.length; j++) {
+					int temp = Integer.parseInt(ItemStrings2[j]);	
 					array[j] = temp;
 				}
-				itemsTemp[i] = array;
+				ItemTemp[i] = array;
 			}
-			items = itemsTemp ;			
+			Item = ItemTemp ;			
 		} else {
-			items = new int[][] {};
+			Item = new int[][] {};
 		}
-		buyCount = Integer.parseInt(element.getAttribute("buyCount") == null || element.getAttribute("buyCount").length() == 0 ? "0"
-			: element.getAttribute("buyCount")); // 可买次数
-		buyType = Integer.parseInt(element.getAttribute("buyType") == null || element.getAttribute("buyType").length() == 0 ? "0"
-			: element.getAttribute("buyType")); // 购买类型 1=正常购买 2=随机折扣 3=每次重置首次免费 4=终身首次双倍
-		String costString = element.getAttribute("cost"); // 购买消耗
-		if (costString != null && costString.length() > 0) {
-			String[] costStrings = costString.split(";"); 
-			int[] costTemp = new int[costStrings.length] ; 
-			for (int i = 0; i < costStrings.length; i++) {
-				int temp = Integer.parseInt(costStrings[i]);	
-				costTemp[i] = temp;
+		PurchaseCnt = Integer.parseInt(element.getAttribute("PurchaseCnt") == null || element.getAttribute("PurchaseCnt").length() == 0 ? "0"
+			: element.getAttribute("PurchaseCnt")); // 可买次数 0=不限次
+		PurchaseType = Integer.parseInt(element.getAttribute("PurchaseType") == null || element.getAttribute("PurchaseType").length() == 0 ? "0"
+			: element.getAttribute("PurchaseType")); // 购买类型 1=正常购买 2=随机购买 3=每次充值首次免费 4=终身首次双倍
+		String PurchaseParameterString = element.getAttribute("PurchaseParameter"); // 购买参数
+		if (PurchaseParameterString != null && PurchaseParameterString.length() > 0) {
+			String[] PurchaseParameterStrings = PurchaseParameterString.split(";"); 
+			int[] PurchaseParameterTemp = new int[PurchaseParameterStrings.length] ; 
+			for (int i = 0; i < PurchaseParameterStrings.length; i++) {
+				int temp = Integer.parseInt(PurchaseParameterStrings[i]);	
+				PurchaseParameterTemp[i] = temp;
 			}
-			cost = costTemp ;			
+			PurchaseParameter = PurchaseParameterTemp ;			
 		} else {
-			cost = new int[] {};
+			PurchaseParameter = new int[] {};
 		}
-		String discountString = element.getAttribute("discount"); // 折扣
-		if (discountString != null && discountString.length() > 0) {
-			String[] discountStrings = discountString.split("\\|"); 
-			int[][] discountTemp = new int[discountStrings.length][] ; 
-			for (int i = 0; i < discountStrings.length; i++) {
-				String[] discountStrings2 = discountStrings[i].split(";"); 
-				int[] array = new int[discountStrings2.length];
-				for (int j = 0; j < discountStrings2.length; j++) {
-					int temp = Integer.parseInt(discountStrings2[j]);	
+		String DiscountString = element.getAttribute("Discount"); // 折扣 90=蓝色标签 80=紫色标签 70=黄色标签 60=红色标签 50=大促标签
+		if (DiscountString != null && DiscountString.length() > 0) {
+			String[] DiscountStrings = DiscountString.split("\\|"); 
+			int[][] DiscountTemp = new int[DiscountStrings.length][] ; 
+			for (int i = 0; i < DiscountStrings.length; i++) {
+				String[] DiscountStrings2 = DiscountStrings[i].split(";"); 
+				int[] array = new int[DiscountStrings2.length];
+				for (int j = 0; j < DiscountStrings2.length; j++) {
+					int temp = Integer.parseInt(DiscountStrings2[j]);	
 					array[j] = temp;
 				}
-				discountTemp[i] = array;
+				DiscountTemp[i] = array;
 			}
-			discount = discountTemp ;			
+			Discount = DiscountTemp ;			
 		} else {
-			discount = new int[][] {};
+			Discount = new int[][] {};
 		}
 	}
 	

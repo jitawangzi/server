@@ -7,11 +7,9 @@ import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.ShopItem;
-import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.player.IdConstant;
@@ -24,10 +22,7 @@ import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.generated.manager.ShopGiftManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
-import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.protocol.protobuf.ShopMsg.AdvertiseWatchFinishRequest_15000030;
 import cn.game.protocol.protobuf.ShopMsg.AdvertiseWatchFinishResponse_15000031;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRequest_15000010;
@@ -36,16 +31,13 @@ import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardResponse_15000013;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardRequest_15000014;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardResponse_15000015;
-import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
 import cn.game.protocol.protobuf.ShopMsg.ShopGiftBuyRequest_15000020;
 import cn.game.protocol.protobuf.ShopMsg.ShopGiftBuyResponse_15000021;
 import cn.game.protocol.protobuf.ShopMsg.ShopGroupItemListRequest_15000001;
 import cn.game.protocol.protobuf.ShopMsg.ShopGroupItemListResponse_15000002;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyResponse_15000004;
-import cn.game.util.ServerType;
 import io.vertx.core.Future;
-import io.vertx.core.eventbus.Message;
 
 @Component
 public class ShopHandler extends BaseHandler {
@@ -79,12 +71,12 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId());
-		if (shopItemConfig.buyCount > 0 && shopItem.getItemBuyTimes() >= shopItemConfig.buyCount) {
+		if (shopItemConfig.PurchaseCnt > 0 && shopItem.getItemBuyTimes() >= shopItemConfig.PurchaseCnt) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());
 			return;
 		}
-		int[][] items = shopItemConfig.items;
-		if (shopItemConfig.buyType == 4 && shopItem.getItemBuyTimes() == 0) {
+		int[][] items = shopItemConfig.Item;
+		if (shopItemConfig.PurchaseType == 4 && shopItem.getItemBuyTimes() == 0) {
 			items = ShopHelper.multipleCount(items, 2);
 		}
 
@@ -93,17 +85,17 @@ public class ShopHandler extends BaseHandler {
 
 			PlayerHelper.addResources(player.getPlayerId(), itemsAdd);
 
-			if (shopItemConfig.buyCount > 0) {
+			if (shopItemConfig.PurchaseCnt > 0) {
 				shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
 				shopItem.update();
 			}
 			client.sendProtocol(resp);
 			return true; 
 		};
-		if (shopItemConfig.buyType == 3 && shopItem.getItemBuyTimes() == 0) { // 首次免费
+		if (shopItemConfig.PurchaseType == 3 && shopItem.getItemBuyTimes() == 0) { // 首次免费
 			addItemAction.get();
 		} else {
-			int[] cost = shopItemConfig.cost;
+			int[] cost = shopItemConfig.PurchaseParameter;
 			if (shopItem.getItemDiscount() > 0) {
 				cost = ShopHelper.discount(cost, shopItem.getItemDiscount());
 			}
@@ -143,12 +135,12 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id); 
-		boolean checkCondition = PlayerHelper.checkCondition(player.getPlayerId(), monthCardConfig.condition, null);
+		boolean checkCondition = PlayerHelper.checkCondition(player.getPlayerId(), monthCardConfig.ConditionID);
 		if (!checkCondition) {
 			client.sendProtocol(resp, ErrorMsgEnum.month_card_condition.getId());
 			return;
 		}
-		int[] cost = monthCardConfig.cost;
+		int[] cost = monthCardConfig.Price;
 		
 		Future<Boolean> pay = player.pay(cost); 
 		pay.onComplete(t -> {
@@ -180,7 +172,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
-		PlayerHelper.addResources(player.getPlayerId(), monthCardConfig.buyReward);
+		PlayerHelper.addResources(player.getPlayerId(), monthCardConfig.PurchaseRewards);
 
 		monthCard.setIsBuyRewards(true);
 		monthCard.update();
@@ -206,7 +198,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
-		PlayerHelper.addResources(player.getPlayerId(), monthCardConfig.dayReward);
+		PlayerHelper.addResources(player.getPlayerId(), monthCardConfig.DailyRewards);
 
 		monthCard.setIsDayRewards(true);
 		monthCard.update();
@@ -227,18 +219,18 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		ShopGiftConfig shopGiftConfig = ShopGiftManager.instance().get(id);
-		boolean checkCondition = PlayerHelper.checkCondition(player.getPlayerId(), shopGiftConfig.buyCondtion, null);
+		boolean checkCondition = PlayerHelper.checkCondition(player.getPlayerId(), shopGiftConfig.Condition, null);
 		if (!checkCondition) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_gift_condition.getId());
 			return;
 		}
-		int[] cost = shopGiftConfig.cost;
+		int[] cost = shopGiftConfig.Price;
 		
 		Future<Boolean> pay = player.pay(cost); 
 		pay.onComplete(t -> {
 			if (t.result()) {
 				playerModule.addId(IdConstant.SHOP_GIFT, id);
-				PlayerHelper.addResources(player.getPlayerId(), shopGiftConfig.items) ; 
+				PlayerHelper.addResources(player.getPlayerId(), shopGiftConfig.Item);
 				client.sendProtocol(resp.build());
 			}else {
 				client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());

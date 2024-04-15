@@ -1,4 +1,4 @@
-package cn.game.protocol.generated.enume;
+package cn.game.protocol.manual;
 
 /**
  * 副本枚举

@@ -12,20 +12,29 @@ public class Chapter implements Serializable, DbEntity {
 	 */
 	private Long playerId;
 	/**
-	 * 意识空间id
+	 * 战役id
 	 * @mbg.generated
 	 */
-	private Integer chapterId;
+	private Integer battleId;
 	/**
-	 * 意识空间是否通关，貌似没什么用了
+	 * 战役是否通关
 	 * @mbg.generated
 	 */
 	private Boolean pass;
 	/**
-	 * 领取过的意识空间奖励索引
+	 * 领取到的战役奖励索引
 	 * @mbg.generated
 	 */
 	private Integer rewards;
+	/**
+	 * @mbg.generated
+	 */
+	private Integer killMonsterCount;
+	/**
+	 * 剩余血量百分比
+	 * @mbg.generated
+	 */
+	private Integer hpPercent;
 	/**
 	 * @mbg.generated
 	 */
@@ -48,15 +57,15 @@ public class Chapter implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getChapterId() {
-		return chapterId;
+	public Integer getBattleId() {
+		return battleId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setChapterId(Integer chapterId) {
-		this.chapterId = chapterId;
+	public void setBattleId(Integer battleId) {
+		this.battleId = battleId;
 	}
 
 	/**
@@ -90,6 +99,34 @@ public class Chapter implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
+	public Integer getKillMonsterCount() {
+		return killMonsterCount;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setKillMonsterCount(Integer killMonsterCount) {
+		this.killMonsterCount = killMonsterCount;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public Integer getHpPercent() {
+		return hpPercent;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setHpPercent(Integer hpPercent) {
+		this.hpPercent = hpPercent;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
 	@Override
 	public Class<?> getMapperClass() {
 		return cn.game.games.net.data.mapper.ChapterMapper.class;
@@ -100,15 +137,17 @@ public class Chapter implements Serializable, DbEntity {
 	 */
 	@Override
 	public Object primaryKey() {
-		return new Object[] { playerId, chapterId };
+		return new Object[] { playerId, battleId };
 	}
 
 	public static Chapter valueOf(long playerId, int chapterId) {
 		Chapter chapter = new Chapter();
 		chapter.setPlayerId(playerId);
-		chapter.setChapterId(chapterId);
+		chapter.setBattleId(chapterId);
 		chapter.setPass(false);
-		chapter.setRewards(0);
+		chapter.setRewards(-1);
+		chapter.setKillMonsterCount(0);
+		chapter.setHpPercent(0);
 		return chapter;
 	}
 

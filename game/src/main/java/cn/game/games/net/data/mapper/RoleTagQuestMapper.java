@@ -9,8 +9,7 @@ public interface RoleTagQuestMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("roleDictId") Integer roleDictId,
-			@Param("tagId") Integer tagId);
+	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("roleDictId") Integer roleDictId, @Param("tagId") Integer tagId);
 
 	/**
 	 * @mbg.generated
@@ -30,8 +29,7 @@ public interface RoleTagQuestMapper {
 	/**
 	 * @mbg.generated
 	 */
-	RoleTagQuest selectByPrimaryKey(@Param("playerId") Long playerId, @Param("roleDictId") Integer roleDictId,
-			@Param("tagId") Integer tagId);
+	RoleTagQuest selectByPrimaryKey(@Param("playerId") Long playerId, @Param("roleDictId") Integer roleDictId, @Param("tagId") Integer tagId);
 
 	/**
 	 * @mbg.generated

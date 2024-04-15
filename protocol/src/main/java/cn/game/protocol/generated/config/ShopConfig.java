@@ -13,22 +13,22 @@ import org.w3c.dom.Element;
 	/** id */
 	public final int ID;		
 	/** 商品实例 */
-	public final int item;		
+	public final int Item;		
 	/** 显示条件ID */
-	public final int viewCondition;		
+	public final int ViewCondition;		
 	/** 显示类型 */
-	public final int viewType;		
+	public final int ViewType;		
 
 	public ShopConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // id
-		item = Integer.parseInt(element.getAttribute("item") == null || element.getAttribute("item").length() == 0 ? "0"
-			: element.getAttribute("item")); // 商品实例
-		viewCondition = Integer.parseInt(element.getAttribute("viewCondition") == null || element.getAttribute("viewCondition").length() == 0 ? "0"
-			: element.getAttribute("viewCondition")); // 显示条件ID
-		viewType = Integer.parseInt(element.getAttribute("viewType") == null || element.getAttribute("viewType").length() == 0 ? "0"
-			: element.getAttribute("viewType")); // 显示类型
+		Item = Integer.parseInt(element.getAttribute("Item") == null || element.getAttribute("Item").length() == 0 ? "0"
+			: element.getAttribute("Item")); // 商品实例
+		ViewCondition = Integer.parseInt(element.getAttribute("ViewCondition") == null || element.getAttribute("ViewCondition").length() == 0 ? "0"
+			: element.getAttribute("ViewCondition")); // 显示条件ID
+		ViewType = Integer.parseInt(element.getAttribute("ViewType") == null || element.getAttribute("ViewType").length() == 0 ? "0"
+			: element.getAttribute("ViewType")); // 显示类型
 	}
 	
 

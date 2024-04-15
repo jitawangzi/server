@@ -8,13 +8,13 @@ package cn.game.protocol.generated.enume;
 public enum Asset{
 
 	/** 钻石 */
-	diamond(100001,"diamond","钻石",1,4,"游戏中的万用货币",""),
+	diamond(100001,"diamond","钻石",1,4,"游戏中的万用货币","Texture/common/com_icon_stone"),
 	/** 金币 */
-	gold(100002,"gold","金币",1,3,"游戏中购买物品的标准货币",""),
+	gold(100002,"gold","金币",1,3,"游戏中购买物品的标准货币","Texture/common/com_icon_gold"),
 	/** 经验 */
 	playerExp(100201,"playerExp","经验",2,3,"提升玩家等级之用",""),
 	/** 体力 */
-	playerEnergy(100301,"playerEnergy","体力",3,3,"用于挑战、扫荡关卡，获取关卡奖励",""),
+	playerEnergy(100301,"playerEnergy","体力",3,3,"用于挑战、扫荡关卡，获取关卡奖励","Texture/common/com_icon_tili"),
     ;
 	/** 物品ID */
 	public final int ID ; 

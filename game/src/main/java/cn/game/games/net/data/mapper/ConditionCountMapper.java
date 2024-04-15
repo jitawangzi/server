@@ -44,6 +44,11 @@ public interface ConditionCountMapper {
 	/**
 	 * @mbg.generated
 	 */
+	List<ConditionCount> selectByPlayerId(@Param("playerId") Long playerId);
+
+	/**
+	 * @mbg.generated
+	 */
 	int insertBatch(List<ConditionCount> records);
 
 	/**
