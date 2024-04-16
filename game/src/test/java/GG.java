@@ -1,33 +1,21 @@
-import cn.game.util.JsonUtil;
+import java.util.HashMap;
+import java.util.Map;
 
-public class GG {
+public class GG<T extends Number> {
 
 	public static void main(String[] args) throws Exception {
-		GGGG g = new GGGG();
-		g.name = "sadfasdf";
-		String jsonString = JsonUtil.toJsonString(g);
-		System.out.println(jsonString);
-		
-		String string = "[\"GGGG\",{\"name\":\"sadfasdf\",\"age\":33}]";
+		Map<Integer, Integer> m1 = new HashMap<Integer, Integer>();
+		m1.put(1, 2);
+		m1.put(2, 33);
 
-		System.out.println(JsonUtil.parseObject(string, GGGG.class));
+		Map<Integer, Integer> m2 = new HashMap<Integer, Integer>();
+		m1.put(1, 9);
+		m1.put(3, 33);
 
-	}
-	
-}
+		m1.putAll(m2);
 
-class GGGG {
-	public String name;
-//	public int age;
-
-	@Override
-	public String toString() {
-		return "GGGG [name=" + name + ", age=" + 0 + "]";
+		System.out.println(m1);
 	}
 
 }
 
-class GGG extends GGGG {
-	public String name;
-
-}

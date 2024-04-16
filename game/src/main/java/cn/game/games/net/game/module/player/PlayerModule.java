@@ -3,11 +3,9 @@ package cn.game.games.net.game.module.player;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,14 +23,24 @@ import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.util.IntMapWrapper;
 import io.vertx.core.Promise;
 
+/**    
+ * 零散、简单的一些数据，都可以放这里
+ * 2024年3月19日 下午6:38:13
+ * @author SYQ
+ */
 public class PlayerModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE,
 			EventTypeEnum.LoginFinish, EventTypeEnum.Reconnect, EventTypeEnum.LevelUp, EventTypeEnum.ResourceRemove };
 
 	/** 玩家拥有的各种id集合，通常是只增加新id，并且id不能重复。 key1:type ,key2:configId*/
 	private Map<Integer, Map<Integer, PlayerIds>> idsMap = new HashMap<Integer, Map<Integer, PlayerIds>>();
+	/** 等级数据，key: {@link Asset} 这里是经验升的等级*/
+	private IntMapWrapper expLevelMap = new IntMapWrapper();
+	/** 炼金等级 */
+	private IntMapWrapper alchemysMap = new IntMapWrapper();
 	/** 支付成功后的回调 */
 	@JsonIgnore
 	private Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
@@ -115,6 +123,14 @@ public class PlayerModule extends BasePlayerModule {
 		return map;
 	}
 
+	public IntMapWrapper getExpLevelMap() {
+		return expLevelMap;
+	}
+
+	public IntMapWrapper getAlchemysMap() {
+		return alchemysMap;
+	}
+
 	@Override
 	public void autoSaveTasks(List<DbEntity> entities) {
 		entities.add(player.getData());
@@ -132,13 +148,7 @@ public class PlayerModule extends BasePlayerModule {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.setPlayer(player.toProto());
-		Map<Integer, Long> levelMap = player.getLevelMap().getMap();
-		Iterator<Entry<Integer, Long>> iterator = levelMap.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<java.lang.Integer, java.lang.Long> entry = (Map.Entry<java.lang.Integer, java.lang.Long>) iterator
-					.next();
-			builder.putLevels(entry.getKey(), entry.getValue().intValue());
-		}
+		builder.putAllLevels(expLevelMap.getMap());
 
 		// 礼包
 		Map<Integer, PlayerIds> map = idsMap.get(IdConstant.SHOP_GIFT);
@@ -175,7 +185,7 @@ public class PlayerModule extends BasePlayerModule {
 		}
 		case ResourceRemove: {
 			int id = event.getIntParameter(0);
-			player.getLevelMap().removeValue(id);
+			expLevelMap.removeValue(id);
 			break;
 		}
 		}

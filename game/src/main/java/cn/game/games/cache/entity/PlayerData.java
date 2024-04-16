@@ -142,16 +142,6 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	private Integer gameTime;
 	/**
-	 * 玩家的热点数据，经常修改的,一般保存复杂的数据结构
-	 * @mbg.generated
-	 */
-	private cn.game.games.net.game.module.player.PlayerHotData hotData = new cn.game.games.net.game.module.player.PlayerHotData();
-	/**
-	 * 玩家的热点数据，经常修改的,一般保存复杂的数据结构
-	 * @mbg.generated
-	 */
-	private String playerHotData;
-	/**
 	 * 所有模块的数据
 	 * @mbg.generated
 	 */
@@ -556,42 +546,6 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public cn.game.games.net.game.module.player.PlayerHotData getHotData() {
-		return hotData;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setHotData(cn.game.games.net.game.module.player.PlayerHotData hotData) {
-		this.hotData = hotData;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public String getPlayerHotData() {
-		if (playerHotData == null || playerHotData.isEmpty()) {
-			beforeSave();
-		}
-		return playerHotData;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setPlayerHotData(String playerHotData) {
-		this.hotData = com.alibaba.fastjson.JSON.parseObject(playerHotData,
-				new com.alibaba.fastjson.TypeReference<cn.game.games.net.game.module.player.PlayerHotData>() {
-				});
-		if (this.hotData == null) {
-			this.hotData = new cn.game.games.net.game.module.player.PlayerHotData();
-		}
-	}
-
-	/**
-	 * @mbg.generated
-	 */
 	public String getModules() {
 		return modules;
 	}
@@ -601,14 +555,6 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	public void setModules(String modules) {
 		this.modules = modules;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	@Override
-	public void beforeSave() {
-		this.playerHotData = com.alibaba.fastjson.JSON.toJSONString(this.hotData, com.alibaba.fastjson.serializer.SerializerFeature.WriteNonStringKeyAsString);
 	}
 
 	/**

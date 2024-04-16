@@ -9,7 +9,13 @@ public class ItemNoStack extends Item implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	protected Boolean isStack;
+	protected Boolean isStack = false;
+
+	/** 等级 */
+	protected int level;
+	/** 星级 */
+	protected int star;
+
 	/**
 	 * @mbg.generated
 	 */
@@ -27,6 +33,22 @@ public class ItemNoStack extends Item implements Serializable, DbEntity {
 	 */
 	public void setIsStack(Boolean isStack) {
 		this.isStack = isStack;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public int getStar() {
+		return star;
+	}
+
+	public void setStar(int star) {
+		this.star = star;
 	}
 
 	/**

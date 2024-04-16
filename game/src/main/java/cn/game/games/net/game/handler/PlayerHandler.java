@@ -28,7 +28,6 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
-import cn.game.games.net.data.mapper.PlayerExtMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.EventHelper;
@@ -802,7 +801,7 @@ public class PlayerHandler extends BaseHandler {
 			boolean isPc, boolean autoCreate) {
 //		PlayerLoginResponse_01000002.Builder builder = PlayerLoginResponse_01000002.newBuilder();
 		PlayerData playerData = new PlayerData();
-		PlayerExt playerExt = new PlayerExt();
+//		PlayerExt playerExt = new PlayerExt();
 
 
 		long id = uid;
@@ -849,14 +848,14 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setVipLevel(1); // 好感度默认1级
 		playerData.setRefreshDay(DateUtil.getDay(0));
 		playerData.setModules("[]");
-		playerExt.setPlayerId(id);
+//		playerExt.setPlayerId(id);
 
 		ObjUtil.setDefaultValue(playerData);
-		ObjUtil.setDefaultValue(playerExt);
+//		ObjUtil.setDefaultValue(playerExt);
 
 		List<DbTask> dbTasks = new ArrayList<>();
 		dbTasks.add(new DbTask(PlayerDataMapper.class, MapperConstant.insert, playerData));
-		dbTasks.add(new DbTask(PlayerExtMapper.class, MapperConstant.insert, playerExt));
+//		dbTasks.add(new DbTask(PlayerExtMapper.class, MapperConstant.insert, playerExt));
 		DAO.execute(dbTasks).onSuccess(r -> {
 			try {
 //				User user = (User) list.get(0);
@@ -870,7 +869,7 @@ public class PlayerHandler extends BaseHandler {
 
 				Player player = new Player(playerData);
 				player.setGameClient((GameClient) client);
-				player.setExt(playerExt);
+//				player.setExt(playerExt);
 
 				PlayerManager.getInstance().initAdd(player);
 

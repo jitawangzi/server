@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.dragon;
+package cn.game.games.net.game.module.develop.hero;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
@@ -10,9 +10,11 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.ObjUtil;
 
-public class DragonModule extends AbstractItemNoStackModule<Hero> {
+public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
 
+	/** 当前使用的英雄id */
+	private long heroUid;
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -33,6 +35,9 @@ public class DragonModule extends AbstractItemNoStackModule<Hero> {
 	@Override
 	public void setInstanceAfter(Hero hero) {
 		ObjUtil.setDefaultValue(hero);
+		if (this.heroUid == 0) {
+			this.heroUid = hero.getId();
+		}
 	}
 
 	@Override
@@ -42,7 +47,7 @@ public class DragonModule extends AbstractItemNoStackModule<Hero> {
 
 	@Override
 	public RewardInfo toRewardInfo(Hero hero) {
-		return RewardInfo.newBuilder().build();
+		return RewardInfo.newBuilder().setRole(hero.toHeroInfo()).build();
 	}
 
 	@Override
@@ -55,5 +60,17 @@ public class DragonModule extends AbstractItemNoStackModule<Hero> {
 		for (Hero hero : list()) {
 			builder.addHeros(hero.toHeroInfo());
 		}
+	}
+
+	public long getHeroId() {
+		return heroUid;
+	}
+
+	public void setHeroId(long heroId) {
+		this.heroUid = heroId;
+	}
+
+	public Hero getCurHero() {
+		return get(heroUid);
 	}
 }

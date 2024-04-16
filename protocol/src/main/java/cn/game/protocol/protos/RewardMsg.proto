@@ -14,8 +14,10 @@ message RewardInfo{
     HeroInfo role = 3;		// 英雄奖励
     EquipInfo equip = 7;  //装备奖励
     HeroFashionInfo fashion = 8;  //时装奖励
-    GemInfo gem = 9;  //装备奖励
+    GemInfo gem = 9;  //宝石奖励
     DragonInfo dragon = 10;  //龙奖励
+    DragonSkillInfo dragonSkill = 11;  //龙技能奖励
+    HeroSwordInfo sword = 12;  //武器
 }
 
 //奖励推送,客户端收到这个协议之后，将奖励增加到本地。

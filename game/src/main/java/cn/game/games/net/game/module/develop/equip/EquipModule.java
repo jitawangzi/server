@@ -1,40 +1,23 @@
-package cn.game.games.net.game.module.equip;
+package cn.game.games.net.game.module.develop.equip;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.protobuf.ProtocolStringList;
 
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Equip;
-import cn.game.games.cache.op.impl.BuffOp;
-import cn.game.games.cache.op.impl.RoleOp;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.EquipMapper;
-import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
-import cn.game.games.net.game.module.item.ItemModule;
-import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.EquipmentBuffConfig;
 import cn.game.protocol.generated.config.EquipmentConfig;
 import cn.game.protocol.generated.config.EquipmentEnumConfig;
-import cn.game.protocol.generated.config.OldBuffConfig;
 import cn.game.protocol.generated.config.OldGlobalConst;
-import cn.game.protocol.generated.config.RoleConfig;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
 import cn.game.protocol.generated.manager.EquipmentBuffManager;
 import cn.game.protocol.generated.manager.EquipmentEnumManager;
 import cn.game.protocol.generated.manager.EquipmentManager;
-import cn.game.protocol.generated.manager.OldBuffManager;
-import cn.game.protocol.generated.manager.RoleManager;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -83,7 +66,6 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-		// TODO Auto-generated method stub
 
 	}
 	
@@ -98,11 +80,11 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 		Equip equip = new Equip();
 		equip.setPlayerId(playerId);
 //		equip.setDictId(configId);
-		equip.setRoleId(0);
-		equip.setPos((byte) 0);
+//		equip.setRoleId(0);
+//		equip.setPos((byte) 0);
 //		equip.setStrength((byte) 0);
 //		equip.setExp(0);
-		equipmentConfig.getBuff().forEach(e-> equip.addBuff(e));
+//		equipmentConfig.getBuff().forEach(e-> equip.addBuff(e));
 
 		EquipmentEnumConfig buffConfig = EquipmentEnumManager.getInstance()
 				.getEquipmentEnumConfigNullable(equipmentConfig.getQuality());
@@ -156,19 +138,6 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 					current += configs.get(i).weight();
 					if (rand < current) {
 
-						equip.addBuff(configs.get(i).getBuff());
-						// 只能随机出一条传说
-						if (configs.get(i).getIsLegend()) {
-							if (!hasLegend) {
-								hasLegend = true;
-								// 去除所有传说的权重
-								for (EquipmentBuffConfig config : configs) {
-									if (config.getIsLegend()) {
-										total -= config.weight();
-									}
-								}
-							}
-						}
 						break;
 					}
 				}
@@ -180,143 +149,13 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 		return equip;
 	}
 	@Override
-	public void setInstanceAfter(Equip item) {
-
-	}
-
-//	@Override
-//	public void del(long id) {
-//		Equip remove = equips.remove(id);
-//		DAO.delete(EquipMapper.class, remove.getId());
-//	}
-
-//	@Override
-//	public Collection<Equip> list() {
-//		return equips.values();
-//	}
-
-	public void toRepository(long uid) {
-		Equip equip = get(uid);
-		equip.setStorage(Equip.IN_REPOSITORY);
-	}
-
-	public void toBag(long uid) {
-		Equip equip = get(uid);
-		equip.setStorage(Equip.IN_BAG);
-	}
-
-	public ErrorMsgEnum toBag(ProtocolStringList equipUids) {
-		ItemModule itemModule = player.getModule(ItemModule.class);
-//		int idle = itemModule.getBagIdleSize();
-//		if (equipUids.size() > idle) {
-//			return ErrorMsgEnum.item_bag_capacity_not_enough;
-//		}
-
-		for (String uidStr : equipUids) {
-			long uid = StringUtils.isEmpty(uidStr) ? 0 : Long.parseLong(uidStr);
-			Equip equip = get(uid);
-			if (equip == null) {
-				return ErrorMsgEnum.illegal_request;
-			}
-		}
-		for (String uidStr : equipUids) {
-			long uid = StringUtils.isEmpty(uidStr) ? 0 : Long.parseLong(uidStr);
-			toBag(uid);
-//			itemModule.addBagEquip(uid);
-		}
-		return ErrorMsgEnum.ok;
+	public void setInstanceAfter(Equip equip) {
+//		EquipManager.in
 	}
 
 	public int equip(long uid, int roleId, int slot) {
-		ItemModule itemModule = player.getModule(ItemModule.class);
-		Equip newEquip = get(uid);
-		if (newEquip == null) {
-			return ErrorMsgEnum.player_check_error.getId();
-		}
-		if (newEquip.getRoleId() != 0) {
-			// 不能选择其他角色已经装备的
-			return ErrorMsgEnum.player_check_error.getId();
-		}
-		EquipmentConfig equipmentConfig = EquipmentManager.getInstance().getEquipmentConfig(newEquip.getDictId());
 
-		RoleConfig roleConfig = RoleManager.getInstance().getRoleConfig(roleId);
-		List<Integer> equipmentSlot = roleConfig.getEquipmentSlot();
-		if (equipmentSlot == null || equipmentSlot.size() == 0) {
-			return ErrorMsgEnum.config_data_not_found.getId();
-		}
-		if (slot <= 0 || slot > equipmentSlot.size()) {
-			return ErrorMsgEnum.illegal_request.getId();
-		}
-		RoleOp roleOp = player.getModule(RoleOp.class);
-		if (roleOp.get(roleId) == null) {
-			return ErrorMsgEnum.player_check_error.getId();
-		}
-		Map<Byte, Equip> equipMap = null ;
-		if (equipMap == null) {
-			equipMap = new HashMap<>();
-		}
-		if (equipmentConfig.getType() != equipmentSlot.get(slot - 1)) {
-			// 类型不对
-			return ErrorMsgEnum.illegal_request.getId();
-		}
-		// 身上的装备
-		Equip bodyEquip = equipMap.get((byte) slot);
-		BuffOp buffOp = player.getModule(BuffOp.class);
-		if (bodyEquip == null) {// 装备
-			if (equipmentConfig.getRoleId().size() != 0 && !equipmentConfig.getRoleId().contains(roleId)) {
-				return ErrorMsgEnum.illegal_request.getId();
-			}
-			if (equipmentConfig.getOccupation().size() != 0
-					&& !equipmentConfig.getOccupation().contains(roleConfig.getOccupation())) {
-				return ErrorMsgEnum.illegal_request.getId();
-			}
-			if (equipmentConfig.getCamp().size() != 0 && !equipmentConfig.getCamp().contains(roleConfig.getCamp())) {
-				return ErrorMsgEnum.illegal_request.getId();
-			}
-			// 不可同时装备两个同ID的饰品
-//			for (Equip equip1 : equipMap.values()) {
-//				if (equip1.getDictId().equals(newEquip.getDictId())) {
-//					return ErrorMsgEnum.illegal_request.getId();
-//				}
-//			}
-			// 在探索中,穿上背包里的装备
-
-			newEquip.setStorage(Equip.IN_ROLE);
-			newEquip.setRoleId(roleId);
-			newEquip.setPos((byte) slot);
-
-			equipMap.put((byte) slot, newEquip);
-//			this.role_equips.put(roleId, equipMap);
-
-		} else {// 替换
-			if (bodyEquip.getId().equals(uid)) {
-				return ErrorMsgEnum.illegal_request.getId();
-			}
-			EquipmentConfig config = EquipmentManager.getInstance().getEquipmentConfig(bodyEquip.getDictId());
-			if (equipmentConfig.getType() != config.getType()) {
-				return ErrorMsgEnum.illegal_request.getId();
-			}
-
-			// 背包里装备增减
-			bodyEquip.setStorage(Equip.IN_REPOSITORY);
-			
-			bodyEquip.setRoleId(0);
-			bodyEquip.setPos((byte) 0);
-			
-			newEquip.setStorage(Equip.IN_ROLE);
-			newEquip.setRoleId(roleId);
-			newEquip.setPos((byte) slot);
-			
-//			this.equips.put(bodyEquip.getId(), bodyEquip);
-
-//			this.role_equips.get(roleId).put(newEquip.getPos(), newEquip);
-
-			//移除之前的buff
-			buffOp.remove(roleId, bodyEquip.getBuffList());
-		}
-		//添加buff
-		newEquip.getBuffList().forEach(e -> buffOp.add(e, Arrays.asList(roleId)));
-		return ErrorMsgEnum.ok.getId();
+		return 0;
 	}
 
 //	public boolean teardown(int roleId, int slot) {
@@ -429,33 +268,6 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 //		});
 //		return attrMap;
 //	}
-
-	private void addBuffAttr(List<Integer> buff, int valueType, Map<Integer, Integer> attrMap) {
-		for (Integer e : buff) {
-			OldBuffConfig buffConfig = OldBuffManager.getInstance().getBuffConfigNullable(e);
-			if (buffConfig == null) {
-				continue;
-			}
-			int numTypeParam = buffConfig.getNumTypeParam();
-			if(numTypeParam == valueType) {
-				int id = buffConfig.getIdParam() / 100;
-				if (attrMap.get(buffConfig.getIdParam()) == null) {
-					attrMap.put(id, buffConfig.getNumParam());
-				} else {
-					attrMap.put(id, attrMap.get(id) + buffConfig.getNumParam());
-				}
-			}
-		}
-	}
-	public void deleteByIds(List<Long> list) {
-		if (list == null || list.size() == 0) {
-			return;
-		}
-		for (long id : list) {
-			removeCache(get(id));
-		}
-		DAO.execute(EquipMapper.class, MapperConstant.deleteByIds, list);
-	}
 
 //	public void addRoleFixedEquip(int equipDictId, int roleId, int slot) {
 //		EquipmentConfig equipmentConfig = EquipmentManager.getInstance().getEquipmentConfigNullable(equipDictId);

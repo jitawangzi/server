@@ -38,7 +38,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 		case PLAYER_CREATE: {
 			Collection<MoneyRecoveryConfig> list = MoneyRecoveryManager.instance().list();
 			for (MoneyRecoveryConfig moneyRecoveryConfig : list) {
-				if (player.hasCurrency(moneyRecoveryConfig.ID)) {
+				if (player.getCurrencyModule().has(moneyRecoveryConfig.ID)) {
 					startRecoveryTask(moneyRecoveryConfig.ID);
 				}
 			}
@@ -46,7 +46,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 		}
 		case LoginFinish: {
 			Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.MONEY_RECOVERY);
-			idsSet.stream().filter(id -> !player.hasCurrency(id)).collect(Collectors.toList())
+			idsSet.stream().filter(id -> !player.getCurrencyModule().has(id)).collect(Collectors.toList())
 					.forEach(id -> player.getPlayerModule().removeId(IdConstant.MONEY_RECOVERY, id));
 
 			for (Integer id : idsSet) {
@@ -59,8 +59,8 @@ public class MoneyRecoverModule extends BasePlayerModule {
 				int max = getRecoverMax(id);
 				long recoveryTimes = (System.currentTimeMillis() - ids.getUpdateTime()) / interval;
 				if (recoveryTimes > 0) {
-					long newValue = Math.min(player.getCurrency(id) + recoveryTimes, max);
-					player.setCurrency(id, newValue);
+					long newValue = Math.min(player.getCurrencyModule().getCount(id) + recoveryTimes, max);
+					player.getCurrencyModule().setCount(id, newValue);
 					ids.setUpdateTime(ids.getUpdateTime() + recoveryTimes * interval);
 					ids.update();
 				}
@@ -128,7 +128,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	 * @return
 	 */
 	private boolean isRecoverMax(int id) {
-		return player.getCurrency(id) >= getRecoverMax(id);
+		return player.getCurrencyModule().getCount(id) >= getRecoverMax(id);
 	}
 
 	@Override

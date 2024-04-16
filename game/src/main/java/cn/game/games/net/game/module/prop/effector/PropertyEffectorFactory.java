@@ -11,7 +11,7 @@ import cn.game.games.cache.op.impl.RoleOp;
 import cn.game.games.net.game.helper.RoleHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.buff.BuffValue;
-import cn.game.games.net.game.module.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.prop.RolePropFromType;
 import cn.game.games.net.game.module.prop.RoleProperty;
 import cn.game.protocol.generated.config.RoleConfig;

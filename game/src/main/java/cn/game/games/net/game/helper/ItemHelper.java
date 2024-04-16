@@ -25,6 +25,9 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
 import cn.game.protocol.generated.manager.BattlePassManager;
 import cn.game.protocol.generated.manager.BattlePassPrizeManager;
+import cn.game.protocol.generated.manager.DragonManager;
+import cn.game.protocol.generated.manager.DragonSkillManager;
+import cn.game.protocol.generated.manager.HeroFashionManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemConsumablesManager;
 import cn.game.protocol.generated.manager.ItemManager;
@@ -55,6 +58,18 @@ public class ItemHelper {
 		}
 		case Hero: {
 			HeroManager.instance().get(id);
+			break;
+		}
+		case Fashion: {
+			HeroFashionManager.instance().get(id);
+			break;
+		}
+		case Dragon: {
+			DragonManager.instance().get(id);
+			break;
+		}
+		case DragonSkill: {
+			DragonSkillManager.instance().get(id);
 			break;
 		}
 		default:
@@ -107,7 +122,7 @@ public class ItemHelper {
 	 */
 	public static long getCount(Player player, int id) {
 
-		GoodsModule goodsModule = player.getGoodsModule(ItemHelper.getGoodsType(id));
+		GoodsModule goodsModule = player.getGoodsModule(id);
 		return goodsModule.getCount(id);
 	}
 

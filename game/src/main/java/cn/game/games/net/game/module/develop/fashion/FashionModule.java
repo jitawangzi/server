@@ -1,23 +1,16 @@
-package cn.game.games.net.game.module.hero;
+package cn.game.games.net.game.module.develop.fashion;
 
-import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.HeroMapper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.ObjUtil;
 
-/**    
- * 英雄武器
- * @date 2024年4月9日 下午6:09:30
- * @author SYQ
- */
-public class HeroSwordModule extends AbstractItemNoStackModule<Hero> {
+public class FashionModule extends AbstractItemNoStackModule<Fashion> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
-
+	private long fashionUid;
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -27,38 +20,52 @@ public class HeroSwordModule extends AbstractItemNoStackModule<Hero> {
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
+		case PLAYER_CREATE: {
+			break;
+		}
 		}
 	}
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
-		return new Class<?>[] { HeroMapper.class };
+		return null;
 	}
 
 	@Override
-	public void setInstanceAfter(Hero hero) {
+	public void setInstanceAfter(Fashion hero) {
 		ObjUtil.setDefaultValue(hero);
+		if (this.fashionUid == 0) {
+			this.fashionUid = hero.getId();
+		}
+//		SwordConfig SwordConfig = SwordManager.instance().get(hero.getConfigId());
+//		if (SwordConfig.SwordConsumeSkillId > 0) {
+//			player.getSwordSkillModule().add(SwordConfig.SwordConsumeSkillId);
+//		}
+
 	}
 
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
-		return GoodsTypeEnum.Hero;
+		return GoodsTypeEnum.Fashion;
 	}
 
 	@Override
-	public RewardInfo toRewardInfo(Hero hero) {
-		return RewardInfo.newBuilder().build();
+	public RewardInfo toRewardInfo(Fashion sword) {
+		return RewardInfo.newBuilder().setFashion(sword.toFashionInfo()).build();
 	}
 
 	@Override
-	public Hero newInstance() {
-		return new Hero();
+	public Fashion newInstance() {
+		return new Fashion();
 	}
 
+	public Fashion getCurSword() {
+		return get(fashionUid);
+	}
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-		for (Hero hero : list()) {
-			builder.addHeros(hero.toHeroInfo());
+		for (Fashion sword : list()) {
+			builder.addFashions(sword.toFashionInfo());
 		}
 	}
 }

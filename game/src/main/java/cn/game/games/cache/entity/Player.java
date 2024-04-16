@@ -25,8 +25,11 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.currency.CurrencyModule;
+import cn.game.games.net.game.module.develop.dragon.DragonModule;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
+import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
 import cn.game.games.net.game.module.event.EventModule;
-import cn.game.games.net.game.module.hero.HeroModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.PlayerModule;
@@ -42,7 +45,6 @@ import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
 import cn.game.util.JsonUtil;
-import cn.game.util.MapWrapper;
 import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Future;
@@ -145,6 +147,14 @@ public class Player  {
 		return getModule(HeroModule.class);
 	}
 
+	public DragonModule getDragonModule() {
+		return getModule(DragonModule.class);
+	}
+
+	public DragonSkillModule getDragonSkillModule() {
+		return getModule(DragonSkillModule.class);
+	}
+
 	public ItemModule getItemModule() {
 		return getModule(ItemModule.class);
 	}
@@ -162,6 +172,10 @@ public class Player  {
 
 	public QuestModule getQuestModule() {
 		return getModule(QuestModule.class);
+	}
+
+	public CurrencyModule getCurrencyModule() {
+		return getModule(CurrencyModule.class);
 	}
 	public Player() {
 	}
@@ -225,38 +239,8 @@ public class Player  {
 		return ret;
 	}
 
-	/** 
-	 * 获取所有货币数据
-	 * @return
-	 */
-	public MapWrapper getCurrencyMap() {
-		return getData().getHotData().getCurrencyMap();
-	}
-
-	/** 
-	 * 获取所有等级数据
-	 * @return
-	 */
-	public MapWrapper getLevelMap() {
-		return getData().getHotData().getLevelMap();
-	}
-
-	public void setCurrency(int resourceType, long value) {
-		getCurrencyMap().setValue(resourceType, value);
-	}
-
-	public long getCurrency(int resourceType) {
-		return getCurrencyMap().getValue(resourceType);
-	}
-
-	public boolean hasCurrency(int resourceType) {
-		return getCurrencyMap().hasValue(resourceType);
-	}
-
-
 	public boolean isEnough(int id, int count) {
-		int goodsType = ItemHelper.getGoodsType(id);
-		return getGoodsModule(goodsType).isEnough(id, count);
+		return getGoodsModule(id).isEnough(id, count);
 	}
 
 	public Collection<BasePlayerModule> getAllModule()
@@ -276,7 +260,13 @@ public class Player  {
 		this.modules = modules;
 	}
 
-	public GoodsModule getGoodsModule(int goodsType) {
+	/** 
+	 * 获取处理这个id的物品模块
+	 * @param id 配置表id
+	 * @return
+	 */
+	public GoodsModule getGoodsModule(int id) {
+		int goodsType = ItemHelper.getGoodsType(id);
 		return this.goodsModules.get(goodsType);
 	}
 

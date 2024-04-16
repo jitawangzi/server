@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.hero;
+package cn.game.games.net.game.module.develop.hero;
 
 import java.util.List;
 import java.util.Map.Entry;

@@ -156,8 +156,7 @@ public class PlayerHelper {
 		return true;
 	}
 	public static boolean isEnough(Player player, int id, int count) {
-		int goodsType = ItemHelper.getGoodsType(id);
-		return player.getGoodsModule(goodsType).isEnough(id, count);
+		return player.getGoodsModule(id).isEnough(id, count);
 	}
 	public static boolean isEnough(long playerId, int id, int count) {
 		Player player =  PlayerManager.getInstance().getPlayer(playerId) ; 
@@ -190,13 +189,17 @@ public class PlayerHelper {
 		if (value < 0) {
 			return Collections.EMPTY_LIST;
 		}
-		int type = ItemHelper.getGoodsType(id);
-		GoodsModule goodsModule = player.getGoodsModule(type);
-		List<RewardInfo> rewards = goodsModule.addReward(id, value);
-		log.info("player[{}] addReward  type[{}]id[{}]count[{}]", player.getPlayerId(), type, id, value);
-		player.handleEvent(EventTypeEnum.GetItem, id, value);
-		if (notify && !rewards.isEmpty()) {
-			player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
+		List<RewardInfo> rewards = null;
+		try {
+			GoodsModule goodsModule = player.getGoodsModule(id);
+			rewards = goodsModule.addReward(id, value);
+			log.info("player[{}] addReward  id[{}]count[{}]", player.getPlayerId(), id, value);
+			player.handleEvent(EventTypeEnum.GetItem, id, value);
+			if (notify && !rewards.isEmpty()) {
+				player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
+			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException("添加物品出现异常,id： " + id);
 		}
 		return rewards;
 	}
@@ -227,7 +230,7 @@ public class PlayerHelper {
 				return true;
 			}
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			long playerValue = player.getCurrency(id);
+			long playerValue = player.getGoodsModule(id).getCount(id);
 			value = Math.round(playerValue * (100 - value) / 100f);
 		}
 	
@@ -278,8 +281,7 @@ public class PlayerHelper {
 		}
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		int goodsType = ItemHelper.getGoodsType(id);
-		GoodsModule goodsModule = player.getGoodsModule(goodsType);
+		GoodsModule goodsModule = player.getGoodsModule(id);
 		long maxCount = goodsModule.getCount(id);
 		if (value > maxCount) {
 			value = (int) maxCount;

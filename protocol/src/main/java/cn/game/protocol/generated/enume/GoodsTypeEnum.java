@@ -19,6 +19,12 @@ public enum GoodsTypeEnum{
 	Fashion(8, "Equipment", "英雄时装"),
 	/** 龙 */
 	Dragon(10, "Dragon", "龙"),
+	/** 龙技能 */
+	DragonSkill(11, "DragonSkill", "龙技能"),
+
+	Sword(12, "Sword", "武器"),
+	Gem(13, "Gem", "宝石"),
+
 	/** 角色 */
 	Role(44, "Role", "角色"),
 	/** 皮肤 */

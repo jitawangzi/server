@@ -1,7 +1,6 @@
 package cn.game.games.net.game.module.currency;
 
 import java.util.ListIterator;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +17,13 @@ import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.IntMapWrapper;
 import cn.game.util.MapWrapper;
 
 public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
-
+	/** 货币,key:  {@link Money}*/
+	private MapWrapper currencyMap = new MapWrapper();
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return null;
@@ -34,7 +35,15 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 
 	@Override
 	public long getCount(int configId) {
-		return player.getCurrencyMap().getValue(configId);
+		return currencyMap.getValue(configId);
+	}
+
+	public void setCount(int configId, long count) {
+		currencyMap.setValue(configId, count);
+	}
+
+	public boolean has(int configId) {
+		return currencyMap.hasValue(configId);
 	}
 
 	@Override
@@ -48,7 +57,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		if (money.Type == 2) {
 			addExp(configId, count);
 		} else {
-			player.getCurrencyMap().add(configId, count);
+			currencyMap.add(configId, count);
 		}
 		return new Currency(configId, count);
 	}
@@ -59,7 +68,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		if (count <= 0) {
 			return true;
 		}
-		return player.getCurrencyMap().del(configId, count);
+		return currencyMap.del(configId, count);
 	}
 
 	@Override
@@ -99,8 +108,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-		Map<Integer, Long> currencyMap = player.getCurrencyMap().getMap();
-		builder.putAllAssets(currencyMap);
+		builder.putAllAssets(currencyMap.getMap());
 	}
 
 	@Override
@@ -125,9 +133,9 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	}
 
 	public void addExp(int id, int count) {
-		long curExp = player.getCurrency(id) + count;
+		long curExp = currencyMap.getValue(id) + count;
 
-		MapWrapper levelsMap = player.getLevelMap();
+		IntMapWrapper levelsMap = player.getPlayerModule().getExpLevelMap();
 
 		ExpConfig expConfig = getExpConfig(id, (int) levelsMap.getValue(id));
 		ExpConfig nextExpConfig = getExpConfig(id, (int) (levelsMap.getValue(id) + 1));
@@ -146,7 +154,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		if (curExp > expConfig.experience) {
 			curExp = expConfig.experience;
 		}
-		player.setCurrency(id, curExp);
+		currencyMap.setValue(id, curExp);
 	}
 
 	public ExpConfig getExpConfig(int id, int level) {
@@ -165,4 +173,13 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	public void addCacheNoStackable(Currency item) {
 		
 	}
+
+	public MapWrapper getCurrencyMap() {
+		return currencyMap;
+	}
+
+	public void setCurrencyMap(MapWrapper currencyMap) {
+		this.currencyMap = currencyMap;
+	}
+
 }

@@ -14,7 +14,7 @@ import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
- * 
+ * 代表玩家拥有的所有物品
  * @date 2024年2月5日 下午7:18:21
  * @author SYQ
  */
@@ -85,6 +85,7 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	public abstract T get(int configId);
 
 	public abstract T get(long uid);
+
 
 	/** 
 	 * 这个模块处理的物品类型

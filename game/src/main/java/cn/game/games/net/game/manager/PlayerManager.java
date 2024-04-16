@@ -93,7 +93,7 @@ public class PlayerManager {
 
 	/** 初始化一些数据 */
 	public void init() {
-		initForbidAccount();
+//		initForbidAccount();
 
 	}
 

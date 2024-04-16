@@ -8,11 +8,6 @@ import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 public class Hero extends ItemNoStack implements Serializable, DbEntity {
 
 	/**
-	 * 等级
-	 * @mbg.generated
-	 */
-	private Integer level;
-	/**
 	 * 等级经验
 	 * @mbg.generated
 	 */
@@ -22,11 +17,6 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private Integer breakLevel;
-	/**
-	 * 星级
-	 * @mbg.generated
-	 */
-	private Integer star;
 	/**
 	 * 获取时间
 	 * @mbg.generated
@@ -88,20 +78,6 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getLevel() {
-		return level;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setLevel(Integer level) {
-		this.level = level;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
 	public Integer getExp() {
 		return exp;
 	}
@@ -125,13 +101,6 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 	 */
 	public void setBreakLevel(Integer breakLevel) {
 		this.breakLevel = breakLevel;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public Integer getStar() {
-		return star;
 	}
 
 	/**

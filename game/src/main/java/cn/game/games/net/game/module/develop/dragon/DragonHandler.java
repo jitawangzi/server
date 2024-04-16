@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.dragon;
+package cn.game.games.net.game.module.develop.dragon;
 
 import org.springframework.stereotype.Component;
 

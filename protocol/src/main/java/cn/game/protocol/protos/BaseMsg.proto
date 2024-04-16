@@ -88,6 +88,11 @@ message DragonInfo{
   uint32 id  = 1; //Dragon配置表id
   uint32 star  = 2; //Dragon星级
 }
+// 龙技能数据
+message DragonSkillInfo{
+  uint32 id  = 1; //DragonSkil配置表id
+  uint32 level  = 2; //技能等级
+}
 
 
 //技能信息

@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.equip;
+package cn.game.games.net.game.module.develop.equip;
 
 import org.springframework.stereotype.Component;
 

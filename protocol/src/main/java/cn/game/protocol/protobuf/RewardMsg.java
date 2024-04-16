@@ -155,7 +155,7 @@ public final class RewardMsg {
 
     /**
      * <pre>
-     *装备奖励
+     *宝石奖励
      * </pre>
      *
      * <code>.Protos.GemInfo gem = 9;</code>
@@ -164,7 +164,7 @@ public final class RewardMsg {
     boolean hasGem();
     /**
      * <pre>
-     *装备奖励
+     *宝石奖励
      * </pre>
      *
      * <code>.Protos.GemInfo gem = 9;</code>
@@ -173,7 +173,7 @@ public final class RewardMsg {
     cn.game.protocol.protobuf.BaseMsg.GemInfo getGem();
     /**
      * <pre>
-     *装备奖励
+     *宝石奖励
      * </pre>
      *
      * <code>.Protos.GemInfo gem = 9;</code>
@@ -206,6 +206,60 @@ public final class RewardMsg {
      * <code>.Protos.DragonInfo dragon = 10;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.DragonInfoOrBuilder getDragonOrBuilder();
+
+    /**
+     * <pre>
+     *龙技能奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+     * @return Whether the dragonSkill field is set.
+     */
+    boolean hasDragonSkill();
+    /**
+     * <pre>
+     *龙技能奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+     * @return The dragonSkill.
+     */
+    cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo getDragonSkill();
+    /**
+     * <pre>
+     *龙技能奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.DragonSkillInfoOrBuilder getDragonSkillOrBuilder();
+
+    /**
+     * <pre>
+     *武器
+     * </pre>
+     *
+     * <code>.Protos.HeroSwordInfo sword = 12;</code>
+     * @return Whether the sword field is set.
+     */
+    boolean hasSword();
+    /**
+     * <pre>
+     *武器
+     * </pre>
+     *
+     * <code>.Protos.HeroSwordInfo sword = 12;</code>
+     * @return The sword.
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo getSword();
+    /**
+     * <pre>
+     *武器
+     * </pre>
+     *
+     * <code>.Protos.HeroSwordInfo sword = 12;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroSwordInfoOrBuilder getSwordOrBuilder();
   }
   /**
    * <pre>
@@ -345,6 +399,32 @@ public final class RewardMsg {
               if (subBuilder != null) {
                 subBuilder.mergeFrom(dragon_);
                 dragon_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 90: {
+              cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.Builder subBuilder = null;
+              if (dragonSkill_ != null) {
+                subBuilder = dragonSkill_.toBuilder();
+              }
+              dragonSkill_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(dragonSkill_);
+                dragonSkill_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 98: {
+              cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.Builder subBuilder = null;
+              if (sword_ != null) {
+                subBuilder = sword_.toBuilder();
+              }
+              sword_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(sword_);
+                sword_ = subBuilder.buildPartial();
               }
 
               break;
@@ -575,7 +655,7 @@ public final class RewardMsg {
     private cn.game.protocol.protobuf.BaseMsg.GemInfo gem_;
     /**
      * <pre>
-     *装备奖励
+     *宝石奖励
      * </pre>
      *
      * <code>.Protos.GemInfo gem = 9;</code>
@@ -587,7 +667,7 @@ public final class RewardMsg {
     }
     /**
      * <pre>
-     *装备奖励
+     *宝石奖励
      * </pre>
      *
      * <code>.Protos.GemInfo gem = 9;</code>
@@ -599,7 +679,7 @@ public final class RewardMsg {
     }
     /**
      * <pre>
-     *装备奖励
+     *宝石奖励
      * </pre>
      *
      * <code>.Protos.GemInfo gem = 9;</code>
@@ -647,6 +727,82 @@ public final class RewardMsg {
       return getDragon();
     }
 
+    public static final int DRAGONSKILL_FIELD_NUMBER = 11;
+    private cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo dragonSkill_;
+    /**
+     * <pre>
+     *龙技能奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+     * @return Whether the dragonSkill field is set.
+     */
+    @java.lang.Override
+    public boolean hasDragonSkill() {
+      return dragonSkill_ != null;
+    }
+    /**
+     * <pre>
+     *龙技能奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+     * @return The dragonSkill.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo getDragonSkill() {
+      return dragonSkill_ == null ? cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.getDefaultInstance() : dragonSkill_;
+    }
+    /**
+     * <pre>
+     *龙技能奖励
+     * </pre>
+     *
+     * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.DragonSkillInfoOrBuilder getDragonSkillOrBuilder() {
+      return getDragonSkill();
+    }
+
+    public static final int SWORD_FIELD_NUMBER = 12;
+    private cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo sword_;
+    /**
+     * <pre>
+     *武器
+     * </pre>
+     *
+     * <code>.Protos.HeroSwordInfo sword = 12;</code>
+     * @return Whether the sword field is set.
+     */
+    @java.lang.Override
+    public boolean hasSword() {
+      return sword_ != null;
+    }
+    /**
+     * <pre>
+     *武器
+     * </pre>
+     *
+     * <code>.Protos.HeroSwordInfo sword = 12;</code>
+     * @return The sword.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo getSword() {
+      return sword_ == null ? cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.getDefaultInstance() : sword_;
+    }
+    /**
+     * <pre>
+     *武器
+     * </pre>
+     *
+     * <code>.Protos.HeroSwordInfo sword = 12;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroSwordInfoOrBuilder getSwordOrBuilder() {
+      return getSword();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -681,6 +837,12 @@ public final class RewardMsg {
       }
       if (dragon_ != null) {
         output.writeMessage(10, getDragon());
+      }
+      if (dragonSkill_ != null) {
+        output.writeMessage(11, getDragonSkill());
+      }
+      if (sword_ != null) {
+        output.writeMessage(12, getSword());
       }
       unknownFields.writeTo(output);
     }
@@ -718,6 +880,14 @@ public final class RewardMsg {
       if (dragon_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(10, getDragon());
+      }
+      if (dragonSkill_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, getDragonSkill());
+      }
+      if (sword_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(12, getSword());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -769,6 +939,16 @@ public final class RewardMsg {
         if (!getDragon()
             .equals(other.getDragon())) return false;
       }
+      if (hasDragonSkill() != other.hasDragonSkill()) return false;
+      if (hasDragonSkill()) {
+        if (!getDragonSkill()
+            .equals(other.getDragonSkill())) return false;
+      }
+      if (hasSword() != other.hasSword()) return false;
+      if (hasSword()) {
+        if (!getSword()
+            .equals(other.getSword())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -807,6 +987,14 @@ public final class RewardMsg {
       if (hasDragon()) {
         hash = (37 * hash) + DRAGON_FIELD_NUMBER;
         hash = (53 * hash) + getDragon().hashCode();
+      }
+      if (hasDragonSkill()) {
+        hash = (37 * hash) + DRAGONSKILL_FIELD_NUMBER;
+        hash = (53 * hash) + getDragonSkill().hashCode();
+      }
+      if (hasSword()) {
+        hash = (37 * hash) + SWORD_FIELD_NUMBER;
+        hash = (53 * hash) + getSword().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -989,6 +1177,18 @@ public final class RewardMsg {
           dragon_ = null;
           dragonBuilder_ = null;
         }
+        if (dragonSkillBuilder_ == null) {
+          dragonSkill_ = null;
+        } else {
+          dragonSkill_ = null;
+          dragonSkillBuilder_ = null;
+        }
+        if (swordBuilder_ == null) {
+          sword_ = null;
+        } else {
+          sword_ = null;
+          swordBuilder_ = null;
+        }
         return this;
       }
 
@@ -1049,6 +1249,16 @@ public final class RewardMsg {
           result.dragon_ = dragon_;
         } else {
           result.dragon_ = dragonBuilder_.build();
+        }
+        if (dragonSkillBuilder_ == null) {
+          result.dragonSkill_ = dragonSkill_;
+        } else {
+          result.dragonSkill_ = dragonSkillBuilder_.build();
+        }
+        if (swordBuilder_ == null) {
+          result.sword_ = sword_;
+        } else {
+          result.sword_ = swordBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1118,6 +1328,12 @@ public final class RewardMsg {
         }
         if (other.hasDragon()) {
           mergeDragon(other.getDragon());
+        }
+        if (other.hasDragonSkill()) {
+          mergeDragonSkill(other.getDragonSkill());
+        }
+        if (other.hasSword()) {
+          mergeSword(other.getSword());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1928,7 +2144,7 @@ public final class RewardMsg {
           cn.game.protocol.protobuf.BaseMsg.GemInfo, cn.game.protocol.protobuf.BaseMsg.GemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.GemInfoOrBuilder> gemBuilder_;
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -1939,7 +2155,7 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -1954,7 +2170,7 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -1974,7 +2190,7 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -1992,7 +2208,7 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -2014,7 +2230,7 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -2032,7 +2248,7 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -2044,7 +2260,7 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -2059,7 +2275,7 @@ public final class RewardMsg {
       }
       /**
        * <pre>
-       *装备奖励
+       *宝石奖励
        * </pre>
        *
        * <code>.Protos.GemInfo gem = 9;</code>
@@ -2231,6 +2447,316 @@ public final class RewardMsg {
           dragon_ = null;
         }
         return dragonBuilder_;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo dragonSkill_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo, cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.Builder, cn.game.protocol.protobuf.BaseMsg.DragonSkillInfoOrBuilder> dragonSkillBuilder_;
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       * @return Whether the dragonSkill field is set.
+       */
+      public boolean hasDragonSkill() {
+        return dragonSkillBuilder_ != null || dragonSkill_ != null;
+      }
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       * @return The dragonSkill.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo getDragonSkill() {
+        if (dragonSkillBuilder_ == null) {
+          return dragonSkill_ == null ? cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.getDefaultInstance() : dragonSkill_;
+        } else {
+          return dragonSkillBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       */
+      public Builder setDragonSkill(cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo value) {
+        if (dragonSkillBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          dragonSkill_ = value;
+          onChanged();
+        } else {
+          dragonSkillBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       */
+      public Builder setDragonSkill(
+          cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.Builder builderForValue) {
+        if (dragonSkillBuilder_ == null) {
+          dragonSkill_ = builderForValue.build();
+          onChanged();
+        } else {
+          dragonSkillBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       */
+      public Builder mergeDragonSkill(cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo value) {
+        if (dragonSkillBuilder_ == null) {
+          if (dragonSkill_ != null) {
+            dragonSkill_ =
+              cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.newBuilder(dragonSkill_).mergeFrom(value).buildPartial();
+          } else {
+            dragonSkill_ = value;
+          }
+          onChanged();
+        } else {
+          dragonSkillBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       */
+      public Builder clearDragonSkill() {
+        if (dragonSkillBuilder_ == null) {
+          dragonSkill_ = null;
+          onChanged();
+        } else {
+          dragonSkill_ = null;
+          dragonSkillBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.Builder getDragonSkillBuilder() {
+        
+        onChanged();
+        return getDragonSkillFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.DragonSkillInfoOrBuilder getDragonSkillOrBuilder() {
+        if (dragonSkillBuilder_ != null) {
+          return dragonSkillBuilder_.getMessageOrBuilder();
+        } else {
+          return dragonSkill_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.getDefaultInstance() : dragonSkill_;
+        }
+      }
+      /**
+       * <pre>
+       *龙技能奖励
+       * </pre>
+       *
+       * <code>.Protos.DragonSkillInfo dragonSkill = 11;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo, cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.Builder, cn.game.protocol.protobuf.BaseMsg.DragonSkillInfoOrBuilder> 
+          getDragonSkillFieldBuilder() {
+        if (dragonSkillBuilder_ == null) {
+          dragonSkillBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo, cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo.Builder, cn.game.protocol.protobuf.BaseMsg.DragonSkillInfoOrBuilder>(
+                  getDragonSkill(),
+                  getParentForChildren(),
+                  isClean());
+          dragonSkill_ = null;
+        }
+        return dragonSkillBuilder_;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo sword_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo, cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroSwordInfoOrBuilder> swordBuilder_;
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       * @return Whether the sword field is set.
+       */
+      public boolean hasSword() {
+        return swordBuilder_ != null || sword_ != null;
+      }
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       * @return The sword.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo getSword() {
+        if (swordBuilder_ == null) {
+          return sword_ == null ? cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.getDefaultInstance() : sword_;
+        } else {
+          return swordBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       */
+      public Builder setSword(cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo value) {
+        if (swordBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          sword_ = value;
+          onChanged();
+        } else {
+          swordBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       */
+      public Builder setSword(
+          cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.Builder builderForValue) {
+        if (swordBuilder_ == null) {
+          sword_ = builderForValue.build();
+          onChanged();
+        } else {
+          swordBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       */
+      public Builder mergeSword(cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo value) {
+        if (swordBuilder_ == null) {
+          if (sword_ != null) {
+            sword_ =
+              cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.newBuilder(sword_).mergeFrom(value).buildPartial();
+          } else {
+            sword_ = value;
+          }
+          onChanged();
+        } else {
+          swordBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       */
+      public Builder clearSword() {
+        if (swordBuilder_ == null) {
+          sword_ = null;
+          onChanged();
+        } else {
+          sword_ = null;
+          swordBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.Builder getSwordBuilder() {
+        
+        onChanged();
+        return getSwordFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroSwordInfoOrBuilder getSwordOrBuilder() {
+        if (swordBuilder_ != null) {
+          return swordBuilder_.getMessageOrBuilder();
+        } else {
+          return sword_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.getDefaultInstance() : sword_;
+        }
+      }
+      /**
+       * <pre>
+       *武器
+       * </pre>
+       *
+       * <code>.Protos.HeroSwordInfo sword = 12;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo, cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroSwordInfoOrBuilder> 
+          getSwordFieldBuilder() {
+        if (swordBuilder_ == null) {
+          swordBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo, cn.game.protocol.protobuf.BaseMsg.HeroSwordInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroSwordInfoOrBuilder>(
+                  getSword(),
+                  getParentForChildren(),
+                  isClean());
+          sword_ = null;
+        }
+        return swordBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -5056,18 +5582,20 @@ public final class RewardMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017RewardMsg.proto\022\006Protos\032\rBaseMsg.proto" +
-      "\"\374\001\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
+      "\"\320\002\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
       "AssetInfo\022\036\n\004item\030\002 \001(\0132\020.Protos.ItemInf" +
       "o\022\036\n\004role\030\003 \001(\0132\020.Protos.HeroInfo\022 \n\005equ" +
       "ip\030\007 \001(\0132\021.Protos.EquipInfo\022(\n\007fashion\030\010" +
       " \001(\0132\027.Protos.HeroFashionInfo\022\034\n\003gem\030\t \001" +
       "(\0132\017.Protos.GemInfo\022\"\n\006dragon\030\n \001(\0132\022.Pr" +
-      "otos.DragonInfo\":\n\023RewardPush_55000501\022#" +
-      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"6\n\022S" +
-      "pendPush_55001501\022 \n\005spend\030\001 \003(\0132\021.Proto" +
-      "s.GoodsInfo\">\n\027RewardShowPush_55002501\022#" +
-      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfoB\033\n\031c" +
-      "n.game.protocol.protobufb\006proto3"
+      "otos.DragonInfo\022,\n\013dragonSkill\030\013 \001(\0132\027.P" +
+      "rotos.DragonSkillInfo\022$\n\005sword\030\014 \001(\0132\025.P" +
+      "rotos.HeroSwordInfo\":\n\023RewardPush_550005" +
+      "01\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"" +
+      "6\n\022SpendPush_55001501\022 \n\005spend\030\001 \003(\0132\021.P" +
+      "rotos.GoodsInfo\">\n\027RewardShowPush_550025" +
+      "01\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfoB" +
+      "\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5079,7 +5607,7 @@ public final class RewardMsg {
     internal_static_Protos_RewardInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_RewardInfo_descriptor,
-        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", });
+        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", "DragonSkill", "Sword", });
     internal_static_Protos_RewardPush_55000501_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_RewardPush_55000501_fieldAccessorTable = new

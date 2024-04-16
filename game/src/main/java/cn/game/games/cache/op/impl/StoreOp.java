@@ -22,7 +22,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.StoreHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.RewardItem;
-import cn.game.games.net.game.module.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.store.StoreGoods;
 import cn.game.games.util.DAO;

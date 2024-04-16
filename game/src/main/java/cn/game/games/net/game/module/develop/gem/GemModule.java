@@ -1,16 +1,13 @@
-package cn.game.games.net.game.module.gem;
+package cn.game.games.net.game.module.develop.gem;
 
-import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.HeroMapper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.generated.enume.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.ObjUtil;
 
-public class GemModule extends AbstractItemNoStackModule<Hero> {
+public class GemModule extends AbstractItemNoStackModule<Gem> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
 
 
@@ -27,33 +24,33 @@ public class GemModule extends AbstractItemNoStackModule<Hero> {
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
-		return new Class<?>[] { HeroMapper.class };
+		return null;
 	}
 
 	@Override
-	public void setInstanceAfter(Hero hero) {
-		ObjUtil.setDefaultValue(hero);
+	public void setInstanceAfter(Gem instance) {
+		// 随机宝石属性
 	}
 
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
-		return GoodsTypeEnum.Hero;
+		return GoodsTypeEnum.Gem;
 	}
 
 	@Override
-	public RewardInfo toRewardInfo(Hero hero) {
-		return RewardInfo.newBuilder().build();
+	public RewardInfo toRewardInfo(Gem obj) {
+		return RewardInfo.newBuilder().setGem(obj.toGemInfo()).build();
 	}
 
 	@Override
-	public Hero newInstance() {
-		return new Hero();
+	public Gem newInstance() {
+		return new Gem();
 	}
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-		for (Hero hero : list()) {
-			builder.addHeros(hero.toHeroInfo());
+		for (Gem obj : list()) {
+			builder.addGems(obj.toGemInfo());
 		}
 	}
 }

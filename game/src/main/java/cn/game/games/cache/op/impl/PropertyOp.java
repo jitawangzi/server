@@ -15,7 +15,7 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.RoleHelper;
-import cn.game.games.net.game.module.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.prop.RolePropFromType;
 import cn.game.games.net.game.module.prop.RoleProperty;
 import cn.game.protocol.generated.config.OldBuffConfig;

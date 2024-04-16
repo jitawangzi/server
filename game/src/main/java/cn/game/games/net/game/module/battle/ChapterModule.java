@@ -44,7 +44,7 @@ import cn.game.protocol.generated.manager.EventTriggerManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
-import cn.game.util.MapWrapper;
+import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
 /**    
@@ -69,7 +69,7 @@ public class ChapterModule extends BasePlayerModule  {
 	/** 各种类型的随机事件，每天产生了多少次 */
 	private Map<Integer, Integer> eventTypeMap;
 
-	private MapWrapper dailyCount = new MapWrapper();
+	private IntMapWrapper dailyCount = new IntMapWrapper();
 
 	// 战斗相关数据
 	private int type;
@@ -101,11 +101,6 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		this.battleRandomEvents = battleRandomEvents;
 		checkBattleEvent();
-	}
-
-	public void updateChapter(Chapter chapter) {
-//		DAO.execute(ChapterMapper.class, MapperConstant.updateByPrimaryKey,
-//				chapter);
 	}
 
 	public void addChapter(int battleId) {
@@ -522,13 +517,6 @@ public class ChapterModule extends BasePlayerModule  {
 		return 0;
 	}
 
-	public MapWrapper getDailyCount() {
-		return dailyCount;
-	}
-
-	public void setDailyCount(MapWrapper dailyCount) {
-		this.dailyCount = dailyCount;
-	}
 
 	public List<BattleRandomEvent> listBattleEvents() {
 		return this.battleRandomEvents;
