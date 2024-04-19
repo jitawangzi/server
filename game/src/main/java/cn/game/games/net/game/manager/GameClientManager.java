@@ -231,7 +231,9 @@ public class GameClientManager {
 		AtomicInteger finishCount = new AtomicInteger(0);
 		Promise<Object> promise = Promise.promise();
 		Future<Object> future = promise.future();
-
+		if (onLineCount == 0) {
+			promise.complete();
+		}
 		for (GameClient gameClient : lists) {
 			gameClient.getContext().runOnContext(r -> {
 				Future<?> logout = logout(gameClient);

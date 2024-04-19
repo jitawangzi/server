@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 	/** 表唯一id */
 	public final int ID;		
-	/** 消耗类型,消耗类型和参数两个值确定唯一的一条数据： 1英雄升级 */
+	/** 消耗类型 消耗类型和参数两个值确定唯一的一条数据： 1英雄升级 */
 	public final int type;		
 	/** 消耗类型对应的参数 1英雄职业 */
 	public final int typeParam;		
@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 表唯一id
 		type = Integer.parseInt(element.getAttribute("type") == null || element.getAttribute("type").length() == 0 ? "0"
-			: element.getAttribute("type")); // 消耗类型,消耗类型和参数两个值确定唯一的一条数据： 1英雄升级
+			: element.getAttribute("type")); // 消耗类型 消耗类型和参数两个值确定唯一的一条数据： 1英雄升级
 		typeParam = Integer.parseInt(element.getAttribute("typeParam") == null || element.getAttribute("typeParam").length() == 0 ? "0"
 			: element.getAttribute("typeParam")); // 消耗类型对应的参数 1英雄职业
 		item1 = Integer.parseInt(element.getAttribute("item1") == null || element.getAttribute("item1").length() == 0 ? "0"

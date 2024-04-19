@@ -363,13 +363,13 @@ public class GameServer implements GameServerMBean {
 			GameClientManager.getInstance().storeAllPlayers();
 			SpringContextLoader.getContext().close();
 			quartzInitializer.destroyed();
-			// 安全关闭log
-			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-			context.stop();
 
 			VxHolder.vertx.close().toCompletionStage().toCompletableFuture().get(300, TimeUnit.SECONDS);
 
 			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
+			// 安全关闭log
+			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+			context.stop();
 
 		} catch (Throwable e) {
 			log.error("Game Server Shutdown err ", e);

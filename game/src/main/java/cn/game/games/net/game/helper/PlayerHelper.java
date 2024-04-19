@@ -53,6 +53,7 @@ import cn.game.protocol.generated.config.ConsumeConfig;
 import cn.game.protocol.generated.config.EventOptionConfig;
 import cn.game.protocol.generated.config.GameCommandConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
+import cn.game.protocol.generated.config.RandomGroupConfig;
 import cn.game.protocol.generated.config.RewardConfig;
 import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.config.versionConfig;
@@ -62,6 +63,7 @@ import cn.game.protocol.generated.manager.ConsumeManager;
 import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.GameCommandManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
+import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
@@ -199,7 +201,7 @@ public class PlayerHelper {
 				player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
 			}
 		} catch (Exception e) {
-			throw new IllegalArgumentException("添加物品出现异常,id： " + id);
+			throw new IllegalArgumentException("添加物品出现异常,id： " + id, e);
 		}
 		return rewards;
 	}
@@ -221,7 +223,7 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(long playerId, int id, int value, int mode, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, int id, int value, int mode, ResourceConsumeEnum consumeType) {
 		if (value <= 0) {
 			return true;
 		}
@@ -229,29 +231,24 @@ public class PlayerHelper {
 			if (value > 100) {
 				return true;
 			}
-			Player player = PlayerManager.getInstance().getPlayer(playerId);
 			long playerValue = player.getGoodsModule(id).getCount(id);
 			value = Math.round(playerValue * (100 - value) / 100f);
 		}
 	
-		return delResources(playerId, id, value, consumeType, true);
+		return delResources(player, id, value, consumeType, true);
 
 	}
 
-	public static boolean delResources(long playerId, int id, int value, ResourceConsumeEnum consumeType) {
-		return delResources(playerId, id, value, consumeType, true);
+	public static boolean delResources(Player player, int id, int value, ResourceConsumeEnum consumeType) {
+		return delResources(player, id, value, consumeType, true);
 	}
 
-	public static boolean delResources(long playerId, int consumeId, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, int consumeId, ResourceConsumeEnum consumeType) {
 		if (consumeId == 0) {
 			return true;
 		}
 		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
-		return delResources(playerId, consumeConfig.cost, consumeType);
-	}
-
-	public static boolean delResources(Player player, int id, int value, ResourceConsumeEnum consumeType) {
-		return delResources(player.getPlayerId(), id, value, consumeType, true);
+		return delResources(player, consumeConfig.cost, consumeType);
 	}
 
 	/**
@@ -263,12 +260,12 @@ public class PlayerHelper {
 	 * @param notify 是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
 	 * @return
 	 */
-	private static boolean delResources(long playerId, int id, int value, ResourceConsumeEnum consumeType, boolean notify) {
+	private static boolean delResources(Player player, int id, int value, ResourceConsumeEnum consumeType, boolean notify) {
 
 		if (value <= 0) {
 			return true;
 		}
-		if (!PlayerManager.getInstance().hasCache(playerId)) {
+//		if (!PlayerManager.getInstance().hasCache(player)) {
 //			OfflineResourceAdd add = new OfflineResourceAdd();
 //			add.setItemId(id);
 //			add.setCount(value);
@@ -277,10 +274,8 @@ public class PlayerHelper {
 //			DAO.insert(OfflineResourceAddMapper.class, add);
 //			return true;
 			// 不在线不能扣资源
-			return false;
-		}
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
+//			return false;
+//		}
 		GoodsModule goodsModule = player.getGoodsModule(id);
 		long maxCount = goodsModule.getCount(id);
 		if (value > maxCount) {
@@ -289,13 +284,13 @@ public class PlayerHelper {
 		boolean ret = goodsModule.del(id, value, consumeType);
 
 		if (ret) {
-			EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.CostItem, id, value));
-			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", playerId, id, value,
+			player.handleEvent(EventTypeEnum.CostItem, id, value);
+			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", player.getPlayerId(), id, value,
 					consumeType.getName());
 			if (notify) {
 				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
-				PlayerHelper.sendProtocol(playerId, spendPush.build());
+				player.getGameClient().sendProtocol(spendPush.build());
 			}
 		}
 		return ret;
@@ -308,39 +303,36 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(long playerId, List<Entry<Integer, Integer>> list, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, List<Entry<Integer, Integer>> list, ResourceConsumeEnum consumeType) {
 
 		if (list == null || list.isEmpty()) {
 			return true;
 		}
-		Player player =  PlayerManager.getInstance().getPlayer(playerId) ; 
 
 		if (isEnough(player, list)) {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (Entry<Integer, Integer> entry : list) {
-				delResources(playerId, entry.getKey(), entry.getValue(), consumeType, false);
+				delResources(player, entry.getKey(), entry.getValue(), consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
 			}
-			PlayerHelper.sendProtocol(playerId, spendPush.build());
+			player.getGameClient().sendProtocol(spendPush.build());
 			return true;
 		}
 		return false;
 	}
 
-	public static boolean delResourcesOld(long playerId, int[][] list, ResourceConsumeEnum consumeType) {
+	public static boolean delResourcesOld(Player player, int[][] list, ResourceConsumeEnum consumeType) {
 
 		if (list == null || list.length == 0) {
 			return true;
 		}
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
 		if (isEnough(player, list)) {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (int i = 0; i < list.length; i++) {
-				delResources(playerId, list[i][0], list[i][1], consumeType, false);
+				delResources(player, list[i][0], list[i][1], consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
 			}
-			PlayerHelper.sendProtocol(playerId, spendPush.build());
+			player.getGameClient().sendProtocol(spendPush.build());
 			return true;
 		}
 		return false;
@@ -353,28 +345,43 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(long playerId, int[][] list, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, int[][] list, ResourceConsumeEnum consumeType) {
 
 		if (list == null || list.length == 0) {
 			return true;
 		}
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
 		if (isEnough(player, list)) {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (int i = 0; i < list.length; i++) {
-				delResources(playerId, list[i][0], list[i][1], consumeType, false);
+				delResources(player, list[i][0], list[i][1], consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
 			}
-			PlayerHelper.sendProtocol(playerId, spendPush.build());
+			player.getGameClient().sendProtocol(spendPush.build());
 			return true;
 		}
 		return false;
 	}
 
+	/** 
+	 * 根据奖励id，增加所有物品
+	 * @param player
+	 * @param randomRewardId
+	 * @return
+	 */
 	public static List<RewardInfo> addReward(Player player, int randomRewardId) {
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId); 
-		return addResources(player.getPlayerId(), randomGivenConfig.MustGiven);
+		List<RewardInfo> resources = addResources(player.getPlayerId(), randomGivenConfig.MustGiven, false);
+		if (randomGivenConfig.RandomNumber.length > 0) {
+			int randomCount = Rnd.get(randomGivenConfig.RandomNumber[0], randomGivenConfig.RandomNumber[1]);
+			for (int i = 0; i < randomCount; i++) {
+				int randomIndex = Rnd.randomIndex(randomGivenConfig.RandomParameterWeight);
+				int group = randomGivenConfig.RandomParameterGroupId[randomIndex];
+				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
+				RandomGroupConfig groupConfig = Rnd.randomOne(randomGroupIDList);
+				resources.addAll(addResources(player, groupConfig.AssetID, groupConfig.Several));
+			}
+		}
+		return resources;
 	}
 
 	public static Player addExp(Player player, int exp) {
@@ -562,13 +569,19 @@ public class PlayerHelper {
 	}
 
 	public static List<RewardInfo> addResources(long playerId, int[][] rewards) {
+		return addResources(playerId, rewards, false);
+	}
+
+	public static List<RewardInfo> addResources(long playerId, int[][] rewards, boolean notify) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.length > 0) {
 			for (int i = 0; i < rewards.length; i++) {
 				List<RewardInfo> rewardItem = addResources(playerId, rewards[i][0], rewards[i][1], false);
 				rewardItems.addAll(rewardItem);
 			}
-			PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			if (notify) {
+				PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			}
 		}
 		return rewardItems;
 	}
@@ -845,11 +858,11 @@ public class PlayerHelper {
 	 * @param optionId
 	 * @param notify 是否通知客户端
 	 */
-	public static List<Buff> chooseEventOption(long playerId, int eventId, int optionId, boolean notify) {
+	public static List<Buff> chooseEventOption(Player player, int eventId, int optionId, boolean notify) {
 
 		EventOptionConfig config = EventOptionManager.getInstance().getEventOptionConfig(optionId);
 		// 选择时花费
-		if (!PlayerHelper.delResources(playerId, config.getChooseCost(), ResourceConsumeEnum.EventOptin)) {
+		if (!PlayerHelper.delResources(player, config.getChooseCost(), ResourceConsumeEnum.EventOptin)) {
 			return null;
 		}
 		List<Buff> ret = new ArrayList<>();
@@ -858,14 +871,14 @@ public class PlayerHelper {
 			int randomIndex = Rnd.randomIndex(buffWeight);
 			int[] buffId = config.getBuffId();
 			int randomBuffId = buffId[randomIndex];
-			List<Buff> buff = BuffHelper.addBuff(playerId, randomBuffId, null, notify);
+			List<Buff> buff = BuffHelper.addBuff(player.getPlayerId(), randomBuffId, null, notify);
 			ret.addAll(buff);
 
 		} else {
 			// 固定选项
 			int[] buffId = config.getBuffId();
 			for (int id : buffId) {
-				List<Buff> buff = BuffHelper.addBuff(playerId, id, null, notify);
+				List<Buff> buff = BuffHelper.addBuff(player.getPlayerId(), id, null, notify);
 				ret.addAll(buff);
 			}
 		}

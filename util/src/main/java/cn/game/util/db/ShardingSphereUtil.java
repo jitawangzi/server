@@ -49,12 +49,13 @@ public class ShardingSphereUtil {
 	public static final Map<String, Integer> tablesShardingCount = new HashMap<String, Integer>();
 
 	static {
-		tablesShardingCount.put("t_item", 20);
-		tablesShardingCount.put("t_hero", 20);
-		tablesShardingCount.put("t_variable", 20);
-		tablesShardingCount.put("t_quest", 20);
-		tablesShardingCount.put("t_activity", 10);
-		tablesShardingCount.put("t_player_ids", 30);
+//		tablesShardingCount.put("t_item", 20);
+//		tablesShardingCount.put("t_hero", 20);
+//		tablesShardingCount.put("t_variable", 20);
+//		tablesShardingCount.put("t_quest", 20);
+//		tablesShardingCount.put("t_activity", 10);
+//		tablesShardingCount.put("t_player_ids", 30);
+		tablesShardingCount.put("t_mail", 5);
 	}
 
 	public static void main(String[] args) throws Exception {

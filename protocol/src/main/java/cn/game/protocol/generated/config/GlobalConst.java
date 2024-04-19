@@ -20,6 +20,10 @@ public class GlobalConst extends ResourceListener {
 	public static int[][] initItems;		
 	/** UID创建取值，参数1版本标识，参数2自增函数起始值 */
 	public static int[] CreateUID;		
+	/** 【肉鸽】全场AOE类肉鸽规定 */
+	public static int[] Rogueroll1;		
+	/** 【肉鸽】全场纯加属性类肉鸽规定 */
+	public static int[] Rogueroll2;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -58,6 +62,30 @@ public class GlobalConst extends ResourceListener {
 			CreateUID = CreateUIDTemp ;			
 		} else {
 			CreateUID = new int[] {};
+		}
+		String Rogueroll1String = element.getAttribute("Rogueroll1"); // 【肉鸽】全场AOE类肉鸽规定
+		if (Rogueroll1String != null && Rogueroll1String.length() > 0) {
+			String[] Rogueroll1Strings = Rogueroll1String.split(";"); 
+			int[] Rogueroll1Temp = new int[Rogueroll1Strings.length] ; 
+			for (int i = 0; i < Rogueroll1Strings.length; i++) {
+				int temp = Integer.parseInt(Rogueroll1Strings[i]);	
+				Rogueroll1Temp[i] = temp;
+			}
+			Rogueroll1 = Rogueroll1Temp ;			
+		} else {
+			Rogueroll1 = new int[] {};
+		}
+		String Rogueroll2String = element.getAttribute("Rogueroll2"); // 【肉鸽】全场纯加属性类肉鸽规定
+		if (Rogueroll2String != null && Rogueroll2String.length() > 0) {
+			String[] Rogueroll2Strings = Rogueroll2String.split(";"); 
+			int[] Rogueroll2Temp = new int[Rogueroll2Strings.length] ; 
+			for (int i = 0; i < Rogueroll2Strings.length; i++) {
+				int temp = Integer.parseInt(Rogueroll2Strings[i]);	
+				Rogueroll2Temp[i] = temp;
+			}
+			Rogueroll2 = Rogueroll2Temp ;			
+		} else {
+			Rogueroll2 = new int[] {};
 		}
 	}
 	@Override

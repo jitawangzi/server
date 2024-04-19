@@ -9,7 +9,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.collections4.map.MultiKeyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -41,12 +40,12 @@ import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.OccupationTalentNodeConfig;
 import cn.game.protocol.generated.enume.Asset;
-import cn.game.protocol.generated.enume.GoodsTypeEnum;
 import cn.game.protocol.generated.enume.MissionTypeEnum;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OccupationTalentNodeManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -289,15 +288,11 @@ public class TestHandler extends BaseHandler {
 		
 //		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
 
-		MultiKeyMap<Integer, Integer> conditionCountMap = player.getQuestModule().getConditionCountMap();
-		System.out.println(conditionCountMap);
-
-		new Thread(() -> {
-			GameClientManager.getInstance().storeAllPlayers();
-		}).start();
-		
-
-
+//		AttrModule module = player.getModule(AttrModule.class);
+//		module.calcAllAttr();
+//		module.buildBattleAttrs();
+		PlayerHelper.addResources(playerId, 610001, 1);
+		System.out.println();
 //		System.out.println();
 //		PlayerHelper.refresh(player);
 //		for (int i = 0; i < 100000; i++) {

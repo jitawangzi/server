@@ -14,9 +14,9 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 技能名称 */
 	public final String SkillName;		
-	/** 所有技能id配置 配置：肉鸽1id;技能id1;技能id2|肉鸽2id;技能id1;技能id2 调用HeroSkill#技能id */
+	/** 肉鸽的所有技能id配置 配置：肉鸽1id;技能id1;技能id2|肉鸽2id;技能id1;技能id2 调用HeroSkill#技能id 需要考虑如果该肉鸽没有激活，数组中就没有 学习的肉鸽技能不配这里 */
 	public final int[][] SkillGroup;		
-	/** 技能类型 1-主角 2-龙 3-场中AOE  新增列 */
+	/** 技能类型 1-英雄 2-伙伴 3-全场AOE */
 	public final int SkillType;		
 	/** 权重 技能 直接根据权重确定使用哪个技能 */
 	public final int[] SkillWeight;		
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 技能组ID
 		SkillName = element.getAttribute("SkillName"); // 技能名称
-		String SkillGroupString = element.getAttribute("SkillGroup"); // 所有技能id配置 配置：肉鸽1id;技能id1;技能id2|肉鸽2id;技能id1;技能id2 调用HeroSkill#技能id
+		String SkillGroupString = element.getAttribute("SkillGroup"); // 肉鸽的所有技能id配置 配置：肉鸽1id;技能id1;技能id2|肉鸽2id;技能id1;技能id2 调用HeroSkill#技能id 需要考虑如果该肉鸽没有激活，数组中就没有 学习的肉鸽技能不配这里
 		if (SkillGroupString != null && SkillGroupString.length() > 0) {
 			String[] SkillGroupStrings = SkillGroupString.split("\\|"); 
 			int[][] SkillGroupTemp = new int[SkillGroupStrings.length][] ; 
@@ -60,7 +60,7 @@ import org.w3c.dom.Element;
 			SkillGroup = new int[][] {};
 		}
 		SkillType = Integer.parseInt(element.getAttribute("SkillType") == null || element.getAttribute("SkillType").length() == 0 ? "0"
-			: element.getAttribute("SkillType")); // 技能类型 1-主角 2-龙 3-场中AOE  新增列
+			: element.getAttribute("SkillType")); // 技能类型 1-英雄 2-伙伴 3-全场AOE
 		String SkillWeightString = element.getAttribute("SkillWeight"); // 权重 技能 直接根据权重确定使用哪个技能
 		if (SkillWeightString != null && SkillWeightString.length() > 0) {
 			String[] SkillWeightStrings = SkillWeightString.split(";"); 

@@ -23,7 +23,9 @@ import org.w3c.dom.Element;
 	/** 胜利类型 */
 	public final int WinCondition;		
 	/** 玩法类型 */
-	public final int[] PlayType;		
+	public final int PlayType;		
+	/** 玩法类型参数 */
+	public final int PlayTypeParameter;		
 	/** 小怪1 */
 	public final int[][] monster1;		
 	/** 小怪2 */
@@ -38,8 +40,10 @@ import org.w3c.dom.Element;
 	public final int[][] boss2;		
 	/** 肉鸽能量ID */
 	public final int RogeEnergyID;		
-	/** 难度提升 */
-	public final int[] HardType;		
+	/** 难度提升条件 */
+	public final int HardCondtion;		
+	/** 难度提升天数 */
+	public final int HardType;		
 	/** 提升属性 */
 	public final int[][] MonsterAttExt;		
 
@@ -56,18 +60,10 @@ import org.w3c.dom.Element;
 			: element.getAttribute("LimitedTime")); // 关卡限时
 		WinCondition = Integer.parseInt(element.getAttribute("WinCondition") == null || element.getAttribute("WinCondition").length() == 0 ? "0"
 			: element.getAttribute("WinCondition")); // 胜利类型
-		String PlayTypeString = element.getAttribute("PlayType"); // 玩法类型
-		if (PlayTypeString != null && PlayTypeString.length() > 0) {
-			String[] PlayTypeStrings = PlayTypeString.split(";"); 
-			int[] PlayTypeTemp = new int[PlayTypeStrings.length] ; 
-			for (int i = 0; i < PlayTypeStrings.length; i++) {
-				int temp = Integer.parseInt(PlayTypeStrings[i]);	
-				PlayTypeTemp[i] = temp;
-			}
-			PlayType = PlayTypeTemp ;			
-		} else {
-			PlayType = new int[] {};
-		}
+		PlayType = Integer.parseInt(element.getAttribute("PlayType") == null || element.getAttribute("PlayType").length() == 0 ? "0"
+			: element.getAttribute("PlayType")); // 玩法类型
+		PlayTypeParameter = Integer.parseInt(element.getAttribute("PlayTypeParameter") == null || element.getAttribute("PlayTypeParameter").length() == 0 ? "0"
+			: element.getAttribute("PlayTypeParameter")); // 玩法类型参数
 		String monster1String = element.getAttribute("monster1"); // 小怪1
 		if (monster1String != null && monster1String.length() > 0) {
 			String[] monster1Strings = monster1String.split("\\|"); 
@@ -172,18 +168,10 @@ import org.w3c.dom.Element;
 		}
 		RogeEnergyID = Integer.parseInt(element.getAttribute("RogeEnergyID") == null || element.getAttribute("RogeEnergyID").length() == 0 ? "0"
 			: element.getAttribute("RogeEnergyID")); // 肉鸽能量ID
-		String HardTypeString = element.getAttribute("HardType"); // 难度提升
-		if (HardTypeString != null && HardTypeString.length() > 0) {
-			String[] HardTypeStrings = HardTypeString.split(";"); 
-			int[] HardTypeTemp = new int[HardTypeStrings.length] ; 
-			for (int i = 0; i < HardTypeStrings.length; i++) {
-				int temp = Integer.parseInt(HardTypeStrings[i]);	
-				HardTypeTemp[i] = temp;
-			}
-			HardType = HardTypeTemp ;			
-		} else {
-			HardType = new int[] {};
-		}
+		HardCondtion = Integer.parseInt(element.getAttribute("HardCondtion") == null || element.getAttribute("HardCondtion").length() == 0 ? "0"
+			: element.getAttribute("HardCondtion")); // 难度提升条件
+		HardType = Integer.parseInt(element.getAttribute("HardType") == null || element.getAttribute("HardType").length() == 0 ? "0"
+			: element.getAttribute("HardType")); // 难度提升天数
 		String MonsterAttExtString = element.getAttribute("MonsterAttExt"); // 提升属性
 		if (MonsterAttExtString != null && MonsterAttExtString.length() > 0) {
 			String[] MonsterAttExtStrings = MonsterAttExtString.split("\\|"); 

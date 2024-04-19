@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Group;
+import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.MailHelper;
@@ -75,7 +76,8 @@ public class GameRemoteServerImpl implements GameRemoteServerInterface {
 	
 	@Override
 	public boolean delResources(long playerId, int id, int value) {
-		return PlayerHelper.delResources(playerId, id, value, ResourceConsumeEnum.GM);
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		return PlayerHelper.delResources(player, id, value, ResourceConsumeEnum.GM);
 	}
 
 	@Override

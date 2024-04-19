@@ -1240,7 +1240,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 			return OldErrorMsgEnum.unlock.getId();
 		}
 		List<Map.Entry<Integer, Integer>> cost = config.getCost();
-		if (!PlayerHelper.delResources(playerId, cost, ResourceConsumeEnum.OccupationTalentUnlock)) {
+		if (!PlayerHelper.delResources(player, cost, ResourceConsumeEnum.OccupationTalentUnlock)) {
 			return OldErrorMsgEnum.resource_not_enough.getId();
 		}
 		// 开启天赋技能

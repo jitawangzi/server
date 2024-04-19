@@ -22,17 +22,18 @@ import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.config.OldItemConfig;
 import cn.game.protocol.generated.config.RewardConfig;
 import cn.game.protocol.generated.enume.Asset;
-import cn.game.protocol.generated.enume.GoodsTypeEnum;
 import cn.game.protocol.generated.manager.BattlePassManager;
 import cn.game.protocol.generated.manager.BattlePassPrizeManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.HeroFashionManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.HeroSwordManager;
 import cn.game.protocol.generated.manager.ItemConsumablesManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OldItemManager;
 import cn.game.protocol.generated.manager.RewardManager;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -70,6 +71,10 @@ public class ItemHelper {
 		}
 		case DragonSkill: {
 			DragonSkillManager.instance().get(id);
+			break;
+		}
+		case Sword: {
+			HeroSwordManager.instance().get(id);
 			break;
 		}
 		default:

@@ -10,11 +10,11 @@ import org.w3c.dom.Element;
  */
  public class ArtResourceConfig {
 
-	/** 资源id  被以下表调用： Hero表 Monster表 */
+	/** 资源id #Hero表 */
 	public final int ID;		
-	/** 资源类型 1-英雄 2-怪物 3-小头目（在小怪中随机出现） 4-大BOSS（头上N个血条，进入会有boss来袭） */
+	/** 资源类型 1-英雄 */
 	public final int Type;		
-	/** 头像Icon 文件名  出现在图鉴中 */
+	/** 头像Icon */
 	public final String Icon;		
 	/** 出生 动作 */
 	public final String StartAction;		
@@ -40,10 +40,10 @@ import org.w3c.dom.Element;
 	public ArtResourceConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // 资源id  被以下表调用： Hero表 Monster表
+			: element.getAttribute("ID")); // 资源id #Hero表
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
-			: element.getAttribute("Type")); // 资源类型 1-英雄 2-怪物 3-小头目（在小怪中随机出现） 4-大BOSS（头上N个血条，进入会有boss来袭）
-		Icon = element.getAttribute("Icon"); // 头像Icon 文件名  出现在图鉴中
+			: element.getAttribute("Type")); // 资源类型 1-英雄
+		Icon = element.getAttribute("Icon"); // 头像Icon
 		StartAction = element.getAttribute("StartAction"); // 出生 动作
 		StandbyAction = element.getAttribute("StandbyAction"); // 休闲待机 动作
 		AttackAction = element.getAttribute("AttackAction"); // 技能攻击 动作

@@ -16,6 +16,8 @@ import org.w3c.dom.Element;
 	public final int MoveSpeed;		
 	/** 攻击速度 */
 	public final int AtkSpeed;		
+	/** 规模 */
+	public final int scale;		
 	/** 生命 */
 	public final int HP;		
 	/** 攻击 */
@@ -49,6 +51,8 @@ import org.w3c.dom.Element;
 			: element.getAttribute("MoveSpeed")); // 移动速度
 		AtkSpeed = Integer.parseInt(element.getAttribute("AtkSpeed") == null || element.getAttribute("AtkSpeed").length() == 0 ? "0"
 			: element.getAttribute("AtkSpeed")); // 攻击速度
+		scale = Integer.parseInt(element.getAttribute("scale") == null || element.getAttribute("scale").length() == 0 ? "0"
+			: element.getAttribute("scale")); // 规模
 		HP = Integer.parseInt(element.getAttribute("HP") == null || element.getAttribute("HP").length() == 0 ? "0"
 			: element.getAttribute("HP")); // 生命
 		Attack = Integer.parseInt(element.getAttribute("Attack") == null || element.getAttribute("Attack").length() == 0 ? "0"

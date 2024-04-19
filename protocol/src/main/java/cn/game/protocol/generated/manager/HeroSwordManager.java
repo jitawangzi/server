@@ -23,12 +23,12 @@ public class HeroSwordManager extends ResourceListener {
 	private static HeroSwordManager instance = new HeroSwordManager();
 	private static final String xmlFileName = "HeroSword";
 	
-	/** 总数据，按id取值 */
 	private Map<Integer, HeroSwordConfig> heroswords = new HashMap<>();
 
 	public static HeroSwordManager instance() {
 		return instance;
 	}
+
 	private HeroSwordManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -55,15 +55,13 @@ public class HeroSwordManager extends ResourceListener {
 		return this.heroswords.get(id);
 	}
 
-	/**
-	 * 获取所有数据
-	 * @return
-	 */
 	public Collection<HeroSwordConfig> list() {
 		return this.heroswords.values();
 	}
+
 	@Override
 	public void load() {
+
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
@@ -72,10 +70,7 @@ public class HeroSwordManager extends ResourceListener {
 			Map<Integer, HeroSwordConfig> heroswords = new HashMap<>();
 			for (Element e : list) {
 				HeroSwordConfig herosword = new HeroSwordConfig(e);
-				HeroSwordConfig old = heroswords.put(herosword.ID, herosword);
-				if (old != null) {
-					throw new IllegalArgumentException("[HeroSwordConfig]表存在重复的数据id： " + old.ID);
-				}
+				heroswords.put(herosword.ID, herosword);
 			}			
 
 			this.heroswords = com.google.common.collect.ImmutableMap.copyOf(heroswords);

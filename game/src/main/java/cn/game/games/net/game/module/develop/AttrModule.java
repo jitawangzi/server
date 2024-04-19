@@ -11,11 +11,13 @@ import cn.game.games.net.game.module.develop.skill.DragonSkill;
 import cn.game.games.net.game.module.develop.sword.Sword;
 import cn.game.games.net.game.module.develop.sword.SwordModule;
 import cn.game.games.net.game.module.player.VarConstant;
+import cn.game.protocol.generated.config.AttributeVlalueConfig;
 import cn.game.protocol.generated.config.DragonConfig;
 import cn.game.protocol.generated.config.DragonSkillConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.HeroSwordConfig;
 import cn.game.protocol.generated.config.WallConfig;
+import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.HeroManager;
@@ -61,7 +63,7 @@ public class AttrModule extends BasePlayerModule {
 
 	public PlayerBattleAttrs buildBattleAttrs() {
 		cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs.Builder builder = PlayerBattleAttrs.newBuilder();
-		builder.putAllDragonAttrs(wallAttr.getMap());
+		builder.putAllWallAttrs(wallAttr.getMap());
 		builder.putAllHeroAttrs(heroAttr.getMap());
 
 		IntMapWrapper dragon = new IntMapWrapper();
@@ -82,28 +84,41 @@ public class AttrModule extends BasePlayerModule {
 	public void calcHeroAttr() {
 		heroAttr.clear();
 		Hero hero = player.getHeroModule().getCurHero();
+		if (hero == null) {
+			return;
+		}
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-		heroAttr.addAll(heroConfig.InitialAttribute);
+		AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttribute1);
+
+		heroAttr.addAll(attributeVlalueConfig.AttributeVlalue);
 	}
 
 	public void calcDragonAttr() {
 		dragonAttr.clear();
 		Dragon o = player.getDragonModule().getCurDragon();
+		if (o == null) {
+			return;
+		}
 		DragonConfig dragonConfig = DragonManager.instance().get(o.getConfigId());
-		heroAttr.addAll(dragonConfig.DragonStarValve);
+		dragonAttr.addAll(dragonConfig.DragonStarValve);
 		// TODO
 	}
 
 	public void calcDragonSkillAttr() {
 		dragonSkillAttr.clear();
 		DragonSkill o = player.getDragonSkillModule().getCurDragonSkill();
-		DragonSkillConfig dragonSkillConfig = DragonSkillManager.instance().get(o.getConfigId());
-		heroAttr.add(dragonSkillConfig.UpgradeAttributeAward[0], dragonSkillConfig.UpgradeAttributeAward[1] * o.getLevel());
+		if (o != null) {
+			DragonSkillConfig dragonSkillConfig = DragonSkillManager.instance().get(o.getConfigId());
+			dragonSkillAttr.add(dragonSkillConfig.UpgradeAttributeAward[0], dragonSkillConfig.UpgradeAttributeAward[1] * o.getLevel());
+		}
 	}
 
 	public void calcWallAttr() {
 		wallAttr.clear();
 		int level = player.getVarModule().getVar(VarConstant.WALL_LEVEL);
+		if (level == 0) {
+			return;
+		}
 		WallConfig config = WallManager.instance().get(level);
 		wallAttr.add(config.WallAttribute[0], config.WallAttribute[1] * level);
 	}
@@ -112,11 +127,12 @@ public class AttrModule extends BasePlayerModule {
 		swordAttr.clear();
 		SwordModule module = player.getModule(SwordModule.class);
 		Sword curSword = module.getCurSword();
-		if (curSword != null) {
-			HeroSwordConfig config = HeroSwordManager.instance().get(curSword.getConfigId());
-			swordAttr.add(config.SwordValve);
-			// TODO 星级属性
+		if (curSword == null) {
+			return;
 		}
+		HeroSwordConfig config = HeroSwordManager.instance().get(curSword.getConfigId());
+		swordAttr.add(config.SwordValve);
+		// TODO 星级属性
 	}
 
 	public void calcFashionAttr() {

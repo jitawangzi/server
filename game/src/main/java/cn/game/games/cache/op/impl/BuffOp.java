@@ -597,7 +597,7 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 		List<EventOptionConfig> eventIdList = EventOptionManager.getInstance().getEventIdList(eventId);
 		if (eventIdList.size() == 1) {
 			// 直接添加buff
-			List<Buff> buffs = PlayerHelper.chooseEventOption(playerId, eventId, eventIdList.get(0).getId(), true);
+			List<Buff> buffs = PlayerHelper.chooseEventOption(player, eventId, eventIdList.get(0).getId(), true);
 			Map<Integer, Integer> addResources = new HashMap<>();
 			for (Buff buff : buffs) {
 				OldBuffConfig buffConfig = OldBuffManager.getInstance().getBuffConfig(buff.getBuffId());

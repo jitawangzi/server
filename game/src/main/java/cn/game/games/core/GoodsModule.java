@@ -9,7 +9,7 @@ import java.util.List;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.net.game.helper.ItemHelper;
-import cn.game.protocol.generated.enume.GoodsTypeEnum;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 

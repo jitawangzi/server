@@ -27,16 +27,16 @@ import org.w3c.dom.Element;
 
 	public AssetConfig (Element element) throws Exception {
 	
-		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
+		this.ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 物品ID
-		Name = element.getAttribute("Name"); // 物品英文名
-		Desc = element.getAttribute("Desc"); // 物品名称
-		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
+		this.Name = element.getAttribute("Name"); // 物品英文名
+		this.Desc = element.getAttribute("Desc"); // 物品名称
+		this.Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
 			: element.getAttribute("Type")); // 物品类型
-		Quality = Integer.parseInt(element.getAttribute("Quality") == null || element.getAttribute("Quality").length() == 0 ? "0"
+		this.Quality = Integer.parseInt(element.getAttribute("Quality") == null || element.getAttribute("Quality").length() == 0 ? "0"
 			: element.getAttribute("Quality")); // 品质
-		Tips = element.getAttribute("Tips"); // 物品tips
-		Icon = element.getAttribute("Icon"); // 图标Icon 文件名
+		this.Tips = element.getAttribute("Tips"); // 物品tips
+		this.Icon = element.getAttribute("Icon"); // 图标Icon 文件名
 	}
 	
 

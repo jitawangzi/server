@@ -7,6 +7,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Base;
 import cn.game.games.cache.entity.Buff;
+import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.cache.entity.Variable;
@@ -15,6 +16,9 @@ import cn.game.games.net.data.mapper.BuffMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.util.DAO;
+import cn.game.util.DateUtil;
+import cn.game.util.JsonUtil;
+import cn.game.util.ObjUtil;
 import cn.game.util.RedissonUtil;
 import cn.game.util.Rnd;
 import cn.game.util.ServerType;
@@ -32,12 +36,98 @@ public class DbExcute {
 
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();
+
+		long start = System.currentTimeMillis();
+
 //		testBatchInsert();
 //		testQuestBatch() ; 
-		testPlayerBatch();
+//		testPlayerBatch();
+//		insertPlayerBatch();
+		updatePlayerBatch();
+
+		System.err.println("执行总耗时： " + (System.currentTimeMillis() - start) + " ms");
 
 	}
 	
+	/** 
+	 * 9w人后，1w人要1.5分钟了。和设置的var数量有关，也就是数量越大，越慢 ，暂时和数据库已经数据量没多大关系。 
+	 */
+	public static void insertPlayerBatch() {
+		long id = 300330000;
+
+		for (int a = 0; a < 10000; a++) {
+			List<PlayerData> list = new ArrayList<>();
+			for (int i = 0; i < 50; i++) {
+				PlayerData playerData = new PlayerData();
+				playerData.setPlayerId(id++);
+				playerData.setUid(id);
+				playerData.setGender(true);
+				playerData.setCreateDate(DateUtil.getStringDate());
+				playerData.setName(id + "");
+				playerData.setHead(33);
+				playerData.setHeadFrame(22);
+//				playerData.setRegion(AddressUtil.getCityInfo(client.getIp()));
+				playerData.setLoginDate(DateUtil.getStringDate());
+				playerData.setVipExpTotal(0);
+				playerData.setVipLevel(1); // 好感度默认1级
+				playerData.setRefreshDay(DateUtil.getDay(0));
+
+				ObjUtil.setDefaultValue(playerData);
+
+				Player player = new Player(playerData);
+
+				for (int j = 0; j < 300; j++) {
+					player.getVarModule().setVar(j, j);
+				}
+
+				playerData.setModules(JsonUtil.toJsonString(player.getModules()));
+				list.add(playerData);
+			}
+			DAO.executeSync(PlayerDataMapper.class, MapperConstant.insertBatch, list);
+		}
+
+	}
+
+	/** 
+	 * 更新的时间和插入的时间差不多
+	 */
+	public static void updatePlayerBatch() {
+		long id = 300700000;
+
+		for (int a = 0; a < 200; a++) {
+			List<PlayerData> list = new ArrayList<>();
+			for (int i = 0; i < 50; i++) {
+				PlayerData playerData = new PlayerData();
+				playerData.setPlayerId(id++);
+				playerData.setUid(id);
+				playerData.setGender(true);
+				playerData.setCreateDate(DateUtil.getStringDate());
+				playerData.setName(id + "");
+				playerData.setHead(33);
+				playerData.setHeadFrame(22);
+//				playerData.setRegion(AddressUtil.getCityInfo(client.getIp()));
+				playerData.setLoginDate(DateUtil.getStringDate());
+				playerData.setVipExpTotal(0);
+				playerData.setVipLevel(1); // 好感度默认1级
+				playerData.setRefreshDay(DateUtil.getDay(0));
+
+				ObjUtil.setDefaultValue(playerData);
+
+				Player player = new Player(playerData);
+
+				for (int j = 1500; j < 1800; j++) {
+					player.getVarModule().setVar(j, j);
+				}
+
+				playerData.setModules(JsonUtil.toJsonString(player.getModules()));
+				list.add(playerData);
+//				DAO.executeSync(PlayerDataMapper.class, MapperConstant.updateByPrimaryKeyWithBLOBs, playerData);
+
+			}
+			DAO.executeSync(PlayerDataMapper.class, MapperConstant.updateBatch, list);
+		}
+	}
+
 	public static void testPlayerBatch() {
 		
 		PlayerData player1 = (PlayerData) DAO.executeSync(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, 242110003L); 

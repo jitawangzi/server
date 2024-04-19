@@ -6252,6 +6252,16 @@ public final class BattleMsg {
      * @return The rewardIndex.
      */
     int getRewardIndex();
+
+    /**
+     * <pre>
+     * 这个战役是否通关了。
+     * </pre>
+     *
+     * <code>bool finish = 4;</code>
+     * @return The finish.
+     */
+    boolean getFinish();
   }
   /**
    * <pre>
@@ -6315,6 +6325,11 @@ public final class BattleMsg {
             case 24: {
 
               rewardIndex_ = input.readInt32();
+              break;
+            }
+            case 32: {
+
+              finish_ = input.readBool();
               break;
             }
             default: {
@@ -6394,6 +6409,21 @@ public final class BattleMsg {
       return rewardIndex_;
     }
 
+    public static final int FINISH_FIELD_NUMBER = 4;
+    private boolean finish_;
+    /**
+     * <pre>
+     * 这个战役是否通关了。
+     * </pre>
+     *
+     * <code>bool finish = 4;</code>
+     * @return The finish.
+     */
+    @java.lang.Override
+    public boolean getFinish() {
+      return finish_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6417,6 +6447,9 @@ public final class BattleMsg {
       if (rewardIndex_ != 0) {
         output.writeInt32(3, rewardIndex_);
       }
+      if (finish_ != false) {
+        output.writeBool(4, finish_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -6437,6 +6470,10 @@ public final class BattleMsg {
       if (rewardIndex_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, rewardIndex_);
+      }
+      if (finish_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, finish_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -6459,6 +6496,8 @@ public final class BattleMsg {
           != other.getHpPercent()) return false;
       if (getRewardIndex()
           != other.getRewardIndex()) return false;
+      if (getFinish()
+          != other.getFinish()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -6476,6 +6515,9 @@ public final class BattleMsg {
       hash = (53 * hash) + getHpPercent();
       hash = (37 * hash) + REWARDINDEX_FIELD_NUMBER;
       hash = (53 * hash) + getRewardIndex();
+      hash = (37 * hash) + FINISH_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getFinish());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6619,6 +6661,8 @@ public final class BattleMsg {
 
         rewardIndex_ = 0;
 
+        finish_ = false;
+
         return this;
       }
 
@@ -6648,6 +6692,7 @@ public final class BattleMsg {
         result.id_ = id_;
         result.hpPercent_ = hpPercent_;
         result.rewardIndex_ = rewardIndex_;
+        result.finish_ = finish_;
         onBuilt();
         return result;
       }
@@ -6704,6 +6749,9 @@ public final class BattleMsg {
         }
         if (other.getRewardIndex() != 0) {
           setRewardIndex(other.getRewardIndex());
+        }
+        if (other.getFinish() != false) {
+          setFinish(other.getFinish());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -6862,6 +6910,49 @@ public final class BattleMsg {
         onChanged();
         return this;
       }
+
+      private boolean finish_ ;
+      /**
+       * <pre>
+       * 这个战役是否通关了。
+       * </pre>
+       *
+       * <code>bool finish = 4;</code>
+       * @return The finish.
+       */
+      @java.lang.Override
+      public boolean getFinish() {
+        return finish_;
+      }
+      /**
+       * <pre>
+       * 这个战役是否通关了。
+       * </pre>
+       *
+       * <code>bool finish = 4;</code>
+       * @param value The finish to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFinish(boolean value) {
+        
+        finish_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 这个战役是否通关了。
+       * </pre>
+       *
+       * <code>bool finish = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFinish() {
+        
+        finish_ = false;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -7008,9 +7099,10 @@ public final class BattleMsg {
       "rdInfo\"9\n\034BattleRewardRequest_13000022\022\n" +
       "\n\002id\030\001 \001(\r\022\r\n\005index\030\002 \001(\r\"C\n\035BattleRewar" +
       "dResponse_13000023\022\"\n\006reward\030\001 \003(\0132\022.Pro" +
-      "tos.RewardInfo\"@\n\nBattleInfo\022\n\n\002id\030\001 \001(\005" +
+      "tos.RewardInfo\"P\n\nBattleInfo\022\n\n\002id\030\001 \001(\005" +
       "\022\021\n\thpPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003 \001(\005" +
-      "B\033\n\031cn.game.protocol.protobufb\006proto3"
+      "\022\016\n\006finish\030\004 \001(\010B\033\n\031cn.game.protocol.pro" +
+      "tobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7088,7 +7180,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleInfo_descriptor,
-        new java.lang.String[] { "Id", "HpPercent", "RewardIndex", });
+        new java.lang.String[] { "Id", "HpPercent", "RewardIndex", "Finish", });
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }
 

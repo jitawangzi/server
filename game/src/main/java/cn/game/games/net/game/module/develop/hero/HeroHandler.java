@@ -96,7 +96,7 @@ public class HeroHandler extends BaseHandler {
 		}
 		// 万能id TODO
 		int powerfulCostId = 1;
-		if (!PlayerHelper.delResources(player.getPlayerId(), powerfulCostId, powerfulCostIdCount,
+		if (!PlayerHelper.delResources(player, powerfulCostId, powerfulCostIdCount,
 				ResourceConsumeEnum.HeroConflate)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
@@ -141,7 +141,7 @@ public class HeroHandler extends BaseHandler {
 
 		List<Entry<Integer, Integer>> cost = HeroHelper.calcUpLevelCost(hero.getLevel(), heroConfig.Career);
 
-		boolean delResources = PlayerHelper.delResources(player.getPlayerId(), cost, ResourceConsumeEnum.HeroLevelUp);
+		boolean delResources = PlayerHelper.delResources(player, cost, ResourceConsumeEnum.HeroLevelUp);
 		if (!delResources) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 			return;

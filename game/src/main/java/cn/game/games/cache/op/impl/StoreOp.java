@@ -229,7 +229,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 
 		if (PlayerHelper.isEnough(playerId, moneyType.getId(), orderPrice)) {
 			// 扣钱
-			PlayerHelper.delResources(playerId, moneyType.getId(), orderPrice, ResourceConsumeEnum.BuyGoods);
+			PlayerHelper.delResources(player, moneyType.getId(), orderPrice, ResourceConsumeEnum.BuyGoods);
 			buyGoods(goodsConf, count);
 
 		} else {
@@ -446,7 +446,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 			goodsMap.remove(uid);
 		}
 		
-		PlayerHelper.delResources(this.playerId, costId, totalCostCount, ResourceConsumeEnum.BuyGoods);
+		PlayerHelper.delResources(player, costId, totalCostCount, ResourceConsumeEnum.BuyGoods);
 //		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.BuyItems, g.getId(), count));
 		saveStore(new StoreType[] { curStoreType });
 		//触发事件(局间)

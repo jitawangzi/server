@@ -23,12 +23,12 @@ public class HeroFashionManager extends ResourceListener {
 	private static HeroFashionManager instance = new HeroFashionManager();
 	private static final String xmlFileName = "HeroFashion";
 	
-	/** 总数据，按id取值 */
 	private Map<Integer, HeroFashionConfig> herofashions = new HashMap<>();
 
 	public static HeroFashionManager instance() {
 		return instance;
 	}
+
 	private HeroFashionManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -55,15 +55,13 @@ public class HeroFashionManager extends ResourceListener {
 		return this.herofashions.get(id);
 	}
 
-	/**
-	 * 获取所有数据
-	 * @return
-	 */
 	public Collection<HeroFashionConfig> list() {
 		return this.herofashions.values();
 	}
+
 	@Override
 	public void load() {
+
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
@@ -72,10 +70,7 @@ public class HeroFashionManager extends ResourceListener {
 			Map<Integer, HeroFashionConfig> herofashions = new HashMap<>();
 			for (Element e : list) {
 				HeroFashionConfig herofashion = new HeroFashionConfig(e);
-				HeroFashionConfig old = herofashions.put(herofashion.ID, herofashion);
-				if (old != null) {
-					throw new IllegalArgumentException("[HeroFashionConfig]表存在重复的数据id： " + old.ID);
-				}
+				herofashions.put(herofashion.ID, herofashion);
 			}			
 
 			this.herofashions = com.google.common.collect.ImmutableMap.copyOf(herofashions);

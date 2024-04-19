@@ -12,31 +12,19 @@ import org.w3c.dom.Element;
 
 	/** 掉落ID */
 	public final int ID;		
-	/** 掉落展示 */
-	public final int[] Show;		
 	/** 必掉物品组 */
 	public final int[][] MustGiven;		
 	/** 随机次数 数量下限;数量上限 */
 	public final int[] RandomNumber;		
-	/** 掉落参数 */
-	public final int[][] RandomParameter;		
+	/** 掉落参数 权重 */
+	public final int[] RandomParameterWeight;		
+	/** 掉落参数 掉落组ID */
+	public final int[] RandomParameterGroupId;		
 
 	public RandomGivenConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 掉落ID
-		String ShowString = element.getAttribute("Show"); // 掉落展示
-		if (ShowString != null && ShowString.length() > 0) {
-			String[] ShowStrings = ShowString.split(";"); 
-			int[] ShowTemp = new int[ShowStrings.length] ; 
-			for (int i = 0; i < ShowStrings.length; i++) {
-				int temp = Integer.parseInt(ShowStrings[i]);	
-				ShowTemp[i] = temp;
-			}
-			Show = ShowTemp ;			
-		} else {
-			Show = new int[] {};
-		}
 		String MustGivenString = element.getAttribute("MustGiven"); // 必掉物品组
 		if (MustGivenString != null && MustGivenString.length() > 0) {
 			String[] MustGivenStrings = MustGivenString.split("\\|"); 
@@ -66,22 +54,29 @@ import org.w3c.dom.Element;
 		} else {
 			RandomNumber = new int[] {};
 		}
-		String RandomParameterString = element.getAttribute("RandomParameter"); // 掉落参数
-		if (RandomParameterString != null && RandomParameterString.length() > 0) {
-			String[] RandomParameterStrings = RandomParameterString.split("\\|"); 
-			int[][] RandomParameterTemp = new int[RandomParameterStrings.length][] ; 
-			for (int i = 0; i < RandomParameterStrings.length; i++) {
-				String[] RandomParameterStrings2 = RandomParameterStrings[i].split(";"); 
-				int[] array = new int[RandomParameterStrings2.length];
-				for (int j = 0; j < RandomParameterStrings2.length; j++) {
-					int temp = Integer.parseInt(RandomParameterStrings2[j]);	
-					array[j] = temp;
-				}
-				RandomParameterTemp[i] = array;
+		String RandomParameterWeightString = element.getAttribute("RandomParameterWeight"); // 掉落参数 权重
+		if (RandomParameterWeightString != null && RandomParameterWeightString.length() > 0) {
+			String[] RandomParameterWeightStrings = RandomParameterWeightString.split(";"); 
+			int[] RandomParameterWeightTemp = new int[RandomParameterWeightStrings.length] ; 
+			for (int i = 0; i < RandomParameterWeightStrings.length; i++) {
+				int temp = Integer.parseInt(RandomParameterWeightStrings[i]);	
+				RandomParameterWeightTemp[i] = temp;
 			}
-			RandomParameter = RandomParameterTemp ;			
+			RandomParameterWeight = RandomParameterWeightTemp ;			
 		} else {
-			RandomParameter = new int[][] {};
+			RandomParameterWeight = new int[] {};
+		}
+		String RandomParameterGroupIdString = element.getAttribute("RandomParameterGroupId"); // 掉落参数 掉落组ID
+		if (RandomParameterGroupIdString != null && RandomParameterGroupIdString.length() > 0) {
+			String[] RandomParameterGroupIdStrings = RandomParameterGroupIdString.split(";"); 
+			int[] RandomParameterGroupIdTemp = new int[RandomParameterGroupIdStrings.length] ; 
+			for (int i = 0; i < RandomParameterGroupIdStrings.length; i++) {
+				int temp = Integer.parseInt(RandomParameterGroupIdStrings[i]);	
+				RandomParameterGroupIdTemp[i] = temp;
+			}
+			RandomParameterGroupId = RandomParameterGroupIdTemp ;			
+		} else {
+			RandomParameterGroupId = new int[] {};
 		}
 	}
 	

@@ -14,6 +14,8 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 消耗物品1 */
 	public final int[][] cost;		
+	/** 消耗不足提示 */
+	public final String LackTips;		
 
 	public ConsumeConfig (Element element) throws Exception {
 	
@@ -36,6 +38,7 @@ import org.w3c.dom.Element;
 		} else {
 			cost = new int[][] {};
 		}
+		LackTips = element.getAttribute("LackTips"); // 消耗不足提示
 	}
 	
 

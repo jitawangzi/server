@@ -317,16 +317,17 @@ public class PlayerHandler extends BaseHandler {
 		BuffMsg.BuffAddResponse_01000111.Builder resp = BuffMsg.BuffAddResponse_01000111.newBuilder();
 		long playerId = netClient.getPlayerId();
 		int id = req.getId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		EventOptionConfig config = EventOptionManager.getInstance().getEventOptionConfig(id);
 		int eventId = config.getEventId();
-		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
+		PlayerExt playerExt = player.getExt();
 		List<Integer> eventIdList = playerExt.getEventIdList();
 		if (!eventIdList.contains(eventId)) {
 			netClient.sendProtocol(resp, OldErrorMsgEnum.illegal_request.getId());
 			return;
 		}
 		//添加buff
-		List<Buff> buffs = PlayerHelper.chooseEventOption(playerId, eventId, id, true);
+		List<Buff> buffs = PlayerHelper.chooseEventOption(player, eventId, id, true);
 		if (buffs == null) {
 			netClient.sendProtocol(resp, OldErrorMsgEnum.resource_not_enough.getId());
 			return;

@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 范围类型 1-全屏 2-圆 3-矩形 4-扇形 5-线 */
 	public final int RangeType;		
-	/** 范围参数，750*1334 1 无参数 2-半径 像素 3-长，宽 4-角度;半径 5-长度 */
+	/** 范围参数750*1334 1 无参数 2-半径像素 3-长，宽 4-角度;半径 5-长度 */
 	public final int[] RangeParam;		
 	/** 造成技能伤害公式用计算方法名字程序来封装方法实现 */
 	public final String CalculateFun;		
@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("ID")); // StatusTypeID
 		RangeType = Integer.parseInt(element.getAttribute("RangeType") == null || element.getAttribute("RangeType").length() == 0 ? "0"
 			: element.getAttribute("RangeType")); // 范围类型 1-全屏 2-圆 3-矩形 4-扇形 5-线
-		String RangeParamString = element.getAttribute("RangeParam"); // 范围参数，750*1334 1 无参数 2-半径 像素 3-长，宽 4-角度;半径 5-长度
+		String RangeParamString = element.getAttribute("RangeParam"); // 范围参数750*1334 1 无参数 2-半径像素 3-长，宽 4-角度;半径 5-长度
 		if (RangeParamString != null && RangeParamString.length() > 0) {
 			String[] RangeParamStrings = RangeParamString.split(";"); 
 			int[] RangeParamTemp = new int[RangeParamStrings.length] ; 

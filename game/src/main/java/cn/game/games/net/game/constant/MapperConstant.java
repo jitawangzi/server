@@ -36,6 +36,7 @@ public class MapperConstant {
 	public static final String updateByPrimaryKeyWithBLOBs = "updateByPrimaryKeyWithBLOBs";
 	/** 更新整行数据，不包含blob字段 */
 	public static final String updateByPrimaryKey = "updateByPrimaryKey";
+	public static final String updateBatch = "updateBatch";
 
 	// 下面两个是自定义的
 	/** 按playerId查询数据的 */

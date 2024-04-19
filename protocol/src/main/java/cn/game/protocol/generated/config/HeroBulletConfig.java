@@ -14,25 +14,25 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 技能持续时间  0 无需计算持续时间 ＞1000（毫秒） */
 	public final int Duration;		
-	/** 轨迹类型 1直线 2屏幕反弹 3回旋 4散射 5散射回旋 */
+	/** 轨迹类型 1直线 2屏幕反弹 3回旋 4散射 5散射回旋 6-屏幕上下 7-屏幕左右 */
 	public final int TrackType;		
-	/** 轨迹类型参数 1直线 填0 2屏幕反弹 填反弹次数 3回旋极限距离 4散射最大扇形夹角 5散射最大扇形夹角;回旋极限距离 */
+	/** 轨迹类型参数 1直线 填0 2屏幕反弹 填反弹次数 3回旋极限距离 4散射最大扇形夹角 5散射最大扇形夹角;回旋极限距离 6  x范围0;640随机，y固定值      配置0;640;y坐标 7 x坐标点;0;y最大值 */
 	public final int[] TrackParame;		
 	/** 子弹 击中敌方  可穿透敌人次数 */
 	public final int APenetrate;		
 	/** 子弹发射数量 */
-	public final int BulletTimes;		
+	public final int BulletNum;		
 	/** 子弹 飞行速度  每秒XX像素 */
 	public final int BulletSpeed;		
-	/** 子弹击中敌方伤害类型 0直接伤害 1爆炸 2分裂 3怪物之间弹射 4施加buff */
+	/** 子弹击中敌方伤害类型 0直接伤害 1爆炸 2分裂 3怪物之间弹射 */
 	public final int[] HitType;		
-	/** 伤害类型参数 0直接伤害 无 1爆炸 圆形半径(10000 全屏) 2分裂 角度 个数 分裂子弹ID 3弹射敌人数量 4 buffID */
+	/** 伤害类型参数 0直接伤害 无 1爆炸 圆形半径(10000 全屏) 2分裂 角度 个数 分裂子弹ID 3弹射敌人数量 */
 	public final int[][] HitTypeParam;		
 	/** 造成技能伤害公式 */
 	public final String CalculateFun;		
 	/** 伤害属性id 调用：AttrEffectConfig#属性Id表id */
 	public final int[] AttrEffectConfigId;		
-	/** 技能伤害参数百分比组  【多子弹配置】        子弹1伤害%;子弹2伤害%;...;子弹n伤害% 【多子弹分裂配置】  分裂子弹1伤害%;分裂子弹2伤害%;...;分裂子弹n伤害% 【多子弹穿透配置】  穿透子弹1伤害%;穿透子弹2伤害%;...;穿透子弹n伤害% */
+	/** 技能伤害参数百分比组 看BulletTimes 【多子弹配置】        子弹1伤害%;子弹2伤害%;...;子弹n伤害% 【多子弹分裂配置】  分裂子弹1伤害%;分裂子弹2伤害%;...;分裂子弹n伤害% 【多子弹穿透配置】  穿透子弹1伤害%;穿透子弹2伤害%;...;穿透子弹n伤害% */
 	public final int[] CalculateParam;		
 	/** 子弹特效延迟飞出时间  毫秒 */
 	public final int BulletDelayTime;		
@@ -48,8 +48,8 @@ import org.w3c.dom.Element;
 		Duration = Integer.parseInt(element.getAttribute("Duration") == null || element.getAttribute("Duration").length() == 0 ? "0"
 			: element.getAttribute("Duration")); // 技能持续时间  0 无需计算持续时间 ＞1000（毫秒）
 		TrackType = Integer.parseInt(element.getAttribute("TrackType") == null || element.getAttribute("TrackType").length() == 0 ? "0"
-			: element.getAttribute("TrackType")); // 轨迹类型 1直线 2屏幕反弹 3回旋 4散射 5散射回旋
-		String TrackParameString = element.getAttribute("TrackParame"); // 轨迹类型参数 1直线 填0 2屏幕反弹 填反弹次数 3回旋极限距离 4散射最大扇形夹角 5散射最大扇形夹角;回旋极限距离
+			: element.getAttribute("TrackType")); // 轨迹类型 1直线 2屏幕反弹 3回旋 4散射 5散射回旋 6-屏幕上下 7-屏幕左右
+		String TrackParameString = element.getAttribute("TrackParame"); // 轨迹类型参数 1直线 填0 2屏幕反弹 填反弹次数 3回旋极限距离 4散射最大扇形夹角 5散射最大扇形夹角;回旋极限距离 6  x范围0;640随机，y固定值      配置0;640;y坐标 7 x坐标点;0;y最大值
 		if (TrackParameString != null && TrackParameString.length() > 0) {
 			String[] TrackParameStrings = TrackParameString.split(";"); 
 			int[] TrackParameTemp = new int[TrackParameStrings.length] ; 
@@ -63,11 +63,11 @@ import org.w3c.dom.Element;
 		}
 		APenetrate = Integer.parseInt(element.getAttribute("APenetrate") == null || element.getAttribute("APenetrate").length() == 0 ? "0"
 			: element.getAttribute("APenetrate")); // 子弹 击中敌方  可穿透敌人次数
-		BulletTimes = Integer.parseInt(element.getAttribute("BulletTimes") == null || element.getAttribute("BulletTimes").length() == 0 ? "0"
-			: element.getAttribute("BulletTimes")); // 子弹发射数量
+		BulletNum = Integer.parseInt(element.getAttribute("BulletNum") == null || element.getAttribute("BulletNum").length() == 0 ? "0"
+			: element.getAttribute("BulletNum")); // 子弹发射数量
 		BulletSpeed = Integer.parseInt(element.getAttribute("BulletSpeed") == null || element.getAttribute("BulletSpeed").length() == 0 ? "0"
 			: element.getAttribute("BulletSpeed")); // 子弹 飞行速度  每秒XX像素
-		String HitTypeString = element.getAttribute("HitType"); // 子弹击中敌方伤害类型 0直接伤害 1爆炸 2分裂 3怪物之间弹射 4施加buff
+		String HitTypeString = element.getAttribute("HitType"); // 子弹击中敌方伤害类型 0直接伤害 1爆炸 2分裂 3怪物之间弹射
 		if (HitTypeString != null && HitTypeString.length() > 0) {
 			String[] HitTypeStrings = HitTypeString.split(";"); 
 			int[] HitTypeTemp = new int[HitTypeStrings.length] ; 
@@ -79,7 +79,7 @@ import org.w3c.dom.Element;
 		} else {
 			HitType = new int[] {};
 		}
-		String HitTypeParamString = element.getAttribute("HitTypeParam"); // 伤害类型参数 0直接伤害 无 1爆炸 圆形半径(10000 全屏) 2分裂 角度 个数 分裂子弹ID 3弹射敌人数量 4 buffID
+		String HitTypeParamString = element.getAttribute("HitTypeParam"); // 伤害类型参数 0直接伤害 无 1爆炸 圆形半径(10000 全屏) 2分裂 角度 个数 分裂子弹ID 3弹射敌人数量
 		if (HitTypeParamString != null && HitTypeParamString.length() > 0) {
 			String[] HitTypeParamStrings = HitTypeParamString.split("\\|"); 
 			int[][] HitTypeParamTemp = new int[HitTypeParamStrings.length][] ; 
@@ -109,7 +109,7 @@ import org.w3c.dom.Element;
 		} else {
 			AttrEffectConfigId = new int[] {};
 		}
-		String CalculateParamString = element.getAttribute("CalculateParam"); // 技能伤害参数百分比组  【多子弹配置】        子弹1伤害%;子弹2伤害%;...;子弹n伤害% 【多子弹分裂配置】  分裂子弹1伤害%;分裂子弹2伤害%;...;分裂子弹n伤害% 【多子弹穿透配置】  穿透子弹1伤害%;穿透子弹2伤害%;...;穿透子弹n伤害%
+		String CalculateParamString = element.getAttribute("CalculateParam"); // 技能伤害参数百分比组 看BulletTimes 【多子弹配置】        子弹1伤害%;子弹2伤害%;...;子弹n伤害% 【多子弹分裂配置】  分裂子弹1伤害%;分裂子弹2伤害%;...;分裂子弹n伤害% 【多子弹穿透配置】  穿透子弹1伤害%;穿透子弹2伤害%;...;穿透子弹n伤害%
 		if (CalculateParamString != null && CalculateParamString.length() > 0) {
 			String[] CalculateParamStrings = CalculateParamString.split(";"); 
 			int[] CalculateParamTemp = new int[CalculateParamStrings.length] ; 

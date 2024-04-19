@@ -9,6 +9,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.BattleFieldConfig;
 import cn.game.protocol.generated.manager.BattleFieldManager;
@@ -18,6 +19,7 @@ import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartResponse_13000002;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -156,7 +158,7 @@ public class ChapterHandler extends BaseHandler {
 	}*/
 	protected void start(NetClient client, Object message) {
 		BattleFieldStartRequest_13000001 req = (BattleFieldStartRequest_13000001) message;
-		BattleFieldEndResponse_13000004.Builder resp = BattleFieldEndResponse_13000004.newBuilder();
+		BattleFieldStartResponse_13000002.Builder resp = BattleFieldStartResponse_13000002.newBuilder();
 
 		int dungeonId = req.getTypeId();
 		int id = req.getFieldId();
@@ -196,7 +198,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 
-		if (!PlayerHelper.delResources(playerId, battleConfig.cost, ResourceConsumeEnum.None)) {
+		if (!PlayerHelper.delResources(player, battleConfig.cost, ResourceConsumeEnum.None)) {
 			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
@@ -228,6 +230,9 @@ public class ChapterHandler extends BaseHandler {
 //		}
 
 //		resp.setRandomSeed(randomSeed + "");
+		AttrModule module = player.getModule(AttrModule.class); 
+		module.calcAllAttr();
+		resp.setAttrs(module.buildBattleAttrs());
 		client.sendProtocol(resp, errorCode);
 	}
 

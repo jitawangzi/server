@@ -23,12 +23,12 @@ public class AssetManager extends ResourceListener {
 	private static AssetManager instance = new AssetManager();
 	private static final String xmlFileName = "Asset";
 	
-	/** 总数据，按id取值 */
 	private Map<Integer, AssetConfig> assets = new HashMap<>();
 
 	public static AssetManager instance() {
 		return instance;
 	}
+
 	private AssetManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -55,15 +55,13 @@ public class AssetManager extends ResourceListener {
 		return this.assets.get(id);
 	}
 
-	/**
-	 * 获取所有数据
-	 * @return
-	 */
 	public Collection<AssetConfig> list() {
 		return this.assets.values();
 	}
+
 	@Override
 	public void load() {
+
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
@@ -72,10 +70,7 @@ public class AssetManager extends ResourceListener {
 			Map<Integer, AssetConfig> assets = new HashMap<>();
 			for (Element e : list) {
 				AssetConfig asset = new AssetConfig(e);
-				AssetConfig old = assets.put(asset.ID, asset);
-				if (old != null) {
-					throw new IllegalArgumentException("[AssetConfig]表存在重复的数据id： " + old.ID);
-				}
+				assets.put(asset.ID, asset);
 			}			
 
 			this.assets = com.google.common.collect.ImmutableMap.copyOf(assets);

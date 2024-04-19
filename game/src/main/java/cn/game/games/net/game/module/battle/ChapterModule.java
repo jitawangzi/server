@@ -106,7 +106,7 @@ public class ChapterModule extends BasePlayerModule  {
 	public void addChapter(int battleId) {
 		Chapter chapter = chapters.get(battleId);
 		if (chapter == null) {
-			chapter = Chapter.valueOf(playerId, dungeonId);
+			chapter = Chapter.valueOf(playerId, battleId);
 			chapters.put(chapter.getBattleId(), chapter);
 		}
 //		DAO.execute(ChapterMapper.class, MapperConstant.insert, chapter);

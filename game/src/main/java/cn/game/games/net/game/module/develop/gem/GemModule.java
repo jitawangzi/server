@@ -3,7 +3,7 @@ package cn.game.games.net.game.module.develop.gem;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
-import cn.game.protocol.generated.enume.GoodsTypeEnum;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 

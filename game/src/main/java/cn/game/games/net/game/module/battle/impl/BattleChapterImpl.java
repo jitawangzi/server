@@ -109,6 +109,8 @@ public class BattleChapterImpl implements IBattleHandler {
 
 		// 增加次数。
 		chapterModule.addChapterTimes(battleConfig.ID);
+
+		resp.addAllRewards(allRewards);
 		return 0;
 	}
 
