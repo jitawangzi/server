@@ -15,7 +15,6 @@ import org.apache.commons.collections4.map.MultiKeyMap;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.ConditionCount;
-import cn.game.games.cache.entity.PlayerExt;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.cache.entity.QuestChallenge;
 import cn.game.games.core.BasePlayerModule;
@@ -40,7 +39,6 @@ import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.MissionManager;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
-import cn.game.protocol.protobuf.MissionMsg.MissionBranchPriorityPush_20300000;
 import cn.game.protocol.protobuf.MissionMsg.MissionGroupPush_20100008;
 import cn.game.protocol.protobuf.MissionMsg.MissionRewardPush_20600008;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -254,13 +252,13 @@ public class QuestModule extends BasePlayerModule {
 		if (!questConfig.getOpenTaskId().isEmpty()) {
 			open(questConfig.getOpenTaskId());
 		}
-		if (lastBranch) { // 当前分支完成，如果是设置的优先分支，需要修改默认的优先分支
-			PlayerExt playerExt = player.getExt();
-			int branchGroup = playerExt.getBranchGroup();
-			if (questConfig.getGroupId() == branchGroup) {
-				setDefaultBranchShow();
-			}
-		}
+//		if (lastBranch) { // 当前分支完成，如果是设置的优先分支，需要修改默认的优先分支
+//			PlayerExt playerExt = player.getExt();
+//			int branchGroup = playerExt.getBranchGroup();
+//			if (questConfig.getGroupId() == branchGroup) {
+//				setDefaultBranchShow();
+//			}
+//		}
 
 		// 发起完成任务事件
 		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.QuestFinish, quest.getId()));
@@ -620,10 +618,10 @@ public class QuestModule extends BasePlayerModule {
 				PlayerHelper.command(playerId, mainlineMissionConfig.getStartCommand());
 
 				if (mainlineMissionConfig.getType() == MissionTypeEnum.BranchLine) {
-					PlayerExt playerExt = player.getExt();
-					if (playerExt.getBranchGroup() == 0) {
-						setDefaultBranchShow();
-					}
+//					PlayerExt playerExt = player.getExt();
+//					if (playerExt.getBranchGroup() == 0) {
+//						setDefaultBranchShow();
+//					}
 				}
 			}
 			break;
@@ -651,7 +649,7 @@ public class QuestModule extends BasePlayerModule {
 
 	public void setDefaultBranchShow() {
 		// 当前分支完成，如果是设置的优先分支，需要修改默认的优先分支
-		PlayerExt playerExt = player.getExt();
+//		PlayerExt playerExt = player.getExt();
 
 		int idMin = Integer.MAX_VALUE;
 
@@ -665,16 +663,16 @@ public class QuestModule extends BasePlayerModule {
 				}
 			}
 		}
-		MissionConfig configMin = QuestHelper.getMissionConfig(idMin);
-		int groupUpdate = configMin == null ? 0 : configMin.getGroupId();
-		playerExt.setBranchGroup(groupUpdate);
-
-		PlayerExt update = PlayerExt.valueOf(playerId);
-		update.setBranchGroup(playerExt.getBranchGroup());
-		DAO.updateSelective(update);
-
-		PlayerHelper.sendProtocol(playerId,
-				MissionBranchPriorityPush_20300000.newBuilder().setGroup(playerExt.getBranchGroup()).build());
+		/*		MissionConfig configMin = QuestHelper.getMissionConfig(idMin);
+				int groupUpdate = configMin == null ? 0 : configMin.getGroupId();
+				playerExt.setBranchGroup(groupUpdate);
+		
+				PlayerExt update = PlayerExt.valueOf(playerId);
+				update.setBranchGroup(playerExt.getBranchGroup());
+				DAO.updateSelective(update);
+		
+				PlayerHelper.sendProtocol(playerId,
+						MissionBranchPriorityPush_20300000.newBuilder().setGroup(playerExt.getBranchGroup()).build());*/
 
 	}
 

@@ -31,6 +31,7 @@ import cn.game.games.net.game.module.develop.dragon.DragonModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
 import cn.game.games.net.game.module.event.EventModule;
+import cn.game.games.net.game.module.func.FuncModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.PlayerModule;
@@ -38,6 +39,8 @@ import cn.game.games.net.game.module.player.VarModule;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
+import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
@@ -72,8 +75,6 @@ public class Player  {
 	private volatile boolean islogouting;
 	/** 玩家基本数据 */
 	private PlayerData data;
-	/** 玩家扩展数据 */
-	private PlayerExt ext;
 	private transient GameClient gameClient;
 	private List<Long> timerTask = new ArrayList<>();
 
@@ -181,6 +182,10 @@ public class Player  {
 
 	public ActivityModule getActivityModule() {
 		return getModule(ActivityModule.class);
+	}
+
+	public FuncModule getFuncModule() {
+		return getModule(FuncModule.class);
 	}
 	public Player() {
 	}
@@ -331,6 +336,15 @@ public class Player  {
 		return promise.future() ; 
 	}
 
+	/** 
+	 * 某个功能是否开启了
+	 * @param type
+	 * @return
+	 */
+	public boolean isFuncOpen(InitialUI type) {
+		return getPlayerModule().getExpLevelMap().getValue(Asset.playerExp.ID) >= type.DisplayLevel;
+	}
+
 	public long getPlayerId() {
 		return playerId;
 	}
@@ -345,14 +359,6 @@ public class Player  {
 
 	public void setData(PlayerData data) {
 		this.data = data;
-	}
-
-	public PlayerExt getExt() {
-		return ext;
-	}
-
-	public void setExt(PlayerExt ext) {
-		this.ext = ext;
 	}
 
 	public boolean isActive() {

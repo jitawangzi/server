@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
 	public final String HeroTips;		
 	/** 所属图鉴 */
 	public final int CollectionID;		
-	/** 英雄技能ID 调用HeroSkill—HeroSkillGroup#技能组ID */
+	/** 英雄技能ID 调用HeroSkillGroup#技能组ID */
 	public final int[] HeroSkillID;		
 	/** 激活肉鸽id组 配置：品质;激活的肉鸽id1|...|等级;激活肉鸽idn 调用：Almost-技能&肉鸽——Roguelike#肉鸽表 */
 	public final int[][] RoguelikeId;		
@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
 		HeroTips = element.getAttribute("HeroTips"); // 英雄tips
 		CollectionID = Integer.parseInt(element.getAttribute("CollectionID") == null || element.getAttribute("CollectionID").length() == 0 ? "0"
 			: element.getAttribute("CollectionID")); // 所属图鉴
-		String HeroSkillIDString = element.getAttribute("HeroSkillID"); // 英雄技能ID 调用HeroSkill—HeroSkillGroup#技能组ID
+		String HeroSkillIDString = element.getAttribute("HeroSkillID"); // 英雄技能ID 调用HeroSkillGroup#技能组ID
 		if (HeroSkillIDString != null && HeroSkillIDString.length() > 0) {
 			String[] HeroSkillIDStrings = HeroSkillIDString.split(";"); 
 			int[] HeroSkillIDTemp = new int[HeroSkillIDStrings.length] ; 

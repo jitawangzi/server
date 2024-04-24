@@ -16,7 +16,6 @@ import com.google.common.collect.Multimap;
 import cn.game.core.util.IdUtil;
 import cn.game.core.util.IdUtil.IdType;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.PlayerExt;
 import cn.game.games.cache.entity.Role;
 import cn.game.games.cache.entity.RoleAction;
 import cn.game.games.cache.entity.RoleTagQuest;
@@ -65,7 +64,6 @@ import cn.game.protocol.generated.manager.RoleManager;
 import cn.game.protocol.generated.manager.RoleRisingStarManager;
 import cn.game.protocol.generated.manager.RoleTagManager;
 import cn.game.protocol.manual.OldErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.ByteHelp;
 import cn.game.util.MapUtil;
@@ -92,10 +90,10 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 	@Override
 	public int initLoadData(List<Role> roles) {
 		// 职业技能天赋
-		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-		List<Integer> occTalentNodes = playerExt.getOccTalentNodes();
-		occTalentNodes.forEach(e -> putOccTalentSkill(e));
-
+		/*		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
+				List<Integer> occTalentNodes = playerExt.getOccTalentNodes();
+				occTalentNodes.forEach(e -> putOccTalentSkill(e));
+		*/
 		if (roles == null) {
 			return 0;
 		}
@@ -1229,30 +1227,30 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 
 	@Override
 	public int occupationTalentUnlock(int id) {
-		OccupationTalentNodeConfig config = OccupationTalentNodeManager.getInstance().getOccupationTalentNodeConfig(id);
-		int preNode = config.getPreNode();
-		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-		List<Integer> occTalentNodes = playerExt.getOccTalentNodes();
-		if (occTalentNodes.contains(id)) {
-			return OldErrorMsgEnum.illegal_request.getId();
-		}
-		if (preNode != 0 && !occTalentNodes.contains(preNode)) {
-			return OldErrorMsgEnum.unlock.getId();
-		}
-		List<Map.Entry<Integer, Integer>> cost = config.getCost();
-		if (!PlayerHelper.delResources(player, cost, ResourceConsumeEnum.OccupationTalentUnlock)) {
-			return OldErrorMsgEnum.resource_not_enough.getId();
-		}
-		// 开启天赋技能
-		if (!putOccTalentSkill(id)) {
-			return OldErrorMsgEnum.lock_error.getId();
-		}
-
-		playerExt.addOccTalentNode(id);
-
-		PlayerExt update = PlayerExt.valueOf(playerId);
-		update.setOcctalentNode(playerExt.getOcctalentNode());
-		DAO.updateSelective(update);
+		/*	OccupationTalentNodeConfig config = OccupationTalentNodeManager.getInstance().getOccupationTalentNodeConfig(id);
+			int preNode = config.getPreNode();
+			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
+			List<Integer> occTalentNodes = playerExt.getOccTalentNodes();
+			if (occTalentNodes.contains(id)) {
+				return OldErrorMsgEnum.illegal_request.getId();
+			}
+			if (preNode != 0 && !occTalentNodes.contains(preNode)) {
+				return OldErrorMsgEnum.unlock.getId();
+			}
+			List<Map.Entry<Integer, Integer>> cost = config.getCost();
+			if (!PlayerHelper.delResources(player, cost, ResourceConsumeEnum.OccupationTalentUnlock)) {
+				return OldErrorMsgEnum.resource_not_enough.getId();
+			}
+			// 开启天赋技能
+			if (!putOccTalentSkill(id)) {
+				return OldErrorMsgEnum.lock_error.getId();
+			}
+		
+			playerExt.addOccTalentNode(id);
+		
+			PlayerExt update = PlayerExt.valueOf(playerId);
+			update.setOcctalentNode(playerExt.getOcctalentNode());
+			DAO.updateSelective(update);*/
 
 		return OldErrorMsgEnum.ok.getId();
 	}

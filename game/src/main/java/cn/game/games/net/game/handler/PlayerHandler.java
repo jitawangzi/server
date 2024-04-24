@@ -21,7 +21,6 @@ import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Buff;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.cache.entity.PlayerExt;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
@@ -320,22 +319,22 @@ public class PlayerHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		EventOptionConfig config = EventOptionManager.getInstance().getEventOptionConfig(id);
 		int eventId = config.getEventId();
-		PlayerExt playerExt = player.getExt();
-		List<Integer> eventIdList = playerExt.getEventIdList();
-		if (!eventIdList.contains(eventId)) {
-			netClient.sendProtocol(resp, OldErrorMsgEnum.illegal_request.getId());
-			return;
-		}
+		/*		PlayerExt playerExt = player.getExt();
+				List<Integer> eventIdList = playerExt.getEventIdList();
+				if (!eventIdList.contains(eventId)) {
+					netClient.sendProtocol(resp, OldErrorMsgEnum.illegal_request.getId());
+					return;
+				}*/
 		//添加buff
 		List<Buff> buffs = PlayerHelper.chooseEventOption(player, eventId, id, true);
 		if (buffs == null) {
 			netClient.sendProtocol(resp, OldErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
-		playerExt.removeEventId(eventId);
-		PlayerExt update = PlayerExt.valueOf(playerId);
-		update.setEventIds(playerExt.getEventIds());
-		DAO.updateSelective(update);
+		/*		playerExt.removeEventId(eventId);
+				PlayerExt update = PlayerExt.valueOf(playerId);
+				update.setEventIds(playerExt.getEventIds());
+				DAO.updateSelective(update);*/
 		// 添加事件
 		Map<Integer, Integer> addResources = new HashMap<>();
 		for (Buff buff : buffs) {

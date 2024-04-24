@@ -18,7 +18,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import cn.game.games.cache.entity.Buff;
-import cn.game.games.cache.entity.PlayerExt;
 import cn.game.games.cache.op.face.IBuffOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventHandler;
@@ -29,7 +28,6 @@ import cn.game.games.net.game.helper.EventHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.GameConstants;
-import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.buff.BuffValue;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.EventOptionConfig;
@@ -610,11 +608,12 @@ public class BuffOp extends BasePlayerModule implements IBuffOp {
 			EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.ExploreGetResources, addResources));
 
 		} else {
-			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-			playerExt.addEventId(eventId);
-			PlayerExt update = PlayerExt.valueOf(playerId);
-			update.setEventIds(playerExt.getEventIds());
-			DAO.updateSelective(update);
+
+			/*		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
+					playerExt.addEventId(eventId);
+					PlayerExt update = PlayerExt.valueOf(playerId);
+					update.setEventIds(playerExt.getEventIds());
+					DAO.updateSelective(update);*/
 
 			BuffMsg.EventPush_01001100.Builder response = BuffMsg.EventPush_01001100.newBuilder();
 			response.setEventId(eventId);

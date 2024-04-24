@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 总类型 1-货币 2-物品 3-装备 4-铁哥们 5-好友 6-宠物 */
 	public final int TotalType;		
-	/** 物品类型 1-熊猫竹子（英雄升级专用） 2-熊猫碎片 3-扭蛋道具 4-英雄/英雄碎片宝箱 5-货币类的集合 */
+	/** 物品类型 1-英雄突破 2-英雄升级 3-扭蛋道具 4-英雄任选道具 5-货币类的集合 */
 	public final int ItemType;		
 	/** 品质 1-白色 2-绿色 3-蓝色 4-紫色 5-金色 6-红色 7-彩色 8-永恒 9-唯一 */
 	public final int Quality;		
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 		TotalType = Integer.parseInt(element.getAttribute("TotalType") == null || element.getAttribute("TotalType").length() == 0 ? "0"
 			: element.getAttribute("TotalType")); // 总类型 1-货币 2-物品 3-装备 4-铁哥们 5-好友 6-宠物
 		ItemType = Integer.parseInt(element.getAttribute("ItemType") == null || element.getAttribute("ItemType").length() == 0 ? "0"
-			: element.getAttribute("ItemType")); // 物品类型 1-熊猫竹子（英雄升级专用） 2-熊猫碎片 3-扭蛋道具 4-英雄/英雄碎片宝箱 5-货币类的集合
+			: element.getAttribute("ItemType")); // 物品类型 1-英雄突破 2-英雄升级 3-扭蛋道具 4-英雄任选道具 5-货币类的集合
 		Quality = Integer.parseInt(element.getAttribute("Quality") == null || element.getAttribute("Quality").length() == 0 ? "0"
 			: element.getAttribute("Quality")); // 品质 1-白色 2-绿色 3-蓝色 4-紫色 5-金色 6-红色 7-彩色 8-永恒 9-唯一
 		Name = element.getAttribute("Name"); // 物品名称

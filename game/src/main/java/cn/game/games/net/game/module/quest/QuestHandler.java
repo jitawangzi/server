@@ -44,7 +44,6 @@ import cn.game.protocol.protobuf.MissionMsg.MissionUpdateRequest_20000030;
 import cn.game.protocol.protobuf.MissionMsg.MissionUpdateResponse_20000031;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.ByteHelp;
 
 @Component
 public class QuestHandler extends BaseHandler {
@@ -110,8 +109,8 @@ public class QuestHandler extends BaseHandler {
 			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-		playerExt.setBranchGroup(group);
+//		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
+//		playerExt.setBranchGroup(group);
 
 		PlayerExt update = PlayerExt.valueOf(playerId);
 		update.setBranchGroup(group);
@@ -190,13 +189,13 @@ public class QuestHandler extends BaseHandler {
 
 		QuestModule questOp = player.getModule(QuestModule.class);
 		int finishedCount = questOp.getFinishedCount(MissionTypeEnum.Daily);
-		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-		Integer quest = playerExt.getQuestActive();
-		boolean one = ByteHelp.isOne(playerExt.getQuestActive(), id);
-		if (one) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
-			return;
-		}
+		/*		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
+				Integer quest = playerExt.getQuestActive();
+				boolean one = ByteHelp.isOne(playerExt.getQuestActive(), id);
+				if (one) {
+					client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+					return;
+				}*/
 		
 		List<MissionDailyConfig> list = MissionDailyManager.getInstance().list();
 		boolean canReward = false;
@@ -217,10 +216,10 @@ public class QuestHandler extends BaseHandler {
 		}
 		resp.addAllRewards(PlayerHelper.addResources(playerId, missionDailyConfig.getReward()));
 
-		playerExt.setQuestActive(ByteHelp.modifyBit(quest, id));
+//		playerExt.setQuestActive(ByteHelp.modifyBit(quest, id));
 
 		PlayerExt update = PlayerExt.valueOf(playerId);
-		update.setQuestActive(playerExt.getQuestActive());
+//		update.setQuestActive(playerExt.getQuestActive());
 		DAO.updateSelective(update);
 
 		client.sendProtocol(resp.build());
@@ -229,9 +228,9 @@ public class QuestHandler extends BaseHandler {
 		MissionActiveResponse_20000007.Builder resp = MissionActiveResponse_20000007.newBuilder();
 		long playerId = client.getPlayerId(); 
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-		List<Integer> binary1List = ByteHelp.binary1List(playerExt.getQuestActive());
-		resp.addAllId(binary1List);
+//		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
+//		List<Integer> binary1List = ByteHelp.binary1List(playerExt.getQuestActive());
+//		resp.addAllId(binary1List);
 		client.sendProtocol(resp.build());
 	}
 
@@ -243,8 +242,8 @@ public class QuestHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		resp.addAllMissions(PbBuilder.buildQuestByGroup(playerId, MissionTypeEnum.get(group)));
 		if (group == MissionTypeEnum.BranchLine.getId()) {
-			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-			resp.setPriorityBranch(playerExt.getBranchGroup());
+//			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
+//			resp.setPriorityBranch(playerExt.getBranchGroup());
 		}
 //		resp.addAllGroups(PbBuilder.buildQuestStateByGroup(client.getPlayerId()));
 //		resp.setType(type);
