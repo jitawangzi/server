@@ -4,47 +4,58 @@ option java_package = "cn.game.protocol.protobuf";
 package Protos;
 //import "CommonMsg.proto" ;
 //import "HeroMsg.proto" ;
-//import "RewardMsg.proto" ;
+import "RewardMsg.proto" ;
 // 活动协议
 
-
-//查看有哪些展示的活动
+//查看有哪些显示的活动
 message ActivityListRequest_11000001{
 }
-//展示中的活动id列表
+//显示的活动列表
 message ActivityListResponse_11000002{
-   repeated uint32 id = 1; 		//活动id Activity.xlsm 表的id，ActivityState 为1，2，3的活动
+   repeated ActivityInfo activitys = 1;
 }
 
-//查看某活动数据
-message ActivityInfoRequest_11000003{
-   uint32 id = 1; 		//活动id Activity.xlsm 表的id
+//查看首冲活动数据
+message ActivityFirstChargeRequest_11000003{
+   uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
 }
-//活动数据
-message ActivityInfoResponse_11000004{
-   ActivityInfo activity = 1;
+//首冲活动
+message ActivityFirstChargeResponse_11000004{
+   FirstChargeActivityInfo firstCharge = 1;
+}
+
+//购买首冲里面的礼包
+message ActivityFirstChargeBuyRequest_11000005{
+   uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+   uint32 chargeId  = 2;    // FirstCharge 表id
+   repeated uint32 selected  = 3;    // 选择的物品（当chargeId 是1、2、3、4时使用）
+
+}
+message ActivityFirstChargeBuyResponse_11000006{
+   FirstChargeActivityInfo firstCharge = 1;  // 更新当前首冲数据,如果为null表示东西都买完了，不用在显示这个首冲了。
+   repeated RewardInfo rewards = 2;  // 购买的物品
+}
+
+
+message FirstChargeActivityInfo{
+   uint32 id = 1; //当前可以购买的 FirstCharge 表id礼包
+   repeated uint32 selectedIndex = 2;  // 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+}
+
+// 单个活动基本数据
+message ActivityInfo{
+	uint32 id = 1; 		//活动id Activity 表的id
+	ActivityState state = 2;		// 活动状态
+	int32 startTime = 3;			// 距离活动正式开始的时间（秒），针对状态是VIEW的活动
+}
+enum ActivityState{
+	NONE = 0;		// 不显示此活动
+	VIEW = 1  ;		// 活动展示，没有到活动正式开始时间，只能查看
+	START = 2  ;	// 活动正式开始，可以参加活动
+	CLOSE = 3;		// 活动过期关闭，不能参加，只能查看，或者领奖等操作。
 }
 
 //活动状态改变推送，看具体情况选择性推送
 message ActivityStatePush_11100006{
    ActivityInfo activity = 1;
-}
-
-// 单个活动数据
-message ActivityInfo{
-	uint32 id = 1; 		//活动id Activity.xlsm 表的id
-	ActivityState state = 2;		// 活动状态
-	int32 startTime = 3;			// 距离活动正式开始的时间（秒），针对状态是VIEW的活动
-	repeated ActivityBaseInfo baseInfo = 4;		// 活动的相关数据。
-}
-message ActivityBaseInfo{
-	int32 id = 1; 	//不同的活动对应不同的表id，比如如果是活动副本，则是ChapterDungeon.xlsm表的id
-	int32 state = 2; 	//任务状态:针对任务类型的活动， 1:不可领取(任务进行中，没有完成) 2:可领取3:已领取
-	int32 finishCount = 3; 	//完成数量统计，一些需要记录相关操作数量的
-}
-enum ActivityState{
-	DELETE = 0;		// 不显示此活动
-	VIEW = 1  ;		// 活动展示，没有到活动正式开始时间，只能查看
-	START = 2  ;	// 活动正式开始，可以参加活动
-	CLOSE = 3;		// 活动过期关闭，不能参加，只能查看，或者领奖等操作。
 }

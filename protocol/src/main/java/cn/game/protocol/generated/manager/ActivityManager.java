@@ -3,6 +3,8 @@ package cn.game.protocol.generated.manager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -23,12 +25,14 @@ public class ActivityManager extends ResourceListener {
 	private static ActivityManager instance = new ActivityManager();
 	private static final String xmlFileName = "Activity";
 	
+	/** 总数据，按id取值 */
 	private Map<Integer, ActivityConfig> activitys = new HashMap<>();
+	/** 普通索引 */
+	private Map<Integer,List<ActivityConfig>> openTypes = new HashMap<>();
 
-	public static ActivityManager getInstance() {
+	public static ActivityManager instance() {
 		return instance;
 	}
-
 	private ActivityManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -38,7 +42,7 @@ public class ActivityManager extends ResourceListener {
 	 * @param id
 	 * @return
 	 */
-	public ActivityConfig getActivityConfig(int id) {
+	public ActivityConfig get(int id) {
 		ActivityConfig config = this.activitys.get(id);
 		if (config == null) { 
 			throw new NullPointerException("【Activity】表的" + "id【" + id + "】不存在"); 
@@ -51,31 +55,44 @@ public class ActivityManager extends ResourceListener {
 	 * @param id
 	 * @return
 	 */
-	public ActivityConfig getActivityConfigNullable(int id) {
+	public ActivityConfig getNullable(int id) {
 		return this.activitys.get(id);
 	}
 
+	public List<ActivityConfig> getOpenTypeList(int openType) {
+		return this.openTypes.get(openType);
+	}
+	/**
+	 * 获取所有数据
+	 * @return
+	 */
 	public Collection<ActivityConfig> list() {
 		return this.activitys.values();
 	}
-
 	@Override
 	public void load() {
-
 		try {
-			ClassLoader classLoader = Thread.currentThread().getClass().getClassLoader();
-			if (classLoader == null) {
-				classLoader = ActivityManager.class.getClassLoader();
-			}
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
 			Element[] list = XmlUtils.getChildrenByName(document.getDocumentElement(), xmlFileName);
 			
 			Map<Integer, ActivityConfig> activitys = new HashMap<>();
+			Map<Integer, List<ActivityConfig>> openTypes = new HashMap<>();
 			for (Element e : list) {
 				ActivityConfig activity = new ActivityConfig(e);
-				activitys.put(activity.getId(), activity);
+				List<ActivityConfig> openTypeList = openTypes.get(activity.openType); 
+				if (openTypeList == null){
+					openTypeList = new ArrayList<ActivityConfig>(2) ; 
+					openTypes.put(activity.openType ,openTypeList) ; 
+				}
+				openTypeList.add(activity) ;
+				ActivityConfig old = activitys.put(activity.ID, activity);
+				if (old != null) {
+					throw new IllegalArgumentException("[ActivityConfig]表存在重复的数据id： " + old.ID);
+				}
 			}			
 
+			this.openTypes = com.google.common.collect.ImmutableMap.copyOf(openTypes);			
 			this.activitys = com.google.common.collect.ImmutableMap.copyOf(activitys);
 
 			log.info("load ActivityConfig size[{}]", activitys.size());

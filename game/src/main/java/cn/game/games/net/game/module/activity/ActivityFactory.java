@@ -7,24 +7,22 @@ import com.alibaba.fastjson.JSON;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.protocol.generated.config.ActivityConfig;
-import cn.game.protocol.generated.enume.ActivityTypeEnum;
 
 public class ActivityFactory {
 
 	public static ActivityBase initActivityBase(ActivityConfig config, String saveString, Player player) {
 
-		ActivityTypeEnum type = config.getType(); 
 		ActivityBase activityBase;
 		if (!StringUtils.isEmpty(saveString)) {
-			activityBase = JSON.parseObject(saveString, ClassManager.getInstance().getActivityClass(type));
+			activityBase = JSON.parseObject(saveString, ClassManager.getInstance().getActivityClass(config.type));
 		} else {
-			activityBase = createActivity(type);
+			activityBase = createActivity(config.type);
 		}
-		activityBase.init(config.getId(), player, false);
+		activityBase.init(config.ID, player, false);
 		return activityBase;
 	}
 
-	public static ActivityBase createActivity(ActivityTypeEnum type) {
+	public static ActivityBase createActivity(int type) {
 		return ClassManager.getInstance().createActivityClassInstance(type);
 	}
 

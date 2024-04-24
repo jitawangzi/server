@@ -21,10 +21,12 @@ public class PbProtocol implements ProtocolParser {
 		return instance;
 	}
 
-	public final static int ActivityListRequest_11000001 = 0x11000001;    //查看有哪些展示的活动  
-	public final static int ActivityListResponse_11000002 = 0x11000002;    //展示中的活动id列表  
-	public final static int ActivityInfoRequest_11000003 = 0x11000003;    //查看某活动数据  
-	public final static int ActivityInfoResponse_11000004 = 0x11000004;    //活动数据  
+	public final static int ActivityListRequest_11000001 = 0x11000001;    //查看有哪些显示的活动  
+	public final static int ActivityListResponse_11000002 = 0x11000002;    //显示的活动列表  
+	public final static int ActivityFirstChargeRequest_11000003 = 0x11000003;    //查看首冲活动数据  
+	public final static int ActivityFirstChargeResponse_11000004 = 0x11000004;    //首冲活动  
+	public final static int ActivityFirstChargeBuyRequest_11000005 = 0x11000005;    //购买首冲里面的礼包  
+	public final static int ActivityFirstChargeBuyResponse_11000006 = 0x11000006;    
 	public final static int ActivityStatePush_11100006 = 0x11100006;    //活动状态改变推送，看具体情况选择性推送  
 	public final static int BattleFieldStartRequest_13000001 = 0x13000001;    //开始关卡战斗请求  
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
@@ -70,8 +72,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int GmPlayerLogouttResponse_7700000a = 0x7700000a;    //响应踢下线  
 	public final static int HeroUpLevelRequest_16000001 = 0x16000001;    //英雄升级  
 	public final static int HeroUpLevelResponse_16000002 = 0x16000002;    
-	public final static int HeroConflateRequest_16000003 = 0x16000003;    //英雄合成  
-	public final static int HeroConflateResponse_16000004 = 0x16000004;    
+	public final static int HeroConflateRequest_16000003 = 0x16000003;    //英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。  
+	public final static int HeroConflateResponse_16000004 = 0x16000004;    //合成返回，客户端自己删除耗材。  
 	public final static int MailListRequest_12000001 = 0x12000001;    //请求邮件列表。  
 	public final static int MailListResponse_12000002 = 0x12000002;    //邮件列表数据  
 	public final static int MailSeeRequest_12000003 = 0x12000003;    //查看未读邮件  
@@ -173,6 +175,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PaymentOrderPush_15010020 = 0x15010020;    //支付订单相关参数，客户端收到这个协议就可以利用里面的参数发起支付了  
 	public final static int AdvertiseWatchFinishRequest_15000030 = 0x15000030;    //广告观看完毕  
 	public final static int AdvertiseWatchFinishResponse_15000031 = 0x15000031;    
+	public final static int StoryStartRequest_14000001 = 0x14000001;    //剧情开始  
+	public final static int StoryStartResponse_14000002 = 0x14000002;    
+	public final static int StoryFinishRequest_14000003 = 0x14000003;    //剧情结束  
+	public final static int StoryFinishResponse_14000004 = 0x14000004;    
 	public final static int TestGmCmdRequest_6f000001 = 0x6f000001;    //gm指令  
 	public final static int TestGmCmdResponse_6f000002 = 0x6f000002;    
 	public final static int TestAddItemRequest_6f000008 = 0x6f000008;    //获取游戏中的各种物品  
@@ -189,9 +195,13 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(ActivityListResponse_11000002, cn.game.protocol.protobuf.ActivityMsg.ActivityListResponse_11000002.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(ActivityInfoRequest_11000003, cn.game.protocol.protobuf.ActivityMsg.ActivityInfoRequest_11000003.getDefaultInstance()
+		parsersMap.put(ActivityFirstChargeRequest_11000003, cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000003.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(ActivityInfoResponse_11000004, cn.game.protocol.protobuf.ActivityMsg.ActivityInfoResponse_11000004.getDefaultInstance()
+		parsersMap.put(ActivityFirstChargeResponse_11000004, cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeResponse_11000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivityFirstChargeBuyRequest_11000005, cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivityFirstChargeBuyResponse_11000006, cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000006.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ActivityStatePush_11100006, cn.game.protocol.protobuf.ActivityMsg.ActivityStatePush_11100006.getDefaultInstance()
 				.getParserForType());
@@ -489,6 +499,14 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(AdvertiseWatchFinishResponse_15000031, cn.game.protocol.protobuf.ShopMsg.AdvertiseWatchFinishResponse_15000031.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(StoryStartRequest_14000001, cn.game.protocol.protobuf.StoryMsg.StoryStartRequest_14000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(StoryStartResponse_14000002, cn.game.protocol.protobuf.StoryMsg.StoryStartResponse_14000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(StoryFinishRequest_14000003, cn.game.protocol.protobuf.StoryMsg.StoryFinishRequest_14000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(StoryFinishResponse_14000004, cn.game.protocol.protobuf.StoryMsg.StoryFinishResponse_14000004.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(TestGmCmdRequest_6f000001, cn.game.protocol.protobuf.TestMsg.TestGmCmdRequest_6f000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(TestGmCmdResponse_6f000002, cn.game.protocol.protobuf.TestMsg.TestGmCmdResponse_6f000002.getDefaultInstance()
@@ -512,8 +530,10 @@ public class PbProtocol implements ProtocolParser {
 
 		nameIdMap.put("ActivityListRequest_11000001", 0x11000001);
 		nameIdMap.put("ActivityListResponse_11000002", 0x11000002);
-		nameIdMap.put("ActivityInfoRequest_11000003", 0x11000003);
-		nameIdMap.put("ActivityInfoResponse_11000004", 0x11000004);
+		nameIdMap.put("ActivityFirstChargeRequest_11000003", 0x11000003);
+		nameIdMap.put("ActivityFirstChargeResponse_11000004", 0x11000004);
+		nameIdMap.put("ActivityFirstChargeBuyRequest_11000005", 0x11000005);
+		nameIdMap.put("ActivityFirstChargeBuyResponse_11000006", 0x11000006);
 		nameIdMap.put("ActivityStatePush_11100006", 0x11100006);
 		nameIdMap.put("BattleFieldStartRequest_13000001", 0x13000001);
 		nameIdMap.put("BattleFieldStartResponse_13000002", 0x13000002);
@@ -662,6 +682,10 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PaymentOrderPush_15010020", 0x15010020);
 		nameIdMap.put("AdvertiseWatchFinishRequest_15000030", 0x15000030);
 		nameIdMap.put("AdvertiseWatchFinishResponse_15000031", 0x15000031);
+		nameIdMap.put("StoryStartRequest_14000001", 0x14000001);
+		nameIdMap.put("StoryStartResponse_14000002", 0x14000002);
+		nameIdMap.put("StoryFinishRequest_14000003", 0x14000003);
+		nameIdMap.put("StoryFinishResponse_14000004", 0x14000004);
 		nameIdMap.put("TestGmCmdRequest_6f000001", 0x6f000001);
 		nameIdMap.put("TestGmCmdResponse_6f000002", 0x6f000002);
 		nameIdMap.put("TestAddItemRequest_6f000008", 0x6f000008);

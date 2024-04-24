@@ -25,6 +25,7 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.develop.dragon.DragonModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
@@ -176,6 +177,10 @@ public class Player  {
 
 	public CurrencyModule getCurrencyModule() {
 		return getModule(CurrencyModule.class);
+	}
+
+	public ActivityModule getActivityModule() {
+		return getModule(ActivityModule.class);
 	}
 	public Player() {
 	}

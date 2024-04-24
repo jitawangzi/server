@@ -15,12 +15,14 @@ import cn.game.protocol.generated.config.AttributeVlalueConfig;
 import cn.game.protocol.generated.config.DragonConfig;
 import cn.game.protocol.generated.config.DragonSkillConfig;
 import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.HeroQualityConfig;
 import cn.game.protocol.generated.config.HeroSwordConfig;
 import cn.game.protocol.generated.config.WallConfig;
 import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.HeroQualityManager;
 import cn.game.protocol.generated.manager.HeroSwordManager;
 import cn.game.protocol.generated.manager.WallManager;
 import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
@@ -88,7 +90,9 @@ public class AttrModule extends BasePlayerModule {
 			return;
 		}
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-		AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttribute1);
+		HeroQualityConfig heroQualityConfig = HeroQualityManager.instance().get(heroConfig.Quality);
+
+		AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroQualityConfig.InitialAttribute);
 
 		heroAttr.addAll(attributeVlalueConfig.AttributeVlalue);
 	}

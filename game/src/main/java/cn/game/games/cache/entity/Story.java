@@ -1,8 +1,9 @@
 package cn.game.games.cache.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+
 import cn.game.games.cache.base.DbEntity;
+import cn.game.protocol.protobuf.StoryMsg.StoryInfo;
 
 public class Story implements Serializable, DbEntity {
 
@@ -108,4 +109,13 @@ public class Story implements Serializable, DbEntity {
 		s.setStory(story);
 		return s;
 	}
+
+	public StoryInfo toStoryInfo() {
+		StoryInfo.Builder builder = StoryInfo.newBuilder();
+		builder.setId(story);
+		builder.setCount(startConditionCount);
+		builder.setFinish(finish);
+		return builder.build();
+	}
+
 }

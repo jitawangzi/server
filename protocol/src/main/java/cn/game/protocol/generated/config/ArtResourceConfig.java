@@ -14,6 +14,8 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 资源类型 1-英雄 */
 	public final int Type;		
+	/** spine预制体 */
+	public final String Prefab;		
 	/** 头像Icon */
 	public final String Icon;		
 	/** 出生 动作 */
@@ -43,6 +45,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("ID")); // 资源id #Hero表
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
 			: element.getAttribute("Type")); // 资源类型 1-英雄
+		Prefab = element.getAttribute("Prefab"); // spine预制体
 		Icon = element.getAttribute("Icon"); // 头像Icon
 		StartAction = element.getAttribute("StartAction"); // 出生 动作
 		StandbyAction = element.getAttribute("StandbyAction"); // 休闲待机 动作

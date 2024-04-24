@@ -184,7 +184,7 @@ public class ChapterHandler extends BaseHandler {
 				return;
 			}
 		}
-		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(dungeonId)) {
+		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(battleConfig.preBattle)) {
 			client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
 			return;
 		}

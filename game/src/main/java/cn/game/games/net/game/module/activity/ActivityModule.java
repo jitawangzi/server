@@ -1,4 +1,4 @@
-package cn.game.games.cache.op.impl;
+package cn.game.games.net.game.module.activity;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -17,41 +17,36 @@ import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Activity;
 import cn.game.games.cache.entity.ClimbingTower;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.face.IActivityOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ActivityMapper;
-import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.activity.ActivityBase;
-import cn.game.games.net.game.module.activity.ActivityFactory;
-import cn.game.games.net.game.module.activity.ClimbingTowerActivity;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
-public class ActivityOp extends BasePlayerModule implements IActivityOp {
+public class ActivityModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
 
 
-	@Override
 	public int initLoadData(List<Activity> list) {
 
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
+//		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
 		List<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
 		// 这里注意一个活动，多开启时间的
 		if (list != null) {
 			for (Activity activity : list) {
-				ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(activity.getId());
+				ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
 				// 活动已经彻底关闭了
 				if (!showList.contains(activity.getId())) // 活动已经彻底关闭了
 				{
@@ -59,7 +54,7 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 				} else { // init from db
 					ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(), player);
 					if (activityBase != null) {
-						this.activities.put(activityConfig.getId(), activityBase);
+						this.activities.put(activityConfig.ID, activityBase);
 					}
 				}
 			}
@@ -75,18 +70,34 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 		return 0;
 	}
 
+	public int getState(int id) {
+		if (activities.containsKey(id)) {
+			return ActivityState.START_VALUE;
+		}
+		return ActivityStateManager.getInstance().getState(id);
+	}
+
+	public Map<Integer, ActivityInfo> getShowState() {
+
+		Map<Integer, ActivityInfo> activityInfos = new HashMap<Integer, ActivityMsg.ActivityInfo>();
+		for (Integer id : activities.keySet()) {
+			ActivityInfo activityInfo = ActivityInfo.newBuilder().setId(id).setStateValue(getState(id)).build();
+			activityInfos.put(id, activityInfo);
+		}
+		return activityInfos;
+	}
+
 	protected void initFromDb(ListIterator<?> iterator) {
 
 		List<Activity> list = iterator == null ? null : (List<Activity>) iterator.next();
-
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
+//		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
 		List<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
 		// 这里注意一个活动，多开启时间的
 		if (list != null) {
 			for (Activity activity : list) {
-				ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(activity.getId());
+				ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
 				// 活动已经彻底关闭了
 				if (!showList.contains(activity.getId())) // 活动已经彻底关闭了
 				{
@@ -95,7 +106,7 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 					ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(),
 							player);
 					if (activityBase != null) {
-						this.activities.put(activityConfig.getId(), activityBase);
+						this.activities.put(activityConfig.ID, activityBase);
 					}
 				}
 			}
@@ -107,6 +118,15 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 		}
 		// 重载已开启过的爬塔活动数据
 //		reloadClimbingTowerData();
+	}
+
+	private void initNewActivity() {
+		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(1);
+		if (openTypeList != null) {
+			for (ActivityConfig activityConfig : openTypeList) {
+				open(activityConfig.ID);
+			}
+		}
 	}
 	@Override
 	public void initFromDbAfter() {
@@ -165,7 +185,6 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 
 	}
 
-	@Override
 	public void initAdd(int id) {
 
 		Activity activity = new Activity();
@@ -180,7 +199,6 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 	}
 
 
-	@Override
 	public void update(int id) {
 
 		Activity activity = new Activity();
@@ -192,7 +210,6 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 
 		DAO.updateWithBLOBs(activity);
 	}
-	@Override
 	public void updateAll() {
 
 		for (ActivityBase activityBase : this.activities.values()) {
@@ -212,7 +229,6 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 	}
 
 
-	@Override
 	public List<RewardInfo> receive(int id, int subId) {
 		ActivityBase activityBase = this.activities.get(id);
 		List<RewardInfo> rewards = null;
@@ -225,23 +241,20 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 		return rewards;
 	}
 
-	@Override
 	public void delete(int id) {
-		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { playerId, id });
+//		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { playerId, id });
 	}
 
-	@Override
 	public void refresh() {
 
 		initLoadData(null);
 	}
 
 
-	@Override
 	public void end(int id) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
-		if (!activityConfig.getIsPlayer() && player != null) {
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		if (activityConfig.isMultiplayer && player != null) {
 			return ;
 		}
 		ActivityBase activityBase = this.activities.get(id);
@@ -252,15 +265,14 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 	}
 
 
-	@Override
 	public void destroy(int id) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
-		if (!activityConfig.getIsPlayer() && player != null) {
-			return ;
-		}
+//		Player player = PlayerManager.getInstance().getPlayer(playerId);
+//		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+//		if (!activityConfig.isMultiplayer && player != null) {
+//			return ;
+//		}
 
-		ActivityBase activityBase = this.activities.get(id);
+		ActivityBase activityBase = this.activities.remove(id);
 		if (activityBase != null) {
 			activityBase.destroy();
 			delete(id);
@@ -268,30 +280,26 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 	}
 
 
-	@Override
 	public void open(int id) {
-
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		if (!activities.containsKey(id)) {
 			// new activity
-			ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
-			if (!activityConfig.getIsPlayer() && player != null) {
-				return ; 
-			}
-			ActivityBase activityBase = ActivityFactory.createActivity(activityConfig.getType());
+			ActivityConfig activityConfig = ActivityManager.instance().get(id);
+//			if (!activityConfig.isMultiplayer && player != null) {
+//				return ; 
+//			}
+			ActivityBase activityBase = ActivityFactory.createActivity(activityConfig.type);
 			if (activityBase != null) {
-				this.activities.put(activityConfig.getId(), activityBase);
-				activityBase.init(activityConfig.getId(), player, true);
-				initAdd(activityConfig.getId());
+				this.activities.put(activityConfig.ID, activityBase);
+				activityBase.init(activityConfig.ID, player, true);
+//				initAdd(activityConfig.ID);
 			}
 		}
 	}
 
-	@Override
 	public ActivityBase get(int id) {
 
-		ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
 
 		// 全局活动
 		// if (activityConfig.getType() == ActivityTypeEnum.Login.getId()) {
@@ -301,7 +309,6 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 	}
 
 
-	@Override
 	public void newDay() {
 
 		Iterator<Entry<Integer, ActivityBase>> iterator = activities.entrySet().iterator();
@@ -324,7 +331,6 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 	public void init() {
 
 	}
-	@Override
 	public Collection<ActivityBase> list() {
 		return this.activities.values();
 	}
@@ -338,7 +344,7 @@ public class ActivityOp extends BasePlayerModule implements IActivityOp {
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
-			initFromDb(null);
+			initNewActivity();
 			break;
 		}
 		}

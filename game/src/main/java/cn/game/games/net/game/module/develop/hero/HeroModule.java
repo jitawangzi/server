@@ -1,9 +1,10 @@
 package cn.game.games.net.game.module.develop.hero;
 
+import java.util.Collection;
+
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.HeroMapper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -24,13 +25,22 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
+		
+		case PLAYER_CREATE: {
+			Collection<Hero> list = list(); 
+			// 初始英雄全上阵
+			for (Hero hero : list) {
+				hero.setBattle(true);
+			}
+			break;
+			}
 		}
 	}
 
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return new Class<?>[] { HeroMapper.class };
-	}
+//	@Override
+//	public Class<?>[] defaultDbMapperClass() {
+//		return new Class<?>[] { HeroMapper.class };
+//	}
 
 	@Override
 	public void setInstanceAfter(Hero hero) {

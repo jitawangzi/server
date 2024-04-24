@@ -75,6 +75,8 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private boolean isBattle;
+
 	/**
 	 * @mbg.generated
 	 */
@@ -280,6 +282,14 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 		return id;
 	}
 
+	public boolean isBattle() {
+		return isBattle;
+	}
+
+	public void setBattle(boolean isBattle) {
+		this.isBattle = isBattle;
+	}
+
 	public HeroInfo toHeroInfo() {
 		HeroInfo.Builder builder = HeroInfo.newBuilder();
 
@@ -287,6 +297,7 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 		builder.setConfigId(configId);
 		builder.setStar(star);
 		builder.setLevel(level);
+		builder.setIsBattle(isBattle);
 //		builder.setExp(this.exp); 
 //		builder.setGetTime(getTime.intValue());
 

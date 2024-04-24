@@ -23,6 +23,8 @@ import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.protocol.protobuf.RewardMsg;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
 import io.vertx.core.Promise;
 
@@ -178,9 +180,9 @@ public class PlayerModule extends BasePlayerModule {
 			if (exp == Asset.playerExp.ID) {
 				// 给等级奖励
 				UserUpgradeConfig userUpgradeConfig = UserUpgradeManager.instance().get(level);
-				PlayerHelper.addReward(player, userUpgradeConfig.LvRewardID);
+				List<RewardInfo> reward = PlayerHelper.addReward(player, userUpgradeConfig.LvRewardID);
+				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(reward));
 			}
-
 			break;
 		}
 		case ResourceRemove: {

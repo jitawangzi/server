@@ -81,9 +81,11 @@ public class BattleChapterImpl implements IBattleHandler {
 						break;
 					}
 				}
-				for (int i = 0; i < battleConfig.FUNFactor[index]; i++) {
-					List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index]);
-					allRewards.addAll(reward);
+				if (index >= 0) {
+					for (int i = 0; i < battleConfig.FUNFactor[index]; i++) {
+						List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index]);
+						allRewards.addAll(reward);
+					}
 				}
 				break;
 			}
@@ -96,9 +98,11 @@ public class BattleChapterImpl implements IBattleHandler {
 						break;
 					}
 				}
-				for (int i = 0; i < battleConfig.FUNFactor[index]; i++) {
-					List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index]);
-					allRewards.addAll(reward);
+				if (index >= 0) {
+					for (int i = 0; i < battleConfig.FUNFactor[index]; i++) {
+						List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index]);
+						allRewards.addAll(reward);
+					}
 				}
 				break;
 			}

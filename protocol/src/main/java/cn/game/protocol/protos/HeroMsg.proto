@@ -14,14 +14,13 @@ message HeroUpLevelResponse_16000002{
 }
 
 
-//英雄合成
+//英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。
 message HeroConflateRequest_16000003{
   string uid = 1; // 本体英雄唯一id
-  // 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-  // 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+  // 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
   repeated string consumedUid = 2;
 }
-
+// 合成返回，客户端自己删除耗材。
 message HeroConflateResponse_16000004{
-	HeroInfo hero = 1;	// 获得新的英雄。
+	HeroInfo hero = 1;	// 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
 }

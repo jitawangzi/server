@@ -2,6 +2,7 @@ package cn.game.games.net.game.helper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map.Entry;
@@ -70,6 +71,8 @@ import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
+import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
@@ -185,6 +188,43 @@ public class PlayerHelper {
 			return Collections.EMPTY_LIST;
 		}
 		return addResources(player, id, value, notify);
+	}
+
+	/** 
+	 * 合并同id 的资源和道具的数量。 
+	 * @param rewards
+	 */
+	public static void mergeRewards(List<RewardInfo> rewards) {
+		cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder itemBuilder = ItemInfo.newBuilder(); 
+		cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder assetBuilder = AssetInfo.newBuilder(); 
+
+		Iterator<RewardInfo> iterator = rewards.iterator();
+		while (iterator.hasNext()) {
+			RewardMsg.RewardInfo rewardInfo = (RewardMsg.RewardInfo) iterator.next();
+			if (rewardInfo.hasItem()) {
+				ItemInfo item = rewardInfo.getItem();
+				if (itemBuilder.getId() == 0 || itemBuilder.getId() == item.getId()) {
+					itemBuilder.setId(item.getId());
+					itemBuilder.setCount(itemBuilder.getCount() + item.getCount());
+					iterator.remove();
+				}
+			}
+			if (rewardInfo.hasAsset()) {
+				AssetInfo asset = rewardInfo.getAsset();
+				if (assetBuilder.getId() == 0 || assetBuilder.getId() == asset.getId()) {
+					assetBuilder.setId(asset.getId());
+					assetBuilder.setCount(assetBuilder.getCount() + asset.getCount());
+					iterator.remove();
+				}
+			}
+
+		}
+		if (itemBuilder.getId() > 0) {
+			rewards.add(RewardInfo.newBuilder().setItem(itemBuilder.build()).build());
+		}
+		if (assetBuilder.getId() > 0) {
+			rewards.add(RewardInfo.newBuilder().setAsset(assetBuilder.build()).build());
+		}
 	}
 
 	private static List<RewardInfo> addResources(Player player, int id, int value, boolean notify) {
@@ -572,6 +612,10 @@ public class PlayerHelper {
 		return addResources(playerId, rewards, false);
 	}
 
+	public static List<RewardInfo> addResources(Player player, int[][] rewards) {
+		return addResources(player, rewards, false);
+	}
+
 	public static List<RewardInfo> addResources(long playerId, int[][] rewards, boolean notify) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.length > 0) {
@@ -581,6 +625,20 @@ public class PlayerHelper {
 			}
 			if (notify) {
 				PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			}
+		}
+		return rewardItems;
+	}
+
+	public static List<RewardInfo> addResources(Player player, int[][] rewards, boolean notify) {
+		List<RewardInfo> rewardItems = new ArrayList<>();
+		if (rewards != null && rewards.length > 0) {
+			for (int i = 0; i < rewards.length; i++) {
+				List<RewardInfo> rewardItem = addResources(player, rewards[i][0], rewards[i][1], false);
+				rewardItems.addAll(rewardItem);
+			}
+			if (notify) {
+				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 			}
 		}
 		return rewardItems;

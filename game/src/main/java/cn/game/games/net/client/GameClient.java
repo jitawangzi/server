@@ -242,6 +242,7 @@ public class GameClient extends AbstractNetClient {
 	public ServerWebSocket getChannel() {
 		return channel;
 	}
+
 	@Override
 	public boolean needProcess(IProtocol<?> protocol) {
 		int seq = protocol.getSeq();
@@ -275,5 +276,6 @@ public class GameClient extends AbstractNetClient {
 	public void clearRecentMessages() {
 		this.recentMessages.clear();
 	}
+
 
 }

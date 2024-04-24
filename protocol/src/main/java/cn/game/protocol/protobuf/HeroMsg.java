@@ -1070,8 +1070,7 @@ public final class HeroMsg {
 
     /**
      * <pre>
-     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
      * </pre>
      *
      * <code>repeated string consumedUid = 2;</code>
@@ -1081,8 +1080,7 @@ public final class HeroMsg {
         getConsumedUidList();
     /**
      * <pre>
-     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
      * </pre>
      *
      * <code>repeated string consumedUid = 2;</code>
@@ -1091,8 +1089,7 @@ public final class HeroMsg {
     int getConsumedUidCount();
     /**
      * <pre>
-     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
      * </pre>
      *
      * <code>repeated string consumedUid = 2;</code>
@@ -1102,8 +1099,7 @@ public final class HeroMsg {
     java.lang.String getConsumedUid(int index);
     /**
      * <pre>
-     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
      * </pre>
      *
      * <code>repeated string consumedUid = 2;</code>
@@ -1115,7 +1111,7 @@ public final class HeroMsg {
   }
   /**
    * <pre>
-   *英雄合成
+   *英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。
    * </pre>
    *
    * Protobuf type {@code Protos.HeroConflateRequest_16000003}
@@ -1265,8 +1261,7 @@ public final class HeroMsg {
     private com.google.protobuf.LazyStringList consumedUid_;
     /**
      * <pre>
-     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
      * </pre>
      *
      * <code>repeated string consumedUid = 2;</code>
@@ -1278,8 +1273,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
      * </pre>
      *
      * <code>repeated string consumedUid = 2;</code>
@@ -1290,8 +1284,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
      * </pre>
      *
      * <code>repeated string consumedUid = 2;</code>
@@ -1303,8 +1296,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-     * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+     * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
      * </pre>
      *
      * <code>repeated string consumedUid = 2;</code>
@@ -1489,7 +1481,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     *英雄合成
+     *英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。
      * </pre>
      *
      * Protobuf type {@code Protos.HeroConflateRequest_16000003}
@@ -1763,8 +1755,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1776,8 +1767,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1788,8 +1778,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1801,8 +1790,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1815,8 +1803,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1836,8 +1823,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1856,8 +1842,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1874,8 +1859,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1889,8 +1873,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 被消耗的英雄唯一id,注意需要对应HeroConflate表耗材1、2、3的顺序，服务端才能校验
-       * 配置了消耗几个耗材，就发几个uid，如果对应的耗材没有，使用了万能耗材，则uid填0
+       * 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
        * </pre>
        *
        * <code>repeated string consumedUid = 2;</code>
@@ -1967,7 +1950,7 @@ public final class HeroMsg {
 
     /**
      * <pre>
-     * 获得新的英雄。
+     * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
      * </pre>
      *
      * <code>.Protos.HeroInfo hero = 1;</code>
@@ -1976,7 +1959,7 @@ public final class HeroMsg {
     boolean hasHero();
     /**
      * <pre>
-     * 获得新的英雄。
+     * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
      * </pre>
      *
      * <code>.Protos.HeroInfo hero = 1;</code>
@@ -1985,7 +1968,7 @@ public final class HeroMsg {
     cn.game.protocol.protobuf.BaseMsg.HeroInfo getHero();
     /**
      * <pre>
-     * 获得新的英雄。
+     * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
      * </pre>
      *
      * <code>.Protos.HeroInfo hero = 1;</code>
@@ -1993,6 +1976,10 @@ public final class HeroMsg {
     cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHeroOrBuilder();
   }
   /**
+   * <pre>
+   * 合成返回，客户端自己删除耗材。
+   * </pre>
+   *
    * Protobuf type {@code Protos.HeroConflateResponse_16000004}
    */
   public static final class HeroConflateResponse_16000004 extends
@@ -2086,7 +2073,7 @@ public final class HeroMsg {
     private cn.game.protocol.protobuf.BaseMsg.HeroInfo hero_;
     /**
      * <pre>
-     * 获得新的英雄。
+     * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
      * </pre>
      *
      * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2098,7 +2085,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 获得新的英雄。
+     * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
      * </pre>
      *
      * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2110,7 +2097,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 获得新的英雄。
+     * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
      * </pre>
      *
      * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2281,6 +2268,10 @@ public final class HeroMsg {
       return builder;
     }
     /**
+     * <pre>
+     * 合成返回，客户端自己删除耗材。
+     * </pre>
+     *
      * Protobuf type {@code Protos.HeroConflateResponse_16000004}
      */
     public static final class Builder extends
@@ -2440,7 +2431,7 @@ public final class HeroMsg {
           cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> heroBuilder_;
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2451,7 +2442,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2466,7 +2457,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2486,7 +2477,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2504,7 +2495,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2526,7 +2517,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2544,7 +2535,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2556,7 +2547,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>
@@ -2571,7 +2562,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 获得新的英雄。
+       * 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
        * </pre>
        *
        * <code>.Protos.HeroInfo hero = 1;</code>

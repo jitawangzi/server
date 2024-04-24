@@ -93,14 +93,23 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	}
 
 
-	public abstract Class<?>[] defaultDbMapperClass();
+	/** 
+	 * 单表情况下先不用这个了
+	 * @return
+	 */
+	public Class<?>[] defaultDbMapperClass() {
+		return null;
+	};
 
 	/**
 	 * 从数据库中初始化数据,子类需要实现,这里只是将数据从db加载到内存，数据的进一步初始化，
 	 * 应该在{@link #initFromDbAfter()}里完成，例如初始化任务的事件监听、登陆时检查过期数据等。 
 	 * @param iterator
 	 */
-	protected abstract void initFromDb(ListIterator<?> iterator);
+	protected void initFromDb(ListIterator<?> iterator) {
+
+		return;
+	}
 
 	/** 
 	 * 业务数据从数据库载入后的自定义初始化流程

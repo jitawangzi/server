@@ -42,20 +42,19 @@ public class DbExcute {
 //		testBatchInsert();
 //		testQuestBatch() ; 
 //		testPlayerBatch();
-//		insertPlayerBatch();
-		updatePlayerBatch();
+		insertPlayerBatch();
+//		updatePlayerBatch();
 
 		System.err.println("执行总耗时： " + (System.currentTimeMillis() - start) + " ms");
-
 	}
 	
 	/** 
 	 * 9w人后，1w人要1.5分钟了。和设置的var数量有关，也就是数量越大，越慢 ，暂时和数据库已经数据量没多大关系。 
 	 */
 	public static void insertPlayerBatch() {
-		long id = 300330000;
+		long id = 400530000;
 
-		for (int a = 0; a < 10000; a++) {
+		for (int a = 0; a < 1000000; a++) {
 			List<PlayerData> list = new ArrayList<>();
 			for (int i = 0; i < 50; i++) {
 				PlayerData playerData = new PlayerData();

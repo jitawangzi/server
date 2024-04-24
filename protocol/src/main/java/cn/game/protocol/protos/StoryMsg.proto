@@ -1,0 +1,34 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+import "RewardMsg.proto" ;
+// 剧情相关协议
+
+// 剧情开始
+message StoryStartRequest_14000001{
+ 	 uint32 id = 1;							// 剧情id，Story表id
+}
+
+message StoryStartResponse_14000002{
+	StoryInfo story = 1 ; 				// 
+}
+
+// 剧情结束
+message StoryFinishRequest_14000003{
+ 	uint32 id = 1;							// 剧情id，Story表id
+ 	//  repeated uint32 optionIndex  = 2;			// 剧情里选择过的选项索引	
+}
+
+message StoryFinishResponse_14000004{
+	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
+}
+
+
+// 剧情数据
+message StoryInfo{
+	 uint32 id = 1;					// 剧情id，Story表id
+ 	 uint32 count = 2;				// 剧情开启的条件数量
+ 	 bool finish = 3; 				// 此剧情是否已完成
+	
+}

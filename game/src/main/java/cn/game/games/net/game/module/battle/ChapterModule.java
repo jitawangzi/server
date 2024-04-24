@@ -195,6 +195,8 @@ public class ChapterModule extends BasePlayerModule  {
 
 		return false;
 	}
+
+	@Deprecated
 	public boolean isChapterPass(int chapterId) {
 		BattleChapterConfig battleChapterConfig = BattleChapterManager.getInstance().getBattleChapterConfig(chapterId);
 		List<BattleLevelConfig> battleChapterIdList = BattleLevelManager.getInstance().getBattleChapterIdList(battleChapterConfig

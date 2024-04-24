@@ -1,4 +1,4 @@
-package cn.game.games.cache.op.impl;
+package cn.game.games.net.game.module.story;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,39 +7,30 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import cn.game.games.cache.entity.Story;
-import cn.game.games.cache.op.face.IStoryOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.StoryConfig;
 import cn.game.protocol.generated.manager.StoryManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
-public class StoryOp extends BasePlayerModule implements IStoryOp {
+public class StoryModule extends BasePlayerModule {
 
-	private Map<Integer, Story> storys;
+	private Map<Integer, Story> storys = new HashMap<Integer, Story>();
 
-	@Override
-	public void init() {
-		storys = new HashMap<Integer, Story>();
-	}
+//	public void initLoadData(List<Story> storys) {
+//		for (Story story : storys) {
+//			this.storys.put(story.getStory(), story);
+//		}
+//	}
 
-	@Override
-	public void initLoadData(List<Story> storys) {
-		for (Story story : storys) {
-			this.storys.put(story.getStory(), story);
-		}
-	}
-
-	@Override
 	public boolean update(int id, int count, boolean finish) {
 		Story story = get(id);
 		if (story == null) {
 			story = Story.valueOf(playerId, id);
 			story.setStartConditionCount(count);
 			story.setFinish(finish);
-			DAO.insert(story);
+//			DAO.insert(story);
 			this.storys.put(id, story);
 		} else {
 			if (story.getFinish()) {
@@ -52,17 +43,15 @@ public class StoryOp extends BasePlayerModule implements IStoryOp {
 			if (count > 0) {
 				story.setStartConditionCount(story.getStartConditionCount() + count);
 			}
-			DAO.update(story);
+//			DAO.update(story);
 		}
 		return true;
 	}
 
-	@Override
 	public Story get(int id) {
 		return this.storys.get(id);
 	}
 
-	@Override
 	public boolean finish(int id) {
 
 		Story story = get(id); 
@@ -74,12 +63,10 @@ public class StoryOp extends BasePlayerModule implements IStoryOp {
 
 	}
 
-	@Override
 	public Collection<Story> list() {
 		return this.storys.values();
 	}
 
-	@Override
 	public boolean isFinish(List<Integer> ids) {
 		for (Integer id : ids) {
 			Story story = get(id); 

@@ -1,25 +1,16 @@
 package cn.game.games.net.game.module.activity;
 
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.net.game.manager.ActivityStateManager;
-import cn.game.protocol.generated.config.ChapterDungeonOpenConfig;
-import cn.game.protocol.generated.enume.ActivityTypeEnum;
-import cn.game.protocol.generated.manager.ChapterDungeonOpenManager;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityBaseInfo;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
-@ActivityType(type = ActivityTypeEnum.Test1)
-public class ChapterDungeonActivity extends ActivityBase {
+//@ActivityType(type = ActivityTypeEnum.Test1)
+public class ChapterDungeonActivity {
 
-	@Override
+	/*@Override
 	public ActivityInfo buildActivityInfo() {
-
+	
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);
 		int state = ActivityStateManager.getInstance().getState(id);
@@ -38,7 +29,7 @@ public class ChapterDungeonActivity extends ActivityBase {
 			if (e.getNeedLv() > player.getData().getLevel()) {
 				continue;
 			}
-
+	
 			List<Integer> integer = e.getOpenChapter().get(today);
 			for (Integer i : integer) {
 				ActivityBaseInfo.Builder baseInfo = ActivityBaseInfo.newBuilder();
@@ -46,26 +37,26 @@ public class ChapterDungeonActivity extends ActivityBase {
 				builder.addBaseInfo(baseInfo.build());
 			}
 		}
-
+	
 		return builder.build();
-	}
+	}*/
 
-	@Override
+	// @Override
 	public List<RewardInfo> receive(int id) {
 
 		return null;
 	}
 
-	@Override
+	// @Override
 	public void startUp() {
 
 	}
 
-	@Override
+	// @Override
 	public void shutDown() {
 	}
 
-	@Override
+	// @Override
 	public void setEvents(EventTypeEnum[] events) {
 
 	}

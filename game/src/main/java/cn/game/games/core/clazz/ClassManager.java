@@ -87,23 +87,23 @@ public class ClassManager {
 				throw new IllegalArgumentException(c.getName() + " 没有配置ActivityType注解");
 			}
 			ActivityTypeEnum type = annotation.type();
-			if (activityClass.containsKey(type.getId())) {
+			if (activityClass.containsKey(type.ID)) {
 				throw new IllegalArgumentException(
 						MessageFormat.format("class[{0}] 配置了重复的ActivityType注解 [{1}]，已经在[{2}]里配置了", c.getName(), type,
-								activityClass.get(type.getId())));
+								activityClass.get(type.ID)));
 			}
-			activityClass.put(type.getId(), c);
+			activityClass.put(type.ID, c);
 		}
 	}
 
-	public Class<? extends ActivityBase> getActivityClass(ActivityTypeEnum type) {
-		return activityClass.get(type.getId());
+	public Class<? extends ActivityBase> getActivityClass(int type) {
+		return activityClass.get(type);
 	}
 
-	public ActivityBase createActivityClassInstance(ActivityTypeEnum type) {
+	public ActivityBase createActivityClassInstance(int type) {
 		ActivityBase newInstance = null;
 		try {
-			Class<? extends ActivityBase> clazz = activityClass.get(type.getId());
+			Class<? extends ActivityBase> clazz = activityClass.get(type);
 			newInstance = clazz.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {

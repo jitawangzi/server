@@ -11,7 +11,6 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.DayOperationMapper;
-import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.module.award.OpType;
 import cn.game.games.util.DAO;
@@ -103,7 +102,7 @@ public class DayOp extends BasePlayerModule implements IDayOp{
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case NewDay: {
-			reset();
+//			reset();
 			break;
 		}
 		}

@@ -14,13 +14,13 @@ public enum GoodsTypeEnum{
 	Resource(1,"Resource","玩家资源类"),
 	/** 道具 */
 	Item(2,"Item","道具"),
+	/** 英雄*/
+	Hero(3, "Hero", "英雄"),
 	/** 装备 */
 	Equipment(7, "Equipment", "装备"),
 	/** 英雄时装 */
 	Fashion(8, "Equipment", "英雄时装"),
 	Gem(9, "Gem", "宝石"),
-	/** 英雄*/
-	Hero(10, "Hero", "英雄"),
 	/** 龙 */
 	Dragon(11, "Dragon", "龙"),
 	/** 龙技能 */

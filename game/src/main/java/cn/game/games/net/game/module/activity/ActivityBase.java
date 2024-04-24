@@ -5,12 +5,12 @@ import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.protobuf.Message;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**
@@ -31,7 +31,7 @@ public abstract class ActivityBase implements EventHandler {
 	/** 配置表id */
 	protected int id;
 
-	public abstract ActivityInfo buildActivityInfo();
+	public abstract Message buildActivityInfo();
 
 	public abstract List<RewardInfo> receive(int id);
 

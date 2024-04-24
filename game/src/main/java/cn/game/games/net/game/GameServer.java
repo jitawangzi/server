@@ -136,7 +136,7 @@ public class GameServer implements GameServerMBean {
 		initGameServerConfig();
 		initVerticle();
 		initRemoteInterface();
-		DAO.listenPauseUpdateDb();
+//		DAO.listenPauseUpdateDb();
 		TreeWordFilter.init("filterWord.txt");
 
 //		this.maxPlayerId = initialProp.getIntProperty("player.max.id", 0);

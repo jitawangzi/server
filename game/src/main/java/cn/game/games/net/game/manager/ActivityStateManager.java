@@ -15,17 +15,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.task.TaskManager;
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Activity;
 import cn.game.games.cache.entity.ClimbingTower;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.impl.ActivityOp;
 import cn.game.games.core.event.AbstractGameEventRegistration;
 import cn.game.games.net.data.mapper.ActivityMapper;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.util.DateUtil;
 import cn.game.util.Pair;
@@ -36,13 +36,13 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 
 	private static ActivityStateManager instance = new ActivityStateManager();
 
-	// 当前开启的活动id
+	// 当前开启的活动id,一般是按时间开启的全体活动
 	private Set<Integer> activeActivitys = new HashSet<>();
 
 	// 缓存活动状态，不保存0
 	private Map<Integer, Integer> states = new ConcurrentHashMap<>();
 	/** 全体活动 */
-	public ActivityOp activityOp = new ActivityOp();
+	public ActivityModule activityOp = new ActivityModule();
 
 	/**所有玩家爬塔数据*/
 	private final Map<Long, ClimbingTower> playerClimbingTowerData = new ConcurrentHashMap<>();
@@ -81,26 +81,26 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	public void start() {
 
 		Date nowDate = new Date();
-		for (ActivityConfig activityConfig : ActivityManager.getInstance().list()) {
-			int id = activityConfig.getId();
-			if (!activityConfig.getEnable()) {
+		for (ActivityConfig activityConfig : ActivityManager.instance().list()) {
+			int id = activityConfig.ID;
+			if (activityConfig.disable) {
 				continue;
 			}
-			if (activityConfig.getViewTime() != null && nowDate.before(activityConfig.getViewTime())) { // 暂时未达可见时间
-				long howLong = DateUtil.howLong(TimeUnit.MILLISECONDS, nowDate, activityConfig.getViewTime());
+			if (activityConfig.viewTime != null && nowDate.before(activityConfig.viewTime)) { // 暂时未达可见时间
+				long howLong = DateUtil.howLong(TimeUnit.MILLISECONDS, nowDate, activityConfig.viewTime);
 				TaskManager.getInstance().scheduleGeneral(new ViewTask(id), howLong);
 				continue;
 			}
 
 			setState(id, ActivityState.VIEW_VALUE);
 
-			int period = activityConfig.getPeriod();
+			int period = activityConfig.period;
 			int periodPass = getPeriodPass(id);
 
-			if (activityConfig.getDestroyTime().isEmpty() == false) {// 活动是否彻底销毁了
+			if (activityConfig.destroyTime.isEmpty() == false) {// 活动是否彻底销毁了
 				boolean destroy = true;
-				for (int i = 0; i < activityConfig.getDestroyTime().size(); i++) {
-					Date date = activityConfig.getDestroyTime().get(i);
+				for (int i = 0; i < activityConfig.destroyTime.size(); i++) {
+					Date date = activityConfig.destroyTime.get(i);
 					date = changeDateByPeriod(date, period, periodPass);
 					if (nowDate.before(date)) {
 						destroy = false;
@@ -108,14 +108,14 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 					}
 				}
 				if (destroy) {
-					setState(id, ActivityState.DELETE_VALUE);
+					setState(id, ActivityState.NONE_VALUE);
 					continue;
 				}
 			}
 			// 更改活动状态的定时任务
-			if (activityConfig.getStartTime().size() > 0) {
-				for (int i = 0; i < activityConfig.getStartTime().size(); i++) {
-					Date startDate = activityConfig.getStartTime().get(i);
+			if (activityConfig.startTime.size() > 0) {
+				for (int i = 0; i < activityConfig.startTime.size(); i++) {
+					Date startDate = activityConfig.startTime.get(i);
 					startDate = changeDateByPeriod(startDate, period, periodPass);
 					if (nowDate.before(startDate)) {// 活动尚未开启
 
@@ -133,9 +133,9 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 				}
 			}
 
-			if (activityConfig.getEndTime().size() > 0) {
-				for (int i = 0; i < activityConfig.getEndTime().size(); i++) {
-					Date endDate = activityConfig.getEndTime().get(i);
+			if (activityConfig.endTime.size() > 0) {
+				for (int i = 0; i < activityConfig.endTime.size(); i++) {
+					Date endDate = activityConfig.endTime.get(i);
 					endDate = changeDateByPeriod(endDate, period, periodPass);
 					if (nowDate.after(endDate)) {
 //						int state = getState(id);
@@ -156,9 +156,9 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 
 			}
 
-			if (activityConfig.getDestroyTime().isEmpty() == false) {
-				for (int i = 0; i < activityConfig.getDestroyTime().size(); i++) {
-					Date date = activityConfig.getDestroyTime().get(i);
+			if (activityConfig.destroyTime.isEmpty() == false) {
+				for (int i = 0; i < activityConfig.destroyTime.size(); i++) {
+					Date date = activityConfig.destroyTime.get(i);
 					date = changeDateByPeriod(date, period, periodPass);
 					if (nowDate.before(date)) {
 						long howLong = DateUtil.howLong(TimeUnit.MILLISECONDS, nowDate, date);
@@ -194,22 +194,22 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	 * @return null 如果没有活跃的活动
 	 */
 	private Pair<Integer, ActivityState> getActivityState(int id) {
-		ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
-		int period = activityConfig.getPeriod();
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		int period = activityConfig.period;
 		Date nowDate = new Date();
 		int periodPass = getPeriodPass(id);
-		for (int i = 0; i < activityConfig.getStartTime().size(); i++) {
-			Date startDate = activityConfig.getStartTime().get(i);
-			Date endDate = activityConfig.getEndTime().get(i);
-			Date destoryDate = activityConfig.getDestroyTime().get(i);
+		for (int i = 0; i < activityConfig.startTime.size(); i++) {
+			Date startDate = activityConfig.startTime.get(i);
+			Date endDate = activityConfig.endTime.get(i);
+			Date destoryDate = activityConfig.destroyTime.get(i);
 			startDate = changeDateByPeriod(startDate, period, periodPass);
 			endDate = changeDateByPeriod(endDate, period, periodPass);
 			destoryDate = changeDateByPeriod(destoryDate, period, periodPass);
 			if (destoryDate != null && nowDate.after(destoryDate)) {
 				continue;
 			}
-			ActivityState state = ActivityState.DELETE;
-			if (activityConfig.getViewTime() == null || nowDate.after(activityConfig.getViewTime())) {
+			ActivityState state = ActivityState.NONE;
+			if (activityConfig.viewTime == null || nowDate.after(activityConfig.viewTime)) {
 				state = ActivityState.VIEW;
 			}
 			// 尚未销毁
@@ -235,12 +235,12 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	 * @return
 	 */
 	public int getPeriodPass(int id) {
-		ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
 		long nowTimeMillis = System.currentTimeMillis();
 		int periodPass = 0;
-		int period = activityConfig.getPeriod();
-		for (int i = 0; i < activityConfig.getStartTime().size(); i++) {
-			Date date = activityConfig.getStartTime().get(i);
+		int period = activityConfig.period;
+		for (int i = 0; i < activityConfig.startTime.size(); i++) {
+			Date date = activityConfig.startTime.get(i);
 			if (period > 0 && nowTimeMillis - date.getTime() > period) {
 				int tmp = (int) ((nowTimeMillis - date.getTime()) / 1000 / period);
 				if (tmp > periodPass) {
@@ -262,9 +262,9 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		if (activity == null) {
 			return null ; 
 		}
-		ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
-		Date startDate = activityConfig.getStartTime().get(activity.first);
-		startDate = changeDateByPeriod(startDate, activityConfig.getPeriod(), getPeriodPass(id));
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		Date startDate = activityConfig.startTime.get(activity.first);
+		startDate = changeDateByPeriod(startDate, activityConfig.period, getPeriodPass(id));
 		return startDate;
 	}
 
@@ -292,21 +292,20 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 
 				setState(id, ActivityState.START_VALUE);
 
-				ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
-				if (activityConfig.getIsPlayer()) {
+				ActivityConfig activityConfig = ActivityManager.instance().get(id);
+				if (!activityConfig.isMultiplayer) {
 					ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
 					for (Player player : allPlayer.values()) {
 						player.getGameClient().getContext().runOnContext(r -> {
 
-							ActivityOp activityOp = PlayerCacheFactory.getCache(player.getData().getPlayerId(),
-									ActivityOp.class);
-							activityOp.open(id);
+							ActivityModule activityModule = player.getActivityModule();
+							activityModule.open(id);
 						});
 					}
+				} else {
+					activityOp.open(id);
+					activeActivitys.add(id);
 				}
-				activityOp.open(id);
-
-				activeActivitys.add(id);
 			});
 		}
 	}
@@ -325,20 +324,21 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 
 			TaskManager.getInstance().addMainTask(() -> {
 				setState(id, ActivityState.CLOSE_VALUE);
+				ActivityConfig activityConfig = ActivityManager.instance().get(id);
+				if (!activityConfig.isMultiplayer) {
 
-				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
-				for (Player player : allPlayer.values()) {
+					ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
+					for (Player player : allPlayer.values()) {
 
-					player.getGameClient().getContext().runOnContext(r -> {
-
-						ActivityOp activityOp = PlayerCacheFactory.getCache(player.getData().getPlayerId(),
-								ActivityOp.class);
-						activityOp.end(id);
-					});
+						player.getGameClient().getContext().runOnContext(r -> {
+							ActivityModule activityModule = player.getActivityModule();
+							activityModule.end(id);
+						});
+					}
+				} else {
+					activityOp.end(id);
+					activeActivitys.remove(id);
 				}
-				activityOp.end(id);
-
-				activeActivitys.remove(id);
 			});
 		}
 	}
@@ -356,21 +356,22 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		public void run() {
 
 			// close(id);
-			TaskManager.getInstance().addMainTask(() -> {
+//			TaskManager.getInstance().addMainTask(() -> {
+
+			ActivityConfig activityConfig = ActivityManager.instance().get(id);
+			if (!activityConfig.isMultiplayer) {
 				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
 				for (Player player : allPlayer.values()) {
 					player.getGameClient().getContext().runOnContext(r -> {
-
-						ActivityOp activityOp = PlayerCacheFactory.getCache(player.getData().getPlayerId(),
-								ActivityOp.class);
-						activityOp.destroy(id);
+						ActivityModule activityModule = player.getActivityModule();
+						activityModule.destroy(id);
 					});
 				}
+			} else {
 				removeState(id);
-
 				activityOp.destroy(id);
-
-			});
+			}
+//			});
 		}
 	}
 
@@ -390,9 +391,12 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 			// willOpenActivitys.add(id);
 			// }
 			// ActivityConfig activityConfig = getActivityConfig(id);
-			TaskManager.getInstance().addMainTask(() -> {
-				setState(id, ActivityState.VIEW_VALUE);
-			});
+//			TaskManager.getInstance().addMainTask(() -> {
+//				setState(id, ActivityState.VIEW_VALUE);
+//			});
+
+			setState(id, ActivityState.VIEW_VALUE);
+
 		}
 	}
 
@@ -408,7 +412,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	 */
 	public int getState(int id) {
 		Integer state = this.states.get(id);
-		return state == null ? ActivityState.DELETE_VALUE : state;
+		return state == null ? ActivityState.NONE_VALUE : state;
 	}
 
 	public void removeState(int id) {
@@ -422,6 +426,16 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	 */
 	public Collection<Integer> getShowIds() {
 		return this.states.keySet();
+	}
+
+	public Collection<ActivityInfo> getShowState() {
+
+		List<ActivityInfo> activityInfos = new ArrayList<>();
+		for (Integer id : getShowIds()) {
+			ActivityInfo activityInfo = ActivityInfo.newBuilder().setId(id).setStateValue(getState(id)).setStartTime(getOpenTimeRemaining(id)).build();
+			activityInfos.add(activityInfo);
+		}
+		return activityInfos;
 	}
 
 	/**
@@ -440,9 +454,14 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		return list;
 	}
 
+	/** 
+	 * 活动还有多久开启
+	 * @param id
+	 * @return
+	 */
 	public int getOpenTimeRemaining(int id) {
-		ActivityConfig activityConfig = ActivityManager.getInstance().getActivityConfig(id);
-		List<Date> startTime = activityConfig.getStartTime();
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		List<Date> startTime = activityConfig.startTime;
 		Date now = new Date();
 		for (Date date : startTime) {
 			if (now.before(date)) { return (int) DateUtil.howLong(TimeUnit.SECONDS, date, now); }
