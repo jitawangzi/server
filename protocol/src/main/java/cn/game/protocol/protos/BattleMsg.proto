@@ -18,9 +18,15 @@ message BattleFieldStartResponse_13000002{
 // 玩家战斗属性数据
 message PlayerBattleAttrs{
 	map<int32,int32> playerAttrs = 4 ;// 玩家的属性，可能包括装备、宝石、炼金、武器等等系统的属性。
-	map<int32,int32> heroAttrs = 1 ; // 主角属性，初始属性
+	repeated HeroAttr heroAttrs = 1 ; // 上阵英雄属性
 	map<int32,int32> dragonAttrs = 2 ; // 龙属性，一般是龙的基础属性，加上龙的技能属性
 	map<int32,int32> wallAttrs = 3 ;// 城池属性
+}
+
+// 英雄属性数据
+message HeroAttr{
+	string heroUid = 1;
+	map<int32,int32> heroAttrs = 2 ; // 英雄属性
 }
 
 // 结束关卡战斗请求
@@ -34,6 +40,16 @@ message BattleFieldEndRequest_13000003{
 message BattleFieldEndResponse_13000004{
 	repeated RewardInfo rewards = 1;		// 获得的奖励
 }
+
+
+// 肉鸽刷新,每天前3次免费，第四次看广告。
+message BattleRougeRefreshRequest_13000005{
+}
+
+// 肉鸽刷新
+message BattleRougeRefreshResponse_13000006{
+}
+
 
 //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励
 message BattleRewardRequest_13000022{

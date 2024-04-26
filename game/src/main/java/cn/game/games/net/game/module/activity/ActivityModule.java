@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.activity;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -87,6 +88,7 @@ public class ActivityModule extends BasePlayerModule {
 		return activityInfos;
 	}
 
+	@Deprecated
 	protected void initFromDb(ListIterator<?> iterator) {
 
 		List<Activity> list = iterator == null ? null : (List<Activity>) iterator.next();
@@ -131,6 +133,31 @@ public class ActivityModule extends BasePlayerModule {
 	@Override
 	public void initFromDbAfter() {
 
+		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
+		List<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
+		// 这里注意一个活动，多开启时间的
+		List<Integer> deleteIds = new ArrayList<>();
+		for (ActivityBase activityBase : activities.values()) {
+			int cid = activityBase.getId();
+			ActivityConfig activityConfig = ActivityManager.instance().get(cid);
+			// 活动已经彻底关闭了
+			if (!showList.contains(cid)) // 活动已经彻底关闭了
+			{
+//				delete(cid);
+				deleteIds.add(cid);
+			} else { // init from db
+//				ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(), player);
+				activityBase.init(cid, player, false);
+			}
+		}
+		for (Integer integer : deleteIds) {
+			activities.remove(integer);
+		}
+		for (Integer integer : openList) {
+			if (!activities.containsKey(integer)) {
+				open(integer);
+			}
+		}
 	};
 
 	@Override

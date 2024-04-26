@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.develop.hero;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -19,8 +20,14 @@ import cn.game.protocol.generated.manager.HeroQualityManager;
 import cn.game.protocol.generated.manager.HeroSourceManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
+import cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateResponse_16000004;
+import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetRequest_16000007;
+import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetResponse_16000008;
+import cn.game.protocol.protobuf.HeroMsg.HeroQualityResetRequest_16000011;
+import cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012;
 import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001;
 import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelResponse_16000002;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -38,8 +45,71 @@ public class HeroHandler extends BaseHandler {
 
 		putInvoker(PbProtocol.HeroUpLevelRequest_16000001, this::upLevel);
 		putInvoker(PbProtocol.HeroConflateRequest_16000003, this::conflate);
+		putInvoker(PbProtocol.HeroBattleRequest_16000005, this::battle);
+		putInvoker(PbProtocol.HeroLevelResetRequest_16000007, this::levelReset);
+		putInvoker(PbProtocol.HeroQualityResetRequest_16000011, this::qualityReset);
 	}
 
+	private void levelReset(NetClient client, Object message) {
+		HeroLevelResetRequest_16000007 req = (HeroLevelResetRequest_16000007) message;
+		HeroLevelResetResponse_16000008.Builder resp = HeroLevelResetResponse_16000008.newBuilder();
+		long uid = Long.parseLong(req.getUid());
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		Hero hero = heroModule.get(uid);
+		if (hero == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		client.sendProtocol(resp.build());
+	}
+
+	private void qualityReset(NetClient client, Object message) {
+		HeroQualityResetRequest_16000011 req = (HeroQualityResetRequest_16000011) message;
+		HeroQualityResetResponse_16000012.Builder resp = HeroQualityResetResponse_16000012.newBuilder();
+		long uid = Long.parseLong(req.getUid());
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		Hero hero = heroModule.get(uid);
+		if (hero == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		client.sendProtocol(resp.build());
+	}
+
+	private void battle(NetClient client, Object message) {
+		HeroBattleRequest_16000005 req = (HeroBattleRequest_16000005) message;
+		HeroBattleResponse_16000006.Builder resp = HeroBattleResponse_16000006.newBuilder();
+		long uid = Long.parseLong(req.getUid());
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		Hero hero = heroModule.get(uid);
+		if (hero == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		Set<Long> battleHeros = heroModule.getBattleHeros();
+		if (battleHeros.contains(uid)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		// 有没有同职业的在阵上
+		int career = HeroHelper.getCareer(hero.getConfigId());
+		Hero replaceHero = null;
+		for (Long id : battleHeros) {
+			Hero tmp = heroModule.get(id);
+			if (career == HeroHelper.getCareer(tmp.getConfigId())) {
+				replaceHero = tmp;
+				break;
+			}
+		}
+		if (replaceHero != null) {
+			battleHeros.remove(replaceHero.getId());
+		}
+		battleHeros.add(uid);
+		client.sendProtocol(resp.build());
+	}
 	private void conflate(NetClient client, Object message) {
 		HeroConflateRequest_16000003 req = (HeroConflateRequest_16000003) message;
 		HeroConflateResponse_16000004.Builder resp = HeroConflateResponse_16000004.newBuilder();

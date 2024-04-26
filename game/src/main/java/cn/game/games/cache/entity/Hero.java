@@ -3,6 +3,7 @@ package cn.game.games.cache.entity;
 import java.io.Serializable;
 
 import cn.game.games.cache.base.DbEntity;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 
 public class Hero extends ItemNoStack implements Serializable, DbEntity {
@@ -74,8 +75,6 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private boolean isBattle;
 
 	/**
 	 * @mbg.generated
@@ -282,22 +281,16 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 		return id;
 	}
 
-	public boolean isBattle() {
-		return isBattle;
-	}
-
-	public void setBattle(boolean isBattle) {
-		this.isBattle = isBattle;
-	}
 
 	public HeroInfo toHeroInfo() {
 		HeroInfo.Builder builder = HeroInfo.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		builder.setUid(id.toString());
 		builder.setConfigId(configId);
 		builder.setStar(star);
 		builder.setLevel(level);
-		builder.setIsBattle(isBattle);
+		builder.setIsBattle(player.getHeroModule().isInBattle(id));
 //		builder.setExp(this.exp); 
 //		builder.setGetTime(getTime.intValue());
 

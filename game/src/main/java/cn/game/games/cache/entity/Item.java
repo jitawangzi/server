@@ -34,6 +34,9 @@ public class Item implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	protected Date createTime;
+
+	/** 过期时间（秒时间戳）  */
+	protected int expiredTime;
 	/**
 	 * @mbg.generated
 	 */
@@ -121,6 +124,14 @@ public class Item implements Serializable, DbEntity {
 	 */
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public int getExpiredTime() {
+		return expiredTime;
+	}
+
+	public void setExpiredTime(int expiredTime) {
+		this.expiredTime = expiredTime;
 	}
 
 	/**

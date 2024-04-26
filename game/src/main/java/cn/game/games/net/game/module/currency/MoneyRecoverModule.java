@@ -15,9 +15,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.AssetRestoreConfig;
-import cn.game.protocol.generated.config.MoneyRecoveryConfig;
 import cn.game.protocol.generated.manager.AssetRestoreManager;
-import cn.game.protocol.generated.manager.MoneyRecoveryManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 /**    
@@ -36,8 +34,8 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
-			Collection<MoneyRecoveryConfig> list = MoneyRecoveryManager.instance().list();
-			for (MoneyRecoveryConfig moneyRecoveryConfig : list) {
+			Collection<AssetRestoreConfig> list = AssetRestoreManager.instance().list();
+			for (AssetRestoreConfig moneyRecoveryConfig : list) {
 				if (player.getCurrencyModule().has(moneyRecoveryConfig.ID)) {
 					startRecoveryTask(moneyRecoveryConfig.ID);
 				}
@@ -51,7 +49,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 
 			for (Integer id : idsSet) {
 				PlayerIds ids = player.getPlayerModule().getIds(IdConstant.MONEY_RECOVERY, id);
-				MoneyRecoveryConfig recoveryConfig = MoneyRecoveryManager.instance().get(id);
+				AssetRestoreConfig recoveryConfig = AssetRestoreManager.instance().get(id);
 				int interval = recoveryConfig.interval * 60 * 1000;
 				if (isRecoverMax(id)) {
 					continue;
@@ -89,9 +87,9 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	}
 
 	private void startRecoveryTask(int id) {
-		MoneyRecoveryConfig recoveryConfig = MoneyRecoveryManager.instance().getNullable(id);
+		AssetRestoreConfig recoveryConfig = AssetRestoreManager.instance().getNullable(id);
 		if (recoveryConfig != null) {
-			long timer = player.setPeriodic(recoveryConfig.interval * 60 * 1000, r -> {
+			long timer = player.setPeriodicTask(recoveryConfig.interval * 60 * 1000, r -> {
 				// 是否到达上限
 				if (isRecoverMax(id)) {
 					return;

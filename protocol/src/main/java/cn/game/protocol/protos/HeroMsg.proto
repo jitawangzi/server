@@ -24,3 +24,35 @@ message HeroConflateRequest_16000003{
 message HeroConflateResponse_16000004{
 	HeroInfo hero = 1;	// 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
 }
+
+
+//英雄上阵
+message HeroBattleRequest_16000005{
+  string uid = 1; // 英雄唯一id
+}
+
+message HeroBattleResponse_16000006{
+}
+
+
+//英雄等级重置,返还升级材料
+message HeroLevelResetRequest_16000007{
+  string uid = 1; // 英雄唯一id
+}
+
+message HeroLevelResetResponse_16000008{
+
+}
+
+
+//英雄品质重置
+message HeroQualityResetRequest_16000011{
+  string uid = 1; // 英雄唯一id
+}
+
+message HeroQualityResetResponse_16000012{
+
+}
+
+
+

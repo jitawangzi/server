@@ -53,23 +53,29 @@ import cn.game.util.Rnd;
  * @author SYQ
  */
 public class ChapterModule extends BasePlayerModule  {
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
 
 	/** 主线战役 */
 	private Map<Integer, Chapter> chapters = new HashMap<>();;
 
+	@Deprecated
 	@JsonIgnore
 	/** 打过的关卡数据,这里是统一的关卡id，关卡可能包括剧情关卡，普通关卡，战旗关卡等，id按段区分。 */
 	private Map<Integer, BattleLevel> levels;
-
+	@Deprecated
 	@JsonIgnore
 	/** 产生的随机事件，过期没有通过的，或者成功通过的，不在此列表中 */
 	private List<BattleRandomEvent> battleRandomEvents;
-
+	@Deprecated
 	@JsonIgnore
 	/** 各种类型的随机事件，每天产生了多少次 */
 	private Map<Integer, Integer> eventTypeMap;
 
+	/** 战役次数 */
 	private IntMapWrapper dailyCount = new IntMapWrapper();
+
+	/** 每日免费肉鸽刷新次数 */
+	private int freeRougeTimes;
 
 	// 战斗相关数据
 	private int type;
@@ -77,7 +83,9 @@ public class ChapterModule extends BasePlayerModule  {
 	private int id;
 	private int lineupId;
 	/** 子玩法的唯一id */
+	@JsonIgnore
 	private long uid;
+	@JsonIgnore
 	private long randomSeed;
 
 	@Override
@@ -328,6 +336,14 @@ public class ChapterModule extends BasePlayerModule  {
 		return this.uid;
 	}
 
+	public int getFreeRougeTimes() {
+		return freeRougeTimes;
+	}
+
+	public void setFreeRougeTimes(int freeRougeTimes) {
+		this.freeRougeTimes = freeRougeTimes;
+	}
+
 	public boolean checkProfession(long playerId, int profession, int lineupId, int type) {
 
 		return true;
@@ -546,10 +562,18 @@ public class ChapterModule extends BasePlayerModule  {
 		return null;
 	}
 
+	private void newDay() {
+		this.freeRougeTimes = 0;
+	}
 	@Override
 	public void handleEvent(GameEvent event) {
-		// TODO Auto-generated method stub
+		switch (event.getType()) {
 
+		case NewDay: {
+			newDay();
+			break;
+		}
+		}
 	}
 
 	@Override
@@ -568,7 +592,7 @@ public class ChapterModule extends BasePlayerModule  {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-
+		builder.setFreeRougeTimes(this.freeRougeTimes);
 	}
 
 }

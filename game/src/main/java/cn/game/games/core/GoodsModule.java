@@ -86,6 +86,13 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 
 	public abstract T get(long uid);
 
+	/**
+	 *物品模块优先级相对较高
+	 */
+	@Override
+	protected int getInitOrder() {
+		return INIT_PRIORITY_HIGH;
+	}
 
 	/** 
 	 * 这个模块处理的物品类型

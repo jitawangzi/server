@@ -22,6 +22,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartResponse_13000002;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
+import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
+import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
@@ -42,7 +44,36 @@ public class ChapterHandler extends BaseHandler {
 //		putInvoker(PbProtocol.BattleChapterRewardRequest_13000022, (client, message) -> reward(client, message));
 //		putInvoker(PbProtocol.ExploreActRewardRequest_13000020, (client, message) -> exploreActReward(client, message));
 		putInvoker(PbProtocol.BattleRewardRequest_13000022, (client, message) -> chapterReward(client, message));
+		putInvoker(PbProtocol.BattleRougeRefreshRequest_13000005, (client, message) -> rougeRefresh(client, message));
 
+	}
+
+	protected void empty(NetClient client, Object message) {
+		BattleFieldStartRequest_13000001 req = (BattleFieldStartRequest_13000001) message;
+		BattleFieldStartResponse_13000002.Builder resp = BattleFieldStartResponse_13000002.newBuilder();
+
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void rougeRefresh(NetClient client, Object message) {
+		BattleRougeRefreshRequest_13000005 req = (BattleRougeRefreshRequest_13000005) message;
+		BattleRougeRefreshResponse_13000006.Builder resp = BattleRougeRefreshResponse_13000006.newBuilder();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		int freeRougeTimes = chapterModule.getFreeRougeTimes();
+		if (freeRougeTimes < 3) {
+			chapterModule.setFreeRougeTimes(freeRougeTimes + 1);
+		} else { // TODO 看广告， 和最大次数
+
+		}
+		client.sendProtocol(resp);
 	}
 
 	/*protected void exploreActReward(NetClient client, Object message) {

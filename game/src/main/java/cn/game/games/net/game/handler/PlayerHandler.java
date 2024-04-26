@@ -628,7 +628,7 @@ public class PlayerHandler extends BaseHandler {
 					if (v) {
 						createPlayer(client, uid.longValue(), null, true, 0, false, true);
 					}else {
-						failHandler.handle(OldErrorMsgEnum.player_lock.getId());
+						failHandler.handle(ErrorMsgEnum.player_lock.getId());
 						log.error("create player error  ", throwable);
 					}
 				});

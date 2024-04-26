@@ -485,7 +485,7 @@ public class PlayerHelper {
 //				PlayerManager.getInstance().saveClientCache(playerId);
 //			}) ;
 //		}, Config.ONELINE_SAVE, Config.ONELINE_SAVE);
-		player.setPeriodic(Config.ONLINE_SAVE * 1000, r -> {
+		player.setPeriodicTask(Config.ONLINE_SAVE * 1000, r -> {
 			PlayerManager.getInstance().saveClientCache(playerId);
 		});
 		// 上线后生成自己的简单信息

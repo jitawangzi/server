@@ -1,6 +1,8 @@
 package cn.game.games.net.game.module.develop.hero;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
@@ -16,6 +18,8 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	/** 当前使用的英雄id */
 	private long heroUid;
+	/** 上阵的英雄列表 */
+	private Set<Long> battleHeros = new HashSet<Long>();
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -30,12 +34,31 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			Collection<Hero> list = list(); 
 			// 初始英雄全上阵
 			for (Hero hero : list) {
-				hero.setBattle(true);
+//				hero.setBattle(true);
+				battleHeros.add(hero.getId());
 			}
 			break;
 			}
 		}
 	}
+
+	// 给英雄这里，把数量当成品质来用。
+	/*	@Override
+		public List<Hero> add(int itemId, int count) {
+			if (count <= 0) {
+				return null;
+			}
+			ItemHelper.checkConfig(itemId);
+			// TODO 检查id，是不是存在，涉及到多个表。
+			List<Hero> ret = new ArrayList<Hero>();
+			Hero item = newInstance();
+			setInstance(item, itemId, 1);
+			setInstanceAfter(item);
+			initAddCache(item);
+			item.insert();
+			ret.add(item);
+			return ret;
+		}*/
 
 //	@Override
 //	public Class<?>[] defaultDbMapperClass() {
@@ -83,4 +106,13 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	public Hero getCurHero() {
 		return get(heroUid);
 	}
+
+	public boolean isInBattle(long uid) {
+		return battleHeros.contains(uid);
+	}
+
+	public Set<Long> getBattleHeros() {
+		return battleHeros;
+	}
+
 }

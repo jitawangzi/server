@@ -1,35 +1,25 @@
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.collections4.map.MultiKeyMap;
 
-public class GG<T extends Number> {
+import cn.game.util.JsonUtil;
 
-	public static void main(String[] args) throws Exception {
+public class GG {
+	public static void main(String[] args) {
+		// 创建一个 MultiKeyMap 对象
+		MultiKeyMap<Long, Integer> map = new MultiKeyMap<Long, Integer>();
 
-//		RewardInfo rewardInfo1 = RewardInfo.newBuilder().setItem(ItemInfo.newBuilder().setId(100).setCount(100)).build();
-//		RewardInfo rewardInfo2 = RewardInfo.newBuilder().setItem(ItemInfo.newBuilder().setId(100).setCount(200)).build();
-//		RewardInfo rewardInfo3 = RewardInfo.newBuilder().setItem(ItemInfo.newBuilder().setId(100).setCount(300)).build();
-//
-//		List<RewardInfo> list = new ArrayList<>();
-//		list.add(rewardInfo1);
-//		list.add(rewardInfo2);
-//		list.add(rewardInfo3);
-//
-//		PlayerHelper.mergeRewards(list);
-//
-//		for (RewardInfo rewardInfo : list) {
-//			System.out.println(rewardInfo);
+		// 向 MultiKeyMap 添加键值对
+		map.put(323232L, 1001L, 3323232);
+		map.put(323233L, 10012L, 33232323);
+
+		String jsonString = JsonUtil.toJsonString(map);
+		MultiKeyMap object = JsonUtil.parseObject(jsonString, MultiKeyMap.class);
+		System.out.println(object);
+
+//		Set<Entry<MultiKey<? extends Long>, Integer>> entrySet = map.entrySet();
+//		for (Entry<MultiKey<? extends Long>, Integer> entry : entrySet) {
+//			System.out.println(entry.getKey().getKey(0).getClass());
+//			System.out.println(entry.getKey().getKey(1).getClass());
+//			System.out.println(entry.getValue());
 //		}
-//		System.out.println(6 * 300);
-//		System.out.println(604800 / 60 / 60 / 24);
-		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
-		map.put(1, 2);
-		map.put(2, 5);
-		map.put(3, 6);
-		map.keySet().remove(1);
-
-		System.out.println(map.keySet());
-
 	}
-
 }
-

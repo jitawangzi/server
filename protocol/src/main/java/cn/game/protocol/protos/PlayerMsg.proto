@@ -165,7 +165,7 @@ message PlayerAllInfo{
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
    repeated BattleInfo battles = 30;        //打过的战役，包括通关的和非通关的。
-
+   int32 freeRougeTimes = 31; 				// 每日免费肉鸽刷新次数。
 
    repeated MonthCardProto monthCards  = 40;        //月卡
    repeated uint32 shopGift  = 41;        //购买过的商店礼包id(ShopGift表)

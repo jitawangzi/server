@@ -23,6 +23,11 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	protected transient long playerId;
 	protected transient Class<?>[] defaultDbMapperClass;
 	private transient int tableCount = 0;
+
+	protected static final int INIT_PRIORITY_MIDDLE = 1_0000;
+	protected static final int INIT_PRIORITY_HIGH = 100;
+	protected static final int INIT_PRIORITY_LOW = 100_0000;
+
 	/**
 	 * 是否初始化过
 	 */
@@ -58,11 +63,11 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	}
 
 	/**
-	 * 模块初始化顺序，数字小的在前
+	 * 模块初始化顺序，数字小的在前,默认10000，普通优先级
 	 * @return
 	 */
 	protected int getInitOrder() {
-		return 10000;
+		return INIT_PRIORITY_MIDDLE;
 	}
 
 	/**

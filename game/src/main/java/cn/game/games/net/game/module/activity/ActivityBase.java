@@ -24,6 +24,7 @@ public abstract class ActivityBase implements EventHandler {
 	private static transient final boolean fieldBased = true;
 	private static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
 
+	@JsonIgnore
 	protected transient Player player;
 	/** 监听的事件，通常在玩家活动里监听事件 */
 	protected transient EventTypeEnum[] events;

@@ -47,6 +47,7 @@ public class PlayerModule extends BasePlayerModule {
 	@JsonIgnore
 	private Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
 	
+
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
 		return new Class[] { PlayerIdsMapper.class };
@@ -61,7 +62,6 @@ public class PlayerModule extends BasePlayerModule {
 	}
 	@Override
 	public void initFromDbAfter() {
-
 	};
 	public void addId(int type, int configId) {
 		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
@@ -191,6 +191,11 @@ public class PlayerModule extends BasePlayerModule {
 			break;
 		}
 		}
+	}
+
+	@Override
+	protected int getInitOrder() {
+		return INIT_PRIORITY_HIGH;
 	}
 
 	@Override

@@ -85,8 +85,14 @@ public class Player  {
 		return (T) this.modules.get(clazz.getName());
 	}
 
-	public long setPeriodic(long delay, Handler<Long> handler) {
+	public long setPeriodicTask(long delay, Handler<Long> handler) {
 		long timer = gameClient.getContext().setPeriodic(delay, handler);
+		timerTask.add(timer);
+		return timer;
+	}
+
+	public long setTimerTask(long delay, Handler<Long> handler) {
+		long timer = gameClient.getContext().setTimer(delay, handler);
 		timerTask.add(timer);
 		return timer;
 	}

@@ -32,6 +32,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
 	public final static int BattleFieldEndRequest_13000003 = 0x13000003;    //结束关卡战斗请求  
 	public final static int BattleFieldEndResponse_13000004 = 0x13000004;    //结束关卡战斗  
+	public final static int BattleRougeRefreshRequest_13000005 = 0x13000005;    //肉鸽刷新,每天前3次免费，第四次看广告。  
+	public final static int BattleRougeRefreshResponse_13000006 = 0x13000006;    //肉鸽刷新  
 	public final static int BattleRewardRequest_13000022 = 0x13000022;    //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励  
 	public final static int BattleRewardResponse_13000023 = 0x13000023;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    //龙解锁  
@@ -74,6 +76,12 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HeroUpLevelResponse_16000002 = 0x16000002;    
 	public final static int HeroConflateRequest_16000003 = 0x16000003;    //英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。  
 	public final static int HeroConflateResponse_16000004 = 0x16000004;    //合成返回，客户端自己删除耗材。  
+	public final static int HeroBattleRequest_16000005 = 0x16000005;    //英雄上阵  
+	public final static int HeroBattleResponse_16000006 = 0x16000006;    
+	public final static int HeroLevelResetRequest_16000007 = 0x16000007;    //英雄等级重置,返还升级材料  
+	public final static int HeroLevelResetResponse_16000008 = 0x16000008;    
+	public final static int HeroQualityResetRequest_16000011 = 0x16000011;    //英雄品质重置  
+	public final static int HeroQualityResetResponse_16000012 = 0x16000012;    
 	public final static int MailListRequest_12000001 = 0x12000001;    //请求邮件列表。  
 	public final static int MailListResponse_12000002 = 0x12000002;    //邮件列表数据  
 	public final static int MailSeeRequest_12000003 = 0x12000003;    //查看未读邮件  
@@ -213,6 +221,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(BattleFieldEndResponse_13000004, cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(BattleRougeRefreshRequest_13000005, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleRougeRefreshResponse_13000006, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(BattleRewardRequest_13000022, cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleRewardResponse_13000023, cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.getDefaultInstance()
@@ -296,6 +308,18 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(HeroConflateRequest_16000003, cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroConflateResponse_16000004, cn.game.protocol.protobuf.HeroMsg.HeroConflateResponse_16000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroBattleRequest_16000005, cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroBattleResponse_16000006, cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroLevelResetRequest_16000007, cn.game.protocol.protobuf.HeroMsg.HeroLevelResetRequest_16000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroLevelResetResponse_16000008, cn.game.protocol.protobuf.HeroMsg.HeroLevelResetResponse_16000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroQualityResetRequest_16000011, cn.game.protocol.protobuf.HeroMsg.HeroQualityResetRequest_16000011.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroQualityResetResponse_16000012, cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(MailListRequest_12000001, cn.game.protocol.protobuf.MailMsg.MailListRequest_12000001.getDefaultInstance()
 				.getParserForType());
@@ -539,6 +563,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleFieldStartResponse_13000002", 0x13000002);
 		nameIdMap.put("BattleFieldEndRequest_13000003", 0x13000003);
 		nameIdMap.put("BattleFieldEndResponse_13000004", 0x13000004);
+		nameIdMap.put("BattleRougeRefreshRequest_13000005", 0x13000005);
+		nameIdMap.put("BattleRougeRefreshResponse_13000006", 0x13000006);
 		nameIdMap.put("BattleRewardRequest_13000022", 0x13000022);
 		nameIdMap.put("BattleRewardResponse_13000023", 0x13000023);
 		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
@@ -581,6 +607,12 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("HeroUpLevelResponse_16000002", 0x16000002);
 		nameIdMap.put("HeroConflateRequest_16000003", 0x16000003);
 		nameIdMap.put("HeroConflateResponse_16000004", 0x16000004);
+		nameIdMap.put("HeroBattleRequest_16000005", 0x16000005);
+		nameIdMap.put("HeroBattleResponse_16000006", 0x16000006);
+		nameIdMap.put("HeroLevelResetRequest_16000007", 0x16000007);
+		nameIdMap.put("HeroLevelResetResponse_16000008", 0x16000008);
+		nameIdMap.put("HeroQualityResetRequest_16000011", 0x16000011);
+		nameIdMap.put("HeroQualityResetResponse_16000012", 0x16000012);
 		nameIdMap.put("MailListRequest_12000001", 0x12000001);
 		nameIdMap.put("MailListResponse_12000002", 0x12000002);
 		nameIdMap.put("MailSeeRequest_12000003", 0x12000003);

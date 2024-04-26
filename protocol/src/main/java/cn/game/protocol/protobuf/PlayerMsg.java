@@ -17781,6 +17781,16 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 每日免费肉鸽刷新次数。
+     * </pre>
+     *
+     * <code>int32 freeRougeTimes = 31;</code>
+     * @return The freeRougeTimes.
+     */
+    int getFreeRougeTimes();
+
+    /**
+     * <pre>
      *月卡
      * </pre>
      *
@@ -18080,6 +18090,11 @@ public final class PlayerMsg {
               }
               battles_.add(
                   input.readMessage(cn.game.protocol.protobuf.BattleMsg.BattleInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 248: {
+
+              freeRougeTimes_ = input.readInt32();
               break;
             }
             case 322: {
@@ -19342,6 +19357,21 @@ public final class PlayerMsg {
       return battles_.get(index);
     }
 
+    public static final int FREEROUGETIMES_FIELD_NUMBER = 31;
+    private int freeRougeTimes_;
+    /**
+     * <pre>
+     * 每日免费肉鸽刷新次数。
+     * </pre>
+     *
+     * <code>int32 freeRougeTimes = 31;</code>
+     * @return The freeRougeTimes.
+     */
+    @java.lang.Override
+    public int getFreeRougeTimes() {
+      return freeRougeTimes_;
+    }
+
     public static final int MONTHCARDS_FIELD_NUMBER = 40;
     private java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> monthCards_;
     /**
@@ -19523,6 +19553,9 @@ public final class PlayerMsg {
       for (int i = 0; i < battles_.size(); i++) {
         output.writeMessage(30, battles_.get(i));
       }
+      if (freeRougeTimes_ != 0) {
+        output.writeInt32(31, freeRougeTimes_);
+      }
       for (int i = 0; i < monthCards_.size(); i++) {
         output.writeMessage(40, monthCards_.get(i));
       }
@@ -19641,6 +19674,10 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(30, battles_.get(i));
       }
+      if (freeRougeTimes_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(31, freeRougeTimes_);
+      }
       for (int i = 0; i < monthCards_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(40, monthCards_.get(i));
@@ -19709,6 +19746,8 @@ public final class PlayerMsg {
           other.internalGetDragonSkills())) return false;
       if (!getBattlesList()
           .equals(other.getBattlesList())) return false;
+      if (getFreeRougeTimes()
+          != other.getFreeRougeTimes()) return false;
       if (!getMonthCardsList()
           .equals(other.getMonthCardsList())) return false;
       if (!getShopGiftList()
@@ -19786,6 +19825,8 @@ public final class PlayerMsg {
         hash = (37 * hash) + BATTLES_FIELD_NUMBER;
         hash = (53 * hash) + getBattlesList().hashCode();
       }
+      hash = (37 * hash) + FREEROUGETIMES_FIELD_NUMBER;
+      hash = (53 * hash) + getFreeRougeTimes();
       if (getMonthCardsCount() > 0) {
         hash = (37 * hash) + MONTHCARDS_FIELD_NUMBER;
         hash = (53 * hash) + getMonthCardsList().hashCode();
@@ -20044,6 +20085,8 @@ public final class PlayerMsg {
         } else {
           battlesBuilder_.clear();
         }
+        freeRougeTimes_ = 0;
+
         if (monthCardsBuilder_ == null) {
           monthCards_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00004000);
@@ -20169,6 +20212,7 @@ public final class PlayerMsg {
         } else {
           result.battles_ = battlesBuilder_.build();
         }
+        result.freeRougeTimes_ = freeRougeTimes_;
         if (monthCardsBuilder_ == null) {
           if (((bitField0_ & 0x00004000) != 0)) {
             monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
@@ -20457,6 +20501,9 @@ public final class PlayerMsg {
               battlesBuilder_.addAllMessages(other.battles_);
             }
           }
+        }
+        if (other.getFreeRougeTimes() != 0) {
+          setFreeRougeTimes(other.getFreeRougeTimes());
         }
         if (monthCardsBuilder_ == null) {
           if (!other.monthCards_.isEmpty()) {
@@ -24207,6 +24254,49 @@ public final class PlayerMsg {
         return battlesBuilder_;
       }
 
+      private int freeRougeTimes_ ;
+      /**
+       * <pre>
+       * 每日免费肉鸽刷新次数。
+       * </pre>
+       *
+       * <code>int32 freeRougeTimes = 31;</code>
+       * @return The freeRougeTimes.
+       */
+      @java.lang.Override
+      public int getFreeRougeTimes() {
+        return freeRougeTimes_;
+      }
+      /**
+       * <pre>
+       * 每日免费肉鸽刷新次数。
+       * </pre>
+       *
+       * <code>int32 freeRougeTimes = 31;</code>
+       * @param value The freeRougeTimes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFreeRougeTimes(int value) {
+        
+        freeRougeTimes_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每日免费肉鸽刷新次数。
+       * </pre>
+       *
+       * <code>int32 freeRougeTimes = 31;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFreeRougeTimes() {
+        
+        freeRougeTimes_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> monthCards_ =
         java.util.Collections.emptyList();
       private void ensureMonthCardsIsMutable() {
@@ -24897,7 +24987,7 @@ public final class PlayerMsg {
       "onfigId\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"k\n\nPlayerIn" +
       "fo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 " +
       "\001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013" +
-      "offlineTime\030\026 \001(\t\"\246\010\n\rPlayerAllInfo\022\"\n\006p" +
+      "offlineTime\030\026 \001(\t\"\276\010\n\rPlayerAllInfo\022\"\n\006p" +
       "layer\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006asset" +
       "s\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsEnt" +
       "ry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Player" +
@@ -24915,16 +25005,17 @@ public final class PlayerMsg {
       "yerAllInfo.DragonsEntry\022=\n\014dragonSkills\030" +
       "\021 \003(\0132\'.Protos.PlayerAllInfo.DragonSkill" +
       "sEntry\022#\n\007battles\030\036 \003(\0132\022.Protos.BattleI" +
-      "nfo\022*\n\nmonthCards\030( \003(\0132\026.Protos.MonthCa" +
-      "rdProto\022\020\n\010shopGift\030) \003(\r\032-\n\013AssetsEntry" +
-      "\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021Asse" +
-      "tRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
-      "\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005val" +
-      "ue\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001" +
-      "(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n" +
-      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonS" +
-      "killsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
-      "8\001B\033\n\031cn.game.protocol.protobufb\006proto3"
+      "nfo\022\026\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCard" +
+      "s\030( \003(\0132\026.Protos.MonthCardProto\022\020\n\010shopG" +
+      "ift\030) \003(\r\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n" +
+      "\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n" +
+      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsE" +
+      "ntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\r" +
+      "AlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
+      "\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
+      "lue\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003ke" +
+      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.pr" +
+      "otocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -25100,7 +25191,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "MonthCards", "ShopGift", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "ShopGift", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
