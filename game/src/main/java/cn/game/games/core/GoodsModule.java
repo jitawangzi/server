@@ -78,21 +78,9 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 		return getCount(configId) >= 1;
 	}
 
-	public Collection<E> list() {
-		return Collections.EMPTY_LIST;
-	}
-
 	public abstract T get(int configId);
 
 	public abstract T get(long uid);
-
-	/**
-	 *物品模块优先级相对较高
-	 */
-	@Override
-	protected int getInitOrder() {
-		return INIT_PRIORITY_HIGH;
-	}
 
 	/** 
 	 * 这个模块处理的物品类型
@@ -106,4 +94,15 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	public abstract void addCacheNoStackable(E item);
 
 	public abstract void removeCache(E item);
+
+	public Collection<E> list() {
+		return Collections.EMPTY_LIST;
+	}
+	/**
+	 *物品模块优先级相对较高
+	 */
+	@Override
+	protected int getInitOrder() {
+		return INIT_PRIORITY_HIGH;
+	}
 }

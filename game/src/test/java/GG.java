@@ -1,25 +1,51 @@
-import org.apache.commons.collections4.map.MultiKeyMap;
-
-import cn.game.util.JsonUtil;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 public class GG {
 	public static void main(String[] args) {
-		// 创建一个 MultiKeyMap 对象
-		MultiKeyMap<Long, Integer> map = new MultiKeyMap<Long, Integer>();
+		// 创建一个NavigableMap对象
+		NavigableMap<Integer, String> navigableMap = new TreeMap<>();
 
-		// 向 MultiKeyMap 添加键值对
-		map.put(323232L, 1001L, 3323232);
-		map.put(323233L, 10012L, 33232323);
+		// 添加键值对
+		navigableMap.put(1, "Apple");
+		navigableMap.put(2, "Banana");
+		navigableMap.put(3, "Orange");
+		navigableMap.put(44, "Grapes");
+		navigableMap.put(5, "Mango");
 
-		String jsonString = JsonUtil.toJsonString(map);
-		MultiKeyMap object = JsonUtil.parseObject(jsonString, MultiKeyMap.class);
-		System.out.println(object);
+		String string = navigableMap.get(5);
+		System.err.println(string);
+		// 获取键值对
+		System.out.println("NavigableMap: " + navigableMap);
 
-//		Set<Entry<MultiKey<? extends Long>, Integer>> entrySet = map.entrySet();
-//		for (Entry<MultiKey<? extends Long>, Integer> entry : entrySet) {
-//			System.out.println(entry.getKey().getKey(0).getClass());
-//			System.out.println(entry.getKey().getKey(1).getClass());
-//			System.out.println(entry.getValue());
-//		}
+		// 获取第一个键值对
+		System.out.println("First Entry: " + navigableMap.firstEntry());
+
+		// 获取最后一个键值对
+		System.out.println("Last Entry: " + navigableMap.lastEntry());
+
+		// 获取小于等于指定键的最大键值对
+		System.out.println("Floor Entry: " + navigableMap.floorEntry(3));
+
+		// 获取大于等于指定键的最小键值对
+		System.out.println("Ceiling Entry: " + navigableMap.ceilingEntry(3));
+
+		// 获取小于指定键的最大键值对
+		System.out.println("Lower Entry: " + navigableMap.lowerEntry(3));
+
+		// 获取大于指定键的最小键值对
+		System.out.println("Higher Entry: " + navigableMap.higherEntry(3));
+
+		// 获取指定范围的键值对
+		System.out.println("SubMap: " + navigableMap.subMap(2, true, 4, true));
+
+		// 删除键值对
+		navigableMap.remove(3);
+
+		// 获取键值对个数
+		System.out.println("Size: " + navigableMap.size());
+
+		// 清空键值对
+		navigableMap.clear();
 	}
 }

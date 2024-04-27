@@ -71,6 +71,7 @@ public class ExpireItemModule extends BasePlayerModule {
 
 	}
 
+	@Override
 	protected int getInitOrder() {
 		return INIT_PRIORITY_LOW;
 	}

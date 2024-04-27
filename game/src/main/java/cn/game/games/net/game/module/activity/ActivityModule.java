@@ -1,7 +1,5 @@
 package cn.game.games.net.game.module.activity;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,20 +9,12 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
-import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Activity;
-import cn.game.games.cache.entity.ClimbingTower;
-import cn.game.games.cache.entity.Player;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ActivityMapper;
 import cn.game.games.net.game.manager.ActivityStateManager;
-import cn.game.games.net.game.manager.GameConstants;
-import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
@@ -37,39 +27,6 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 public class ActivityModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
-
-
-	public int initLoadData(List<Activity> list) {
-
-//		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
-		List<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
-		// 这里注意一个活动，多开启时间的
-		if (list != null) {
-			for (Activity activity : list) {
-				ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
-				// 活动已经彻底关闭了
-				if (!showList.contains(activity.getId())) // 活动已经彻底关闭了
-				{
-					delete(activity.getId());
-				} else { // init from db
-					ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(), player);
-					if (activityBase != null) {
-						this.activities.put(activityConfig.ID, activityBase);
-					}
-				}
-			}
-		}
-		for (Integer integer : openList) {
-			if (!activities.containsKey(integer)) {
-				open(integer);
-			}
-		}
-		//重载已开启过的爬塔活动数据
-//		reloadClimbingTowerData();
-
-		return 0;
-	}
 
 	public int getState(int id) {
 		if (activities.containsKey(id)) {
@@ -86,40 +43,6 @@ public class ActivityModule extends BasePlayerModule {
 			activityInfos.put(id, activityInfo);
 		}
 		return activityInfos;
-	}
-
-	@Deprecated
-	protected void initFromDb(ListIterator<?> iterator) {
-
-		List<Activity> list = iterator == null ? null : (List<Activity>) iterator.next();
-//		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
-		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
-		List<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
-		// 这里注意一个活动，多开启时间的
-		if (list != null) {
-			for (Activity activity : list) {
-				ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
-				// 活动已经彻底关闭了
-				if (!showList.contains(activity.getId())) // 活动已经彻底关闭了
-				{
-					delete(activity.getId());
-				} else { // init from db
-					ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(),
-							player);
-					if (activityBase != null) {
-						this.activities.put(activityConfig.ID, activityBase);
-					}
-				}
-			}
-		}
-		for (Integer integer : openList) {
-			if (!activities.containsKey(integer)) {
-				open(integer);
-			}
-		}
-		// 重载已开启过的爬塔活动数据
-//		reloadClimbingTowerData();
 	}
 
 	private void initNewActivity() {
@@ -165,96 +88,6 @@ public class ActivityModule extends BasePlayerModule {
 		return new Class[] { ActivityMapper.class };
 	}
 
-	public void reloadClimbingTowerData() {
-		ActivityBase activityBase = get(GameConstants.TOWER_ACTIVITYID);
-		if (activityBase == null) {
-			return;
-		}
-		ClimbingTowerActivity cta = (ClimbingTowerActivity) activityBase;
-		Map<Integer, Multimap<Integer, ClimbingTower>> groupInfo = cta.getGroupInfo();
-		if (groupInfo.size() == 0) { //没有分组 重新加载分组数据
-			Map<Long, ClimbingTower> playerClimbingTowerData = ActivityStateManager.getInstance().getPlayerClimbingTowerData();
-			playerClimbingTowerData.values().forEach(data -> {
-				Integer groupId = data.getGroupId();
-				if (groupId != 0) {
-					Integer level = data.getLevel();
-					Multimap<Integer, ClimbingTower> integerListMap = groupInfo.get(level);
-					if(integerListMap == null){
-						integerListMap = ArrayListMultimap.create();
-						groupInfo.put(level, integerListMap);
-					}
-					integerListMap.put(groupId, data);
-				}
-			});
-
-			//活动开启了，设置玩家可以参加活动的状态
-			int activityState = ActivityStateManager.getInstance().getState(GameConstants.TOWER_ACTIVITYID);
-			if (activityState == ActivityMsg.ActivityState.START_VALUE) {
-				if (!cta.isReady()) {//设置玩家是否可以参加活动
-					LocalDateTime now = LocalDateTime.now();
-					if (now.getHour() >= GameConstants.TOWER_STARHOUR) {
-						cta.setReady(true);
-					} else {
-						LocalDateTime end = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), GameConstants.TOWER_STARHOUR, GameConstants.TOWER_STARMINITE, 0);
-
-						Duration duration = Duration.between(now, end);
-						long millis = duration.toMillis();//相差毫秒数
-						TaskManager.getInstance().scheduleGeneral(new Runnable() {
-							@Override
-							public void run() {
-								cta.setReady(true);
-							}
-						}, millis);
-					}
-				}
-			}
-		}
-
-	}
-
-	public void initAdd(int id) {
-
-		Activity activity = new Activity();
-		ActivityBase activityBase = this.activities.get(id);
-		activity.setId(id);
-		activity.setPlayerId(playerId);
-		activity.setStat((byte) 0);
-		if (activityBase != null) {
-			activity.setParams(activityBase.toSaveString());
-		}
-		DAO.insert(activity);
-	}
-
-
-	public void update(int id) {
-
-		Activity activity = new Activity();
-		activity.setId(id);
-		activity.setPlayerId(playerId);
-		activity.setStat((byte) 0);
-		ActivityBase activityBase = this.activities.get(id);
-		activity.setParams(activityBase.toSaveString());
-
-		DAO.updateWithBLOBs(activity);
-	}
-	public void updateAll() {
-
-		for (ActivityBase activityBase : this.activities.values()) {
-
-			String saveString = activityBase.toSaveString();
-			if (saveString == null) { // 这个活动不需要保存到数据库
-				continue;
-			}
-			Activity activity = new Activity();
-			activity.setId(activityBase.getId());
-			activity.setPlayerId(playerId);
-			activity.setStat((byte) 0);
-			activity.setParams(saveString);
-
-			DAO.updateWithBLOBs(activity);
-		}
-	}
-
 
 	public List<RewardInfo> receive(int id, int subId) {
 		ActivityBase activityBase = this.activities.get(id);
@@ -272,14 +105,8 @@ public class ActivityModule extends BasePlayerModule {
 //		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { playerId, id });
 	}
 
-	public void refresh() {
-
-		initLoadData(null);
-	}
-
 
 	public void end(int id) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
 		if (activityConfig.isMultiplayer && player != null) {
 			return ;
@@ -351,7 +178,6 @@ public class ActivityModule extends BasePlayerModule {
 			}
 
 		}
-
 	}
 
 	@Override
@@ -381,6 +207,85 @@ public class ActivityModule extends BasePlayerModule {
 	public void buildPlayerAllInfo(Builder builder) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Deprecated
+	public void initAdd(int id) {
+
+		Activity activity = new Activity();
+		ActivityBase activityBase = this.activities.get(id);
+		activity.setId(id);
+		activity.setPlayerId(playerId);
+		activity.setStat((byte) 0);
+		if (activityBase != null) {
+			activity.setParams(activityBase.toSaveString());
+		}
+		DAO.insert(activity);
+	}
+
+	@Deprecated
+	public void update(int id) {
+
+		Activity activity = new Activity();
+		activity.setId(id);
+		activity.setPlayerId(playerId);
+		activity.setStat((byte) 0);
+		ActivityBase activityBase = this.activities.get(id);
+		activity.setParams(activityBase.toSaveString());
+
+		DAO.updateWithBLOBs(activity);
+	}
+
+	@Deprecated
+	public void updateAll() {
+
+		for (ActivityBase activityBase : this.activities.values()) {
+
+			String saveString = activityBase.toSaveString();
+			if (saveString == null) { // 这个活动不需要保存到数据库
+				continue;
+			}
+			Activity activity = new Activity();
+			activity.setId(activityBase.getId());
+			activity.setPlayerId(playerId);
+			activity.setStat((byte) 0);
+			activity.setParams(saveString);
+
+			DAO.updateWithBLOBs(activity);
+		}
+	}
+
+	@Deprecated
+	protected void initFromDb(ListIterator<?> iterator) {
+
+		List<Activity> list = iterator == null ? null : (List<Activity>) iterator.next();
+//		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
+		List<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
+		// 这里注意一个活动，多开启时间的
+		if (list != null) {
+			for (Activity activity : list) {
+				ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
+				// 活动已经彻底关闭了
+				if (!showList.contains(activity.getId())) // 活动已经彻底关闭了
+				{
+					delete(activity.getId());
+				} else { // init from db
+					ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(), player);
+					if (activityBase != null) {
+						this.activities.put(activityConfig.ID, activityBase);
+					}
+				}
+			}
+		}
+		for (Integer integer : openList) {
+			if (!activities.containsKey(integer)) {
+				open(integer);
+			}
+		}
+		// 重载已开启过的爬塔活动数据
+//		reloadClimbingTowerData();
 	}
 
 }

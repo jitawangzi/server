@@ -481,7 +481,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		List<Activity> activities = (List<Activity>) DAO.executeSync(ActivityMapper.class,
 				MapperConstant.selectByPlayerId, 0L);
 
-		activityOp.initLoadData(activities);
+//		activityOp.initLoadData(activities);
 
 	}
 
