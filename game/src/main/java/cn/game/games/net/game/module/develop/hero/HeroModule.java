@@ -8,6 +8,8 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
+import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -42,24 +44,6 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		}
 	}
 
-	// 给英雄这里，把数量当成品质来用。
-	/*	@Override
-		public List<Hero> add(int itemId, int count) {
-			if (count <= 0) {
-				return null;
-			}
-			ItemHelper.checkConfig(itemId);
-			// TODO 检查id，是不是存在，涉及到多个表。
-			List<Hero> ret = new ArrayList<Hero>();
-			Hero item = newInstance();
-			setInstance(item, itemId, 1);
-			setInstanceAfter(item);
-			initAddCache(item);
-			item.insert();
-			ret.add(item);
-			return ret;
-		}*/
-
 //	@Override
 //	public Class<?>[] defaultDbMapperClass() {
 //		return new Class<?>[] { HeroMapper.class };
@@ -71,6 +55,10 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		if (this.heroUid == 0) {
 			this.heroUid = hero.getId();
 		}
+		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId()); 
+		hero.setStar(1);
+		hero.setLevel(1);
+		hero.setQuality(heroConfig.InitialQuality);
 	}
 
 	@Override

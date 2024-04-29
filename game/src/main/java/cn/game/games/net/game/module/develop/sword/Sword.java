@@ -22,6 +22,6 @@ public class Sword extends ItemNoStack implements Serializable, DbEntity {
 	}
 
 	public HeroSwordInfo toHeroSwordInfo() {
-		return HeroSwordInfo.newBuilder().setUid(getId().toString()).setConfigId(getConfigId()).setStar(getStar()).build();
+		return HeroSwordInfo.newBuilder().setUid(getId() + "").setConfigId(getConfigId()).setStar(getStar()).build();
 	}
 }

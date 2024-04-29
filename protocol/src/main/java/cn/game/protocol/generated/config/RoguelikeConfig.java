@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 	public final int[] RogueStar;		
 	/** 技能组id  调用HeroSkillGroup#技能组id 用来判定是同组id */
 	public final int HeroSkillGroupId;		
-	/** 技能组id标识  此列用来去（Almost_HeroSkill——HeroSkillGroup#技能组——SkillGroup序列）中找第几个数组 */
+	/** 技能组id标识  此列用来去Almost_HeroSkill——HeroSkillGroup#技能组——SkillGroup序列中找第几个数组 */
 	public final int SkillGroupMark;		
 	/** 多技能组id间出现权重 */
 	public final int RogueWeight;		
@@ -57,7 +57,7 @@ import org.w3c.dom.Element;
 		HeroSkillGroupId = Integer.parseInt(element.getAttribute("HeroSkillGroupId") == null || element.getAttribute("HeroSkillGroupId").length() == 0 ? "0"
 			: element.getAttribute("HeroSkillGroupId")); // 技能组id  调用HeroSkillGroup#技能组id 用来判定是同组id
 		SkillGroupMark = Integer.parseInt(element.getAttribute("SkillGroupMark") == null || element.getAttribute("SkillGroupMark").length() == 0 ? "0"
-			: element.getAttribute("SkillGroupMark")); // 技能组id标识  此列用来去（Almost_HeroSkill——HeroSkillGroup#技能组——SkillGroup序列）中找第几个数组
+			: element.getAttribute("SkillGroupMark")); // 技能组id标识  此列用来去Almost_HeroSkill——HeroSkillGroup#技能组——SkillGroup序列中找第几个数组
 		RogueWeight = Integer.parseInt(element.getAttribute("RogueWeight") == null || element.getAttribute("RogueWeight").length() == 0 ? "0"
 			: element.getAttribute("RogueWeight")); // 多技能组id间出现权重
 	}

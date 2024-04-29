@@ -39,7 +39,7 @@ message ActivityFirstChargeBuyResponse_11000006{
 
 message FirstChargeActivityInfo{
    uint32 id = 1; //当前可以购买的 FirstCharge 表id礼包
-   repeated uint32 selectedIndex = 2;  // 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+   repeated uint32 selectedIndex = 2;  // 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
 }
 
 // 单个活动基本数据

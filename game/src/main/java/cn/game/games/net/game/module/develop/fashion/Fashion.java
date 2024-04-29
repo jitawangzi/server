@@ -19,6 +19,6 @@ public class Fashion extends ItemNoStack implements Serializable, DbEntity {
 	}
 
 	public HeroFashionInfo toFashionInfo() {
-		return HeroFashionInfo.newBuilder().setUid(getId().toString()).setConfigId(getConfigId()).setStar(getStar()).build();
+		return HeroFashionInfo.newBuilder().setUid(getId() + "").setConfigId(getConfigId()).setStar(getStar()).build();
 	}
 }

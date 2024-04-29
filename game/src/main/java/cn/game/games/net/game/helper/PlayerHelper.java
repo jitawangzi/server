@@ -129,32 +129,43 @@ public class PlayerHelper {
 	}
 	
 	/** 
-	 * 二维数组，用or的关系判断
+	 * or的关系判断,二维数组中有一个满足就可以
 	 * @param player
 	 * @param list
 	 * @return
 	 */
+	public static boolean isEnoughOr(Player player, int[][] list) {
+
+		if (list == null || list.length == 0) {
+			return true;
+		}
+		for (int i = 0; i < list.length; i++) {
+			if (isEnough(player, list[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static boolean isEnough(Player player, int[][] list) {
 
 		if (list == null || list.length == 0) {
 			return true;
 		}
 		for (int i = 0; i < list.length; i++) {
-			for (int j = 0; j < list.length; j++) {
-				if (isEnough(player, list[i])) {
-					return true;
-				}
+			if (!isEnough(player, list[i])) {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	public static boolean isEnough(Player player, int[] list) {
 		if (list == null || list.length == 0) {
 			return true;
 		}
-		for (int i = 0; i + 1 < list.length; i++) {
-			if (!isEnough(player, list[i], list[++i])) {
+		for (int i = 0; i < list.length; i += 2) {
+			if (!isEnough(player, list[i], list[i + 1])) {
 				return false;
 			}
 		}
@@ -300,7 +311,7 @@ public class PlayerHelper {
 	 * @param notify 是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
 	 * @return
 	 */
-	private static boolean delResources(Player player, int id, int value, ResourceConsumeEnum consumeType, boolean notify) {
+	public static boolean delResources(Player player, int id, int value, ResourceConsumeEnum consumeType, boolean notify) {
 
 		if (value <= 0) {
 			return true;
@@ -326,7 +337,7 @@ public class PlayerHelper {
 		if (ret) {
 			player.handleEvent(EventTypeEnum.CostItem, id, value);
 			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", player.getPlayerId(), id, value,
-					consumeType.getName());
+					consumeType == null ? "NO_DEFINE" : consumeType.getName());
 			if (notify) {
 				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
@@ -361,7 +372,7 @@ public class PlayerHelper {
 		return false;
 	}
 
-	public static boolean delResourcesOld(Player player, int[][] list, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, int[][] list, ResourceConsumeEnum consumeType) {
 
 		if (list == null || list.length == 0) {
 			return true;
@@ -369,8 +380,10 @@ public class PlayerHelper {
 		if (isEnough(player, list)) {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (int i = 0; i < list.length; i++) {
-				delResources(player, list[i][0], list[i][1], consumeType, false);
-				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
+				for (int j = 0; j < list[i].length; j += 2) {
+					delResources(player, list[i][j], list[i][j + 1], consumeType, false);
+					spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][j], list[i][j + 1]));
+				}
 			}
 			player.getGameClient().sendProtocol(spendPush.build());
 			return true;
@@ -385,22 +398,22 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(Player player, int[][] list, ResourceConsumeEnum consumeType) {
-
-		if (list == null || list.length == 0) {
-			return true;
-		}
-		if (isEnough(player, list)) {
-			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
-			for (int i = 0; i < list.length; i++) {
-				delResources(player, list[i][0], list[i][1], consumeType, false);
-				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
+	/*	public static boolean delResources(Player player, int[][] list, ResourceConsumeEnum consumeType) {
+	
+			if (list == null || list.length == 0) {
+				return true;
 			}
-			player.getGameClient().sendProtocol(spendPush.build());
-			return true;
-		}
-		return false;
-	}
+			if (isEnough(player, list)) {
+				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
+				for (int i = 0; i < list.length; i++) {
+					delResources(player, list[i][0], list[i][1], consumeType, false);
+					spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
+				}
+				player.getGameClient().sendProtocol(spendPush.build());
+				return true;
+			}
+			return false;
+		}*/
 
 	/** 
 	 * 根据奖励id，增加所有物品
@@ -410,9 +423,16 @@ public class PlayerHelper {
 	 */
 	public static List<RewardInfo> addReward(Player player, int randomRewardId) {
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId); 
-		List<RewardInfo> resources = addResources(player.getPlayerId(), randomGivenConfig.MustGiven, false);
+		List<RewardInfo> resources = addResources(player, randomGivenConfig.MustGiven, false);
 		if (randomGivenConfig.RandomNumber.length > 0) {
-			int randomCount = Rnd.get(randomGivenConfig.RandomNumber[0], randomGivenConfig.RandomNumber[1]);
+			int randomCount = 0;
+			if (randomGivenConfig.RandomNumber.length == 1) {
+				randomCount = randomGivenConfig.RandomNumber[0];
+			} else if (randomGivenConfig.RandomNumber.length == 2) {
+				randomCount = Rnd.get(randomGivenConfig.RandomNumber[0], randomGivenConfig.RandomNumber[1]);
+			} else {
+				throw new IllegalArgumentException("RandomGiven奖励数量貌似不对：  " + randomGivenConfig.ID);
+			}
 			for (int i = 0; i < randomCount; i++) {
 				int randomIndex = Rnd.randomIndex(randomGivenConfig.RandomParameterWeight);
 				int group = randomGivenConfig.RandomParameterGroupId[randomIndex];
@@ -608,34 +628,34 @@ public class PlayerHelper {
 		return rewardItems;
 	}
 
-	public static List<RewardInfo> addResources(long playerId, int[][] rewards) {
-		return addResources(playerId, rewards, false);
-	}
-
 	public static List<RewardInfo> addResources(Player player, int[][] rewards) {
 		return addResources(player, rewards, false);
 	}
 
-	public static List<RewardInfo> addResources(long playerId, int[][] rewards, boolean notify) {
-		List<RewardInfo> rewardItems = new ArrayList<>();
-		if (rewards != null && rewards.length > 0) {
-			for (int i = 0; i < rewards.length; i++) {
-				List<RewardInfo> rewardItem = addResources(playerId, rewards[i][0], rewards[i][1], false);
-				rewardItems.addAll(rewardItem);
-			}
-			if (notify) {
-				PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
-			}
-		}
-		return rewardItems;
-	}
+//	public static List<RewardInfo> addResources(long playerId, int[][] rewards, boolean notify) {
+//		List<RewardInfo> rewardItems = new ArrayList<>();
+//		if (rewards != null && rewards.length > 0) {
+//			for (int i = 0; i < rewards.length; i++) {
+//				for (int j = 0; j < rewards[i].length; j += 2) {
+//					List<RewardInfo> rewardItem = addResources(playerId, rewards[i][j], rewards[i][j + 1], false);
+//					rewardItems.addAll(rewardItem);
+//				}
+//			}
+//			if (notify) {
+//				PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+//			}
+//		}
+//		return rewardItems;
+//	}
 
 	public static List<RewardInfo> addResources(Player player, int[][] rewards, boolean notify) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.length > 0) {
 			for (int i = 0; i < rewards.length; i++) {
-				List<RewardInfo> rewardItem = addResources(player, rewards[i][0], rewards[i][1], false);
-				rewardItems.addAll(rewardItem);
+				for (int j = 0; j < rewards[i].length; j += 2) {
+					List<RewardInfo> rewardItem = addResources(player, rewards[i][j], rewards[i][j + 1], false);
+					rewardItems.addAll(rewardItem);
+				}
 			}
 			if (notify) {
 				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
@@ -645,6 +665,11 @@ public class PlayerHelper {
 	}
 
 	public static List<RewardInfo> addResources(long playerId, int[] rewards) {
+
+		List<RewardInfo> ret = new ArrayList<>();
+		for (int i = 0; i < rewards.length - 1; i += 2) {
+			ret.addAll(addResources(playerId, rewards[i], rewards[i + 1]));
+		}
 		return addResources(playerId, rewards[0], rewards[1]);
 	}
 	/** 

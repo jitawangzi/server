@@ -36,6 +36,7 @@ message HeroInfo{
 	uint32 star = 4 ;// 星级
 	bool isBattle = 5; // 是否上阵了
 	string fashionUid = 6 ;// 穿戴的时装唯一id
+	uint32 quality = 7 ;  // 品质。
 }
 // 英雄武器
 message HeroSwordInfo{

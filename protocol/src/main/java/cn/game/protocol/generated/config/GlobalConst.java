@@ -1,4 +1,6 @@
 package cn.game.protocol.generated.config;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,14 +18,34 @@ public class GlobalConst extends ResourceListener {
 	private static final String xmlFileName = "GlobalConst";
 	private static GlobalConst instance = new GlobalConst();
 
-	/** 初始化物品 */
+	/** 【初始化物品】 */
 	public static int[][] initItems;		
-	/** UID创建取值，参数1版本标识，参数2自增函数起始值 */
+	/** 【UID创建取值】参数1版本标识，参数2自增函数起始值 */
 	public static int[] CreateUID;		
 	/** 【肉鸽】全场AOE类肉鸽规定 */
 	public static int[] Rogueroll1;		
 	/** 【肉鸽】全场纯加属性类肉鸽规定 */
 	public static int[] Rogueroll2;		
+	/** 【英雄升级】所有职业消耗相同物品 */
+	public static int HeroLvItem;		
+	/** 【图鉴】拥有&每次突破，每个神将固定奖励元宝数 */
+	public static int HeroBookAward;		
+	/** 【图鉴】不同品质的1颗星加成属性id */
+	public static Map<Integer,Integer> HeroBookStar;		
+	/** 【随机小云宝箱】触发 */
+	public static int[] RandomCLoud;		
+	/** 【随机小云宝箱】显示 */
+	public static int[][] RandomCLoudAward;		
+	/** 【队长加成】 */
+	public static int[][] CaptainBonus;		
+	/** 每日任务宝箱积分 */
+	public static int[] DailyPoint;		
+	/** 每日任务宝箱奖励 */
+	public static int[][] DailyTask;		
+	/** 每周任务宝箱积分 */
+	public static int[] WeeklyPoint;		
+	/** 每周任务宝箱奖励 */
+	public static int[][] WeeklyTask;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -34,7 +56,7 @@ public class GlobalConst extends ResourceListener {
 	}
 	
 	public static void init (Element element) throws Exception {	
-		String initItemsString = element.getAttribute("initItems"); // 初始化物品
+		String initItemsString = element.getAttribute("initItems"); // 【初始化物品】
 		if (initItemsString != null && initItemsString.length() > 0) {
 			String[] initItemsStrings = initItemsString.split("\\|"); 
 			int[][] initItemsTemp = new int[initItemsStrings.length][] ; 
@@ -51,7 +73,7 @@ public class GlobalConst extends ResourceListener {
 		} else {
 			initItems = new int[][] {};
 		}
-		String CreateUIDString = element.getAttribute("CreateUID"); // UID创建取值，参数1版本标识，参数2自增函数起始值
+		String CreateUIDString = element.getAttribute("CreateUID"); // 【UID创建取值】参数1版本标识，参数2自增函数起始值
 		if (CreateUIDString != null && CreateUIDString.length() > 0) {
 			String[] CreateUIDStrings = CreateUIDString.split(";"); 
 			int[] CreateUIDTemp = new int[CreateUIDStrings.length] ; 
@@ -86,6 +108,128 @@ public class GlobalConst extends ResourceListener {
 			Rogueroll2 = Rogueroll2Temp ;			
 		} else {
 			Rogueroll2 = new int[] {};
+		}
+		HeroLvItem = Integer.parseInt(element.getAttribute("HeroLvItem") == null || element.getAttribute("HeroLvItem").length() == 0 ? "0"
+			: element.getAttribute("HeroLvItem")); // 【英雄升级】所有职业消耗相同物品
+		HeroBookAward = Integer.parseInt(element.getAttribute("HeroBookAward") == null || element.getAttribute("HeroBookAward").length() == 0 ? "0"
+			: element.getAttribute("HeroBookAward")); // 【图鉴】拥有&每次突破，每个神将固定奖励元宝数
+		String HeroBookStarString = element.getAttribute("HeroBookStar"); // 【图鉴】不同品质的1颗星加成属性id
+		if (HeroBookStarString != null && HeroBookStarString.length() > 0) {
+			String[] HeroBookStarStrings = HeroBookStarString.split("\\|"); 
+			Map<Integer,Integer> HeroBookStarTemp = new HashMap<Integer,Integer>(HeroBookStarStrings.length) ; 
+			for (int i = 0; i < HeroBookStarStrings.length; i++) {
+				String[] split = HeroBookStarStrings[i].split(";", 2);
+				Integer key = Integer.parseInt(split[0]);
+				Integer value = Integer.parseInt(split[1]);
+				HeroBookStarTemp.put(key, value) ; 				
+			}
+			HeroBookStar = com.google.common.collect.ImmutableMap.copyOf(HeroBookStarTemp);
+		}else{
+			HeroBookStar = java.util.Collections.emptyMap() ; 
+		}
+		String RandomCLoudString = element.getAttribute("RandomCLoud"); // 【随机小云宝箱】触发
+		if (RandomCLoudString != null && RandomCLoudString.length() > 0) {
+			String[] RandomCLoudStrings = RandomCLoudString.split(";"); 
+			int[] RandomCLoudTemp = new int[RandomCLoudStrings.length] ; 
+			for (int i = 0; i < RandomCLoudStrings.length; i++) {
+				int temp = Integer.parseInt(RandomCLoudStrings[i]);	
+				RandomCLoudTemp[i] = temp;
+			}
+			RandomCLoud = RandomCLoudTemp ;			
+		} else {
+			RandomCLoud = new int[] {};
+		}
+		String RandomCLoudAwardString = element.getAttribute("RandomCLoudAward"); // 【随机小云宝箱】显示
+		if (RandomCLoudAwardString != null && RandomCLoudAwardString.length() > 0) {
+			String[] RandomCLoudAwardStrings = RandomCLoudAwardString.split("\\|"); 
+			int[][] RandomCLoudAwardTemp = new int[RandomCLoudAwardStrings.length][] ; 
+			for (int i = 0; i < RandomCLoudAwardStrings.length; i++) {
+				String[] RandomCLoudAwardStrings2 = RandomCLoudAwardStrings[i].split(";"); 
+				int[] array = new int[RandomCLoudAwardStrings2.length];
+				for (int j = 0; j < RandomCLoudAwardStrings2.length; j++) {
+					int temp = Integer.parseInt(RandomCLoudAwardStrings2[j]);	
+					array[j] = temp;
+				}
+				RandomCLoudAwardTemp[i] = array;
+			}
+			RandomCLoudAward = RandomCLoudAwardTemp ;			
+		} else {
+			RandomCLoudAward = new int[][] {};
+		}
+		String CaptainBonusString = element.getAttribute("CaptainBonus"); // 【队长加成】
+		if (CaptainBonusString != null && CaptainBonusString.length() > 0) {
+			String[] CaptainBonusStrings = CaptainBonusString.split("\\|"); 
+			int[][] CaptainBonusTemp = new int[CaptainBonusStrings.length][] ; 
+			for (int i = 0; i < CaptainBonusStrings.length; i++) {
+				String[] CaptainBonusStrings2 = CaptainBonusStrings[i].split(";"); 
+				int[] array = new int[CaptainBonusStrings2.length];
+				for (int j = 0; j < CaptainBonusStrings2.length; j++) {
+					int temp = Integer.parseInt(CaptainBonusStrings2[j]);	
+					array[j] = temp;
+				}
+				CaptainBonusTemp[i] = array;
+			}
+			CaptainBonus = CaptainBonusTemp ;			
+		} else {
+			CaptainBonus = new int[][] {};
+		}
+		String DailyPointString = element.getAttribute("DailyPoint"); // 每日任务宝箱积分
+		if (DailyPointString != null && DailyPointString.length() > 0) {
+			String[] DailyPointStrings = DailyPointString.split(";"); 
+			int[] DailyPointTemp = new int[DailyPointStrings.length] ; 
+			for (int i = 0; i < DailyPointStrings.length; i++) {
+				int temp = Integer.parseInt(DailyPointStrings[i]);	
+				DailyPointTemp[i] = temp;
+			}
+			DailyPoint = DailyPointTemp ;			
+		} else {
+			DailyPoint = new int[] {};
+		}
+		String DailyTaskString = element.getAttribute("DailyTask"); // 每日任务宝箱奖励
+		if (DailyTaskString != null && DailyTaskString.length() > 0) {
+			String[] DailyTaskStrings = DailyTaskString.split("\\|"); 
+			int[][] DailyTaskTemp = new int[DailyTaskStrings.length][] ; 
+			for (int i = 0; i < DailyTaskStrings.length; i++) {
+				String[] DailyTaskStrings2 = DailyTaskStrings[i].split(";"); 
+				int[] array = new int[DailyTaskStrings2.length];
+				for (int j = 0; j < DailyTaskStrings2.length; j++) {
+					int temp = Integer.parseInt(DailyTaskStrings2[j]);	
+					array[j] = temp;
+				}
+				DailyTaskTemp[i] = array;
+			}
+			DailyTask = DailyTaskTemp ;			
+		} else {
+			DailyTask = new int[][] {};
+		}
+		String WeeklyPointString = element.getAttribute("WeeklyPoint"); // 每周任务宝箱积分
+		if (WeeklyPointString != null && WeeklyPointString.length() > 0) {
+			String[] WeeklyPointStrings = WeeklyPointString.split(";"); 
+			int[] WeeklyPointTemp = new int[WeeklyPointStrings.length] ; 
+			for (int i = 0; i < WeeklyPointStrings.length; i++) {
+				int temp = Integer.parseInt(WeeklyPointStrings[i]);	
+				WeeklyPointTemp[i] = temp;
+			}
+			WeeklyPoint = WeeklyPointTemp ;			
+		} else {
+			WeeklyPoint = new int[] {};
+		}
+		String WeeklyTaskString = element.getAttribute("WeeklyTask"); // 每周任务宝箱奖励
+		if (WeeklyTaskString != null && WeeklyTaskString.length() > 0) {
+			String[] WeeklyTaskStrings = WeeklyTaskString.split("\\|"); 
+			int[][] WeeklyTaskTemp = new int[WeeklyTaskStrings.length][] ; 
+			for (int i = 0; i < WeeklyTaskStrings.length; i++) {
+				String[] WeeklyTaskStrings2 = WeeklyTaskStrings[i].split(";"); 
+				int[] array = new int[WeeklyTaskStrings2.length];
+				for (int j = 0; j < WeeklyTaskStrings2.length; j++) {
+					int temp = Integer.parseInt(WeeklyTaskStrings2[j]);	
+					array[j] = temp;
+				}
+				WeeklyTaskTemp[i] = array;
+			}
+			WeeklyTask = WeeklyTaskTemp ;			
+		} else {
+			WeeklyTask = new int[][] {};
 		}
 	}
 	@Override

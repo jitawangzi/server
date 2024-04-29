@@ -12,6 +12,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.BattleFieldConfig;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleFieldManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -25,8 +26,6 @@ import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.util.DateUtil;
-import cn.game.util.GameUtil;
 
 @Component
 public class ChapterHandler extends BaseHandler {
@@ -116,6 +115,11 @@ public class ChapterHandler extends BaseHandler {
 	
 		int id = req.getId();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		if (!player.isFuncOpen(InitialUI.ChapterBox)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
 		long playerId = player.getPlayerId();
 		ChapterModule chapterModule = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
 		boolean pass = chapterModule.isExploreChapterPass(id);
@@ -207,14 +211,14 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 
-		int[] openDay = battleConfig.openDay;
-		if (openDay.length > 0) {
-			int dayOfWeek = DateUtil.getDayOfWeek();
-			if (!GameUtil.contains(openDay, dayOfWeek)) {
-				client.sendProtocol(resp, ErrorMsgEnum.not_open.getId());
-				return;
-			}
-		}
+		/*		int[] openDay = battleConfig.openDay;
+				if (openDay.length > 0) {
+					int dayOfWeek = DateUtil.getDayOfWeek();
+					if (!GameUtil.contains(openDay, dayOfWeek)) {
+						client.sendProtocol(resp, ErrorMsgEnum.not_open.getId());
+						return;
+					}
+				}*/
 		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(battleConfig.preBattle)) {
 			client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
 			return;
@@ -224,10 +228,10 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 
-		if (!PlayerHelper.checkCondition(playerId, battleConfig.enterCondtion)) {
-			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
-			return;
-		}
+//		if (!PlayerHelper.checkCondition(playerId, battleConfig.enterCondtion)) {
+//			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+//			return;
+//		}
 
 		if (!PlayerHelper.delResources(player, battleConfig.cost, ResourceConsumeEnum.None)) {
 			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());

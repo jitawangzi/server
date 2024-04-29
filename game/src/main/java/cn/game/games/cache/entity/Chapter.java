@@ -35,6 +35,9 @@ public class Chapter implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private Integer hpPercent;
+
+	/** 战斗时长（秒） */
+	private int battleTime;
 	/**
 	 * @mbg.generated
 	 */
@@ -122,6 +125,14 @@ public class Chapter implements Serializable, DbEntity {
 	 */
 	public void setHpPercent(Integer hpPercent) {
 		this.hpPercent = hpPercent;
+	}
+
+	public int getBattleTime() {
+		return battleTime;
+	}
+
+	public void setBattleTime(int battleTime) {
+		this.battleTime = battleTime;
 	}
 
 	/**

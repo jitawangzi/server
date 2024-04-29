@@ -14,141 +14,23 @@ public final class DrawMsg {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  /**
-   * <pre>
-   * 卡池类型枚举
-   * </pre>
-   *
-   * Protobuf enum {@code Protos.PoolType}
-   */
-  public enum PoolType
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <pre>
-     *普通卡池
-     * </pre>
-     *
-     * <code>COMMON = 0;</code>
-     */
-    COMMON(0),
-    /**
-     * <pre>
-     *UP卡池
-     * </pre>
-     *
-     * <code>UP = 1;</code>
-     */
-    UP(1),
-    UNRECOGNIZED(-1),
-    ;
-
-    /**
-     * <pre>
-     *普通卡池
-     * </pre>
-     *
-     * <code>COMMON = 0;</code>
-     */
-    public static final int COMMON_VALUE = 0;
-    /**
-     * <pre>
-     *UP卡池
-     * </pre>
-     *
-     * <code>UP = 1;</code>
-     */
-    public static final int UP_VALUE = 1;
-
-
-    public final int getNumber() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
-      }
-      return value;
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     * @deprecated Use {@link #forNumber(int)} instead.
-     */
-    @java.lang.Deprecated
-    public static PoolType valueOf(int value) {
-      return forNumber(value);
-    }
-
-    /**
-     * @param value The numeric wire value of the corresponding enum entry.
-     * @return The enum associated with the given numeric wire value.
-     */
-    public static PoolType forNumber(int value) {
-      switch (value) {
-        case 0: return COMMON;
-        case 1: return UP;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<PoolType>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        PoolType> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<PoolType>() {
-            public PoolType findValueByNumber(int number) {
-              return PoolType.forNumber(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
-      return getDescriptor().getValues().get(ordinal());
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.DrawMsg.getDescriptor().getEnumTypes().get(0);
-    }
-
-    private static final PoolType[] VALUES = values();
-
-    public static PoolType valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      if (desc.getIndex() == -1) {
-        return UNRECOGNIZED;
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int value;
-
-    private PoolType(int value) {
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:Protos.PoolType)
-  }
-
   public interface DrawListRequest_37000001OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.DrawListRequest_37000001)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Draw表id，代表高级抽卡还是至尊抽卡。
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
   }
   /**
    * <pre>
-   * 请求卡池界面
+   * 请求卡池界面数据
    * </pre>
    *
    * Protobuf type {@code Protos.DrawListRequest_37000001}
@@ -195,6 +77,11 @@ public final class DrawMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -227,6 +114,21 @@ public final class DrawMsg {
               cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001.class, cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001.Builder.class);
     }
 
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * Draw表id，代表高级抽卡还是至尊抽卡。
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -241,6 +143,9 @@ public final class DrawMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -250,6 +155,10 @@ public final class DrawMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -265,6 +174,8 @@ public final class DrawMsg {
       }
       cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001 other = (cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001) obj;
 
+      if (getId()
+          != other.getId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -276,6 +187,8 @@ public final class DrawMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -373,7 +286,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 请求卡池界面
+     * 请求卡池界面数据
      * </pre>
      *
      * Protobuf type {@code Protos.DrawListRequest_37000001}
@@ -413,6 +326,8 @@ public final class DrawMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        id_ = 0;
+
         return this;
       }
 
@@ -439,6 +354,7 @@ public final class DrawMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001 buildPartial() {
         cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001 result = new cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001(this);
+        result.id_ = id_;
         onBuilt();
         return result;
       }
@@ -487,6 +403,9 @@ public final class DrawMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001 other) {
         if (other == cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -513,6 +432,49 @@ public final class DrawMsg {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       * Draw表id，代表高级抽卡还是至尊抽卡。
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * Draw表id，代表高级抽卡还是至尊抽卡。
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Draw表id，代表高级抽卡还是至尊抽卡。
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
         return this;
       }
       @java.lang.Override
@@ -574,63 +536,30 @@ public final class DrawMsg {
 
     /**
      * <pre>
-     * 新手卡池当前抽卡次数(若为-1表示新手卡池不可用)
+     * 抽卡相关数据
      * </pre>
      *
-     * <code>int32 noviceCur = 1;</code>
-     * @return The noviceCur.
+     * <code>.Protos.DrawInfo draw = 1;</code>
+     * @return Whether the draw field is set.
      */
-    int getNoviceCur();
-
+    boolean hasDraw();
     /**
      * <pre>
-     * 新手卡池保底上限
+     * 抽卡相关数据
      * </pre>
      *
-     * <code>int32 noviceLimit = 2;</code>
-     * @return The noviceLimit.
+     * <code>.Protos.DrawInfo draw = 1;</code>
+     * @return The draw.
      */
-    int getNoviceLimit();
-
+    cn.game.protocol.protobuf.DrawMsg.DrawInfo getDraw();
     /**
      * <pre>
-     * 普通卡池当前抽卡次数
+     * 抽卡相关数据
      * </pre>
      *
-     * <code>int32 commonCur = 3;</code>
-     * @return The commonCur.
+     * <code>.Protos.DrawInfo draw = 1;</code>
      */
-    int getCommonCur();
-
-    /**
-     * <pre>
-     * 普通卡池保底上限
-     * </pre>
-     *
-     * <code>int32 commonLimit = 4;</code>
-     * @return The commonLimit.
-     */
-    int getCommonLimit();
-
-    /**
-     * <pre>
-     * 	up卡池当前抽卡次数
-     * </pre>
-     *
-     * <code>int32 upCur = 5;</code>
-     * @return The upCur.
-     */
-    int getUpCur();
-
-    /**
-     * <pre>
-     * 	up卡池卡池保底上限
-     * </pre>
-     *
-     * <code>int32 upLimit = 6;</code>
-     * @return The upLimit.
-     */
-    int getUpLimit();
+    cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder getDrawOrBuilder();
   }
   /**
    * <pre>
@@ -681,34 +610,17 @@ public final class DrawMsg {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder subBuilder = null;
+              if (draw_ != null) {
+                subBuilder = draw_.toBuilder();
+              }
+              draw_ = input.readMessage(cn.game.protocol.protobuf.DrawMsg.DrawInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(draw_);
+                draw_ = subBuilder.buildPartial();
+              }
 
-              noviceCur_ = input.readInt32();
-              break;
-            }
-            case 16: {
-
-              noviceLimit_ = input.readInt32();
-              break;
-            }
-            case 24: {
-
-              commonCur_ = input.readInt32();
-              break;
-            }
-            case 32: {
-
-              commonLimit_ = input.readInt32();
-              break;
-            }
-            case 40: {
-
-              upCur_ = input.readInt32();
-              break;
-            }
-            case 48: {
-
-              upLimit_ = input.readInt32();
               break;
             }
             default: {
@@ -743,94 +655,42 @@ public final class DrawMsg {
               cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002.class, cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002.Builder.class);
     }
 
-    public static final int NOVICECUR_FIELD_NUMBER = 1;
-    private int noviceCur_;
+    public static final int DRAW_FIELD_NUMBER = 1;
+    private cn.game.protocol.protobuf.DrawMsg.DrawInfo draw_;
     /**
      * <pre>
-     * 新手卡池当前抽卡次数(若为-1表示新手卡池不可用)
+     * 抽卡相关数据
      * </pre>
      *
-     * <code>int32 noviceCur = 1;</code>
-     * @return The noviceCur.
+     * <code>.Protos.DrawInfo draw = 1;</code>
+     * @return Whether the draw field is set.
      */
     @java.lang.Override
-    public int getNoviceCur() {
-      return noviceCur_;
+    public boolean hasDraw() {
+      return draw_ != null;
     }
-
-    public static final int NOVICELIMIT_FIELD_NUMBER = 2;
-    private int noviceLimit_;
     /**
      * <pre>
-     * 新手卡池保底上限
+     * 抽卡相关数据
      * </pre>
      *
-     * <code>int32 noviceLimit = 2;</code>
-     * @return The noviceLimit.
+     * <code>.Protos.DrawInfo draw = 1;</code>
+     * @return The draw.
      */
     @java.lang.Override
-    public int getNoviceLimit() {
-      return noviceLimit_;
+    public cn.game.protocol.protobuf.DrawMsg.DrawInfo getDraw() {
+      return draw_ == null ? cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance() : draw_;
     }
-
-    public static final int COMMONCUR_FIELD_NUMBER = 3;
-    private int commonCur_;
     /**
      * <pre>
-     * 普通卡池当前抽卡次数
+     * 抽卡相关数据
      * </pre>
      *
-     * <code>int32 commonCur = 3;</code>
-     * @return The commonCur.
+     * <code>.Protos.DrawInfo draw = 1;</code>
      */
     @java.lang.Override
-    public int getCommonCur() {
-      return commonCur_;
-    }
-
-    public static final int COMMONLIMIT_FIELD_NUMBER = 4;
-    private int commonLimit_;
-    /**
-     * <pre>
-     * 普通卡池保底上限
-     * </pre>
-     *
-     * <code>int32 commonLimit = 4;</code>
-     * @return The commonLimit.
-     */
-    @java.lang.Override
-    public int getCommonLimit() {
-      return commonLimit_;
-    }
-
-    public static final int UPCUR_FIELD_NUMBER = 5;
-    private int upCur_;
-    /**
-     * <pre>
-     * 	up卡池当前抽卡次数
-     * </pre>
-     *
-     * <code>int32 upCur = 5;</code>
-     * @return The upCur.
-     */
-    @java.lang.Override
-    public int getUpCur() {
-      return upCur_;
-    }
-
-    public static final int UPLIMIT_FIELD_NUMBER = 6;
-    private int upLimit_;
-    /**
-     * <pre>
-     * 	up卡池卡池保底上限
-     * </pre>
-     *
-     * <code>int32 upLimit = 6;</code>
-     * @return The upLimit.
-     */
-    @java.lang.Override
-    public int getUpLimit() {
-      return upLimit_;
+    public cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder getDrawOrBuilder() {
+      return getDraw();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -847,23 +707,8 @@ public final class DrawMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (noviceCur_ != 0) {
-        output.writeInt32(1, noviceCur_);
-      }
-      if (noviceLimit_ != 0) {
-        output.writeInt32(2, noviceLimit_);
-      }
-      if (commonCur_ != 0) {
-        output.writeInt32(3, commonCur_);
-      }
-      if (commonLimit_ != 0) {
-        output.writeInt32(4, commonLimit_);
-      }
-      if (upCur_ != 0) {
-        output.writeInt32(5, upCur_);
-      }
-      if (upLimit_ != 0) {
-        output.writeInt32(6, upLimit_);
+      if (draw_ != null) {
+        output.writeMessage(1, getDraw());
       }
       unknownFields.writeTo(output);
     }
@@ -874,29 +719,9 @@ public final class DrawMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (noviceCur_ != 0) {
+      if (draw_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, noviceCur_);
-      }
-      if (noviceLimit_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, noviceLimit_);
-      }
-      if (commonCur_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, commonCur_);
-      }
-      if (commonLimit_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, commonLimit_);
-      }
-      if (upCur_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, upCur_);
-      }
-      if (upLimit_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, upLimit_);
+          .computeMessageSize(1, getDraw());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -913,18 +738,11 @@ public final class DrawMsg {
       }
       cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002 other = (cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002) obj;
 
-      if (getNoviceCur()
-          != other.getNoviceCur()) return false;
-      if (getNoviceLimit()
-          != other.getNoviceLimit()) return false;
-      if (getCommonCur()
-          != other.getCommonCur()) return false;
-      if (getCommonLimit()
-          != other.getCommonLimit()) return false;
-      if (getUpCur()
-          != other.getUpCur()) return false;
-      if (getUpLimit()
-          != other.getUpLimit()) return false;
+      if (hasDraw() != other.hasDraw()) return false;
+      if (hasDraw()) {
+        if (!getDraw()
+            .equals(other.getDraw())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -936,18 +754,10 @@ public final class DrawMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + NOVICECUR_FIELD_NUMBER;
-      hash = (53 * hash) + getNoviceCur();
-      hash = (37 * hash) + NOVICELIMIT_FIELD_NUMBER;
-      hash = (53 * hash) + getNoviceLimit();
-      hash = (37 * hash) + COMMONCUR_FIELD_NUMBER;
-      hash = (53 * hash) + getCommonCur();
-      hash = (37 * hash) + COMMONLIMIT_FIELD_NUMBER;
-      hash = (53 * hash) + getCommonLimit();
-      hash = (37 * hash) + UPCUR_FIELD_NUMBER;
-      hash = (53 * hash) + getUpCur();
-      hash = (37 * hash) + UPLIMIT_FIELD_NUMBER;
-      hash = (53 * hash) + getUpLimit();
+      if (hasDraw()) {
+        hash = (37 * hash) + DRAW_FIELD_NUMBER;
+        hash = (53 * hash) + getDraw().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1085,18 +895,12 @@ public final class DrawMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        noviceCur_ = 0;
-
-        noviceLimit_ = 0;
-
-        commonCur_ = 0;
-
-        commonLimit_ = 0;
-
-        upCur_ = 0;
-
-        upLimit_ = 0;
-
+        if (drawBuilder_ == null) {
+          draw_ = null;
+        } else {
+          draw_ = null;
+          drawBuilder_ = null;
+        }
         return this;
       }
 
@@ -1123,12 +927,11 @@ public final class DrawMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002 buildPartial() {
         cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002 result = new cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002(this);
-        result.noviceCur_ = noviceCur_;
-        result.noviceLimit_ = noviceLimit_;
-        result.commonCur_ = commonCur_;
-        result.commonLimit_ = commonLimit_;
-        result.upCur_ = upCur_;
-        result.upLimit_ = upLimit_;
+        if (drawBuilder_ == null) {
+          result.draw_ = draw_;
+        } else {
+          result.draw_ = drawBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -1177,23 +980,8 @@ public final class DrawMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002 other) {
         if (other == cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002.getDefaultInstance()) return this;
-        if (other.getNoviceCur() != 0) {
-          setNoviceCur(other.getNoviceCur());
-        }
-        if (other.getNoviceLimit() != 0) {
-          setNoviceLimit(other.getNoviceLimit());
-        }
-        if (other.getCommonCur() != 0) {
-          setCommonCur(other.getCommonCur());
-        }
-        if (other.getCommonLimit() != 0) {
-          setCommonLimit(other.getCommonLimit());
-        }
-        if (other.getUpCur() != 0) {
-          setUpCur(other.getUpCur());
-        }
-        if (other.getUpLimit() != 0) {
-          setUpLimit(other.getUpLimit());
+        if (other.hasDraw()) {
+          mergeDraw(other.getDraw());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1224,262 +1012,159 @@ public final class DrawMsg {
         return this;
       }
 
-      private int noviceCur_ ;
+      private cn.game.protocol.protobuf.DrawMsg.DrawInfo draw_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.DrawMsg.DrawInfo, cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder, cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder> drawBuilder_;
       /**
        * <pre>
-       * 新手卡池当前抽卡次数(若为-1表示新手卡池不可用)
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 noviceCur = 1;</code>
-       * @return The noviceCur.
+       * <code>.Protos.DrawInfo draw = 1;</code>
+       * @return Whether the draw field is set.
        */
-      @java.lang.Override
-      public int getNoviceCur() {
-        return noviceCur_;
+      public boolean hasDraw() {
+        return drawBuilder_ != null || draw_ != null;
       }
       /**
        * <pre>
-       * 新手卡池当前抽卡次数(若为-1表示新手卡池不可用)
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 noviceCur = 1;</code>
-       * @param value The noviceCur to set.
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 1;</code>
+       * @return The draw.
        */
-      public Builder setNoviceCur(int value) {
-        
-        noviceCur_ = value;
-        onChanged();
-        return this;
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfo getDraw() {
+        if (drawBuilder_ == null) {
+          return draw_ == null ? cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance() : draw_;
+        } else {
+          return drawBuilder_.getMessage();
+        }
       }
       /**
        * <pre>
-       * 新手卡池当前抽卡次数(若为-1表示新手卡池不可用)
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 noviceCur = 1;</code>
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 1;</code>
        */
-      public Builder clearNoviceCur() {
-        
-        noviceCur_ = 0;
-        onChanged();
-        return this;
-      }
+      public Builder setDraw(cn.game.protocol.protobuf.DrawMsg.DrawInfo value) {
+        if (drawBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          draw_ = value;
+          onChanged();
+        } else {
+          drawBuilder_.setMessage(value);
+        }
 
-      private int noviceLimit_ ;
-      /**
-       * <pre>
-       * 新手卡池保底上限
-       * </pre>
-       *
-       * <code>int32 noviceLimit = 2;</code>
-       * @return The noviceLimit.
-       */
-      @java.lang.Override
-      public int getNoviceLimit() {
-        return noviceLimit_;
-      }
-      /**
-       * <pre>
-       * 新手卡池保底上限
-       * </pre>
-       *
-       * <code>int32 noviceLimit = 2;</code>
-       * @param value The noviceLimit to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNoviceLimit(int value) {
-        
-        noviceLimit_ = value;
-        onChanged();
         return this;
       }
       /**
        * <pre>
-       * 新手卡池保底上限
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 noviceLimit = 2;</code>
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 1;</code>
        */
-      public Builder clearNoviceLimit() {
-        
-        noviceLimit_ = 0;
-        onChanged();
-        return this;
-      }
+      public Builder setDraw(
+          cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder builderForValue) {
+        if (drawBuilder_ == null) {
+          draw_ = builderForValue.build();
+          onChanged();
+        } else {
+          drawBuilder_.setMessage(builderForValue.build());
+        }
 
-      private int commonCur_ ;
-      /**
-       * <pre>
-       * 普通卡池当前抽卡次数
-       * </pre>
-       *
-       * <code>int32 commonCur = 3;</code>
-       * @return The commonCur.
-       */
-      @java.lang.Override
-      public int getCommonCur() {
-        return commonCur_;
-      }
-      /**
-       * <pre>
-       * 普通卡池当前抽卡次数
-       * </pre>
-       *
-       * <code>int32 commonCur = 3;</code>
-       * @param value The commonCur to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCommonCur(int value) {
-        
-        commonCur_ = value;
-        onChanged();
         return this;
       }
       /**
        * <pre>
-       * 普通卡池当前抽卡次数
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 commonCur = 3;</code>
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 1;</code>
        */
-      public Builder clearCommonCur() {
-        
-        commonCur_ = 0;
-        onChanged();
-        return this;
-      }
+      public Builder mergeDraw(cn.game.protocol.protobuf.DrawMsg.DrawInfo value) {
+        if (drawBuilder_ == null) {
+          if (draw_ != null) {
+            draw_ =
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo.newBuilder(draw_).mergeFrom(value).buildPartial();
+          } else {
+            draw_ = value;
+          }
+          onChanged();
+        } else {
+          drawBuilder_.mergeFrom(value);
+        }
 
-      private int commonLimit_ ;
-      /**
-       * <pre>
-       * 普通卡池保底上限
-       * </pre>
-       *
-       * <code>int32 commonLimit = 4;</code>
-       * @return The commonLimit.
-       */
-      @java.lang.Override
-      public int getCommonLimit() {
-        return commonLimit_;
-      }
-      /**
-       * <pre>
-       * 普通卡池保底上限
-       * </pre>
-       *
-       * <code>int32 commonLimit = 4;</code>
-       * @param value The commonLimit to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCommonLimit(int value) {
-        
-        commonLimit_ = value;
-        onChanged();
         return this;
       }
       /**
        * <pre>
-       * 普通卡池保底上限
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 commonLimit = 4;</code>
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 1;</code>
        */
-      public Builder clearCommonLimit() {
-        
-        commonLimit_ = 0;
-        onChanged();
-        return this;
-      }
+      public Builder clearDraw() {
+        if (drawBuilder_ == null) {
+          draw_ = null;
+          onChanged();
+        } else {
+          draw_ = null;
+          drawBuilder_ = null;
+        }
 
-      private int upCur_ ;
-      /**
-       * <pre>
-       * 	up卡池当前抽卡次数
-       * </pre>
-       *
-       * <code>int32 upCur = 5;</code>
-       * @return The upCur.
-       */
-      @java.lang.Override
-      public int getUpCur() {
-        return upCur_;
-      }
-      /**
-       * <pre>
-       * 	up卡池当前抽卡次数
-       * </pre>
-       *
-       * <code>int32 upCur = 5;</code>
-       * @param value The upCur to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUpCur(int value) {
-        
-        upCur_ = value;
-        onChanged();
         return this;
       }
       /**
        * <pre>
-       * 	up卡池当前抽卡次数
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 upCur = 5;</code>
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 1;</code>
        */
-      public Builder clearUpCur() {
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder getDrawBuilder() {
         
-        upCur_ = 0;
         onChanged();
-        return this;
-      }
-
-      private int upLimit_ ;
-      /**
-       * <pre>
-       * 	up卡池卡池保底上限
-       * </pre>
-       *
-       * <code>int32 upLimit = 6;</code>
-       * @return The upLimit.
-       */
-      @java.lang.Override
-      public int getUpLimit() {
-        return upLimit_;
+        return getDrawFieldBuilder().getBuilder();
       }
       /**
        * <pre>
-       * 	up卡池卡池保底上限
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 upLimit = 6;</code>
-       * @param value The upLimit to set.
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 1;</code>
        */
-      public Builder setUpLimit(int value) {
-        
-        upLimit_ = value;
-        onChanged();
-        return this;
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder getDrawOrBuilder() {
+        if (drawBuilder_ != null) {
+          return drawBuilder_.getMessageOrBuilder();
+        } else {
+          return draw_ == null ?
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance() : draw_;
+        }
       }
       /**
        * <pre>
-       * 	up卡池卡池保底上限
+       * 抽卡相关数据
        * </pre>
        *
-       * <code>int32 upLimit = 6;</code>
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 1;</code>
        */
-      public Builder clearUpLimit() {
-        
-        upLimit_ = 0;
-        onChanged();
-        return this;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.DrawMsg.DrawInfo, cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder, cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder> 
+          getDrawFieldBuilder() {
+        if (drawBuilder_ == null) {
+          drawBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo, cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder, cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder>(
+                  getDraw(),
+                  getParentForChildren(),
+                  isClean());
+          draw_ = null;
+        }
+        return drawBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -1534,34 +1219,94 @@ public final class DrawMsg {
 
   }
 
-  public interface DrawNoviceRequest_37000003OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.DrawNoviceRequest_37000003)
+  public interface DrawInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.DrawInfo)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+     */
+    int getGiftRemainingTimesCount();
+    /**
+     * <pre>
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+     */
+    boolean containsGiftRemainingTimes(
+        int key);
+    /**
+     * Use {@link #getGiftRemainingTimesMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getGiftRemainingTimes();
+    /**
+     * <pre>
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getGiftRemainingTimesMap();
+    /**
+     * <pre>
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+     */
+
+    int getGiftRemainingTimesOrDefault(
+        int key,
+        int defaultValue);
+    /**
+     * <pre>
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+     */
+
+    int getGiftRemainingTimesOrThrow(
+        int key);
+
+    /**
+     * <pre>
+     * 距离下次免费单抽的时间(秒)
+     * </pre>
+     *
+     * <code>int32 nextFreeTime = 2;</code>
+     * @return The nextFreeTime.
+     */
+    int getNextFreeTime();
   }
   /**
-   * <pre>
-   * 请求在新手卡池抽卡
-   * </pre>
-   *
-   * Protobuf type {@code Protos.DrawNoviceRequest_37000003}
+   * Protobuf type {@code Protos.DrawInfo}
    */
-  public static final class DrawNoviceRequest_37000003 extends
+  public static final class DrawInfo extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.DrawNoviceRequest_37000003)
-      DrawNoviceRequest_37000003OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.DrawInfo)
+      DrawInfoOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use DrawNoviceRequest_37000003.newBuilder() to construct.
-    private DrawNoviceRequest_37000003(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use DrawInfo.newBuilder() to construct.
+    private DrawInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private DrawNoviceRequest_37000003() {
+    private DrawInfo() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new DrawNoviceRequest_37000003();
+      return new DrawInfo();
     }
 
     @java.lang.Override
@@ -1569,463 +1314,7 @@ public final class DrawMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private DrawNoviceRequest_37000003(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceRequest_37000003_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceRequest_37000003_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003.class, cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003.Builder.class);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 other = (cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003) obj;
-
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 请求在新手卡池抽卡
-     * </pre>
-     *
-     * Protobuf type {@code Protos.DrawNoviceRequest_37000003}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.DrawNoviceRequest_37000003)
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceRequest_37000003_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceRequest_37000003_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003.class, cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceRequest_37000003_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 build() {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 buildPartial() {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 result = new cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003(this);
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003) {
-          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 other) {
-        if (other == cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.DrawNoviceRequest_37000003)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.DrawNoviceRequest_37000003)
-    private static final cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003();
-    }
-
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<DrawNoviceRequest_37000003>
-        PARSER = new com.google.protobuf.AbstractParser<DrawNoviceRequest_37000003>() {
-      @java.lang.Override
-      public DrawNoviceRequest_37000003 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new DrawNoviceRequest_37000003(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<DrawNoviceRequest_37000003> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<DrawNoviceRequest_37000003> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.DrawMsg.DrawNoviceRequest_37000003 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface DrawNoviceResponse_37000004OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.DrawNoviceResponse_37000004)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 本次抽到角色
-     * </pre>
-     *
-     * <code>repeated int32 roleIds = 1;</code>
-     * @return A list containing the roleIds.
-     */
-    java.util.List<java.lang.Integer> getRoleIdsList();
-    /**
-     * <pre>
-     * 本次抽到角色
-     * </pre>
-     *
-     * <code>repeated int32 roleIds = 1;</code>
-     * @return The count of roleIds.
-     */
-    int getRoleIdsCount();
-    /**
-     * <pre>
-     * 本次抽到角色
-     * </pre>
-     *
-     * <code>repeated int32 roleIds = 1;</code>
-     * @param index The index of the element to return.
-     * @return The roleIds at the given index.
-     */
-    int getRoleIds(int index);
-  }
-  /**
-   * <pre>
-   * 响应本次新手卡池抽到的角色
-   * </pre>
-   *
-   * Protobuf type {@code Protos.DrawNoviceResponse_37000004}
-   */
-  public static final class DrawNoviceResponse_37000004 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.DrawNoviceResponse_37000004)
-      DrawNoviceResponse_37000004OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use DrawNoviceResponse_37000004.newBuilder() to construct.
-    private DrawNoviceResponse_37000004(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private DrawNoviceResponse_37000004() {
-      roleIds_ = emptyIntList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new DrawNoviceResponse_37000004();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private DrawNoviceResponse_37000004(
+    private DrawInfo(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2044,25 +1333,22 @@ public final class DrawMsg {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                roleIds_ = newIntList();
+                giftRemainingTimes_ = com.google.protobuf.MapField.newMapField(
+                    GiftRemainingTimesDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000001;
               }
-              roleIds_.addInt(input.readInt32());
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+              giftRemainingTimes__ = input.readMessage(
+                  GiftRemainingTimesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              giftRemainingTimes_.getMutableMap().put(
+                  giftRemainingTimes__.getKey(), giftRemainingTimes__.getValue());
               break;
             }
-            case 10: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                roleIds_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                roleIds_.addInt(input.readInt32());
-              }
-              input.popLimit(limit);
+            case 16: {
+
+              nextFreeTime_ = input.readInt32();
               break;
             }
             default: {
@@ -2080,65 +1366,146 @@ public final class DrawMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          roleIds_.makeImmutable(); // C
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceResponse_37000004_descriptor;
+      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawInfo_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 1:
+          return internalGetGiftRemainingTimes();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceResponse_37000004_fieldAccessorTable
+      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004.class, cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004.Builder.class);
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo.class, cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder.class);
     }
 
-    public static final int ROLEIDS_FIELD_NUMBER = 1;
-    private com.google.protobuf.Internal.IntList roleIds_;
+    public static final int GIFTREMAININGTIMES_FIELD_NUMBER = 1;
+    private static final class GiftRemainingTimesDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.Integer> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.Integer>newDefaultInstance(
+                  cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Integer> giftRemainingTimes_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+    internalGetGiftRemainingTimes() {
+      if (giftRemainingTimes_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            GiftRemainingTimesDefaultEntryHolder.defaultEntry);
+      }
+      return giftRemainingTimes_;
+    }
+
+    public int getGiftRemainingTimesCount() {
+      return internalGetGiftRemainingTimes().getMap().size();
+    }
     /**
      * <pre>
-     * 本次抽到角色
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
      * </pre>
      *
-     * <code>repeated int32 roleIds = 1;</code>
-     * @return A list containing the roleIds.
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsGiftRemainingTimes(
+        int key) {
+      
+      return internalGetGiftRemainingTimes().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getGiftRemainingTimesMap()} instead.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getRoleIdsList() {
-      return roleIds_;
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getGiftRemainingTimes() {
+      return getGiftRemainingTimesMap();
     }
     /**
      * <pre>
-     * 本次抽到角色
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
      * </pre>
      *
-     * <code>repeated int32 roleIds = 1;</code>
-     * @return The count of roleIds.
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
      */
-    public int getRoleIdsCount() {
-      return roleIds_.size();
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getGiftRemainingTimesMap() {
+      return internalGetGiftRemainingTimes().getMap();
     }
     /**
      * <pre>
-     * 本次抽到角色
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
      * </pre>
      *
-     * <code>repeated int32 roleIds = 1;</code>
-     * @param index The index of the element to return.
-     * @return The roleIds at the given index.
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
      */
-    public int getRoleIds(int index) {
-      return roleIds_.getInt(index);
+    @java.lang.Override
+
+    public int getGiftRemainingTimesOrDefault(
+        int key,
+        int defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetGiftRemainingTimes().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
     }
-    private int roleIdsMemoizedSerializedSize = -1;
+    /**
+     * <pre>
+     * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+     */
+    @java.lang.Override
+
+    public int getGiftRemainingTimesOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetGiftRemainingTimes().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public static final int NEXTFREETIME_FIELD_NUMBER = 2;
+    private int nextFreeTime_;
+    /**
+     * <pre>
+     * 距离下次免费单抽的时间(秒)
+     * </pre>
+     *
+     * <code>int32 nextFreeTime = 2;</code>
+     * @return The nextFreeTime.
+     */
+    @java.lang.Override
+    public int getNextFreeTime() {
+      return nextFreeTime_;
+    }
 
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
@@ -2154,13 +1521,14 @@ public final class DrawMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
-      if (getRoleIdsList().size() > 0) {
-        output.writeUInt32NoTag(10);
-        output.writeUInt32NoTag(roleIdsMemoizedSerializedSize);
-      }
-      for (int i = 0; i < roleIds_.size(); i++) {
-        output.writeInt32NoTag(roleIds_.getInt(i));
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetGiftRemainingTimes(),
+          GiftRemainingTimesDefaultEntryHolder.defaultEntry,
+          1);
+      if (nextFreeTime_ != 0) {
+        output.writeInt32(2, nextFreeTime_);
       }
       unknownFields.writeTo(output);
     }
@@ -2171,19 +1539,19 @@ public final class DrawMsg {
       if (size != -1) return size;
 
       size = 0;
-      {
-        int dataSize = 0;
-        for (int i = 0; i < roleIds_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(roleIds_.getInt(i));
-        }
-        size += dataSize;
-        if (!getRoleIdsList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        roleIdsMemoizedSerializedSize = dataSize;
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
+           : internalGetGiftRemainingTimes().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+        giftRemainingTimes__ = GiftRemainingTimesDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(1, giftRemainingTimes__);
+      }
+      if (nextFreeTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, nextFreeTime_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2195,13 +1563,15 @@ public final class DrawMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawInfo)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 other = (cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004) obj;
+      cn.game.protocol.protobuf.DrawMsg.DrawInfo other = (cn.game.protocol.protobuf.DrawMsg.DrawInfo) obj;
 
-      if (!getRoleIdsList()
-          .equals(other.getRoleIdsList())) return false;
+      if (!internalGetGiftRemainingTimes().equals(
+          other.internalGetGiftRemainingTimes())) return false;
+      if (getNextFreeTime()
+          != other.getNextFreeTime()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2213,78 +1583,80 @@ public final class DrawMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getRoleIdsCount() > 0) {
-        hash = (37 * hash) + ROLEIDS_FIELD_NUMBER;
-        hash = (53 * hash) + getRoleIdsList().hashCode();
+      if (!internalGetGiftRemainingTimes().getMap().isEmpty()) {
+        hash = (37 * hash) + GIFTREMAININGTIMES_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetGiftRemainingTimes().hashCode();
       }
+      hash = (37 * hash) + NEXTFREETIME_FIELD_NUMBER;
+      hash = (53 * hash) + getNextFreeTime();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2297,7 +1669,7 @@ public final class DrawMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawInfo prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2313,30 +1685,48 @@ public final class DrawMsg {
       return builder;
     }
     /**
-     * <pre>
-     * 响应本次新手卡池抽到的角色
-     * </pre>
-     *
-     * Protobuf type {@code Protos.DrawNoviceResponse_37000004}
+     * Protobuf type {@code Protos.DrawInfo}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.DrawNoviceResponse_37000004)
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.DrawInfo)
+        cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceResponse_37000004_descriptor;
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawInfo_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 1:
+            return internalGetGiftRemainingTimes();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 1:
+            return internalGetMutableGiftRemainingTimes();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceResponse_37000004_fieldAccessorTable
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004.class, cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004.Builder.class);
+                cn.game.protocol.protobuf.DrawMsg.DrawInfo.class, cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004.newBuilder()
+      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawInfo.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2354,25 +1744,26 @@ public final class DrawMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        roleIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        internalGetMutableGiftRemainingTimes().clear();
+        nextFreeTime_ = 0;
+
         return this;
       }
 
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceResponse_37000004_descriptor;
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawInfo_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004.getDefaultInstance();
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 build() {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 result = buildPartial();
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfo build() {
+        cn.game.protocol.protobuf.DrawMsg.DrawInfo result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2380,14 +1771,12 @@ public final class DrawMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 buildPartial() {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 result = new cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004(this);
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfo buildPartial() {
+        cn.game.protocol.protobuf.DrawMsg.DrawInfo result = new cn.game.protocol.protobuf.DrawMsg.DrawInfo(this);
         int from_bitField0_ = bitField0_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          roleIds_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.roleIds_ = roleIds_;
+        result.giftRemainingTimes_ = internalGetGiftRemainingTimes();
+        result.giftRemainingTimes_.makeImmutable();
+        result.nextFreeTime_ = nextFreeTime_;
         onBuilt();
         return result;
       }
@@ -2426,25 +1815,20 @@ public final class DrawMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004) {
-          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004)other);
+        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawInfo)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 other) {
-        if (other == cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004.getDefaultInstance()) return this;
-        if (!other.roleIds_.isEmpty()) {
-          if (roleIds_.isEmpty()) {
-            roleIds_ = other.roleIds_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureRoleIdsIsMutable();
-            roleIds_.addAll(other.roleIds_);
-          }
-          onChanged();
+      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawInfo other) {
+        if (other == cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance()) return this;
+        internalGetMutableGiftRemainingTimes().mergeFrom(
+            other.internalGetGiftRemainingTimes());
+        if (other.getNextFreeTime() != 0) {
+          setNextFreeTime(other.getNextFreeTime());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2461,11 +1845,11 @@ public final class DrawMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 parsedMessage = null;
+        cn.game.protocol.protobuf.DrawMsg.DrawInfo parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawInfo) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2476,109 +1860,201 @@ public final class DrawMsg {
       }
       private int bitField0_;
 
-      private com.google.protobuf.Internal.IntList roleIds_ = emptyIntList();
-      private void ensureRoleIdsIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          roleIds_ = mutableCopy(roleIds_);
-          bitField0_ |= 0x00000001;
-         }
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.Integer> giftRemainingTimes_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetGiftRemainingTimes() {
+        if (giftRemainingTimes_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              GiftRemainingTimesDefaultEntryHolder.defaultEntry);
+        }
+        return giftRemainingTimes_;
+      }
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetMutableGiftRemainingTimes() {
+        onChanged();;
+        if (giftRemainingTimes_ == null) {
+          giftRemainingTimes_ = com.google.protobuf.MapField.newMapField(
+              GiftRemainingTimesDefaultEntryHolder.defaultEntry);
+        }
+        if (!giftRemainingTimes_.isMutable()) {
+          giftRemainingTimes_ = giftRemainingTimes_.copy();
+        }
+        return giftRemainingTimes_;
+      }
+
+      public int getGiftRemainingTimesCount() {
+        return internalGetGiftRemainingTimes().getMap().size();
       }
       /**
        * <pre>
-       * 本次抽到角色
+       * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
        * </pre>
        *
-       * <code>repeated int32 roleIds = 1;</code>
-       * @return A list containing the roleIds.
+       * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
        */
-      public java.util.List<java.lang.Integer>
-          getRoleIdsList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(roleIds_) : roleIds_;
+
+      @java.lang.Override
+      public boolean containsGiftRemainingTimes(
+          int key) {
+        
+        return internalGetGiftRemainingTimes().getMap().containsKey(key);
       }
       /**
-       * <pre>
-       * 本次抽到角色
-       * </pre>
-       *
-       * <code>repeated int32 roleIds = 1;</code>
-       * @return The count of roleIds.
+       * Use {@link #getGiftRemainingTimesMap()} instead.
        */
-      public int getRoleIdsCount() {
-        return roleIds_.size();
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getGiftRemainingTimes() {
+        return getGiftRemainingTimesMap();
       }
       /**
        * <pre>
-       * 本次抽到角色
+       * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
        * </pre>
        *
-       * <code>repeated int32 roleIds = 1;</code>
-       * @param index The index of the element to return.
-       * @return The roleIds at the given index.
+       * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
        */
-      public int getRoleIds(int index) {
-        return roleIds_.getInt(index);
+      @java.lang.Override
+
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getGiftRemainingTimesMap() {
+        return internalGetGiftRemainingTimes().getMap();
       }
       /**
        * <pre>
-       * 本次抽到角色
+       * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
        * </pre>
        *
-       * <code>repeated int32 roleIds = 1;</code>
-       * @param index The index to set the value at.
-       * @param value The roleIds to set.
+       * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+       */
+      @java.lang.Override
+
+      public int getGiftRemainingTimesOrDefault(
+          int key,
+          int defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetGiftRemainingTimes().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+       */
+      @java.lang.Override
+
+      public int getGiftRemainingTimesOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetGiftRemainingTimes().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearGiftRemainingTimes() {
+        internalGetMutableGiftRemainingTimes().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+       */
+
+      public Builder removeGiftRemainingTimes(
+          int key) {
+        
+        internalGetMutableGiftRemainingTimes().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer>
+      getMutableGiftRemainingTimes() {
+        return internalGetMutableGiftRemainingTimes().getMutableMap();
+      }
+      /**
+       * <pre>
+       * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+       */
+      public Builder putGiftRemainingTimes(
+          int key,
+          int value) {
+        
+        
+        internalGetMutableGiftRemainingTimes().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       * 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftRemainingTimes = 1;</code>
+       */
+
+      public Builder putAllGiftRemainingTimes(
+          java.util.Map<java.lang.Integer, java.lang.Integer> values) {
+        internalGetMutableGiftRemainingTimes().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+
+      private int nextFreeTime_ ;
+      /**
+       * <pre>
+       * 距离下次免费单抽的时间(秒)
+       * </pre>
+       *
+       * <code>int32 nextFreeTime = 2;</code>
+       * @return The nextFreeTime.
+       */
+      @java.lang.Override
+      public int getNextFreeTime() {
+        return nextFreeTime_;
+      }
+      /**
+       * <pre>
+       * 距离下次免费单抽的时间(秒)
+       * </pre>
+       *
+       * <code>int32 nextFreeTime = 2;</code>
+       * @param value The nextFreeTime to set.
        * @return This builder for chaining.
        */
-      public Builder setRoleIds(
-          int index, int value) {
-        ensureRoleIdsIsMutable();
-        roleIds_.setInt(index, value);
+      public Builder setNextFreeTime(int value) {
+        
+        nextFreeTime_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 本次抽到角色
+       * 距离下次免费单抽的时间(秒)
        * </pre>
        *
-       * <code>repeated int32 roleIds = 1;</code>
-       * @param value The roleIds to add.
+       * <code>int32 nextFreeTime = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder addRoleIds(int value) {
-        ensureRoleIdsIsMutable();
-        roleIds_.addInt(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 本次抽到角色
-       * </pre>
-       *
-       * <code>repeated int32 roleIds = 1;</code>
-       * @param values The roleIds to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllRoleIds(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureRoleIdsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, roleIds_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 本次抽到角色
-       * </pre>
-       *
-       * <code>repeated int32 roleIds = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearRoleIds() {
-        roleIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+      public Builder clearNextFreeTime() {
+        
+        nextFreeTime_ = 0;
         onChanged();
         return this;
       }
@@ -2595,74 +2071,104 @@ public final class DrawMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.DrawNoviceResponse_37000004)
+      // @@protoc_insertion_point(builder_scope:Protos.DrawInfo)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.DrawNoviceResponse_37000004)
-    private static final cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.DrawInfo)
+    private static final cn.game.protocol.protobuf.DrawMsg.DrawInfo DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawInfo();
     }
 
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.DrawMsg.DrawInfo getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<DrawNoviceResponse_37000004>
-        PARSER = new com.google.protobuf.AbstractParser<DrawNoviceResponse_37000004>() {
+    private static final com.google.protobuf.Parser<DrawInfo>
+        PARSER = new com.google.protobuf.AbstractParser<DrawInfo>() {
       @java.lang.Override
-      public DrawNoviceResponse_37000004 parsePartialFrom(
+      public DrawInfo parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new DrawNoviceResponse_37000004(input, extensionRegistry);
+        return new DrawInfo(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<DrawNoviceResponse_37000004> parser() {
+    public static com.google.protobuf.Parser<DrawInfo> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<DrawNoviceResponse_37000004> getParserForType() {
+    public com.google.protobuf.Parser<DrawInfo> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.DrawMsg.DrawNoviceResponse_37000004 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.DrawMsg.DrawInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface DrawNoviceChoiceRequest_37000005OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.DrawNoviceChoiceRequest_37000005)
+  public interface DrawRequest_37000003OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.DrawRequest_37000003)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Draw表id，代表高级抽卡还是至尊抽卡。
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * 是否是十连抽
+     * </pre>
+     *
+     * <code>bool ten = 2;</code>
+     * @return The ten.
+     */
+    boolean getTen();
+
+    /**
+     * <pre>
+     * 是否是免费的单抽
+     * </pre>
+     *
+     * <code>bool freeOnce = 3;</code>
+     * @return The freeOnce.
+     */
+    boolean getFreeOnce();
   }
   /**
    * <pre>
-   * 选择新手卡池当前奖励
+   * 请求抽卡
    * </pre>
    *
-   * Protobuf type {@code Protos.DrawNoviceChoiceRequest_37000005}
+   * Protobuf type {@code Protos.DrawRequest_37000003}
    */
-  public static final class DrawNoviceChoiceRequest_37000005 extends
+  public static final class DrawRequest_37000003 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.DrawNoviceChoiceRequest_37000005)
-      DrawNoviceChoiceRequest_37000005OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.DrawRequest_37000003)
+      DrawRequest_37000003OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use DrawNoviceChoiceRequest_37000005.newBuilder() to construct.
-    private DrawNoviceChoiceRequest_37000005(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use DrawRequest_37000003.newBuilder() to construct.
+    private DrawRequest_37000003(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private DrawNoviceChoiceRequest_37000005() {
+    private DrawRequest_37000003() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new DrawNoviceChoiceRequest_37000005();
+      return new DrawRequest_37000003();
     }
 
     @java.lang.Override
@@ -2670,7 +2176,7 @@ public final class DrawMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private DrawNoviceChoiceRequest_37000005(
+    private DrawRequest_37000003(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2688,6 +2194,21 @@ public final class DrawMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              ten_ = input.readBool();
+              break;
+            }
+            case 24: {
+
+              freeOnce_ = input.readBool();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -2709,15 +2230,60 @@ public final class DrawMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceRequest_37000005_descriptor;
+      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000003_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceRequest_37000005_fieldAccessorTable
+      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000003_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005.class, cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005.Builder.class);
+              cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.class, cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * Draw表id，代表高级抽卡还是至尊抽卡。
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int TEN_FIELD_NUMBER = 2;
+    private boolean ten_;
+    /**
+     * <pre>
+     * 是否是十连抽
+     * </pre>
+     *
+     * <code>bool ten = 2;</code>
+     * @return The ten.
+     */
+    @java.lang.Override
+    public boolean getTen() {
+      return ten_;
+    }
+
+    public static final int FREEONCE_FIELD_NUMBER = 3;
+    private boolean freeOnce_;
+    /**
+     * <pre>
+     * 是否是免费的单抽
+     * </pre>
+     *
+     * <code>bool freeOnce = 3;</code>
+     * @return The freeOnce.
+     */
+    @java.lang.Override
+    public boolean getFreeOnce() {
+      return freeOnce_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2734,6 +2300,15 @@ public final class DrawMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
+      if (ten_ != false) {
+        output.writeBool(2, ten_);
+      }
+      if (freeOnce_ != false) {
+        output.writeBool(3, freeOnce_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -2743,6 +2318,18 @@ public final class DrawMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      if (ten_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, ten_);
+      }
+      if (freeOnce_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, freeOnce_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -2753,11 +2340,17 @@ public final class DrawMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 other = (cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005) obj;
+      cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 other = (cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003) obj;
 
+      if (getId()
+          != other.getId()) return false;
+      if (getTen()
+          != other.getTen()) return false;
+      if (getFreeOnce()
+          != other.getFreeOnce()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2769,74 +2362,82 @@ public final class DrawMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + TEN_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getTen());
+      hash = (37 * hash) + FREEONCE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getFreeOnce());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2849,7 +2450,7 @@ public final class DrawMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2866,29 +2467,29 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 选择新手卡池当前奖励
+     * 请求抽卡
      * </pre>
      *
-     * Protobuf type {@code Protos.DrawNoviceChoiceRequest_37000005}
+     * Protobuf type {@code Protos.DrawRequest_37000003}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.DrawNoviceChoiceRequest_37000005)
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.DrawRequest_37000003)
+        cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceRequest_37000005_descriptor;
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000003_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceRequest_37000005_fieldAccessorTable
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000003_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005.class, cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005.Builder.class);
+                cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.class, cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005.newBuilder()
+      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2906,23 +2507,29 @@ public final class DrawMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        id_ = 0;
+
+        ten_ = false;
+
+        freeOnce_ = false;
+
         return this;
       }
 
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceRequest_37000005_descriptor;
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000003_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005.getDefaultInstance();
+      public cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 build() {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 result = buildPartial();
+      public cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 build() {
+        cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2930,8 +2537,11 @@ public final class DrawMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 buildPartial() {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 result = new cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005(this);
+      public cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 buildPartial() {
+        cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 result = new cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003(this);
+        result.id_ = id_;
+        result.ten_ = ten_;
+        result.freeOnce_ = freeOnce_;
         onBuilt();
         return result;
       }
@@ -2970,16 +2580,25 @@ public final class DrawMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005) {
-          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005)other);
+        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003) {
+          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 other) {
-        if (other == cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 other) {
+        if (other == cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getTen() != false) {
+          setTen(other.getTen());
+        }
+        if (other.getFreeOnce() != false) {
+          setFreeOnce(other.getFreeOnce());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -2995,17 +2614,146 @@ public final class DrawMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 parsedMessage = null;
+        cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       * Draw表id，代表高级抽卡还是至尊抽卡。
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * Draw表id，代表高级抽卡还是至尊抽卡。
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Draw表id，代表高级抽卡还是至尊抽卡。
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean ten_ ;
+      /**
+       * <pre>
+       * 是否是十连抽
+       * </pre>
+       *
+       * <code>bool ten = 2;</code>
+       * @return The ten.
+       */
+      @java.lang.Override
+      public boolean getTen() {
+        return ten_;
+      }
+      /**
+       * <pre>
+       * 是否是十连抽
+       * </pre>
+       *
+       * <code>bool ten = 2;</code>
+       * @param value The ten to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTen(boolean value) {
+        
+        ten_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是否是十连抽
+       * </pre>
+       *
+       * <code>bool ten = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTen() {
+        
+        ten_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean freeOnce_ ;
+      /**
+       * <pre>
+       * 是否是免费的单抽
+       * </pre>
+       *
+       * <code>bool freeOnce = 3;</code>
+       * @return The freeOnce.
+       */
+      @java.lang.Override
+      public boolean getFreeOnce() {
+        return freeOnce_;
+      }
+      /**
+       * <pre>
+       * 是否是免费的单抽
+       * </pre>
+       *
+       * <code>bool freeOnce = 3;</code>
+       * @param value The freeOnce to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFreeOnce(boolean value) {
+        
+        freeOnce_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是否是免费的单抽
+       * </pre>
+       *
+       * <code>bool freeOnce = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFreeOnce() {
+        
+        freeOnce_ = false;
+        onChanged();
         return this;
       }
       @java.lang.Override
@@ -3021,53 +2769,53 @@ public final class DrawMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.DrawNoviceChoiceRequest_37000005)
+      // @@protoc_insertion_point(builder_scope:Protos.DrawRequest_37000003)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.DrawNoviceChoiceRequest_37000005)
-    private static final cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.DrawRequest_37000003)
+    private static final cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003();
     }
 
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<DrawNoviceChoiceRequest_37000005>
-        PARSER = new com.google.protobuf.AbstractParser<DrawNoviceChoiceRequest_37000005>() {
+    private static final com.google.protobuf.Parser<DrawRequest_37000003>
+        PARSER = new com.google.protobuf.AbstractParser<DrawRequest_37000003>() {
       @java.lang.Override
-      public DrawNoviceChoiceRequest_37000005 parsePartialFrom(
+      public DrawRequest_37000003 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new DrawNoviceChoiceRequest_37000005(input, extensionRegistry);
+        return new DrawRequest_37000003(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<DrawNoviceChoiceRequest_37000005> parser() {
+    public static com.google.protobuf.Parser<DrawRequest_37000003> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<DrawNoviceChoiceRequest_37000005> getParserForType() {
+    public com.google.protobuf.Parser<DrawRequest_37000003> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceRequest_37000005 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface DrawNoviceChoiceResponse_37000006OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.DrawNoviceChoiceResponse_37000006)
+  public interface DrawResponse_37000004OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.DrawResponse_37000004)
       com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3076,7 +2824,7 @@ public final class DrawMsg {
         getRewardsList();
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3084,7 +2832,7 @@ public final class DrawMsg {
     cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3092,7 +2840,7 @@ public final class DrawMsg {
     int getRewardsCount();
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3101,31 +2849,68 @@ public final class DrawMsg {
         getRewardsOrBuilderList();
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
      */
     cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     * 抽卡获得的金币
+     * </pre>
+     *
+     * <code>int32 gold = 2;</code>
+     * @return The gold.
+     */
+    int getGold();
+
+    /**
+     * <pre>
+     * 更新相关数据
+     * </pre>
+     *
+     * <code>.Protos.DrawInfo draw = 3;</code>
+     * @return Whether the draw field is set.
+     */
+    boolean hasDraw();
+    /**
+     * <pre>
+     * 更新相关数据
+     * </pre>
+     *
+     * <code>.Protos.DrawInfo draw = 3;</code>
+     * @return The draw.
+     */
+    cn.game.protocol.protobuf.DrawMsg.DrawInfo getDraw();
+    /**
+     * <pre>
+     * 更新相关数据
+     * </pre>
+     *
+     * <code>.Protos.DrawInfo draw = 3;</code>
+     */
+    cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder getDrawOrBuilder();
   }
   /**
    * <pre>
-   * 响应新手卡池抽卡奖励
+   * 抽卡结果
    * </pre>
    *
-   * Protobuf type {@code Protos.DrawNoviceChoiceResponse_37000006}
+   * Protobuf type {@code Protos.DrawResponse_37000004}
    */
-  public static final class DrawNoviceChoiceResponse_37000006 extends
+  public static final class DrawResponse_37000004 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.DrawNoviceChoiceResponse_37000006)
-      DrawNoviceChoiceResponse_37000006OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.DrawResponse_37000004)
+      DrawResponse_37000004OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use DrawNoviceChoiceResponse_37000006.newBuilder() to construct.
-    private DrawNoviceChoiceResponse_37000006(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use DrawResponse_37000004.newBuilder() to construct.
+    private DrawResponse_37000004(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private DrawNoviceChoiceResponse_37000006() {
+    private DrawResponse_37000004() {
       rewards_ = java.util.Collections.emptyList();
     }
 
@@ -3133,7 +2918,7 @@ public final class DrawMsg {
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new DrawNoviceChoiceResponse_37000006();
+      return new DrawResponse_37000004();
     }
 
     @java.lang.Override
@@ -3141,7 +2926,7 @@ public final class DrawMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private DrawNoviceChoiceResponse_37000006(
+    private DrawResponse_37000004(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3169,6 +2954,24 @@ public final class DrawMsg {
                   input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
               break;
             }
+            case 16: {
+
+              gold_ = input.readInt32();
+              break;
+            }
+            case 26: {
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder subBuilder = null;
+              if (draw_ != null) {
+                subBuilder = draw_.toBuilder();
+              }
+              draw_ = input.readMessage(cn.game.protocol.protobuf.DrawMsg.DrawInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(draw_);
+                draw_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -3193,22 +2996,22 @@ public final class DrawMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceResponse_37000006_descriptor;
+      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000004_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceResponse_37000006_fieldAccessorTable
+      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000004_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006.class, cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006.Builder.class);
+              cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004.class, cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004.Builder.class);
     }
 
     public static final int REWARDS_FIELD_NUMBER = 1;
     private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3219,7 +3022,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3231,7 +3034,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3242,7 +3045,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3253,7 +3056,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 抽卡奖励
+     * 抽卡获得的英雄
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3262,6 +3065,59 @@ public final class DrawMsg {
     public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
         int index) {
       return rewards_.get(index);
+    }
+
+    public static final int GOLD_FIELD_NUMBER = 2;
+    private int gold_;
+    /**
+     * <pre>
+     * 抽卡获得的金币
+     * </pre>
+     *
+     * <code>int32 gold = 2;</code>
+     * @return The gold.
+     */
+    @java.lang.Override
+    public int getGold() {
+      return gold_;
+    }
+
+    public static final int DRAW_FIELD_NUMBER = 3;
+    private cn.game.protocol.protobuf.DrawMsg.DrawInfo draw_;
+    /**
+     * <pre>
+     * 更新相关数据
+     * </pre>
+     *
+     * <code>.Protos.DrawInfo draw = 3;</code>
+     * @return Whether the draw field is set.
+     */
+    @java.lang.Override
+    public boolean hasDraw() {
+      return draw_ != null;
+    }
+    /**
+     * <pre>
+     * 更新相关数据
+     * </pre>
+     *
+     * <code>.Protos.DrawInfo draw = 3;</code>
+     * @return The draw.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DrawMsg.DrawInfo getDraw() {
+      return draw_ == null ? cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance() : draw_;
+    }
+    /**
+     * <pre>
+     * 更新相关数据
+     * </pre>
+     *
+     * <code>.Protos.DrawInfo draw = 3;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder getDrawOrBuilder() {
+      return getDraw();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3281,6 +3137,12 @@ public final class DrawMsg {
       for (int i = 0; i < rewards_.size(); i++) {
         output.writeMessage(1, rewards_.get(i));
       }
+      if (gold_ != 0) {
+        output.writeInt32(2, gold_);
+      }
+      if (draw_ != null) {
+        output.writeMessage(3, getDraw());
+      }
       unknownFields.writeTo(output);
     }
 
@@ -3294,6 +3156,14 @@ public final class DrawMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, rewards_.get(i));
       }
+      if (gold_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, gold_);
+      }
+      if (draw_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getDraw());
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -3304,13 +3174,20 @@ public final class DrawMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 other = (cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006) obj;
+      cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 other = (cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004) obj;
 
       if (!getRewardsList()
           .equals(other.getRewardsList())) return false;
+      if (getGold()
+          != other.getGold()) return false;
+      if (hasDraw() != other.hasDraw()) return false;
+      if (hasDraw()) {
+        if (!getDraw()
+            .equals(other.getDraw())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3326,74 +3203,80 @@ public final class DrawMsg {
         hash = (37 * hash) + REWARDS_FIELD_NUMBER;
         hash = (53 * hash) + getRewardsList().hashCode();
       }
+      hash = (37 * hash) + GOLD_FIELD_NUMBER;
+      hash = (53 * hash) + getGold();
+      if (hasDraw()) {
+        hash = (37 * hash) + DRAW_FIELD_NUMBER;
+        hash = (53 * hash) + getDraw().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parseFrom(
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3406,7 +3289,7 @@ public final class DrawMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -3423,29 +3306,29 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 响应新手卡池抽卡奖励
+     * 抽卡结果
      * </pre>
      *
-     * Protobuf type {@code Protos.DrawNoviceChoiceResponse_37000006}
+     * Protobuf type {@code Protos.DrawResponse_37000004}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.DrawNoviceChoiceResponse_37000006)
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.DrawResponse_37000004)
+        cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceResponse_37000006_descriptor;
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000004_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceResponse_37000006_fieldAccessorTable
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000004_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006.class, cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006.Builder.class);
+                cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004.class, cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006.newBuilder()
+      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3470,23 +3353,31 @@ public final class DrawMsg {
         } else {
           rewardsBuilder_.clear();
         }
+        gold_ = 0;
+
+        if (drawBuilder_ == null) {
+          draw_ = null;
+        } else {
+          draw_ = null;
+          drawBuilder_ = null;
+        }
         return this;
       }
 
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawNoviceChoiceResponse_37000006_descriptor;
+        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000004_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006.getDefaultInstance();
+      public cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 build() {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 result = buildPartial();
+      public cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 build() {
+        cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -3494,8 +3385,8 @@ public final class DrawMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 buildPartial() {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 result = new cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006(this);
+      public cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 buildPartial() {
+        cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 result = new cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004(this);
         int from_bitField0_ = bitField0_;
         if (rewardsBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
@@ -3505,6 +3396,12 @@ public final class DrawMsg {
           result.rewards_ = rewards_;
         } else {
           result.rewards_ = rewardsBuilder_.build();
+        }
+        result.gold_ = gold_;
+        if (drawBuilder_ == null) {
+          result.draw_ = draw_;
+        } else {
+          result.draw_ = drawBuilder_.build();
         }
         onBuilt();
         return result;
@@ -3544,16 +3441,16 @@ public final class DrawMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006) {
-          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006)other);
+        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004) {
+          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 other) {
-        if (other == cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 other) {
+        if (other == cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004.getDefaultInstance()) return this;
         if (rewardsBuilder_ == null) {
           if (!other.rewards_.isEmpty()) {
             if (rewards_.isEmpty()) {
@@ -3580,6 +3477,12 @@ public final class DrawMsg {
             }
           }
         }
+        if (other.getGold() != 0) {
+          setGold(other.getGold());
+        }
+        if (other.hasDraw()) {
+          mergeDraw(other.getDraw());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -3595,11 +3498,11 @@ public final class DrawMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 parsedMessage = null;
+        cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3624,7 +3527,7 @@ public final class DrawMsg {
 
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3638,7 +3541,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3652,7 +3555,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3666,7 +3569,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3687,7 +3590,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3705,7 +3608,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3725,7 +3628,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3746,7 +3649,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3764,7 +3667,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3782,7 +3685,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3801,7 +3704,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3818,7 +3721,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3835,7 +3738,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3846,7 +3749,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3860,7 +3763,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3875,7 +3778,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3886,7 +3789,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3898,7 +3801,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 抽卡获得的英雄
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo rewards = 1;</code>
@@ -3921,1668 +3824,203 @@ public final class DrawMsg {
         }
         return rewardsBuilder_;
       }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
 
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.DrawNoviceChoiceResponse_37000006)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.DrawNoviceChoiceResponse_37000006)
-    private static final cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006();
-    }
-
-    public static cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<DrawNoviceChoiceResponse_37000006>
-        PARSER = new com.google.protobuf.AbstractParser<DrawNoviceChoiceResponse_37000006>() {
-      @java.lang.Override
-      public DrawNoviceChoiceResponse_37000006 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new DrawNoviceChoiceResponse_37000006(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<DrawNoviceChoiceResponse_37000006> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<DrawNoviceChoiceResponse_37000006> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.DrawMsg.DrawNoviceChoiceResponse_37000006 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface DrawRequest_37000007OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.DrawRequest_37000007)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     *卡池类型
-     * </pre>
-     *
-     * <code>.Protos.PoolType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    int getTypeValue();
-    /**
-     * <pre>
-     *卡池类型
-     * </pre>
-     *
-     * <code>.Protos.PoolType type = 1;</code>
-     * @return The type.
-     */
-    cn.game.protocol.protobuf.DrawMsg.PoolType getType();
-
-    /**
-     * <pre>
-     * true-十连抽，false-单抽
-     * </pre>
-     *
-     * <code>bool ten = 2;</code>
-     * @return The ten.
-     */
-    boolean getTen();
-  }
-  /**
-   * <pre>
-   * 请求普通/UP卡池抽卡
-   * </pre>
-   *
-   * Protobuf type {@code Protos.DrawRequest_37000007}
-   */
-  public static final class DrawRequest_37000007 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.DrawRequest_37000007)
-      DrawRequest_37000007OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use DrawRequest_37000007.newBuilder() to construct.
-    private DrawRequest_37000007(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private DrawRequest_37000007() {
-      type_ = 0;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new DrawRequest_37000007();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private DrawRequest_37000007(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-              int rawValue = input.readEnum();
-
-              type_ = rawValue;
-              break;
-            }
-            case 16: {
-
-              ten_ = input.readBool();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000007_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000007_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007.class, cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007.Builder.class);
-    }
-
-    public static final int TYPE_FIELD_NUMBER = 1;
-    private int type_;
-    /**
-     * <pre>
-     *卡池类型
-     * </pre>
-     *
-     * <code>.Protos.PoolType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
-    }
-    /**
-     * <pre>
-     *卡池类型
-     * </pre>
-     *
-     * <code>.Protos.PoolType type = 1;</code>
-     * @return The type.
-     */
-    @java.lang.Override public cn.game.protocol.protobuf.DrawMsg.PoolType getType() {
-      @SuppressWarnings("deprecation")
-      cn.game.protocol.protobuf.DrawMsg.PoolType result = cn.game.protocol.protobuf.DrawMsg.PoolType.valueOf(type_);
-      return result == null ? cn.game.protocol.protobuf.DrawMsg.PoolType.UNRECOGNIZED : result;
-    }
-
-    public static final int TEN_FIELD_NUMBER = 2;
-    private boolean ten_;
-    /**
-     * <pre>
-     * true-十连抽，false-单抽
-     * </pre>
-     *
-     * <code>bool ten = 2;</code>
-     * @return The ten.
-     */
-    @java.lang.Override
-    public boolean getTen() {
-      return ten_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (type_ != cn.game.protocol.protobuf.DrawMsg.PoolType.COMMON.getNumber()) {
-        output.writeEnum(1, type_);
-      }
-      if (ten_ != false) {
-        output.writeBool(2, ten_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (type_ != cn.game.protocol.protobuf.DrawMsg.PoolType.COMMON.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, type_);
-      }
-      if (ten_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, ten_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 other = (cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007) obj;
-
-      if (type_ != other.type_) return false;
-      if (getTen()
-          != other.getTen()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + type_;
-      hash = (37 * hash) + TEN_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getTen());
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 请求普通/UP卡池抽卡
-     * </pre>
-     *
-     * Protobuf type {@code Protos.DrawRequest_37000007}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.DrawRequest_37000007)
-        cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000007_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000007_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007.class, cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        type_ = 0;
-
-        ten_ = false;
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawRequest_37000007_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 build() {
-        cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 buildPartial() {
-        cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 result = new cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007(this);
-        result.type_ = type_;
-        result.ten_ = ten_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007) {
-          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 other) {
-        if (other == cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007.getDefaultInstance()) return this;
-        if (other.type_ != 0) {
-          setTypeValue(other.getTypeValue());
-        }
-        if (other.getTen() != false) {
-          setTen(other.getTen());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private int type_ = 0;
+      private int gold_ ;
       /**
        * <pre>
-       *卡池类型
+       * 抽卡获得的金币
        * </pre>
        *
-       * <code>.Protos.PoolType type = 1;</code>
-       * @return The enum numeric value on the wire for type.
+       * <code>int32 gold = 2;</code>
+       * @return The gold.
        */
-      @java.lang.Override public int getTypeValue() {
-        return type_;
+      @java.lang.Override
+      public int getGold() {
+        return gold_;
       }
       /**
        * <pre>
-       *卡池类型
+       * 抽卡获得的金币
        * </pre>
        *
-       * <code>.Protos.PoolType type = 1;</code>
-       * @param value The enum numeric value on the wire for type to set.
+       * <code>int32 gold = 2;</code>
+       * @param value The gold to set.
        * @return This builder for chaining.
        */
-      public Builder setTypeValue(int value) {
+      public Builder setGold(int value) {
         
-        type_ = value;
+        gold_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *卡池类型
+       * 抽卡获得的金币
        * </pre>
        *
-       * <code>.Protos.PoolType type = 1;</code>
-       * @return The type.
-       */
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.PoolType getType() {
-        @SuppressWarnings("deprecation")
-        cn.game.protocol.protobuf.DrawMsg.PoolType result = cn.game.protocol.protobuf.DrawMsg.PoolType.valueOf(type_);
-        return result == null ? cn.game.protocol.protobuf.DrawMsg.PoolType.UNRECOGNIZED : result;
-      }
-      /**
-       * <pre>
-       *卡池类型
-       * </pre>
-       *
-       * <code>.Protos.PoolType type = 1;</code>
-       * @param value The type to set.
+       * <code>int32 gold = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder setType(cn.game.protocol.protobuf.DrawMsg.PoolType value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
+      public Builder clearGold() {
         
-        type_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *卡池类型
-       * </pre>
-       *
-       * <code>.Protos.PoolType type = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearType() {
-        
-        type_ = 0;
+        gold_ = 0;
         onChanged();
         return this;
       }
 
-      private boolean ten_ ;
+      private cn.game.protocol.protobuf.DrawMsg.DrawInfo draw_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.DrawMsg.DrawInfo, cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder, cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder> drawBuilder_;
       /**
        * <pre>
-       * true-十连抽，false-单抽
+       * 更新相关数据
        * </pre>
        *
-       * <code>bool ten = 2;</code>
-       * @return The ten.
+       * <code>.Protos.DrawInfo draw = 3;</code>
+       * @return Whether the draw field is set.
        */
-      @java.lang.Override
-      public boolean getTen() {
-        return ten_;
-      }
-      /**
-       * <pre>
-       * true-十连抽，false-单抽
-       * </pre>
-       *
-       * <code>bool ten = 2;</code>
-       * @param value The ten to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTen(boolean value) {
-        
-        ten_ = value;
-        onChanged();
-        return this;
+      public boolean hasDraw() {
+        return drawBuilder_ != null || draw_ != null;
       }
       /**
        * <pre>
-       * true-十连抽，false-单抽
+       * 更新相关数据
        * </pre>
        *
-       * <code>bool ten = 2;</code>
-       * @return This builder for chaining.
+       * <code>.Protos.DrawInfo draw = 3;</code>
+       * @return The draw.
        */
-      public Builder clearTen() {
-        
-        ten_ = false;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.DrawRequest_37000007)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.DrawRequest_37000007)
-    private static final cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007();
-    }
-
-    public static cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<DrawRequest_37000007>
-        PARSER = new com.google.protobuf.AbstractParser<DrawRequest_37000007>() {
-      @java.lang.Override
-      public DrawRequest_37000007 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new DrawRequest_37000007(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<DrawRequest_37000007> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<DrawRequest_37000007> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000007 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface DrawResponse_37000008OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.DrawResponse_37000008)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 当前累计抽卡次数
-     * </pre>
-     *
-     * <code>int32 curTimes = 1;</code>
-     * @return The curTimes.
-     */
-    int getCurTimes();
-
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
-        getRewardsList();
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    int getRewardsCount();
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getRewardsOrBuilderList();
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
-        int index);
-  }
-  /**
-   * <pre>
-   * 响应抽卡
-   * </pre>
-   *
-   * Protobuf type {@code Protos.DrawResponse_37000008}
-   */
-  public static final class DrawResponse_37000008 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.DrawResponse_37000008)
-      DrawResponse_37000008OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use DrawResponse_37000008.newBuilder() to construct.
-    private DrawResponse_37000008(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private DrawResponse_37000008() {
-      rewards_ = java.util.Collections.emptyList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new DrawResponse_37000008();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private DrawResponse_37000008(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-
-              curTimes_ = input.readInt32();
-              break;
-            }
-            case 18: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              rewards_.add(
-                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          rewards_ = java.util.Collections.unmodifiableList(rewards_);
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000008_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000008_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008.class, cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008.Builder.class);
-    }
-
-    public static final int CURTIMES_FIELD_NUMBER = 1;
-    private int curTimes_;
-    /**
-     * <pre>
-     * 当前累计抽卡次数
-     * </pre>
-     *
-     * <code>int32 curTimes = 1;</code>
-     * @return The curTimes.
-     */
-    @java.lang.Override
-    public int getCurTimes() {
-      return curTimes_;
-    }
-
-    public static final int REWARDS_FIELD_NUMBER = 2;
-    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
-      return rewards_;
-    }
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getRewardsOrBuilderList() {
-      return rewards_;
-    }
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    @java.lang.Override
-    public int getRewardsCount() {
-      return rewards_.size();
-    }
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
-      return rewards_.get(index);
-    }
-    /**
-     * <pre>
-     * 抽卡奖励
-     * </pre>
-     *
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
-        int index) {
-      return rewards_.get(index);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (curTimes_ != 0) {
-        output.writeInt32(1, curTimes_);
-      }
-      for (int i = 0; i < rewards_.size(); i++) {
-        output.writeMessage(2, rewards_.get(i));
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (curTimes_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, curTimes_);
-      }
-      for (int i = 0; i < rewards_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, rewards_.get(i));
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 other = (cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008) obj;
-
-      if (getCurTimes()
-          != other.getCurTimes()) return false;
-      if (!getRewardsList()
-          .equals(other.getRewardsList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + CURTIMES_FIELD_NUMBER;
-      hash = (53 * hash) + getCurTimes();
-      if (getRewardsCount() > 0) {
-        hash = (37 * hash) + REWARDS_FIELD_NUMBER;
-        hash = (53 * hash) + getRewardsList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 响应抽卡
-     * </pre>
-     *
-     * Protobuf type {@code Protos.DrawResponse_37000008}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.DrawResponse_37000008)
-        cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000008_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000008_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008.class, cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-          getRewardsFieldBuilder();
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        curTimes_ = 0;
-
-        if (rewardsBuilder_ == null) {
-          rewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfo getDraw() {
+        if (drawBuilder_ == null) {
+          return draw_ == null ? cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance() : draw_;
         } else {
-          rewardsBuilder_.clear();
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawResponse_37000008_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 build() {
-        cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 buildPartial() {
-        cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 result = new cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008(this);
-        int from_bitField0_ = bitField0_;
-        result.curTimes_ = curTimes_;
-        if (rewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            rewards_ = java.util.Collections.unmodifiableList(rewards_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.rewards_ = rewards_;
-        } else {
-          result.rewards_ = rewardsBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008) {
-          return mergeFrom((cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 other) {
-        if (other == cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008.getDefaultInstance()) return this;
-        if (other.getCurTimes() != 0) {
-          setCurTimes(other.getCurTimes());
-        }
-        if (rewardsBuilder_ == null) {
-          if (!other.rewards_.isEmpty()) {
-            if (rewards_.isEmpty()) {
-              rewards_ = other.rewards_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureRewardsIsMutable();
-              rewards_.addAll(other.rewards_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.rewards_.isEmpty()) {
-            if (rewardsBuilder_.isEmpty()) {
-              rewardsBuilder_.dispose();
-              rewardsBuilder_ = null;
-              rewards_ = other.rewards_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              rewardsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getRewardsFieldBuilder() : null;
-            } else {
-              rewardsBuilder_.addAllMessages(other.rewards_);
-            }
-          }
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private int curTimes_ ;
-      /**
-       * <pre>
-       * 当前累计抽卡次数
-       * </pre>
-       *
-       * <code>int32 curTimes = 1;</code>
-       * @return The curTimes.
-       */
-      @java.lang.Override
-      public int getCurTimes() {
-        return curTimes_;
-      }
-      /**
-       * <pre>
-       * 当前累计抽卡次数
-       * </pre>
-       *
-       * <code>int32 curTimes = 1;</code>
-       * @param value The curTimes to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCurTimes(int value) {
-        
-        curTimes_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 当前累计抽卡次数
-       * </pre>
-       *
-       * <code>int32 curTimes = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearCurTimes() {
-        
-        curTimes_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_ =
-        java.util.Collections.emptyList();
-      private void ensureRewardsIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(rewards_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
-
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
-        if (rewardsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(rewards_);
-        } else {
-          return rewardsBuilder_.getMessageList();
+          return drawBuilder_.getMessage();
         }
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 更新相关数据
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.DrawInfo draw = 3;</code>
        */
-      public int getRewardsCount() {
-        if (rewardsBuilder_ == null) {
-          return rewards_.size();
-        } else {
-          return rewardsBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
-        if (rewardsBuilder_ == null) {
-          return rewards_.get(index);
-        } else {
-          return rewardsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder setRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (rewardsBuilder_ == null) {
+      public Builder setDraw(cn.game.protocol.protobuf.DrawMsg.DrawInfo value) {
+        if (drawBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureRewardsIsMutable();
-          rewards_.set(index, value);
+          draw_ = value;
           onChanged();
         } else {
-          rewardsBuilder_.setMessage(index, value);
+          drawBuilder_.setMessage(value);
         }
+
         return this;
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 更新相关数据
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.DrawInfo draw = 3;</code>
        */
-      public Builder setRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          rewards_.set(index, builderForValue.build());
+      public Builder setDraw(
+          cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder builderForValue) {
+        if (drawBuilder_ == null) {
+          draw_ = builderForValue.build();
           onChanged();
         } else {
-          rewardsBuilder_.setMessage(index, builderForValue.build());
+          drawBuilder_.setMessage(builderForValue.build());
         }
+
         return this;
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 更新相关数据
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.DrawInfo draw = 3;</code>
        */
-      public Builder addRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (rewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
+      public Builder mergeDraw(cn.game.protocol.protobuf.DrawMsg.DrawInfo value) {
+        if (drawBuilder_ == null) {
+          if (draw_ != null) {
+            draw_ =
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo.newBuilder(draw_).mergeFrom(value).buildPartial();
+          } else {
+            draw_ = value;
           }
-          ensureRewardsIsMutable();
-          rewards_.add(value);
           onChanged();
         } else {
-          rewardsBuilder_.addMessage(value);
+          drawBuilder_.mergeFrom(value);
         }
+
         return this;
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 更新相关数据
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.DrawInfo draw = 3;</code>
        */
-      public Builder addRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (rewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRewardsIsMutable();
-          rewards_.add(index, value);
+      public Builder clearDraw() {
+        if (drawBuilder_ == null) {
+          draw_ = null;
           onChanged();
         } else {
-          rewardsBuilder_.addMessage(index, value);
+          draw_ = null;
+          drawBuilder_ = null;
         }
+
         return this;
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 更新相关数据
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.DrawInfo draw = 3;</code>
        */
-      public Builder addRewards(
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          rewards_.add(builderForValue.build());
-          onChanged();
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder getDrawBuilder() {
+        
+        onChanged();
+        return getDrawFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 更新相关数据
+       * </pre>
+       *
+       * <code>.Protos.DrawInfo draw = 3;</code>
+       */
+      public cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder getDrawOrBuilder() {
+        if (drawBuilder_ != null) {
+          return drawBuilder_.getMessageOrBuilder();
         } else {
-          rewardsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder addRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          rewards_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          rewardsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder addAllRewards(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
-        if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, rewards_);
-          onChanged();
-        } else {
-          rewardsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder clearRewards() {
-        if (rewardsBuilder_ == null) {
-          rewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          rewardsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder removeRewards(int index) {
-        if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          rewards_.remove(index);
-          onChanged();
-        } else {
-          rewardsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder(
-          int index) {
-        return getRewardsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
-          int index) {
-        if (rewardsBuilder_ == null) {
-          return rewards_.get(index);  } else {
-          return rewardsBuilder_.getMessageOrBuilder(index);
+          return draw_ == null ?
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance() : draw_;
         }
       }
       /**
        * <pre>
-       * 抽卡奖励
+       * 更新相关数据
        * </pre>
        *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.DrawInfo draw = 3;</code>
        */
-      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-           getRewardsOrBuilderList() {
-        if (rewardsBuilder_ != null) {
-          return rewardsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(rewards_);
-        }
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder() {
-        return getRewardsFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder(
-          int index) {
-        return getRewardsFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 抽卡奖励
-       * </pre>
-       *
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
-           getRewardsBuilderList() {
-        return getRewardsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-          getRewardsFieldBuilder() {
-        if (rewardsBuilder_ == null) {
-          rewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
-                  rewards_,
-                  ((bitField0_ & 0x00000001) != 0),
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.DrawMsg.DrawInfo, cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder, cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder> 
+          getDrawFieldBuilder() {
+        if (drawBuilder_ == null) {
+          drawBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.DrawMsg.DrawInfo, cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder, cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder>(
+                  getDraw(),
                   getParentForChildren(),
                   isClean());
-          rewards_ = null;
+          draw_ = null;
         }
-        return rewardsBuilder_;
+        return drawBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -5597,41 +4035,41 @@ public final class DrawMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.DrawResponse_37000008)
+      // @@protoc_insertion_point(builder_scope:Protos.DrawResponse_37000004)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.DrawResponse_37000008)
-    private static final cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.DrawResponse_37000004)
+    private static final cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004();
     }
 
-    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<DrawResponse_37000008>
-        PARSER = new com.google.protobuf.AbstractParser<DrawResponse_37000008>() {
+    private static final com.google.protobuf.Parser<DrawResponse_37000004>
+        PARSER = new com.google.protobuf.AbstractParser<DrawResponse_37000004>() {
       @java.lang.Override
-      public DrawResponse_37000008 parsePartialFrom(
+      public DrawResponse_37000004 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new DrawResponse_37000008(input, extensionRegistry);
+        return new DrawResponse_37000004(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<DrawResponse_37000008> parser() {
+    public static com.google.protobuf.Parser<DrawResponse_37000004> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<DrawResponse_37000008> getParserForType() {
+    public com.google.protobuf.Parser<DrawResponse_37000004> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000008 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5648,35 +4086,25 @@ public final class DrawMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_DrawListResponse_37000002_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_DrawNoviceRequest_37000003_descriptor;
+    internal_static_Protos_DrawInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_DrawNoviceRequest_37000003_fieldAccessorTable;
+      internal_static_Protos_DrawInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_DrawNoviceResponse_37000004_descriptor;
+    internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_DrawNoviceResponse_37000004_fieldAccessorTable;
+      internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_DrawNoviceChoiceRequest_37000005_descriptor;
+    internal_static_Protos_DrawRequest_37000003_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_DrawNoviceChoiceRequest_37000005_fieldAccessorTable;
+      internal_static_Protos_DrawRequest_37000003_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_DrawNoviceChoiceResponse_37000006_descriptor;
+    internal_static_Protos_DrawResponse_37000004_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_DrawNoviceChoiceResponse_37000006_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_DrawRequest_37000007_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_DrawRequest_37000007_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_DrawResponse_37000008_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_DrawResponse_37000008_fieldAccessorTable;
+      internal_static_Protos_DrawResponse_37000004_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -5687,21 +4115,18 @@ public final class DrawMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\rDrawMsg.proto\022\006Protos\032\017RewardMsg.proto" +
-      "\"\032\n\030DrawListRequest_37000001\"\213\001\n\031DrawLis" +
-      "tResponse_37000002\022\021\n\tnoviceCur\030\001 \001(\005\022\023\n" +
-      "\013noviceLimit\030\002 \001(\005\022\021\n\tcommonCur\030\003 \001(\005\022\023\n" +
-      "\013commonLimit\030\004 \001(\005\022\r\n\005upCur\030\005 \001(\005\022\017\n\007upL" +
-      "imit\030\006 \001(\005\"\034\n\032DrawNoviceRequest_37000003" +
-      "\".\n\033DrawNoviceResponse_37000004\022\017\n\007roleI" +
-      "ds\030\001 \003(\005\"\"\n DrawNoviceChoiceRequest_3700" +
-      "0005\"H\n!DrawNoviceChoiceResponse_3700000" +
-      "6\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"C" +
-      "\n\024DrawRequest_37000007\022\036\n\004type\030\001 \001(\0162\020.P" +
-      "rotos.PoolType\022\013\n\003ten\030\002 \001(\010\"N\n\025DrawRespo" +
-      "nse_37000008\022\020\n\010curTimes\030\001 \001(\005\022#\n\007reward" +
-      "s\030\002 \003(\0132\022.Protos.RewardInfo*\036\n\010PoolType\022" +
-      "\n\n\006COMMON\020\000\022\006\n\002UP\020\001B\033\n\031cn.game.protocol." +
-      "protobufb\006proto3"
+      "\"&\n\030DrawListRequest_37000001\022\n\n\002id\030\001 \001(\005" +
+      "\";\n\031DrawListResponse_37000002\022\036\n\004draw\030\001 " +
+      "\001(\0132\020.Protos.DrawInfo\"\241\001\n\010DrawInfo\022D\n\022gi" +
+      "ftRemainingTimes\030\001 \003(\0132(.Protos.DrawInfo" +
+      ".GiftRemainingTimesEntry\022\024\n\014nextFreeTime" +
+      "\030\002 \001(\005\0329\n\027GiftRemainingTimesEntry\022\013\n\003key" +
+      "\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"A\n\024DrawRequest" +
+      "_37000003\022\n\n\002id\030\001 \001(\005\022\013\n\003ten\030\002 \001(\010\022\020\n\010fr" +
+      "eeOnce\030\003 \001(\010\"j\n\025DrawResponse_37000004\022#\n" +
+      "\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\022\014\n\004go" +
+      "ld\030\002 \001(\005\022\036\n\004draw\030\003 \001(\0132\020.Protos.DrawInfo" +
+      "B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5713,49 +4138,37 @@ public final class DrawMsg {
     internal_static_Protos_DrawListRequest_37000001_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DrawListRequest_37000001_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Id", });
     internal_static_Protos_DrawListResponse_37000002_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_DrawListResponse_37000002_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DrawListResponse_37000002_descriptor,
-        new java.lang.String[] { "NoviceCur", "NoviceLimit", "CommonCur", "CommonLimit", "UpCur", "UpLimit", });
-    internal_static_Protos_DrawNoviceRequest_37000003_descriptor =
+        new java.lang.String[] { "Draw", });
+    internal_static_Protos_DrawInfo_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_Protos_DrawNoviceRequest_37000003_fieldAccessorTable = new
+    internal_static_Protos_DrawInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_DrawNoviceRequest_37000003_descriptor,
-        new java.lang.String[] { });
-    internal_static_Protos_DrawNoviceResponse_37000004_descriptor =
+        internal_static_Protos_DrawInfo_descriptor,
+        new java.lang.String[] { "GiftRemainingTimes", "NextFreeTime", });
+    internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_descriptor =
+      internal_static_Protos_DrawInfo_descriptor.getNestedTypes().get(0);
+    internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_Protos_DrawRequest_37000003_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_Protos_DrawNoviceResponse_37000004_fieldAccessorTable = new
+    internal_static_Protos_DrawRequest_37000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_DrawNoviceResponse_37000004_descriptor,
-        new java.lang.String[] { "RoleIds", });
-    internal_static_Protos_DrawNoviceChoiceRequest_37000005_descriptor =
+        internal_static_Protos_DrawRequest_37000003_descriptor,
+        new java.lang.String[] { "Id", "Ten", "FreeOnce", });
+    internal_static_Protos_DrawResponse_37000004_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_Protos_DrawNoviceChoiceRequest_37000005_fieldAccessorTable = new
+    internal_static_Protos_DrawResponse_37000004_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_DrawNoviceChoiceRequest_37000005_descriptor,
-        new java.lang.String[] { });
-    internal_static_Protos_DrawNoviceChoiceResponse_37000006_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_Protos_DrawNoviceChoiceResponse_37000006_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_DrawNoviceChoiceResponse_37000006_descriptor,
-        new java.lang.String[] { "Rewards", });
-    internal_static_Protos_DrawRequest_37000007_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_Protos_DrawRequest_37000007_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_DrawRequest_37000007_descriptor,
-        new java.lang.String[] { "Type", "Ten", });
-    internal_static_Protos_DrawResponse_37000008_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_Protos_DrawResponse_37000008_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_DrawResponse_37000008_descriptor,
-        new java.lang.String[] { "CurTimes", "Rewards", });
+        internal_static_Protos_DrawResponse_37000004_descriptor,
+        new java.lang.String[] { "Rewards", "Gold", "Draw", });
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }
 

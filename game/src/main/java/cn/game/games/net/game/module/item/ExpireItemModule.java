@@ -45,7 +45,7 @@ public class ExpireItemModule extends BasePlayerModule {
 	 * @return  0表示不过期。 
 	 */
 	public int getExpiredTime(Item item) {
-		Integer time = expiredGoodsMap.get(item.getId(), item.getConfigId().longValue());
+		Integer time = expiredGoodsMap.get(item.getId(), (long) item.getConfigId());
 		return time == null ? 0 : time;
 	}
 

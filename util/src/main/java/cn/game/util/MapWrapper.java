@@ -44,7 +44,7 @@ public class MapWrapper {
 
 	@Override
 	public String toString() {
-		return com.alibaba.fastjson.JSON.toJSONString(this.map, com.alibaba.fastjson.serializer.SerializerFeature.WriteNonStringKeyAsString);
+		return this.map.toString();
 	}
 
 	public Map<Integer, Long> getMap() {

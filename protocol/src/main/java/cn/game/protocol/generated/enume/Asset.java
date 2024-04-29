@@ -7,16 +7,20 @@ package cn.game.protocol.generated.enume;
  */
 public enum Asset{
 
-	/** 钻石 */
-	diamond(100001,"diamond","钻石",1,4,"游戏中的万用货币","Texture/common/com_icon_stone"),
+	/** 元宝 */
+	diamond(100001,"diamond","元宝",1,4,"游戏中的万用货币","recharge_icon_01"),
 	/** 金币 */
-	gold(100002,"gold","金币",1,3,"游戏中购买物品的标准货币","Texture/common/com_icon_gold"),
+	gold(100002,"gold","金币",1,3,"游戏中购买物品的标准货币","recharge_icon_07"),
 	/** 经验 */
 	playerExp(100201,"playerExp","经验",2,3,"提升玩家等级之用",""),
+	/** 每日任务活跃度 */
+	DailyPoint(100202,"DailyPoint","每日任务活跃度",2,3,"获得指定数量后可以领取奖励","task_icon_rihuoyue"),
+	/** 每周任务活跃度 */
+	WeeklyPoint(100203,"WeeklyPoint","每周任务活跃度",2,3,"获得指定数量后可以领取奖励","task_icon_zhouhuoyue"),
 	/** 体力 */
-	playerEnergy(100301,"playerEnergy","体力",3,3,"用于挑战、扫荡关卡，获取关卡奖励","Texture/common/com_icon_tili"),
+	playerEnergy(100301,"playerEnergy","体力",3,3,"用于挑战、扫荡关卡，获取关卡奖励","physicalpower_icon_01"),
     ;
-	/** 物品ID */
+	/** ID */
 	public final int ID ; 
 	/** 物品英文名 */
 	public final String Name ; 
@@ -28,7 +32,7 @@ public enum Asset{
 	public final int Quality ; 
 	/** 物品tips */
 	public final String Tips ; 
-	/** 图标Icon 文件名 */
+	/** 图标Icon 调用：west\src\First_party\art\xiyou UI\icon_图标 */
 	public final String Icon ; 
 
 	private Asset(int ID, String Name, String Desc, int Type, int Quality, String Tips, String Icon) {

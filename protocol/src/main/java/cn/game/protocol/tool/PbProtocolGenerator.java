@@ -89,7 +89,8 @@ public class PbProtocolGenerator {
 				String clientStr = str.trim();
 
 				if (clientStr.length() > 0 && !clientStr.startsWith("syntax") && !clientStr.startsWith("option")
-						&& !clientStr.startsWith("//") && !clientStr.startsWith("package")
+//						&& !clientStr.startsWith("//") 
+						&& !clientStr.startsWith("package")
 						&& !clientStr.startsWith("import")) {
 					clientProtoLines.add(clientStr);
 				}

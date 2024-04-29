@@ -55,7 +55,7 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 	@Override
 	public RewardInfo toRewardInfo(Equip equip) {
 		return RewardInfo.newBuilder()
-				.setEquip(EquipInfo.newBuilder().setConfigId(equip.getConfigId()).setUid(equip.getId().toString()))
+				.setEquip(EquipInfo.newBuilder().setConfigId(equip.getConfigId()).setUid(equip.getId() + ""))
 				.build();
 	}
 

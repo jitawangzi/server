@@ -17,6 +17,44 @@ public enum ConditionTypeEnum{
 	ChapterFinish(4,"ChapterFinish","通关章节"),
 	/** 持有月卡 */
 	MonthCard(5,"MonthCard","持有月卡"),
+	/** 参与主线章节 */
+	ParticipateChapter(6,"ParticipateChapter","参与主线章节"),
+	/** 通关历练（精英） */
+	EliteFinish(7,"EliteFinish","通关历练（精英）"),
+	/** 领取体力 */
+	ReceiveStamina(8,"ReceiveStamina","领取体力"),
+	/** 消耗体力 */
+	ExertsStamina(9,"ExertsStamina","消耗体力"),
+	/** 观看广告 */
+	WatchAds(10,"WatchAds","观看广告"),
+	/** 击杀怪物（小怪+头目） */
+	KillMonsters(11,"KillMonsters","击杀怪物（小怪+头目）"),
+	/** 击杀首领怪物 */
+	KillBoss(12,"KillBoss","击杀首领怪物"),
+	/** 消耗钻石 */
+	ConsumesDiamonds(13,"ConsumesDiamonds","消耗钻石"),
+	/** 充值 */
+	RechargeCnt(14,"RechargeCnt","充值"),
+	/** 获得英雄 */
+	EarnHero(15,"EarnHero","获得英雄"),
+	/** 突破英雄 */
+	BreakHero(16,"BreakHero","突破英雄"),
+	/** 英雄升级 */
+	UpgradeHero(17,"UpgradeHero","英雄升级"),
+	/** 商店购买物品 */
+	StorePurchases(18,"StorePurchases","商店购买物品"),
+	/** 抽卡 */
+	Gacha(19,"Gacha","抽卡"),
+	/** 登录游戏 */
+	CumulativeLogins(20,"CumulativeLogins","登录游戏"),
+	/** 登录游戏 */
+	LogGame(21,"LogGame","登录游戏"),
+	/** 快速挂机 */
+	QuickHangup(22,"QuickHangup","快速挂机"),
+	/** 领取挂机奖励 */
+	ReceiveHangup(23,"ReceiveHangup","领取挂机奖励"),
+	/** 英雄等级 */
+	HeroLevel(24,"HeroLevel","英雄等级"),
     ;
 	/** id */
 	public final int ID ; 

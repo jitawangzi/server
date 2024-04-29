@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cn.game.protocol.generated.config.HeroSourceConfig;
+import cn.game.protocol.generated.config.MapConfig;
 import cn.game.util.XmlUtils;
 import cn.game.util.file.ResourceListener;
 import cn.game.util.file.WatchServiceManager;
@@ -17,19 +17,19 @@ import cn.game.util.file.WatchServiceManager;
  * 
  * 工具生成的，不要手动修改
  */
-public class HeroSourceManager extends ResourceListener {
-	private static final Logger log = LoggerFactory.getLogger(HeroSourceManager.class);
+public class MapManager extends ResourceListener {
+	private static final Logger log = LoggerFactory.getLogger(MapManager.class);
 
-	private static HeroSourceManager instance = new HeroSourceManager();
-	private static final String xmlFileName = "HeroSource";
+	private static MapManager instance = new MapManager();
+	private static final String xmlFileName = "Map";
 	
 	/** 总数据，按id取值 */
-	private Map<Integer, HeroSourceConfig> herosources = new HashMap<>();
+	private Map<Integer, MapConfig> maps = new HashMap<>();
 
-	public static HeroSourceManager instance() {
+	public static MapManager instance() {
 		return instance;
 	}
-	private HeroSourceManager() {
+	private MapManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
 	/**
@@ -38,10 +38,10 @@ public class HeroSourceManager extends ResourceListener {
 	 * @param id
 	 * @return
 	 */
-	public HeroSourceConfig get(int id) {
-		HeroSourceConfig config = this.herosources.get(id);
+	public MapConfig get(int id) {
+		MapConfig config = this.maps.get(id);
 		if (config == null) { 
-			throw new NullPointerException("【HeroSource】表的" + "id【" + id + "】不存在"); 
+			throw new NullPointerException("【Map】表的" + "id【" + id + "】不存在"); 
 		}
 		return config;
 	}
@@ -51,16 +51,16 @@ public class HeroSourceManager extends ResourceListener {
 	 * @param id
 	 * @return
 	 */
-	public HeroSourceConfig getNullable(int id) {
-		return this.herosources.get(id);
+	public MapConfig getNullable(int id) {
+		return this.maps.get(id);
 	}
 
 	/**
 	 * 获取所有数据
 	 * @return
 	 */
-	public Collection<HeroSourceConfig> list() {
-		return this.herosources.values();
+	public Collection<MapConfig> list() {
+		return this.maps.values();
 	}
 	@Override
 	public void load() {
@@ -69,21 +69,21 @@ public class HeroSourceManager extends ResourceListener {
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
 			Element[] list = XmlUtils.getChildrenByName(document.getDocumentElement(), xmlFileName);
 			
-			Map<Integer, HeroSourceConfig> herosources = new HashMap<>();
+			Map<Integer, MapConfig> maps = new HashMap<>();
 			for (Element e : list) {
-				HeroSourceConfig herosource = new HeroSourceConfig(e);
-				HeroSourceConfig old = herosources.put(herosource.ID, herosource);
+				MapConfig map = new MapConfig(e);
+				MapConfig old = maps.put(map.ID, map);
 				if (old != null) {
-					throw new IllegalArgumentException("[HeroSourceConfig]表存在重复的数据id： " + old.ID);
+					throw new IllegalArgumentException("[MapConfig]表存在重复的数据id： " + old.ID);
 				}
 			}			
 
-			this.herosources = com.google.common.collect.ImmutableMap.copyOf(herosources);
+			this.maps = com.google.common.collect.ImmutableMap.copyOf(maps);
 
-			log.info("load HeroSourceConfig size[{}]", herosources.size());
+			log.info("load MapConfig size[{}]", maps.size());
 
 		} catch (Exception e) {
-			throw new RuntimeException("load HeroSourceConfig error", e);
+			throw new RuntimeException("load MapConfig error", e);
 		}
 
 	}

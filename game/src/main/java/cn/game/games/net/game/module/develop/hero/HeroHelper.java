@@ -9,15 +9,16 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.games.cache.entity.Hero;
 import cn.game.protocol.generated.config.EquipAttributeConfig;
 import cn.game.protocol.generated.config.EquipConfig;
+import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.HeroSourceConfig;
 import cn.game.protocol.generated.config.ParameterConsumeConfig;
 import cn.game.protocol.generated.config.PlayerLevelConfig;
 import cn.game.protocol.generated.manager.EquipAttributeManager;
+import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.HeroSourceManager;
 import cn.game.protocol.generated.manager.ParameterConsumeManager;
 import cn.game.protocol.generated.manager.PlayerLevelManager;
 import cn.game.util.Rnd;
@@ -200,8 +201,11 @@ public class HeroHelper {
 
 	public static int getCareer(int id) {
 		HeroConfig heroConfig = HeroManager.instance().get(id);
-		HeroSourceConfig heroSourceConfig = HeroSourceManager.instance().get(heroConfig.HeroSourceID);
-		return heroSourceConfig.Career;
+		return heroConfig.Career;
 	}
 
+	public static int getHeroMaxLevel(Hero hero) {
+		HeroBreakConfig qualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
+		return qualityStarConfig.LevelMax;
+	}
 }

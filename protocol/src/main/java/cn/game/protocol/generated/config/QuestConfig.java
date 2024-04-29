@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 任务描述 */
 	public final String Description;		
-	/** 任务完成条件 */
+	/** 条件ID */
 	public final int Condition;		
 	/** 任务奖励ID */
 	public final int[] Reward;		
@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("ID")); // 任务ID
 		Description = element.getAttribute("Description"); // 任务描述
 		Condition = Integer.parseInt(element.getAttribute("Condition") == null || element.getAttribute("Condition").length() == 0 ? "0"
-			: element.getAttribute("Condition")); // 任务完成条件
+			: element.getAttribute("Condition")); // 条件ID
 		String RewardString = element.getAttribute("Reward"); // 任务奖励ID
 		if (RewardString != null && RewardString.length() > 0) {
 			String[] RewardStrings = RewardString.split(";"); 

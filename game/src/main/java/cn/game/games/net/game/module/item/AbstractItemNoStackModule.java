@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.net.game.helper.ItemHelper;
@@ -118,5 +117,9 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	@Override
 	public T get(int itemId) {
 		throw new UnsupportedOperationException("不支持通过配置表id获取不能重叠的物体");
+	}
+
+	public Collection<T> getByConfigId(int configId) {
+		return id_items.get(configId);
 	}
 }

@@ -10,71 +10,101 @@ import org.w3c.dom.Element;
  */
  public class HeroConfig {
 
-	/** 英雄ID */
+	/** 英雄ID  必须3打头6位id 前三位代表品质 300-唯一   310-永恒 320-彩      330-红 340-金      350-紫 360-蓝      370-绿 380-白 后3位流水号 */
 	public final int ID;		
-	/** 英雄源ID */
-	public final int HeroSourceID;		
-	/** 品质ID */
-	public final int Quality;		
-	/** 突破目标ID */
-	public final int PromoteTargetID;		
-	/** 星级突破消耗 1;职业;品质;数量| */
-	public final int[][] StarPromoteConsume;		
-	/** 品质突破消耗 2;英雄ID;数量| */
-	public final int[][] QualityPromoteConsume;		
-	/** 星级突破万能耗材ID */
-	public final int StarOmniItemID;		
-	/** 品质突破万能耗材ID */
-	public final int QualityOmniItemID;		
+	/** 英雄名称 */
+	public final String name;		
+	/** 职业 1-战士 2-刺客 3-法师 4-牧师 5-射手 */
+	public final int Career;		
+	/** 初始品质 1-白1星 2-绿1星 3-蓝1星 4-紫1星 5-金1星 6-红1星 7-彩1星 8-永恒1星 9-唯一1星 */
+	public final int InitialQuality;		
+	/** 最多能突破到的最高品质 1-白1星 2-绿1星 3-蓝1星 4-紫1星 5-金1星 6-红1星 7-彩1星 8-永恒1星 9-唯一1星 */
+	public final int BreakQuality;		
+	/** 图鉴类型  调用HeroBook#英雄图鉴表id */
+	public final int CollectionID;		
+	/** 【升级】 初始属性id  调用AttributeVlalue#属性数值表id   属性数值 = 初始值+（lv-1）*成长值 */
+	public final int InitialAttributeId;		
+	/** 【升级】 成长属性id   调用AttributeVlalue#属性数值表id */
+	public final int GrowthAttributeId;		
+	/** 【突破】 不同品质 增加的的属性 配置：品质id;属性id|...|品质id;属性id  调用AttributeVlalue#属性数值表id */
+	public final int[][] BreakActivationAttribute;		
+	/** 【初始+突破】 不同品质 激活英雄技能ID 调用HeroSkillGroup#技能组ID  需要把每个品质都配  调用HeroSkill-HeroSkillGroup#技能组表id */
+	public final int[][] HeroSkillID;		
+	/** 【突破】 不同品质 激活肉鸽id组 配置：当前品质;激活的肉鸽id1|品质+1;激活肉鸽idn 仅客户端界面显示  肉鸽id调用HeroSkill-HeroSkill表id */
+	public final int[][] RoguelikeId;		
+	/** 英雄资源id 调用ArtResource表 */
+	public final int ArtResourceID;		
 
 	public HeroConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // 英雄ID
-		HeroSourceID = Integer.parseInt(element.getAttribute("HeroSourceID") == null || element.getAttribute("HeroSourceID").length() == 0 ? "0"
-			: element.getAttribute("HeroSourceID")); // 英雄源ID
-		Quality = Integer.parseInt(element.getAttribute("Quality") == null || element.getAttribute("Quality").length() == 0 ? "0"
-			: element.getAttribute("Quality")); // 品质ID
-		PromoteTargetID = Integer.parseInt(element.getAttribute("PromoteTargetID") == null || element.getAttribute("PromoteTargetID").length() == 0 ? "0"
-			: element.getAttribute("PromoteTargetID")); // 突破目标ID
-		String StarPromoteConsumeString = element.getAttribute("StarPromoteConsume"); // 星级突破消耗 1;职业;品质;数量|
-		if (StarPromoteConsumeString != null && StarPromoteConsumeString.length() > 0) {
-			String[] StarPromoteConsumeStrings = StarPromoteConsumeString.split("\\|"); 
-			int[][] StarPromoteConsumeTemp = new int[StarPromoteConsumeStrings.length][] ; 
-			for (int i = 0; i < StarPromoteConsumeStrings.length; i++) {
-				String[] StarPromoteConsumeStrings2 = StarPromoteConsumeStrings[i].split(";"); 
-				int[] array = new int[StarPromoteConsumeStrings2.length];
-				for (int j = 0; j < StarPromoteConsumeStrings2.length; j++) {
-					int temp = Integer.parseInt(StarPromoteConsumeStrings2[j]);	
+			: element.getAttribute("ID")); // 英雄ID  必须3打头6位id 前三位代表品质 300-唯一   310-永恒 320-彩      330-红 340-金      350-紫 360-蓝      370-绿 380-白 后3位流水号
+		name = element.getAttribute("name"); // 英雄名称
+		Career = Integer.parseInt(element.getAttribute("Career") == null || element.getAttribute("Career").length() == 0 ? "0"
+			: element.getAttribute("Career")); // 职业 1-战士 2-刺客 3-法师 4-牧师 5-射手
+		InitialQuality = Integer.parseInt(element.getAttribute("InitialQuality") == null || element.getAttribute("InitialQuality").length() == 0 ? "0"
+			: element.getAttribute("InitialQuality")); // 初始品质 1-白1星 2-绿1星 3-蓝1星 4-紫1星 5-金1星 6-红1星 7-彩1星 8-永恒1星 9-唯一1星
+		BreakQuality = Integer.parseInt(element.getAttribute("BreakQuality") == null || element.getAttribute("BreakQuality").length() == 0 ? "0"
+			: element.getAttribute("BreakQuality")); // 最多能突破到的最高品质 1-白1星 2-绿1星 3-蓝1星 4-紫1星 5-金1星 6-红1星 7-彩1星 8-永恒1星 9-唯一1星
+		CollectionID = Integer.parseInt(element.getAttribute("CollectionID") == null || element.getAttribute("CollectionID").length() == 0 ? "0"
+			: element.getAttribute("CollectionID")); // 图鉴类型  调用HeroBook#英雄图鉴表id
+		InitialAttributeId = Integer.parseInt(element.getAttribute("InitialAttributeId") == null || element.getAttribute("InitialAttributeId").length() == 0 ? "0"
+			: element.getAttribute("InitialAttributeId")); // 【升级】 初始属性id  调用AttributeVlalue#属性数值表id   属性数值 = 初始值+（lv-1）*成长值
+		GrowthAttributeId = Integer.parseInt(element.getAttribute("GrowthAttributeId") == null || element.getAttribute("GrowthAttributeId").length() == 0 ? "0"
+			: element.getAttribute("GrowthAttributeId")); // 【升级】 成长属性id   调用AttributeVlalue#属性数值表id
+		String BreakActivationAttributeString = element.getAttribute("BreakActivationAttribute"); // 【突破】 不同品质 增加的的属性 配置：品质id;属性id|...|品质id;属性id  调用AttributeVlalue#属性数值表id
+		if (BreakActivationAttributeString != null && BreakActivationAttributeString.length() > 0) {
+			String[] BreakActivationAttributeStrings = BreakActivationAttributeString.split("\\|"); 
+			int[][] BreakActivationAttributeTemp = new int[BreakActivationAttributeStrings.length][] ; 
+			for (int i = 0; i < BreakActivationAttributeStrings.length; i++) {
+				String[] BreakActivationAttributeStrings2 = BreakActivationAttributeStrings[i].split(";"); 
+				int[] array = new int[BreakActivationAttributeStrings2.length];
+				for (int j = 0; j < BreakActivationAttributeStrings2.length; j++) {
+					int temp = Integer.parseInt(BreakActivationAttributeStrings2[j]);	
 					array[j] = temp;
 				}
-				StarPromoteConsumeTemp[i] = array;
+				BreakActivationAttributeTemp[i] = array;
 			}
-			StarPromoteConsume = StarPromoteConsumeTemp ;			
+			BreakActivationAttribute = BreakActivationAttributeTemp ;			
 		} else {
-			StarPromoteConsume = new int[][] {};
+			BreakActivationAttribute = new int[][] {};
 		}
-		String QualityPromoteConsumeString = element.getAttribute("QualityPromoteConsume"); // 品质突破消耗 2;英雄ID;数量|
-		if (QualityPromoteConsumeString != null && QualityPromoteConsumeString.length() > 0) {
-			String[] QualityPromoteConsumeStrings = QualityPromoteConsumeString.split("\\|"); 
-			int[][] QualityPromoteConsumeTemp = new int[QualityPromoteConsumeStrings.length][] ; 
-			for (int i = 0; i < QualityPromoteConsumeStrings.length; i++) {
-				String[] QualityPromoteConsumeStrings2 = QualityPromoteConsumeStrings[i].split(";"); 
-				int[] array = new int[QualityPromoteConsumeStrings2.length];
-				for (int j = 0; j < QualityPromoteConsumeStrings2.length; j++) {
-					int temp = Integer.parseInt(QualityPromoteConsumeStrings2[j]);	
+		String HeroSkillIDString = element.getAttribute("HeroSkillID"); // 【初始+突破】 不同品质 激活英雄技能ID 调用HeroSkillGroup#技能组ID  需要把每个品质都配  调用HeroSkill-HeroSkillGroup#技能组表id
+		if (HeroSkillIDString != null && HeroSkillIDString.length() > 0) {
+			String[] HeroSkillIDStrings = HeroSkillIDString.split("\\|"); 
+			int[][] HeroSkillIDTemp = new int[HeroSkillIDStrings.length][] ; 
+			for (int i = 0; i < HeroSkillIDStrings.length; i++) {
+				String[] HeroSkillIDStrings2 = HeroSkillIDStrings[i].split(";"); 
+				int[] array = new int[HeroSkillIDStrings2.length];
+				for (int j = 0; j < HeroSkillIDStrings2.length; j++) {
+					int temp = Integer.parseInt(HeroSkillIDStrings2[j]);	
 					array[j] = temp;
 				}
-				QualityPromoteConsumeTemp[i] = array;
+				HeroSkillIDTemp[i] = array;
 			}
-			QualityPromoteConsume = QualityPromoteConsumeTemp ;			
+			HeroSkillID = HeroSkillIDTemp ;			
 		} else {
-			QualityPromoteConsume = new int[][] {};
+			HeroSkillID = new int[][] {};
 		}
-		StarOmniItemID = Integer.parseInt(element.getAttribute("StarOmniItemID") == null || element.getAttribute("StarOmniItemID").length() == 0 ? "0"
-			: element.getAttribute("StarOmniItemID")); // 星级突破万能耗材ID
-		QualityOmniItemID = Integer.parseInt(element.getAttribute("QualityOmniItemID") == null || element.getAttribute("QualityOmniItemID").length() == 0 ? "0"
-			: element.getAttribute("QualityOmniItemID")); // 品质突破万能耗材ID
+		String RoguelikeIdString = element.getAttribute("RoguelikeId"); // 【突破】 不同品质 激活肉鸽id组 配置：当前品质;激活的肉鸽id1|品质+1;激活肉鸽idn 仅客户端界面显示  肉鸽id调用HeroSkill-HeroSkill表id
+		if (RoguelikeIdString != null && RoguelikeIdString.length() > 0) {
+			String[] RoguelikeIdStrings = RoguelikeIdString.split("\\|"); 
+			int[][] RoguelikeIdTemp = new int[RoguelikeIdStrings.length][] ; 
+			for (int i = 0; i < RoguelikeIdStrings.length; i++) {
+				String[] RoguelikeIdStrings2 = RoguelikeIdStrings[i].split(";"); 
+				int[] array = new int[RoguelikeIdStrings2.length];
+				for (int j = 0; j < RoguelikeIdStrings2.length; j++) {
+					int temp = Integer.parseInt(RoguelikeIdStrings2[j]);	
+					array[j] = temp;
+				}
+				RoguelikeIdTemp[i] = array;
+			}
+			RoguelikeId = RoguelikeIdTemp ;			
+		} else {
+			RoguelikeId = new int[][] {};
+		}
+		ArtResourceID = Integer.parseInt(element.getAttribute("ArtResourceID") == null || element.getAttribute("ArtResourceID").length() == 0 ? "0"
+			: element.getAttribute("ArtResourceID")); // 英雄资源id 调用ArtResource表
 	}
 	
 

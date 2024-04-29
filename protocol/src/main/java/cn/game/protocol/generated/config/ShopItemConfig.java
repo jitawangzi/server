@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 	public final int PurchaseCnt;		
 	/** 购买类型 1=正常购买 2=随机购买 3=每次充值首次免费 4=终身首次双倍 */
 	public final int PurchaseType;		
-	/** 购买参数 */
+	/** 购买参数 1=货币；货币ID；数量 2=充值；数量 3=广告 */
 	public final int[] PurchaseParameter;		
 	/** 折扣 90=蓝色标签 80=紫色标签 70=黄色标签 60=红色标签 50=大促标签 */
 	public final int[][] Discount;		
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("PurchaseCnt")); // 可买次数 0=不限次
 		PurchaseType = Integer.parseInt(element.getAttribute("PurchaseType") == null || element.getAttribute("PurchaseType").length() == 0 ? "0"
 			: element.getAttribute("PurchaseType")); // 购买类型 1=正常购买 2=随机购买 3=每次充值首次免费 4=终身首次双倍
-		String PurchaseParameterString = element.getAttribute("PurchaseParameter"); // 购买参数
+		String PurchaseParameterString = element.getAttribute("PurchaseParameter"); // 购买参数 1=货币；货币ID；数量 2=充值；数量 3=广告
 		if (PurchaseParameterString != null && PurchaseParameterString.length() > 0) {
 			String[] PurchaseParameterStrings = PurchaseParameterString.split(";"); 
 			int[] PurchaseParameterTemp = new int[PurchaseParameterStrings.length] ; 

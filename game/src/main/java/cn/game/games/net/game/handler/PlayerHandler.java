@@ -874,7 +874,7 @@ public class PlayerHandler extends BaseHandler {
 				PlayerManager.getInstance().initAdd(player);
 
 				// 初始的资源
-				PlayerHelper.addResources(player.getData().getPlayerId(), GlobalConst.initItems);
+				PlayerHelper.addResources(player, GlobalConst.initItems);
 				PlayerHelper.initNewPlayerData(player);
 
 				player.handleEvent(EventTypeEnum.Login);

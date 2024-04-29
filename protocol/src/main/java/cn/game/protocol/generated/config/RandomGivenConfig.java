@@ -12,20 +12,20 @@ import org.w3c.dom.Element;
 
 	/** 掉落ID */
 	public final int ID;		
-	/** 必掉物品组 */
+	/** 必掉物品组 物品id;个数 以下方便策划看： 100001 元宝 100002 金币 100201 玩家经验 100301 体力 202001 串串（神将升级道具） 203001 黄金请神符 */
 	public final int[][] MustGiven;		
-	/** 随机次数 数量下限;数量上限 */
+	/** 随机次数  表示最后能掉出多少个物品 数量min;数量max */
 	public final int[] RandomNumber;		
-	/** 掉落参数 权重 */
-	public final int[] RandomParameterWeight;		
-	/** 掉落参数 掉落组ID */
+	/** 掉落组id——组合  自定义掉落id */
 	public final int[] RandomParameterGroupId;		
+	/** 每个掉落组id的权重 */
+	public final int[] RandomParameterWeight;		
 
 	public RandomGivenConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 掉落ID
-		String MustGivenString = element.getAttribute("MustGiven"); // 必掉物品组
+		String MustGivenString = element.getAttribute("MustGiven"); // 必掉物品组 物品id;个数 以下方便策划看： 100001 元宝 100002 金币 100201 玩家经验 100301 体力 202001 串串（神将升级道具） 203001 黄金请神符
 		if (MustGivenString != null && MustGivenString.length() > 0) {
 			String[] MustGivenStrings = MustGivenString.split("\\|"); 
 			int[][] MustGivenTemp = new int[MustGivenStrings.length][] ; 
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
 		} else {
 			MustGiven = new int[][] {};
 		}
-		String RandomNumberString = element.getAttribute("RandomNumber"); // 随机次数 数量下限;数量上限
+		String RandomNumberString = element.getAttribute("RandomNumber"); // 随机次数  表示最后能掉出多少个物品 数量min;数量max
 		if (RandomNumberString != null && RandomNumberString.length() > 0) {
 			String[] RandomNumberStrings = RandomNumberString.split(";"); 
 			int[] RandomNumberTemp = new int[RandomNumberStrings.length] ; 
@@ -54,19 +54,7 @@ import org.w3c.dom.Element;
 		} else {
 			RandomNumber = new int[] {};
 		}
-		String RandomParameterWeightString = element.getAttribute("RandomParameterWeight"); // 掉落参数 权重
-		if (RandomParameterWeightString != null && RandomParameterWeightString.length() > 0) {
-			String[] RandomParameterWeightStrings = RandomParameterWeightString.split(";"); 
-			int[] RandomParameterWeightTemp = new int[RandomParameterWeightStrings.length] ; 
-			for (int i = 0; i < RandomParameterWeightStrings.length; i++) {
-				int temp = Integer.parseInt(RandomParameterWeightStrings[i]);	
-				RandomParameterWeightTemp[i] = temp;
-			}
-			RandomParameterWeight = RandomParameterWeightTemp ;			
-		} else {
-			RandomParameterWeight = new int[] {};
-		}
-		String RandomParameterGroupIdString = element.getAttribute("RandomParameterGroupId"); // 掉落参数 掉落组ID
+		String RandomParameterGroupIdString = element.getAttribute("RandomParameterGroupId"); // 掉落组id——组合  自定义掉落id
 		if (RandomParameterGroupIdString != null && RandomParameterGroupIdString.length() > 0) {
 			String[] RandomParameterGroupIdStrings = RandomParameterGroupIdString.split(";"); 
 			int[] RandomParameterGroupIdTemp = new int[RandomParameterGroupIdStrings.length] ; 
@@ -77,6 +65,18 @@ import org.w3c.dom.Element;
 			RandomParameterGroupId = RandomParameterGroupIdTemp ;			
 		} else {
 			RandomParameterGroupId = new int[] {};
+		}
+		String RandomParameterWeightString = element.getAttribute("RandomParameterWeight"); // 每个掉落组id的权重
+		if (RandomParameterWeightString != null && RandomParameterWeightString.length() > 0) {
+			String[] RandomParameterWeightStrings = RandomParameterWeightString.split(";"); 
+			int[] RandomParameterWeightTemp = new int[RandomParameterWeightStrings.length] ; 
+			for (int i = 0; i < RandomParameterWeightStrings.length; i++) {
+				int temp = Integer.parseInt(RandomParameterWeightStrings[i]);	
+				RandomParameterWeightTemp[i] = temp;
+			}
+			RandomParameterWeight = RandomParameterWeightTemp ;			
+		} else {
+			RandomParameterWeight = new int[] {};
 		}
 	}
 	

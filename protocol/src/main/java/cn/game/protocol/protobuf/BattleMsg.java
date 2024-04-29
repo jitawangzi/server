@@ -4334,6 +4334,16 @@ public final class BattleMsg {
      * @return The win.
      */
     boolean getWin();
+
+    /**
+     * <pre>
+     * 战斗时长（秒）
+     * </pre>
+     *
+     * <code>uint32 battleTime = 4;</code>
+     * @return The battleTime.
+     */
+    int getBattleTime();
   }
   /**
    * <pre>
@@ -4397,6 +4407,11 @@ public final class BattleMsg {
             case 24: {
 
               win_ = input.readBool();
+              break;
+            }
+            case 32: {
+
+              battleTime_ = input.readUInt32();
               break;
             }
             default: {
@@ -4476,6 +4491,21 @@ public final class BattleMsg {
       return win_;
     }
 
+    public static final int BATTLETIME_FIELD_NUMBER = 4;
+    private int battleTime_;
+    /**
+     * <pre>
+     * 战斗时长（秒）
+     * </pre>
+     *
+     * <code>uint32 battleTime = 4;</code>
+     * @return The battleTime.
+     */
+    @java.lang.Override
+    public int getBattleTime() {
+      return battleTime_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4499,6 +4529,9 @@ public final class BattleMsg {
       if (win_ != false) {
         output.writeBool(3, win_);
       }
+      if (battleTime_ != 0) {
+        output.writeUInt32(4, battleTime_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -4519,6 +4552,10 @@ public final class BattleMsg {
       if (win_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, win_);
+      }
+      if (battleTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(4, battleTime_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4541,6 +4578,8 @@ public final class BattleMsg {
           != other.getHpPercent()) return false;
       if (getWin()
           != other.getWin()) return false;
+      if (getBattleTime()
+          != other.getBattleTime()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4559,6 +4598,8 @@ public final class BattleMsg {
       hash = (37 * hash) + WIN_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getWin());
+      hash = (37 * hash) + BATTLETIME_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleTime();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4702,6 +4743,8 @@ public final class BattleMsg {
 
         win_ = false;
 
+        battleTime_ = 0;
+
         return this;
       }
 
@@ -4731,6 +4774,7 @@ public final class BattleMsg {
         result.killMonsterCount_ = killMonsterCount_;
         result.hpPercent_ = hpPercent_;
         result.win_ = win_;
+        result.battleTime_ = battleTime_;
         onBuilt();
         return result;
       }
@@ -4787,6 +4831,9 @@ public final class BattleMsg {
         }
         if (other.getWin() != false) {
           setWin(other.getWin());
+        }
+        if (other.getBattleTime() != 0) {
+          setBattleTime(other.getBattleTime());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -4942,6 +4989,49 @@ public final class BattleMsg {
       public Builder clearWin() {
         
         win_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int battleTime_ ;
+      /**
+       * <pre>
+       * 战斗时长（秒）
+       * </pre>
+       *
+       * <code>uint32 battleTime = 4;</code>
+       * @return The battleTime.
+       */
+      @java.lang.Override
+      public int getBattleTime() {
+        return battleTime_;
+      }
+      /**
+       * <pre>
+       * 战斗时长（秒）
+       * </pre>
+       *
+       * <code>uint32 battleTime = 4;</code>
+       * @param value The battleTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleTime(int value) {
+        
+        battleTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 战斗时长（秒）
+       * </pre>
+       *
+       * <code>uint32 battleTime = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleTime() {
+        
+        battleTime_ = 0;
         onChanged();
         return this;
       }
@@ -9051,19 +9141,20 @@ public final class BattleMsg {
       " \001(\005:\0028\001\"\201\001\n\010HeroAttr\022\017\n\007heroUid\030\001 \001(\t\0222" +
       "\n\theroAttrs\030\002 \003(\0132\037.Protos.HeroAttr.Hero" +
       "AttrsEntry\0320\n\016HeroAttrsEntry\022\013\n\003key\030\001 \001(" +
-      "\005\022\r\n\005value\030\002 \001(\005:\0028\001\"Z\n\036BattleFieldEndRe" +
+      "\005\022\r\n\005value\030\002 \001(\005:\0028\001\"n\n\036BattleFieldEndRe" +
       "quest_13000003\022\030\n\020killMonsterCount\030\001 \001(\r" +
-      "\022\021\n\thpPercent\030\002 \001(\r\022\013\n\003win\030\003 \001(\010\"F\n\037Batt" +
-      "leFieldEndResponse_13000004\022#\n\007rewards\030\001" +
-      " \003(\0132\022.Protos.RewardInfo\"$\n\"BattleRougeR" +
-      "efreshRequest_13000005\"%\n#BattleRougeRef" +
-      "reshResponse_13000006\"9\n\034BattleRewardReq" +
-      "uest_13000022\022\n\n\002id\030\001 \001(\r\022\r\n\005index\030\002 \001(\r" +
-      "\"C\n\035BattleRewardResponse_13000023\022\"\n\006rew" +
-      "ard\030\001 \003(\0132\022.Protos.RewardInfo\"P\n\nBattleI" +
-      "nfo\022\n\n\002id\030\001 \001(\005\022\021\n\thpPercent\030\002 \001(\r\022\023\n\013re" +
-      "wardIndex\030\003 \001(\005\022\016\n\006finish\030\004 \001(\010B\033\n\031cn.ga" +
-      "me.protocol.protobufb\006proto3"
+      "\022\021\n\thpPercent\030\002 \001(\r\022\013\n\003win\030\003 \001(\010\022\022\n\nbatt" +
+      "leTime\030\004 \001(\r\"F\n\037BattleFieldEndResponse_1" +
+      "3000004\022#\n\007rewards\030\001 \003(\0132\022.Protos.Reward" +
+      "Info\"$\n\"BattleRougeRefreshRequest_130000" +
+      "05\"%\n#BattleRougeRefreshResponse_1300000" +
+      "6\"9\n\034BattleRewardRequest_13000022\022\n\n\002id\030" +
+      "\001 \001(\r\022\r\n\005index\030\002 \001(\r\"C\n\035BattleRewardResp" +
+      "onse_13000023\022\"\n\006reward\030\001 \003(\0132\022.Protos.R" +
+      "ewardInfo\"P\n\nBattleInfo\022\n\n\002id\030\001 \001(\005\022\021\n\th" +
+      "pPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003 \001(\005\022\016\n\006f" +
+      "inish\030\004 \001(\010B\033\n\031cn.game.protocol.protobuf" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9123,7 +9214,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleFieldEndRequest_13000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldEndRequest_13000003_descriptor,
-        new java.lang.String[] { "KillMonsterCount", "HpPercent", "Win", });
+        new java.lang.String[] { "KillMonsterCount", "HpPercent", "Win", "BattleTime", });
     internal_static_Protos_BattleFieldEndResponse_13000004_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_Protos_BattleFieldEndResponse_13000004_fieldAccessorTable = new

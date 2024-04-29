@@ -22,26 +22,10 @@ import org.w3c.dom.Element;
 	public final int HP;		
 	/** 攻击 */
 	public final int Attack;		
-	/** 怪物资源 */
-	public final String EnemyResPath;		
 	/** 技能ID */
 	public final int SkillID;		
-	/** 出生动作 */
-	public final String BornAct;		
-	/** 移动动作 */
-	public final String MoveAct;		
-	/** 攻击动作 */
-	public final String AtkAct;		
-	/** 受击动作 */
-	public final String HurtedAct;		
-	/** 死亡动作 */
-	public final String DieAct;		
-	/** 移动特效 */
-	public final String MoveEffect;		
-	/** 出生特效 */
-	public final String BornEffect;		
-	/** 出生音效 */
-	public final String BornAudio;		
+	/** 美术资源id 调用ArtResource#资源总表id */
+	public final int ArtResourceId;		
 
 	public MonsterConfig (Element element) throws Exception {
 	
@@ -57,17 +41,10 @@ import org.w3c.dom.Element;
 			: element.getAttribute("HP")); // 生命
 		Attack = Integer.parseInt(element.getAttribute("Attack") == null || element.getAttribute("Attack").length() == 0 ? "0"
 			: element.getAttribute("Attack")); // 攻击
-		EnemyResPath = element.getAttribute("EnemyResPath"); // 怪物资源
 		SkillID = Integer.parseInt(element.getAttribute("SkillID") == null || element.getAttribute("SkillID").length() == 0 ? "0"
 			: element.getAttribute("SkillID")); // 技能ID
-		BornAct = element.getAttribute("BornAct"); // 出生动作
-		MoveAct = element.getAttribute("MoveAct"); // 移动动作
-		AtkAct = element.getAttribute("AtkAct"); // 攻击动作
-		HurtedAct = element.getAttribute("HurtedAct"); // 受击动作
-		DieAct = element.getAttribute("DieAct"); // 死亡动作
-		MoveEffect = element.getAttribute("MoveEffect"); // 移动特效
-		BornEffect = element.getAttribute("BornEffect"); // 出生特效
-		BornAudio = element.getAttribute("BornAudio"); // 出生音效
+		ArtResourceId = Integer.parseInt(element.getAttribute("ArtResourceId") == null || element.getAttribute("ArtResourceId").length() == 0 ? "0"
+			: element.getAttribute("ArtResourceId")); // 美术资源id 调用ArtResource#资源总表id
 	}
 	
 

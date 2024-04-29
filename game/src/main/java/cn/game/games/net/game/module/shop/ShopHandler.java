@@ -83,7 +83,7 @@ public class ShopHandler extends BaseHandler {
 		final int[][] itemsAdd = items;
 		Supplier<Boolean> addItemAction = () -> {
 
-			PlayerHelper.addResources(player.getPlayerId(), itemsAdd);
+			PlayerHelper.addResources(player, itemsAdd);
 
 			if (shopItemConfig.PurchaseCnt > 0) {
 				shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
@@ -172,7 +172,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
-		PlayerHelper.addResources(player.getPlayerId(), monthCardConfig.PurchaseRewards);
+		PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards);
 
 		monthCard.setIsBuyRewards(true);
 		monthCard.update();
@@ -230,7 +230,7 @@ public class ShopHandler extends BaseHandler {
 		pay.onComplete(t -> {
 			if (t.result()) {
 				playerModule.addId(IdConstant.SHOP_GIFT, id);
-				PlayerHelper.addResources(player.getPlayerId(), shopGiftConfig.Item);
+				PlayerHelper.addResources(player, shopGiftConfig.Item);
 				client.sendProtocol(resp.build());
 			}else {
 				client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());

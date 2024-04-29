@@ -13,6 +13,15 @@ message HeroUpLevelRequest_16000001{
 message HeroUpLevelResponse_16000002{
 }
 
+//英雄一键升级,自动升级到最高级。
+message HeroUpLevelMaxRequest_16000021{
+  string uid = 1; // 英雄唯一id
+}
+
+message HeroUpLevelMaxResponse_16000022{
+	int32 level = 1; // 升到的等级
+}
+
 
 //英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。
 message HeroConflateRequest_16000003{
@@ -20,9 +29,9 @@ message HeroConflateRequest_16000003{
   // 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
   repeated string consumedUid = 2;
 }
-// 合成返回，客户端自己删除耗材。
+// 合成返回,客户端这里自己把相关的英雄、万能耗材扣掉。
 message HeroConflateResponse_16000004{
-	HeroInfo hero = 1;	// 本体英雄，不删除，保留uid，只改变品质（换configId）和星级。
+	HeroInfo hero = 1;	// 本体英雄，不删除，保留uid，只改变品质和星级。
 }
 
 
@@ -40,6 +49,7 @@ message HeroLevelResetRequest_16000007{
   string uid = 1; // 英雄唯一id
 }
 
+//客户端看看自己读表返还升级的材料
 message HeroLevelResetResponse_16000008{
 
 }
@@ -51,7 +61,8 @@ message HeroQualityResetRequest_16000011{
 }
 
 message HeroQualityResetResponse_16000012{
-
+	repeated HeroInfo heros = 1;	// 返还的本体英雄卡牌，需要uid
+	repeated ItemInfo items = 2;	// 返还的万能突破道具。
 }
 
 

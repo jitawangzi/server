@@ -122,25 +122,25 @@ public class ChapterModule extends BasePlayerModule  {
 
 	public void addChapterTimes(int battleId) {
 		BattleConfig battleConfig = BattleManager.instance().get(battleId);
-		if (battleConfig.timesLimit.length > 0) {
-			if (battleConfig.timesLimit[0] == 1) {
-				dailyCount.add(battleConfig.BattleType, 1);
-			}
-		} else if (battleConfig.timesLimit[0] == 2) {
-
-		}
+		/*		if (battleConfig.timesLimit.length > 0) {
+					if (battleConfig.timesLimit[0] == 1) {
+						dailyCount.add(battleConfig.BattleType, 1);
+					}
+				} else if (battleConfig.timesLimit[0] == 2) {
+		
+				}*/
 	}
 
 	public boolean checkChapterTimes(int battleId) {
 		BattleConfig battleConfig = BattleManager.instance().get(battleId);
 		boolean ret = true;
-		if (battleConfig.timesLimit.length > 0) {
-			if (battleConfig.timesLimit[0] == 1) {
-				ret = dailyCount.getValue(battleConfig.BattleType) < battleConfig.timesLimit[1];
-			}
-		} else if (battleConfig.timesLimit[0] == 2) {
-
-		}
+		/*		if (battleConfig.timesLimit.length > 0) {
+					if (battleConfig.timesLimit[0] == 1) {
+						ret = dailyCount.getValue(battleConfig.BattleType) < battleConfig.timesLimit[1];
+					}
+				} else if (battleConfig.timesLimit[0] == 2) {
+		
+				}*/
 		return ret;
 	}
 

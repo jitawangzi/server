@@ -10,13 +10,13 @@ import org.w3c.dom.Element;
  */
  public class ArtResourceConfig {
 
-	/** 资源id #Hero表 */
+	/** 300-唯一   310-永恒 320-彩      330-红 340-金      350-紫 360-蓝      370-绿 380-白      390-没有品质（怪专用） */
 	public final int ID;		
-	/** 资源类型 1-英雄 */
+	/** 资源类型 1-英雄 2-怪物 */
 	public final int Type;		
 	/** spine预制体 */
 	public final String Prefab;		
-	/** 头像Icon */
+	/** 头像Icon 调用：west\src\First_party\art\xiyou UI\卡牌_card \west\src\First_party\art\xiyou UI\head_头像 */
 	public final String Icon;		
 	/** 出生 动作 */
 	public final String StartAction;		
@@ -48,11 +48,11 @@ import org.w3c.dom.Element;
 	public ArtResourceConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // 资源id #Hero表
+			: element.getAttribute("ID")); // 300-唯一   310-永恒 320-彩      330-红 340-金      350-紫 360-蓝      370-绿 380-白      390-没有品质（怪专用）
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
-			: element.getAttribute("Type")); // 资源类型 1-英雄
+			: element.getAttribute("Type")); // 资源类型 1-英雄 2-怪物
 		Prefab = element.getAttribute("Prefab"); // spine预制体
-		Icon = element.getAttribute("Icon"); // 头像Icon
+		Icon = element.getAttribute("Icon"); // 头像Icon 调用：west\src\First_party\art\xiyou UI\卡牌_card \west\src\First_party\art\xiyou UI\head_头像
 		StartAction = element.getAttribute("StartAction"); // 出生 动作
 		StandbyAction = element.getAttribute("StandbyAction"); // 休闲待机 动作
 		AttackAction = element.getAttribute("AttackAction"); // 技能攻击 动作

@@ -15,7 +15,7 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 掉落组ID */
 	public final int RandomGroupID;		
-	/** 道具ID */
+	/** 货币ID-1打头 道具ID-2打头 卡牌ID-3打头 */
 	public final int AssetID;		
 	/** 数量 */
 	public final int Several;		
@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 		RandomGroupID = Integer.parseInt(element.getAttribute("RandomGroupID") == null || element.getAttribute("RandomGroupID").length() == 0 ? "0"
 			: element.getAttribute("RandomGroupID")); // 掉落组ID
 		AssetID = Integer.parseInt(element.getAttribute("AssetID") == null || element.getAttribute("AssetID").length() == 0 ? "0"
-			: element.getAttribute("AssetID")); // 道具ID
+			: element.getAttribute("AssetID")); // 货币ID-1打头 道具ID-2打头 卡牌ID-3打头
 		Several = Integer.parseInt(element.getAttribute("Several") == null || element.getAttribute("Several").length() == 0 ? "0"
 			: element.getAttribute("Several")); // 数量
 		Weight = Integer.parseInt(element.getAttribute("Weight") == null || element.getAttribute("Weight").length() == 0 ? "0"

@@ -42,6 +42,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int DragonStarUpResponse_17000004 = 0x17000004;    
 	public final static int DragonSkillUpRequest_17000005 = 0x17000005;    //龙技能升级  
 	public final static int DragonSkillUpResponse_17000006 = 0x17000006;    
+	public final static int DrawListRequest_37000001 = 0x37000001;    //请求卡池界面数据  
+	public final static int DrawListResponse_37000002 = 0x37000002;    //响应卡池界面  
+	public final static int DrawRequest_37000003 = 0x37000003;    //请求抽卡  
+	public final static int DrawResponse_37000004 = 0x37000004;    //抽卡结果  
 	public final static int EquipmentWearRequest_09000001 = 0x09000001;    //装备 替换  
 	public final static int EquipmentWearResponse_09000002 = 0x09000002;    
 	public final static int EquipmentTeardownRequest_09000003 = 0x09000003;    //装备卸下  
@@ -74,12 +78,14 @@ public class PbProtocol implements ProtocolParser {
 	public final static int GmPlayerLogouttResponse_7700000a = 0x7700000a;    //响应踢下线  
 	public final static int HeroUpLevelRequest_16000001 = 0x16000001;    //英雄升级  
 	public final static int HeroUpLevelResponse_16000002 = 0x16000002;    
+	public final static int HeroUpLevelMaxRequest_16000021 = 0x16000021;    //英雄一键升级,自动升级到最高级。  
+	public final static int HeroUpLevelMaxResponse_16000022 = 0x16000022;    
 	public final static int HeroConflateRequest_16000003 = 0x16000003;    //英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。  
-	public final static int HeroConflateResponse_16000004 = 0x16000004;    //合成返回，客户端自己删除耗材。  
+	public final static int HeroConflateResponse_16000004 = 0x16000004;    //合成返回,客户端这里自己把相关的英雄、万能耗材扣掉。  
 	public final static int HeroBattleRequest_16000005 = 0x16000005;    //英雄上阵  
 	public final static int HeroBattleResponse_16000006 = 0x16000006;    
 	public final static int HeroLevelResetRequest_16000007 = 0x16000007;    //英雄等级重置,返还升级材料  
-	public final static int HeroLevelResetResponse_16000008 = 0x16000008;    
+	public final static int HeroLevelResetResponse_16000008 = 0x16000008;    //客户端看看自己读表返还升级的材料  
 	public final static int HeroQualityResetRequest_16000011 = 0x16000011;    //英雄品质重置  
 	public final static int HeroQualityResetResponse_16000012 = 0x16000012;    
 	public final static int MailListRequest_12000001 = 0x12000001;    //请求邮件列表。  
@@ -241,6 +247,14 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(DragonSkillUpResponse_17000006, cn.game.protocol.protobuf.DragonMsg.DragonSkillUpResponse_17000006.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(DrawListRequest_37000001, cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DrawListResponse_37000002, cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DrawRequest_37000003, cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DrawResponse_37000004, cn.game.protocol.protobuf.DrawMsg.DrawResponse_37000004.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(EquipmentWearRequest_09000001, cn.game.protocol.protobuf.EquipMsg.EquipmentWearRequest_09000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(EquipmentWearResponse_09000002, cn.game.protocol.protobuf.EquipMsg.EquipmentWearResponse_09000002.getDefaultInstance()
@@ -304,6 +318,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(HeroUpLevelRequest_16000001, cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroUpLevelResponse_16000002, cn.game.protocol.protobuf.HeroMsg.HeroUpLevelResponse_16000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroUpLevelMaxRequest_16000021, cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroUpLevelMaxResponse_16000022, cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxResponse_16000022.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroConflateRequest_16000003, cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003.getDefaultInstance()
 				.getParserForType());
@@ -573,6 +591,10 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("DragonStarUpResponse_17000004", 0x17000004);
 		nameIdMap.put("DragonSkillUpRequest_17000005", 0x17000005);
 		nameIdMap.put("DragonSkillUpResponse_17000006", 0x17000006);
+		nameIdMap.put("DrawListRequest_37000001", 0x37000001);
+		nameIdMap.put("DrawListResponse_37000002", 0x37000002);
+		nameIdMap.put("DrawRequest_37000003", 0x37000003);
+		nameIdMap.put("DrawResponse_37000004", 0x37000004);
 		nameIdMap.put("EquipmentWearRequest_09000001", 0x09000001);
 		nameIdMap.put("EquipmentWearResponse_09000002", 0x09000002);
 		nameIdMap.put("EquipmentTeardownRequest_09000003", 0x09000003);
@@ -605,6 +627,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("GmPlayerLogouttResponse_7700000a", 0x7700000a);
 		nameIdMap.put("HeroUpLevelRequest_16000001", 0x16000001);
 		nameIdMap.put("HeroUpLevelResponse_16000002", 0x16000002);
+		nameIdMap.put("HeroUpLevelMaxRequest_16000021", 0x16000021);
+		nameIdMap.put("HeroUpLevelMaxResponse_16000022", 0x16000022);
 		nameIdMap.put("HeroConflateRequest_16000003", 0x16000003);
 		nameIdMap.put("HeroConflateResponse_16000004", 0x16000004);
 		nameIdMap.put("HeroBattleRequest_16000005", 0x16000005);

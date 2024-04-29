@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 
 
 /**
- * 定时刷怪
+ * 怪物刷新
  * 
  * 工具生成的，不要手动修改
  */
@@ -14,28 +14,24 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 刷怪组ID */
 	public final int GroupIDs;		
-	/** 循环类型 */
+	/** 循环类型 1.定时刷怪逻辑 2.补怪逻辑 3.具体时间出怪 */
 	public final int LoopType;		
-	/** 循环参数 */
+	/** 循环参数 类型1定时刷怪的配置 参数1：多次时间出一次 参数2：总时间 */
 	public final int[] LoopParms;		
-	/** 刷怪参数 */
+	/** 刷怪参数  调用Battle表中BattleField#关卡 */
 	public final String EnemyType;		
 	/** 刷怪数量 */
 	public final int EnemyCount;		
-	/** 刷怪位置 */
-	public final int[] EnemyPos;		
 	/** 刷怪速率 */
 	public final int Time;		
 	/** 预警 */
 	public final int Waring;		
-	/** 特殊处理 */
+	/** 特殊处理 1-清屏 */
 	public final int SpecialOpt;		
 	/** 能量价值 */
 	public final int EnergyPoint;		
 	/** 彩蛋触发器 */
 	public final int[] Egg;		
-	/** 麻吉触发器 */
-	public final int[] UniqueSkills;		
 
 	public MonsterAppearConfig (Element element) throws Exception {
 	
@@ -44,8 +40,8 @@ import org.w3c.dom.Element;
 		GroupIDs = Integer.parseInt(element.getAttribute("GroupIDs") == null || element.getAttribute("GroupIDs").length() == 0 ? "0"
 			: element.getAttribute("GroupIDs")); // 刷怪组ID
 		LoopType = Integer.parseInt(element.getAttribute("LoopType") == null || element.getAttribute("LoopType").length() == 0 ? "0"
-			: element.getAttribute("LoopType")); // 循环类型
-		String LoopParmsString = element.getAttribute("LoopParms"); // 循环参数
+			: element.getAttribute("LoopType")); // 循环类型 1.定时刷怪逻辑 2.补怪逻辑 3.具体时间出怪
+		String LoopParmsString = element.getAttribute("LoopParms"); // 循环参数 类型1定时刷怪的配置 参数1：多次时间出一次 参数2：总时间
 		if (LoopParmsString != null && LoopParmsString.length() > 0) {
 			String[] LoopParmsStrings = LoopParmsString.split(";"); 
 			int[] LoopParmsTemp = new int[LoopParmsStrings.length] ; 
@@ -57,27 +53,15 @@ import org.w3c.dom.Element;
 		} else {
 			LoopParms = new int[] {};
 		}
-		EnemyType = element.getAttribute("EnemyType"); // 刷怪参数
+		EnemyType = element.getAttribute("EnemyType"); // 刷怪参数  调用Battle表中BattleField#关卡
 		EnemyCount = Integer.parseInt(element.getAttribute("EnemyCount") == null || element.getAttribute("EnemyCount").length() == 0 ? "0"
 			: element.getAttribute("EnemyCount")); // 刷怪数量
-		String EnemyPosString = element.getAttribute("EnemyPos"); // 刷怪位置
-		if (EnemyPosString != null && EnemyPosString.length() > 0) {
-			String[] EnemyPosStrings = EnemyPosString.split(";"); 
-			int[] EnemyPosTemp = new int[EnemyPosStrings.length] ; 
-			for (int i = 0; i < EnemyPosStrings.length; i++) {
-				int temp = Integer.parseInt(EnemyPosStrings[i]);	
-				EnemyPosTemp[i] = temp;
-			}
-			EnemyPos = EnemyPosTemp ;			
-		} else {
-			EnemyPos = new int[] {};
-		}
 		Time = Integer.parseInt(element.getAttribute("Time") == null || element.getAttribute("Time").length() == 0 ? "0"
 			: element.getAttribute("Time")); // 刷怪速率
 		Waring = Integer.parseInt(element.getAttribute("Waring") == null || element.getAttribute("Waring").length() == 0 ? "0"
 			: element.getAttribute("Waring")); // 预警
 		SpecialOpt = Integer.parseInt(element.getAttribute("SpecialOpt") == null || element.getAttribute("SpecialOpt").length() == 0 ? "0"
-			: element.getAttribute("SpecialOpt")); // 特殊处理
+			: element.getAttribute("SpecialOpt")); // 特殊处理 1-清屏
 		EnergyPoint = Integer.parseInt(element.getAttribute("EnergyPoint") == null || element.getAttribute("EnergyPoint").length() == 0 ? "0"
 			: element.getAttribute("EnergyPoint")); // 能量价值
 		String EggString = element.getAttribute("Egg"); // 彩蛋触发器
@@ -91,18 +75,6 @@ import org.w3c.dom.Element;
 			Egg = EggTemp ;			
 		} else {
 			Egg = new int[] {};
-		}
-		String UniqueSkillsString = element.getAttribute("UniqueSkills"); // 麻吉触发器
-		if (UniqueSkillsString != null && UniqueSkillsString.length() > 0) {
-			String[] UniqueSkillsStrings = UniqueSkillsString.split(";"); 
-			int[] UniqueSkillsTemp = new int[UniqueSkillsStrings.length] ; 
-			for (int i = 0; i < UniqueSkillsStrings.length; i++) {
-				int temp = Integer.parseInt(UniqueSkillsStrings[i]);	
-				UniqueSkillsTemp[i] = temp;
-			}
-			UniqueSkills = UniqueSkillsTemp ;			
-		} else {
-			UniqueSkills = new int[] {};
 		}
 	}
 	

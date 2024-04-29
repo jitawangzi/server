@@ -20,7 +20,7 @@ import com.google.protobuf.TextFormat;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.Config;
@@ -89,7 +89,7 @@ public abstract class BaseHandler implements Handler {
 							e);
 					client.sendProtocol(PlayerErrorPush_01000099.newBuilder().setError(e.getMessage() != null ? e.getMessage()
 							: ExceptionUtils.getFullStackTrace(e)).build(),
-							OldErrorMsgEnum.unknown.getId());
+							ErrorMsgEnum.unknown.getId());
 
 					CompletableFuture.runAsync(() -> {
 						try {

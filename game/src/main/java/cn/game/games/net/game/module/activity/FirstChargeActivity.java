@@ -51,10 +51,9 @@ public class FirstChargeActivity extends ActivityBase {
 				ret.addAll(rewards);
 			}
 			this.selectedIndex.addAll(selectedList);
-		} else {
-			List<RewardInfo> rewards = PlayerHelper.addResources(player, firstChargeConfig.Rewards);
-			ret.addAll(rewards);
 		}
+		List<RewardInfo> rewards = PlayerHelper.addResources(player, firstChargeConfig.Rewards2);
+		ret.addAll(rewards);
 
 		FirstChargeConfig nextConfig = FirstChargeManager.instance().getNullable(chargeId + 1);
 		if (nextConfig != null) {

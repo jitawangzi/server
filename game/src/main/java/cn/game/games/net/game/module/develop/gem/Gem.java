@@ -44,6 +44,6 @@ public class Gem extends ItemNoStack implements Serializable, DbEntity {
 	}
 
 	public GemInfo toGemInfo() {
-		return GemInfo.newBuilder().setUid(getId().toString()).setConfigId(getConfigId()).setIsLock(isLock).putAllAttrs(gemAttrs).build();
+		return GemInfo.newBuilder().setUid(getId() + "").setConfigId(getConfigId()).setIsLock(isLock).putAllAttrs(gemAttrs).build();
 	}
 }

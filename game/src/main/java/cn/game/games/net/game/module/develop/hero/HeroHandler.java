@@ -1,6 +1,11 @@
 package cn.game.games.net.game.module.develop.hero;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -12,14 +17,19 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.HeroQualityConfig;
-import cn.game.protocol.generated.config.HeroSourceConfig;
+import cn.game.protocol.generated.config.HeroLvConfig;
+import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.HeroBreakManager;
+import cn.game.protocol.generated.manager.HeroLvManager;
 import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.HeroQualityManager;
-import cn.game.protocol.generated.manager.HeroSourceManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
+import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003;
@@ -28,9 +38,12 @@ import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetRequest_16000007;
 import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetResponse_16000008;
 import cn.game.protocol.protobuf.HeroMsg.HeroQualityResetRequest_16000011;
 import cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012;
+import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021;
+import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxResponse_16000022;
 import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001;
 import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelResponse_16000002;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @Component
 public class HeroHandler extends BaseHandler {
@@ -44,10 +57,75 @@ public class HeroHandler extends BaseHandler {
 	protected void inititialize() {
 
 		putInvoker(PbProtocol.HeroUpLevelRequest_16000001, this::upLevel);
+		putInvoker(PbProtocol.HeroUpLevelMaxRequest_16000021, this::upLevelMax);
 		putInvoker(PbProtocol.HeroConflateRequest_16000003, this::conflate);
 		putInvoker(PbProtocol.HeroBattleRequest_16000005, this::battle);
 		putInvoker(PbProtocol.HeroLevelResetRequest_16000007, this::levelReset);
 		putInvoker(PbProtocol.HeroQualityResetRequest_16000011, this::qualityReset);
+	}
+
+	private void empty(NetClient client, Object message) {
+		HeroQualityResetRequest_16000011 req = (HeroQualityResetRequest_16000011) message;
+		HeroQualityResetResponse_16000012.Builder resp = HeroQualityResetResponse_16000012.newBuilder();
+		long uid = Long.parseLong(req.getUid());
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		Hero hero = heroModule.get(uid);
+		if (hero == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		client.sendProtocol(resp.build());
+	}
+
+	private void upLevelMax(NetClient client, Object message) {
+		HeroUpLevelMaxRequest_16000021 req = (HeroUpLevelMaxRequest_16000021) message;
+		HeroUpLevelMaxResponse_16000022.Builder resp = HeroUpLevelMaxResponse_16000022.newBuilder();
+		long uid = Long.parseLong(req.getUid());
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (!player.isFuncOpen(InitialUI.CardLv)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+
+		HeroModule heroModule = player.getHeroModule();
+		Hero hero = heroModule.get(uid);
+		if (hero == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		int heroMaxLevel = HeroHelper.getHeroMaxLevel(hero);
+		int curLevel = hero.getLevel();
+		int maxLevel = curLevel;
+		int itemId = GlobalConst.HeroLvItem;
+		int itemCount = 0;
+		int moneyId = Asset.gold.ID;
+		int moneyCount = 0;
+		for (int level = curLevel;; level++) {
+			if (maxLevel >= heroMaxLevel) {
+				break;
+			}
+			HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
+			if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+				break;
+			}
+			heroLvConfig = HeroLvManager.instance().getNullable(level + 1);
+			if (heroLvConfig == null) {
+				break;
+			}
+			itemCount += heroLvConfig.LvConsumeItem;
+			moneyCount += heroLvConfig.LvConsumeMoney;
+			maxLevel = level + 1;
+		}
+		if (maxLevel != curLevel) {
+			hero.setLevel(maxLevel);
+			List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
+			deleteItems.add(new AbstractMap.SimpleEntry(moneyId,moneyCount)) ; 
+			deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
+			PlayerHelper.delResources(player, deleteItems, ResourceConsumeEnum.HeroLevelUp);
+		}
+		resp.setLevel(maxLevel);
+		client.sendProtocol(resp.build());
 	}
 
 	private void levelReset(NetClient client, Object message) {
@@ -61,6 +139,20 @@ public class HeroHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		int level = hero.getLevel();
+
+		int itemCount = 0;
+		int money = 0;
+		HeroLvConfig heroLvConfig;
+		for (int i = 1; i < level; i++) {
+			heroLvConfig = HeroLvManager.instance().get(i);
+			itemCount += heroLvConfig.LvConsumeItem;
+			money += heroLvConfig.LvConsumeMoney;
+		}
+		PlayerHelper.addResources(player, GlobalConst.HeroLvItem, itemCount);
+		PlayerHelper.addResources(player, Asset.gold.ID, money);
+
+		hero.setLevel(1);
 		client.sendProtocol(resp.build());
 	}
 
@@ -75,6 +167,36 @@ public class HeroHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+		int quality = hero.getQuality();
+		int star = hero.getStar();
+		int sameIdHeros = 0;
+
+		Map<Integer, Integer> itemsMap = new HashMap<Integer, Integer>();
+		for (int i = 1; i < star; i++) {
+			HeroBreakConfig breakConfig = HeroBreakManager.instance().getUIInitialQualityStar(quality, i);
+			sameIdHeros += breakConfig.SameConsumeNum;
+			
+			int omniItemID = getOmniItemID(heroConfig, breakConfig); 
+			int itemCount = breakConfig.CareerConsumeNum ; 
+			itemsMap.compute(omniItemID, (k, v) -> v == null ? itemCount : v + itemCount);
+		}
+		List<HeroInfo> heroInfos = new ArrayList<>();
+		List<RewardInfo> resources = PlayerHelper.addResources(player, heroConfig.ID, sameIdHeros);
+		for (RewardInfo rewardInfo : resources) {
+			heroInfos.add(rewardInfo.getRole());
+		}
+		List<ItemInfo> itemInfos = new ArrayList<>();
+		for (Entry<Integer, Integer> entry : itemsMap.entrySet()) {
+			List<RewardInfo> resources2 = PlayerHelper.addResources(player, entry.getKey(), entry.getValue());
+			for (RewardInfo rewardInfo : resources2) {
+				itemInfos.add(rewardInfo.getItem());
+			}
+		}
+		hero.setStar(1);
+		resp.addAllHeros(heroInfos);
+		resp.addAllItems(itemInfos);
+
 		client.sendProtocol(resp.build());
 	}
 
@@ -116,21 +238,44 @@ public class HeroHandler extends BaseHandler {
 		String uid = req.getUid();
 		List<String> consumedUidList = req.getConsumedUidList();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (!player.isFuncOpen(InitialUI.CardBreak)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+
 		HeroModule heroModule = player.getHeroModule();
 		Hero hero = heroModule.get(Long.parseLong(uid));
 		if (hero == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-//		先检查是升星还是突破。 
+		for (String string : consumedUidList) {
+			if (string.equals(uid)) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+				return;
+			}
+		}
+
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-		HeroQualityConfig heroQualityConfig = HeroQualityManager.instance().get(heroConfig.Quality);
+		// 先检查能不能往下突破
+		HeroBreakConfig nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar() + 1);
+		if (nextQualityStarConfig == null) {
+			nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality() + 1, 1);
+		}
+		if (nextQualityStarConfig == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.hero_break_max.getId());
+			return;
+		}
+		if (nextQualityStarConfig.InitialQuality > heroConfig.BreakQuality) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.hero_break_max.getId());
+			return;
+		}
+		// 检查资源
+		HeroBreakConfig qualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
+
+//		HeroQualityConfig heroQualityConfig = HeroQualityManager.instance().get(heroConfig.Quality);
 //		HeroConflateConfig heroConflateConfig = HeroConflateManager.instance().get(heroConfig.ID);
-
-		// 普通升星
-		boolean isStarUp = hero.getStar() < heroQualityConfig.StarMax;
-
-		boolean check = checkStarConsume(player, hero, consumedUidList, isStarUp);
+		boolean check = checkStarConsume(player, hero, consumedUidList, qualityStarConfig);
 		if (!check) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
@@ -138,110 +283,71 @@ public class HeroHandler extends BaseHandler {
 		for (String string : consumedUidList) {
 			player.getHeroModule().del(Long.parseLong(string), ResourceConsumeEnum.HeroConflate);
 		}
-		if (isStarUp) {
-			hero.setStar(hero.getStar() + 1);
-		}else {
-			hero.setConfigId(heroConfig.PromoteTargetID);
-			hero.setStar(0);
-		}
+		hero.setStar(nextQualityStarConfig.Star);
+		hero.setQuality(nextQualityStarConfig.InitialQuality);
+
 		resp.setHero(hero.toHeroInfo());
 		client.sendProtocol(resp.build());
 	}
 
-	private boolean checkStarConsume(Player player, Hero hero, List<String> consumedUidList, boolean isStarUp) {
+	private boolean checkStarConsume(Player player, Hero hero, List<String> consumedUidList, HeroBreakConfig qualityStarConfig) {
 
+		HeroModule heroModule = player.getHeroModule();
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 //		HeroSourceConfig heroSourceConfig = HeroSourceManager.instance().get(heroConfig.HeroSourceID);
 //		HeroQualityConfig heroQualityConfig = HeroQualityManager.instance().get(heroConfig.Quality);
-		int OmniItemID = getOmniItemID(heroConfig, isStarUp);
-		int OmniItemCount = 0;
-		int[][] consume = null;
-		if (isStarUp) {
-			consume = heroConfig.StarPromoteConsume;
-		} else {
-			consume = heroConfig.QualityPromoteConsume;
+		int OmniItemID = getOmniItemID(heroConfig, qualityStarConfig);
+		int needHeroCount = qualityStarConfig.CareerConsumeNum + qualityStarConfig.SameConsumeNum;
+		int OmniItemCount = needHeroCount - consumedUidList.size();
+		boolean isItemEnough = player.isEnough(OmniItemID, OmniItemCount);
+		if (!isItemEnough) {
+			return false;
 		}
 
-		int[][] starPromoteConsume = consume;
-		for (int i = 0; i < starPromoteConsume.length; i++) {
-			int type = starPromoteConsume[i][0];
-			if (type == 1) { // 按职业和品质扣英雄
-				int Career = starPromoteConsume[i][1];
-				int quality = starPromoteConsume[i][2];
-				int count = starPromoteConsume[i][3];
-
-				if (consumedUidList.size() > count) {
+		List<Long> sameHerosUsedList = new ArrayList<>();
+		if (qualityStarConfig.SameConsumeNum > 0) {
+			Collection<Hero> sameHeros = heroModule.getByConfigId(hero.getConfigId());
+			if (sameHeros.size() < qualityStarConfig.SameConsumeNum) {
+				return false;
+			}
+			for (String uid : consumedUidList) {
+				Hero hero2 = heroModule.get(Long.parseLong(uid));
+				if (hero2 == null) {
 					return false;
 				}
-
-				OmniItemCount = count - consumedUidList.size();
-				if (OmniItemCount > 0) {
-					if (OmniItemID > 0) {
-						boolean isItemEnough = player.isEnough(OmniItemID, OmniItemCount);
-						if (!isItemEnough) {
-							return false;
-						}
-					} else {
-						return false;
+				if (hero2.getConfigId() == hero.getConfigId()) {
+					sameHerosUsedList.add(hero2.getId());
+					if (sameHerosUsedList.size() == qualityStarConfig.SameConsumeNum) {
+						break;
 					}
 				}
-				for (String uid : consumedUidList) {
-					Hero hero2 = player.getHeroModule().get(Long.parseLong(uid));
-					if (hero2 == null) {
-						return false;
-					}
-					HeroConfig heroConfig2 = HeroManager.instance().get(hero2.getConfigId());
-					HeroSourceConfig heroSourceConfig2 = HeroSourceManager.instance().get(heroConfig2.HeroSourceID);
-					HeroQualityConfig heroQualityConfig2 = HeroQualityManager.instance().get(heroConfig2.Quality);
-					if (heroSourceConfig2.Career != Career || heroQualityConfig2.quality != quality) {
-						return false;
-					}
+			}
+			if (sameHerosUsedList.size() != qualityStarConfig.SameConsumeNum) {
+				return false;
+			}
+		}
+		if (qualityStarConfig.CareerConsumeNum > 0) {
+			// 检查同职业的卡时，需要先排除已经当做同名卡的
+//			int sameCareerCount = 0;
+			for (String uid : consumedUidList) {
+				if (sameHerosUsedList.contains(Long.parseLong(uid))) {
+					continue;
 				}
-
-			} else if (type == 2) {
-				// 按英雄id扣除英雄
-				int heroId = starPromoteConsume[i][1];
-				int count = starPromoteConsume[i][2];
-
-				if (consumedUidList.size() > count) {
+				Hero hero2 = heroModule.get(Long.parseLong(uid));
+				HeroConfig heroConfig2 = HeroManager.instance().get(hero2.getConfigId());
+				if (heroConfig2.Career != heroConfig.Career) {
 					return false;
-				}
-
-				OmniItemCount = count - consumedUidList.size();
-				if (OmniItemCount > 0) {
-					if (OmniItemID > 0) {
-						boolean isItemEnough = player.isEnough(OmniItemID, OmniItemCount);
-						if (!isItemEnough) {
-							return false;
-						}
-					} else {
-						return false;
-					}
-				}
-				for (String uid : consumedUidList) {
-					Hero hero2 = player.getHeroModule().get(Long.parseLong(uid));
-					if (hero2 == null) {
-						return false;
-					}
-					HeroConfig heroConfig2 = HeroManager.instance().get(hero2.getConfigId());
-					if (heroConfig2.ID != heroId) {
-						return false;
-					}
 				}
 			}
 		}
 
-		// 在这里先把万能耗材扣了
-		PlayerHelper.delResources(player, OmniItemID, OmniItemCount, null);
+		// 在这里先把万能耗材扣了,之后只扣卡
+		PlayerHelper.delResources(player, OmniItemID, OmniItemCount, null, false);
 		return true;
 	}
 
-	private int getOmniItemID(HeroConfig heroConfig, boolean isStarUp) {
-		if (isStarUp) {
-			return heroConfig.StarOmniItemID;
-		} else {
-			return heroConfig.QualityOmniItemID;
-		}
+	private int getOmniItemID(HeroConfig heroConfig, HeroBreakConfig qualityStarConfig) {
+		return qualityStarConfig.RebirthReturnItem[heroConfig.Career - 1];
 	}
 
 	private void upLevel(NetClient client, Object message) {
@@ -249,26 +355,35 @@ public class HeroHandler extends BaseHandler {
 		HeroUpLevelResponse_16000002.Builder resp = HeroUpLevelResponse_16000002.newBuilder();
 		long uid = Long.parseLong(req.getUid());
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (!player.isFuncOpen(InitialUI.CardLv)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+
 		HeroModule heroModule = player.getHeroModule();
 		Hero hero = heroModule.get(uid);
 		if (hero == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId()); 
-		HeroQualityConfig heroQualityConfig = HeroQualityManager.instance().get(heroConfig.Quality);
-		if (hero.getLevel() >= heroQualityConfig.LevelMax) {
+		if (hero.getLevel() >= HeroHelper.getHeroMaxLevel(hero)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.hero_level_max.getId());
 			return;
 		}
-		HeroSourceConfig heroSourceConfig = HeroSourceManager.instance().get(heroConfig.HeroSourceID);
-		List<Entry<Integer, Integer>> cost = HeroHelper.calcUpLevelCost(hero.getLevel(), heroSourceConfig.Career);
 
-		boolean delResources = PlayerHelper.delResources(player, cost, ResourceConsumeEnum.HeroLevelUp);
-		if (!delResources) {
+		HeroLvConfig nextConfig = HeroLvManager.instance().getNullable(hero.getLevel() + 1);
+		if (nextConfig == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.hero_level_max.getId());
+			return;
+		}
+		HeroLvConfig curConfig = HeroLvManager.instance().getNullable(hero.getLevel());
+		if (!player.isEnough(GlobalConst.HeroLvItem, curConfig.LvConsumeItem) || !player.isEnough(Asset.gold.ID, curConfig.LvConsumeMoney)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
+
+		PlayerHelper.delResources(player, GlobalConst.HeroLvItem, curConfig.LvConsumeItem, ResourceConsumeEnum.HeroLevelUp);
+		PlayerHelper.delResources(player, Asset.gold.ID, curConfig.LvConsumeMoney, ResourceConsumeEnum.HeroLevelUp);
 		hero.setLevel(hero.getLevel() + 1);
 //		hero.update();
 		client.sendProtocol(resp.build());

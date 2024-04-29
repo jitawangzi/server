@@ -14,15 +14,13 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 活动ID */
 	public final int ActivityiD;		
-	/** 类型 0=无条件 1=购买礼包类型 */
+	/** 顺序 */
 	public final int Type;		
 	/** 前置条件 */
 	public final int[] Preconditions;		
-	/** 资源图 */
-	public final String ResGraph;		
 	/** 售价 */
 	public final int[] Price;		
-	/** 礼包ID组 */
+	/** 礼包ID组 礼包表 */
 	public final int[] BundleID;		
 
 	public SingleChargeActivityConfig (Element element) throws Exception {
@@ -32,7 +30,7 @@ import org.w3c.dom.Element;
 		ActivityiD = Integer.parseInt(element.getAttribute("ActivityiD") == null || element.getAttribute("ActivityiD").length() == 0 ? "0"
 			: element.getAttribute("ActivityiD")); // 活动ID
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
-			: element.getAttribute("Type")); // 类型 0=无条件 1=购买礼包类型
+			: element.getAttribute("Type")); // 顺序
 		String PreconditionsString = element.getAttribute("Preconditions"); // 前置条件
 		if (PreconditionsString != null && PreconditionsString.length() > 0) {
 			String[] PreconditionsStrings = PreconditionsString.split(";"); 
@@ -45,7 +43,6 @@ import org.w3c.dom.Element;
 		} else {
 			Preconditions = new int[] {};
 		}
-		ResGraph = element.getAttribute("ResGraph"); // 资源图
 		String PriceString = element.getAttribute("Price"); // 售价
 		if (PriceString != null && PriceString.length() > 0) {
 			String[] PriceStrings = PriceString.split(";"); 
@@ -58,7 +55,7 @@ import org.w3c.dom.Element;
 		} else {
 			Price = new int[] {};
 		}
-		String BundleIDString = element.getAttribute("BundleID"); // 礼包ID组
+		String BundleIDString = element.getAttribute("BundleID"); // 礼包ID组 礼包表
 		if (BundleIDString != null && BundleIDString.length() > 0) {
 			String[] BundleIDStrings = BundleIDString.split(";"); 
 			int[] BundleIDTemp = new int[BundleIDStrings.length] ; 

@@ -48,11 +48,12 @@ public enum ErrorMsgEnum{
 
 	/** 条件校验错误 */
 	condition_check_error(58, "condition_check_error", "条件校验错误"),
-	/** 功能未开启，或者时间未到之类未开启 */
-	not_open(59, "not_open", "功能未开启，或者时间未到之类未开启"),
-
+	/** 一般是时间未到之类未开启 */
+	not_open(59, "not_open", "一般是时间未到之类未开启"),
+	/** 功能尚未开启  */
+	func_not_open(60, "func_not_open", "功能尚未开启"),
 	/** 玩家名字不合法  */
-	player_name_illegal(60, "player_name_illegal", "玩家名字不合法"),
+	player_name_illegal(61, "player_name_illegal", "玩家名字不合法"),
 	/** 次数不足 */
 	times_limit(62, "times_limit", "次数不足"),
 
@@ -133,6 +134,8 @@ public enum ErrorMsgEnum{
 
 	// 英雄
 	hero_level_max(380, "hero_level_max", "英雄等级到达上限"),
+
+	hero_break_max(381, "hero_break_max", "英雄突破到达上限"),
 
     ;
 	/** id */

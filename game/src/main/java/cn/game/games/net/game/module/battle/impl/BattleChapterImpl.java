@@ -64,6 +64,9 @@ public class BattleChapterImpl implements IBattleHandler {
 		if (!chapter.getPass() && win) {
 			chapter.setPass(true);
 		}
+		if (request.getBattleTime() > chapter.getBattleTime()) {
+			chapter.setBattleTime(request.getBattleTime());
+		}
 		// 发送奖励
 		BattleConfig battleConfig = BattleManager.instance().get(chapter.getBattleId());
 		List<RewardInfo> allRewards = new ArrayList<RewardInfo>();

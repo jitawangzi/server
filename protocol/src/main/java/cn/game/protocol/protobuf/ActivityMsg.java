@@ -4583,7 +4583,7 @@ public final class ActivityMsg {
 
     /**
      * <pre>
-     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
      * </pre>
      *
      * <code>repeated uint32 selectedIndex = 2;</code>
@@ -4592,7 +4592,7 @@ public final class ActivityMsg {
     java.util.List<java.lang.Integer> getSelectedIndexList();
     /**
      * <pre>
-     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
      * </pre>
      *
      * <code>repeated uint32 selectedIndex = 2;</code>
@@ -4601,7 +4601,7 @@ public final class ActivityMsg {
     int getSelectedIndexCount();
     /**
      * <pre>
-     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
      * </pre>
      *
      * <code>repeated uint32 selectedIndex = 2;</code>
@@ -4737,7 +4737,7 @@ public final class ActivityMsg {
     private com.google.protobuf.Internal.IntList selectedIndex_;
     /**
      * <pre>
-     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
      * </pre>
      *
      * <code>repeated uint32 selectedIndex = 2;</code>
@@ -4750,7 +4750,7 @@ public final class ActivityMsg {
     }
     /**
      * <pre>
-     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
      * </pre>
      *
      * <code>repeated uint32 selectedIndex = 2;</code>
@@ -4761,7 +4761,7 @@ public final class ActivityMsg {
     }
     /**
      * <pre>
-     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+     * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
      * </pre>
      *
      * <code>repeated uint32 selectedIndex = 2;</code>
@@ -5174,7 +5174,7 @@ public final class ActivityMsg {
       }
       /**
        * <pre>
-       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
        * </pre>
        *
        * <code>repeated uint32 selectedIndex = 2;</code>
@@ -5187,7 +5187,7 @@ public final class ActivityMsg {
       }
       /**
        * <pre>
-       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
        * </pre>
        *
        * <code>repeated uint32 selectedIndex = 2;</code>
@@ -5198,7 +5198,7 @@ public final class ActivityMsg {
       }
       /**
        * <pre>
-       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
        * </pre>
        *
        * <code>repeated uint32 selectedIndex = 2;</code>
@@ -5210,7 +5210,7 @@ public final class ActivityMsg {
       }
       /**
        * <pre>
-       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
        * </pre>
        *
        * <code>repeated uint32 selectedIndex = 2;</code>
@@ -5227,7 +5227,7 @@ public final class ActivityMsg {
       }
       /**
        * <pre>
-       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
        * </pre>
        *
        * <code>repeated uint32 selectedIndex = 2;</code>
@@ -5242,7 +5242,7 @@ public final class ActivityMsg {
       }
       /**
        * <pre>
-       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
        * </pre>
        *
        * <code>repeated uint32 selectedIndex = 2;</code>
@@ -5259,7 +5259,7 @@ public final class ActivityMsg {
       }
       /**
        * <pre>
-       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。5、6、7就不发这个数据了。
+       * 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
        * </pre>
        *
        * <code>repeated uint32 selectedIndex = 2;</code>

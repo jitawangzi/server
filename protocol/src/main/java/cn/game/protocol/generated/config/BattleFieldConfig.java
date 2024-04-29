@@ -12,20 +12,8 @@ import org.w3c.dom.Element;
 
 	/** 关卡ID */
 	public final int ID;		
-	/** 场景资源 */
-	public final String SceneRes;		
-	/** 推荐等级 */
-	public final int Level;		
-	/** 推荐战力 */
+	/** 推荐战力  留着以后玩法用 */
 	public final int AtkValue;		
-	/** 关卡限时 */
-	public final int LimitedTime;		
-	/** 胜利类型 */
-	public final int WinCondition;		
-	/** 玩法类型 */
-	public final int PlayType;		
-	/** 玩法类型参数 */
-	public final int PlayTypeParameter;		
 	/** 小怪1 */
 	public final int[][] monster1;		
 	/** 小怪2 */
@@ -38,12 +26,6 @@ import org.w3c.dom.Element;
 	public final int[][] boss1;		
 	/** BOSS2 */
 	public final int[][] boss2;		
-	/** 肉鸽能量ID */
-	public final int RogeEnergyID;		
-	/** 难度提升条件 */
-	public final int HardCondtion;		
-	/** 难度提升天数 */
-	public final int HardType;		
 	/** 提升属性 */
 	public final int[][] MonsterAttExt;		
 
@@ -51,19 +33,8 @@ import org.w3c.dom.Element;
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 关卡ID
-		SceneRes = element.getAttribute("SceneRes"); // 场景资源
-		Level = Integer.parseInt(element.getAttribute("Level") == null || element.getAttribute("Level").length() == 0 ? "0"
-			: element.getAttribute("Level")); // 推荐等级
 		AtkValue = Integer.parseInt(element.getAttribute("AtkValue") == null || element.getAttribute("AtkValue").length() == 0 ? "0"
-			: element.getAttribute("AtkValue")); // 推荐战力
-		LimitedTime = Integer.parseInt(element.getAttribute("LimitedTime") == null || element.getAttribute("LimitedTime").length() == 0 ? "0"
-			: element.getAttribute("LimitedTime")); // 关卡限时
-		WinCondition = Integer.parseInt(element.getAttribute("WinCondition") == null || element.getAttribute("WinCondition").length() == 0 ? "0"
-			: element.getAttribute("WinCondition")); // 胜利类型
-		PlayType = Integer.parseInt(element.getAttribute("PlayType") == null || element.getAttribute("PlayType").length() == 0 ? "0"
-			: element.getAttribute("PlayType")); // 玩法类型
-		PlayTypeParameter = Integer.parseInt(element.getAttribute("PlayTypeParameter") == null || element.getAttribute("PlayTypeParameter").length() == 0 ? "0"
-			: element.getAttribute("PlayTypeParameter")); // 玩法类型参数
+			: element.getAttribute("AtkValue")); // 推荐战力  留着以后玩法用
 		String monster1String = element.getAttribute("monster1"); // 小怪1
 		if (monster1String != null && monster1String.length() > 0) {
 			String[] monster1Strings = monster1String.split("\\|"); 
@@ -166,12 +137,6 @@ import org.w3c.dom.Element;
 		} else {
 			boss2 = new int[][] {};
 		}
-		RogeEnergyID = Integer.parseInt(element.getAttribute("RogeEnergyID") == null || element.getAttribute("RogeEnergyID").length() == 0 ? "0"
-			: element.getAttribute("RogeEnergyID")); // 肉鸽能量ID
-		HardCondtion = Integer.parseInt(element.getAttribute("HardCondtion") == null || element.getAttribute("HardCondtion").length() == 0 ? "0"
-			: element.getAttribute("HardCondtion")); // 难度提升条件
-		HardType = Integer.parseInt(element.getAttribute("HardType") == null || element.getAttribute("HardType").length() == 0 ? "0"
-			: element.getAttribute("HardType")); // 难度提升天数
 		String MonsterAttExtString = element.getAttribute("MonsterAttExt"); // 提升属性
 		if (MonsterAttExtString != null && MonsterAttExtString.length() > 0) {
 			String[] MonsterAttExtStrings = MonsterAttExtString.split("\\|"); 

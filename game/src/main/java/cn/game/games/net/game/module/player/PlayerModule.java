@@ -166,8 +166,8 @@ public class PlayerModule extends BasePlayerModule {
 			break;
 		}
 		case PLAYER_CREATE: {
-
 			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
+			expLevelMap.add(Asset.playerExp.ID, 1);
 			break;
 		}
 		case Reconnect: {

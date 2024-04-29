@@ -76,6 +76,8 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private int quality;
+
 	/**
 	 * @mbg.generated
 	 */
@@ -273,6 +275,14 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 		return cn.game.games.net.data.mapper.HeroMapper.class;
 	}
 
+	public int getQuality() {
+		return quality;
+	}
+
+	public void setQuality(int quality) {
+		this.quality = quality;
+	}
+
 	/**
 	 * @mbg.generated
 	 */
@@ -286,11 +296,12 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 		HeroInfo.Builder builder = HeroInfo.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		builder.setUid(id.toString());
+		builder.setUid(id + "");
 		builder.setConfigId(configId);
 		builder.setStar(star);
 		builder.setLevel(level);
 		builder.setIsBattle(player.getHeroModule().isInBattle(id));
+		builder.setQuality(quality);
 //		builder.setExp(this.exp); 
 //		builder.setGetTime(getTime.intValue());
 

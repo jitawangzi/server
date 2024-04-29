@@ -18,6 +18,8 @@ import org.w3c.dom.Element;
 	public final int[][] Rewards;		
 	/** 可选取数量 */
 	public final int Cnt;		
+	/** 必得物品 */
+	public final int[][] Rewards2;		
 	/** 售价 */
 	public final int[] Price;		
 
@@ -46,6 +48,23 @@ import org.w3c.dom.Element;
 		}
 		Cnt = Integer.parseInt(element.getAttribute("Cnt") == null || element.getAttribute("Cnt").length() == 0 ? "0"
 			: element.getAttribute("Cnt")); // 可选取数量
+		String Rewards2String = element.getAttribute("Rewards2"); // 必得物品
+		if (Rewards2String != null && Rewards2String.length() > 0) {
+			String[] Rewards2Strings = Rewards2String.split("\\|"); 
+			int[][] Rewards2Temp = new int[Rewards2Strings.length][] ; 
+			for (int i = 0; i < Rewards2Strings.length; i++) {
+				String[] Rewards2Strings2 = Rewards2Strings[i].split(";"); 
+				int[] array = new int[Rewards2Strings2.length];
+				for (int j = 0; j < Rewards2Strings2.length; j++) {
+					int temp = Integer.parseInt(Rewards2Strings2[j]);	
+					array[j] = temp;
+				}
+				Rewards2Temp[i] = array;
+			}
+			Rewards2 = Rewards2Temp ;			
+		} else {
+			Rewards2 = new int[][] {};
+		}
 		String PriceString = element.getAttribute("Price"); // 售价
 		if (PriceString != null && PriceString.length() > 0) {
 			String[] PriceStrings = PriceString.split(";"); 

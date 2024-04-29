@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cn.game.protocol.generated.config.HeroLvConfig;
+import cn.game.protocol.generated.config.HeroBookConfig;
 import cn.game.util.XmlUtils;
 import cn.game.util.file.ResourceListener;
 import cn.game.util.file.WatchServiceManager;
@@ -17,19 +17,19 @@ import cn.game.util.file.WatchServiceManager;
  * 
  * 工具生成的，不要手动修改
  */
-public class HeroLvManager extends ResourceListener {
-	private static final Logger log = LoggerFactory.getLogger(HeroLvManager.class);
+public class HeroBookManager extends ResourceListener {
+	private static final Logger log = LoggerFactory.getLogger(HeroBookManager.class);
 
-	private static HeroLvManager instance = new HeroLvManager();
-	private static final String xmlFileName = "HeroLv";
+	private static HeroBookManager instance = new HeroBookManager();
+	private static final String xmlFileName = "HeroBook";
 	
 	/** 总数据，按id取值 */
-	private Map<Integer, HeroLvConfig> herolvs = new HashMap<>();
+	private Map<Integer, HeroBookConfig> herobooks = new HashMap<>();
 
-	public static HeroLvManager instance() {
+	public static HeroBookManager instance() {
 		return instance;
 	}
-	private HeroLvManager() {
+	private HeroBookManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
 	/**
@@ -38,10 +38,10 @@ public class HeroLvManager extends ResourceListener {
 	 * @param id
 	 * @return
 	 */
-	public HeroLvConfig get(int id) {
-		HeroLvConfig config = this.herolvs.get(id);
+	public HeroBookConfig get(int id) {
+		HeroBookConfig config = this.herobooks.get(id);
 		if (config == null) { 
-			throw new NullPointerException("【HeroLv】表的" + "id【" + id + "】不存在"); 
+			throw new NullPointerException("【HeroBook】表的" + "id【" + id + "】不存在"); 
 		}
 		return config;
 	}
@@ -51,16 +51,16 @@ public class HeroLvManager extends ResourceListener {
 	 * @param id
 	 * @return
 	 */
-	public HeroLvConfig getNullable(int id) {
-		return this.herolvs.get(id);
+	public HeroBookConfig getNullable(int id) {
+		return this.herobooks.get(id);
 	}
 
 	/**
 	 * 获取所有数据
 	 * @return
 	 */
-	public Collection<HeroLvConfig> list() {
-		return this.herolvs.values();
+	public Collection<HeroBookConfig> list() {
+		return this.herobooks.values();
 	}
 	@Override
 	public void load() {
@@ -69,21 +69,21 @@ public class HeroLvManager extends ResourceListener {
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
 			Element[] list = XmlUtils.getChildrenByName(document.getDocumentElement(), xmlFileName);
 			
-			Map<Integer, HeroLvConfig> herolvs = new HashMap<>();
+			Map<Integer, HeroBookConfig> herobooks = new HashMap<>();
 			for (Element e : list) {
-				HeroLvConfig herolv = new HeroLvConfig(e);
-				HeroLvConfig old = herolvs.put(herolv.ID, herolv);
+				HeroBookConfig herobook = new HeroBookConfig(e);
+				HeroBookConfig old = herobooks.put(herobook.ID, herobook);
 				if (old != null) {
-					throw new IllegalArgumentException("[HeroLvConfig]表存在重复的数据id： " + old.ID);
+					throw new IllegalArgumentException("[HeroBookConfig]表存在重复的数据id： " + old.ID);
 				}
 			}			
 
-			this.herolvs = com.google.common.collect.ImmutableMap.copyOf(herolvs);
+			this.herobooks = com.google.common.collect.ImmutableMap.copyOf(herobooks);
 
-			log.info("load HeroLvConfig size[{}]", herolvs.size());
+			log.info("load HeroBookConfig size[{}]", herobooks.size());
 
 		} catch (Exception e) {
-			throw new RuntimeException("load HeroLvConfig error", e);
+			throw new RuntimeException("load HeroBookConfig error", e);
 		}
 
 	}

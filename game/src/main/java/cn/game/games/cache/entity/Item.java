@@ -8,30 +8,18 @@ import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 
 public class Item implements Serializable, DbEntity {
 
-	/**
-	 * @mbg.generated
-	 */
-	protected Long id;
-	/**
-	 * @mbg.generated
-	 */
-	protected Long playerId;
-	/**
-	 * @mbg.generated
-	 */
-	protected Integer configId;
+	// 这里不用mybatis生成了，手动改成基本类型的
+
+	protected long id;
+	protected long playerId;
+	protected int configId;
 	/**
 	 * 道具类型,
-	 * @mbg.generated
 	 */
 	protected Integer type;
-	/**
-	 * @mbg.generated
-	 */
 	protected Long count;
 	/**
 	 * 创建时间
-	 * @mbg.generated
 	 */
 	protected Date createTime;
 
@@ -42,86 +30,50 @@ public class Item implements Serializable, DbEntity {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @mbg.generated
-	 */
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
-	public Long getPlayerId() {
+	public long getPlayerId() {
 		return playerId;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
-	public void setPlayerId(Long playerId) {
+	public void setPlayerId(long playerId) {
 		this.playerId = playerId;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
-	public Integer getConfigId() {
+	public int getConfigId() {
 		return configId;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
-	public void setConfigId(Integer configId) {
+	public void setConfigId(int configId) {
 		this.configId = configId;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
 	public Integer getType() {
 		return type;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
 	public void setType(Integer type) {
 		this.type = type;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
 	public Long getCount() {
 		return count;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
 	public void setCount(Long count) {
 		this.count = count;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
 	public Date getCreateTime() {
 		return createTime;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}

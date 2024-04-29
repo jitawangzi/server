@@ -18,13 +18,11 @@ import cn.game.protocol.generated.config.AttributeVlalueConfig;
 import cn.game.protocol.generated.config.DragonConfig;
 import cn.game.protocol.generated.config.DragonSkillConfig;
 import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.HeroQualityConfig;
 import cn.game.protocol.generated.config.HeroSwordConfig;
 import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.HeroQualityManager;
 import cn.game.protocol.generated.manager.HeroSwordManager;
 import cn.game.protocol.protobuf.BattleMsg.HeroAttr;
 import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
@@ -99,9 +97,7 @@ public class AttrModule extends BasePlayerModule {
 		for (Long uid : battleHeros) {
 			Hero hero = player.getHeroModule().get(uid);
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-			HeroQualityConfig heroQualityConfig = HeroQualityManager.instance().get(heroConfig.Quality);
-
-			AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroQualityConfig.InitialAttribute);
+			AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttributeId);
 			IntMapWrapper heroAttrMap = new IntMapWrapper();
 			heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
 
