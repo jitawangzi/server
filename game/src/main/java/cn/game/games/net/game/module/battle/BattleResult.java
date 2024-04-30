@@ -6,7 +6,7 @@ import java.util.Map;
 import cn.game.protocol.generated.enume.AttributeTypeEnum;
 import cn.game.games.net.game.helper.RoleHelper;
 
-public class BattleInfo {
+public class BattleResult {
 	private int type; // DungeonTypeEnum 的id，属于哪个玩法的关卡
 	private int dungeonId; // type==2时，是RoutineTraining.xlsm的id ; type = 3 时，BattleEvent.xlsm表id
 	private int id; // 关卡id，关卡包含普通关卡，战旗关卡，剧情关卡等，对应不同的配置表id，比如普通关卡BattleLevel.xlsm表id

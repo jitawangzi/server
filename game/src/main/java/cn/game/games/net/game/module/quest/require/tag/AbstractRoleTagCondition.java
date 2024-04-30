@@ -2,7 +2,7 @@ package cn.game.games.net.game.module.quest.require.tag;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.module.battle.BattleInfo;
+import cn.game.games.net.game.module.battle.BattleResult;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.battle.IRoleBattleAction;
 

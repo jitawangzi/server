@@ -3,6 +3,8 @@ package cn.game.games.cache.entity;
 import java.io.Serializable;
 
 import cn.game.games.cache.base.DbEntity;
+import cn.game.protocol.protobuf.BattleMsg.BattleInfo;
+import cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder;
 
 public class Chapter implements Serializable, DbEntity {
 
@@ -160,6 +162,18 @@ public class Chapter implements Serializable, DbEntity {
 		chapter.setKillMonsterCount(0);
 		chapter.setHpPercent(0);
 		return chapter;
+	}
+
+	public BattleInfo toBattleInfo() {
+		Builder builder = BattleInfo.newBuilder();
+		builder.setId(battleId);
+		builder.setHpPercent(hpPercent);
+		builder.setFinish(pass) ; 
+		builder.setRewardIndex(rewards) ; 
+		builder.setBattleTime(battleTime);
+
+		return builder.build();
+
 	}
 
 }

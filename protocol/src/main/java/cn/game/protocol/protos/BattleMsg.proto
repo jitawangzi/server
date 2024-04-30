@@ -64,7 +64,8 @@ message BattleRewardResponse_13000023{
 // 战役信息
 message BattleInfo{
 	int32 id = 1;	//Battle表的id
-	uint32 hpPercent = 2;	// 打完剩余血量百分比，如剩余40%血量，则为40
-	int32 rewardIndex = 3; // 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+	uint32 hpPercent = 2;	// 打完剩余血量百分比，如剩余40%血量，则为40,可能用不到了
+	int32 rewardIndex = 3; // 0、1、2   章节宝箱领导哪个了
 	bool finish = 4; // 这个战役是否通关了。
+	uint32 battleTime = 5;	        // 战斗时长（秒）
 }

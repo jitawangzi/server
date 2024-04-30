@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -593,6 +594,11 @@ public class ChapterModule extends BasePlayerModule  {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.setFreeRougeTimes(this.freeRougeTimes);
+
+		for (Entry<Integer, Chapter> entry : chapters.entrySet()) {
+			Chapter value = entry.getValue();
+			builder.addBattles(value.toBattleInfo());
+		}
 	}
 
 }

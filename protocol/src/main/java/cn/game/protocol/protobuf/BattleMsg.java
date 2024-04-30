@@ -8268,7 +8268,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 打完剩余血量百分比，如剩余40%血量，则为40
+     * 打完剩余血量百分比，如剩余40%血量，则为40,可能用不到了
      * </pre>
      *
      * <code>uint32 hpPercent = 2;</code>
@@ -8278,7 +8278,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+     * 0、1、2   章节宝箱领导哪个了
      * </pre>
      *
      * <code>int32 rewardIndex = 3;</code>
@@ -8295,6 +8295,16 @@ public final class BattleMsg {
      * @return The finish.
      */
     boolean getFinish();
+
+    /**
+     * <pre>
+     * 战斗时长（秒）
+     * </pre>
+     *
+     * <code>uint32 battleTime = 5;</code>
+     * @return The battleTime.
+     */
+    int getBattleTime();
   }
   /**
    * <pre>
@@ -8365,6 +8375,11 @@ public final class BattleMsg {
               finish_ = input.readBool();
               break;
             }
+            case 40: {
+
+              battleTime_ = input.readUInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -8416,7 +8431,7 @@ public final class BattleMsg {
     private int hpPercent_;
     /**
      * <pre>
-     * 打完剩余血量百分比，如剩余40%血量，则为40
+     * 打完剩余血量百分比，如剩余40%血量，则为40,可能用不到了
      * </pre>
      *
      * <code>uint32 hpPercent = 2;</code>
@@ -8431,7 +8446,7 @@ public final class BattleMsg {
     private int rewardIndex_;
     /**
      * <pre>
-     * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+     * 0、1、2   章节宝箱领导哪个了
      * </pre>
      *
      * <code>int32 rewardIndex = 3;</code>
@@ -8455,6 +8470,21 @@ public final class BattleMsg {
     @java.lang.Override
     public boolean getFinish() {
       return finish_;
+    }
+
+    public static final int BATTLETIME_FIELD_NUMBER = 5;
+    private int battleTime_;
+    /**
+     * <pre>
+     * 战斗时长（秒）
+     * </pre>
+     *
+     * <code>uint32 battleTime = 5;</code>
+     * @return The battleTime.
+     */
+    @java.lang.Override
+    public int getBattleTime() {
+      return battleTime_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -8483,6 +8513,9 @@ public final class BattleMsg {
       if (finish_ != false) {
         output.writeBool(4, finish_);
       }
+      if (battleTime_ != 0) {
+        output.writeUInt32(5, battleTime_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -8508,6 +8541,10 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(4, finish_);
       }
+      if (battleTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(5, battleTime_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -8531,6 +8568,8 @@ public final class BattleMsg {
           != other.getRewardIndex()) return false;
       if (getFinish()
           != other.getFinish()) return false;
+      if (getBattleTime()
+          != other.getBattleTime()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -8551,6 +8590,8 @@ public final class BattleMsg {
       hash = (37 * hash) + FINISH_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getFinish());
+      hash = (37 * hash) + BATTLETIME_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleTime();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -8696,6 +8737,8 @@ public final class BattleMsg {
 
         finish_ = false;
 
+        battleTime_ = 0;
+
         return this;
       }
 
@@ -8726,6 +8769,7 @@ public final class BattleMsg {
         result.hpPercent_ = hpPercent_;
         result.rewardIndex_ = rewardIndex_;
         result.finish_ = finish_;
+        result.battleTime_ = battleTime_;
         onBuilt();
         return result;
       }
@@ -8785,6 +8829,9 @@ public final class BattleMsg {
         }
         if (other.getFinish() != false) {
           setFinish(other.getFinish());
+        }
+        if (other.getBattleTime() != 0) {
+          setBattleTime(other.getBattleTime());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -8861,7 +8908,7 @@ public final class BattleMsg {
       private int hpPercent_ ;
       /**
        * <pre>
-       * 打完剩余血量百分比，如剩余40%血量，则为40
+       * 打完剩余血量百分比，如剩余40%血量，则为40,可能用不到了
        * </pre>
        *
        * <code>uint32 hpPercent = 2;</code>
@@ -8873,7 +8920,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 打完剩余血量百分比，如剩余40%血量，则为40
+       * 打完剩余血量百分比，如剩余40%血量，则为40,可能用不到了
        * </pre>
        *
        * <code>uint32 hpPercent = 2;</code>
@@ -8888,7 +8935,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 打完剩余血量百分比，如剩余40%血量，则为40
+       * 打完剩余血量百分比，如剩余40%血量，则为40,可能用不到了
        * </pre>
        *
        * <code>uint32 hpPercent = 2;</code>
@@ -8904,7 +8951,7 @@ public final class BattleMsg {
       private int rewardIndex_ ;
       /**
        * <pre>
-       * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+       * 0、1、2   章节宝箱领导哪个了
        * </pre>
        *
        * <code>int32 rewardIndex = 3;</code>
@@ -8916,7 +8963,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+       * 0、1、2   章节宝箱领导哪个了
        * </pre>
        *
        * <code>int32 rewardIndex = 3;</code>
@@ -8931,7 +8978,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 0、1、2   代表首次，半血、无损奖励,领到哪个了，如果没领过是-1
+       * 0、1、2   章节宝箱领导哪个了
        * </pre>
        *
        * <code>int32 rewardIndex = 3;</code>
@@ -8983,6 +9030,49 @@ public final class BattleMsg {
       public Builder clearFinish() {
         
         finish_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int battleTime_ ;
+      /**
+       * <pre>
+       * 战斗时长（秒）
+       * </pre>
+       *
+       * <code>uint32 battleTime = 5;</code>
+       * @return The battleTime.
+       */
+      @java.lang.Override
+      public int getBattleTime() {
+        return battleTime_;
+      }
+      /**
+       * <pre>
+       * 战斗时长（秒）
+       * </pre>
+       *
+       * <code>uint32 battleTime = 5;</code>
+       * @param value The battleTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleTime(int value) {
+        
+        battleTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 战斗时长（秒）
+       * </pre>
+       *
+       * <code>uint32 battleTime = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleTime() {
+        
+        battleTime_ = 0;
         onChanged();
         return this;
       }
@@ -9151,10 +9241,10 @@ public final class BattleMsg {
       "6\"9\n\034BattleRewardRequest_13000022\022\n\n\002id\030" +
       "\001 \001(\r\022\r\n\005index\030\002 \001(\r\"C\n\035BattleRewardResp" +
       "onse_13000023\022\"\n\006reward\030\001 \003(\0132\022.Protos.R" +
-      "ewardInfo\"P\n\nBattleInfo\022\n\n\002id\030\001 \001(\005\022\021\n\th" +
+      "ewardInfo\"d\n\nBattleInfo\022\n\n\002id\030\001 \001(\005\022\021\n\th" +
       "pPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003 \001(\005\022\016\n\006f" +
-      "inish\030\004 \001(\010B\033\n\031cn.game.protocol.protobuf" +
-      "b\006proto3"
+      "inish\030\004 \001(\010\022\022\n\nbattleTime\030\005 \001(\rB\033\n\031cn.ga" +
+      "me.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9250,7 +9340,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleInfo_descriptor,
-        new java.lang.String[] { "Id", "HpPercent", "RewardIndex", "Finish", });
+        new java.lang.String[] { "Id", "HpPercent", "RewardIndex", "Finish", "BattleTime", });
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }
 
