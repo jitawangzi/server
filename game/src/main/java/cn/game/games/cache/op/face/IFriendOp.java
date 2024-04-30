@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.game.games.cache.entity.Friend;
-import cn.game.games.cache.base.ICacheOp;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.core.SimplePlayer;
 

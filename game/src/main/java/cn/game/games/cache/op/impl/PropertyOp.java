@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.google.common.collect.Multimap;
 
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Role;
 import cn.game.games.cache.op.face.IPropertyOp;
 import cn.game.games.core.BasePlayerModule;
@@ -303,12 +302,12 @@ public class PropertyOp extends BasePlayerModule implements IPropertyOp {
             case BuffChange: {
                 List<Long> targetIds = (List<Long>) event.getParameter(0);
                 targetIds.forEach(e -> {
-                    RoleOp roleOp = PlayerCacheFactory.getCache(this.playerId, RoleOp.class);
-                    int roleId = e.intValue();
-                    boolean exist = roleOp.exist(roleId);
-                    if (exist) {
-                        initPropertyById(roleId);
-                    }
+					/*                RoleOp roleOp = PlayerCacheFactory.getCache(this.playerId, RoleOp.class);
+					    int roleId = e.intValue();
+					    boolean exist = roleOp.exist(roleId);
+					    if (exist) {
+					        initPropertyById(roleId);
+					    }*/
                 });
             }
             break;

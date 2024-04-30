@@ -9,8 +9,9 @@ import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Mail;
+import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.MailMsg.MailDeleteRequest_12000007;
@@ -45,17 +46,19 @@ public class MailHandler extends BaseHandler {
 
 		String uid = req.getUid();
 		long id = StringUtils.isEmpty(uid) ? 0 : Long.parseLong(uid);
-		MailModule mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailModule.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		MailModule mailModule = player.getMailModule();
 
 		if (id > 0) {
-			Mail mail = mailOp.get(id);
+			Mail mail = mailModule.get(id);
 			if (mail == null) {
 				client.sendProtocol(resp, OldErrorMsgEnum.player_data_not_found.getId());
 				return;
 			}
-			mailOp.see(id);
+			mailModule.see(id);
 		} else {
-			mailOp.seeBatch();
+			mailModule.seeBatch();
 		}
 		client.sendProtocol(resp.build());
 	}
@@ -66,12 +69,13 @@ public class MailHandler extends BaseHandler {
 
 		String uid = req.getUid();
 		long id = StringUtils.isEmpty(uid) ? 0 : Long.parseLong(uid);
-		MailModule mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailModule.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		MailModule mailModule = player.getMailModule();
 		List<RewardInfo> ret = null;
 		if (id > 0) {
-			ret = mailOp.receive(id);
+			ret = mailModule.receive(id);
 		} else {
-			ret = mailOp.receiveBatch();
+			ret = mailModule.receiveBatch();
 		}
 		resp.addAllRewards(ret);
 		client.sendProtocol(resp.build());
@@ -81,18 +85,18 @@ public class MailHandler extends BaseHandler {
 		MailDeleteRequest_12000007 req = (MailDeleteRequest_12000007) message;
 		String uid = req.getUid();
 		long id = StringUtils.isEmpty(uid) ? 0 : Long.parseLong(uid);
-		MailModule mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailModule.class);
-
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		MailModule mailModule = player.getMailModule();
 		if (id > 0) {
-			Mail mail = mailOp.get(id);
+			Mail mail = mailModule.get(id);
 			if (mail != null && mail.getSee()) {
-				mailOp.delete(id);
+				mailModule.delete(id);
 			}
 		} else {
-			List<Mail> list = new ArrayList<Mail>(mailOp.list());
+			List<Mail> list = new ArrayList<Mail>(mailModule.list());
 			for (Mail mail : list) {
 				if (mail.getSee()) {
-					mailOp.delete(mail.getId());
+					mailModule.delete(mail.getId());
 				}
 			}
 		}
@@ -102,8 +106,9 @@ public class MailHandler extends BaseHandler {
 	private void list(NetClient client, Object message) {
 
 		MailListResponse_12000002.Builder resp = MailListResponse_12000002.newBuilder();
-		MailModule mailOp = PlayerCacheFactory.getCache(client.getPlayerId(), MailModule.class);
-		Collection<Mail> list = mailOp.list();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		MailModule mailModule = player.getMailModule();
+		Collection<Mail> list = mailModule.list();
 		resp.addAllMails(PbBuilder.buildAllMailInfo(list));
 
 		client.sendProtocol(resp.build());

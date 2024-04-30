@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import cn.game.games.cache.base.PlayerCacheFactory;
+import cn.game.games.cache.base.DbEntity;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -17,8 +17,6 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.MissionConfig;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.MissionMsg.MissionConditionCompletePush_20500001;
-import java.util.Date;
-import cn.game.games.cache.base.DbEntity;
 
 public class Quest implements Serializable, DbEntity {
 
@@ -211,9 +209,9 @@ public class Quest implements Serializable, DbEntity {
 		close();
 		setParams(null);
 		this.conditionContainer = null;
-		
-		QuestModule questOp = PlayerCacheFactory.getCache(playerId, QuestModule.class) ; 
-		questOp.setState(this, QuestHelper.CAN_ACCEPT); 
+		Player player = PlayerManager.getInstance().getPlayer(getPlayerId());
+		QuestModule questModule = player.getQuestModule();
+		questModule.setState(this, QuestHelper.CAN_ACCEPT);
 		setStartTime(System.currentTimeMillis());
 		setFinishedTimes(0);
 		setEndTime(0l);

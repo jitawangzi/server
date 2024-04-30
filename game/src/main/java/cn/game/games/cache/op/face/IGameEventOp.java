@@ -3,7 +3,6 @@ package cn.game.games.cache.op.face;
 import java.util.Collection;
 import java.util.List;
 
-import cn.game.games.cache.base.ICacheOp;
 import cn.game.games.cache.entity.EventGame;
 
 

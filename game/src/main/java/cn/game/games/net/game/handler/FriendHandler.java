@@ -1,34 +1,27 @@
 package cn.game.games.net.game.handler;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONWriter;
 import com.google.protobuf.ProtocolStringList;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.task.TaskManager;
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.op.impl.FriendOp;
-import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
@@ -60,7 +53,6 @@ import cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014;
 import cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015;
 import cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012;
 import cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013;
-import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
 
 @Component
@@ -101,8 +93,8 @@ public class FriendHandler extends BaseHandler {
 		boolean local = req.getLocal();
 
 		FriendListResponse_30000002.Builder response = FriendListResponse_30000002.newBuilder();
-
-		FriendOp friendOp = PlayerCacheFactory.getCache(client.getPlayerId(), FriendOp.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		FriendOp friendOp = player.getModule(FriendOp.class);
 		Collection<Friend> allFriends = friendOp.getAllFriends();
 		TaskManager.getInstance().addWorkerTask(() -> {
 
@@ -131,8 +123,8 @@ public class FriendHandler extends BaseHandler {
 
 		FriendBlackListResponse_30000052.Builder resp = FriendBlackListResponse_30000052.newBuilder();
 
-		FriendOp friendOp = PlayerCacheFactory.getCache(client.getPlayerId(), FriendOp.class);
-
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		FriendOp friendOp = player.getModule(FriendOp.class);
 		Collection<Friend> allFriends = friendOp.getAllFriends();
 
 		TaskManager.getInstance().addWorkerTask(() -> {
@@ -156,8 +148,8 @@ public class FriendHandler extends BaseHandler {
 
 		FriendApplyListResponse_30000054.Builder resp = FriendApplyListResponse_30000054.newBuilder();
 
-		FriendOp friendOp = PlayerCacheFactory.getCache(client.getPlayerId(), FriendOp.class);
-
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		FriendOp friendOp = player.getModule(FriendOp.class);
 		Collection<Friend> allFriends = friendOp.getAllFriends();
 
 		TaskManager.getInstance().addWorkerTask(() -> {
@@ -186,7 +178,8 @@ public class FriendHandler extends BaseHandler {
 
 		FriendRecommendResponse_30000004.Builder builder = FriendRecommendResponse_30000004.newBuilder();
 
-		FriendOp friendOp = PlayerCacheFactory.getCache(client.getPlayerId(), FriendOp.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		FriendOp friendOp = player.getModule(FriendOp.class);
 		long lastRefreshTime = friendOp.getLastRefreshTime();
 		if (lastRefreshTime > 0 && (System.currentTimeMillis() - lastRefreshTime) < maxTime) {
 			List<SimplePlayer> lastRefreshPlayers = friendOp.getLastRefreshPlayers();
@@ -200,9 +193,9 @@ public class FriendHandler extends BaseHandler {
 
 		TaskManager.getInstance().addWorkerTask(() -> {
 			List<SimplePlayer> players = PlayerManager.getInstance().searchPlayers(client.getPlayerId());
-			for (SimplePlayer player : players) {
+			for (SimplePlayer p : players) {
 
-				builder.addFriends(PbBuilder.buildSimplePlayerInfo(player));
+				builder.addFriends(PbBuilder.buildSimplePlayerInfo(p));
 			}
 			client.sendProtocol(builder.build());
 		});
@@ -311,7 +304,8 @@ public class FriendHandler extends BaseHandler {
 
 		List<String> friendIdList = request.getFriendIdList();
 		boolean agree = request.getAgree();
-		FriendOp friendOp = PlayerCacheFactory.getCache(client.getPlayerId(), FriendOp.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		FriendOp friendOp = player.getModule(FriendOp.class);
 
 		TaskManager.getInstance().addWorkerTask(() -> {
 
@@ -379,7 +373,7 @@ public class FriendHandler extends BaseHandler {
 			}
 			Friend friendTarget;
 			if (PlayerManager.getInstance().hasCache(friendId)) {
-				FriendOp targetFriendOp = PlayerCacheFactory.getCache(friendId, FriendOp.class);
+				FriendOp targetFriendOp = player.getModule(FriendOp.class);
 				friendTarget = targetFriendOp.getFriend(playerId);
 				if (friendTarget != null) {
 					friendTarget.setGifted(true);

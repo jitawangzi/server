@@ -20,11 +20,9 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
-import cn.game.games.cache.op.impl.RoleOp;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
@@ -38,12 +36,10 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
-import cn.game.protocol.generated.config.OccupationTalentNodeConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.MissionTypeEnum;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
-import cn.game.protocol.generated.manager.OccupationTalentNodeManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
@@ -232,7 +228,9 @@ public class TestHandler extends BaseHandler {
 
 		List<Integer> idList = request.getIdList();
 
-		QuestModule questOp = PlayerCacheFactory.getCache(client.getPlayerId(), QuestModule.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		QuestModule questOp = player.getQuestModule();
 
 		Map<Integer, Quest> group = questOp.getGroup(MissionTypeEnum.MainLine);
 
@@ -370,12 +368,11 @@ public class TestHandler extends BaseHandler {
 	}
 
 	private void unlockOccupationTalentNode(NetClient client, Object message) {
-		RoleOp roleOp = PlayerCacheFactory.getCache(client.getPlayerId(), RoleOp.class);
 
-		Collection<OccupationTalentNodeConfig> list = OccupationTalentNodeManager.getInstance().list();
-		for (OccupationTalentNodeConfig config : list) {
-			roleOp.occupationTalentUnlock(config.getId());
-		}
+		/*		Collection<OccupationTalentNodeConfig> list = OccupationTalentNodeManager.getInstance().list();
+				for (OccupationTalentNodeConfig config : list) {
+					roleOp.occupationTalentUnlock(config.getId());
+				}*/
 	}
 
 	/*

@@ -14,7 +14,7 @@ import java.util.Random;
  */
 public final class Rnd {
 	private static final Random random = new Random();
-	private static final int RANDOM_CONST = 100000;
+	private static final int RANDOM_CONST = 10000;
 	/** 按百分比随机 */
 	public static final int RANDOM_PERCENTAGE_CONST = 100;
 
@@ -538,18 +538,6 @@ public final class Rnd {
 				return array[i][0];
 		}
 		return -1;
-	}
-
-	/** 
-	 * 
-	 * @param array
-	 * @return
-	 */
-	public static int randomOrOne(int[][] array) {
-		if (array.length == 1 && array[0].length == 1) {
-			return array[0][0];
-		}
-		return randomId(array);
 	}
 
 	public static void main(String args[]) {

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.games.cache.base.PlayerCacheFactory;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
@@ -126,7 +125,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		long playerId = player.getPlayerId();
-		ChapterModule chapterModule = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		boolean pass = chapterModule.isExploreChapterPass(id);
 		if (!pass) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
@@ -296,9 +295,8 @@ public class ChapterHandler extends BaseHandler {
 		int hpPercent = req.getHpPercent();
 		int killMonsterCount = req.getKillMonsterCount();
 
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
-		ChapterModule chapterModule = PlayerCacheFactory.getCache(playerId, ChapterModule.class);
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		int attackingId = chapterModule.getAttackingId();
 		int attackingType = chapterModule.getAttackingType();
 		long attackingUid = chapterModule.getAttackingUid();

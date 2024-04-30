@@ -136,22 +136,22 @@ public class ShopModule extends BasePlayerModule {
 			}
 		} else if (config.ShopType == 2) { // 随机商品id
 			if (config.ID1.length > 0) {
-				ret.add(Rnd.randomOrOne(config.ID1));
+				ret.add(Rnd.randomId(config.ID1));
 			}
 			if (config.ID2.length > 0) {
-				ret.add(Rnd.randomOrOne(config.ID2));
+				ret.add(Rnd.randomId(config.ID2));
 			}
 			if (config.ID3.length > 0) {
-				ret.add(Rnd.randomOrOne(config.ID3));
+				ret.add(Rnd.randomId(config.ID3));
 			}
 			if (config.ID4.length > 0) {
-				ret.add(Rnd.randomOrOne(config.ID4));
+				ret.add(Rnd.randomId(config.ID4));
 			}
 			if (config.ID5.length > 0) {
-				ret.add(Rnd.randomOrOne(config.ID5));
+				ret.add(Rnd.randomId(config.ID5));
 			}
 			if (config.ID6.length > 0) {
-				ret.add(Rnd.randomOrOne(config.ID6));
+				ret.add(Rnd.randomId(config.ID6));
 			}
 		}
 		return ret;

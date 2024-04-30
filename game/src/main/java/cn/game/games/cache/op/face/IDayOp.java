@@ -2,7 +2,6 @@ package cn.game.games.cache.op.face;
 
 import java.util.List;
 
-import cn.game.games.cache.base.ICacheOp;
 import cn.game.games.cache.entity.DayOperation;
 import cn.game.games.net.game.module.award.OpType;
 
