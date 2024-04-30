@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.award;
 
+import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 
 /**
  * @Description 物品id和数量的封装
@@ -38,6 +39,9 @@ public class Goods {
 		this.count = count;
 	}
 
+	public GoodsInfo toGoodsInfo() {
+		return GoodsInfo.newBuilder().setId(id).setCount(count).build();
+	}
 
 	@Override
 	public String toString() {

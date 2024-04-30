@@ -152,6 +152,11 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerAlchemyResponse_01000041 = 0x01000041;    
 	public final static int PlayerResetPush_01100016 = 0x01100016;    //通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新  
 	public final static int PlayerErrorPush_01000099 = 0x01000099;    //对于客户端的请求，如果服务器处理过程中出现未知异常，导致没有返回对应的响应包时，返回此错误消息  
+	public final static int ItemUseRequest_01000050 = 0x01000050;    //使用道具  
+	public final static int ItemUseResponse_01000051 = 0x01000051;    //使用道具后给的资源，道具等。  
+	public final static int PlayerCloudBoxPush_01100040 = 0x01100040;    //产生小云宝箱 推送  
+	public final static int PlayerCloudBoxRequest_01000042 = 0x01000042;    //领取小云宝箱奖励  
+	public final static int PlayerCloudBoxResponse_01000043 = 0x01000043;    
 	public final static int RewardPush_55000501 = 0x55000501;    //奖励推送,客户端收到这个协议之后，将奖励增加到本地。  
 	public final static int SpendPush_55001501 = 0x55001501;    //消耗推送，客户端收到这个协议之后，减少本地的物品  
 	public final static int RewardShowPush_55002501 = 0x55002501;    //一般需要显示推送获得的奖励时，看情况使用。  
@@ -473,6 +478,16 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PlayerErrorPush_01000099, cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(ItemUseRequest_01000050, cn.game.protocol.protobuf.PlayerMsg.ItemUseRequest_01000050.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ItemUseResponse_01000051, cn.game.protocol.protobuf.PlayerMsg.ItemUseResponse_01000051.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerCloudBoxPush_01100040, cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxPush_01100040.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerCloudBoxRequest_01000042, cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerCloudBoxResponse_01000043, cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(RewardPush_55000501, cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(SpendPush_55001501, cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501.getDefaultInstance()
@@ -719,6 +734,11 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerAlchemyResponse_01000041", 0x01000041);
 		nameIdMap.put("PlayerResetPush_01100016", 0x01100016);
 		nameIdMap.put("PlayerErrorPush_01000099", 0x01000099);
+		nameIdMap.put("ItemUseRequest_01000050", 0x01000050);
+		nameIdMap.put("ItemUseResponse_01000051", 0x01000051);
+		nameIdMap.put("PlayerCloudBoxPush_01100040", 0x01100040);
+		nameIdMap.put("PlayerCloudBoxRequest_01000042", 0x01000042);
+		nameIdMap.put("PlayerCloudBoxResponse_01000043", 0x01000043);
 		nameIdMap.put("RewardPush_55000501", 0x55000501);
 		nameIdMap.put("SpendPush_55001501", 0x55001501);
 		nameIdMap.put("RewardShowPush_55002501", 0x55002501);

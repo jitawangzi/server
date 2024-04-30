@@ -44,6 +44,7 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.buff.BuffValue;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
@@ -444,6 +445,43 @@ public class PlayerHelper {
 		return resources;
 	}
 
+	/** 
+	 * 只是随机出来具体的奖励，不加到玩家身上,较少用到
+	 * @param player
+	 * @param randomRewardId
+	 * @return
+	 */
+	public static List<Goods> randomReward(Player player, int randomRewardId) {
+		List<Goods> ret = new ArrayList<>();
+		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId);
+		for (int[] rewardInfo : randomGivenConfig.MustGiven) {
+			for (int i = 0; i < rewardInfo.length; i += 2) {
+				Goods goods = new Goods(rewardInfo[i], rewardInfo[i + 1]);
+				ret.add(goods);
+			}
+		}
+		if (randomGivenConfig.RandomNumber.length > 0) {
+			int randomCount = 0;
+			if (randomGivenConfig.RandomNumber.length == 1) {
+				randomCount = randomGivenConfig.RandomNumber[0];
+			} else if (randomGivenConfig.RandomNumber.length == 2) {
+				randomCount = Rnd.get(randomGivenConfig.RandomNumber[0], randomGivenConfig.RandomNumber[1]);
+			} else {
+				throw new IllegalArgumentException("RandomGiven奖励数量貌似不对：  " + randomGivenConfig.ID);
+			}
+			for (int i = 0; i < randomCount; i++) {
+				int randomIndex = Rnd.randomIndex(randomGivenConfig.RandomParameterWeight);
+				int group = randomGivenConfig.RandomParameterGroupId[randomIndex];
+				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
+				RandomGroupConfig groupConfig = Rnd.randomOne(randomGroupIDList);
+
+				Goods goods = new Goods(groupConfig.AssetID, groupConfig.Several);
+				ret.add(goods);
+			}
+		}
+		return ret;
+	}
+
 	public static Player addExp(Player player, int exp) {
 		int curExp = player.getData().getExp() + exp;
 		UserUpgradeConfig expConfig = UserUpgradeManager.instance().get(player.getData().getLevel());
@@ -630,6 +668,15 @@ public class PlayerHelper {
 
 	public static List<RewardInfo> addResources(Player player, int[][] rewards) {
 		return addResources(player, rewards, false);
+	}
+
+	public static List<RewardInfo> addGoods(Player player, List<Goods> goods) {
+
+		List<RewardInfo> ret = new ArrayList<>();
+		for (Goods g : goods) {
+			ret.addAll(addResources(player, g.getId(), g.getCount()));
+		}
+		return ret;
 	}
 
 //	public static List<RewardInfo> addResources(long playerId, int[][] rewards, boolean notify) {

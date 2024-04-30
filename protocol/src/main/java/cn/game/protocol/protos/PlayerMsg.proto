@@ -2,7 +2,7 @@ syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
-// import "RewardMsg.proto" ;
+import "RewardMsg.proto" ;
 import "BaseMsg.proto" ;
 import "ShopMsg.proto" ;
 import "BattleMsg.proto" ;
@@ -128,10 +128,40 @@ message PlayerErrorPush_01000099{
   string error = 1;    //服务端的异常堆栈 
 }
 
+//使用道具
+message ItemUseRequest_01000050{
+     uint32 id = 1;				//道具ID
+     uint32 param = 2;			//使用道具的相关参数，比如道具类型是4时，表示任选英雄，此时设置值为Hero表id
+}
+
+// 使用道具后给的资源，道具等。
+message ItemUseResponse_01000051{
+	 repeated RewardInfo reward  = 1; // 获取的东西
+}
+
 // 炼金数据
 message AlchemyInfo{
   uint32 configId  = 1; //Alchemy配置表id
   uint32 level = 2;	 	// 炼金等级
+}
+
+
+/*** 产生小云宝箱 推送 ***/
+message PlayerCloudBoxPush_01100040{
+	CloudBoxInfo cloudBox = 1;
+}
+
+/*** 领取小云宝箱奖励 ***/
+message PlayerCloudBoxRequest_01000042{
+}
+
+message PlayerCloudBoxResponse_01000043{
+	repeated RewardInfo rewards = 1;
+}
+
+// 小云宝箱
+message CloudBoxInfo{
+     repeated GoodsInfo items  = 5; // 宝箱里的物品
 }
 
 //用户基本信息
@@ -169,6 +199,8 @@ message PlayerAllInfo{
 
    repeated MonthCardProto monthCards  = 40;        //月卡
    repeated uint32 shopGift  = 41;        //购买过的商店礼包id(ShopGift表)
+
+   CloudBoxInfo cloudBox = 50;  // 小云宝箱
    //repeated MissionInfo mainMissions = 23 ;  // 主线任务数据
    //repeated MissionInfo branchMissions = 24 ;  // 支线任务数据
 }

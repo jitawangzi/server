@@ -1,10 +1,13 @@
 package cn.game.games.net.game.module.battle;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.base.PlayerCacheFactory;
+import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -26,6 +29,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @Component
 public class ChapterHandler extends BaseHandler {
@@ -114,6 +118,7 @@ public class ChapterHandler extends BaseHandler {
 		BattleRewardResponse_13000023.Builder resp = BattleRewardResponse_13000023.newBuilder();
 	
 		int id = req.getId();
+		int index = req.getIndex();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 
 		if (!player.isFuncOpen(InitialUI.ChapterBox)) {
@@ -127,22 +132,32 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		Chapter chapter = chapterModule.getChapter(id);
+		List<Integer> rewards = chapter.getRewards();
+		if (rewards.contains(index)) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		int minute =   chapter.getBattleTime() / 60 ; 
+		BattleConfig battleConfig = BattleManager.instance().get(id);
+		
+		if (index == 0 && minute < battleConfig.BattleBoxTrigger[0]) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		if (index == 1 && minute < battleConfig.BattleBoxTrigger[1]) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		if (index == 2 && !chapter.getPass()) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index]);
+		rewards.add(index);
 	
-//		ExploreChapterComplete exploreChapter = chapterModule.getExploreChapter(id);
-//		if (exploreChapter != null && exploreChapter.getReward()) {
-//			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-//			return;
-//		}
-//	
-//		boolean reward = chapterModule.exploreChapterReward(id);
-//		if (!reward) {
-//			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-//			return;
-//		}
-//		ExploreChapterConfig exploreChapterConfig = ExploreChapterManager.getInstance().getExploreChapterConfig(id);
-//	
-//		List<RewardItem> addRewards = PlayerHelper.addRewards(playerId, exploreChapterConfig.getProgressRewardId());
-//		resp.addAllReward(PbBuilder.buildRewardInfo(addRewards));
+		resp.addAllReward(reward);
+
 		client.sendProtocol(resp);
 	
 	}

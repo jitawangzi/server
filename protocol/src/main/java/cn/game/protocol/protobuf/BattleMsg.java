@@ -8278,13 +8278,32 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 0、1、2   章节宝箱领导哪个了
+     * 0、1、2  。领过的章节宝箱
      * </pre>
      *
-     * <code>int32 rewardIndex = 3;</code>
-     * @return The rewardIndex.
+     * <code>repeated int32 rewardIndex = 3;</code>
+     * @return A list containing the rewardIndex.
      */
-    int getRewardIndex();
+    java.util.List<java.lang.Integer> getRewardIndexList();
+    /**
+     * <pre>
+     * 0、1、2  。领过的章节宝箱
+     * </pre>
+     *
+     * <code>repeated int32 rewardIndex = 3;</code>
+     * @return The count of rewardIndex.
+     */
+    int getRewardIndexCount();
+    /**
+     * <pre>
+     * 0、1、2  。领过的章节宝箱
+     * </pre>
+     *
+     * <code>repeated int32 rewardIndex = 3;</code>
+     * @param index The index of the element to return.
+     * @return The rewardIndex at the given index.
+     */
+    int getRewardIndex(int index);
 
     /**
      * <pre>
@@ -8323,6 +8342,7 @@ public final class BattleMsg {
       super(builder);
     }
     private BattleInfo() {
+      rewardIndex_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -8345,6 +8365,7 @@ public final class BattleMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -8366,8 +8387,24 @@ public final class BattleMsg {
               break;
             }
             case 24: {
-
-              rewardIndex_ = input.readInt32();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                rewardIndex_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              rewardIndex_.addInt(input.readInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                rewardIndex_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                rewardIndex_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
               break;
             }
             case 32: {
@@ -8395,6 +8432,9 @@ public final class BattleMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          rewardIndex_.makeImmutable(); // C
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -8443,19 +8483,44 @@ public final class BattleMsg {
     }
 
     public static final int REWARDINDEX_FIELD_NUMBER = 3;
-    private int rewardIndex_;
+    private com.google.protobuf.Internal.IntList rewardIndex_;
     /**
      * <pre>
-     * 0、1、2   章节宝箱领导哪个了
+     * 0、1、2  。领过的章节宝箱
      * </pre>
      *
-     * <code>int32 rewardIndex = 3;</code>
-     * @return The rewardIndex.
+     * <code>repeated int32 rewardIndex = 3;</code>
+     * @return A list containing the rewardIndex.
      */
     @java.lang.Override
-    public int getRewardIndex() {
+    public java.util.List<java.lang.Integer>
+        getRewardIndexList() {
       return rewardIndex_;
     }
+    /**
+     * <pre>
+     * 0、1、2  。领过的章节宝箱
+     * </pre>
+     *
+     * <code>repeated int32 rewardIndex = 3;</code>
+     * @return The count of rewardIndex.
+     */
+    public int getRewardIndexCount() {
+      return rewardIndex_.size();
+    }
+    /**
+     * <pre>
+     * 0、1、2  。领过的章节宝箱
+     * </pre>
+     *
+     * <code>repeated int32 rewardIndex = 3;</code>
+     * @param index The index of the element to return.
+     * @return The rewardIndex at the given index.
+     */
+    public int getRewardIndex(int index) {
+      return rewardIndex_.getInt(index);
+    }
+    private int rewardIndexMemoizedSerializedSize = -1;
 
     public static final int FINISH_FIELD_NUMBER = 4;
     private boolean finish_;
@@ -8501,14 +8566,19 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (id_ != 0) {
         output.writeInt32(1, id_);
       }
       if (hpPercent_ != 0) {
         output.writeUInt32(2, hpPercent_);
       }
-      if (rewardIndex_ != 0) {
-        output.writeInt32(3, rewardIndex_);
+      if (getRewardIndexList().size() > 0) {
+        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(rewardIndexMemoizedSerializedSize);
+      }
+      for (int i = 0; i < rewardIndex_.size(); i++) {
+        output.writeInt32NoTag(rewardIndex_.getInt(i));
       }
       if (finish_ != false) {
         output.writeBool(4, finish_);
@@ -8533,9 +8603,19 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(2, hpPercent_);
       }
-      if (rewardIndex_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, rewardIndex_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < rewardIndex_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(rewardIndex_.getInt(i));
+        }
+        size += dataSize;
+        if (!getRewardIndexList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        rewardIndexMemoizedSerializedSize = dataSize;
       }
       if (finish_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -8564,8 +8644,8 @@ public final class BattleMsg {
           != other.getId()) return false;
       if (getHpPercent()
           != other.getHpPercent()) return false;
-      if (getRewardIndex()
-          != other.getRewardIndex()) return false;
+      if (!getRewardIndexList()
+          .equals(other.getRewardIndexList())) return false;
       if (getFinish()
           != other.getFinish()) return false;
       if (getBattleTime()
@@ -8585,8 +8665,10 @@ public final class BattleMsg {
       hash = (53 * hash) + getId();
       hash = (37 * hash) + HPPERCENT_FIELD_NUMBER;
       hash = (53 * hash) + getHpPercent();
-      hash = (37 * hash) + REWARDINDEX_FIELD_NUMBER;
-      hash = (53 * hash) + getRewardIndex();
+      if (getRewardIndexCount() > 0) {
+        hash = (37 * hash) + REWARDINDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getRewardIndexList().hashCode();
+      }
       hash = (37 * hash) + FINISH_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getFinish());
@@ -8733,8 +8815,8 @@ public final class BattleMsg {
 
         hpPercent_ = 0;
 
-        rewardIndex_ = 0;
-
+        rewardIndex_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         finish_ = false;
 
         battleTime_ = 0;
@@ -8765,8 +8847,13 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleInfo buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleInfo result = new cn.game.protocol.protobuf.BattleMsg.BattleInfo(this);
+        int from_bitField0_ = bitField0_;
         result.id_ = id_;
         result.hpPercent_ = hpPercent_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          rewardIndex_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
         result.rewardIndex_ = rewardIndex_;
         result.finish_ = finish_;
         result.battleTime_ = battleTime_;
@@ -8824,8 +8911,15 @@ public final class BattleMsg {
         if (other.getHpPercent() != 0) {
           setHpPercent(other.getHpPercent());
         }
-        if (other.getRewardIndex() != 0) {
-          setRewardIndex(other.getRewardIndex());
+        if (!other.rewardIndex_.isEmpty()) {
+          if (rewardIndex_.isEmpty()) {
+            rewardIndex_ = other.rewardIndex_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureRewardIndexIsMutable();
+            rewardIndex_.addAll(other.rewardIndex_);
+          }
+          onChanged();
         }
         if (other.getFinish() != false) {
           setFinish(other.getFinish());
@@ -8861,6 +8955,7 @@ public final class BattleMsg {
         }
         return this;
       }
+      private int bitField0_;
 
       private int id_ ;
       /**
@@ -8948,45 +9043,109 @@ public final class BattleMsg {
         return this;
       }
 
-      private int rewardIndex_ ;
-      /**
-       * <pre>
-       * 0、1、2   章节宝箱领导哪个了
-       * </pre>
-       *
-       * <code>int32 rewardIndex = 3;</code>
-       * @return The rewardIndex.
-       */
-      @java.lang.Override
-      public int getRewardIndex() {
-        return rewardIndex_;
+      private com.google.protobuf.Internal.IntList rewardIndex_ = emptyIntList();
+      private void ensureRewardIndexIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          rewardIndex_ = mutableCopy(rewardIndex_);
+          bitField0_ |= 0x00000001;
+         }
       }
       /**
        * <pre>
-       * 0、1、2   章节宝箱领导哪个了
+       * 0、1、2  。领过的章节宝箱
        * </pre>
        *
-       * <code>int32 rewardIndex = 3;</code>
+       * <code>repeated int32 rewardIndex = 3;</code>
+       * @return A list containing the rewardIndex.
+       */
+      public java.util.List<java.lang.Integer>
+          getRewardIndexList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(rewardIndex_) : rewardIndex_;
+      }
+      /**
+       * <pre>
+       * 0、1、2  。领过的章节宝箱
+       * </pre>
+       *
+       * <code>repeated int32 rewardIndex = 3;</code>
+       * @return The count of rewardIndex.
+       */
+      public int getRewardIndexCount() {
+        return rewardIndex_.size();
+      }
+      /**
+       * <pre>
+       * 0、1、2  。领过的章节宝箱
+       * </pre>
+       *
+       * <code>repeated int32 rewardIndex = 3;</code>
+       * @param index The index of the element to return.
+       * @return The rewardIndex at the given index.
+       */
+      public int getRewardIndex(int index) {
+        return rewardIndex_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 0、1、2  。领过的章节宝箱
+       * </pre>
+       *
+       * <code>repeated int32 rewardIndex = 3;</code>
+       * @param index The index to set the value at.
        * @param value The rewardIndex to set.
        * @return This builder for chaining.
        */
-      public Builder setRewardIndex(int value) {
-        
-        rewardIndex_ = value;
+      public Builder setRewardIndex(
+          int index, int value) {
+        ensureRewardIndexIsMutable();
+        rewardIndex_.setInt(index, value);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 0、1、2   章节宝箱领导哪个了
+       * 0、1、2  。领过的章节宝箱
        * </pre>
        *
-       * <code>int32 rewardIndex = 3;</code>
+       * <code>repeated int32 rewardIndex = 3;</code>
+       * @param value The rewardIndex to add.
+       * @return This builder for chaining.
+       */
+      public Builder addRewardIndex(int value) {
+        ensureRewardIndexIsMutable();
+        rewardIndex_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0、1、2  。领过的章节宝箱
+       * </pre>
+       *
+       * <code>repeated int32 rewardIndex = 3;</code>
+       * @param values The rewardIndex to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllRewardIndex(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureRewardIndexIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, rewardIndex_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0、1、2  。领过的章节宝箱
+       * </pre>
+       *
+       * <code>repeated int32 rewardIndex = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearRewardIndex() {
-        
-        rewardIndex_ = 0;
+        rewardIndex_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
@@ -9242,7 +9401,7 @@ public final class BattleMsg {
       "\001 \001(\r\022\r\n\005index\030\002 \001(\r\"C\n\035BattleRewardResp" +
       "onse_13000023\022\"\n\006reward\030\001 \003(\0132\022.Protos.R" +
       "ewardInfo\"d\n\nBattleInfo\022\n\n\002id\030\001 \001(\005\022\021\n\th" +
-      "pPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003 \001(\005\022\016\n\006f" +
+      "pPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003 \003(\005\022\016\n\006f" +
       "inish\030\004 \001(\010\022\022\n\nbattleTime\030\005 \001(\rB\033\n\031cn.ga" +
       "me.protocol.protobufb\006proto3"
     };

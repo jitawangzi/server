@@ -1,6 +1,8 @@
 package cn.game.games.cache.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.game.games.cache.base.DbEntity;
 import cn.game.protocol.protobuf.BattleMsg.BattleInfo;
@@ -25,9 +27,8 @@ public class Chapter implements Serializable, DbEntity {
 	private Boolean pass;
 	/**
 	 * 领取到的战役奖励索引
-	 * @mbg.generated
 	 */
-	private Integer rewards;
+	private List<Integer> rewards = new ArrayList<>();;
 	/**
 	 * @mbg.generated
 	 */
@@ -87,19 +88,6 @@ public class Chapter implements Serializable, DbEntity {
 		this.pass = pass;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
-	public Integer getRewards() {
-		return rewards;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setRewards(Integer rewards) {
-		this.rewards = rewards;
-	}
 
 	/**
 	 * @mbg.generated
@@ -137,13 +125,14 @@ public class Chapter implements Serializable, DbEntity {
 		this.battleTime = battleTime;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
-	@Override
-	public Class<?> getMapperClass() {
-		return cn.game.games.net.data.mapper.ChapterMapper.class;
+	public List<Integer> getRewards() {
+		return rewards;
 	}
+
+//	@Override
+//	public Class<?> getMapperClass() {
+//		return cn.game.games.net.data.mapper.ChapterMapper.class;
+//	}
 
 	/**
 	 * @mbg.generated
@@ -158,7 +147,7 @@ public class Chapter implements Serializable, DbEntity {
 		chapter.setPlayerId(playerId);
 		chapter.setBattleId(chapterId);
 		chapter.setPass(false);
-		chapter.setRewards(-1);
+//		chapter.setRewards(-1);
 		chapter.setKillMonsterCount(0);
 		chapter.setHpPercent(0);
 		return chapter;
@@ -169,7 +158,8 @@ public class Chapter implements Serializable, DbEntity {
 		builder.setId(battleId);
 		builder.setHpPercent(hpPercent);
 		builder.setFinish(pass) ; 
-		builder.setRewardIndex(rewards) ; 
+		builder.addAllRewardIndex(rewards);
+//		builder.setRewardIndex(rewards) ; 
 		builder.setBattleTime(battleTime);
 
 		return builder.build();

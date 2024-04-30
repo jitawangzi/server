@@ -543,8 +543,8 @@ public class ChapterModule extends BasePlayerModule  {
 
 
 	public boolean isExploreChapterPass(int id) {
-		// TODO Auto-generated method stub
-		return false;
+		Chapter chapter = chapters.get(id);
+		return chapter != null && chapter.getPass();
 	}
 
 	public boolean exploreActReward(int id) {

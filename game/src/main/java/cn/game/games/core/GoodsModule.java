@@ -62,8 +62,8 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	}
 
 
-	public void add(int configId) {
-		add(configId, 1);
+	public Object add(int configId) {
+		return add(configId, 1);
 	}
 
 	public abstract boolean del(int configId, int count, ResourceConsumeEnum... args);

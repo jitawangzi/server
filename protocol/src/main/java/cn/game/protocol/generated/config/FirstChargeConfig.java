@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 
 
 /**
- * 首充
+ * 首充旧
  * 
  * 工具生成的，不要手动修改
  */

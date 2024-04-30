@@ -42,6 +42,7 @@ import cn.game.protocol.generated.manager.AccomplishmentManager;
 import cn.game.protocol.generated.manager.HeroLvManager;
 import cn.game.protocol.generated.manager.TextManager;
 import cn.game.protocol.generated.manager.QuestManager;
+import cn.game.protocol.generated.manager.SevenDaysSigninManager;
 import cn.game.protocol.generated.manager.GiftCardManager;
 import cn.game.protocol.generated.manager.MailManager;
 import cn.game.protocol.generated.manager.BattleManager;
@@ -102,6 +103,7 @@ public class ManagerHelper {
 		HeroLvManager.instance().load();
 		TextManager.instance().load();
 		QuestManager.instance().load();
+		SevenDaysSigninManager.instance().load();
 		GiftCardManager.instance().load();
 		MailManager.instance().load();
 		BattleManager.instance().load();
