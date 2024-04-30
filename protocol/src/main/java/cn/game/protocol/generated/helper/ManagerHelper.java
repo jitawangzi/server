@@ -22,7 +22,6 @@ import cn.game.protocol.generated.manager.HeroBulletManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomNameManager;
-import cn.game.protocol.generated.manager.MapManager;
 import cn.game.protocol.generated.manager.ArtResourceManager;
 import cn.game.protocol.generated.manager.FundPassRewardsManager;
 import cn.game.protocol.generated.manager.DrawManager;
@@ -83,7 +82,6 @@ public class ManagerHelper {
 		RandomGroupManager.instance().load();
 		RandomGivenManager.instance().load();
 		RandomNameManager.instance().load();
-		MapManager.instance().load();
 		ArtResourceManager.instance().load();
 		FundPassRewardsManager.instance().load();
 		DrawManager.instance().load();

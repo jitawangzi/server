@@ -4,6 +4,8 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ItemMapper;
+import cn.game.protocol.generated.config.ItemConfig;
+import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -26,6 +28,23 @@ public class ItemModule extends AbstractItemModule<Item> {
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
 		return new Class<?>[] { ItemMapper.class };
+	}
+
+	/**
+	 * 增加一个道具数量
+	 */
+	@Override
+	public Item add(int itemId, int count) {
+		if (count <= 0) {
+			return null;
+		}
+		ItemConfig itemConfig = ItemManager.instance().get(itemId);
+		if (itemConfig.ItemType == 6) {
+			// TODO 给挂机金币
+
+			return null;
+		}
+		return super.add(itemId, count);
 	}
 
 //	@Override

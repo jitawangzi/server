@@ -18,9 +18,9 @@ import org.w3c.dom.Element;
 	public final int[][] monster1;		
 	/** 小怪2 */
 	public final int[][] monster2;		
-	/** 精英1 */
+	/** 头目1 */
 	public final int[][] elite1;		
-	/** 精英2 */
+	/** 头目2 */
 	public final int[][] elite2;		
 	/** BOSS1 */
 	public final int[][] boss1;		
@@ -69,7 +69,7 @@ import org.w3c.dom.Element;
 		} else {
 			monster2 = new int[][] {};
 		}
-		String elite1String = element.getAttribute("elite1"); // 精英1
+		String elite1String = element.getAttribute("elite1"); // 头目1
 		if (elite1String != null && elite1String.length() > 0) {
 			String[] elite1Strings = elite1String.split("\\|"); 
 			int[][] elite1Temp = new int[elite1Strings.length][] ; 
@@ -86,7 +86,7 @@ import org.w3c.dom.Element;
 		} else {
 			elite1 = new int[][] {};
 		}
-		String elite2String = element.getAttribute("elite2"); // 精英2
+		String elite2String = element.getAttribute("elite2"); // 头目2
 		if (elite2String != null && elite2String.length() > 0) {
 			String[] elite2Strings = elite2String.split("\\|"); 
 			int[][] elite2Temp = new int[elite2Strings.length][] ; 

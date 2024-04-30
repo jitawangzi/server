@@ -9,8 +9,8 @@ public enum ActivityTypeEnum{
 
 	/** 首冲 */
 	FirstCharge(1,"FirstCharge","首冲"),
-	/** 爬塔 */
-	ClimbingTower(2,"ClimbingTower","爬塔"),
+	/** 单充 */
+	SingleCharge(2,"SingleCharge","单充"),
     ;
 	/** 活动类型 */
 	public final int ID ; 

@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 	/** 300-唯一   310-永恒 320-彩      330-红 340-金      350-紫 360-蓝      370-绿 380-白      390-没有品质（怪专用） */
 	public final int ID;		
-	/** 资源类型 1-英雄 2-怪物 */
+	/** 1-英雄 2-小怪 3-头目 4-boss */
 	public final int Type;		
 	/** spine预制体 */
 	public final String Prefab;		
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 300-唯一   310-永恒 320-彩      330-红 340-金      350-紫 360-蓝      370-绿 380-白      390-没有品质（怪专用）
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
-			: element.getAttribute("Type")); // 资源类型 1-英雄 2-怪物
+			: element.getAttribute("Type")); // 1-英雄 2-小怪 3-头目 4-boss
 		Prefab = element.getAttribute("Prefab"); // spine预制体
 		Icon = element.getAttribute("Icon"); // 头像Icon 调用：west\src\First_party\art\xiyou UI\卡牌_card \west\src\First_party\art\xiyou UI\head_头像
 		StartAction = element.getAttribute("StartAction"); // 出生 动作

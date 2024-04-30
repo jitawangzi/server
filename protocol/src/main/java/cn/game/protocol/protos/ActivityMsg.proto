@@ -15,6 +15,7 @@ message ActivityListResponse_11000002{
    repeated ActivityInfo activitys = 1;
 }
 
+//︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻首冲︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 //查看首冲活动数据
 message ActivityFirstChargeRequest_11000003{
    uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
@@ -41,6 +42,43 @@ message FirstChargeActivityInfo{
    uint32 id = 1; //当前可以购买的 FirstCharge 表id礼包
    repeated uint32 selectedIndex = 2;  // 5个可选奖励中，已经选择的， 0-4，针对id是1、2、3、4的物品。
 }
+
+//︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼首冲︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+
+//︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻单充︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
+//查看单冲活动数据
+message ActivitySingleChargeRequest_11000007{
+   uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+}
+//单冲活动
+message ActivitySingleChargeResponse_11000008{
+   repeated SingleChargeActivityInfo singleCharges = 1;// 已经购买的数据
+}
+
+//购买单冲礼包
+message ActivitySingleChargeBuyRequest_11000010{
+   uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+   uint32 chargeId  = 2;    // SingleCharge 表id
+}
+message ActivitySingleChargeBuyResponse_11000011{
+}
+
+//领取单冲礼包奖励
+message ActivitySingleChargeRewardRequest_11000012{
+   uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+   uint32 chargeId  = 2;    // SingleCharge 表id
+   uint32 rewardDay  = 3;    // 0、1、2，表示领取购买后第一天、第二天、第三天的奖励
+}
+message ActivitySingleChargeRewardResponse_11000013{
+   repeated RewardInfo rewards = 2;  // 购买的物品
+}
+
+message SingleChargeActivityInfo{
+   uint32 id = 1; //已经购买的 SingleCharge 表id礼包,购买第一个礼包才能买第二个礼包
+   uint32 canRewardIndex = 2;  // 购买的id中，可以领取的礼包顺序，0、1、2， 0表示只能领取第一个奖励，1可以领前两个，2表示3个都可以领
+   repeated uint32 selectedIndex = 3;  // 购买的id中，已经领取的礼包顺序,0、1、2
+}
+//︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼单冲︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
 
 // 单个活动基本数据
 message ActivityInfo{

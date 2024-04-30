@@ -24,6 +24,10 @@ import org.w3c.dom.Element;
 	public final int WinRandom;		
 	/** 失败奖励  掉落表id */
 	public final int FailRandom;		
+	/** 章节宝箱触发条件   宝箱1坚持分钟数;宝箱2坚持分钟数;宝箱3通关 2;4;999 其中999为通关标识 */
+	public final int[] BattleBoxTrigger;		
+	/** 章节宝箱奖励掉落id组 */
+	public final int[] BattleBoxRandomId;		
 	/** 折算方法 */
 	public final String ConvertAwardFUN;		
 	/** 折算条件 */
@@ -49,6 +53,30 @@ import org.w3c.dom.Element;
 			: element.getAttribute("WinRandom")); // 胜利奖励  掉落表id
 		FailRandom = Integer.parseInt(element.getAttribute("FailRandom") == null || element.getAttribute("FailRandom").length() == 0 ? "0"
 			: element.getAttribute("FailRandom")); // 失败奖励  掉落表id
+		String BattleBoxTriggerString = element.getAttribute("BattleBoxTrigger"); // 章节宝箱触发条件   宝箱1坚持分钟数;宝箱2坚持分钟数;宝箱3通关 2;4;999 其中999为通关标识
+		if (BattleBoxTriggerString != null && BattleBoxTriggerString.length() > 0) {
+			String[] BattleBoxTriggerStrings = BattleBoxTriggerString.split(";"); 
+			int[] BattleBoxTriggerTemp = new int[BattleBoxTriggerStrings.length] ; 
+			for (int i = 0; i < BattleBoxTriggerStrings.length; i++) {
+				int temp = Integer.parseInt(BattleBoxTriggerStrings[i]);	
+				BattleBoxTriggerTemp[i] = temp;
+			}
+			BattleBoxTrigger = BattleBoxTriggerTemp ;			
+		} else {
+			BattleBoxTrigger = new int[] {};
+		}
+		String BattleBoxRandomIdString = element.getAttribute("BattleBoxRandomId"); // 章节宝箱奖励掉落id组
+		if (BattleBoxRandomIdString != null && BattleBoxRandomIdString.length() > 0) {
+			String[] BattleBoxRandomIdStrings = BattleBoxRandomIdString.split(";"); 
+			int[] BattleBoxRandomIdTemp = new int[BattleBoxRandomIdStrings.length] ; 
+			for (int i = 0; i < BattleBoxRandomIdStrings.length; i++) {
+				int temp = Integer.parseInt(BattleBoxRandomIdStrings[i]);	
+				BattleBoxRandomIdTemp[i] = temp;
+			}
+			BattleBoxRandomId = BattleBoxRandomIdTemp ;			
+		} else {
+			BattleBoxRandomId = new int[] {};
+		}
 		ConvertAwardFUN = element.getAttribute("ConvertAwardFUN"); // 折算方法
 		String FUNConditionString = element.getAttribute("FUNCondition"); // 折算条件
 		if (FUNConditionString != null && FUNConditionString.length() > 0) {

@@ -46,6 +46,9 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	public List<RewardInfo> addReward(int configId, int count) {
 		List<RewardInfo> list = new ArrayList<RewardInfo>(1);
 		Object object = add(configId, count);
+		if (object == null) {
+			return list;
+		}
 		if (object instanceof Item) {
 			Item item = (Item) object;
 			list.add(toRewardInfo((E) item));

@@ -496,6 +496,9 @@ public final class Rnd {
 	 * @return
 	 */
 	public static int random21(int[] value) {
+		if (value.length == 0 || value.length > 2) {
+			throw new IllegalArgumentException("范围随机数据配置错误： " + value);
+		}
 		if (value.length == 1 || value[0]==value[1]) {
 			return value[0] ; 
 		}
@@ -519,6 +522,9 @@ public final class Rnd {
 	 * @return
 	 */
 	public static int randomId(int[][] array) {
+		if (array.length == 1 && array[0].length == 1) {
+			return array[0][0];
+		}
 		int total = 0;
 		for (int i = 0; i < array.length; i++) {
 			total += array[i][1];
@@ -532,6 +538,18 @@ public final class Rnd {
 				return array[i][0];
 		}
 		return -1;
+	}
+
+	/** 
+	 * 
+	 * @param array
+	 * @return
+	 */
+	public static int randomOrOne(int[][] array) {
+		if (array.length == 1 && array[0].length == 1) {
+			return array[0][0];
+		}
+		return randomId(array);
 	}
 
 	public static void main(String args[]) {

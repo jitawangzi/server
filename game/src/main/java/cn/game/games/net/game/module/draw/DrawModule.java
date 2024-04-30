@@ -22,9 +22,9 @@ import cn.game.util.IntMapWrapper;
 
 public class DrawModule extends BasePlayerModule {
 
-	/** 当前第几档必送神将,key：DrawConfig 表id */
+	/** 当前第几档必送神将,key：GiftCardConfig 表id */
 	private IntMapWrapper giftIndex = new IntMapWrapper();
-	/** 当前档位的抽卡次数,key：DrawConfig 表id */
+	/** 当前档位的抽卡次数,key：GiftCardConfig 表id */
 	private IntMapWrapper drawTimes = new IntMapWrapper();
 	/** 免费单抽的时间 key：DrawConfig 表id */
 	private IntMapWrapper freeDrawTime = new IntMapWrapper();
@@ -69,19 +69,7 @@ public class DrawModule extends BasePlayerModule {
 		List<GiftCardConfig> drawIdList = GiftCardManager.instance().getDrawIdList(id);
 		for (GiftCardConfig giftCardConfig : drawIdList) {
 			int curTimes = drawTimes.getValue(giftCardConfig.ID);
-//			int[] giftCardCount = giftCardConfig.GiftCardCount;
 			map.put(giftCardConfig.GiftCardQuality, giftCardConfig.GiftCardCount[giftIndex.getValue(giftCardConfig.ID)] - curTimes);
-//			int totalCount = 0;
-//			int index = -1;
-//			int countRemaining = 0;
-//			for (int i = 0; i < giftCardCount.length; i++) {
-//				totalCount += giftCardCount[i];
-//				if (count < totalCount) {
-//					index = i;
-//					countRemaining = totalCount - count;
-//					break;
-//				}
-//			}
 		}
 
 		newBuilder.putAllGiftRemainingTimes(map);
@@ -107,18 +95,19 @@ public class DrawModule extends BasePlayerModule {
 
 			for (GiftCardConfig giftCardConfig : giftCardList) {
 
-				drawTimes.add(giftCardConfig.ID, 1);
-				int curIndex = giftIndex.getValue(giftCardConfig.ID);
-				int curTimes = drawTimes.getValue(giftCardConfig.ID);
+				int giftCardId = giftCardConfig.ID;
+				drawTimes.add(giftCardId, 1);
+				int curIndex = giftIndex.getValue(giftCardId);
+				int curTimes = drawTimes.getValue(giftCardId);
 				int remaining = giftCardConfig.GiftCardCount[curIndex] - curTimes;
 				if (remaining == 0) {
 					// 送卡
 					ret.addAll(PlayerHelper.addReward(player, giftCardConfig.GiftCardRandomId[curIndex]));
 					// next index
 					if (curIndex < giftCardConfig.GiftCardRandomId.length - 1) {
-						giftIndex.add(giftCardConfig.ID, 1);
+						giftIndex.add(giftCardId, 1);
 					}
-					drawTimes.setValue(giftCardConfig.ID, 0);
+					drawTimes.setValue(giftCardId, 0);
 				}
 			}
 		}

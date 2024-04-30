@@ -27,6 +27,12 @@ public class PbProtocol implements ProtocolParser {
 	public final static int ActivityFirstChargeResponse_11000004 = 0x11000004;    //首冲活动  
 	public final static int ActivityFirstChargeBuyRequest_11000005 = 0x11000005;    //购买首冲里面的礼包  
 	public final static int ActivityFirstChargeBuyResponse_11000006 = 0x11000006;    
+	public final static int ActivitySingleChargeRequest_11000007 = 0x11000007;    //查看单冲活动数据  
+	public final static int ActivitySingleChargeResponse_11000008 = 0x11000008;    //单冲活动  
+	public final static int ActivitySingleChargeBuyRequest_11000010 = 0x11000010;    //购买单冲礼包  
+	public final static int ActivitySingleChargeBuyResponse_11000011 = 0x11000011;    
+	public final static int ActivitySingleChargeRewardRequest_11000012 = 0x11000012;    //领取单冲礼包奖励  
+	public final static int ActivitySingleChargeRewardResponse_11000013 = 0x11000013;    
 	public final static int ActivityStatePush_11100006 = 0x11100006;    //活动状态改变推送，看具体情况选择性推送  
 	public final static int BattleFieldStartRequest_13000001 = 0x13000001;    //开始关卡战斗请求  
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
@@ -216,6 +222,18 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(ActivityFirstChargeBuyRequest_11000005, cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000005.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ActivityFirstChargeBuyResponse_11000006, cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySingleChargeRequest_11000007, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySingleChargeResponse_11000008, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySingleChargeBuyRequest_11000010, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySingleChargeBuyResponse_11000011, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySingleChargeRewardRequest_11000012, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySingleChargeRewardResponse_11000013, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ActivityStatePush_11100006, cn.game.protocol.protobuf.ActivityMsg.ActivityStatePush_11100006.getDefaultInstance()
 				.getParserForType());
@@ -576,6 +594,12 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("ActivityFirstChargeResponse_11000004", 0x11000004);
 		nameIdMap.put("ActivityFirstChargeBuyRequest_11000005", 0x11000005);
 		nameIdMap.put("ActivityFirstChargeBuyResponse_11000006", 0x11000006);
+		nameIdMap.put("ActivitySingleChargeRequest_11000007", 0x11000007);
+		nameIdMap.put("ActivitySingleChargeResponse_11000008", 0x11000008);
+		nameIdMap.put("ActivitySingleChargeBuyRequest_11000010", 0x11000010);
+		nameIdMap.put("ActivitySingleChargeBuyResponse_11000011", 0x11000011);
+		nameIdMap.put("ActivitySingleChargeRewardRequest_11000012", 0x11000012);
+		nameIdMap.put("ActivitySingleChargeRewardResponse_11000013", 0x11000013);
 		nameIdMap.put("ActivityStatePush_11100006", 0x11100006);
 		nameIdMap.put("BattleFieldStartRequest_13000001", 0x13000001);
 		nameIdMap.put("BattleFieldStartResponse_13000002", 0x13000002);

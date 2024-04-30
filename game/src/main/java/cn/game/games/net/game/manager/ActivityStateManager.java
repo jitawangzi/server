@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Activity;
-import cn.game.games.cache.entity.ClimbingTower;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.AbstractGameEventRegistration;
 import cn.game.games.net.data.mapper.ActivityMapper;
@@ -44,19 +43,8 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	/** 全体活动 */
 	public ActivityModule activityOp = new ActivityModule();
 
-	/**所有玩家爬塔数据*/
-	private final Map<Long, ClimbingTower> playerClimbingTowerData = new ConcurrentHashMap<>();
-
 	public static ActivityStateManager getInstance() {
 		return instance;
-	}
-
-	public ClimbingTower getClimbingTowerDataById(long playerId) {
-		return playerClimbingTowerData.get(playerId);
-	}
-
-	public Map<Long, ClimbingTower> getPlayerClimbingTowerData() {
-		return playerClimbingTowerData;
 	}
 
 	public boolean isOpen(int id) {

@@ -206,13 +206,6 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		int orderPrice = count * price;
 		// 货币类型
 		ResourceEnum moneyType = ResourceEnum.get(goodsConf.getItemUnitPrice());
-		// 如果是爬塔商店
-		if (moneyType == ResourceEnum.TowerToken) {
-			ClimbingTowerOp climbTowerOp = player.getModule(ClimbingTowerOp.class);
-			if (!climbTowerOp.isInitialized()) {
-				return OldErrorMsgEnum.module_disabled.getId();
-			}
-		}
 		// 订单数量异常
 		if (count <= 0) {
 			return OldErrorMsgEnum.illegal_request.getId();

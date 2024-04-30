@@ -12,11 +12,13 @@ import org.w3c.dom.Element;
 
 	/** 怪物ID */
 	public final int ID;		
-	/** 移动速度 */
+	/** 1-英雄 2-小怪 3-头目 4-boss */
+	public final int Type;		
+	/** 移动速度  正常填40 快一些填60 */
 	public final int MoveSpeed;		
-	/** 攻击速度 */
+	/** 攻击速度 填2=2秒1次攻击 */
 	public final int AtkSpeed;		
-	/** 规模 */
+	/** 怪物大小 填100=100% */
 	public final int scale;		
 	/** 生命 */
 	public final int HP;		
@@ -31,12 +33,14 @@ import org.w3c.dom.Element;
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 怪物ID
+		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
+			: element.getAttribute("Type")); // 1-英雄 2-小怪 3-头目 4-boss
 		MoveSpeed = Integer.parseInt(element.getAttribute("MoveSpeed") == null || element.getAttribute("MoveSpeed").length() == 0 ? "0"
-			: element.getAttribute("MoveSpeed")); // 移动速度
+			: element.getAttribute("MoveSpeed")); // 移动速度  正常填40 快一些填60
 		AtkSpeed = Integer.parseInt(element.getAttribute("AtkSpeed") == null || element.getAttribute("AtkSpeed").length() == 0 ? "0"
-			: element.getAttribute("AtkSpeed")); // 攻击速度
+			: element.getAttribute("AtkSpeed")); // 攻击速度 填2=2秒1次攻击
 		scale = Integer.parseInt(element.getAttribute("scale") == null || element.getAttribute("scale").length() == 0 ? "0"
-			: element.getAttribute("scale")); // 规模
+			: element.getAttribute("scale")); // 怪物大小 填100=100%
 		HP = Integer.parseInt(element.getAttribute("HP") == null || element.getAttribute("HP").length() == 0 ? "0"
 			: element.getAttribute("HP")); // 生命
 		Attack = Integer.parseInt(element.getAttribute("Attack") == null || element.getAttribute("Attack").length() == 0 ? "0"

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.game.games.net.game.module.battle.impl.BattleChapterImpl;
-import cn.game.games.net.game.module.battle.impl.BattleClimbingTowerImpl;
 import cn.game.games.net.game.module.battle.impl.BattleEventImpl;
 import cn.game.games.net.game.module.battle.impl.BattleMainlineImpl;
 import cn.game.games.net.game.module.battle.impl.BattleTrainingImpl;
@@ -18,7 +17,6 @@ public class BattleFactory {
 		register(new BattleEventImpl());
 		register(new BattleTrainingImpl());
 		register(new BattleMainlineImpl());
-		register(new BattleClimbingTowerImpl());
 	}
 
 	public static void register(IBattleHandler battleHandler) {

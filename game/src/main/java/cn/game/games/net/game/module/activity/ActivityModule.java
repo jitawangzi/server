@@ -139,6 +139,9 @@ public class ActivityModule extends BasePlayerModule {
 		if (!activities.containsKey(id)) {
 			// new activity
 			ActivityConfig activityConfig = ActivityManager.instance().get(id);
+			if (activityConfig.disable) {
+				return;
+			}
 //			if (!activityConfig.isMultiplayer && player != null) {
 //				return ; 
 //			}

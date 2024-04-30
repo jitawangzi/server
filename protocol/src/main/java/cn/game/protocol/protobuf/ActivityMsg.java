@@ -1415,6 +1415,7 @@ public final class ActivityMsg {
   }
   /**
    * <pre>
+   *︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻首冲︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
    *查看首冲活动数据
    * </pre>
    *
@@ -1671,6 +1672,7 @@ public final class ActivityMsg {
     }
     /**
      * <pre>
+     *︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻首冲︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
      *查看首冲活动数据
      * </pre>
      *
@@ -5324,6 +5326,4909 @@ public final class ActivityMsg {
 
   }
 
+  public interface ActivitySingleChargeRequest_11000007OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ActivitySingleChargeRequest_11000007)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+  }
+  /**
+   * <pre>
+   *︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻单充︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
+   *查看单冲活动数据
+   * </pre>
+   *
+   * Protobuf type {@code Protos.ActivitySingleChargeRequest_11000007}
+   */
+  public static final class ActivitySingleChargeRequest_11000007 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ActivitySingleChargeRequest_11000007)
+      ActivitySingleChargeRequest_11000007OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ActivitySingleChargeRequest_11000007.newBuilder() to construct.
+    private ActivitySingleChargeRequest_11000007(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ActivitySingleChargeRequest_11000007() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ActivitySingleChargeRequest_11000007();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActivitySingleChargeRequest_11000007(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRequest_11000007_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRequest_11000007_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 other = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻单充︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
+     *查看单冲活动数据
+     * </pre>
+     *
+     * Protobuf type {@code Protos.ActivitySingleChargeRequest_11000007}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ActivitySingleChargeRequest_11000007)
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRequest_11000007_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRequest_11000007_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRequest_11000007_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 build() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 result = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007(this);
+        result.id_ = id_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ActivitySingleChargeRequest_11000007)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ActivitySingleChargeRequest_11000007)
+    private static final cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ActivitySingleChargeRequest_11000007>
+        PARSER = new com.google.protobuf.AbstractParser<ActivitySingleChargeRequest_11000007>() {
+      @java.lang.Override
+      public ActivitySingleChargeRequest_11000007 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ActivitySingleChargeRequest_11000007(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ActivitySingleChargeRequest_11000007> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ActivitySingleChargeRequest_11000007> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ActivitySingleChargeResponse_11000008OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ActivitySingleChargeResponse_11000008)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo> 
+        getSingleChargesList();
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo getSingleCharges(int index);
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    int getSingleChargesCount();
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder> 
+        getSingleChargesOrBuilderList();
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder getSingleChargesOrBuilder(
+        int index);
+  }
+  /**
+   * <pre>
+   *单冲活动
+   * </pre>
+   *
+   * Protobuf type {@code Protos.ActivitySingleChargeResponse_11000008}
+   */
+  public static final class ActivitySingleChargeResponse_11000008 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ActivitySingleChargeResponse_11000008)
+      ActivitySingleChargeResponse_11000008OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ActivitySingleChargeResponse_11000008.newBuilder() to construct.
+    private ActivitySingleChargeResponse_11000008(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ActivitySingleChargeResponse_11000008() {
+      singleCharges_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ActivitySingleChargeResponse_11000008();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActivitySingleChargeResponse_11000008(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                singleCharges_ = new java.util.ArrayList<cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              singleCharges_.add(
+                  input.readMessage(cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          singleCharges_ = java.util.Collections.unmodifiableList(singleCharges_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeResponse_11000008_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeResponse_11000008_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008.Builder.class);
+    }
+
+    public static final int SINGLECHARGES_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo> singleCharges_;
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo> getSingleChargesList() {
+      return singleCharges_;
+    }
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder> 
+        getSingleChargesOrBuilderList() {
+      return singleCharges_;
+    }
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    @java.lang.Override
+    public int getSingleChargesCount() {
+      return singleCharges_.size();
+    }
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo getSingleCharges(int index) {
+      return singleCharges_.get(index);
+    }
+    /**
+     * <pre>
+     * 已经购买的数据
+     * </pre>
+     *
+     * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder getSingleChargesOrBuilder(
+        int index) {
+      return singleCharges_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < singleCharges_.size(); i++) {
+        output.writeMessage(1, singleCharges_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < singleCharges_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, singleCharges_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 other = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008) obj;
+
+      if (!getSingleChargesList()
+          .equals(other.getSingleChargesList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getSingleChargesCount() > 0) {
+        hash = (37 * hash) + SINGLECHARGES_FIELD_NUMBER;
+        hash = (53 * hash) + getSingleChargesList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *单冲活动
+     * </pre>
+     *
+     * Protobuf type {@code Protos.ActivitySingleChargeResponse_11000008}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ActivitySingleChargeResponse_11000008)
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeResponse_11000008_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeResponse_11000008_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getSingleChargesFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (singleChargesBuilder_ == null) {
+          singleCharges_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          singleChargesBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeResponse_11000008_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 build() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 result = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008(this);
+        int from_bitField0_ = bitField0_;
+        if (singleChargesBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            singleCharges_ = java.util.Collections.unmodifiableList(singleCharges_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.singleCharges_ = singleCharges_;
+        } else {
+          result.singleCharges_ = singleChargesBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008.getDefaultInstance()) return this;
+        if (singleChargesBuilder_ == null) {
+          if (!other.singleCharges_.isEmpty()) {
+            if (singleCharges_.isEmpty()) {
+              singleCharges_ = other.singleCharges_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureSingleChargesIsMutable();
+              singleCharges_.addAll(other.singleCharges_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.singleCharges_.isEmpty()) {
+            if (singleChargesBuilder_.isEmpty()) {
+              singleChargesBuilder_.dispose();
+              singleChargesBuilder_ = null;
+              singleCharges_ = other.singleCharges_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              singleChargesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getSingleChargesFieldBuilder() : null;
+            } else {
+              singleChargesBuilder_.addAllMessages(other.singleCharges_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo> singleCharges_ =
+        java.util.Collections.emptyList();
+      private void ensureSingleChargesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          singleCharges_ = new java.util.ArrayList<cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo>(singleCharges_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder> singleChargesBuilder_;
+
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo> getSingleChargesList() {
+        if (singleChargesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(singleCharges_);
+        } else {
+          return singleChargesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public int getSingleChargesCount() {
+        if (singleChargesBuilder_ == null) {
+          return singleCharges_.size();
+        } else {
+          return singleChargesBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo getSingleCharges(int index) {
+        if (singleChargesBuilder_ == null) {
+          return singleCharges_.get(index);
+        } else {
+          return singleChargesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder setSingleCharges(
+          int index, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo value) {
+        if (singleChargesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSingleChargesIsMutable();
+          singleCharges_.set(index, value);
+          onChanged();
+        } else {
+          singleChargesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder setSingleCharges(
+          int index, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder builderForValue) {
+        if (singleChargesBuilder_ == null) {
+          ensureSingleChargesIsMutable();
+          singleCharges_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          singleChargesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder addSingleCharges(cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo value) {
+        if (singleChargesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSingleChargesIsMutable();
+          singleCharges_.add(value);
+          onChanged();
+        } else {
+          singleChargesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder addSingleCharges(
+          int index, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo value) {
+        if (singleChargesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSingleChargesIsMutable();
+          singleCharges_.add(index, value);
+          onChanged();
+        } else {
+          singleChargesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder addSingleCharges(
+          cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder builderForValue) {
+        if (singleChargesBuilder_ == null) {
+          ensureSingleChargesIsMutable();
+          singleCharges_.add(builderForValue.build());
+          onChanged();
+        } else {
+          singleChargesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder addSingleCharges(
+          int index, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder builderForValue) {
+        if (singleChargesBuilder_ == null) {
+          ensureSingleChargesIsMutable();
+          singleCharges_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          singleChargesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder addAllSingleCharges(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo> values) {
+        if (singleChargesBuilder_ == null) {
+          ensureSingleChargesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, singleCharges_);
+          onChanged();
+        } else {
+          singleChargesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder clearSingleCharges() {
+        if (singleChargesBuilder_ == null) {
+          singleCharges_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          singleChargesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public Builder removeSingleCharges(int index) {
+        if (singleChargesBuilder_ == null) {
+          ensureSingleChargesIsMutable();
+          singleCharges_.remove(index);
+          onChanged();
+        } else {
+          singleChargesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder getSingleChargesBuilder(
+          int index) {
+        return getSingleChargesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder getSingleChargesOrBuilder(
+          int index) {
+        if (singleChargesBuilder_ == null) {
+          return singleCharges_.get(index);  } else {
+          return singleChargesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder> 
+           getSingleChargesOrBuilderList() {
+        if (singleChargesBuilder_ != null) {
+          return singleChargesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(singleCharges_);
+        }
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder addSingleChargesBuilder() {
+        return getSingleChargesFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder addSingleChargesBuilder(
+          int index) {
+        return getSingleChargesFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 已经购买的数据
+       * </pre>
+       *
+       * <code>repeated .Protos.SingleChargeActivityInfo singleCharges = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder> 
+           getSingleChargesBuilderList() {
+        return getSingleChargesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder> 
+          getSingleChargesFieldBuilder() {
+        if (singleChargesBuilder_ == null) {
+          singleChargesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder>(
+                  singleCharges_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          singleCharges_ = null;
+        }
+        return singleChargesBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ActivitySingleChargeResponse_11000008)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ActivitySingleChargeResponse_11000008)
+    private static final cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ActivitySingleChargeResponse_11000008>
+        PARSER = new com.google.protobuf.AbstractParser<ActivitySingleChargeResponse_11000008>() {
+      @java.lang.Override
+      public ActivitySingleChargeResponse_11000008 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ActivitySingleChargeResponse_11000008(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ActivitySingleChargeResponse_11000008> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ActivitySingleChargeResponse_11000008> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ActivitySingleChargeBuyRequest_11000010OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ActivitySingleChargeBuyRequest_11000010)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * SingleCharge 表id
+     * </pre>
+     *
+     * <code>uint32 chargeId = 2;</code>
+     * @return The chargeId.
+     */
+    int getChargeId();
+  }
+  /**
+   * <pre>
+   *购买单冲礼包
+   * </pre>
+   *
+   * Protobuf type {@code Protos.ActivitySingleChargeBuyRequest_11000010}
+   */
+  public static final class ActivitySingleChargeBuyRequest_11000010 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ActivitySingleChargeBuyRequest_11000010)
+      ActivitySingleChargeBuyRequest_11000010OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ActivitySingleChargeBuyRequest_11000010.newBuilder() to construct.
+    private ActivitySingleChargeBuyRequest_11000010(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ActivitySingleChargeBuyRequest_11000010() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ActivitySingleChargeBuyRequest_11000010();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActivitySingleChargeBuyRequest_11000010(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+
+              chargeId_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int CHARGEID_FIELD_NUMBER = 2;
+    private int chargeId_;
+    /**
+     * <pre>
+     * SingleCharge 表id
+     * </pre>
+     *
+     * <code>uint32 chargeId = 2;</code>
+     * @return The chargeId.
+     */
+    @java.lang.Override
+    public int getChargeId() {
+      return chargeId_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      if (chargeId_ != 0) {
+        output.writeUInt32(2, chargeId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      if (chargeId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, chargeId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 other = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (getChargeId()
+          != other.getChargeId()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + CHARGEID_FIELD_NUMBER;
+      hash = (53 * hash) + getChargeId();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *购买单冲礼包
+     * </pre>
+     *
+     * Protobuf type {@code Protos.ActivitySingleChargeBuyRequest_11000010}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ActivitySingleChargeBuyRequest_11000010)
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        chargeId_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 build() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 result = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010(this);
+        result.id_ = id_;
+        result.chargeId_ = chargeId_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getChargeId() != 0) {
+          setChargeId(other.getChargeId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int chargeId_ ;
+      /**
+       * <pre>
+       * SingleCharge 表id
+       * </pre>
+       *
+       * <code>uint32 chargeId = 2;</code>
+       * @return The chargeId.
+       */
+      @java.lang.Override
+      public int getChargeId() {
+        return chargeId_;
+      }
+      /**
+       * <pre>
+       * SingleCharge 表id
+       * </pre>
+       *
+       * <code>uint32 chargeId = 2;</code>
+       * @param value The chargeId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChargeId(int value) {
+        
+        chargeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * SingleCharge 表id
+       * </pre>
+       *
+       * <code>uint32 chargeId = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearChargeId() {
+        
+        chargeId_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ActivitySingleChargeBuyRequest_11000010)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ActivitySingleChargeBuyRequest_11000010)
+    private static final cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ActivitySingleChargeBuyRequest_11000010>
+        PARSER = new com.google.protobuf.AbstractParser<ActivitySingleChargeBuyRequest_11000010>() {
+      @java.lang.Override
+      public ActivitySingleChargeBuyRequest_11000010 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ActivitySingleChargeBuyRequest_11000010(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ActivitySingleChargeBuyRequest_11000010> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ActivitySingleChargeBuyRequest_11000010> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ActivitySingleChargeBuyResponse_11000011OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ActivitySingleChargeBuyResponse_11000011)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code Protos.ActivitySingleChargeBuyResponse_11000011}
+   */
+  public static final class ActivitySingleChargeBuyResponse_11000011 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ActivitySingleChargeBuyResponse_11000011)
+      ActivitySingleChargeBuyResponse_11000011OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ActivitySingleChargeBuyResponse_11000011.newBuilder() to construct.
+    private ActivitySingleChargeBuyResponse_11000011(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ActivitySingleChargeBuyResponse_11000011() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ActivitySingleChargeBuyResponse_11000011();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActivitySingleChargeBuyResponse_11000011(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 other = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.ActivitySingleChargeBuyResponse_11000011}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ActivitySingleChargeBuyResponse_11000011)
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 build() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 result = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ActivitySingleChargeBuyResponse_11000011)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ActivitySingleChargeBuyResponse_11000011)
+    private static final cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ActivitySingleChargeBuyResponse_11000011>
+        PARSER = new com.google.protobuf.AbstractParser<ActivitySingleChargeBuyResponse_11000011>() {
+      @java.lang.Override
+      public ActivitySingleChargeBuyResponse_11000011 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ActivitySingleChargeBuyResponse_11000011(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ActivitySingleChargeBuyResponse_11000011> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ActivitySingleChargeBuyResponse_11000011> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ActivitySingleChargeRewardRequest_11000012OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ActivitySingleChargeRewardRequest_11000012)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * SingleCharge 表id
+     * </pre>
+     *
+     * <code>uint32 chargeId = 2;</code>
+     * @return The chargeId.
+     */
+    int getChargeId();
+
+    /**
+     * <pre>
+     * 0、1、2，表示领取购买后第一天、第二天、第三天的奖励
+     * </pre>
+     *
+     * <code>uint32 rewardDay = 3;</code>
+     * @return The rewardDay.
+     */
+    int getRewardDay();
+  }
+  /**
+   * <pre>
+   *领取单冲礼包奖励
+   * </pre>
+   *
+   * Protobuf type {@code Protos.ActivitySingleChargeRewardRequest_11000012}
+   */
+  public static final class ActivitySingleChargeRewardRequest_11000012 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ActivitySingleChargeRewardRequest_11000012)
+      ActivitySingleChargeRewardRequest_11000012OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ActivitySingleChargeRewardRequest_11000012.newBuilder() to construct.
+    private ActivitySingleChargeRewardRequest_11000012(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ActivitySingleChargeRewardRequest_11000012() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ActivitySingleChargeRewardRequest_11000012();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActivitySingleChargeRewardRequest_11000012(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+
+              chargeId_ = input.readUInt32();
+              break;
+            }
+            case 24: {
+
+              rewardDay_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int CHARGEID_FIELD_NUMBER = 2;
+    private int chargeId_;
+    /**
+     * <pre>
+     * SingleCharge 表id
+     * </pre>
+     *
+     * <code>uint32 chargeId = 2;</code>
+     * @return The chargeId.
+     */
+    @java.lang.Override
+    public int getChargeId() {
+      return chargeId_;
+    }
+
+    public static final int REWARDDAY_FIELD_NUMBER = 3;
+    private int rewardDay_;
+    /**
+     * <pre>
+     * 0、1、2，表示领取购买后第一天、第二天、第三天的奖励
+     * </pre>
+     *
+     * <code>uint32 rewardDay = 3;</code>
+     * @return The rewardDay.
+     */
+    @java.lang.Override
+    public int getRewardDay() {
+      return rewardDay_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      if (chargeId_ != 0) {
+        output.writeUInt32(2, chargeId_);
+      }
+      if (rewardDay_ != 0) {
+        output.writeUInt32(3, rewardDay_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      if (chargeId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, chargeId_);
+      }
+      if (rewardDay_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, rewardDay_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 other = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (getChargeId()
+          != other.getChargeId()) return false;
+      if (getRewardDay()
+          != other.getRewardDay()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + CHARGEID_FIELD_NUMBER;
+      hash = (53 * hash) + getChargeId();
+      hash = (37 * hash) + REWARDDAY_FIELD_NUMBER;
+      hash = (53 * hash) + getRewardDay();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *领取单冲礼包奖励
+     * </pre>
+     *
+     * Protobuf type {@code Protos.ActivitySingleChargeRewardRequest_11000012}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ActivitySingleChargeRewardRequest_11000012)
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        chargeId_ = 0;
+
+        rewardDay_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 build() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 result = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012(this);
+        result.id_ = id_;
+        result.chargeId_ = chargeId_;
+        result.rewardDay_ = rewardDay_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getChargeId() != 0) {
+          setChargeId(other.getChargeId());
+        }
+        if (other.getRewardDay() != 0) {
+          setRewardDay(other.getRewardDay());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int chargeId_ ;
+      /**
+       * <pre>
+       * SingleCharge 表id
+       * </pre>
+       *
+       * <code>uint32 chargeId = 2;</code>
+       * @return The chargeId.
+       */
+      @java.lang.Override
+      public int getChargeId() {
+        return chargeId_;
+      }
+      /**
+       * <pre>
+       * SingleCharge 表id
+       * </pre>
+       *
+       * <code>uint32 chargeId = 2;</code>
+       * @param value The chargeId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChargeId(int value) {
+        
+        chargeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * SingleCharge 表id
+       * </pre>
+       *
+       * <code>uint32 chargeId = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearChargeId() {
+        
+        chargeId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int rewardDay_ ;
+      /**
+       * <pre>
+       * 0、1、2，表示领取购买后第一天、第二天、第三天的奖励
+       * </pre>
+       *
+       * <code>uint32 rewardDay = 3;</code>
+       * @return The rewardDay.
+       */
+      @java.lang.Override
+      public int getRewardDay() {
+        return rewardDay_;
+      }
+      /**
+       * <pre>
+       * 0、1、2，表示领取购买后第一天、第二天、第三天的奖励
+       * </pre>
+       *
+       * <code>uint32 rewardDay = 3;</code>
+       * @param value The rewardDay to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRewardDay(int value) {
+        
+        rewardDay_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0、1、2，表示领取购买后第一天、第二天、第三天的奖励
+       * </pre>
+       *
+       * <code>uint32 rewardDay = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRewardDay() {
+        
+        rewardDay_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ActivitySingleChargeRewardRequest_11000012)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ActivitySingleChargeRewardRequest_11000012)
+    private static final cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ActivitySingleChargeRewardRequest_11000012>
+        PARSER = new com.google.protobuf.AbstractParser<ActivitySingleChargeRewardRequest_11000012>() {
+      @java.lang.Override
+      public ActivitySingleChargeRewardRequest_11000012 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ActivitySingleChargeRewardRequest_11000012(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ActivitySingleChargeRewardRequest_11000012> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ActivitySingleChargeRewardRequest_11000012> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ActivitySingleChargeRewardResponse_11000013OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ActivitySingleChargeRewardResponse_11000013)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
+        getRewardsList();
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    int getRewardsCount();
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList();
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code Protos.ActivitySingleChargeRewardResponse_11000013}
+   */
+  public static final class ActivitySingleChargeRewardResponse_11000013 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ActivitySingleChargeRewardResponse_11000013)
+      ActivitySingleChargeRewardResponse_11000013OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ActivitySingleChargeRewardResponse_11000013.newBuilder() to construct.
+    private ActivitySingleChargeRewardResponse_11000013(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ActivitySingleChargeRewardResponse_11000013() {
+      rewards_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ActivitySingleChargeRewardResponse_11000013();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActivitySingleChargeRewardResponse_11000013(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              rewards_.add(
+                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          rewards_ = java.util.Collections.unmodifiableList(rewards_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013.Builder.class);
+    }
+
+    public static final int REWARDS_FIELD_NUMBER = 2;
+    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public int getRewardsCount() {
+      return rewards_.size();
+    }
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+      return rewards_.get(index);
+    }
+    /**
+     * <pre>
+     * 购买的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index) {
+      return rewards_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < rewards_.size(); i++) {
+        output.writeMessage(2, rewards_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < rewards_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, rewards_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 other = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013) obj;
+
+      if (!getRewardsList()
+          .equals(other.getRewardsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getRewardsCount() > 0) {
+        hash = (37 * hash) + REWARDS_FIELD_NUMBER;
+        hash = (53 * hash) + getRewardsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.ActivitySingleChargeRewardResponse_11000013}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ActivitySingleChargeRewardResponse_11000013)
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getRewardsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          rewardsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 build() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 result = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013(this);
+        int from_bitField0_ = bitField0_;
+        if (rewardsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            rewards_ = java.util.Collections.unmodifiableList(rewards_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.rewards_ = rewards_;
+        } else {
+          result.rewards_ = rewardsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013.getDefaultInstance()) return this;
+        if (rewardsBuilder_ == null) {
+          if (!other.rewards_.isEmpty()) {
+            if (rewards_.isEmpty()) {
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureRewardsIsMutable();
+              rewards_.addAll(other.rewards_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.rewards_.isEmpty()) {
+            if (rewardsBuilder_.isEmpty()) {
+              rewardsBuilder_.dispose();
+              rewardsBuilder_ = null;
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              rewardsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getRewardsFieldBuilder() : null;
+            } else {
+              rewardsBuilder_.addAllMessages(other.rewards_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_ =
+        java.util.Collections.emptyList();
+      private void ensureRewardsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(rewards_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
+
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+        if (rewardsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(rewards_);
+        } else {
+          return rewardsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public int getRewardsCount() {
+        if (rewardsBuilder_ == null) {
+          return rewards_.size();
+        } else {
+          return rewardsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);
+        } else {
+          return rewardsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.set(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addAllRewards(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, rewards_);
+          onChanged();
+        } else {
+          rewardsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder clearRewards() {
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          rewardsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder removeRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.remove(index);
+          onChanged();
+        } else {
+          rewardsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+          int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);  } else {
+          return rewardsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+           getRewardsOrBuilderList() {
+        if (rewardsBuilder_ != null) {
+          return rewardsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(rewards_);
+        }
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder() {
+        return getRewardsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 购买的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
+           getRewardsBuilderList() {
+        return getRewardsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+          getRewardsFieldBuilder() {
+        if (rewardsBuilder_ == null) {
+          rewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
+                  rewards_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          rewards_ = null;
+        }
+        return rewardsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ActivitySingleChargeRewardResponse_11000013)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ActivitySingleChargeRewardResponse_11000013)
+    private static final cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ActivitySingleChargeRewardResponse_11000013>
+        PARSER = new com.google.protobuf.AbstractParser<ActivitySingleChargeRewardResponse_11000013>() {
+      @java.lang.Override
+      public ActivitySingleChargeRewardResponse_11000013 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ActivitySingleChargeRewardResponse_11000013(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ActivitySingleChargeRewardResponse_11000013> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ActivitySingleChargeRewardResponse_11000013> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SingleChargeActivityInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.SingleChargeActivityInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *已经购买的 SingleCharge 表id礼包,购买第一个礼包才能买第二个礼包
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * 购买的id中，可以领取的礼包顺序，0、1、2， 0表示只能领取第一个奖励，1可以领前两个，2表示3个都可以领
+     * </pre>
+     *
+     * <code>uint32 canRewardIndex = 2;</code>
+     * @return The canRewardIndex.
+     */
+    int getCanRewardIndex();
+
+    /**
+     * <pre>
+     * 购买的id中，已经领取的礼包顺序,0、1、2
+     * </pre>
+     *
+     * <code>repeated uint32 selectedIndex = 3;</code>
+     * @return A list containing the selectedIndex.
+     */
+    java.util.List<java.lang.Integer> getSelectedIndexList();
+    /**
+     * <pre>
+     * 购买的id中，已经领取的礼包顺序,0、1、2
+     * </pre>
+     *
+     * <code>repeated uint32 selectedIndex = 3;</code>
+     * @return The count of selectedIndex.
+     */
+    int getSelectedIndexCount();
+    /**
+     * <pre>
+     * 购买的id中，已经领取的礼包顺序,0、1、2
+     * </pre>
+     *
+     * <code>repeated uint32 selectedIndex = 3;</code>
+     * @param index The index of the element to return.
+     * @return The selectedIndex at the given index.
+     */
+    int getSelectedIndex(int index);
+  }
+  /**
+   * Protobuf type {@code Protos.SingleChargeActivityInfo}
+   */
+  public static final class SingleChargeActivityInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.SingleChargeActivityInfo)
+      SingleChargeActivityInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SingleChargeActivityInfo.newBuilder() to construct.
+    private SingleChargeActivityInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SingleChargeActivityInfo() {
+      selectedIndex_ = emptyIntList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SingleChargeActivityInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SingleChargeActivityInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+
+              canRewardIndex_ = input.readUInt32();
+              break;
+            }
+            case 24: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                selectedIndex_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              selectedIndex_.addInt(input.readUInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                selectedIndex_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                selectedIndex_.addInt(input.readUInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          selectedIndex_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SingleChargeActivityInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SingleChargeActivityInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.class, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     *已经购买的 SingleCharge 表id礼包,购买第一个礼包才能买第二个礼包
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int CANREWARDINDEX_FIELD_NUMBER = 2;
+    private int canRewardIndex_;
+    /**
+     * <pre>
+     * 购买的id中，可以领取的礼包顺序，0、1、2， 0表示只能领取第一个奖励，1可以领前两个，2表示3个都可以领
+     * </pre>
+     *
+     * <code>uint32 canRewardIndex = 2;</code>
+     * @return The canRewardIndex.
+     */
+    @java.lang.Override
+    public int getCanRewardIndex() {
+      return canRewardIndex_;
+    }
+
+    public static final int SELECTEDINDEX_FIELD_NUMBER = 3;
+    private com.google.protobuf.Internal.IntList selectedIndex_;
+    /**
+     * <pre>
+     * 购买的id中，已经领取的礼包顺序,0、1、2
+     * </pre>
+     *
+     * <code>repeated uint32 selectedIndex = 3;</code>
+     * @return A list containing the selectedIndex.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getSelectedIndexList() {
+      return selectedIndex_;
+    }
+    /**
+     * <pre>
+     * 购买的id中，已经领取的礼包顺序,0、1、2
+     * </pre>
+     *
+     * <code>repeated uint32 selectedIndex = 3;</code>
+     * @return The count of selectedIndex.
+     */
+    public int getSelectedIndexCount() {
+      return selectedIndex_.size();
+    }
+    /**
+     * <pre>
+     * 购买的id中，已经领取的礼包顺序,0、1、2
+     * </pre>
+     *
+     * <code>repeated uint32 selectedIndex = 3;</code>
+     * @param index The index of the element to return.
+     * @return The selectedIndex at the given index.
+     */
+    public int getSelectedIndex(int index) {
+      return selectedIndex_.getInt(index);
+    }
+    private int selectedIndexMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      if (canRewardIndex_ != 0) {
+        output.writeUInt32(2, canRewardIndex_);
+      }
+      if (getSelectedIndexList().size() > 0) {
+        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(selectedIndexMemoizedSerializedSize);
+      }
+      for (int i = 0; i < selectedIndex_.size(); i++) {
+        output.writeUInt32NoTag(selectedIndex_.getInt(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      if (canRewardIndex_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, canRewardIndex_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < selectedIndex_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeUInt32SizeNoTag(selectedIndex_.getInt(i));
+        }
+        size += dataSize;
+        if (!getSelectedIndexList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        selectedIndexMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo other = (cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (getCanRewardIndex()
+          != other.getCanRewardIndex()) return false;
+      if (!getSelectedIndexList()
+          .equals(other.getSelectedIndexList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + CANREWARDINDEX_FIELD_NUMBER;
+      hash = (53 * hash) + getCanRewardIndex();
+      if (getSelectedIndexCount() > 0) {
+        hash = (37 * hash) + SELECTEDINDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getSelectedIndexList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.SingleChargeActivityInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.SingleChargeActivityInfo)
+        cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SingleChargeActivityInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SingleChargeActivityInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.class, cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        canRewardIndex_ = 0;
+
+        selectedIndex_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SingleChargeActivityInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo build() {
+        cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo result = new cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo(this);
+        int from_bitField0_ = bitField0_;
+        result.id_ = id_;
+        result.canRewardIndex_ = canRewardIndex_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          selectedIndex_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.selectedIndex_ = selectedIndex_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getCanRewardIndex() != 0) {
+          setCanRewardIndex(other.getCanRewardIndex());
+        }
+        if (!other.selectedIndex_.isEmpty()) {
+          if (selectedIndex_.isEmpty()) {
+            selectedIndex_ = other.selectedIndex_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureSelectedIndexIsMutable();
+            selectedIndex_.addAll(other.selectedIndex_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int id_ ;
+      /**
+       * <pre>
+       *已经购买的 SingleCharge 表id礼包,购买第一个礼包才能买第二个礼包
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *已经购买的 SingleCharge 表id礼包,购买第一个礼包才能买第二个礼包
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *已经购买的 SingleCharge 表id礼包,购买第一个礼包才能买第二个礼包
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int canRewardIndex_ ;
+      /**
+       * <pre>
+       * 购买的id中，可以领取的礼包顺序，0、1、2， 0表示只能领取第一个奖励，1可以领前两个，2表示3个都可以领
+       * </pre>
+       *
+       * <code>uint32 canRewardIndex = 2;</code>
+       * @return The canRewardIndex.
+       */
+      @java.lang.Override
+      public int getCanRewardIndex() {
+        return canRewardIndex_;
+      }
+      /**
+       * <pre>
+       * 购买的id中，可以领取的礼包顺序，0、1、2， 0表示只能领取第一个奖励，1可以领前两个，2表示3个都可以领
+       * </pre>
+       *
+       * <code>uint32 canRewardIndex = 2;</code>
+       * @param value The canRewardIndex to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCanRewardIndex(int value) {
+        
+        canRewardIndex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的id中，可以领取的礼包顺序，0、1、2， 0表示只能领取第一个奖励，1可以领前两个，2表示3个都可以领
+       * </pre>
+       *
+       * <code>uint32 canRewardIndex = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCanRewardIndex() {
+        
+        canRewardIndex_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList selectedIndex_ = emptyIntList();
+      private void ensureSelectedIndexIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          selectedIndex_ = mutableCopy(selectedIndex_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * 购买的id中，已经领取的礼包顺序,0、1、2
+       * </pre>
+       *
+       * <code>repeated uint32 selectedIndex = 3;</code>
+       * @return A list containing the selectedIndex.
+       */
+      public java.util.List<java.lang.Integer>
+          getSelectedIndexList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(selectedIndex_) : selectedIndex_;
+      }
+      /**
+       * <pre>
+       * 购买的id中，已经领取的礼包顺序,0、1、2
+       * </pre>
+       *
+       * <code>repeated uint32 selectedIndex = 3;</code>
+       * @return The count of selectedIndex.
+       */
+      public int getSelectedIndexCount() {
+        return selectedIndex_.size();
+      }
+      /**
+       * <pre>
+       * 购买的id中，已经领取的礼包顺序,0、1、2
+       * </pre>
+       *
+       * <code>repeated uint32 selectedIndex = 3;</code>
+       * @param index The index of the element to return.
+       * @return The selectedIndex at the given index.
+       */
+      public int getSelectedIndex(int index) {
+        return selectedIndex_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 购买的id中，已经领取的礼包顺序,0、1、2
+       * </pre>
+       *
+       * <code>repeated uint32 selectedIndex = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The selectedIndex to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSelectedIndex(
+          int index, int value) {
+        ensureSelectedIndexIsMutable();
+        selectedIndex_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的id中，已经领取的礼包顺序,0、1、2
+       * </pre>
+       *
+       * <code>repeated uint32 selectedIndex = 3;</code>
+       * @param value The selectedIndex to add.
+       * @return This builder for chaining.
+       */
+      public Builder addSelectedIndex(int value) {
+        ensureSelectedIndexIsMutable();
+        selectedIndex_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的id中，已经领取的礼包顺序,0、1、2
+       * </pre>
+       *
+       * <code>repeated uint32 selectedIndex = 3;</code>
+       * @param values The selectedIndex to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllSelectedIndex(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureSelectedIndexIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, selectedIndex_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 购买的id中，已经领取的礼包顺序,0、1、2
+       * </pre>
+       *
+       * <code>repeated uint32 selectedIndex = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSelectedIndex() {
+        selectedIndex_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.SingleChargeActivityInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.SingleChargeActivityInfo)
+    private static final cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SingleChargeActivityInfo>
+        PARSER = new com.google.protobuf.AbstractParser<SingleChargeActivityInfo>() {
+      @java.lang.Override
+      public SingleChargeActivityInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SingleChargeActivityInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SingleChargeActivityInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SingleChargeActivityInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.SingleChargeActivityInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ActivityInfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.ActivityInfo)
       com.google.protobuf.MessageOrBuilder {
@@ -6738,6 +11643,41 @@ public final class ActivityMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_FirstChargeActivityInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ActivitySingleChargeRequest_11000007_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ActivitySingleChargeRequest_11000007_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ActivitySingleChargeResponse_11000008_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ActivitySingleChargeResponse_11000008_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_SingleChargeActivityInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_SingleChargeActivityInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_ActivityInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -6770,13 +11710,27 @@ public final class ActivityMsg {
       "arge\030\001 \001(\0132\037.Protos.FirstChargeActivityI" +
       "nfo\022#\n\007rewards\030\002 \003(\0132\022.Protos.RewardInfo" +
       "\"<\n\027FirstChargeActivityInfo\022\n\n\002id\030\001 \001(\r\022" +
-      "\025\n\rselectedIndex\030\002 \003(\r\"S\n\014ActivityInfo\022\n" +
-      "\n\002id\030\001 \001(\r\022$\n\005state\030\002 \001(\0162\025.Protos.Activ" +
-      "ityState\022\021\n\tstartTime\030\003 \001(\005\"D\n\032ActivityS" +
-      "tatePush_11100006\022&\n\010activity\030\001 \001(\0132\024.Pr" +
-      "otos.ActivityInfo*9\n\rActivityState\022\010\n\004NO" +
-      "NE\020\000\022\010\n\004VIEW\020\001\022\t\n\005START\020\002\022\t\n\005CLOSE\020\003B\033\n\031" +
-      "cn.game.protocol.protobufb\006proto3"
+      "\025\n\rselectedIndex\030\002 \003(\r\"2\n$ActivitySingle" +
+      "ChargeRequest_11000007\022\n\n\002id\030\001 \001(\r\"`\n%Ac" +
+      "tivitySingleChargeResponse_11000008\0227\n\rs" +
+      "ingleCharges\030\001 \003(\0132 .Protos.SingleCharge" +
+      "ActivityInfo\"G\n\'ActivitySingleChargeBuyR" +
+      "equest_11000010\022\n\n\002id\030\001 \001(\r\022\020\n\010chargeId\030" +
+      "\002 \001(\r\"*\n(ActivitySingleChargeBuyResponse" +
+      "_11000011\"]\n*ActivitySingleChargeRewardR" +
+      "equest_11000012\022\n\n\002id\030\001 \001(\r\022\020\n\010chargeId\030" +
+      "\002 \001(\r\022\021\n\trewardDay\030\003 \001(\r\"R\n+ActivitySing" +
+      "leChargeRewardResponse_11000013\022#\n\007rewar" +
+      "ds\030\002 \003(\0132\022.Protos.RewardInfo\"U\n\030SingleCh" +
+      "argeActivityInfo\022\n\n\002id\030\001 \001(\r\022\026\n\016canRewar" +
+      "dIndex\030\002 \001(\r\022\025\n\rselectedIndex\030\003 \003(\r\"S\n\014A" +
+      "ctivityInfo\022\n\n\002id\030\001 \001(\r\022$\n\005state\030\002 \001(\0162\025" +
+      ".Protos.ActivityState\022\021\n\tstartTime\030\003 \001(\005" +
+      "\"D\n\032ActivityStatePush_11100006\022&\n\010activi" +
+      "ty\030\001 \001(\0132\024.Protos.ActivityInfo*9\n\rActivi" +
+      "tyState\022\010\n\004NONE\020\000\022\010\n\004VIEW\020\001\022\t\n\005START\020\002\022\t" +
+      "\n\005CLOSE\020\003B\033\n\031cn.game.protocol.protobufb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6825,14 +11779,56 @@ public final class ActivityMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FirstChargeActivityInfo_descriptor,
         new java.lang.String[] { "Id", "SelectedIndex", });
-    internal_static_Protos_ActivityInfo_descriptor =
+    internal_static_Protos_ActivitySingleChargeRequest_11000007_descriptor =
       getDescriptor().getMessageTypes().get(7);
+    internal_static_Protos_ActivitySingleChargeRequest_11000007_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ActivitySingleChargeRequest_11000007_descriptor,
+        new java.lang.String[] { "Id", });
+    internal_static_Protos_ActivitySingleChargeResponse_11000008_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_Protos_ActivitySingleChargeResponse_11000008_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ActivitySingleChargeResponse_11000008_descriptor,
+        new java.lang.String[] { "SingleCharges", });
+    internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ActivitySingleChargeBuyRequest_11000010_descriptor,
+        new java.lang.String[] { "Id", "ChargeId", });
+    internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ActivitySingleChargeBuyResponse_11000011_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ActivitySingleChargeRewardRequest_11000012_descriptor,
+        new java.lang.String[] { "Id", "ChargeId", "RewardDay", });
+    internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ActivitySingleChargeRewardResponse_11000013_descriptor,
+        new java.lang.String[] { "Rewards", });
+    internal_static_Protos_SingleChargeActivityInfo_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_Protos_SingleChargeActivityInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_SingleChargeActivityInfo_descriptor,
+        new java.lang.String[] { "Id", "CanRewardIndex", "SelectedIndex", });
+    internal_static_Protos_ActivityInfo_descriptor =
+      getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_ActivityInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_ActivityInfo_descriptor,
         new java.lang.String[] { "Id", "State", "StartTime", });
     internal_static_Protos_ActivityStatePush_11100006_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_ActivityStatePush_11100006_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_ActivityStatePush_11100006_descriptor,
