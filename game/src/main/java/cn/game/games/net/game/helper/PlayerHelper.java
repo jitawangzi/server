@@ -364,6 +364,9 @@ public class PlayerHelper {
 		if (isEnough(player, list)) {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (Entry<Integer, Integer> entry : list) {
+				if (entry.getValue() <= 0) {
+					continue;
+				}
 				delResources(player, entry.getKey(), entry.getValue(), consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
 			}
@@ -382,6 +385,9 @@ public class PlayerHelper {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (int i = 0; i < list.length; i++) {
 				for (int j = 0; j < list[i].length; j += 2) {
+					if (list[i][j + 1] <= 0) {
+						continue;
+					}
 					delResources(player, list[i][j], list[i][j + 1], consumeType, false);
 					spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][j], list[i][j + 1]));
 				}
@@ -1059,6 +1065,7 @@ public class PlayerHelper {
 				newGameClient.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
 				return true; 
 			}
+			player.setGameClient((GameClient) newGameClient);
 					
 			PlayerHelper.refresh(player);
 			player.handleEvent(EventTypeEnum.Reconnect);

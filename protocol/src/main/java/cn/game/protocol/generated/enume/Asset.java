@@ -14,9 +14,9 @@ public enum Asset{
 	/** 经验 */
 	playerExp(100201,"playerExp","经验",2,3,"提升玩家等级之用",""),
 	/** 每日任务活跃度 */
-	DailyPoint(100202,"DailyPoint","每日任务活跃度",2,3,"获得指定数量后可以领取奖励","task_icon_rihuoyue"),
+	DailyPoint(100202,"DailyPoint","每日任务活跃度",1,3,"获得指定数量后可以领取奖励","task_icon_rihuoyue"),
 	/** 每周任务活跃度 */
-	WeeklyPoint(100203,"WeeklyPoint","每周任务活跃度",2,3,"获得指定数量后可以领取奖励","task_icon_zhouhuoyue"),
+	WeeklyPoint(100203,"WeeklyPoint","每周任务活跃度",1,3,"获得指定数量后可以领取奖励","task_icon_zhouhuoyue"),
 	/** 体力 */
 	playerEnergy(100301,"playerEnergy","体力",3,3,"用于挑战、扫荡关卡，获取关卡奖励","physicalpower_icon_01"),
     ;
@@ -26,7 +26,7 @@ public enum Asset{
 	public final String Name ; 
 	/** 物品名称 */
 	public final String Desc ; 
-	/** 物品类型 */
+	/** 物品类型 1=普通货币 2=经验 3=体力 */
 	public final int Type ; 
 	/** 品质 */
 	public final int Quality ; 

@@ -22,6 +22,14 @@ message HeroUpLevelMaxResponse_16000022{
 	int32 level = 1; // 升到的等级
 }
 
+//批量英雄升级，能升级哪个升级哪个
+message HeroUpLevelBatchRequest_16000023{
+}
+
+message HeroUpLevelBatchResponse_16000024{
+	repeated HeroInfo heros = 1;	// 升级后的英雄等级数据，注意这里只取uid和等级数据。
+}
+
 
 //英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。
 message HeroConflateRequest_16000003{

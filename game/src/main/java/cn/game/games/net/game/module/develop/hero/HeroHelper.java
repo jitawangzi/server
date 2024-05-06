@@ -208,4 +208,15 @@ public class HeroHelper {
 		HeroBreakConfig qualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
 		return qualityStarConfig.LevelMax;
 	}
+
+	public static boolean isAllHeroMaxLevel(Collection<Hero> heros) {
+
+		for (Hero hero : heros) {
+			int maxLevel = getHeroMaxLevel(hero);
+			if (hero.getLevel() < maxLevel) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
