@@ -19260,6 +19260,1517 @@ public final class PlayerMsg {
 
   }
 
+  public interface PlayerPatrolRewardRequest_01000044OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PlayerPatrolRewardRequest_01000044)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   *** 领取巡逻奖励 **
+   * </pre>
+   *
+   * Protobuf type {@code Protos.PlayerPatrolRewardRequest_01000044}
+   */
+  public static final class PlayerPatrolRewardRequest_01000044 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PlayerPatrolRewardRequest_01000044)
+      PlayerPatrolRewardRequest_01000044OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PlayerPatrolRewardRequest_01000044.newBuilder() to construct.
+    private PlayerPatrolRewardRequest_01000044(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PlayerPatrolRewardRequest_01000044() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PlayerPatrolRewardRequest_01000044();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PlayerPatrolRewardRequest_01000044(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardRequest_01000044_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardRequest_01000044_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044.class, cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 other = (cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *** 领取巡逻奖励 **
+     * </pre>
+     *
+     * Protobuf type {@code Protos.PlayerPatrolRewardRequest_01000044}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PlayerPatrolRewardRequest_01000044)
+        cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardRequest_01000044_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardRequest_01000044_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044.class, cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardRequest_01000044_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 build() {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 buildPartial() {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 result = new cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044) {
+          return mergeFrom((cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 other) {
+        if (other == cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PlayerPatrolRewardRequest_01000044)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PlayerPatrolRewardRequest_01000044)
+    private static final cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044();
+    }
+
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PlayerPatrolRewardRequest_01000044>
+        PARSER = new com.google.protobuf.AbstractParser<PlayerPatrolRewardRequest_01000044>() {
+      @java.lang.Override
+      public PlayerPatrolRewardRequest_01000044 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PlayerPatrolRewardRequest_01000044(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PlayerPatrolRewardRequest_01000044> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PlayerPatrolRewardRequest_01000044> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PlayerPatrolRewardResponse_01000045OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PlayerPatrolRewardResponse_01000045)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
+        getRewardsList();
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    int getRewardsCount();
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList();
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index);
+
+    /**
+     * <pre>
+     * 增加的经验  --- 客户端需本地增加经验
+     * </pre>
+     *
+     * <code>int32 exp = 2;</code>
+     * @return The exp.
+     */
+    int getExp();
+
+    /**
+     * <pre>
+     * 增加的金币 --- 客户端需本地增加金币
+     * </pre>
+     *
+     * <code>int32 gold = 3;</code>
+     * @return The gold.
+     */
+    int getGold();
+  }
+  /**
+   * Protobuf type {@code Protos.PlayerPatrolRewardResponse_01000045}
+   */
+  public static final class PlayerPatrolRewardResponse_01000045 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PlayerPatrolRewardResponse_01000045)
+      PlayerPatrolRewardResponse_01000045OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PlayerPatrolRewardResponse_01000045.newBuilder() to construct.
+    private PlayerPatrolRewardResponse_01000045(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PlayerPatrolRewardResponse_01000045() {
+      rewards_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PlayerPatrolRewardResponse_01000045();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PlayerPatrolRewardResponse_01000045(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              rewards_.add(
+                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 16: {
+
+              exp_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              gold_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          rewards_ = java.util.Collections.unmodifiableList(rewards_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardResponse_01000045_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardResponse_01000045_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045.class, cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045.Builder.class);
+    }
+
+    public static final int REWARDS_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    @java.lang.Override
+    public int getRewardsCount() {
+      return rewards_.size();
+    }
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+      return rewards_.get(index);
+    }
+    /**
+     * <pre>
+     * 随机掉落的奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index) {
+      return rewards_.get(index);
+    }
+
+    public static final int EXP_FIELD_NUMBER = 2;
+    private int exp_;
+    /**
+     * <pre>
+     * 增加的经验  --- 客户端需本地增加经验
+     * </pre>
+     *
+     * <code>int32 exp = 2;</code>
+     * @return The exp.
+     */
+    @java.lang.Override
+    public int getExp() {
+      return exp_;
+    }
+
+    public static final int GOLD_FIELD_NUMBER = 3;
+    private int gold_;
+    /**
+     * <pre>
+     * 增加的金币 --- 客户端需本地增加金币
+     * </pre>
+     *
+     * <code>int32 gold = 3;</code>
+     * @return The gold.
+     */
+    @java.lang.Override
+    public int getGold() {
+      return gold_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < rewards_.size(); i++) {
+        output.writeMessage(1, rewards_.get(i));
+      }
+      if (exp_ != 0) {
+        output.writeInt32(2, exp_);
+      }
+      if (gold_ != 0) {
+        output.writeInt32(3, gold_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < rewards_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, rewards_.get(i));
+      }
+      if (exp_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, exp_);
+      }
+      if (gold_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, gold_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 other = (cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045) obj;
+
+      if (!getRewardsList()
+          .equals(other.getRewardsList())) return false;
+      if (getExp()
+          != other.getExp()) return false;
+      if (getGold()
+          != other.getGold()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getRewardsCount() > 0) {
+        hash = (37 * hash) + REWARDS_FIELD_NUMBER;
+        hash = (53 * hash) + getRewardsList().hashCode();
+      }
+      hash = (37 * hash) + EXP_FIELD_NUMBER;
+      hash = (53 * hash) + getExp();
+      hash = (37 * hash) + GOLD_FIELD_NUMBER;
+      hash = (53 * hash) + getGold();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.PlayerPatrolRewardResponse_01000045}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PlayerPatrolRewardResponse_01000045)
+        cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardResponse_01000045_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardResponse_01000045_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045.class, cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getRewardsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          rewardsBuilder_.clear();
+        }
+        exp_ = 0;
+
+        gold_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerPatrolRewardResponse_01000045_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 build() {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 buildPartial() {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 result = new cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045(this);
+        int from_bitField0_ = bitField0_;
+        if (rewardsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            rewards_ = java.util.Collections.unmodifiableList(rewards_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.rewards_ = rewards_;
+        } else {
+          result.rewards_ = rewardsBuilder_.build();
+        }
+        result.exp_ = exp_;
+        result.gold_ = gold_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045) {
+          return mergeFrom((cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 other) {
+        if (other == cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045.getDefaultInstance()) return this;
+        if (rewardsBuilder_ == null) {
+          if (!other.rewards_.isEmpty()) {
+            if (rewards_.isEmpty()) {
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureRewardsIsMutable();
+              rewards_.addAll(other.rewards_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.rewards_.isEmpty()) {
+            if (rewardsBuilder_.isEmpty()) {
+              rewardsBuilder_.dispose();
+              rewardsBuilder_ = null;
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              rewardsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getRewardsFieldBuilder() : null;
+            } else {
+              rewardsBuilder_.addAllMessages(other.rewards_);
+            }
+          }
+        }
+        if (other.getExp() != 0) {
+          setExp(other.getExp());
+        }
+        if (other.getGold() != 0) {
+          setGold(other.getGold());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_ =
+        java.util.Collections.emptyList();
+      private void ensureRewardsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(rewards_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
+
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+        if (rewardsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(rewards_);
+        } else {
+          return rewardsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public int getRewardsCount() {
+        if (rewardsBuilder_ == null) {
+          return rewards_.size();
+        } else {
+          return rewardsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);
+        } else {
+          return rewardsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.set(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder addRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder addRewards(
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder addAllRewards(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, rewards_);
+          onChanged();
+        } else {
+          rewardsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder clearRewards() {
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          rewardsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public Builder removeRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.remove(index);
+          onChanged();
+        } else {
+          rewardsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+          int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);  } else {
+          return rewardsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+           getRewardsOrBuilderList() {
+        if (rewardsBuilder_ != null) {
+          return rewardsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(rewards_);
+        }
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder() {
+        return getRewardsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 随机掉落的奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
+           getRewardsBuilderList() {
+        return getRewardsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+          getRewardsFieldBuilder() {
+        if (rewardsBuilder_ == null) {
+          rewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
+                  rewards_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          rewards_ = null;
+        }
+        return rewardsBuilder_;
+      }
+
+      private int exp_ ;
+      /**
+       * <pre>
+       * 增加的经验  --- 客户端需本地增加经验
+       * </pre>
+       *
+       * <code>int32 exp = 2;</code>
+       * @return The exp.
+       */
+      @java.lang.Override
+      public int getExp() {
+        return exp_;
+      }
+      /**
+       * <pre>
+       * 增加的经验  --- 客户端需本地增加经验
+       * </pre>
+       *
+       * <code>int32 exp = 2;</code>
+       * @param value The exp to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExp(int value) {
+        
+        exp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加的经验  --- 客户端需本地增加经验
+       * </pre>
+       *
+       * <code>int32 exp = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExp() {
+        
+        exp_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int gold_ ;
+      /**
+       * <pre>
+       * 增加的金币 --- 客户端需本地增加金币
+       * </pre>
+       *
+       * <code>int32 gold = 3;</code>
+       * @return The gold.
+       */
+      @java.lang.Override
+      public int getGold() {
+        return gold_;
+      }
+      /**
+       * <pre>
+       * 增加的金币 --- 客户端需本地增加金币
+       * </pre>
+       *
+       * <code>int32 gold = 3;</code>
+       * @param value The gold to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGold(int value) {
+        
+        gold_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加的金币 --- 客户端需本地增加金币
+       * </pre>
+       *
+       * <code>int32 gold = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGold() {
+        
+        gold_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PlayerPatrolRewardResponse_01000045)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PlayerPatrolRewardResponse_01000045)
+    private static final cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045();
+    }
+
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PlayerPatrolRewardResponse_01000045>
+        PARSER = new com.google.protobuf.AbstractParser<PlayerPatrolRewardResponse_01000045>() {
+      @java.lang.Override
+      public PlayerPatrolRewardResponse_01000045 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PlayerPatrolRewardResponse_01000045(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PlayerPatrolRewardResponse_01000045> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PlayerPatrolRewardResponse_01000045> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface CloudBoxInfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.CloudBoxInfo)
       com.google.protobuf.MessageOrBuilder {
@@ -22168,6 +23679,16 @@ public final class PlayerMsg {
      * <code>.Protos.CloudBoxInfo cloudBox = 50;</code>
      */
     cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfoOrBuilder getCloudBoxOrBuilder();
+
+    /**
+     * <pre>
+     *最后一次领取巡逻奖励的时间(秒时间戳)
+     * </pre>
+     *
+     * <code>int32 lastPatrolRewardTime = 51;</code>
+     * @return The lastPatrolRewardTime.
+     */
+    int getLastPatrolRewardTime();
   }
   /**
    * <pre>
@@ -22445,6 +23966,11 @@ public final class PlayerMsg {
                 cloudBox_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 408: {
+
+              lastPatrolRewardTime_ = input.readInt32();
               break;
             }
             default: {
@@ -23830,6 +25356,21 @@ public final class PlayerMsg {
       return getCloudBox();
     }
 
+    public static final int LASTPATROLREWARDTIME_FIELD_NUMBER = 51;
+    private int lastPatrolRewardTime_;
+    /**
+     * <pre>
+     *最后一次领取巡逻奖励的时间(秒时间戳)
+     * </pre>
+     *
+     * <code>int32 lastPatrolRewardTime = 51;</code>
+     * @return The lastPatrolRewardTime.
+     */
+    @java.lang.Override
+    public int getLastPatrolRewardTime() {
+      return lastPatrolRewardTime_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -23926,6 +25467,9 @@ public final class PlayerMsg {
       }
       if (cloudBox_ != null) {
         output.writeMessage(50, getCloudBox());
+      }
+      if (lastPatrolRewardTime_ != 0) {
+        output.writeInt32(51, lastPatrolRewardTime_);
       }
       unknownFields.writeTo(output);
     }
@@ -24061,6 +25605,10 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(50, getCloudBox());
       }
+      if (lastPatrolRewardTime_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(51, lastPatrolRewardTime_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -24122,6 +25670,8 @@ public final class PlayerMsg {
         if (!getCloudBox()
             .equals(other.getCloudBox())) return false;
       }
+      if (getLastPatrolRewardTime()
+          != other.getLastPatrolRewardTime()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -24209,6 +25759,8 @@ public final class PlayerMsg {
         hash = (37 * hash) + CLOUDBOX_FIELD_NUMBER;
         hash = (53 * hash) + getCloudBox().hashCode();
       }
+      hash = (37 * hash) + LASTPATROLREWARDTIME_FIELD_NUMBER;
+      hash = (53 * hash) + getLastPatrolRewardTime();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -24475,6 +26027,8 @@ public final class PlayerMsg {
           cloudBox_ = null;
           cloudBoxBuilder_ = null;
         }
+        lastPatrolRewardTime_ = 0;
+
         return this;
       }
 
@@ -24612,6 +26166,7 @@ public final class PlayerMsg {
         } else {
           result.cloudBox_ = cloudBoxBuilder_.build();
         }
+        result.lastPatrolRewardTime_ = lastPatrolRewardTime_;
         onBuilt();
         return result;
       }
@@ -24928,6 +26483,9 @@ public final class PlayerMsg {
         }
         if (other.hasCloudBox()) {
           mergeCloudBox(other.getCloudBox());
+        }
+        if (other.getLastPatrolRewardTime() != 0) {
+          setLastPatrolRewardTime(other.getLastPatrolRewardTime());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -29258,6 +30816,49 @@ public final class PlayerMsg {
         }
         return cloudBoxBuilder_;
       }
+
+      private int lastPatrolRewardTime_ ;
+      /**
+       * <pre>
+       *最后一次领取巡逻奖励的时间(秒时间戳)
+       * </pre>
+       *
+       * <code>int32 lastPatrolRewardTime = 51;</code>
+       * @return The lastPatrolRewardTime.
+       */
+      @java.lang.Override
+      public int getLastPatrolRewardTime() {
+        return lastPatrolRewardTime_;
+      }
+      /**
+       * <pre>
+       *最后一次领取巡逻奖励的时间(秒时间戳)
+       * </pre>
+       *
+       * <code>int32 lastPatrolRewardTime = 51;</code>
+       * @param value The lastPatrolRewardTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastPatrolRewardTime(int value) {
+        
+        lastPatrolRewardTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *最后一次领取巡逻奖励的时间(秒时间戳)
+       * </pre>
+       *
+       * <code>int32 lastPatrolRewardTime = 51;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLastPatrolRewardTime() {
+        
+        lastPatrolRewardTime_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -29467,6 +31068,16 @@ public final class PlayerMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_PlayerCloudBoxResponse_01000043_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PlayerPatrolRewardRequest_01000044_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PlayerPatrolRewardRequest_01000044_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PlayerPatrolRewardResponse_01000045_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PlayerPatrolRewardResponse_01000045_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_CloudBoxInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -29565,40 +31176,44 @@ public final class PlayerMsg {
       "oudBox\030\001 \001(\0132\024.Protos.CloudBoxInfo\" \n\036Pl" +
       "ayerCloudBoxRequest_01000042\"F\n\037PlayerCl" +
       "oudBoxResponse_01000043\022#\n\007rewards\030\001 \003(\013" +
-      "2\022.Protos.RewardInfo\"0\n\014CloudBoxInfo\022 \n\005" +
-      "items\030\005 \003(\0132\021.Protos.GoodsInfo\"k\n\nPlayer" +
-      "Info\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030" +
-      "\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023" +
-      "\n\013offlineTime\030\026 \001(\t\"\346\010\n\rPlayerAllInfo\022\"\n" +
-      "\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006ass" +
-      "ets\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsE" +
-      "ntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Play" +
-      "erAllInfo.AssetRecoverEntry\0221\n\006levels\030\004 " +
-      "\003(\0132!.Protos.PlayerAllInfo.LevelsEntry\022\037" +
-      "\n\005items\030\005 \003(\0132\020.Protos.ItemInfo\022)\n\010fashi" +
-      "ons\030\006 \003(\0132\027.Protos.HeroFashionInfo\022\037\n\005he" +
-      "ros\030\007 \003(\0132\020.Protos.HeroInfo\022%\n\006swords\030\010 " +
-      "\003(\0132\025.Protos.HeroSwordInfo\022\024\n\014heroSwordU" +
-      "id\030\t \001(\t\022\035\n\004gems\030\n \003(\0132\017.Protos.GemInfo\022" +
-      "!\n\006equips\030\013 \003(\0132\021.Protos.EquipInfo\022)\n\neq" +
-      "uipParts\030\014 \003(\0132\025.Protos.EquipPartInfo\0225\n" +
-      "\010alchemys\030\016 \003(\0132#.Protos.PlayerAllInfo.A" +
-      "lchemysEntry\0223\n\007dragons\030\020 \003(\0132\".Protos.P" +
-      "layerAllInfo.DragonsEntry\022=\n\014dragonSkill" +
-      "s\030\021 \003(\0132\'.Protos.PlayerAllInfo.DragonSki" +
-      "llsEntry\022#\n\007battles\030\036 \003(\0132\022.Protos.Battl" +
-      "eInfo\022\026\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCa" +
-      "rds\030( \003(\0132\026.Protos.MonthCardProto\022\020\n\010sho" +
-      "pGift\030) \003(\r\022&\n\010cloudBox\0302 \001(\0132\024.Protos.C" +
-      "loudBoxInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022" +
-      "\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022" +
-      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Level" +
-      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/" +
-      "\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
-      "\001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
-      "value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003" +
-      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game." +
-      "protocol.protobufb\006proto3"
+      "2\022.Protos.RewardInfo\"$\n\"PlayerPatrolRewa" +
+      "rdRequest_01000044\"e\n#PlayerPatrolReward" +
+      "Response_01000045\022#\n\007rewards\030\001 \003(\0132\022.Pro" +
+      "tos.RewardInfo\022\013\n\003exp\030\002 \001(\005\022\014\n\004gold\030\003 \001(" +
+      "\005\"0\n\014CloudBoxInfo\022 \n\005items\030\005 \003(\0132\021.Proto" +
+      "s.GoodsInfo\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n" +
+      "\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r" +
+      "\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t" +
+      "\"\204\t\n\rPlayerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Pro" +
+      "tos.PlayerInfo\0221\n\006assets\030\002 \003(\0132!.Protos." +
+      "PlayerAllInfo.AssetsEntry\022=\n\014assetRecove" +
+      "r\030\003 \003(\0132\'.Protos.PlayerAllInfo.AssetReco" +
+      "verEntry\0221\n\006levels\030\004 \003(\0132!.Protos.Player" +
+      "AllInfo.LevelsEntry\022\037\n\005items\030\005 \003(\0132\020.Pro" +
+      "tos.ItemInfo\022)\n\010fashions\030\006 \003(\0132\027.Protos." +
+      "HeroFashionInfo\022\037\n\005heros\030\007 \003(\0132\020.Protos." +
+      "HeroInfo\022%\n\006swords\030\010 \003(\0132\025.Protos.HeroSw" +
+      "ordInfo\022\024\n\014heroSwordUid\030\t \001(\t\022\035\n\004gems\030\n " +
+      "\003(\0132\017.Protos.GemInfo\022!\n\006equips\030\013 \003(\0132\021.P" +
+      "rotos.EquipInfo\022)\n\nequipParts\030\014 \003(\0132\025.Pr" +
+      "otos.EquipPartInfo\0225\n\010alchemys\030\016 \003(\0132#.P" +
+      "rotos.PlayerAllInfo.AlchemysEntry\0223\n\007dra" +
+      "gons\030\020 \003(\0132\".Protos.PlayerAllInfo.Dragon" +
+      "sEntry\022=\n\014dragonSkills\030\021 \003(\0132\'.Protos.Pl" +
+      "ayerAllInfo.DragonSkillsEntry\022#\n\007battles" +
+      "\030\036 \003(\0132\022.Protos.BattleInfo\022\026\n\016freeRougeT" +
+      "imes\030\037 \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos." +
+      "MonthCardProto\022\020\n\010shopGift\030) \003(\r\022&\n\010clou" +
+      "dBox\0302 \001(\0132\024.Protos.CloudBoxInfo\022\034\n\024last" +
+      "PatrolRewardTime\0303 \001(\005\032-\n\013AssetsEntry\022\013\n" +
+      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRe" +
+      "coverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
+      "8\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030" +
+      "\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022" +
+      "\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003ke" +
+      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkil" +
+      "lsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B" +
+      "\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -29794,24 +31409,36 @@ public final class PlayerMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerCloudBoxResponse_01000043_descriptor,
         new java.lang.String[] { "Rewards", });
-    internal_static_Protos_CloudBoxInfo_descriptor =
+    internal_static_Protos_PlayerPatrolRewardRequest_01000044_descriptor =
       getDescriptor().getMessageTypes().get(31);
+    internal_static_Protos_PlayerPatrolRewardRequest_01000044_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PlayerPatrolRewardRequest_01000044_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_PlayerPatrolRewardResponse_01000045_descriptor =
+      getDescriptor().getMessageTypes().get(32);
+    internal_static_Protos_PlayerPatrolRewardResponse_01000045_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PlayerPatrolRewardResponse_01000045_descriptor,
+        new java.lang.String[] { "Rewards", "Exp", "Gold", });
+    internal_static_Protos_CloudBoxInfo_descriptor =
+      getDescriptor().getMessageTypes().get(33);
     internal_static_Protos_CloudBoxInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_CloudBoxInfo_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_Protos_PlayerInfo_descriptor =
-      getDescriptor().getMessageTypes().get(32);
+      getDescriptor().getMessageTypes().get(34);
     internal_static_Protos_PlayerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerInfo_descriptor,
         new java.lang.String[] { "Id", "Name", "IsMan", "Head", "HeadFrame", "OfflineTime", });
     internal_static_Protos_PlayerAllInfo_descriptor =
-      getDescriptor().getMessageTypes().get(33);
+      getDescriptor().getMessageTypes().get(35);
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "ShopGift", "CloudBox", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "ShopGift", "CloudBox", "LastPatrolRewardTime", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

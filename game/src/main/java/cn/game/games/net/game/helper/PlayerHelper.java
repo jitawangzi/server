@@ -488,6 +488,7 @@ public class PlayerHelper {
 		return ret;
 	}
 
+	@Deprecated
 	public static Player addExp(Player player, int exp) {
 		int curExp = player.getData().getExp() + exp;
 		UserUpgradeConfig expConfig = UserUpgradeManager.instance().get(player.getData().getLevel());

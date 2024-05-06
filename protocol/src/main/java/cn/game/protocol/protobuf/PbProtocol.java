@@ -159,6 +159,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerCloudBoxPush_01100040 = 0x01100040;    //产生小云宝箱 推送  
 	public final static int PlayerCloudBoxRequest_01000042 = 0x01000042;    //领取小云宝箱奖励  
 	public final static int PlayerCloudBoxResponse_01000043 = 0x01000043;    
+	public final static int PlayerPatrolRewardRequest_01000044 = 0x01000044;    //领取巡逻奖励  
+	public final static int PlayerPatrolRewardResponse_01000045 = 0x01000045;    
 	public final static int RewardPush_55000501 = 0x55000501;    //奖励推送,客户端收到这个协议之后，将奖励增加到本地。  
 	public final static int SpendPush_55001501 = 0x55001501;    //消耗推送，客户端收到这个协议之后，减少本地的物品  
 	public final static int RewardShowPush_55002501 = 0x55002501;    //一般需要显示推送获得的奖励时，看情况使用。  
@@ -494,6 +496,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PlayerCloudBoxResponse_01000043, cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PlayerPatrolRewardRequest_01000044, cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerPatrolRewardResponse_01000045, cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(RewardPush_55000501, cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(SpendPush_55001501, cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501.getDefaultInstance()
@@ -747,6 +753,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerCloudBoxPush_01100040", 0x01100040);
 		nameIdMap.put("PlayerCloudBoxRequest_01000042", 0x01000042);
 		nameIdMap.put("PlayerCloudBoxResponse_01000043", 0x01000043);
+		nameIdMap.put("PlayerPatrolRewardRequest_01000044", 0x01000044);
+		nameIdMap.put("PlayerPatrolRewardResponse_01000045", 0x01000045);
 		nameIdMap.put("RewardPush_55000501", 0x55000501);
 		nameIdMap.put("SpendPush_55001501", 0x55001501);
 		nameIdMap.put("RewardShowPush_55002501", 0x55002501);

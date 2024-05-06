@@ -59,6 +59,8 @@ public class PlayerModule extends BasePlayerModule {
 	private List<Goods> cloudBox;
 	private int lastCloudBoxRewardTime;
 	
+	/** 最后一次领取巡逻奖励的时间 */
+	private int lastPatrolRewardTime;
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -157,6 +159,14 @@ public class PlayerModule extends BasePlayerModule {
 		this.lastCloudBoxRewardTime = lastCloudBoxRewardTime;
 	}
 
+	public void setPatrolRewardTime() {
+		this.lastPatrolRewardTime = DateUtil.currentTimeSeconds();
+	}
+
+	public int getLastPatrolRewardTime() {
+		return lastPatrolRewardTime;
+	}
+
 	@Override
 	public void autoSaveTasks(List<DbEntity> entities) {
 		entities.add(player.getData());
@@ -194,6 +204,7 @@ public class PlayerModule extends BasePlayerModule {
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.setPlayer(player.toProto());
 		builder.putAllLevels(expLevelMap.getMap());
+		builder.setLastPatrolRewardTime(lastCloudBoxRewardTime);
 
 		// 礼包
 		Map<Integer, PlayerIds> map = idsMap.get(IdConstant.SHOP_GIFT);
