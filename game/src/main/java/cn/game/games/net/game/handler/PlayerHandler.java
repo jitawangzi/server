@@ -45,9 +45,7 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.OldBuffConfig;
-import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.config.RandomNameConfig;
-import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.EffectEnum;
 import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.HeadBoxManager;
@@ -55,7 +53,6 @@ import cn.game.protocol.generated.manager.HeadPortraitManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OldBuffManager;
-import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
@@ -82,8 +79,6 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerNameRequest_01000011;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerNameResponse_01000012;
-import cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardRequest_01000044;
-import cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolRewardResponse_01000045;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecResponse_01000066;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039;
@@ -140,34 +135,7 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerGenderRequest_01000017, this::gender);
 		putInvoker(PbProtocol.ItemUseRequest_01000050, this::useItem);
 		putInvoker(PbProtocol.PlayerCloudBoxRequest_01000042, this::cloudBox);
-		putInvoker(PbProtocol.PlayerPatrolRewardRequest_01000044, this::patrolReward);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
-	}
-
-	private void patrolReward(NetClient client, Object message) {
-		PlayerPatrolRewardRequest_01000044 request = (PlayerPatrolRewardRequest_01000044) message;
-		PlayerPatrolRewardResponse_01000045.Builder resp = PlayerPatrolRewardResponse_01000045.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		PlayerModule playerModule = player.getPlayerModule();
-		int seconds = DateUtil.currentTimeSeconds() - playerModule.getLastPatrolRewardTime();
-		int minute = seconds / 60;
-		int hours = seconds / 60 / 60;
-
-		PatrolConfig patrolConfig = PatrolManager.instance().get(1);
-		int exp = patrolConfig.IncomeEXP * minute;
-		int gold = patrolConfig.IncomeGold * minute;
-
-		PlayerHelper.addResources(player, Asset.playerExp.ID, exp);
-		PlayerHelper.addResources(player, Asset.gold.ID, gold);
-		for (int i = 0; i < hours; i++) {
-			List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.IncomeRandomID[0]);
-			resp.addAllRewards(reward);
-		}
-		resp.setExp(exp);
-		resp.setGold(gold);
-
-		client.sendProtocol(resp);
-		playerModule.setPatrolRewardTime();
 	}
 
 	private void cloudBox(NetClient client, Object message) {

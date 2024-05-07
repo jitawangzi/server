@@ -18,6 +18,8 @@ import org.w3c.dom.Element;
 	public final int ItemType;		
 	/** 品质 1-白色 2-绿色 3-蓝色 4-紫色 5-金色 6-红色 7-彩色 8-永恒 9-唯一 */
 	public final int Quality;		
+	/** 职业 1-战士 2-刺客 3-法师 4-牧师 5-射手 */
+	public final int Career;		
 	/** 物品名称 */
 	public final String Name;		
 	/** 物品tips */
@@ -39,6 +41,8 @@ import org.w3c.dom.Element;
 			: element.getAttribute("ItemType")); // 物品类型 1-英雄突破 2-英雄升级 3-请神道具 4-英雄任选道具 5-材料 6-挂机奖励道具
 		Quality = Integer.parseInt(element.getAttribute("Quality") == null || element.getAttribute("Quality").length() == 0 ? "0"
 			: element.getAttribute("Quality")); // 品质 1-白色 2-绿色 3-蓝色 4-紫色 5-金色 6-红色 7-彩色 8-永恒 9-唯一
+		Career = Integer.parseInt(element.getAttribute("Career") == null || element.getAttribute("Career").length() == 0 ? "0"
+			: element.getAttribute("Career")); // 职业 1-战士 2-刺客 3-法师 4-牧师 5-射手
 		Name = element.getAttribute("Name"); // 物品名称
 		Tips = element.getAttribute("Tips"); // 物品tips
 		Para = Integer.parseInt(element.getAttribute("Para") == null || element.getAttribute("Para").length() == 0 ? "0"

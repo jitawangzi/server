@@ -12,7 +12,7 @@ public enum Asset{
 	/** 金币 */
 	gold(100002,"gold","金币",1,3,"游戏中购买物品的标准货币","recharge_icon_07"),
 	/** 经验 */
-	playerExp(100201,"playerExp","经验",2,3,"提升玩家等级之用",""),
+	playerExp(100201,"playerExp","经验",2,3,"提升玩家等级之用","com_icon_jingyan"),
 	/** 每日任务活跃度 */
 	DailyPoint(100202,"DailyPoint","每日任务活跃度",1,3,"获得指定数量后可以领取奖励","task_icon_rihuoyue"),
 	/** 每周任务活跃度 */
