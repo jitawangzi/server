@@ -351,6 +351,9 @@ public class HeroHandler extends BaseHandler {
 		hero.setStar(nextQualityStarConfig.Star);
 		hero.setQuality(nextQualityStarConfig.InitialQuality);
 
+		// 英雄突破，奖励固定元宝
+		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward);
+
 		resp.setHero(hero.toHeroInfo());
 		client.sendProtocol(resp.build());
 	}

@@ -239,7 +239,7 @@ public class PlayerHelper {
 		}
 	}
 
-	private static List<RewardInfo> addResources(Player player, int id, int value, boolean notify) {
+	public static List<RewardInfo> addResources(Player player, int id, int value, boolean notify) {
 		if (value < 0) {
 			return Collections.EMPTY_LIST;
 		}

@@ -67,6 +67,8 @@ public class WebSocketVerticle extends AbstractVerticle {
 				processor.process(client, protocol);
 //				handlerState.addTotalPacketReceived();
 
+			}).textMessageHandler(r -> {
+				log.error("not support ws text message " + r);
 			}).closeHandler(v -> GameClientManager.getInstance().removeGameClientConnection(ws.binaryHandlerID()));
 		}).connectionHandler(r -> {
 			if (log.isDebugEnabled()) {

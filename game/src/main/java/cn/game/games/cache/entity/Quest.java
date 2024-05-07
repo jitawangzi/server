@@ -209,12 +209,13 @@ public class Quest implements Serializable, DbEntity {
 		close();
 		setParams(null);
 		this.conditionContainer = null;
+		setFinishedTimes(0);
+		setEndTime(0l);
+
 		Player player = PlayerManager.getInstance().getPlayer(getPlayerId());
 		QuestModule questModule = player.getQuestModule();
 		questModule.setState(this, QuestHelper.CAN_ACCEPT);
 		setStartTime(System.currentTimeMillis());
-		setFinishedTimes(0);
-		setEndTime(0l);
 
 	}
 
@@ -243,13 +244,13 @@ public class Quest implements Serializable, DbEntity {
 		Consumer<Condition> condChangeAction = c -> {
 //			// 推送条件数量变更
 			QuestHelper.notifyQuestChange(this, UpdateType.UPDATE);
-			QuestHelper.updateParams(this);
+//			QuestHelper.updateParams(this);
 		};
 		Consumer<Condition> condAchieveAction = c -> {
-			QuestHelper.conditionCmd(this, c.getCondition());
+//			QuestHelper.conditionCmd(this, c.getCondition());
 			PlayerHelper.sendProtocol(this.getPlayerId(), MissionConditionCompletePush_20500001.newBuilder().setId(this.getId())
 					.setIndex(c.getIndex()).build());
-			QuestHelper.updateParams(this);
+//			QuestHelper.updateParams(this);
 		};
 		Consumer<Condition> finishAction = t -> {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);

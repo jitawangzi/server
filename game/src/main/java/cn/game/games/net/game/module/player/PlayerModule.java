@@ -56,6 +56,7 @@ public class PlayerModule extends BasePlayerModule {
 	@JsonIgnore
 	private Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
 	
+	/** 随机宝箱，小云宝箱 */
 	private List<Goods> cloudBox;
 	private int lastCloudBoxRewardTime;
 	

@@ -3,6 +3,8 @@ package cn.game.games.net.game.module.battle.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -73,7 +75,7 @@ public class BattleChapterImpl implements IBattleHandler {
 		List<RewardInfo> rewards = PlayerHelper.addReward(player, win ? battleConfig.WinRandom : battleConfig.FailRandom);
 		allRewards.addAll(rewards);
 		String convertAwardFUN = battleConfig.ConvertAwardFUN;
-		if (convertAwardFUN != null) {
+		if (!StringUtils.isEmpty(convertAwardFUN)) {
 			switch (convertAwardFUN) {
 			case "FunKillConvertAward": {
 				int index = -1 ; 

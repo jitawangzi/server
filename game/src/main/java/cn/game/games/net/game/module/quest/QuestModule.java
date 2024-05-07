@@ -99,8 +99,9 @@ public class QuestModule extends BasePlayerModule {
 		}
 	};
 
+	@Deprecated
 	public void update(Quest quest) {
-		QuestHelper.updateBase(quest);
+//		QuestHelper.updateBase(quest);
 	}
 
 	public void refreshQuest(MissionTypeEnum type) {
@@ -239,26 +240,30 @@ public class QuestModule extends BasePlayerModule {
 			throw new IllegalArgumentException("chooseRewardType not impl" + chooseRewardType);
 		}
 
-		addChallengeScore(id);
+//		addChallengeScore(id);
 
-		boolean lastBranch = questConfig.getOpenTaskId().isEmpty();
-		// 分支的最后一个任务保留不删除
-		if (questConfig.getRefreshType() || lastBranch || questConfig.getType() == MissionTypeEnum.Achievement) {
-			quest.close();
-			update(quest);
-		} else {
-			remove(id);
-		}
-		if (!questConfig.getOpenTaskId().isEmpty()) {
-			open(questConfig.getOpenTaskId());
-		}
-//		if (lastBranch) { // 当前分支完成，如果是设置的优先分支，需要修改默认的优先分支
-//			PlayerExt playerExt = player.getExt();
-//			int branchGroup = playerExt.getBranchGroup();
-//			if (questConfig.getGroupId() == branchGroup) {
-//				setDefaultBranchShow();
-//			}
-//		}
+//		关闭任务
+		quest.close();
+		// 成就类型的任务，可能需要完成一个在开启一个。
+
+		/*	boolean lastBranch = questConfig.getOpenTaskId().isEmpty();
+			// 分支的最后一个任务保留不删除
+			if (questConfig.getRefreshType() || lastBranch || questConfig.getType() == MissionTypeEnum.Achievement) {
+				quest.close();
+				update(quest);
+			} else {
+				remove(id);
+			}
+			if (!questConfig.getOpenTaskId().isEmpty()) {
+				open(questConfig.getOpenTaskId());
+			}
+			if (lastBranch) { // 当前分支完成，如果是设置的优先分支，需要修改默认的优先分支
+				PlayerExt playerExt = player.getExt();
+				int branchGroup = playerExt.getBranchGroup();
+				if (questConfig.getGroupId() == branchGroup) {
+					setDefaultBranchShow();
+				}
+			}*/
 
 		// 发起完成任务事件
 		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.QuestFinish, quest.getId()));
@@ -272,6 +277,7 @@ public class QuestModule extends BasePlayerModule {
 
 	}
 
+	@Deprecated
 	public void addChallengeScore(int id) {
 		MissionConfig questConfig = QuestHelper.getMissionConfig(id);
 		int challengeScore = questConfig.getChallengeScore();
@@ -613,17 +619,17 @@ public class QuestModule extends BasePlayerModule {
 		case QuestHelper.ACCEPTED:
 			quest.initCondition();
 			// 执行接取命令，事件
-			if (missionConfig instanceof MainlineMissionConfig) {
-				MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) missionConfig;
-				PlayerHelper.command(playerId, mainlineMissionConfig.getStartCommand());
-
-				if (mainlineMissionConfig.getType() == MissionTypeEnum.BranchLine) {
-//					PlayerExt playerExt = player.getExt();
-//					if (playerExt.getBranchGroup() == 0) {
-//						setDefaultBranchShow();
-//					}
-				}
-			}
+			/*			if (missionConfig instanceof MainlineMissionConfig) {
+							MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) missionConfig;
+							PlayerHelper.command(playerId, mainlineMissionConfig.getStartCommand());
+			
+							if (mainlineMissionConfig.getType() == MissionTypeEnum.BranchLine) {
+								PlayerExt playerExt = player.getExt();
+								if (playerExt.getBranchGroup() == 0) {
+									setDefaultBranchShow();
+								}
+							}
+						}*/
 			break;
 		case QuestHelper.CAN_GIVEWARD:
 			quest.unregEvent();
@@ -705,6 +711,10 @@ public class QuestModule extends BasePlayerModule {
 		switch (event.getType()) {
 		case NewWeek: {
 			refreshQuest(MissionTypeEnum.Weekly);
+			break;
+		}
+		case NewDay: {
+			refreshQuest(MissionTypeEnum.Daily);
 			break;
 		}
 		case PLAYER_CREATE: {

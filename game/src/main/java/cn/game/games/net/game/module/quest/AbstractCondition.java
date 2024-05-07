@@ -19,7 +19,7 @@ import cn.game.protocol.generated.manager.ConditionManager;
 public abstract class AbstractCondition implements Condition {
 
 	/** 只序列化字段，不调用get()序列化 */
-	protected static final boolean fieldBased = true;
+	protected static final transient boolean fieldBased = true;
 	protected static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
 
 	protected long playerId;

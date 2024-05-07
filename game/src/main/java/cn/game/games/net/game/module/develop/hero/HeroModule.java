@@ -7,8 +7,11 @@ import java.util.Set;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -59,6 +62,9 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		hero.setStar(1);
 		hero.setLevel(1);
 		hero.setQuality(heroConfig.InitialQuality);
+
+		// 拥有新英雄，奖励固定元宝
+		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward);
 	}
 
 	@Override

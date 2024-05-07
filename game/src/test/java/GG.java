@@ -20,5 +20,7 @@ public class GG {
 			System.out.println(b);
 		}
 
+		System.out.println((5 * 35 - 20) * 7);
+
 	}
 }
