@@ -4,13 +4,13 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
-import cn.game.protocol.generated.enume.OldConditionTypeEnum;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 /**
  * 消耗物品数量
  * 
  */
-@ConditionType(type = OldConditionTypeEnum.CostItemNumbers)
+@ConditionType(type = ConditionTypeEnum.ConsumesDiamonds)
 public class CostItemNumbers extends AbstractCondition {
 
 	public CostItemNumbers() {

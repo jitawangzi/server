@@ -5,7 +5,7 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.config.StoreConfig;
-import cn.game.protocol.generated.enume.OldConditionTypeEnum;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.StoreManager;
 
 /**
@@ -14,10 +14,10 @@ import cn.game.protocol.generated.manager.StoreManager;
  * @date 2021年4月28日 下午3:19:54
  * @author SYQ
  */
-@ConditionType(type = OldConditionTypeEnum.BuyItems)
-public class StoreBuy extends AbstractCondition {
+@ConditionType(type = ConditionTypeEnum.StorePurchases)
+public class StorePurchases extends AbstractCondition {
 
-	public StoreBuy() {
+	public StorePurchases() {
 	};
 	@Override
 	public void setEvents() {

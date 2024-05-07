@@ -6,27 +6,30 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**
- * 玩家等级条件
- * 
- */
-@ConditionType(type = ConditionTypeEnum.PlayerLevel)
-public class PlayerLevelCondition extends AbstractCondition {
+@ConditionType(type = ConditionTypeEnum.ChapterFinish)
+public class ChapterFinish extends AbstractCondition {
 
-	public PlayerLevelCondition() {
+	public ChapterFinish() {
 
 	}
 
 	@Override
 	public void setEvents() {
-		super.events = new EventTypeEnum[] { EventTypeEnum.LevelUp };
+		super.events = new EventTypeEnum[] { EventTypeEnum.Chapter };
+	}
+
+	@Override
+	public void updateRequireCount(GameEvent event) {
+		int count = event.getIntParameter(1);
+		finishCount += count;
 	}
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-		int level = event.getIntParameter(0);
-		if (level >= getRequireCount()) {
-			setAchieve();
+		int id = event.getIntParameter(0);
+		int count = event.getIntParameter(1);
+		if (id == getRequireId()) {
+			finishCount += count;
 			return true;
 		}
 		return false;

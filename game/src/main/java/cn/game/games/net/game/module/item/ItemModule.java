@@ -4,7 +4,9 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ItemMapper;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.protocol.generated.config.ItemConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
@@ -41,8 +43,10 @@ public class ItemModule extends AbstractItemModule<Item> {
 		ItemConfig itemConfig = ItemManager.instance().get(itemId);
 		if (itemConfig.ItemType == 6) {
 			// TODO 给挂机金币
-
-			return null;
+			ChapterModule chapterModule = player.getModule(ChapterModule.class);
+			itemId = Asset.gold.ID ; 
+			count = chapterModule.calcPatrolGold(itemConfig.Para);
+			return player.getCurrencyModule().add(itemId, count);
 		}
 		return super.add(itemId, count);
 	}

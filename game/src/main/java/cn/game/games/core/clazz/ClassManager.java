@@ -14,7 +14,7 @@ import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
-import cn.game.protocol.generated.enume.OldConditionTypeEnum;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.util.file.PackageScanner;
 import cn.game.util.reflect.ClassHelper;
 
@@ -47,13 +47,13 @@ public class ClassManager {
 			if (annotation == null) {
 				throw new IllegalArgumentException(c.getName() + " 没有配置ConditionType注解");
 			}
-			OldConditionTypeEnum type = annotation.type();
-			if (conditionClass.containsKey(type.getId())) {
+			ConditionTypeEnum type = annotation.type();
+			if (conditionClass.containsKey(type.ID)) {
 				throw new IllegalArgumentException(
 						MessageFormat.format("class[{0}] 配置了重复的ConditionType注解 [{1}]，已经在[{2}]里配置了", c.getName(), type,
-								conditionClass.get(type.getId())));
+								conditionClass.get(type.ID)));
 			}
-			conditionClass.put(type.getId(), c);
+			conditionClass.put(type.ID, c);
 		}
 	}
 

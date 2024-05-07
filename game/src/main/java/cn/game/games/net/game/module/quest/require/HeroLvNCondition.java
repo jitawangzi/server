@@ -7,14 +7,14 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
-import cn.game.protocol.generated.enume.OldConditionTypeEnum;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 /**   
  * @Description 伙伴等级、数量
  * @date 2019年1月8日 下午3:38:05
  * @author SYQ
  */
-@ConditionType(type = OldConditionTypeEnum.CampLimit)
+@ConditionType(type = ConditionTypeEnum.HeroLevel)
 public class HeroLvNCondition extends AbstractCondition {
 
 	public HeroLvNCondition() {
@@ -29,7 +29,6 @@ public class HeroLvNCondition extends AbstractCondition {
 	@Override
 	@JsonIgnore
 	public long getFinishCount() {
-
 		RoleOp heroOp = player.getModule(RoleOp.class);
 		return heroOp.getCountByLevel(getParam(0));
 	}

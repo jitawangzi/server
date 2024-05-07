@@ -5,13 +5,13 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
-import cn.game.protocol.generated.enume.OldConditionTypeEnum;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 /**
  * 完成指定关卡
  * 
  */
-@ConditionType(type = OldConditionTypeEnum.LevelComplete)
+@ConditionType(type = ConditionTypeEnum.PlayerLevel)
 public class LevelCondition extends AbstractCondition {
 
 	public LevelCondition() {

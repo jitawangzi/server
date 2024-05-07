@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
@@ -69,6 +70,7 @@ public class BattleChapterImpl implements IBattleHandler {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 1) {
 				chapterModule.setMainBattleHighest(chapter.getBattleId());
+				player.handleEvent(EventTypeEnum.Chapter);
 			}
 		}
 		if (request.getBattleTime() > chapter.getBattleTime()) {

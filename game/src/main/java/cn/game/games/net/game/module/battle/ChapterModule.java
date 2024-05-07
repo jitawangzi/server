@@ -35,6 +35,7 @@ import cn.game.protocol.generated.config.BattleLevelConfig;
 import cn.game.protocol.generated.config.EventRankIntervalConfig;
 import cn.game.protocol.generated.config.EventTriggerConfig;
 import cn.game.protocol.generated.config.OldGlobalConst;
+import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.config.RoutineTrainingConfig;
 import cn.game.protocol.generated.manager.BattleChapterManager;
 import cn.game.protocol.generated.manager.BattleEventManager;
@@ -42,6 +43,7 @@ import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.EventRankIntervalManager;
 import cn.game.protocol.generated.manager.EventTriggerManager;
+import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.protobuf.BattleMsg.PatrolInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.ByteHelp;
@@ -104,22 +106,6 @@ public class ChapterModule extends BasePlayerModule  {
 		levels = new HashMap<>();
 		eventTypeMap = new HashMap<Integer, Integer>();
 		battleRandomEvents = new ArrayList<BattleRandomEvent>();
-	}
-
-	public void initLoadData(List<Chapter> chapters,
-			List<BattleLevel> battleBattleLevels, List<BattleEventType> eventTypes,
-			List<BattleRandomEvent> battleRandomEvents) {
-		for (Chapter c : chapters) {
-			this.chapters.put(c.getBattleId(), c);
-		}
-		for (BattleLevel s : battleBattleLevels) {
-			this.levels.put(s.getLevelId(), s);
-		}
-		for (BattleEventType e : eventTypes) {
-			this.eventTypeMap.put(e.getEventType(), e.getCount());
-		}
-		this.battleRandomEvents = battleRandomEvents;
-		checkBattleEvent();
 	}
 
 	public void addChapter(int battleId) {
@@ -213,6 +199,19 @@ public class ChapterModule extends BasePlayerModule  {
 	public boolean isExploreActPass(int id) {
 
 		return false;
+	}
+
+	/** 
+	 * 计算巡逻n小时金币
+	 * @param hours
+	 * @return
+	 */
+	public int calcPatrolGold(int hours) {
+		if (mainBattleHighest == 0) {
+			return 0;
+		}
+		PatrolConfig patrolConfig = PatrolManager.instance().get(mainBattleHighest);
+		return patrolConfig.IncomeGold * 60 * hours;
 	}
 
 	@Deprecated
