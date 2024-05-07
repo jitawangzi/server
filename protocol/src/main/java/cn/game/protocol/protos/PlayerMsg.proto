@@ -158,21 +158,11 @@ message PlayerCloudBoxRequest_01000042{
 message PlayerCloudBoxResponse_01000043{
 	repeated RewardInfo rewards = 1;
 }
-
-/*** 领取巡逻奖励 ***/
-message PlayerPatrolRewardRequest_01000044{
-}
-
-message PlayerPatrolRewardResponse_01000045{
-	repeated RewardInfo rewards = 1;// 随机掉落的奖励
-	int32 exp = 2;					// 增加的经验  --- 客户端需本地增加经验
-	int32 gold = 3;					// 增加的金币 --- 客户端需本地增加金币
-}
-
 // 小云宝箱
 message CloudBoxInfo{
      repeated GoodsInfo items  = 5; // 宝箱里的物品
 }
+
 
 //用户基本信息
 message PlayerInfo{

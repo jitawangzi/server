@@ -14,21 +14,28 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.BattleFieldConfig;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.PatrolConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleFieldManager;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartResponse_13000002;
+import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044;
+import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 
 @Component
 public class ChapterHandler extends BaseHandler {
@@ -47,6 +54,7 @@ public class ChapterHandler extends BaseHandler {
 //		putInvoker(PbProtocol.ExploreActRewardRequest_13000020, (client, message) -> exploreActReward(client, message));
 		putInvoker(PbProtocol.BattleRewardRequest_13000022, (client, message) -> chapterReward(client, message));
 		putInvoker(PbProtocol.BattleRougeRefreshRequest_13000005, (client, message) -> rougeRefresh(client, message));
+		putInvoker(PbProtocol.BattlePatrolRewardRequest_13000044, this::patrolReward);
 
 	}
 
@@ -59,6 +67,78 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
+		client.sendProtocol(resp);
+	}
+
+	private void patrolReward(NetClient client, Object message) {
+		BattlePatrolRewardRequest_13000044 request = (BattlePatrolRewardRequest_13000044) message;
+		boolean isFast = request.getIsFast();
+		boolean advertising = request.getAdvertising();
+		BattlePatrolRewardResponse_13000045.Builder resp = BattlePatrolRewardResponse_13000045.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		if (!player.isFuncOpen(InitialUI.HangingUpp)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+//		int seconds = DateUtil.currentTimeSeconds() - playerModule.getLastPatrolRewardTime();
+		if (advertising && !isFast) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+
+		if (isFast) {
+			// 快速巡逻次数处理
+			if (advertising) {
+				int quickPatrolCount = chapterModule.getAdPatrolCount();
+				if (quickPatrolCount >= GlobalConst.AdPatrolCnt) {
+					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+					return;
+				}
+				chapterModule.setAdPatrolCount(quickPatrolCount + 1);
+				player.handleEvent(EventTypeEnum.WatchAds);
+
+			} else {
+				int quickPatrolCount = chapterModule.getQuickPatrolCount();
+				if (quickPatrolCount >= GlobalConst.QuickPatrolCnt) {
+					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+					return;
+				}
+				chapterModule.setQuickPatrolCount(quickPatrolCount + 1);
+			}
+		}
+		// 巡逻时间
+		int minute = 0;
+		int hours = 0;
+
+		if (isFast) {
+			minute = GlobalConst.QuickPatrolDuration / 60;
+			hours = minute / 60;
+		} else {
+			int seconds = DateUtil.currentTimeSeconds() - chapterModule.getLastPatrolRewardTime();
+			if (seconds >= GlobalConst.MaximumPatrolDuration) {
+				seconds = GlobalConst.MaximumPatrolDuration;
+			}
+			minute = seconds / 60;
+			hours = minute / 60;
+		}
+
+		PatrolConfig patrolConfig = PatrolManager.instance().get(chapterModule.getMainBattleHighest());
+
+		int exp = patrolConfig.IncomeEXP * minute;
+		int gold = patrolConfig.IncomeGold * minute;
+
+		PlayerHelper.addResources(player, Asset.playerExp.ID, exp);
+		PlayerHelper.addResources(player, Asset.gold.ID, gold);
+		for (int i = 0; i < hours; i++) {
+			List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.IncomeRandomID);
+			resp.addAllRewards(reward);
+		}
+		resp.setExp(exp);
+		resp.setGold(gold);
+		if (!isFast) {
+			chapterModule.setPatrolRewardTime();
+		}
 		client.sendProtocol(resp);
 	}
 

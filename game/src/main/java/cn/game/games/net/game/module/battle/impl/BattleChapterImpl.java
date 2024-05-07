@@ -57,6 +57,8 @@ public class BattleChapterImpl implements IBattleHandler {
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		Chapter chapter = chapterModule.getChapter(chapterModule.getAttackingDungeonId());
+		BattleConfig battleConfig = BattleManager.instance().get(chapter.getBattleId());
+
 		if (hpPercent > chapter.getHpPercent()) {
 			chapter.setHpPercent(hpPercent);
 		}
@@ -65,12 +67,14 @@ public class BattleChapterImpl implements IBattleHandler {
 		}
 		if (!chapter.getPass() && win) {
 			chapter.setPass(true);
+			if (battleConfig.BattleType == 1) {
+				chapterModule.setMainBattleHighest(chapter.getBattleId());
+			}
 		}
 		if (request.getBattleTime() > chapter.getBattleTime()) {
 			chapter.setBattleTime(request.getBattleTime());
 		}
 		// 发送奖励
-		BattleConfig battleConfig = BattleManager.instance().get(chapter.getBattleId());
 		List<RewardInfo> allRewards = new ArrayList<RewardInfo>();
 		List<RewardInfo> rewards = PlayerHelper.addReward(player, win ? battleConfig.WinRandom : battleConfig.FailRandom);
 		allRewards.addAll(rewards);

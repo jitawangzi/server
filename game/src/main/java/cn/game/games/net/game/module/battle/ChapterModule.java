@@ -75,8 +75,17 @@ public class ChapterModule extends BasePlayerModule  {
 	/** 战役次数 */
 	private IntMapWrapper dailyCount = new IntMapWrapper();
 
+	/** 主线战役最高id */
+	private int mainBattleHighest;
 	/** 每日免费肉鸽刷新次数 */
 	private int freeRougeTimes;
+
+	/** 最后一次领取巡逻奖励的时间 */
+	private int lastPatrolRewardTime;
+	/** 每天的快速巡逻次数 */
+	private int quickPatrolCount;
+	/** 每天的广告巡逻次数 */
+	private int adPatrolCount;
 
 	// 战斗相关数据
 	private int type;
@@ -557,6 +566,38 @@ public class ChapterModule extends BasePlayerModule  {
 		return false;
 	}
 
+	public int getMainBattleHighest() {
+		return mainBattleHighest;
+	}
+
+	public void setMainBattleHighest(int mainBattleHighest) {
+		this.mainBattleHighest = mainBattleHighest;
+	}
+
+	public void setPatrolRewardTime() {
+		this.lastPatrolRewardTime = DateUtil.currentTimeSeconds();
+	}
+
+	public int getLastPatrolRewardTime() {
+		return lastPatrolRewardTime;
+	}
+
+	public int getQuickPatrolCount() {
+		return quickPatrolCount;
+	}
+
+	public void setQuickPatrolCount(int quickPatrolCount) {
+		this.quickPatrolCount = quickPatrolCount;
+	}
+
+	public int getAdPatrolCount() {
+		return adPatrolCount;
+	}
+
+	public void setAdPatrolCount(int adPatrolCount) {
+		this.adPatrolCount = adPatrolCount;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		// TODO Auto-generated method stub
@@ -565,6 +606,8 @@ public class ChapterModule extends BasePlayerModule  {
 
 	private void newDay() {
 		this.freeRougeTimes = 0;
+		this.quickPatrolCount = 0;
+		this.adPatrolCount = 0;
 	}
 	@Override
 	public void handleEvent(GameEvent event) {

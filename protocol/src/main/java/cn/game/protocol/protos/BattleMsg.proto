@@ -61,6 +61,20 @@ message BattleRewardResponse_13000023{
    repeated RewardInfo reward = 1;
 }
 
+
+
+/*** 领取巡逻奖励 ***/
+message BattlePatrolRewardRequest_13000044{
+	bool isFast = 1; // true ：快速巡逻，直接领取固定时长收益。 false： 根据时长领取收益
+	bool advertising = 2; // 看广告领取快速巡逻收益，只有是快速巡逻是这个值才有用。
+}
+
+message BattlePatrolRewardResponse_13000045{
+	repeated RewardInfo rewards = 1;// 随机掉落的奖励
+	int32 exp = 2;					// 增加的经验  --- 客户端需本地增加经验
+	int32 gold = 3;					// 增加的金币 --- 客户端需本地增加金币
+}
+
 // 战役信息
 message BattleInfo{
 	int32 id = 1;	//Battle表的id

@@ -46,6 +46,18 @@ public class GlobalConst extends ResourceListener {
 	public static int[] WeeklyPoint;		
 	/** 每周任务宝箱奖励 */
 	public static int[][] WeeklyTask;		
+	/** 快速巡逻时长 */
+	public static int QuickPatrolDuration;		
+	/** 巡逻时长上限 */
+	public static int MaximumPatrolDuration;		
+	/** 快速巡逻次数 */
+	public static int QuickPatrolCnt;		
+	/** 月卡附加次数 */
+	public static int MonthCardCnt;		
+	/** 快速巡逻消耗 */
+	public static int QuickPatrolConsume;		
+	/** 广告巡逻次数 */
+	public static int AdPatrolCnt;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -231,6 +243,18 @@ public class GlobalConst extends ResourceListener {
 		} else {
 			WeeklyTask = new int[][] {};
 		}
+		QuickPatrolDuration = Integer.parseInt(element.getAttribute("QuickPatrolDuration") == null || element.getAttribute("QuickPatrolDuration").length() == 0 ? "0"
+			: element.getAttribute("QuickPatrolDuration")); // 快速巡逻时长
+		MaximumPatrolDuration = Integer.parseInt(element.getAttribute("MaximumPatrolDuration") == null || element.getAttribute("MaximumPatrolDuration").length() == 0 ? "0"
+			: element.getAttribute("MaximumPatrolDuration")); // 巡逻时长上限
+		QuickPatrolCnt = Integer.parseInt(element.getAttribute("QuickPatrolCnt") == null || element.getAttribute("QuickPatrolCnt").length() == 0 ? "0"
+			: element.getAttribute("QuickPatrolCnt")); // 快速巡逻次数
+		MonthCardCnt = Integer.parseInt(element.getAttribute("MonthCardCnt") == null || element.getAttribute("MonthCardCnt").length() == 0 ? "0"
+			: element.getAttribute("MonthCardCnt")); // 月卡附加次数
+		QuickPatrolConsume = Integer.parseInt(element.getAttribute("QuickPatrolConsume") == null || element.getAttribute("QuickPatrolConsume").length() == 0 ? "0"
+			: element.getAttribute("QuickPatrolConsume")); // 快速巡逻消耗
+		AdPatrolCnt = Integer.parseInt(element.getAttribute("AdPatrolCnt") == null || element.getAttribute("AdPatrolCnt").length() == 0 ? "0"
+			: element.getAttribute("AdPatrolCnt")); // 广告巡逻次数
 	}
 	@Override
 	public void load() {
