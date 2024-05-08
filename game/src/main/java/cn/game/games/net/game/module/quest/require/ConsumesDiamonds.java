@@ -4,29 +4,30 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**
- * 玩家等级条件
- * 
- */
-@ConditionType(type = ConditionTypeEnum.PlayerLevel)
-public class PlayerLevelCondition extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LevelUp };
+@ConditionType(type = ConditionTypeEnum.ConsumesDiamonds)
+public class ConsumesDiamonds extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.CostItem };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public PlayerLevelCondition() {
+	public ConsumesDiamonds() {
 
 	}
 
 	@Override
+	public long getFinishCount() {
+		return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.ConsumesDiamonds);
+	}
+
+	@Override
 	public boolean checkEventParam(GameEvent event) {
-		int level = event.getIntParameter(0);
-		if (level >= getRequireCount()) {
-			setAchieve();
+		int id = event.getIntParameter(0);
+		if (id == Asset.diamond.ID) {
 			return true;
 		}
 		return false;

@@ -10,8 +10,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.map.MultiKeyMap;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.ConditionCount;
@@ -29,19 +27,23 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.AchievementMissionConfig;
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.MainlineMissionConfig;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.IntMapWrapper;
 
 /**
  * @Description
@@ -50,7 +52,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  */
 public class QuestModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
-			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp };
+			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem };
 
 	/** 当前激活的任务 */
 	private Map<Integer, Quest>[] quests;
@@ -62,7 +64,7 @@ public class QuestModule extends BasePlayerModule {
 	private Map<Integer, QuestChallenge> challenges;
 
 	/** 一些累计的计数 */
-	private MultiKeyMap<Integer, Integer> conditionCountMap = new MultiKeyMap<Integer, Integer>();
+	private IntMapWrapper cumulativeCountMap = new IntMapWrapper();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -83,10 +85,10 @@ public class QuestModule extends BasePlayerModule {
 			quests[QuestTypeEnum.get(questConfig.Type).ordinal()].put(e.getId(), e);
 		}
 
-		for (ConditionCount conditionCount : conditionList) {
-			conditionCountMap.put(conditionCount.getConditionType(), conditionCount.getArg1(), conditionCount.getArg2(),
-					conditionCount.getCount());
-		}
+//		for (ConditionCount conditionCount : conditionList) {
+//			conditionCountMap.put(conditionCount.getConditionType(), conditionCount.getArg1(), conditionCount.getArg2(),
+//					conditionCount.getCount());
+//		}
 	}
 
 	@Override
@@ -122,6 +124,15 @@ public class QuestModule extends BasePlayerModule {
 				remove(missionConfig.ID);
 			}
 		}
+	}
+
+	/** 
+	 * 获取某类型的累计数
+	 * @param type
+	 * @return
+	 */
+	public int getCumulativeCount(ConditionTypeEnum type) {
+		return this.cumulativeCountMap.getValue(type.ID);
 	}
 
 	public int getFinishedCount(QuestTypeEnum type) {
@@ -758,6 +769,31 @@ public class QuestModule extends BasePlayerModule {
 			initQuestFirst();
 			break;
 		}
+		case Charge: {
+			addCumulativeCount(ConditionTypeEnum.AccumulatedRecharge, event.getIntParameter(0));
+			break;
+		}
+		case ChapterWin: {
+			int id = event.getIntParameter(0);
+			BattleConfig battleConfig = BattleManager.instance().get(id);
+			if (battleConfig.BattleType == 2) {
+				addCumulativeCount(ConditionTypeEnum.EliteFinish, 1);
+			}
+			break;
+		}
+		case BattleEnd: {
+			addCumulativeCount(ConditionTypeEnum.KillMonsters, event.getIntParameter(3));
+			addCumulativeCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
+			break;
+		}
+		case CostItem: {
+			int id = event.getIntParameter(0);
+			int count = event.getIntParameter(1);
+			if (id == Asset.diamond.ID) {
+				addCumulativeCount(ConditionTypeEnum.ConsumesDiamonds, count);
+			}
+			break;
+		}
 		}
 	}
 
@@ -770,13 +806,14 @@ public class QuestModule extends BasePlayerModule {
 		challenges = new HashMap<>();
 	}
 
-	public void addConditionCount(ConditionTypeEnum type, int count, int... args) {
-		int id = type.ID;
-		int arg1 = args.length > 0 ? args[0] : 0;
-		int arg2 = args.length > 1 ? args[1] : 0;
-		Integer oldCount = this.conditionCountMap.get(id, arg1, arg2);
-		int newCount = oldCount == null ? count : oldCount + count;
-		this.conditionCountMap.put(id, arg1, arg2, newCount);
+	public void addCumulativeCount(ConditionTypeEnum type, int count) {
+		cumulativeCountMap.add(type.ID, count);
+		/*		int id = type.ID;
+				int arg1 = args.length > 0 ? args[0] : 0;
+				int arg2 = args.length > 1 ? args[1] : 0;
+				Integer oldCount = this.conditionCountMap.get(id, arg1, arg2);
+				int newCount = oldCount == null ? count : oldCount + count;
+				this.conditionCountMap.put(id, arg1, arg2, newCount);*/
 		// TODO 似乎这里如果带参数，应该把不带参数的数量也增加一下。
 //		if (oldCount == null) {
 //			conditionCount = new ConditionCount();
@@ -793,9 +830,6 @@ public class QuestModule extends BasePlayerModule {
 //		}
 	}
 
-	public MultiKeyMap<Integer, Integer> getConditionCountMap() {
-		return conditionCountMap;
-	}
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {

@@ -5798,7 +5798,7 @@ public final class QuestMsg {
 
     /**
      * <pre>
-     * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+     * 任务id,Quest表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -5966,7 +5966,7 @@ public final class QuestMsg {
     private int id_;
     /**
      * <pre>
-     * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+     * 任务id,Quest表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -6405,7 +6405,7 @@ public final class QuestMsg {
       private int id_ ;
       /**
        * <pre>
-       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+       * 任务id,Quest表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -6417,7 +6417,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+       * 任务id,Quest表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -6432,7 +6432,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+       * 任务id,Quest表id
        * </pre>
        *
        * <code>int32 id = 1;</code>

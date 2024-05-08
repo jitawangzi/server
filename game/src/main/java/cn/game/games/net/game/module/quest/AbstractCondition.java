@@ -39,14 +39,8 @@ public abstract class AbstractCondition implements Condition {
 	transient protected Consumer<Condition> updateAction;
 	transient protected Consumer<Condition> achieveAction;
 
-	/** 监听的事件 */
-	transient protected EventTypeEnum[] events;
-
 	@Override
-	public EventTypeEnum[] getEventTypes() {
-		return events;
-
-	}
+	public abstract EventTypeEnum[] getEventTypes();
 
 	public AbstractCondition() {
 
@@ -99,9 +93,6 @@ public abstract class AbstractCondition implements Condition {
 	public void setFinishCount(int finishCount) {
 		this.finishCount = finishCount;
 	}
-
-	public abstract void setEvents();
-
 
 	/**
 	 * 当处理关心的事件时，检查事件的相关参数，判断是否符合当前条件
@@ -192,7 +183,6 @@ public abstract class AbstractCondition implements Condition {
 		this.player = PlayerManager.getInstance().getPlayer(playerId);
 		this.updateAction = updateAction;
 		this.achieveAction = achieveAction;
-		setEvents();
 	}
 
 	@Override

@@ -8,21 +8,21 @@ import cn.game.protocol.generated.config.StoreConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.StoreManager;
 
-/**
+/**    
  * 商店购买商品
- * 
- * @date 2021年4月28日 下午3:19:54
+ * @date 2024年5月8日 下午5:50:06
  * @author SYQ
  */
 @ConditionType(type = ConditionTypeEnum.StorePurchases)
 public class StorePurchases extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.BuyItems };
 
+	@Override
+	public EventTypeEnum[] getEventTypes() {
+		return events;
+	}
 	public StorePurchases() {
 	};
-	@Override
-	public void setEvents() {
-		super.events = new EventTypeEnum[] { EventTypeEnum.BuyItems };
-	}
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {

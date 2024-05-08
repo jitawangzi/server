@@ -8,14 +8,14 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.UpgradeHero)
 public class UpgradeHero extends AbstractCondition {
-
-	public UpgradeHero() {
-
-	}
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroLevelUp };
 
 	@Override
-	public void setEvents() {
-		super.events = new EventTypeEnum[] { EventTypeEnum.CardUpGrade };
+	public EventTypeEnum[] getEventTypes() {
+		return events;
+	}
+	public UpgradeHero() {
+
 	}
 
 	@Override

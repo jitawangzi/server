@@ -6,29 +6,30 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**
- * 玩家等级条件
- * 
+/**    
+ * 累计杀boss
+ * @date 2024年5月8日 下午6:36:31
+ * @author SYQ
  */
-@ConditionType(type = ConditionTypeEnum.PlayerLevel)
-public class PlayerLevelCondition extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LevelUp };
+@ConditionType(type = ConditionTypeEnum.KillBoss)
+public class KillBoss extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.BattleEnd };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public PlayerLevelCondition() {
+	public KillBoss() {
 
 	}
 
 	@Override
+	public long getFinishCount() {
+		return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.KillBoss);
+	}
+
+	@Override
 	public boolean checkEventParam(GameEvent event) {
-		int level = event.getIntParameter(0);
-		if (level >= getRequireCount()) {
-			setAchieve();
-			return true;
-		}
-		return false;
+		return true;
 	}
 }

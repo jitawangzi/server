@@ -6,20 +6,15 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**
- * 消耗物品数量
- * 
- */
-@ConditionType(type = ConditionTypeEnum.ConsumesDiamonds)
-public class CostItemNumbers extends AbstractCondition {
-
-	public CostItemNumbers() {
+@ConditionType(type = ConditionTypeEnum.AccumulatedRecharge)
+public class AccumulatedRecharge extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Charge };
+	public AccumulatedRecharge() {
 
 	}
-
 	@Override
-	public void setEvents() {
-		super.events = new EventTypeEnum[] { EventTypeEnum.CostItem };
+	public EventTypeEnum[] getEventTypes() {
+		return events;
 	}
 
 	@Override
@@ -30,12 +25,7 @@ public class CostItemNumbers extends AbstractCondition {
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-		int id = event.getIntParameter(0);
-		int count = event.getIntParameter(1);
-		if (id == getRequireId()) {
-			finishCount += count;
-			return true;
-		}
-		return false;
+		return true;
 	}
+
 }

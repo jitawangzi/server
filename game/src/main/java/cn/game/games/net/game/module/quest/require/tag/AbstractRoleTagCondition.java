@@ -1,10 +1,8 @@
 package cn.game.games.net.game.module.quest.require.tag;
 
-import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.module.battle.BattleResult;
-import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.battle.IRoleBattleAction;
+import cn.game.games.net.game.module.quest.AbstractCondition;
 
 /** 
 * 默认角色标签条件
@@ -23,10 +21,6 @@ public abstract class AbstractRoleTagCondition extends AbstractCondition {
 	 */
 	public abstract int getUpdateCount(IRoleBattleAction roleBattleAction);
 	
-	@Override
-	public void setEvents() {
-		super.events = new EventTypeEnum[] { EventTypeEnum.BattleEnd };		
-	}
 	
 	@Override
 	public boolean checkEventParam(GameEvent event) {

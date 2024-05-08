@@ -384,6 +384,7 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		int hpPercent = req.getHpPercent();
 		int killMonsterCount = req.getKillMonsterCount();
+		int killMonsterBossCount = req.getKillMonsterBossCount();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
@@ -462,7 +463,7 @@ public class ChapterHandler extends BaseHandler {
 ////		List<RewardInfo> rewardItems = PlayerHelper.addResources(client.getPlayerId(), rewards);
 ////		resp.addAllRandomRewards(rewardItems);
 
-		player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, lineupId);
+		player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, killMonsterCount, killMonsterBossCount);
 		chapterModule.setAttackingData(0, 0, 0, 0, 0, 0);
 		
 		client.sendProtocol(resp);

@@ -20,6 +20,8 @@ public enum EventTypeEnum {
 	NewWeek(110, "NewWeek", "跨周"),
 	/** 跨月 */
 	NewMonth(111, "NewMonth", "跨月"),
+	/** 充值  // 参数 ： 充值数量*/
+	Charge(112, "Charge", "充值"),
 
 	/** 新添加了某种资源 */
 	ResourceAdd(120, "ResourceAdd", "新添加了某种资源"),
@@ -32,14 +34,14 @@ public enum EventTypeEnum {
 	LevelUp(2, "LevelUp", "升级"),
 	/** 通关关卡，包含剧情普通关卡，探索关卡等 */
 	Level(3, "Level", "通关关卡"), // 参数： 关卡id，回合数，剩余人数
-	/** 通关章节 */
-	Chapter(4, "Chapter", "通关章节"),
+	/** 章节胜利  参数: 章节id*/
+	ChapterWin(4, "ChapterWin", "章节胜利"),
 	/** 主角升星 */
 	StarUp(5, "StarUp", "主角升星"),
-	/** 伙伴升级 */
-	RoleLevelUp(6, "RoleLevelUp", "伙伴升级"),
-	/** 伙伴突破 */
-	Break(7, "Break", "伙伴突破"),
+	/** 英雄升级 */
+	HeroLevelUp(6, "HeroLevelUp", "英雄升级"),
+	/** 英雄突破 */
+	HeroBreak(7, "HeroBreak", "英雄突破"),
 	/** 伙伴升星 */
 	RoleStarUp(8, "RoleStarUp", "伙伴升星"),
 	/** 技能升级 */
@@ -54,10 +56,12 @@ public enum EventTypeEnum {
 	RoleExp(13, "RoleExp", "喂经验素材"),
 	/** 伙伴培养 */
 	RoleTrain(14, "RoleTrain", "伙伴培养"),
-	/** 获得伙伴 */
-	Role(15, "Role", "获得伙伴"),
-	/** 一场战斗结束，参数,战役id，关卡id，输赢， 阵容id */
+	/** 获得英雄 */
+	Hero(15, "Hero", "获得英雄"),
+	/** 一场战斗结束，参数,战役id，关卡id，输赢，杀怪数量 ,boss数量*/
 	BattleEnd(16, "BattleEnd", "一场战斗结束"),
+
+	ReceiveStamina(18, "ReceiveStamina", "领取体力"),
 
 	// 任务相关
 	/** 完成探索关卡,可能和完成关卡合并 */

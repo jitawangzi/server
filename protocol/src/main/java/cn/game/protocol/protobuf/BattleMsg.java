@@ -4307,13 +4307,23 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 击杀怪物数量
+     * 击杀怪物（小怪+头目）数量
      * </pre>
      *
      * <code>uint32 killMonsterCount = 1;</code>
      * @return The killMonsterCount.
      */
     int getKillMonsterCount();
+
+    /**
+     * <pre>
+     * 击杀首领数量
+     * </pre>
+     *
+     * <code>uint32 killMonsterBossCount = 6;</code>
+     * @return The killMonsterBossCount.
+     */
+    int getKillMonsterBossCount();
 
     /**
      * <pre>
@@ -4414,6 +4424,11 @@ public final class BattleMsg {
               battleTime_ = input.readUInt32();
               break;
             }
+            case 48: {
+
+              killMonsterBossCount_ = input.readUInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -4450,7 +4465,7 @@ public final class BattleMsg {
     private int killMonsterCount_;
     /**
      * <pre>
-     * 击杀怪物数量
+     * 击杀怪物（小怪+头目）数量
      * </pre>
      *
      * <code>uint32 killMonsterCount = 1;</code>
@@ -4459,6 +4474,21 @@ public final class BattleMsg {
     @java.lang.Override
     public int getKillMonsterCount() {
       return killMonsterCount_;
+    }
+
+    public static final int KILLMONSTERBOSSCOUNT_FIELD_NUMBER = 6;
+    private int killMonsterBossCount_;
+    /**
+     * <pre>
+     * 击杀首领数量
+     * </pre>
+     *
+     * <code>uint32 killMonsterBossCount = 6;</code>
+     * @return The killMonsterBossCount.
+     */
+    @java.lang.Override
+    public int getKillMonsterBossCount() {
+      return killMonsterBossCount_;
     }
 
     public static final int HPPERCENT_FIELD_NUMBER = 2;
@@ -4532,6 +4562,9 @@ public final class BattleMsg {
       if (battleTime_ != 0) {
         output.writeUInt32(4, battleTime_);
       }
+      if (killMonsterBossCount_ != 0) {
+        output.writeUInt32(6, killMonsterBossCount_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -4557,6 +4590,10 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(4, battleTime_);
       }
+      if (killMonsterBossCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(6, killMonsterBossCount_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -4574,6 +4611,8 @@ public final class BattleMsg {
 
       if (getKillMonsterCount()
           != other.getKillMonsterCount()) return false;
+      if (getKillMonsterBossCount()
+          != other.getKillMonsterBossCount()) return false;
       if (getHpPercent()
           != other.getHpPercent()) return false;
       if (getWin()
@@ -4593,6 +4632,8 @@ public final class BattleMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + KILLMONSTERCOUNT_FIELD_NUMBER;
       hash = (53 * hash) + getKillMonsterCount();
+      hash = (37 * hash) + KILLMONSTERBOSSCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getKillMonsterBossCount();
       hash = (37 * hash) + HPPERCENT_FIELD_NUMBER;
       hash = (53 * hash) + getHpPercent();
       hash = (37 * hash) + WIN_FIELD_NUMBER;
@@ -4739,6 +4780,8 @@ public final class BattleMsg {
         super.clear();
         killMonsterCount_ = 0;
 
+        killMonsterBossCount_ = 0;
+
         hpPercent_ = 0;
 
         win_ = false;
@@ -4772,6 +4815,7 @@ public final class BattleMsg {
       public cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003 result = new cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003(this);
         result.killMonsterCount_ = killMonsterCount_;
+        result.killMonsterBossCount_ = killMonsterBossCount_;
         result.hpPercent_ = hpPercent_;
         result.win_ = win_;
         result.battleTime_ = battleTime_;
@@ -4826,6 +4870,9 @@ public final class BattleMsg {
         if (other.getKillMonsterCount() != 0) {
           setKillMonsterCount(other.getKillMonsterCount());
         }
+        if (other.getKillMonsterBossCount() != 0) {
+          setKillMonsterBossCount(other.getKillMonsterBossCount());
+        }
         if (other.getHpPercent() != 0) {
           setHpPercent(other.getHpPercent());
         }
@@ -4867,7 +4914,7 @@ public final class BattleMsg {
       private int killMonsterCount_ ;
       /**
        * <pre>
-       * 击杀怪物数量
+       * 击杀怪物（小怪+头目）数量
        * </pre>
        *
        * <code>uint32 killMonsterCount = 1;</code>
@@ -4879,7 +4926,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 击杀怪物数量
+       * 击杀怪物（小怪+头目）数量
        * </pre>
        *
        * <code>uint32 killMonsterCount = 1;</code>
@@ -4894,7 +4941,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 击杀怪物数量
+       * 击杀怪物（小怪+头目）数量
        * </pre>
        *
        * <code>uint32 killMonsterCount = 1;</code>
@@ -4903,6 +4950,49 @@ public final class BattleMsg {
       public Builder clearKillMonsterCount() {
         
         killMonsterCount_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int killMonsterBossCount_ ;
+      /**
+       * <pre>
+       * 击杀首领数量
+       * </pre>
+       *
+       * <code>uint32 killMonsterBossCount = 6;</code>
+       * @return The killMonsterBossCount.
+       */
+      @java.lang.Override
+      public int getKillMonsterBossCount() {
+        return killMonsterBossCount_;
+      }
+      /**
+       * <pre>
+       * 击杀首领数量
+       * </pre>
+       *
+       * <code>uint32 killMonsterBossCount = 6;</code>
+       * @param value The killMonsterBossCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKillMonsterBossCount(int value) {
+        
+        killMonsterBossCount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 击杀首领数量
+       * </pre>
+       *
+       * <code>uint32 killMonsterBossCount = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKillMonsterBossCount() {
+        
+        killMonsterBossCount_ = 0;
         onChanged();
         return this;
       }
@@ -11794,27 +11884,27 @@ public final class BattleMsg {
       " \001(\005:\0028\001\"\201\001\n\010HeroAttr\022\017\n\007heroUid\030\001 \001(\t\0222" +
       "\n\theroAttrs\030\002 \003(\0132\037.Protos.HeroAttr.Hero" +
       "AttrsEntry\0320\n\016HeroAttrsEntry\022\013\n\003key\030\001 \001(" +
-      "\005\022\r\n\005value\030\002 \001(\005:\0028\001\"n\n\036BattleFieldEndRe" +
-      "quest_13000003\022\030\n\020killMonsterCount\030\001 \001(\r" +
-      "\022\021\n\thpPercent\030\002 \001(\r\022\013\n\003win\030\003 \001(\010\022\022\n\nbatt" +
-      "leTime\030\004 \001(\r\"F\n\037BattleFieldEndResponse_1" +
-      "3000004\022#\n\007rewards\030\001 \003(\0132\022.Protos.Reward" +
-      "Info\"$\n\"BattleRougeRefreshRequest_130000" +
-      "05\"%\n#BattleRougeRefreshResponse_1300000" +
-      "6\"9\n\034BattleRewardRequest_13000022\022\n\n\002id\030" +
-      "\001 \001(\r\022\r\n\005index\030\002 \001(\r\"C\n\035BattleRewardResp" +
-      "onse_13000023\022\"\n\006reward\030\001 \003(\0132\022.Protos.R" +
-      "ewardInfo\"I\n\"BattlePatrolRewardRequest_1" +
-      "3000044\022\016\n\006isFast\030\001 \001(\010\022\023\n\013advertising\030\002" +
-      " \001(\010\"e\n#BattlePatrolRewardResponse_13000" +
-      "045\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo" +
-      "\022\013\n\003exp\030\002 \001(\005\022\014\n\004gold\030\003 \001(\005\"d\n\nBattleInf" +
-      "o\022\n\n\002id\030\001 \001(\005\022\021\n\thpPercent\030\002 \001(\r\022\023\n\013rewa" +
-      "rdIndex\030\003 \003(\005\022\016\n\006finish\030\004 \001(\010\022\022\n\nbattleT" +
-      "ime\030\005 \001(\r\"Q\n\nPatrolInfo\022\022\n\nrewardTime\030\001 " +
-      "\001(\005\022\030\n\020quickPatrolCount\030\002 \001(\005\022\025\n\radPatro" +
-      "lCount\030\003 \001(\005B\033\n\031cn.game.protocol.protobu" +
-      "fb\006proto3"
+      "\005\022\r\n\005value\030\002 \001(\005:\0028\001\"\214\001\n\036BattleFieldEndR" +
+      "equest_13000003\022\030\n\020killMonsterCount\030\001 \001(" +
+      "\r\022\034\n\024killMonsterBossCount\030\006 \001(\r\022\021\n\thpPer" +
+      "cent\030\002 \001(\r\022\013\n\003win\030\003 \001(\010\022\022\n\nbattleTime\030\004 " +
+      "\001(\r\"F\n\037BattleFieldEndResponse_13000004\022#" +
+      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"$\n\"B" +
+      "attleRougeRefreshRequest_13000005\"%\n#Bat" +
+      "tleRougeRefreshResponse_13000006\"9\n\034Batt" +
+      "leRewardRequest_13000022\022\n\n\002id\030\001 \001(\r\022\r\n\005" +
+      "index\030\002 \001(\r\"C\n\035BattleRewardResponse_1300" +
+      "0023\022\"\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo" +
+      "\"I\n\"BattlePatrolRewardRequest_13000044\022\016" +
+      "\n\006isFast\030\001 \001(\010\022\023\n\013advertising\030\002 \001(\010\"e\n#B" +
+      "attlePatrolRewardResponse_13000045\022#\n\007re" +
+      "wards\030\001 \003(\0132\022.Protos.RewardInfo\022\013\n\003exp\030\002" +
+      " \001(\005\022\014\n\004gold\030\003 \001(\005\"d\n\nBattleInfo\022\n\n\002id\030\001" +
+      " \001(\005\022\021\n\thpPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003" +
+      " \003(\005\022\016\n\006finish\030\004 \001(\010\022\022\n\nbattleTime\030\005 \001(\r" +
+      "\"Q\n\nPatrolInfo\022\022\n\nrewardTime\030\001 \001(\005\022\030\n\020qu" +
+      "ickPatrolCount\030\002 \001(\005\022\025\n\radPatrolCount\030\003 " +
+      "\001(\005B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -11874,7 +11964,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleFieldEndRequest_13000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldEndRequest_13000003_descriptor,
-        new java.lang.String[] { "KillMonsterCount", "HpPercent", "Win", "BattleTime", });
+        new java.lang.String[] { "KillMonsterCount", "KillMonsterBossCount", "HpPercent", "Win", "BattleTime", });
     internal_static_Protos_BattleFieldEndResponse_13000004_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_Protos_BattleFieldEndResponse_13000004_fieldAccessorTable = new

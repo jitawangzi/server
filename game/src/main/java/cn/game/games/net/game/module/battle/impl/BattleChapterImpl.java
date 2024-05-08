@@ -70,9 +70,12 @@ public class BattleChapterImpl implements IBattleHandler {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 1) {
 				chapterModule.setMainBattleHighest(chapter.getBattleId());
-				player.handleEvent(EventTypeEnum.Chapter);
 			}
 		}
+		if (win) {
+			player.handleEvent(EventTypeEnum.ChapterWin, battleConfig.ID);
+		}
+
 		if (request.getBattleTime() > chapter.getBattleTime()) {
 			chapter.setBattleTime(request.getBattleTime());
 		}

@@ -31,7 +31,8 @@ message HeroAttr{
 
 // 结束关卡战斗请求
 message BattleFieldEndRequest_13000003{
-	uint32 killMonsterCount = 1;	// 击杀怪物数量
+	uint32 killMonsterCount = 1;	// 击杀怪物（小怪+头目）数量
+	uint32 killMonsterBossCount = 6;	// 击杀首领数量
 	uint32 hpPercent = 2;	// 城池剩余血量百分比，如剩余40%血量，则为40
 	bool win = 3;	        // 战斗是否成功，用血量百分比可能有误差。
 	uint32 battleTime = 4;	        // 战斗时长（秒）

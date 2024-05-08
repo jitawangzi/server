@@ -16,14 +16,14 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
  */
 @ConditionType(type = ConditionTypeEnum.HeroLevel)
 public class HeroLvNCondition extends AbstractCondition {
-
-	public HeroLvNCondition() {
-
-	}
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Hero };
 
 	@Override
-	public void setEvents() {
-		super.events = new EventTypeEnum[] { EventTypeEnum.RoleLevelUp, EventTypeEnum.Role };
+	public EventTypeEnum[] getEventTypes() {
+		return events;
+	}
+	public HeroLvNCondition() {
+
 	}
 
 	@Override

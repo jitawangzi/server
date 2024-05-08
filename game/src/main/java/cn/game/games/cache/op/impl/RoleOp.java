@@ -355,7 +355,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 		role.save();
 		DAO.execute(RoleMapper.class, MapperConstant.insert, role);
 
-		player.handleEvent(new GameEvent(EventTypeEnum.Role, roleConfig.getId()));
+		player.handleEvent(new GameEvent(EventTypeEnum.Hero, roleConfig.getId()));
 
 		return RewardItem.valueOf(role);
 	}
@@ -496,7 +496,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 			expConfig = RoleExpManager.getInstance().getRoleExpConfig(role.getLevel());
 
 			
-			player.handleEvent(new GameEvent(EventTypeEnum.RoleLevelUp, null, role.getDictId()));
+			player.handleEvent(new GameEvent(EventTypeEnum.HeroLevelUp, null, role.getDictId()));
 
 		}
 		role.setExp(curExp);
@@ -513,7 +513,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 		}
 
 		
-		player.handleEvent(new GameEvent(EventTypeEnum.RoleLevelUp, null, role.getDictId()));
+		player.handleEvent(new GameEvent(EventTypeEnum.HeroLevelUp, null, role.getDictId()));
 		role.setLevel(role.getLevel() + level);
 		update(role);
 		return role;
