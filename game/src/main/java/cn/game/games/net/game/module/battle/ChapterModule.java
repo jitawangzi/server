@@ -538,7 +538,7 @@ public class ChapterModule extends BasePlayerModule  {
 			if (chapter != null) {
 				continue;
 			}
-			boolean checkCondition = PlayerHelper.checkCondition(playerId, battleChapterConfig.getCondition());
+			boolean checkCondition = PlayerHelper.checkCondition(player, battleChapterConfig.getCondition());
 			if (checkCondition) { return battleChapterConfig.getId(); }
 		}
 		

@@ -32,16 +32,16 @@ import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.AchievementMissionConfig;
 import cn.game.protocol.generated.config.MainlineMissionConfig;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
-import cn.game.protocol.generated.config.MissionConfig;
+import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
-import cn.game.protocol.generated.enume.MissionTypeEnum;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
-import cn.game.protocol.generated.manager.MissionManager;
+import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
-import cn.game.protocol.protobuf.MissionMsg.MissionGroupPush_20100008;
-import cn.game.protocol.protobuf.MissionMsg.MissionRewardPush_20600008;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008;
+import cn.game.protocol.protobuf.QuestMsg.QuestRewardPush_20600008;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**
@@ -80,7 +80,7 @@ public class QuestModule extends BasePlayerModule {
 //			} else {
 //				quests[e.getQuestGroup()].put(e.getId(), e);
 //			}
-			MissionConfig missionConfig = QuestHelper.getMissionConfig(e.getId());
+			QuestConfig missionConfig = QuestHelper.getQuestConfig(e.getId());
 			quests[missionConfig.getType().ordinal()].put(e.getId(), e);
 		}
 
@@ -104,13 +104,13 @@ public class QuestModule extends BasePlayerModule {
 //		QuestHelper.updateBase(quest);
 	}
 
-	public void refreshQuest(MissionTypeEnum type) {
+	public void refreshQuest(QuestTypeEnum type) {
 		Map<Integer, Quest> values = quests[type.ordinal()];
-		List<MissionConfig> missionList = MissionManager.getInstance().getTypeList(type);
+		List<QuestConfig> missionList = QuestManager.getInstance().getTypeList(type);
 		if (missionList == null) {
 			return;
 		}
-		for (MissionConfig missionConfig : missionList) {
+		for (QuestConfig missionConfig : missionList) {
 			if (checkOpen(missionConfig)) {
 				Quest quest = values.get(missionConfig.getId());
 				if (quest == null) {
@@ -125,7 +125,7 @@ public class QuestModule extends BasePlayerModule {
 		}
 	}
 
-	public int getFinishedCount(MissionTypeEnum type) {
+	public int getFinishedCount(QuestTypeEnum type) {
 		Map<Integer, Quest> map = this.quests[type.ordinal()];
 		int count = 0;
 		for (Quest quest : map.values()) {
@@ -139,9 +139,9 @@ public class QuestModule extends BasePlayerModule {
 	public void refreshNewLevelQuest(int level, boolean notify) {
 
 		// 通用任务，一般根据等级刷新出新任务
-		Collection<MissionConfig> list = MissionManager.getInstance().getLevelList(level);
+		Collection<QuestConfig> list = QuestManager.getInstance().getLevelList(level);
 		if (list != null) {
-			for (MissionConfig e : list) {
+			for (QuestConfig e : list) {
 				if (!checkOpen(e)) {
 					continue;
 				}
@@ -217,7 +217,7 @@ public class QuestModule extends BasePlayerModule {
 		if (!quest.receive()) {
 			return null;
 		}
-		MissionConfig questConfig = QuestHelper.getMissionConfig(id);
+		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
 		// 先执行结束命令
 //		if (questConfig instanceof MainlineMissionConfig) {
 //			MainlineMissionConfig missionConfig = (MainlineMissionConfig) questConfig;
@@ -268,22 +268,23 @@ public class QuestModule extends BasePlayerModule {
 		// 发起完成任务事件
 		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.QuestFinish, quest.getId()));
 
-		if (QuestHelper.autoRewardUseMail(id)) {
-			MailHelper.sendMailMultiLanguage(playerId, 208011, 208009, 208010, MailHelper.SYSTEM, reward);
-			return null;
-		} else {
-			return PlayerHelper.addResources(playerId, reward);
-		}
+		/*		if (QuestHelper.autoRewardUseMail(id)) {
+					MailHelper.sendMailMultiLanguage(playerId, 208011, 208009, 208010, MailHelper.SYSTEM, reward);
+					return null;
+				} else {
+					return PlayerHelper.addResources(playerId, reward);
+				}*/
+
+		return PlayerHelper.addResources(playerId, reward);
 
 	}
 
 	@Deprecated
 	public void addChallengeScore(int id) {
-		MissionConfig questConfig = QuestHelper.getMissionConfig(id);
+		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
 		int challengeScore = questConfig.getChallengeScore();
 		if (challengeScore > 0) {
-			MissionChallengeGroupConfig config = MissionChallengeGroupManager.getInstance()
-					.getMissionChallengeGroupConfig(questConfig.getGroupId());
+			MissionChallengeGroupConfig config = MissionChallengeGroupManager.getInstance().getMissionChallengeGroupConfig(questConfig.getGroupId());
 			QuestChallenge questChallenge = this.challenges.get(config.getId());
 			questChallenge.setScore(questChallenge.getScore() + challengeScore);
 			if (questChallenge.getScore() >= config.getChapterLimit()) {
@@ -312,8 +313,7 @@ public class QuestModule extends BasePlayerModule {
 		DAO.execute(QuestChallengeMapper.class, MapperConstant.insert, add);
 		this.challenges.put(add.getId(), add);
 
-		MissionChallengeGroupConfig config = MissionChallengeGroupManager.getInstance()
-				.getMissionChallengeGroupConfig(group);
+		MissionChallengeGroupConfig config = MissionChallengeGroupManager.getInstance().getMissionChallengeGroupConfig(group);
 		List<Integer> missionId = config.getMissionId();
 		open(missionId);
 	}
@@ -343,7 +343,7 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	public Quest get(int id) {
-		MissionConfig missionConfig = QuestHelper.getMissionConfig(id);
+		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
 		return get(id, missionConfig.getType());
 	}
 
@@ -363,16 +363,16 @@ public class QuestModule extends BasePlayerModule {
 		return competeQuests[group].get(id);
 	}
 
-	public Quest get(int id, MissionTypeEnum missionType) {
+	public Quest get(int id, QuestTypeEnum missionType) {
 
 		return quests[missionType.ordinal()].get(id);
 	}
 
 	public boolean hasBranchGroup(int branchGroup) {
 
-		Map<Integer, Quest> group = getGroup(MissionTypeEnum.BranchLine);
+		Map<Integer, Quest> group = getGroup(QuestTypeEnum.BranchLine);
 		for (Integer id : group.keySet()) {
-			MissionConfig config = QuestHelper.getMissionConfig(id);
+			QuestConfig config = QuestHelper.getQuestConfig(id);
 			if (config.getGroupId() == branchGroup) {
 				return true;
 			}
@@ -380,7 +380,7 @@ public class QuestModule extends BasePlayerModule {
 		return false;
 	}
 
-	public Map<Integer, Quest> getGroup(MissionTypeEnum missionTypeEnum) {
+	public Map<Integer, Quest> getGroup(QuestTypeEnum missionTypeEnum) {
 
 		return quests[missionTypeEnum.ordinal()];
 	}
@@ -395,7 +395,7 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	public Quest open(int id, byte initState, boolean notify) {
-		MissionConfig questConfig = QuestHelper.getMissionConfig(id);
+		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
 		int group = questConfig.getType().ordinal();
 		if (this.quests[group].get(id) != null) {
 			log.warn(" {} 任务{}重复开启 : ", playerId, questConfig.getId());
@@ -406,7 +406,7 @@ public class QuestModule extends BasePlayerModule {
 
 		if (notify) {
 			PlayerHelper.sendProtocol(playerId,
-					MissionGroupPush_20100008.newBuilder().setType(questConfig.getType().getId()).build());
+					QuestGroupPush_20100008.newBuilder().setType(questConfig.getType().getId()).build());
 			QuestHelper.notifyQuestChange(quest, UpdateType.ADD);
 		}
 		setState(quest, initState);
@@ -420,7 +420,7 @@ public class QuestModule extends BasePlayerModule {
 		return quest;
 	}
 
-	public void open(MissionConfig questConfig, boolean notify) {
+	public void open(QuestConfig questConfig, boolean notify) {
 
 		open(questConfig.getId(), QuestHelper.SHOW, notify);
 	}
@@ -435,7 +435,7 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	public void remove(int id) {
-		MissionConfig missionConfig = QuestHelper.getMissionConfig(id);
+		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
 		Map<Integer, Quest> group = getGroup(missionConfig.getType());
 
 		Quest quest = group.remove(id);
@@ -469,7 +469,7 @@ public class QuestModule extends BasePlayerModule {
 		}
 	}
 
-	public boolean checkOpen(MissionConfig questConfig) {
+	public boolean checkOpen(QuestConfig questConfig) {
 		if (questConfig.getLevel() > 0 && player.getData().getLevel() >= questConfig.getLevel()) {
 
 			if (questConfig.getEndLevel() > 0 && player.getData().getLevel() > questConfig.getEndLevel()) {
@@ -496,7 +496,7 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	public boolean isPass(int id) {
-		MissionConfig config = QuestHelper.getMissionConfig(id);
+		QuestConfig config = QuestHelper.getQuestConfig(id);
 		Quest quest = get(id, config.getType());
 		if (config.getRefreshType()) {
 			return quest != null && quest.getState() >= QuestHelper.CAN_GIVEWARD;
@@ -505,8 +505,8 @@ public class QuestModule extends BasePlayerModule {
 			return true;
 		}
 		// 通过id数值判断是否完成；
-		if (config.getType() == MissionTypeEnum.MainLine) {
-			Map<Integer, Quest> group = getGroup(MissionTypeEnum.MainLine);
+		if (config.getType() == QuestTypeEnum.MainLine) {
+			Map<Integer, Quest> group = getGroup(QuestTypeEnum.MainLine);
 			for (Quest q : group.values()) {
 				if (id < q.getId()) {
 					return true;
@@ -516,8 +516,8 @@ public class QuestModule extends BasePlayerModule {
 					return false;
 				}
 			}
-		} else if (config.getType() == MissionTypeEnum.BranchLine) {
-			Map<Integer, Quest> group = getGroup(MissionTypeEnum.BranchLine);
+		} else if (config.getType() == QuestTypeEnum.BranchLine) {
+			Map<Integer, Quest> group = getGroup(QuestTypeEnum.BranchLine);
 			MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) config;
 			int groupId = mainlineMissionConfig.getGroupId();
 			Set<Entry<Integer, Quest>> entrySet = group.entrySet();
@@ -525,7 +525,7 @@ public class QuestModule extends BasePlayerModule {
 				int k = entry.getKey();
 				Quest v = entry.getValue();
 
-				MissionConfig c = QuestHelper.getMissionConfig(k);
+				QuestConfig c = QuestHelper.getQuestConfig(k);
 				if (c.getGroupId() == groupId) {
 					if (id < k) {
 						return true;
@@ -558,7 +558,7 @@ public class QuestModule extends BasePlayerModule {
 
 	public boolean canAccept(int id) {
 
-		MissionConfig missionConfig = QuestHelper.getMissionConfig(id);
+		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
 //		Quest quest = get(id, missionConfig.getType()); 
 //		if (quest != null) {
 //			return false ; 
@@ -569,8 +569,8 @@ public class QuestModule extends BasePlayerModule {
 		int accessType = missionConfig.getAccessMode().get(0);
 		if (accessType == 1)
 			return true;
-		MissionTypeEnum type = missionConfig.getType();
-		if (type == MissionTypeEnum.MainLine || type == MissionTypeEnum.BranchLine) {
+		QuestTypeEnum type = missionConfig.getType();
+		if (type == QuestTypeEnum.MainLine || type == QuestTypeEnum.BranchLine) {
 			if (!isPass(id)) {
 				return true;
 			}
@@ -601,7 +601,7 @@ public class QuestModule extends BasePlayerModule {
 
 	private void setState(Quest quest) {
 		byte state = quest.getState();
-		MissionConfig missionConfig = QuestHelper.getMissionConfig(quest.getId());
+		QuestConfig missionConfig = QuestHelper.getQuestConfig(quest.getId());
 		switch (state) {
 		case QuestHelper.SHOW:
 
@@ -637,7 +637,7 @@ public class QuestModule extends BasePlayerModule {
 				List<RewardInfo> receive = receive(quest.getId());
 				if (receive != null && !receive.isEmpty()) {
 
-					MissionRewardPush_20600008.Builder builder = MissionRewardPush_20600008.newBuilder();
+					QuestRewardPush_20600008.Builder builder = QuestRewardPush_20600008.newBuilder();
 					builder.setId(quest.getId());
 					builder.addAllRewards(receive);
 					PlayerHelper.sendProtocol(playerId, builder.build());
@@ -659,7 +659,7 @@ public class QuestModule extends BasePlayerModule {
 
 		int idMin = Integer.MAX_VALUE;
 
-		Map<Integer, Quest> group = getGroup(MissionTypeEnum.BranchLine);
+		Map<Integer, Quest> group = getGroup(QuestTypeEnum.BranchLine);
 		for (Entry<Integer, Quest> entry : group.entrySet()) {
 			Quest quest = entry.getValue();
 			if (QuestHelper.showBranch(quest.getState())) {
@@ -682,10 +682,10 @@ public class QuestModule extends BasePlayerModule {
 
 	}
 
-	public void refreshNewQuest(MissionTypeEnum type, boolean notify) {
+	public void refreshNewQuest(QuestTypeEnum type, boolean notify) {
 		Map<Integer, Quest> group = getGroup(type);
 		if (group == null || group.isEmpty()) {
-			if (type == MissionTypeEnum.Achievement) {
+			if (type == QuestTypeEnum.Achievement) {
 				Collection<AchievementMissionConfig> list = AchievementMissionManager.getInstance().list();
 				for (AchievementMissionConfig config : list) {
 					open(config, notify);
@@ -710,18 +710,18 @@ public class QuestModule extends BasePlayerModule {
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case NewWeek: {
-			refreshQuest(MissionTypeEnum.Weekly);
+			refreshQuest(QuestTypeEnum.Weekly);
 			break;
 		}
 		case NewDay: {
-			refreshQuest(MissionTypeEnum.Daily);
+			refreshQuest(QuestTypeEnum.Daily);
 			break;
 		}
 		case PLAYER_CREATE: {
 //			questOp.refreshNewQuest();
 			refreshNewLevelQuest(player.getData().getLevel(), false);
 			initQuest();
-			refreshNewQuest(MissionTypeEnum.Achievement, false);
+			refreshNewQuest(QuestTypeEnum.Achievement, false);
 			break;
 		}
 		case LevelUp: {
@@ -733,7 +733,7 @@ public class QuestModule extends BasePlayerModule {
 
 	@Override
 	public void init() {
-		quests = new HashMap[MissionTypeEnum.values().length];
+		quests = new HashMap[QuestTypeEnum.values().length];
 		for (int i = 0; i < quests.length; i++) {
 			quests[i] = new HashMap<>();
 		}

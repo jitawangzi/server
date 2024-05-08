@@ -39,7 +39,7 @@ import cn.game.games.net.game.module.chat.GroupAllInfo;
 import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.store.StoreGoods;
-import cn.game.protocol.generated.enume.MissionTypeEnum;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
@@ -57,9 +57,9 @@ import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo;
 import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
-import cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupInfo;
-import cn.game.protocol.protobuf.MissionMsg.MissionInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
+import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupInfo;
+import cn.game.protocol.protobuf.QuestMsg.QuestInfo;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
@@ -448,38 +448,39 @@ public class PbBuilder {
 		return items.stream().map(PbBuilder::buildRewardInfo).collect(toList());
 	}
 
-	public static List<MissionInfo> buildQuestByGroup(Long playerId, MissionTypeEnum missionTypeEnum, int type) {
+	public static List<QuestInfo> buildQuestByGroup(Long playerId, QuestTypeEnum missionTypeEnum, int type) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		QuestModule questOp = player.getModule(QuestModule.class);
 		Map<Integer, Quest> group2 = type == 0 ? questOp.getGroup(missionTypeEnum) : questOp.getCompeteGroup(missionTypeEnum.getId());
 
-		List<MissionInfo> list = new ArrayList<>();
+		List<QuestInfo> list = new ArrayList<>();
 
 		for (Quest e : group2.values()) {
 
-			list.add(buildMissionInfo(e));
+			list.add(buildQuestInfo(e));
 		}
 		return list;
 	}
-	public static List<MissionInfo> buildQuestByGroup(Long playerId, MissionTypeEnum missionTypeEnum) {
+
+	public static List<QuestInfo> buildQuestByGroup(Long playerId, QuestTypeEnum missionTypeEnum) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		QuestModule questOp = player.getModule(QuestModule.class);
 		Map<Integer, Quest> group2 = questOp.getGroup(missionTypeEnum);
 
-		List<MissionInfo> list = new ArrayList<>();
+		List<QuestInfo> list = new ArrayList<>();
 
 		for (Quest e : group2.values()) {
 
-			list.add(buildMissionInfo(e));
+			list.add(buildQuestInfo(e));
 		}
 		return list;
 	}
 
-	public static MissionInfo buildMissionInfo(Quest quest) {
+	public static QuestInfo buildQuestInfo(Quest quest) {
 
-		MissionInfo.Builder questInfo = MissionInfo.newBuilder();
+		QuestInfo.Builder questInfo = QuestInfo.newBuilder();
 		questInfo.setId(quest.getId());
 		List<Condition> questConditionList = quest.getRequires();
 		if (questConditionList != null) {
@@ -763,8 +764,8 @@ public class PbBuilder {
 	}
 
 
-	public static MissionChallengeGroupInfo buildQuestChallengeGroupInfo(QuestChallenge questChallenge) {
-		MissionChallengeGroupInfo.Builder builder = MissionChallengeGroupInfo.newBuilder();
+	public static QuestChallengeGroupInfo buildQuestChallengeGroupInfo(QuestChallenge questChallenge) {
+		QuestChallengeGroupInfo.Builder builder = QuestChallengeGroupInfo.newBuilder();
 		builder.setId(questChallenge.getId());
 		builder.setReward(questChallenge.getFinish());
 		builder.setScore(questChallenge.getScore());

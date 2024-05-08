@@ -1112,7 +1112,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 					}
 				}
 			}
-			boolean check = PlayerHelper.checkCondition(playerId, tagConfig.getCondition(), new GameEvent(roleId));
+			boolean check = PlayerHelper.checkCondition(player, tagConfig.getCondition(), new GameEvent(roleId));
 			if (check) {
 				canGet.add(tagConfig);
 			}

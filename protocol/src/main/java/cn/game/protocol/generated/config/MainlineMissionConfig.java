@@ -1,7 +1,7 @@
 package cn.game.protocol.generated.config;
 
 import java.util.Map.Entry;
-import cn.game.protocol.generated.enume.MissionTypeEnum;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;
@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
  * 
  * 工具生成的，不要手动修改
  */
- public class MainlineMissionConfig extends MissionConfig {
+ public class MainlineMissionConfig extends QuestConfig {
 
 	/** 起始命令id -- 起始命令id */
 	private final List<Integer> startCommand;		

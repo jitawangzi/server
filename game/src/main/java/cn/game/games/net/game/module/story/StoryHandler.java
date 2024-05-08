@@ -45,7 +45,7 @@ public class StoryHandler extends BaseHandler {
 
 		StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
 
-		boolean checkCondition = PlayerHelper.checkCondition(playerId, storyConfig.getCondition());
+		boolean checkCondition = PlayerHelper.checkCondition(player, storyConfig.getCondition());
 		if (!checkCondition) {
 //			client.sendProtocol(resp.build(), ErrorMsgEnum.story_unlock_condition_err.getId());
 			return;

@@ -135,7 +135,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id); 
-		boolean checkCondition = PlayerHelper.checkCondition(player.getPlayerId(), monthCardConfig.ConditionID);
+		boolean checkCondition = PlayerHelper.checkCondition(player, monthCardConfig.ConditionID);
 		if (!checkCondition) {
 			client.sendProtocol(resp, ErrorMsgEnum.month_card_condition.getId());
 			return;
@@ -219,7 +219,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		ShopGiftConfig shopGiftConfig = ShopGiftManager.instance().get(id);
-		boolean checkCondition = PlayerHelper.checkCondition(player.getPlayerId(), shopGiftConfig.Condition, null);
+		boolean checkCondition = PlayerHelper.checkCondition(player, shopGiftConfig.Condition);
 		if (!checkCondition) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_gift_condition.getId());
 			return;

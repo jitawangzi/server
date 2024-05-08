@@ -821,13 +821,14 @@ public class PlayerHelper {
 	 * @param conditions
 	 * @return
 	 */
-	public static boolean checkCondition(long playerId, List<Integer> conditions) {
+	public static boolean checkCondition(Player player, List<Integer> conditions) {
 
-		return checkCondition(playerId, conditions, false, null);
+		return checkCondition(player, conditions, false, null);
 	}
-	public static boolean checkCondition(long playerId, int[] conditions) {
 
-		return checkCondition(playerId, GameUtil.transform1(conditions));
+	public static boolean checkCondition(Player player, int[] conditions) {
+
+		return checkCondition(player, GameUtil.transform1(conditions));
 	}
 	/**
 	 * @Description
@@ -837,24 +838,25 @@ public class PlayerHelper {
 	 *            true,如果满足任意条件
 	 * @return
 	 */
-	public static boolean checkCondition(long playerId, List<Integer> conditions, boolean or) {
+	public static boolean checkCondition(Player player, List<Integer> conditions, boolean or) {
 
-		return checkCondition(playerId, conditions, or, null);
+		return checkCondition(player, conditions, or, null);
 	}
-	public static boolean checkCondition(long playerId, List<Integer> conditions, boolean or, GameEvent param) {
+
+	public static boolean checkCondition(Player player, List<Integer> conditions, boolean or, GameEvent param) {
 
 		if (conditions.isEmpty()) {
 			return true ; 
 		}
 		if (or) {
 			for (Integer e : conditions) {
-				if (checkCondition(playerId, e, param)) {
+				if (checkCondition(player, e, param)) {
 					return true; 
 				}
 			}
 		} else {
 			for (Integer e : conditions) {
-				if (!checkCondition(playerId, e, param)) { 
+				if (!checkCondition(player, e, param)) {
 					return false; 
 				}
 			}
@@ -862,8 +864,9 @@ public class PlayerHelper {
 		}
 		return false;
 	}
-	public static boolean checkCondition(long playerId, List<Integer> conditions, GameEvent param) {
-		return checkCondition(playerId, conditions, false, param);
+
+	public static boolean checkCondition(Player player, List<Integer> conditions, GameEvent param) {
+		return checkCondition(player, conditions, false, param);
 		
 	}
 
@@ -875,11 +878,10 @@ public class PlayerHelper {
 	 *            需要传入待检查的一些参数
 	 * @return
 	 */
-	public static boolean checkCondition(long playerId, int condition, Object... param) {
+	public static boolean checkCondition(Player player, int condition, Object... param) {
 		if (condition == 0) {
 			return true;
 		}
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
 

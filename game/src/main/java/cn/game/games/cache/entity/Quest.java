@@ -14,9 +14,9 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.net.game.module.quest.ConditionContainer;
 import cn.game.games.net.game.module.quest.QuestModule;
-import cn.game.protocol.generated.config.MissionConfig;
+import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
-import cn.game.protocol.protobuf.MissionMsg.MissionConditionCompletePush_20500001;
+import cn.game.protocol.protobuf.QuestMsg.QuestConditionCompletePush_20500001;
 
 public class Quest implements Serializable, DbEntity {
 
@@ -240,7 +240,7 @@ public class Quest implements Serializable, DbEntity {
 		if (this.state != QuestHelper.ACCEPTED) {
 			return;
 		}
-		MissionConfig questConfig = QuestHelper.getMissionConfig(id);
+		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
 		Consumer<Condition> condChangeAction = c -> {
 //			// 推送条件数量变更
 			QuestHelper.notifyQuestChange(this, UpdateType.UPDATE);
@@ -248,7 +248,7 @@ public class Quest implements Serializable, DbEntity {
 		};
 		Consumer<Condition> condAchieveAction = c -> {
 //			QuestHelper.conditionCmd(this, c.getCondition());
-			PlayerHelper.sendProtocol(this.getPlayerId(), MissionConditionCompletePush_20500001.newBuilder().setId(this.getId())
+			PlayerHelper.sendProtocol(this.getPlayerId(), QuestConditionCompletePush_20500001.newBuilder().setId(this.getId())
 					.setIndex(c.getIndex()).build());
 //			QuestHelper.updateParams(this);
 		};

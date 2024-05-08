@@ -17,32 +17,32 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
-import cn.game.protocol.generated.config.MissionConfig;
 import cn.game.protocol.generated.config.MissionDailyConfig;
-import cn.game.protocol.generated.enume.MissionTypeEnum;
+import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.MissionDailyManager;
 import cn.game.protocol.manual.OldErrorMsgEnum;
-import cn.game.protocol.protobuf.MissionMsg.MissionAcceptRequest_20000026;
-import cn.game.protocol.protobuf.MissionMsg.MissionAcceptResponse_20000027;
-import cn.game.protocol.protobuf.MissionMsg.MissionActiveResponse_20000007;
-import cn.game.protocol.protobuf.MissionMsg.MissionBranchPriorityRequest_20000028;
-import cn.game.protocol.protobuf.MissionMsg.MissionBranchPriorityResponse_20000029;
-import cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupDetailRequest_20000022;
-import cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupDetailResponse_20000023;
-import cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupRequest_20000020;
-import cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupResponse_20000021;
-import cn.game.protocol.protobuf.MissionMsg.MissionChooseRewardRequest_20000033;
-import cn.game.protocol.protobuf.MissionMsg.MissionChooseRewardResponse_20000034;
-import cn.game.protocol.protobuf.MissionMsg.MissionListRequest_20000001;
-import cn.game.protocol.protobuf.MissionMsg.MissionListResponse_20000002;
-import cn.game.protocol.protobuf.MissionMsg.MissionReceiveActiveRequest_20000008;
-import cn.game.protocol.protobuf.MissionMsg.MissionReceiveActiveResponse_20000009;
-import cn.game.protocol.protobuf.MissionMsg.MissionReceiveRequest_20000004;
-import cn.game.protocol.protobuf.MissionMsg.MissionReceiveResponse_20000005;
-import cn.game.protocol.protobuf.MissionMsg.MissionUpdateRequest_20000030;
-import cn.game.protocol.protobuf.MissionMsg.MissionUpdateResponse_20000031;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.QuestMsg.QuestAcceptRequest_20000026;
+import cn.game.protocol.protobuf.QuestMsg.QuestAcceptResponse_20000027;
+import cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007;
+import cn.game.protocol.protobuf.QuestMsg.QuestBranchPriorityRequest_20000028;
+import cn.game.protocol.protobuf.QuestMsg.QuestBranchPriorityResponse_20000029;
+import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupDetailRequest_20000022;
+import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupDetailResponse_20000023;
+import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupRequest_20000020;
+import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupResponse_20000021;
+import cn.game.protocol.protobuf.QuestMsg.QuestChooseRewardRequest_20000033;
+import cn.game.protocol.protobuf.QuestMsg.QuestChooseRewardResponse_20000034;
+import cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001;
+import cn.game.protocol.protobuf.QuestMsg.QuestListResponse_20000002;
+import cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008;
+import cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveResponse_20000009;
+import cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004;
+import cn.game.protocol.protobuf.QuestMsg.QuestReceiveResponse_20000005;
+import cn.game.protocol.protobuf.QuestMsg.QuestUpdateRequest_20000030;
+import cn.game.protocol.protobuf.QuestMsg.QuestUpdateResponse_20000031;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @Component
@@ -56,21 +56,21 @@ public class QuestHandler extends BaseHandler {
 	@Override
 	protected void inititialize() {
 
-		putInvoker(PbProtocol.MissionListRequest_20000001, this::list);
-		putInvoker(PbProtocol.MissionReceiveRequest_20000004, this::receive);
-		putInvoker(PbProtocol.MissionChooseRewardRequest_20000033, this::chooseReward);
-		putInvoker(PbProtocol.MissionActiveRequest_20000006, this::active);
-		putInvoker(PbProtocol.MissionReceiveActiveRequest_20000008, this::activeReceive);
-		putInvoker(PbProtocol.MissionChallengeGroupRequest_20000020, this::group);
-		putInvoker(PbProtocol.MissionChallengeGroupDetailRequest_20000022, this::groupDetail);
-		putInvoker(PbProtocol.MissionAcceptRequest_20000026, this::accept);
-		putInvoker(PbProtocol.MissionBranchPriorityRequest_20000028, this::branchPriority);
-		putInvoker(PbProtocol.MissionUpdateRequest_20000030, this::update);
+		putInvoker(PbProtocol.QuestListRequest_20000001, this::list);
+		putInvoker(PbProtocol.QuestReceiveRequest_20000004, this::receive);
+		putInvoker(PbProtocol.QuestChooseRewardRequest_20000033, this::chooseReward);
+		putInvoker(PbProtocol.QuestActiveRequest_20000006, this::active);
+		putInvoker(PbProtocol.QuestReceiveActiveRequest_20000008, this::activeReceive);
+		putInvoker(PbProtocol.QuestChallengeGroupRequest_20000020, this::group);
+		putInvoker(PbProtocol.QuestChallengeGroupDetailRequest_20000022, this::groupDetail);
+		putInvoker(PbProtocol.QuestAcceptRequest_20000026, this::accept);
+		putInvoker(PbProtocol.QuestBranchPriorityRequest_20000028, this::branchPriority);
+		putInvoker(PbProtocol.QuestUpdateRequest_20000030, this::update);
 	}
 
 	protected void update(NetClient client, Object message) {
-		MissionUpdateRequest_20000030 req = (MissionUpdateRequest_20000030) message;
-		MissionUpdateResponse_20000031.Builder resp = MissionUpdateResponse_20000031.newBuilder();
+		QuestUpdateRequest_20000030 req = (QuestUpdateRequest_20000030) message;
+		QuestUpdateResponse_20000031.Builder resp = QuestUpdateResponse_20000031.newBuilder();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		int id = req.getId();
@@ -78,7 +78,7 @@ public class QuestHandler extends BaseHandler {
 		int count = req.getCount();
 
 		// 是否前端触发
-		MissionConfig missionConfig = QuestHelper.getMissionConfig(id);
+		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
 		if (!missionConfig.getIsClentUpdate()) {
 			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
 			return;
@@ -98,8 +98,8 @@ public class QuestHandler extends BaseHandler {
 	}
 
 	protected void branchPriority(NetClient client, Object message) {
-		MissionBranchPriorityRequest_20000028 req = (MissionBranchPriorityRequest_20000028) message;
-		MissionBranchPriorityResponse_20000029.Builder resp = MissionBranchPriorityResponse_20000029.newBuilder();
+		QuestBranchPriorityRequest_20000028 req = (QuestBranchPriorityRequest_20000028) message;
+		QuestBranchPriorityResponse_20000029.Builder resp = QuestBranchPriorityResponse_20000029.newBuilder();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		int group = req.getGroup();
@@ -119,8 +119,8 @@ public class QuestHandler extends BaseHandler {
 		client.sendProtocol(resp);
 	}
 	protected void accept(NetClient client, Object message) {
-		MissionAcceptRequest_20000026 req = (MissionAcceptRequest_20000026) message;
-		MissionAcceptResponse_20000027.Builder resp = MissionAcceptResponse_20000027.newBuilder();
+		QuestAcceptRequest_20000026 req = (QuestAcceptRequest_20000026) message;
+		QuestAcceptResponse_20000027.Builder resp = QuestAcceptResponse_20000027.newBuilder();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		int id = req.getId();
@@ -137,12 +137,12 @@ public class QuestHandler extends BaseHandler {
 
 		questOp.setState(quest, QuestHelper.ACCEPTED);
 
-		resp.setMission(PbBuilder.buildMissionInfo(quest));
+		resp.setQuest(PbBuilder.buildQuestInfo(quest));
 		client.sendProtocol(resp);
 	}
 	protected void groupDetail(NetClient client, Object message) {
-		MissionChallengeGroupDetailRequest_20000022 req = (MissionChallengeGroupDetailRequest_20000022) message;
-		MissionChallengeGroupDetailResponse_20000023.Builder resp = MissionChallengeGroupDetailResponse_20000023.newBuilder();
+		QuestChallengeGroupDetailRequest_20000022 req = (QuestChallengeGroupDetailRequest_20000022) message;
+		QuestChallengeGroupDetailResponse_20000023.Builder resp = QuestChallengeGroupDetailResponse_20000023.newBuilder();
 		int id = req.getId();
 		
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
@@ -156,7 +156,7 @@ public class QuestHandler extends BaseHandler {
 			for (Integer qid : ids) {
 				Quest quest = questOp.get(qid);
 				if (quest != null) {
-					resp.addMissions(PbBuilder.buildMissionInfo(quest));
+					resp.addQuests(PbBuilder.buildQuestInfo(quest));
 				}
 			}
 		}
@@ -165,8 +165,8 @@ public class QuestHandler extends BaseHandler {
 	}
 
 	protected void group(NetClient client, Object message) {
-		MissionChallengeGroupRequest_20000020 req = (MissionChallengeGroupRequest_20000020) message;
-		MissionChallengeGroupResponse_20000021.Builder resp = MissionChallengeGroupResponse_20000021.newBuilder();
+		QuestChallengeGroupRequest_20000020 req = (QuestChallengeGroupRequest_20000020) message;
+		QuestChallengeGroupResponse_20000021.Builder resp = QuestChallengeGroupResponse_20000021.newBuilder();
 		int type = req.getType();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		QuestModule questOp = player.getModule(QuestModule.class);
@@ -182,13 +182,13 @@ public class QuestHandler extends BaseHandler {
 		client.sendProtocol(resp.build());
 	}
 	protected void activeReceive(NetClient client, Object message) {
-		MissionReceiveActiveRequest_20000008 req = (MissionReceiveActiveRequest_20000008) message;
-		MissionReceiveActiveResponse_20000009.Builder resp = MissionReceiveActiveResponse_20000009.newBuilder();
+		QuestReceiveActiveRequest_20000008 req = (QuestReceiveActiveRequest_20000008) message;
+		QuestReceiveActiveResponse_20000009.Builder resp = QuestReceiveActiveResponse_20000009.newBuilder();
 		int id = req.getId();
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		QuestModule questOp = player.getModule(QuestModule.class);
-		int finishedCount = questOp.getFinishedCount(MissionTypeEnum.Daily);
+		int finishedCount = questOp.getFinishedCount(QuestTypeEnum.Daily);
 		/*		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
 				Integer quest = playerExt.getQuestActive();
 				boolean one = ByteHelp.isOne(playerExt.getQuestActive(), id);
@@ -225,7 +225,7 @@ public class QuestHandler extends BaseHandler {
 		client.sendProtocol(resp.build());
 	}
 	protected void active(NetClient client, Object message) {
-		MissionActiveResponse_20000007.Builder resp = MissionActiveResponse_20000007.newBuilder();
+		QuestActiveResponse_20000007.Builder resp = QuestActiveResponse_20000007.newBuilder();
 		long playerId = client.getPlayerId(); 
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 //		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
@@ -235,13 +235,13 @@ public class QuestHandler extends BaseHandler {
 	}
 
 	protected void list(NetClient client, Object message) {
-		MissionListRequest_20000001 req = (MissionListRequest_20000001) message;
-		MissionListResponse_20000002.Builder resp = MissionListResponse_20000002.newBuilder();
+		QuestListRequest_20000001 req = (QuestListRequest_20000001) message;
+		QuestListResponse_20000002.Builder resp = QuestListResponse_20000002.newBuilder();
 		int group = req.getType();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		resp.addAllMissions(PbBuilder.buildQuestByGroup(playerId, MissionTypeEnum.get(group)));
-		if (group == MissionTypeEnum.BranchLine.getId()) {
+		resp.addAllQuests(PbBuilder.buildQuestByGroup(playerId, QuestTypeEnum.get(group)));
+		if (group == QuestTypeEnum.BranchLine.getId()) {
 //			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
 //			resp.setPriorityBranch(playerExt.getBranchGroup());
 		}
@@ -252,8 +252,8 @@ public class QuestHandler extends BaseHandler {
 	}
 
 	protected void chooseReward(NetClient client, Object message) {
-		MissionChooseRewardRequest_20000033 req = (MissionChooseRewardRequest_20000033) message;
-		MissionChooseRewardResponse_20000034.Builder resp = MissionChooseRewardResponse_20000034.newBuilder();
+		QuestChooseRewardRequest_20000033 req = (QuestChooseRewardRequest_20000033) message;
+		QuestChooseRewardResponse_20000034.Builder resp = QuestChooseRewardResponse_20000034.newBuilder();
 
 		int id = req.getId();
 		int index = req.getIndex();
@@ -269,8 +269,8 @@ public class QuestHandler extends BaseHandler {
 		client.sendProtocol(resp);
 	}
 	protected void receive(NetClient client, Object message) {
-		MissionReceiveRequest_20000004 req = (MissionReceiveRequest_20000004) message;
-		MissionReceiveResponse_20000005.Builder resp = MissionReceiveResponse_20000005.newBuilder();
+		QuestReceiveRequest_20000004 req = (QuestReceiveRequest_20000004) message;
+		QuestReceiveResponse_20000005.Builder resp = QuestReceiveResponse_20000005.newBuilder();
 
 		List<Integer> ids = req.getIdsList();
 //		int group = req.getGroup();

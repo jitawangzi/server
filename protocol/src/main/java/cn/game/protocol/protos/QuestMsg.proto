@@ -1,0 +1,173 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+
+import "RewardMsg.proto" ;
+import "BaseMsg.proto" ;
+
+// 查看某类任务数据
+message QuestListRequest_20000001
+{
+	int32 type  = 1 ; 			// 任务类型， QuestTypeEnum 的id
+}
+
+// 任务数据
+message QuestListResponse_20000002
+{
+	repeated QuestInfo quests = 1 ;  // 当前类型的任务数据
+	int32 priorityBranch  = 2 ;  // 当前优先显示的支线分组，只有QuestTypeEnum = 7支线任务使用，MainlineQuest 表的groupId
+}
+
+// 领取任务奖励
+message QuestReceiveRequest_20000004
+{
+	repeated int32 ids = 1 ; 			// 领取/一键领取的任务id
+}
+
+message QuestReceiveResponse_20000005
+{
+	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
+}
+
+// 查看每日任务活跃奖励领取情况
+message QuestActiveRequest_20000006
+{
+}
+
+message QuestActiveResponse_20000007
+{
+	repeated int32 id = 1 ; 			// 已经领取过的奖励id, QuestDaily表
+}
+
+// 领取每日任务活跃奖励
+message QuestReceiveActiveRequest_20000008
+{
+	int32 id = 1 ; 			// 奖励id, QuestDaily表
+}
+
+message QuestReceiveActiveResponse_20000009
+{
+	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
+}
+
+
+// 查看某类型挑战组任务
+message QuestChallengeGroupRequest_20000020
+{
+	int32 type = 1 ; 			// 1-主线 2-意识空间 3-基地建设
+}
+
+message QuestChallengeGroupResponse_20000021
+{
+	repeated QuestChallengeGroupInfo groups = 1 ;  // 当前类型已解锁的挑战组数据
+}
+
+// 查看一组任务里的任务数据
+message QuestChallengeGroupDetailRequest_20000022
+{
+	int32 id = 1 ; 			// QuestChallengeGroup 任务组id
+}
+
+message QuestChallengeGroupDetailResponse_20000023
+{
+	repeated QuestInfo quests = 1 ;  // 当前组的任务数据
+}
+
+
+// 一组任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议
+message QuestGroupPush_20100008
+{
+	int32 type = 1 ; 			// 哪种类型的任务有变化
+}
+
+// 单个任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议
+message QuestPush_20200008
+{
+	UpdateType  type = 1; 		// 更新类型
+	QuestInfo quest = 2 ;  // 具体变化的任务，如果是删除，只用到id
+}
+
+
+// 一个任务条件完成的时候，推送此协议
+message QuestConditionCompletePush_20500001
+{
+	int32   id = 1 ; 		// 任务id,Quest表或者MainlineQuest 表id
+	int32   index = 2 ; 	// 完成的任务条件索引，Quest表或者MainlineQuest 表 的condition字段索引
+}
+
+// 对于自动交付（领奖）的任务，服务端领奖之后会推送此协议，也代表此任务完成，客户端根据此协议判断是否删除任务
+message QuestRewardPush_20600008
+{
+	int32   id = 1 ; 					// 任务id,Quest表或者MainlineQuest 表id
+	repeated RewardInfo rewards = 2;		// 任务奖励
+}
+
+
+// 接取任务请求，一般是和npc，或者特殊的交互物触发
+message QuestAcceptRequest_20000026
+{
+	int32   id = 1 ; 				// 任务id,Quest表或者MainlineQuest 表id
+}
+message QuestAcceptResponse_20000027
+{	
+	QuestInfo quest = 1 ;  // 更新任务状态
+}
+
+// 设置优先显示的支线组
+message QuestBranchPriorityRequest_20000028
+{
+	int32   group = 1 ; 				// MainlineQuest 表的groupId,支线分组id
+}
+message QuestBranchPriorityResponse_20000029
+{	
+}
+
+// 推送优先显示的支线组
+message QuestBranchPriorityPush_20300000
+{
+	int32   group = 1 ; 				// MainlineQuest 表的groupId,支线分组id
+}
+
+// 单个任务状态
+message QuestInfo
+{
+	int32   id = 1 ; 			// 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+	int32   state = 2 ; 		// "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
+	// 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+	repeated int32   finishCount = 3 ;  // 任务相关条件完成数量统计
+}
+
+// 挑战任务组状态
+message QuestChallengeGroupInfo
+{
+	int32   id = 1 ; 			// QuestChallengeGroup 任务组id
+	int32   score = 2 ; 		// 组中所有任务累计获取的积分
+	bool  reward = 3 ;  		// 组奖励是否已发放
+}
+
+// 增加任务条件进度数据，客户端发起
+message QuestUpdateRequest_20000030
+{
+	int32   id = 1 ; 		// 任务id,Quest表或者ExploreQuest 等表的id
+	int32   index = 2 ; 	// 任务条件索引，Quest表或者ExploreQuest 等表 的condition字段索引，从0开始
+	int32   count = 3 ; 	// 增加的任务条件进度数量（增量值，服务端收到数据进行累加）
+}
+message QuestUpdateResponse_20000031
+{
+}
+
+
+// 领取任务奖励,一般是多个任务奖励，选择其中的一个奖励领取
+message QuestChooseRewardRequest_20000033
+{
+	int32 id = 1 ; 			// 任务id,Quest表或者ExploreQuest 等表的id
+	int32 index = 2 ; 		//配置表中奖励组的下标，从0开始
+}
+
+message QuestChooseRewardResponse_20000034
+{
+	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
+}
+
+

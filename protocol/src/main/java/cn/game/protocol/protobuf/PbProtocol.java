@@ -106,31 +106,6 @@ public class PbProtocol implements ProtocolParser {
 	public final static int MailReceiveResponse_12000006 = 0x12000006;    //领取邮件奖励返回  
 	public final static int MailDeleteRequest_12000007 = 0x12000007;    //删除邮件  
 	public final static int MailDeleteResponse_12000008 = 0x12000008;    //删除邮件返回  
-	public final static int MissionListRequest_20000001 = 0x20000001;    //查看某类任务数据  
-	public final static int MissionListResponse_20000002 = 0x20000002;    //任务数据  
-	public final static int MissionReceiveRequest_20000004 = 0x20000004;    //领取任务奖励  
-	public final static int MissionReceiveResponse_20000005 = 0x20000005;    
-	public final static int MissionActiveRequest_20000006 = 0x20000006;    //查看每日任务活跃奖励领取情况  
-	public final static int MissionActiveResponse_20000007 = 0x20000007;    
-	public final static int MissionReceiveActiveRequest_20000008 = 0x20000008;    //领取每日任务活跃奖励  
-	public final static int MissionReceiveActiveResponse_20000009 = 0x20000009;    
-	public final static int MissionChallengeGroupRequest_20000020 = 0x20000020;    //查看某类型挑战组任务  
-	public final static int MissionChallengeGroupResponse_20000021 = 0x20000021;    
-	public final static int MissionChallengeGroupDetailRequest_20000022 = 0x20000022;    //查看一组任务里的任务数据  
-	public final static int MissionChallengeGroupDetailResponse_20000023 = 0x20000023;    
-	public final static int MissionGroupPush_20100008 = 0x20100008;    //一组任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议  
-	public final static int MissionPush_20200008 = 0x20200008;    //单个任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议  
-	public final static int MissionConditionCompletePush_20500001 = 0x20500001;    //一个任务条件完成的时候，推送此协议  
-	public final static int MissionRewardPush_20600008 = 0x20600008;    //对于自动交付（领奖）的任务，服务端领奖之后会推送此协议，也代表此任务完成，客户端根据此协议判断是否删除任务  
-	public final static int MissionAcceptRequest_20000026 = 0x20000026;    //接取任务请求，一般是和npc，或者特殊的交互物触发  
-	public final static int MissionAcceptResponse_20000027 = 0x20000027;    
-	public final static int MissionBranchPriorityRequest_20000028 = 0x20000028;    //设置优先显示的支线组  
-	public final static int MissionBranchPriorityResponse_20000029 = 0x20000029;    
-	public final static int MissionBranchPriorityPush_20300000 = 0x20300000;    //推送优先显示的支线组  
-	public final static int MissionUpdateRequest_20000030 = 0x20000030;    //增加任务条件进度数据，客户端发起  
-	public final static int MissionUpdateResponse_20000031 = 0x20000031;    
-	public final static int MissionChooseRewardRequest_20000033 = 0x20000033;    //领取任务奖励,一般是多个任务奖励，选择其中的一个奖励领取  
-	public final static int MissionChooseRewardResponse_20000034 = 0x20000034;    
 	public final static int PlayerLoginRequest_01000001 = 0x01000001;    //登陆  
 	public final static int PlayerLoginResponse_01000002 = 0x01000002;    //用户登陆,返回游戏数据  
 	public final static int PlayerLogoutPush_01100030 = 0x01100030;    //退出登录(客户端登录多个账号，或者服务器关闭等)  
@@ -161,6 +136,31 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerCloudBoxPush_01100040 = 0x01100040;    //产生小云宝箱 推送  
 	public final static int PlayerCloudBoxRequest_01000042 = 0x01000042;    //领取小云宝箱奖励  
 	public final static int PlayerCloudBoxResponse_01000043 = 0x01000043;    
+	public final static int QuestListRequest_20000001 = 0x20000001;    //查看某类任务数据  
+	public final static int QuestListResponse_20000002 = 0x20000002;    //任务数据  
+	public final static int QuestReceiveRequest_20000004 = 0x20000004;    //领取任务奖励  
+	public final static int QuestReceiveResponse_20000005 = 0x20000005;    
+	public final static int QuestActiveRequest_20000006 = 0x20000006;    //查看每日任务活跃奖励领取情况  
+	public final static int QuestActiveResponse_20000007 = 0x20000007;    
+	public final static int QuestReceiveActiveRequest_20000008 = 0x20000008;    //领取每日任务活跃奖励  
+	public final static int QuestReceiveActiveResponse_20000009 = 0x20000009;    
+	public final static int QuestChallengeGroupRequest_20000020 = 0x20000020;    //查看某类型挑战组任务  
+	public final static int QuestChallengeGroupResponse_20000021 = 0x20000021;    
+	public final static int QuestChallengeGroupDetailRequest_20000022 = 0x20000022;    //查看一组任务里的任务数据  
+	public final static int QuestChallengeGroupDetailResponse_20000023 = 0x20000023;    
+	public final static int QuestGroupPush_20100008 = 0x20100008;    //一组任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议  
+	public final static int QuestPush_20200008 = 0x20200008;    //单个任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议  
+	public final static int QuestConditionCompletePush_20500001 = 0x20500001;    //一个任务条件完成的时候，推送此协议  
+	public final static int QuestRewardPush_20600008 = 0x20600008;    //对于自动交付（领奖）的任务，服务端领奖之后会推送此协议，也代表此任务完成，客户端根据此协议判断是否删除任务  
+	public final static int QuestAcceptRequest_20000026 = 0x20000026;    //接取任务请求，一般是和npc，或者特殊的交互物触发  
+	public final static int QuestAcceptResponse_20000027 = 0x20000027;    
+	public final static int QuestBranchPriorityRequest_20000028 = 0x20000028;    //设置优先显示的支线组  
+	public final static int QuestBranchPriorityResponse_20000029 = 0x20000029;    
+	public final static int QuestBranchPriorityPush_20300000 = 0x20300000;    //推送优先显示的支线组  
+	public final static int QuestUpdateRequest_20000030 = 0x20000030;    //增加任务条件进度数据，客户端发起  
+	public final static int QuestUpdateResponse_20000031 = 0x20000031;    
+	public final static int QuestChooseRewardRequest_20000033 = 0x20000033;    //领取任务奖励,一般是多个任务奖励，选择其中的一个奖励领取  
+	public final static int QuestChooseRewardResponse_20000034 = 0x20000034;    
 	public final static int RewardPush_55000501 = 0x55000501;    //奖励推送,客户端收到这个协议之后，将奖励增加到本地。  
 	public final static int SpendPush_55001501 = 0x55001501;    //消耗推送，客户端收到这个协议之后，减少本地的物品  
 	public final static int RewardShowPush_55002501 = 0x55002501;    //一般需要显示推送获得的奖励时，看情况使用。  
@@ -390,56 +390,6 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(MailDeleteResponse_12000008, cn.game.protocol.protobuf.MailMsg.MailDeleteResponse_12000008.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(MissionListRequest_20000001, cn.game.protocol.protobuf.MissionMsg.MissionListRequest_20000001.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionListResponse_20000002, cn.game.protocol.protobuf.MissionMsg.MissionListResponse_20000002.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionReceiveRequest_20000004, cn.game.protocol.protobuf.MissionMsg.MissionReceiveRequest_20000004.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionReceiveResponse_20000005, cn.game.protocol.protobuf.MissionMsg.MissionReceiveResponse_20000005.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionActiveRequest_20000006, cn.game.protocol.protobuf.MissionMsg.MissionActiveRequest_20000006.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionActiveResponse_20000007, cn.game.protocol.protobuf.MissionMsg.MissionActiveResponse_20000007.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionReceiveActiveRequest_20000008, cn.game.protocol.protobuf.MissionMsg.MissionReceiveActiveRequest_20000008.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionReceiveActiveResponse_20000009, cn.game.protocol.protobuf.MissionMsg.MissionReceiveActiveResponse_20000009.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionChallengeGroupRequest_20000020, cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupRequest_20000020.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionChallengeGroupResponse_20000021, cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupResponse_20000021.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionChallengeGroupDetailRequest_20000022, cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupDetailRequest_20000022.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionChallengeGroupDetailResponse_20000023, cn.game.protocol.protobuf.MissionMsg.MissionChallengeGroupDetailResponse_20000023.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionGroupPush_20100008, cn.game.protocol.protobuf.MissionMsg.MissionGroupPush_20100008.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionPush_20200008, cn.game.protocol.protobuf.MissionMsg.MissionPush_20200008.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionConditionCompletePush_20500001, cn.game.protocol.protobuf.MissionMsg.MissionConditionCompletePush_20500001.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionRewardPush_20600008, cn.game.protocol.protobuf.MissionMsg.MissionRewardPush_20600008.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionAcceptRequest_20000026, cn.game.protocol.protobuf.MissionMsg.MissionAcceptRequest_20000026.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionAcceptResponse_20000027, cn.game.protocol.protobuf.MissionMsg.MissionAcceptResponse_20000027.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionBranchPriorityRequest_20000028, cn.game.protocol.protobuf.MissionMsg.MissionBranchPriorityRequest_20000028.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionBranchPriorityResponse_20000029, cn.game.protocol.protobuf.MissionMsg.MissionBranchPriorityResponse_20000029.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionBranchPriorityPush_20300000, cn.game.protocol.protobuf.MissionMsg.MissionBranchPriorityPush_20300000.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionUpdateRequest_20000030, cn.game.protocol.protobuf.MissionMsg.MissionUpdateRequest_20000030.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionUpdateResponse_20000031, cn.game.protocol.protobuf.MissionMsg.MissionUpdateResponse_20000031.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionChooseRewardRequest_20000033, cn.game.protocol.protobuf.MissionMsg.MissionChooseRewardRequest_20000033.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(MissionChooseRewardResponse_20000034, cn.game.protocol.protobuf.MissionMsg.MissionChooseRewardResponse_20000034.getDefaultInstance()
-				.getParserForType());
 		parsersMap.put(PlayerLoginRequest_01000001, cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerLoginResponse_01000002, cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002.getDefaultInstance()
@@ -499,6 +449,56 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(PlayerCloudBoxRequest_01000042, cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerCloudBoxResponse_01000043, cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestListRequest_20000001, cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestListResponse_20000002, cn.game.protocol.protobuf.QuestMsg.QuestListResponse_20000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestReceiveRequest_20000004, cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestReceiveResponse_20000005, cn.game.protocol.protobuf.QuestMsg.QuestReceiveResponse_20000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestActiveRequest_20000006, cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestActiveResponse_20000007, cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestReceiveActiveRequest_20000008, cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestReceiveActiveResponse_20000009, cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveResponse_20000009.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestChallengeGroupRequest_20000020, cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupRequest_20000020.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestChallengeGroupResponse_20000021, cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupResponse_20000021.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestChallengeGroupDetailRequest_20000022, cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupDetailRequest_20000022.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestChallengeGroupDetailResponse_20000023, cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupDetailResponse_20000023.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestGroupPush_20100008, cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestPush_20200008, cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestConditionCompletePush_20500001, cn.game.protocol.protobuf.QuestMsg.QuestConditionCompletePush_20500001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestRewardPush_20600008, cn.game.protocol.protobuf.QuestMsg.QuestRewardPush_20600008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestAcceptRequest_20000026, cn.game.protocol.protobuf.QuestMsg.QuestAcceptRequest_20000026.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestAcceptResponse_20000027, cn.game.protocol.protobuf.QuestMsg.QuestAcceptResponse_20000027.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestBranchPriorityRequest_20000028, cn.game.protocol.protobuf.QuestMsg.QuestBranchPriorityRequest_20000028.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestBranchPriorityResponse_20000029, cn.game.protocol.protobuf.QuestMsg.QuestBranchPriorityResponse_20000029.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestBranchPriorityPush_20300000, cn.game.protocol.protobuf.QuestMsg.QuestBranchPriorityPush_20300000.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestUpdateRequest_20000030, cn.game.protocol.protobuf.QuestMsg.QuestUpdateRequest_20000030.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestUpdateResponse_20000031, cn.game.protocol.protobuf.QuestMsg.QuestUpdateResponse_20000031.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestChooseRewardRequest_20000033, cn.game.protocol.protobuf.QuestMsg.QuestChooseRewardRequest_20000033.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestChooseRewardResponse_20000034, cn.game.protocol.protobuf.QuestMsg.QuestChooseRewardResponse_20000034.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(RewardPush_55000501, cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501.getDefaultInstance()
 				.getParserForType());
@@ -700,31 +700,6 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("MailReceiveResponse_12000006", 0x12000006);
 		nameIdMap.put("MailDeleteRequest_12000007", 0x12000007);
 		nameIdMap.put("MailDeleteResponse_12000008", 0x12000008);
-		nameIdMap.put("MissionListRequest_20000001", 0x20000001);
-		nameIdMap.put("MissionListResponse_20000002", 0x20000002);
-		nameIdMap.put("MissionReceiveRequest_20000004", 0x20000004);
-		nameIdMap.put("MissionReceiveResponse_20000005", 0x20000005);
-		nameIdMap.put("MissionActiveRequest_20000006", 0x20000006);
-		nameIdMap.put("MissionActiveResponse_20000007", 0x20000007);
-		nameIdMap.put("MissionReceiveActiveRequest_20000008", 0x20000008);
-		nameIdMap.put("MissionReceiveActiveResponse_20000009", 0x20000009);
-		nameIdMap.put("MissionChallengeGroupRequest_20000020", 0x20000020);
-		nameIdMap.put("MissionChallengeGroupResponse_20000021", 0x20000021);
-		nameIdMap.put("MissionChallengeGroupDetailRequest_20000022", 0x20000022);
-		nameIdMap.put("MissionChallengeGroupDetailResponse_20000023", 0x20000023);
-		nameIdMap.put("MissionGroupPush_20100008", 0x20100008);
-		nameIdMap.put("MissionPush_20200008", 0x20200008);
-		nameIdMap.put("MissionConditionCompletePush_20500001", 0x20500001);
-		nameIdMap.put("MissionRewardPush_20600008", 0x20600008);
-		nameIdMap.put("MissionAcceptRequest_20000026", 0x20000026);
-		nameIdMap.put("MissionAcceptResponse_20000027", 0x20000027);
-		nameIdMap.put("MissionBranchPriorityRequest_20000028", 0x20000028);
-		nameIdMap.put("MissionBranchPriorityResponse_20000029", 0x20000029);
-		nameIdMap.put("MissionBranchPriorityPush_20300000", 0x20300000);
-		nameIdMap.put("MissionUpdateRequest_20000030", 0x20000030);
-		nameIdMap.put("MissionUpdateResponse_20000031", 0x20000031);
-		nameIdMap.put("MissionChooseRewardRequest_20000033", 0x20000033);
-		nameIdMap.put("MissionChooseRewardResponse_20000034", 0x20000034);
 		nameIdMap.put("PlayerLoginRequest_01000001", 0x01000001);
 		nameIdMap.put("PlayerLoginResponse_01000002", 0x01000002);
 		nameIdMap.put("PlayerLogoutPush_01100030", 0x01100030);
@@ -755,6 +730,31 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerCloudBoxPush_01100040", 0x01100040);
 		nameIdMap.put("PlayerCloudBoxRequest_01000042", 0x01000042);
 		nameIdMap.put("PlayerCloudBoxResponse_01000043", 0x01000043);
+		nameIdMap.put("QuestListRequest_20000001", 0x20000001);
+		nameIdMap.put("QuestListResponse_20000002", 0x20000002);
+		nameIdMap.put("QuestReceiveRequest_20000004", 0x20000004);
+		nameIdMap.put("QuestReceiveResponse_20000005", 0x20000005);
+		nameIdMap.put("QuestActiveRequest_20000006", 0x20000006);
+		nameIdMap.put("QuestActiveResponse_20000007", 0x20000007);
+		nameIdMap.put("QuestReceiveActiveRequest_20000008", 0x20000008);
+		nameIdMap.put("QuestReceiveActiveResponse_20000009", 0x20000009);
+		nameIdMap.put("QuestChallengeGroupRequest_20000020", 0x20000020);
+		nameIdMap.put("QuestChallengeGroupResponse_20000021", 0x20000021);
+		nameIdMap.put("QuestChallengeGroupDetailRequest_20000022", 0x20000022);
+		nameIdMap.put("QuestChallengeGroupDetailResponse_20000023", 0x20000023);
+		nameIdMap.put("QuestGroupPush_20100008", 0x20100008);
+		nameIdMap.put("QuestPush_20200008", 0x20200008);
+		nameIdMap.put("QuestConditionCompletePush_20500001", 0x20500001);
+		nameIdMap.put("QuestRewardPush_20600008", 0x20600008);
+		nameIdMap.put("QuestAcceptRequest_20000026", 0x20000026);
+		nameIdMap.put("QuestAcceptResponse_20000027", 0x20000027);
+		nameIdMap.put("QuestBranchPriorityRequest_20000028", 0x20000028);
+		nameIdMap.put("QuestBranchPriorityResponse_20000029", 0x20000029);
+		nameIdMap.put("QuestBranchPriorityPush_20300000", 0x20300000);
+		nameIdMap.put("QuestUpdateRequest_20000030", 0x20000030);
+		nameIdMap.put("QuestUpdateResponse_20000031", 0x20000031);
+		nameIdMap.put("QuestChooseRewardRequest_20000033", 0x20000033);
+		nameIdMap.put("QuestChooseRewardResponse_20000034", 0x20000034);
 		nameIdMap.put("RewardPush_55000501", 0x55000501);
 		nameIdMap.put("SpendPush_55001501", 0x55001501);
 		nameIdMap.put("RewardShowPush_55002501", 0x55002501);

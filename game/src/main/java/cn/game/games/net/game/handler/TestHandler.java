@@ -37,7 +37,7 @@ import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.Asset;
-import cn.game.protocol.generated.enume.MissionTypeEnum;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -232,7 +232,7 @@ public class TestHandler extends BaseHandler {
 
 		QuestModule questOp = player.getQuestModule();
 
-		Map<Integer, Quest> group = questOp.getGroup(MissionTypeEnum.MainLine);
+		Map<Integer, Quest> group = questOp.getGroup(QuestTypeEnum.MainLine);
 
 		Quest mainQuest = null;
 

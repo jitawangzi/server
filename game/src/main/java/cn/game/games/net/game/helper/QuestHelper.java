@@ -2,12 +2,12 @@ package cn.game.games.net.game.helper;
 
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.generated.config.MissionConfig;
-import cn.game.protocol.generated.enume.MissionTypeEnum;
+import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
-import cn.game.protocol.generated.manager.MissionManager;
+import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
-import cn.game.protocol.protobuf.MissionMsg.MissionPush_20200008;
+import cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008;
 
 public class QuestHelper {
 
@@ -57,9 +57,10 @@ public class QuestHelper {
 	 * @return
 	 */
 	public static boolean autoRewardUseMail(int id) {
-		MissionConfig missionConfig = QuestHelper.getMissionConfig(id);
-		MissionTypeEnum type = missionConfig.getType();
-		return type == MissionTypeEnum.Challenge;
+		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
+		QuestTypeEnum type = missionConfig.getType();
+//		return type == QuestTypeEnum.Challenge;
+		return false;
 	}
 
 	/**
@@ -67,22 +68,22 @@ public class QuestHelper {
 	 * @param id
 	 * @return
 	 */
-	public static MissionConfig getMissionConfig(int id) {
+	public static QuestConfig getQuestConfig(int id) {
 		int type = id / 10000;
-		MissionConfig missionConfig = null;
-		switch (MissionTypeEnum.get(type)) {
+		QuestConfig missionConfig = null;
+		switch (QuestTypeEnum.get(type)) {
 			case Achievement:
 				missionConfig = AchievementMissionManager.getInstance().getAchievementMissionConfig(id);
 				break;
 //			case MainLine:
 //				missionConfig = MainlineMissionManager.getInstance().getMainlineMissionConfig(id);
 //				break;
-			case ExploreMainLine:
+//			case ExploreMainLine:
 //			case Explore:
 //				missionConfig = ExploreMissionManager.getInstance().getExploreMissionConfig(id);
-				break;
+//				break;
 			default:
-				missionConfig = MissionManager.getInstance().getMissionConfig(id);
+				missionConfig = QuestManager.getInstance().getMissionConfig(id);
 				break;
 		}
 		return missionConfig;
@@ -92,8 +93,8 @@ public class QuestHelper {
 	 * @param id
 	 * @return
 	 */
-	public static MissionConfig getMissionConfigOrNull(int id) {
-		MissionConfig missionConfig = MissionManager.getInstance().getMissionConfigNullable(id);
+	public static QuestConfig getMissionConfigOrNull(int id) {
+		QuestConfig missionConfig = QuestManager.getInstance().getMissionConfigNullable(id);
 		if (missionConfig == null) {
 //			missionConfig = MainlineMissionManager.getInstance().getMainlineMissionConfigNullable(id);
 		}
@@ -113,7 +114,7 @@ public class QuestHelper {
 	 */
 	public static void conditionCmd(Quest quest, int cond) {
 		//  目前只有主线和支线的任务，带命令
-		MissionConfig missionConfig = QuestHelper.getMissionConfig(quest.getId());
+		QuestConfig missionConfig = QuestHelper.getQuestConfig(quest.getId());
 		if (missionConfig != null) {
 //			if (missionConfig instanceof MainlineMissionConfig) {
 //				MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) missionConfig;
@@ -132,7 +133,7 @@ public class QuestHelper {
 
 	public static void notifyQuestChange(Quest quest, UpdateType type) {
 		long playerId = quest.getPlayerId();
-		MissionPush_20200008 msg = MissionPush_20200008.newBuilder().setType(type).setMission(PbBuilder.buildMissionInfo(quest))
+		QuestPush_20200008 msg = QuestPush_20200008.newBuilder().setType(type).setQuest(PbBuilder.buildQuestInfo(quest))
 				.build();
 		PlayerHelper.sendProtocol(playerId, msg);
 	}

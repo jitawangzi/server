@@ -2,7 +2,6 @@ package cn.game.games.net.game.module.quest;
 
 import java.util.function.Consumer;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 
 import cn.game.games.cache.entity.Player;
@@ -11,6 +10,7 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.manager.ConditionManager;
+import cn.game.util.JsonUtil;
 
 /**
  * 默认实现
@@ -22,7 +22,7 @@ public abstract class AbstractCondition implements Condition {
 	protected static final transient boolean fieldBased = true;
 	protected static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
 
-	protected long playerId;
+	transient protected long playerId;
 
 	transient protected Player player;
 
@@ -135,7 +135,8 @@ public abstract class AbstractCondition implements Condition {
 	}
 	@Override
 	public String toSaveString() {
-		return JSON.toJSONString(this, serializeConfig);
+		return JsonUtil.toJsonString(this);
+//		return JSON.toJSONString(this, serializeConfig);
 	}
 	@Override
 	public int getCondition() {
@@ -192,14 +193,6 @@ public abstract class AbstractCondition implements Condition {
 		this.updateAction = updateAction;
 		this.achieveAction = achieveAction;
 		setEvents();
-	}
-
-	public long getPlayerId() {
-		return playerId;
-	}
-
-	public void setPlayerId(long playerId) {
-		this.playerId = playerId;
 	}
 
 	@Override
