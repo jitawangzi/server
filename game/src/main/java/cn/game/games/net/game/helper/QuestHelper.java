@@ -3,7 +3,6 @@ package cn.game.games.net.game.helper;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.QuestConfig;
-import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
@@ -58,7 +57,7 @@ public class QuestHelper {
 	 */
 	public static boolean autoRewardUseMail(int id) {
 		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
-		QuestTypeEnum type = missionConfig.getType();
+		int type = missionConfig.Type;
 //		return type == QuestTypeEnum.Challenge;
 		return false;
 	}
@@ -69,24 +68,24 @@ public class QuestHelper {
 	 * @return
 	 */
 	public static QuestConfig getQuestConfig(int id) {
-		int type = id / 10000;
-		QuestConfig missionConfig = null;
-		switch (QuestTypeEnum.get(type)) {
-			case Achievement:
-				missionConfig = AchievementMissionManager.getInstance().getAchievementMissionConfig(id);
-				break;
-//			case MainLine:
-//				missionConfig = MainlineMissionManager.getInstance().getMainlineMissionConfig(id);
-//				break;
-//			case ExploreMainLine:
-//			case Explore:
-//				missionConfig = ExploreMissionManager.getInstance().getExploreMissionConfig(id);
-//				break;
-			default:
-				missionConfig = QuestManager.getInstance().getMissionConfig(id);
-				break;
-		}
-		return missionConfig;
+		/*		int type = id / 10000;
+				QuestConfig missionConfig = null;
+				switch (QuestTypeEnum.get(type)) {
+					case Achievement:
+						missionConfig = AchievementMissionManager.getInstance().getAchievementMissionConfig(id);
+						break;
+					case MainLine:
+						missionConfig = MainlineMissionManager.getInstance().getMainlineMissionConfig(id);
+						break;
+					case ExploreMainLine:
+					case Explore:
+						missionConfig = ExploreMissionManager.getInstance().getExploreMissionConfig(id);
+						break;
+					default:
+						missionConfig = QuestManager.getInstance().getMissionConfig(id);
+						break;
+				}*/
+		return QuestManager.instance().get(id);
 	}
 	/**
 	 * @Description 获取任务配置文件
@@ -94,7 +93,7 @@ public class QuestHelper {
 	 * @return
 	 */
 	public static QuestConfig getMissionConfigOrNull(int id) {
-		QuestConfig missionConfig = QuestManager.getInstance().getMissionConfigNullable(id);
+		QuestConfig missionConfig = QuestManager.instance().getNullable(id);
 		if (missionConfig == null) {
 //			missionConfig = MainlineMissionManager.getInstance().getMainlineMissionConfigNullable(id);
 		}

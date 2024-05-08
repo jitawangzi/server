@@ -79,10 +79,10 @@ public class QuestHandler extends BaseHandler {
 
 		// 是否前端触发
 		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
-		if (!missionConfig.getIsClentUpdate()) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
-			return;
-		}
+		/*		if (!missionConfig.getIsClentUpdate()) {
+					client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+					return;
+				}*/
 		QuestModule questOp = player.getModule(QuestModule.class);
 		Quest quest = questOp.get(id);
 		if (quest == null) {
@@ -241,7 +241,7 @@ public class QuestHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		resp.addAllQuests(PbBuilder.buildQuestByGroup(playerId, QuestTypeEnum.get(group)));
-		if (group == QuestTypeEnum.BranchLine.getId()) {
+		if (group == QuestTypeEnum.BranchLine.ID) {
 //			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
 //			resp.setPriorityBranch(playerExt.getBranchGroup());
 		}
