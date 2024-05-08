@@ -16,6 +16,8 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 肉鸽触发次序  随战中每次肉鸽能量条满进行判断 */
 	public final int RoguelikeTriggerOrder;		
+	/** 肉鸽能量点数  每级战斗能量条exp */
+	public final int RogueExp;		
 	/** 专属战役标识  填Battle#战役id  只有专属战役才填，例如新手战役，其他战役全填999 */
 	public final int ExclusiveBattleLogo;		
 	/** 肉鸽大类 1-神将上阵    2-基础肉鸽   另：彩蛋肉鸽-GlobalConst#常量表 */
@@ -41,6 +43,8 @@ import org.w3c.dom.Element;
 			: element.getAttribute("ID")); // 流水号
 		RoguelikeTriggerOrder = Integer.parseInt(element.getAttribute("RoguelikeTriggerOrder") == null || element.getAttribute("RoguelikeTriggerOrder").length() == 0 ? "0"
 			: element.getAttribute("RoguelikeTriggerOrder")); // 肉鸽触发次序  随战中每次肉鸽能量条满进行判断
+		RogueExp = Integer.parseInt(element.getAttribute("RogueExp") == null || element.getAttribute("RogueExp").length() == 0 ? "0"
+			: element.getAttribute("RogueExp")); // 肉鸽能量点数  每级战斗能量条exp
 		ExclusiveBattleLogo = Integer.parseInt(element.getAttribute("ExclusiveBattleLogo") == null || element.getAttribute("ExclusiveBattleLogo").length() == 0 ? "0"
 			: element.getAttribute("ExclusiveBattleLogo")); // 专属战役标识  填Battle#战役id  只有专属战役才填，例如新手战役，其他战役全填999
 		RoguelikeTriggerType = Integer.parseInt(element.getAttribute("RoguelikeTriggerType") == null || element.getAttribute("RoguelikeTriggerType").length() == 0 ? "0"

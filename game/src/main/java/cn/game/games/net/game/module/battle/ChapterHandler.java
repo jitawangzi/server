@@ -310,10 +310,10 @@ public class ChapterHandler extends BaseHandler {
 		
 		BattleConfig battleConfig = BattleManager.instance().get(dungeonId);
 		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);
-		if (battleConfig.BattleFieldID != id) {
-			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
-			return;
-		}
+		/*		if (battleConfig.BattleFieldID != id) {
+					client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+					return;
+				}*/
 
 		/*		int[] openDay = battleConfig.openDay;
 				if (openDay.length > 0) {
@@ -348,7 +348,7 @@ public class ChapterHandler extends BaseHandler {
 			// 设置当前在打的关卡数据
 			chapterModule.setAttackingData(0, type, dungeonId, id, 0, 0);
 			// 触发事件
-			player.handleEvent(EventTypeEnum.BattleStart, battleConfig.ID, battleConfig.BattleFieldID);
+			player.handleEvent(EventTypeEnum.BattleStart, battleConfig.ID, 0);
 		}
 		//添加怪物图鉴
 //		List<Integer> monsterSequence = levelConfig.getMonsterSequence();

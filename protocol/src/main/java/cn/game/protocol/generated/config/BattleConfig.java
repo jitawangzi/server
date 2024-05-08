@@ -14,8 +14,8 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 战役类型 1-主线 2-历练精英 */
 	public final int BattleType;		
-	/** 关卡ID  调用：BattleField#关卡 */
-	public final int BattleFieldID;		
+	/** 推荐战斗力  直接填入战斗力的具体数值 */
+	public final int AtkValue;		
 	/** 前置战役ID  调用本表id列 */
 	public final int preBattle;		
 	/** 每次进入消耗id  调用Consume表id 主线固定消耗5体力 */
@@ -43,8 +43,8 @@ import org.w3c.dom.Element;
 			: element.getAttribute("ID")); // 战役ID
 		BattleType = Integer.parseInt(element.getAttribute("BattleType") == null || element.getAttribute("BattleType").length() == 0 ? "0"
 			: element.getAttribute("BattleType")); // 战役类型 1-主线 2-历练精英
-		BattleFieldID = Integer.parseInt(element.getAttribute("BattleFieldID") == null || element.getAttribute("BattleFieldID").length() == 0 ? "0"
-			: element.getAttribute("BattleFieldID")); // 关卡ID  调用：BattleField#关卡
+		AtkValue = Integer.parseInt(element.getAttribute("AtkValue") == null || element.getAttribute("AtkValue").length() == 0 ? "0"
+			: element.getAttribute("AtkValue")); // 推荐战斗力  直接填入战斗力的具体数值
 		preBattle = Integer.parseInt(element.getAttribute("preBattle") == null || element.getAttribute("preBattle").length() == 0 ? "0"
 			: element.getAttribute("preBattle")); // 前置战役ID  调用本表id列
 		cost = Integer.parseInt(element.getAttribute("cost") == null || element.getAttribute("cost").length() == 0 ? "0"

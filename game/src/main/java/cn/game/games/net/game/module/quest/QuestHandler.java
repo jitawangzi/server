@@ -78,7 +78,11 @@ public class QuestHandler extends BaseHandler {
 		// 是否前端触发
 		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
 		/*		if (!missionConfig.getIsClentUpdate()) {
+<<<<<<< HEAD
 					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+=======
+					client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+>>>>>>> branch 'dev' of http://10.1.10.103:3800/project-server/server.git
 					return;
 				}*/
 		QuestModule questOp = player.getModule(QuestModule.class);

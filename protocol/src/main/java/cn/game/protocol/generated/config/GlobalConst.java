@@ -62,6 +62,8 @@ public class GlobalConst extends ResourceListener {
 	public static int QuickPatrolConsume;		
 	/** 广告巡逻次数 */
 	public static int AdPatrolCnt;		
+	/** 日租卡选取数量 */
+	public static int DayCardCnt;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -283,6 +285,8 @@ public class GlobalConst extends ResourceListener {
 			: element.getAttribute("QuickPatrolConsume")); // 快速巡逻消耗
 		AdPatrolCnt = Integer.parseInt(element.getAttribute("AdPatrolCnt") == null || element.getAttribute("AdPatrolCnt").length() == 0 ? "0"
 			: element.getAttribute("AdPatrolCnt")); // 广告巡逻次数
+		DayCardCnt = Integer.parseInt(element.getAttribute("DayCardCnt") == null || element.getAttribute("DayCardCnt").length() == 0 ? "0"
+			: element.getAttribute("DayCardCnt")); // 日租卡选取数量
 	}
 	@Override
 	public void load() {
