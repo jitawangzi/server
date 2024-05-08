@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.util.XmlUtils;
 import cn.game.util.file.ResourceListener;
@@ -24,16 +23,16 @@ public class QuestManager extends ResourceListener {
 	private static final Logger log = LoggerFactory.getLogger(QuestManager.class);
 
 	private static QuestManager instance = new QuestManager();
-	private static final String xmlFileName = "Mission";
+	private static final String xmlFileName = "Quest";
 	
-	private Map<Integer, QuestConfig> missions = new HashMap<>();
-	private Map<Integer,List<QuestConfig>> levels = new HashMap<>();
-	private Map<QuestTypeEnum,List<QuestConfig>> types = new HashMap<>();
+	/** 总数据，按id取值 */
+	private Map<Integer, QuestConfig> quests = new HashMap<>();
+	/** 普通索引 */
+	private Map<Integer,List<QuestConfig>> Types = new HashMap<>();
 
-	public static QuestManager getInstance() {
+	public static QuestManager instance() {
 		return instance;
 	}
-
 	private QuestManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
@@ -43,10 +42,10 @@ public class QuestManager extends ResourceListener {
 	 * @param id
 	 * @return
 	 */
-	public QuestConfig getMissionConfig(int id) {
-		QuestConfig config = this.missions.get(id);
+	public QuestConfig get(int id) {
+		QuestConfig config = this.quests.get(id);
 		if (config == null) { 
-			throw new NullPointerException("【Mission】表的" + "id【" + id + "】不存在"); 
+			throw new NullPointerException("【Quest】表的" + "id【" + id + "】不存在"); 
 		}
 		return config;
 	}
@@ -56,59 +55,50 @@ public class QuestManager extends ResourceListener {
 	 * @param id
 	 * @return
 	 */
-	public QuestConfig getMissionConfigNullable(int id) {
-		return this.missions.get(id);
+	public QuestConfig getNullable(int id) {
+		return this.quests.get(id);
 	}
 
-	public List<QuestConfig> getLevelList(int level) {
-		return this.levels.get(level);
+	public List<QuestConfig> getTypeList(int Type) {
+		return this.Types.get(Type);
 	}
-	public List<QuestConfig> getTypeList(QuestTypeEnum type) {
-		return this.types.get(type);
-	}
+	/**
+	 * 获取所有数据
+	 * @return
+	 */
 	public Collection<QuestConfig> list() {
-		return this.missions.values();
+		return this.quests.values();
 	}
-
 	@Override
 	public void load() {
-
 		try {
-			ClassLoader classLoader = Thread.currentThread().getClass().getClassLoader();
-			if (classLoader == null) {
-				classLoader = QuestManager.class.getClassLoader();
-			}
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
 			Element[] list = XmlUtils.getChildrenByName(document.getDocumentElement(), xmlFileName);
 			
-			Map<Integer, QuestConfig> missions = new HashMap<>();
-			Map<Integer, List<QuestConfig>> levels = new HashMap<>();
-			Map<QuestTypeEnum, List<QuestConfig>> types = new HashMap<>();
+			Map<Integer, QuestConfig> quests = new HashMap<>();
+			Map<Integer, List<QuestConfig>> Types = new HashMap<>();
 			for (Element e : list) {
-				QuestConfig mission = new QuestConfig(e);
-				List<QuestConfig> levelList = levels.get(mission.getLevel()); 
-				if (levelList == null){
-					levelList = new ArrayList<QuestConfig>(2) ; 
-					levels.put(mission.getLevel() ,levelList) ; 
+				QuestConfig quest = new QuestConfig(e);
+				List<QuestConfig> TypeList = Types.get(quest.Type); 
+				if (TypeList == null){
+					TypeList = new ArrayList<QuestConfig>(2) ; 
+					Types.put(quest.Type ,TypeList) ; 
 				}
-				levelList.add(mission) ;
-				List<QuestConfig> typeList = types.get(mission.getType()); 
-				if (typeList == null){
-					typeList = new ArrayList<QuestConfig>(2) ; 
-					types.put(mission.getType() ,typeList) ; 
+				TypeList.add(quest) ;
+				QuestConfig old = quests.put(quest.ID, quest);
+				if (old != null) {
+					throw new IllegalArgumentException("[QuestConfig]表存在重复的数据id： " + old.ID);
 				}
-				typeList.add(mission) ;
-				missions.put(mission.getId(), mission);
 			}			
 
-			this.levels = com.google.common.collect.ImmutableMap.copyOf(levels);			
-			this.types = com.google.common.collect.ImmutableMap.copyOf(types);			
-			this.missions = com.google.common.collect.ImmutableMap.copyOf(missions);
+			this.Types = com.google.common.collect.ImmutableMap.copyOf(Types);			
+			this.quests = com.google.common.collect.ImmutableMap.copyOf(quests);
 
-			log.info("load MissionConfig size[{}]", missions.size());
+			log.info("load QuestConfig size[{}]", quests.size());
 
 		} catch (Exception e) {
-			throw new RuntimeException("load MissionConfig error", e);
+			throw new RuntimeException("load QuestConfig error", e);
 		}
 
 	}

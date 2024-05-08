@@ -60,6 +60,13 @@ public class ConditionContainer {
 		return this;
 	}
 
+	public ConditionContainer create(long playerId, int condition, boolean or, Consumer<Condition> condChangeActions, Consumer<Condition> condAchieveActions,
+			Consumer<Condition> achieveAction, String dbString) {
+		List<Integer> conditions = new ArrayList<>(1);
+		conditions.add(condition);
+		return create(playerId, conditions, or, condChangeActions, condAchieveActions, achieveAction, dbString);
+	}
+
 	private void set(List<Condition> requires, boolean condOr, Consumer<Condition> achieveAction) {
 		this.requires = requires;
 		this.condOr = condOr;

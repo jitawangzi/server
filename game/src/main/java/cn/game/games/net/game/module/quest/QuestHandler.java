@@ -22,11 +22,10 @@ import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.MissionDailyManager;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.QuestMsg.QuestAcceptRequest_20000026;
 import cn.game.protocol.protobuf.QuestMsg.QuestAcceptResponse_20000027;
-import cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007;
 import cn.game.protocol.protobuf.QuestMsg.QuestBranchPriorityRequest_20000028;
 import cn.game.protocol.protobuf.QuestMsg.QuestBranchPriorityResponse_20000029;
 import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupDetailRequest_20000022;
@@ -59,7 +58,6 @@ public class QuestHandler extends BaseHandler {
 		putInvoker(PbProtocol.QuestListRequest_20000001, this::list);
 		putInvoker(PbProtocol.QuestReceiveRequest_20000004, this::receive);
 		putInvoker(PbProtocol.QuestChooseRewardRequest_20000033, this::chooseReward);
-		putInvoker(PbProtocol.QuestActiveRequest_20000006, this::active);
 		putInvoker(PbProtocol.QuestReceiveActiveRequest_20000008, this::activeReceive);
 		putInvoker(PbProtocol.QuestChallengeGroupRequest_20000020, this::group);
 		putInvoker(PbProtocol.QuestChallengeGroupDetailRequest_20000022, this::groupDetail);
@@ -79,18 +77,18 @@ public class QuestHandler extends BaseHandler {
 
 		// 是否前端触发
 		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
-		if (!missionConfig.getIsClentUpdate()) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
-			return;
-		}
+		/*		if (!missionConfig.getIsClentUpdate()) {
+					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+					return;
+				}*/
 		QuestModule questOp = player.getModule(QuestModule.class);
 		Quest quest = questOp.get(id);
 		if (quest == null) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 		if (quest.getState() < QuestHelper.ACCEPTED) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 		quest.getConditionContainer().addCount(index, count);
@@ -106,7 +104,7 @@ public class QuestHandler extends BaseHandler {
 		QuestModule questOp = player.getModule(QuestModule.class);
 		boolean hasBranchGroup = questOp.hasBranchGroup(group);
 		if (!hasBranchGroup) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 //		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
@@ -127,11 +125,11 @@ public class QuestHandler extends BaseHandler {
 		QuestModule questOp = player.getModule(QuestModule.class);
 		Quest quest = questOp.get(id);
 		if (quest == null) { // 接任务之前应该已经有了 
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 		if (!questOp.canAccept(id)) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 
@@ -184,7 +182,7 @@ public class QuestHandler extends BaseHandler {
 	protected void activeReceive(NetClient client, Object message) {
 		QuestReceiveActiveRequest_20000008 req = (QuestReceiveActiveRequest_20000008) message;
 		QuestReceiveActiveResponse_20000009.Builder resp = QuestReceiveActiveResponse_20000009.newBuilder();
-		int id = req.getId();
+		int index = req.getIndex();
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		QuestModule questOp = player.getModule(QuestModule.class);
@@ -193,7 +191,7 @@ public class QuestHandler extends BaseHandler {
 				Integer quest = playerExt.getQuestActive();
 				boolean one = ByteHelp.isOne(playerExt.getQuestActive(), id);
 				if (one) {
-					client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 					return;
 				}*/
 		
@@ -203,7 +201,7 @@ public class QuestHandler extends BaseHandler {
 		for (int i = list.size() - 1; i >= 0; i--) {
 			MissionDailyConfig config = list.get(i);
 			if (finishedCount >= config.getNumber()) {
-				if (id == config.getId()) {
+				if (index == config.getId()) {
 					canReward = true;
 					missionDailyConfig = config;
 					break;
@@ -211,7 +209,7 @@ public class QuestHandler extends BaseHandler {
 			}
 		}
 		if (!canReward) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 		resp.addAllRewards(PlayerHelper.addResources(playerId, missionDailyConfig.getReward()));
@@ -224,15 +222,6 @@ public class QuestHandler extends BaseHandler {
 
 		client.sendProtocol(resp.build());
 	}
-	protected void active(NetClient client, Object message) {
-		QuestActiveResponse_20000007.Builder resp = QuestActiveResponse_20000007.newBuilder();
-		long playerId = client.getPlayerId(); 
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-//		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-//		List<Integer> binary1List = ByteHelp.binary1List(playerExt.getQuestActive());
-//		resp.addAllId(binary1List);
-		client.sendProtocol(resp.build());
-	}
 
 	protected void list(NetClient client, Object message) {
 		QuestListRequest_20000001 req = (QuestListRequest_20000001) message;
@@ -241,7 +230,7 @@ public class QuestHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		resp.addAllQuests(PbBuilder.buildQuestByGroup(playerId, QuestTypeEnum.get(group)));
-		if (group == QuestTypeEnum.BranchLine.getId()) {
+		if (group == QuestTypeEnum.BranchLine.ID) {
 //			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
 //			resp.setPriorityBranch(playerExt.getBranchGroup());
 		}
@@ -262,7 +251,7 @@ public class QuestHandler extends BaseHandler {
 
 		List<RewardInfo> rewards = questOp.receive(id, index);
 		if (rewards.isEmpty()) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 		resp.addAllRewards(rewards);
@@ -289,7 +278,7 @@ public class QuestHandler extends BaseHandler {
 		// }
 		List<RewardInfo> rewards = questOp.receive(ids);
 		if (rewards.isEmpty()) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 //		resp.addAllIds(ret);

@@ -452,7 +452,7 @@ public class PbBuilder {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		QuestModule questOp = player.getModule(QuestModule.class);
-		Map<Integer, Quest> group2 = type == 0 ? questOp.getGroup(missionTypeEnum) : questOp.getCompeteGroup(missionTypeEnum.getId());
+		Map<Integer, Quest> group2 = type == 0 ? questOp.getGroup(missionTypeEnum) : questOp.getCompeteGroup(missionTypeEnum.ID);
 
 		List<QuestInfo> list = new ArrayList<>();
 

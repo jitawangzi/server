@@ -20,7 +20,7 @@ public final class QuestMsg {
 
     /**
      * <pre>
-     * 任务类型， QuestTypeEnum 的id
+     * 任务类型， QuestTypeEnum 的id，日常，周常等。
      * </pre>
      *
      * <code>int32 type = 1;</code>
@@ -30,7 +30,7 @@ public final class QuestMsg {
   }
   /**
    * <pre>
-   * 查看某类任务数据
+   * 查看某类任务数据,一般在任务功能开启时，客户端请求一下。
    * </pre>
    *
    * Protobuf type {@code Protos.QuestListRequest_20000001}
@@ -118,7 +118,7 @@ public final class QuestMsg {
     private int type_;
     /**
      * <pre>
-     * 任务类型， QuestTypeEnum 的id
+     * 任务类型， QuestTypeEnum 的id，日常，周常等。
      * </pre>
      *
      * <code>int32 type = 1;</code>
@@ -286,7 +286,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 查看某类任务数据
+     * 查看某类任务数据,一般在任务功能开启时，客户端请求一下。
      * </pre>
      *
      * Protobuf type {@code Protos.QuestListRequest_20000001}
@@ -438,7 +438,7 @@ public final class QuestMsg {
       private int type_ ;
       /**
        * <pre>
-       * 任务类型， QuestTypeEnum 的id
+       * 任务类型， QuestTypeEnum 的id，日常，周常等。
        * </pre>
        *
        * <code>int32 type = 1;</code>
@@ -450,7 +450,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 任务类型， QuestTypeEnum 的id
+       * 任务类型， QuestTypeEnum 的id，日常，周常等。
        * </pre>
        *
        * <code>int32 type = 1;</code>
@@ -465,7 +465,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 任务类型， QuestTypeEnum 的id
+       * 任务类型， QuestTypeEnum 的id，日常，周常等。
        * </pre>
        *
        * <code>int32 type = 1;</code>
@@ -577,16 +577,6 @@ public final class QuestMsg {
      */
     cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestsOrBuilder(
         int index);
-
-    /**
-     * <pre>
-     * 当前优先显示的支线分组，只有QuestTypeEnum = 7支线任务使用，MainlineQuest 表的groupId
-     * </pre>
-     *
-     * <code>int32 priorityBranch = 2;</code>
-     * @return The priorityBranch.
-     */
-    int getPriorityBranch();
   }
   /**
    * <pre>
@@ -646,11 +636,6 @@ public final class QuestMsg {
               }
               quests_.add(
                   input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestInfo.parser(), extensionRegistry));
-              break;
-            }
-            case 16: {
-
-              priorityBranch_ = input.readInt32();
               break;
             }
             default: {
@@ -748,21 +733,6 @@ public final class QuestMsg {
       return quests_.get(index);
     }
 
-    public static final int PRIORITYBRANCH_FIELD_NUMBER = 2;
-    private int priorityBranch_;
-    /**
-     * <pre>
-     * 当前优先显示的支线分组，只有QuestTypeEnum = 7支线任务使用，MainlineQuest 表的groupId
-     * </pre>
-     *
-     * <code>int32 priorityBranch = 2;</code>
-     * @return The priorityBranch.
-     */
-    @java.lang.Override
-    public int getPriorityBranch() {
-      return priorityBranch_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -780,9 +750,6 @@ public final class QuestMsg {
       for (int i = 0; i < quests_.size(); i++) {
         output.writeMessage(1, quests_.get(i));
       }
-      if (priorityBranch_ != 0) {
-        output.writeInt32(2, priorityBranch_);
-      }
       unknownFields.writeTo(output);
     }
 
@@ -795,10 +762,6 @@ public final class QuestMsg {
       for (int i = 0; i < quests_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, quests_.get(i));
-      }
-      if (priorityBranch_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, priorityBranch_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -817,8 +780,6 @@ public final class QuestMsg {
 
       if (!getQuestsList()
           .equals(other.getQuestsList())) return false;
-      if (getPriorityBranch()
-          != other.getPriorityBranch()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -834,8 +795,6 @@ public final class QuestMsg {
         hash = (37 * hash) + QUESTS_FIELD_NUMBER;
         hash = (53 * hash) + getQuestsList().hashCode();
       }
-      hash = (37 * hash) + PRIORITYBRANCH_FIELD_NUMBER;
-      hash = (53 * hash) + getPriorityBranch();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -980,8 +939,6 @@ public final class QuestMsg {
         } else {
           questsBuilder_.clear();
         }
-        priorityBranch_ = 0;
-
         return this;
       }
 
@@ -1018,7 +975,6 @@ public final class QuestMsg {
         } else {
           result.quests_ = questsBuilder_.build();
         }
-        result.priorityBranch_ = priorityBranch_;
         onBuilt();
         return result;
       }
@@ -1092,9 +1048,6 @@ public final class QuestMsg {
               questsBuilder_.addAllMessages(other.quests_);
             }
           }
-        }
-        if (other.getPriorityBranch() != 0) {
-          setPriorityBranch(other.getPriorityBranch());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1436,49 +1389,6 @@ public final class QuestMsg {
           quests_ = null;
         }
         return questsBuilder_;
-      }
-
-      private int priorityBranch_ ;
-      /**
-       * <pre>
-       * 当前优先显示的支线分组，只有QuestTypeEnum = 7支线任务使用，MainlineQuest 表的groupId
-       * </pre>
-       *
-       * <code>int32 priorityBranch = 2;</code>
-       * @return The priorityBranch.
-       */
-      @java.lang.Override
-      public int getPriorityBranch() {
-        return priorityBranch_;
-      }
-      /**
-       * <pre>
-       * 当前优先显示的支线分组，只有QuestTypeEnum = 7支线任务使用，MainlineQuest 表的groupId
-       * </pre>
-       *
-       * <code>int32 priorityBranch = 2;</code>
-       * @param value The priorityBranch to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPriorityBranch(int value) {
-        
-        priorityBranch_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 当前优先显示的支线分组，只有QuestTypeEnum = 7支线任务使用，MainlineQuest 表的groupId
-       * </pre>
-       *
-       * <code>int32 priorityBranch = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPriorityBranch() {
-        
-        priorityBranch_ = 0;
-        onChanged();
-        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -3113,1112 +3023,19 @@ public final class QuestMsg {
 
   }
 
-  public interface QuestActiveRequest_20000006OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.QuestActiveRequest_20000006)
-      com.google.protobuf.MessageOrBuilder {
-  }
-  /**
-   * <pre>
-   * 查看每日任务活跃奖励领取情况
-   * </pre>
-   *
-   * Protobuf type {@code Protos.QuestActiveRequest_20000006}
-   */
-  public static final class QuestActiveRequest_20000006 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.QuestActiveRequest_20000006)
-      QuestActiveRequest_20000006OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use QuestActiveRequest_20000006.newBuilder() to construct.
-    private QuestActiveRequest_20000006(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private QuestActiveRequest_20000006() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new QuestActiveRequest_20000006();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private QuestActiveRequest_20000006(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveRequest_20000006_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveRequest_20000006_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006.class, cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006.Builder.class);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 other = (cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006) obj;
-
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 查看每日任务活跃奖励领取情况
-     * </pre>
-     *
-     * Protobuf type {@code Protos.QuestActiveRequest_20000006}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.QuestActiveRequest_20000006)
-        cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveRequest_20000006_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveRequest_20000006_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006.class, cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveRequest_20000006_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 build() {
-        cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 buildPartial() {
-        cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 result = new cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006(this);
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006) {
-          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 other) {
-        if (other == cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.QuestActiveRequest_20000006)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.QuestActiveRequest_20000006)
-    private static final cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006();
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<QuestActiveRequest_20000006>
-        PARSER = new com.google.protobuf.AbstractParser<QuestActiveRequest_20000006>() {
-      @java.lang.Override
-      public QuestActiveRequest_20000006 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new QuestActiveRequest_20000006(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<QuestActiveRequest_20000006> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<QuestActiveRequest_20000006> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.QuestMsg.QuestActiveRequest_20000006 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface QuestActiveResponse_20000007OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.QuestActiveResponse_20000007)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 已经领取过的奖励id, QuestDaily表
-     * </pre>
-     *
-     * <code>repeated int32 id = 1;</code>
-     * @return A list containing the id.
-     */
-    java.util.List<java.lang.Integer> getIdList();
-    /**
-     * <pre>
-     * 已经领取过的奖励id, QuestDaily表
-     * </pre>
-     *
-     * <code>repeated int32 id = 1;</code>
-     * @return The count of id.
-     */
-    int getIdCount();
-    /**
-     * <pre>
-     * 已经领取过的奖励id, QuestDaily表
-     * </pre>
-     *
-     * <code>repeated int32 id = 1;</code>
-     * @param index The index of the element to return.
-     * @return The id at the given index.
-     */
-    int getId(int index);
-  }
-  /**
-   * Protobuf type {@code Protos.QuestActiveResponse_20000007}
-   */
-  public static final class QuestActiveResponse_20000007 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.QuestActiveResponse_20000007)
-      QuestActiveResponse_20000007OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use QuestActiveResponse_20000007.newBuilder() to construct.
-    private QuestActiveResponse_20000007(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private QuestActiveResponse_20000007() {
-      id_ = emptyIntList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new QuestActiveResponse_20000007();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private QuestActiveResponse_20000007(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                id_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              id_.addInt(input.readInt32());
-              break;
-            }
-            case 10: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                id_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                id_.addInt(input.readInt32());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          id_.makeImmutable(); // C
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveResponse_20000007_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveResponse_20000007_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007.class, cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007.Builder.class);
-    }
-
-    public static final int ID_FIELD_NUMBER = 1;
-    private com.google.protobuf.Internal.IntList id_;
-    /**
-     * <pre>
-     * 已经领取过的奖励id, QuestDaily表
-     * </pre>
-     *
-     * <code>repeated int32 id = 1;</code>
-     * @return A list containing the id.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getIdList() {
-      return id_;
-    }
-    /**
-     * <pre>
-     * 已经领取过的奖励id, QuestDaily表
-     * </pre>
-     *
-     * <code>repeated int32 id = 1;</code>
-     * @return The count of id.
-     */
-    public int getIdCount() {
-      return id_.size();
-    }
-    /**
-     * <pre>
-     * 已经领取过的奖励id, QuestDaily表
-     * </pre>
-     *
-     * <code>repeated int32 id = 1;</code>
-     * @param index The index of the element to return.
-     * @return The id at the given index.
-     */
-    public int getId(int index) {
-      return id_.getInt(index);
-    }
-    private int idMemoizedSerializedSize = -1;
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (getIdList().size() > 0) {
-        output.writeUInt32NoTag(10);
-        output.writeUInt32NoTag(idMemoizedSerializedSize);
-      }
-      for (int i = 0; i < id_.size(); i++) {
-        output.writeInt32NoTag(id_.getInt(i));
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      {
-        int dataSize = 0;
-        for (int i = 0; i < id_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(id_.getInt(i));
-        }
-        size += dataSize;
-        if (!getIdList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        idMemoizedSerializedSize = dataSize;
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 other = (cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007) obj;
-
-      if (!getIdList()
-          .equals(other.getIdList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (getIdCount() > 0) {
-        hash = (37 * hash) + ID_FIELD_NUMBER;
-        hash = (53 * hash) + getIdList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code Protos.QuestActiveResponse_20000007}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.QuestActiveResponse_20000007)
-        cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveResponse_20000007_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveResponse_20000007_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007.class, cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        id_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestActiveResponse_20000007_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 build() {
-        cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 buildPartial() {
-        cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 result = new cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007(this);
-        int from_bitField0_ = bitField0_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          id_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.id_ = id_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007) {
-          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 other) {
-        if (other == cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007.getDefaultInstance()) return this;
-        if (!other.id_.isEmpty()) {
-          if (id_.isEmpty()) {
-            id_ = other.id_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureIdIsMutable();
-            id_.addAll(other.id_);
-          }
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private com.google.protobuf.Internal.IntList id_ = emptyIntList();
-      private void ensureIdIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          id_ = mutableCopy(id_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-      /**
-       * <pre>
-       * 已经领取过的奖励id, QuestDaily表
-       * </pre>
-       *
-       * <code>repeated int32 id = 1;</code>
-       * @return A list containing the id.
-       */
-      public java.util.List<java.lang.Integer>
-          getIdList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(id_) : id_;
-      }
-      /**
-       * <pre>
-       * 已经领取过的奖励id, QuestDaily表
-       * </pre>
-       *
-       * <code>repeated int32 id = 1;</code>
-       * @return The count of id.
-       */
-      public int getIdCount() {
-        return id_.size();
-      }
-      /**
-       * <pre>
-       * 已经领取过的奖励id, QuestDaily表
-       * </pre>
-       *
-       * <code>repeated int32 id = 1;</code>
-       * @param index The index of the element to return.
-       * @return The id at the given index.
-       */
-      public int getId(int index) {
-        return id_.getInt(index);
-      }
-      /**
-       * <pre>
-       * 已经领取过的奖励id, QuestDaily表
-       * </pre>
-       *
-       * <code>repeated int32 id = 1;</code>
-       * @param index The index to set the value at.
-       * @param value The id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setId(
-          int index, int value) {
-        ensureIdIsMutable();
-        id_.setInt(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 已经领取过的奖励id, QuestDaily表
-       * </pre>
-       *
-       * <code>repeated int32 id = 1;</code>
-       * @param value The id to add.
-       * @return This builder for chaining.
-       */
-      public Builder addId(int value) {
-        ensureIdIsMutable();
-        id_.addInt(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 已经领取过的奖励id, QuestDaily表
-       * </pre>
-       *
-       * <code>repeated int32 id = 1;</code>
-       * @param values The id to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllId(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureIdIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, id_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 已经领取过的奖励id, QuestDaily表
-       * </pre>
-       *
-       * <code>repeated int32 id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearId() {
-        id_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.QuestActiveResponse_20000007)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.QuestActiveResponse_20000007)
-    private static final cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007();
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<QuestActiveResponse_20000007>
-        PARSER = new com.google.protobuf.AbstractParser<QuestActiveResponse_20000007>() {
-      @java.lang.Override
-      public QuestActiveResponse_20000007 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new QuestActiveResponse_20000007(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<QuestActiveResponse_20000007> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<QuestActiveResponse_20000007> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.QuestMsg.QuestActiveResponse_20000007 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface QuestReceiveActiveRequest_20000008OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.QuestReceiveActiveRequest_20000008)
       com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
-     * 奖励id, QuestDaily表
+     * 0-4，一共5个奖励，领哪个
      * </pre>
      *
-     * <code>int32 id = 1;</code>
-     * @return The id.
+     * <code>int32 index = 1;</code>
+     * @return The index.
      */
-    int getId();
+    int getIndex();
   }
   /**
    * <pre>
@@ -4271,7 +3088,7 @@ public final class QuestMsg {
               break;
             case 8: {
 
-              id_ = input.readInt32();
+              index_ = input.readInt32();
               break;
             }
             default: {
@@ -4306,19 +3123,19 @@ public final class QuestMsg {
               cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008.class, cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    public static final int INDEX_FIELD_NUMBER = 1;
+    private int index_;
     /**
      * <pre>
-     * 奖励id, QuestDaily表
+     * 0-4，一共5个奖励，领哪个
      * </pre>
      *
-     * <code>int32 id = 1;</code>
-     * @return The id.
+     * <code>int32 index = 1;</code>
+     * @return The index.
      */
     @java.lang.Override
-    public int getId() {
-      return id_;
+    public int getIndex() {
+      return index_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4335,8 +3152,8 @@ public final class QuestMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
+      if (index_ != 0) {
+        output.writeInt32(1, index_);
       }
       unknownFields.writeTo(output);
     }
@@ -4347,9 +3164,9 @@ public final class QuestMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
+      if (index_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+          .computeInt32Size(1, index_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4366,8 +3183,8 @@ public final class QuestMsg {
       }
       cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008 other = (cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008) obj;
 
-      if (getId()
-          != other.getId()) return false;
+      if (getIndex()
+          != other.getIndex()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4379,8 +3196,8 @@ public final class QuestMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      hash = (37 * hash) + INDEX_FIELD_NUMBER;
+      hash = (53 * hash) + getIndex();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4518,7 +3335,7 @@ public final class QuestMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
+        index_ = 0;
 
         return this;
       }
@@ -4546,7 +3363,7 @@ public final class QuestMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008 buildPartial() {
         cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008 result = new cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008(this);
-        result.id_ = id_;
+        result.index_ = index_;
         onBuilt();
         return result;
       }
@@ -4595,8 +3412,8 @@ public final class QuestMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008 other) {
         if (other == cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (other.getIndex() != 0) {
+          setIndex(other.getIndex());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -4627,45 +3444,45 @@ public final class QuestMsg {
         return this;
       }
 
-      private int id_ ;
+      private int index_ ;
       /**
        * <pre>
-       * 奖励id, QuestDaily表
+       * 0-4，一共5个奖励，领哪个
        * </pre>
        *
-       * <code>int32 id = 1;</code>
-       * @return The id.
+       * <code>int32 index = 1;</code>
+       * @return The index.
        */
       @java.lang.Override
-      public int getId() {
-        return id_;
+      public int getIndex() {
+        return index_;
       }
       /**
        * <pre>
-       * 奖励id, QuestDaily表
+       * 0-4，一共5个奖励，领哪个
        * </pre>
        *
-       * <code>int32 id = 1;</code>
-       * @param value The id to set.
+       * <code>int32 index = 1;</code>
+       * @param value The index to set.
        * @return This builder for chaining.
        */
-      public Builder setId(int value) {
+      public Builder setIndex(int value) {
         
-        id_ = value;
+        index_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 奖励id, QuestDaily表
+       * 0-4，一共5个奖励，领哪个
        * </pre>
        *
-       * <code>int32 id = 1;</code>
+       * <code>int32 index = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearId() {
+      public Builder clearIndex() {
         
-        id_ = 0;
+        index_ = 0;
         onChanged();
         return this;
       }
@@ -5627,6 +4444,2209 @@ public final class QuestMsg {
 
   }
 
+  public interface QuestGroupPush_20100008OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QuestGroupPush_20100008)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 哪种类型的任务有变化
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    int getType();
+  }
+  /**
+   * <pre>
+   * 一组任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议
+   * </pre>
+   *
+   * Protobuf type {@code Protos.QuestGroupPush_20100008}
+   */
+  public static final class QuestGroupPush_20100008 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QuestGroupPush_20100008)
+      QuestGroupPush_20100008OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QuestGroupPush_20100008.newBuilder() to construct.
+    private QuestGroupPush_20100008(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QuestGroupPush_20100008() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QuestGroupPush_20100008();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QuestGroupPush_20100008(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              type_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.class, cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.Builder.class);
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <pre>
+     * 哪种类型的任务有变化
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public int getType() {
+      return type_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (type_ != 0) {
+        output.writeInt32(1, type_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, type_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 other = (cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008) obj;
+
+      if (getType()
+          != other.getType()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 一组任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议
+     * </pre>
+     *
+     * Protobuf type {@code Protos.QuestGroupPush_20100008}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QuestGroupPush_20100008)
+        cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.class, cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        type_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 build() {
+        cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 buildPartial() {
+        cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 result = new cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008(this);
+        result.type_ = type_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008) {
+          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 other) {
+        if (other == cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.getDefaultInstance()) return this;
+        if (other.getType() != 0) {
+          setType(other.getType());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int type_ ;
+      /**
+       * <pre>
+       * 哪种类型的任务有变化
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * 哪种类型的任务有变化
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 哪种类型的任务有变化
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QuestGroupPush_20100008)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QuestGroupPush_20100008)
+    private static final cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008();
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QuestGroupPush_20100008>
+        PARSER = new com.google.protobuf.AbstractParser<QuestGroupPush_20100008>() {
+      @java.lang.Override
+      public QuestGroupPush_20100008 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QuestGroupPush_20100008(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QuestGroupPush_20100008> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QuestGroupPush_20100008> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QuestPush_20200008OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QuestPush_20200008)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 更新类型
+     * </pre>
+     *
+     * <code>.Protos.UpdateType type = 1;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    int getTypeValue();
+    /**
+     * <pre>
+     * 更新类型
+     * </pre>
+     *
+     * <code>.Protos.UpdateType type = 1;</code>
+     * @return The type.
+     */
+    cn.game.protocol.protobuf.BaseMsg.UpdateType getType();
+
+    /**
+     * <pre>
+     * 具体变化的任务，如果是删除，只用到id
+     * </pre>
+     *
+     * <code>.Protos.QuestInfo quest = 2;</code>
+     * @return Whether the quest field is set.
+     */
+    boolean hasQuest();
+    /**
+     * <pre>
+     * 具体变化的任务，如果是删除，只用到id
+     * </pre>
+     *
+     * <code>.Protos.QuestInfo quest = 2;</code>
+     * @return The quest.
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuest();
+    /**
+     * <pre>
+     * 具体变化的任务，如果是删除，只用到id
+     * </pre>
+     *
+     * <code>.Protos.QuestInfo quest = 2;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestOrBuilder();
+  }
+  /**
+   * <pre>
+   * 单个任务状态变化通知，一般是任务有变化，或者加入/删除了任务等，会推送这个协议
+   * </pre>
+   *
+   * Protobuf type {@code Protos.QuestPush_20200008}
+   */
+  public static final class QuestPush_20200008 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QuestPush_20200008)
+      QuestPush_20200008OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QuestPush_20200008.newBuilder() to construct.
+    private QuestPush_20200008(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QuestPush_20200008() {
+      type_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QuestPush_20200008();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QuestPush_20200008(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              type_ = rawValue;
+              break;
+            }
+            case 18: {
+              cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder subBuilder = null;
+              if (quest_ != null) {
+                subBuilder = quest_.toBuilder();
+              }
+              quest_ = input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(quest_);
+                quest_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.class, cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.Builder.class);
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <pre>
+     * 更新类型
+     * </pre>
+     *
+     * <code>.Protos.UpdateType type = 1;</code>
+     * @return The enum numeric value on the wire for type.
+     */
+    @java.lang.Override public int getTypeValue() {
+      return type_;
+    }
+    /**
+     * <pre>
+     * 更新类型
+     * </pre>
+     *
+     * <code>.Protos.UpdateType type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override public cn.game.protocol.protobuf.BaseMsg.UpdateType getType() {
+      @SuppressWarnings("deprecation")
+      cn.game.protocol.protobuf.BaseMsg.UpdateType result = cn.game.protocol.protobuf.BaseMsg.UpdateType.valueOf(type_);
+      return result == null ? cn.game.protocol.protobuf.BaseMsg.UpdateType.UNRECOGNIZED : result;
+    }
+
+    public static final int QUEST_FIELD_NUMBER = 2;
+    private cn.game.protocol.protobuf.QuestMsg.QuestInfo quest_;
+    /**
+     * <pre>
+     * 具体变化的任务，如果是删除，只用到id
+     * </pre>
+     *
+     * <code>.Protos.QuestInfo quest = 2;</code>
+     * @return Whether the quest field is set.
+     */
+    @java.lang.Override
+    public boolean hasQuest() {
+      return quest_ != null;
+    }
+    /**
+     * <pre>
+     * 具体变化的任务，如果是删除，只用到id
+     * </pre>
+     *
+     * <code>.Protos.QuestInfo quest = 2;</code>
+     * @return The quest.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuest() {
+      return quest_ == null ? cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance() : quest_;
+    }
+    /**
+     * <pre>
+     * 具体变化的任务，如果是删除，只用到id
+     * </pre>
+     *
+     * <code>.Protos.QuestInfo quest = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestOrBuilder() {
+      return getQuest();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (type_ != cn.game.protocol.protobuf.BaseMsg.UpdateType.UPDATE.getNumber()) {
+        output.writeEnum(1, type_);
+      }
+      if (quest_ != null) {
+        output.writeMessage(2, getQuest());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (type_ != cn.game.protocol.protobuf.BaseMsg.UpdateType.UPDATE.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, type_);
+      }
+      if (quest_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getQuest());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 other = (cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008) obj;
+
+      if (type_ != other.type_) return false;
+      if (hasQuest() != other.hasQuest()) return false;
+      if (hasQuest()) {
+        if (!getQuest()
+            .equals(other.getQuest())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + type_;
+      if (hasQuest()) {
+        hash = (37 * hash) + QUEST_FIELD_NUMBER;
+        hash = (53 * hash) + getQuest().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 单个任务状态变化通知，一般是任务有变化，或者加入/删除了任务等，会推送这个协议
+     * </pre>
+     *
+     * Protobuf type {@code Protos.QuestPush_20200008}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QuestPush_20200008)
+        cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.class, cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        type_ = 0;
+
+        if (questBuilder_ == null) {
+          quest_ = null;
+        } else {
+          quest_ = null;
+          questBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 build() {
+        cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 buildPartial() {
+        cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 result = new cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008(this);
+        result.type_ = type_;
+        if (questBuilder_ == null) {
+          result.quest_ = quest_;
+        } else {
+          result.quest_ = questBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008) {
+          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 other) {
+        if (other == cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.getDefaultInstance()) return this;
+        if (other.type_ != 0) {
+          setTypeValue(other.getTypeValue());
+        }
+        if (other.hasQuest()) {
+          mergeQuest(other.getQuest());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int type_ = 0;
+      /**
+       * <pre>
+       * 更新类型
+       * </pre>
+       *
+       * <code>.Protos.UpdateType type = 1;</code>
+       * @return The enum numeric value on the wire for type.
+       */
+      @java.lang.Override public int getTypeValue() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * 更新类型
+       * </pre>
+       *
+       * <code>.Protos.UpdateType type = 1;</code>
+       * @param value The enum numeric value on the wire for type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTypeValue(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 更新类型
+       * </pre>
+       *
+       * <code>.Protos.UpdateType type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.UpdateType getType() {
+        @SuppressWarnings("deprecation")
+        cn.game.protocol.protobuf.BaseMsg.UpdateType result = cn.game.protocol.protobuf.BaseMsg.UpdateType.valueOf(type_);
+        return result == null ? cn.game.protocol.protobuf.BaseMsg.UpdateType.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       * 更新类型
+       * </pre>
+       *
+       * <code>.Protos.UpdateType type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(cn.game.protocol.protobuf.BaseMsg.UpdateType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        type_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 更新类型
+       * </pre>
+       *
+       * <code>.Protos.UpdateType type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private cn.game.protocol.protobuf.QuestMsg.QuestInfo quest_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> questBuilder_;
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       * @return Whether the quest field is set.
+       */
+      public boolean hasQuest() {
+        return questBuilder_ != null || quest_ != null;
+      }
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       * @return The quest.
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuest() {
+        if (questBuilder_ == null) {
+          return quest_ == null ? cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance() : quest_;
+        } else {
+          return questBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       */
+      public Builder setQuest(cn.game.protocol.protobuf.QuestMsg.QuestInfo value) {
+        if (questBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          quest_ = value;
+          onChanged();
+        } else {
+          questBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       */
+      public Builder setQuest(
+          cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder builderForValue) {
+        if (questBuilder_ == null) {
+          quest_ = builderForValue.build();
+          onChanged();
+        } else {
+          questBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       */
+      public Builder mergeQuest(cn.game.protocol.protobuf.QuestMsg.QuestInfo value) {
+        if (questBuilder_ == null) {
+          if (quest_ != null) {
+            quest_ =
+              cn.game.protocol.protobuf.QuestMsg.QuestInfo.newBuilder(quest_).mergeFrom(value).buildPartial();
+          } else {
+            quest_ = value;
+          }
+          onChanged();
+        } else {
+          questBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       */
+      public Builder clearQuest() {
+        if (questBuilder_ == null) {
+          quest_ = null;
+          onChanged();
+        } else {
+          quest_ = null;
+          questBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder getQuestBuilder() {
+        
+        onChanged();
+        return getQuestFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestOrBuilder() {
+        if (questBuilder_ != null) {
+          return questBuilder_.getMessageOrBuilder();
+        } else {
+          return quest_ == null ?
+              cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance() : quest_;
+        }
+      }
+      /**
+       * <pre>
+       * 具体变化的任务，如果是删除，只用到id
+       * </pre>
+       *
+       * <code>.Protos.QuestInfo quest = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> 
+          getQuestFieldBuilder() {
+        if (questBuilder_ == null) {
+          questBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder>(
+                  getQuest(),
+                  getParentForChildren(),
+                  isClean());
+          quest_ = null;
+        }
+        return questBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QuestPush_20200008)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QuestPush_20200008)
+    private static final cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008();
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QuestPush_20200008>
+        PARSER = new com.google.protobuf.AbstractParser<QuestPush_20200008>() {
+      @java.lang.Override
+      public QuestPush_20200008 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QuestPush_20200008(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QuestPush_20200008> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QuestPush_20200008> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QuestInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QuestInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
+     * </pre>
+     *
+     * <code>int32 state = 2;</code>
+     * @return The state.
+     */
+    int getState();
+
+    /**
+     * <pre>
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * </pre>
+     *
+     * <code>repeated int32 finishCount = 3;</code>
+     * @return A list containing the finishCount.
+     */
+    java.util.List<java.lang.Integer> getFinishCountList();
+    /**
+     * <pre>
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * </pre>
+     *
+     * <code>repeated int32 finishCount = 3;</code>
+     * @return The count of finishCount.
+     */
+    int getFinishCountCount();
+    /**
+     * <pre>
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * </pre>
+     *
+     * <code>repeated int32 finishCount = 3;</code>
+     * @param index The index of the element to return.
+     * @return The finishCount at the given index.
+     */
+    int getFinishCount(int index);
+  }
+  /**
+   * <pre>
+   * 单个任务状态
+   * </pre>
+   *
+   * Protobuf type {@code Protos.QuestInfo}
+   */
+  public static final class QuestInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QuestInfo)
+      QuestInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QuestInfo.newBuilder() to construct.
+    private QuestInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QuestInfo() {
+      finishCount_ = emptyIntList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QuestInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QuestInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              state_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                finishCount_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              finishCount_.addInt(input.readInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                finishCount_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                finishCount_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          finishCount_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.QuestMsg.QuestInfo.class, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int STATE_FIELD_NUMBER = 2;
+    private int state_;
+    /**
+     * <pre>
+     * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
+     * </pre>
+     *
+     * <code>int32 state = 2;</code>
+     * @return The state.
+     */
+    @java.lang.Override
+    public int getState() {
+      return state_;
+    }
+
+    public static final int FINISHCOUNT_FIELD_NUMBER = 3;
+    private com.google.protobuf.Internal.IntList finishCount_;
+    /**
+     * <pre>
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * </pre>
+     *
+     * <code>repeated int32 finishCount = 3;</code>
+     * @return A list containing the finishCount.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getFinishCountList() {
+      return finishCount_;
+    }
+    /**
+     * <pre>
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * </pre>
+     *
+     * <code>repeated int32 finishCount = 3;</code>
+     * @return The count of finishCount.
+     */
+    public int getFinishCountCount() {
+      return finishCount_.size();
+    }
+    /**
+     * <pre>
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * </pre>
+     *
+     * <code>repeated int32 finishCount = 3;</code>
+     * @param index The index of the element to return.
+     * @return The finishCount at the given index.
+     */
+    public int getFinishCount(int index) {
+      return finishCount_.getInt(index);
+    }
+    private int finishCountMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
+      if (state_ != 0) {
+        output.writeInt32(2, state_);
+      }
+      if (getFinishCountList().size() > 0) {
+        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(finishCountMemoizedSerializedSize);
+      }
+      for (int i = 0; i < finishCount_.size(); i++) {
+        output.writeInt32NoTag(finishCount_.getInt(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      if (state_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, state_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < finishCount_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(finishCount_.getInt(i));
+        }
+        size += dataSize;
+        if (!getFinishCountList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        finishCountMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestInfo)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.QuestMsg.QuestInfo other = (cn.game.protocol.protobuf.QuestMsg.QuestInfo) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (getState()
+          != other.getState()) return false;
+      if (!getFinishCountList()
+          .equals(other.getFinishCountList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + getState();
+      if (getFinishCountCount() > 0) {
+        hash = (37 * hash) + FINISHCOUNT_FIELD_NUMBER;
+        hash = (53 * hash) + getFinishCountList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 单个任务状态
+     * </pre>
+     *
+     * Protobuf type {@code Protos.QuestInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QuestInfo)
+        cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.QuestMsg.QuestInfo.class, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        state_ = 0;
+
+        finishCount_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo build() {
+        cn.game.protocol.protobuf.QuestMsg.QuestInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo buildPartial() {
+        cn.game.protocol.protobuf.QuestMsg.QuestInfo result = new cn.game.protocol.protobuf.QuestMsg.QuestInfo(this);
+        int from_bitField0_ = bitField0_;
+        result.id_ = id_;
+        result.state_ = state_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          finishCount_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.finishCount_ = finishCount_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestInfo other) {
+        if (other == cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getState() != 0) {
+          setState(other.getState());
+        }
+        if (!other.finishCount_.isEmpty()) {
+          if (finishCount_.isEmpty()) {
+            finishCount_ = other.finishCount_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureFinishCountIsMutable();
+            finishCount_.addAll(other.finishCount_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.QuestMsg.QuestInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int id_ ;
+      /**
+       * <pre>
+       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int state_ ;
+      /**
+       * <pre>
+       * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
+       * </pre>
+       *
+       * <code>int32 state = 2;</code>
+       * @return The state.
+       */
+      @java.lang.Override
+      public int getState() {
+        return state_;
+      }
+      /**
+       * <pre>
+       * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
+       * </pre>
+       *
+       * <code>int32 state = 2;</code>
+       * @param value The state to set.
+       * @return This builder for chaining.
+       */
+      public Builder setState(int value) {
+        
+        state_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
+       * </pre>
+       *
+       * <code>int32 state = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearState() {
+        
+        state_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList finishCount_ = emptyIntList();
+      private void ensureFinishCountIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          finishCount_ = mutableCopy(finishCount_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * </pre>
+       *
+       * <code>repeated int32 finishCount = 3;</code>
+       * @return A list containing the finishCount.
+       */
+      public java.util.List<java.lang.Integer>
+          getFinishCountList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(finishCount_) : finishCount_;
+      }
+      /**
+       * <pre>
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * </pre>
+       *
+       * <code>repeated int32 finishCount = 3;</code>
+       * @return The count of finishCount.
+       */
+      public int getFinishCountCount() {
+        return finishCount_.size();
+      }
+      /**
+       * <pre>
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * </pre>
+       *
+       * <code>repeated int32 finishCount = 3;</code>
+       * @param index The index of the element to return.
+       * @return The finishCount at the given index.
+       */
+      public int getFinishCount(int index) {
+        return finishCount_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * </pre>
+       *
+       * <code>repeated int32 finishCount = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The finishCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFinishCount(
+          int index, int value) {
+        ensureFinishCountIsMutable();
+        finishCount_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * </pre>
+       *
+       * <code>repeated int32 finishCount = 3;</code>
+       * @param value The finishCount to add.
+       * @return This builder for chaining.
+       */
+      public Builder addFinishCount(int value) {
+        ensureFinishCountIsMutable();
+        finishCount_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * </pre>
+       *
+       * <code>repeated int32 finishCount = 3;</code>
+       * @param values The finishCount to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllFinishCount(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureFinishCountIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, finishCount_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * </pre>
+       *
+       * <code>repeated int32 finishCount = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFinishCount() {
+        finishCount_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QuestInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QuestInfo)
+    private static final cn.game.protocol.protobuf.QuestMsg.QuestInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestInfo();
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QuestInfo>
+        PARSER = new com.google.protobuf.AbstractParser<QuestInfo>() {
+      @java.lang.Override
+      public QuestInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QuestInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QuestInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QuestInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface QuestChallengeGroupRequest_20000020OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.QuestChallengeGroupRequest_20000020)
       com.google.protobuf.MessageOrBuilder {
@@ -5643,7 +6663,7 @@ public final class QuestMsg {
   }
   /**
    * <pre>
-   * 查看某类型挑战组任务
+   * 查看某类型挑战组任务----暂时用不到
    * </pre>
    *
    * Protobuf type {@code Protos.QuestChallengeGroupRequest_20000020}
@@ -5899,7 +6919,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 查看某类型挑战组任务
+     * 查看某类型挑战组任务----暂时用不到
      * </pre>
      *
      * Protobuf type {@code Protos.QuestChallengeGroupRequest_20000020}
@@ -7064,7 +8084,7 @@ public final class QuestMsg {
   }
   /**
    * <pre>
-   * 查看一组任务里的任务数据
+   * 查看一组任务里的任务数据 ----暂时用不到
    * </pre>
    *
    * Protobuf type {@code Protos.QuestChallengeGroupDetailRequest_20000022}
@@ -7320,7 +8340,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 查看一组任务里的任务数据
+     * 查看一组任务里的任务数据 ----暂时用不到
      * </pre>
      *
      * Protobuf type {@code Protos.QuestChallengeGroupDetailRequest_20000022}
@@ -8469,1354 +9489,6 @@ public final class QuestMsg {
 
   }
 
-  public interface QuestGroupPush_20100008OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.QuestGroupPush_20100008)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 哪种类型的任务有变化
-     * </pre>
-     *
-     * <code>int32 type = 1;</code>
-     * @return The type.
-     */
-    int getType();
-  }
-  /**
-   * <pre>
-   * 一组任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议
-   * </pre>
-   *
-   * Protobuf type {@code Protos.QuestGroupPush_20100008}
-   */
-  public static final class QuestGroupPush_20100008 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.QuestGroupPush_20100008)
-      QuestGroupPush_20100008OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use QuestGroupPush_20100008.newBuilder() to construct.
-    private QuestGroupPush_20100008(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private QuestGroupPush_20100008() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new QuestGroupPush_20100008();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private QuestGroupPush_20100008(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-
-              type_ = input.readInt32();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.class, cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.Builder.class);
-    }
-
-    public static final int TYPE_FIELD_NUMBER = 1;
-    private int type_;
-    /**
-     * <pre>
-     * 哪种类型的任务有变化
-     * </pre>
-     *
-     * <code>int32 type = 1;</code>
-     * @return The type.
-     */
-    @java.lang.Override
-    public int getType() {
-      return type_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (type_ != 0) {
-        output.writeInt32(1, type_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (type_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, type_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 other = (cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008) obj;
-
-      if (getType()
-          != other.getType()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + getType();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 一组任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议
-     * </pre>
-     *
-     * Protobuf type {@code Protos.QuestGroupPush_20100008}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.QuestGroupPush_20100008)
-        cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.class, cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        type_ = 0;
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestGroupPush_20100008_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 build() {
-        cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 buildPartial() {
-        cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 result = new cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008(this);
-        result.type_ = type_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008) {
-          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 other) {
-        if (other == cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.getDefaultInstance()) return this;
-        if (other.getType() != 0) {
-          setType(other.getType());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private int type_ ;
-      /**
-       * <pre>
-       * 哪种类型的任务有变化
-       * </pre>
-       *
-       * <code>int32 type = 1;</code>
-       * @return The type.
-       */
-      @java.lang.Override
-      public int getType() {
-        return type_;
-      }
-      /**
-       * <pre>
-       * 哪种类型的任务有变化
-       * </pre>
-       *
-       * <code>int32 type = 1;</code>
-       * @param value The type to set.
-       * @return This builder for chaining.
-       */
-      public Builder setType(int value) {
-        
-        type_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 哪种类型的任务有变化
-       * </pre>
-       *
-       * <code>int32 type = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearType() {
-        
-        type_ = 0;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.QuestGroupPush_20100008)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.QuestGroupPush_20100008)
-    private static final cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008();
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<QuestGroupPush_20100008>
-        PARSER = new com.google.protobuf.AbstractParser<QuestGroupPush_20100008>() {
-      @java.lang.Override
-      public QuestGroupPush_20100008 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new QuestGroupPush_20100008(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<QuestGroupPush_20100008> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<QuestGroupPush_20100008> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface QuestPush_20200008OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.QuestPush_20200008)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 更新类型
-     * </pre>
-     *
-     * <code>.Protos.UpdateType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    int getTypeValue();
-    /**
-     * <pre>
-     * 更新类型
-     * </pre>
-     *
-     * <code>.Protos.UpdateType type = 1;</code>
-     * @return The type.
-     */
-    cn.game.protocol.protobuf.BaseMsg.UpdateType getType();
-
-    /**
-     * <pre>
-     * 具体变化的任务，如果是删除，只用到id
-     * </pre>
-     *
-     * <code>.Protos.QuestInfo quest = 2;</code>
-     * @return Whether the quest field is set.
-     */
-    boolean hasQuest();
-    /**
-     * <pre>
-     * 具体变化的任务，如果是删除，只用到id
-     * </pre>
-     *
-     * <code>.Protos.QuestInfo quest = 2;</code>
-     * @return The quest.
-     */
-    cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuest();
-    /**
-     * <pre>
-     * 具体变化的任务，如果是删除，只用到id
-     * </pre>
-     *
-     * <code>.Protos.QuestInfo quest = 2;</code>
-     */
-    cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestOrBuilder();
-  }
-  /**
-   * <pre>
-   * 单个任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议
-   * </pre>
-   *
-   * Protobuf type {@code Protos.QuestPush_20200008}
-   */
-  public static final class QuestPush_20200008 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.QuestPush_20200008)
-      QuestPush_20200008OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use QuestPush_20200008.newBuilder() to construct.
-    private QuestPush_20200008(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private QuestPush_20200008() {
-      type_ = 0;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new QuestPush_20200008();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private QuestPush_20200008(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-              int rawValue = input.readEnum();
-
-              type_ = rawValue;
-              break;
-            }
-            case 18: {
-              cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder subBuilder = null;
-              if (quest_ != null) {
-                subBuilder = quest_.toBuilder();
-              }
-              quest_ = input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(quest_);
-                quest_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.class, cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.Builder.class);
-    }
-
-    public static final int TYPE_FIELD_NUMBER = 1;
-    private int type_;
-    /**
-     * <pre>
-     * 更新类型
-     * </pre>
-     *
-     * <code>.Protos.UpdateType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
-     */
-    @java.lang.Override public int getTypeValue() {
-      return type_;
-    }
-    /**
-     * <pre>
-     * 更新类型
-     * </pre>
-     *
-     * <code>.Protos.UpdateType type = 1;</code>
-     * @return The type.
-     */
-    @java.lang.Override public cn.game.protocol.protobuf.BaseMsg.UpdateType getType() {
-      @SuppressWarnings("deprecation")
-      cn.game.protocol.protobuf.BaseMsg.UpdateType result = cn.game.protocol.protobuf.BaseMsg.UpdateType.valueOf(type_);
-      return result == null ? cn.game.protocol.protobuf.BaseMsg.UpdateType.UNRECOGNIZED : result;
-    }
-
-    public static final int QUEST_FIELD_NUMBER = 2;
-    private cn.game.protocol.protobuf.QuestMsg.QuestInfo quest_;
-    /**
-     * <pre>
-     * 具体变化的任务，如果是删除，只用到id
-     * </pre>
-     *
-     * <code>.Protos.QuestInfo quest = 2;</code>
-     * @return Whether the quest field is set.
-     */
-    @java.lang.Override
-    public boolean hasQuest() {
-      return quest_ != null;
-    }
-    /**
-     * <pre>
-     * 具体变化的任务，如果是删除，只用到id
-     * </pre>
-     *
-     * <code>.Protos.QuestInfo quest = 2;</code>
-     * @return The quest.
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuest() {
-      return quest_ == null ? cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance() : quest_;
-    }
-    /**
-     * <pre>
-     * 具体变化的任务，如果是删除，只用到id
-     * </pre>
-     *
-     * <code>.Protos.QuestInfo quest = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestOrBuilder() {
-      return getQuest();
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (type_ != cn.game.protocol.protobuf.BaseMsg.UpdateType.UPDATE.getNumber()) {
-        output.writeEnum(1, type_);
-      }
-      if (quest_ != null) {
-        output.writeMessage(2, getQuest());
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (type_ != cn.game.protocol.protobuf.BaseMsg.UpdateType.UPDATE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, type_);
-      }
-      if (quest_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getQuest());
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 other = (cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008) obj;
-
-      if (type_ != other.type_) return false;
-      if (hasQuest() != other.hasQuest()) return false;
-      if (hasQuest()) {
-        if (!getQuest()
-            .equals(other.getQuest())) return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + type_;
-      if (hasQuest()) {
-        hash = (37 * hash) + QUEST_FIELD_NUMBER;
-        hash = (53 * hash) + getQuest().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 单个任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议
-     * </pre>
-     *
-     * Protobuf type {@code Protos.QuestPush_20200008}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.QuestPush_20200008)
-        cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.class, cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        type_ = 0;
-
-        if (questBuilder_ == null) {
-          quest_ = null;
-        } else {
-          quest_ = null;
-          questBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestPush_20200008_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 build() {
-        cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 buildPartial() {
-        cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 result = new cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008(this);
-        result.type_ = type_;
-        if (questBuilder_ == null) {
-          result.quest_ = quest_;
-        } else {
-          result.quest_ = questBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008) {
-          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 other) {
-        if (other == cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.getDefaultInstance()) return this;
-        if (other.type_ != 0) {
-          setTypeValue(other.getTypeValue());
-        }
-        if (other.hasQuest()) {
-          mergeQuest(other.getQuest());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private int type_ = 0;
-      /**
-       * <pre>
-       * 更新类型
-       * </pre>
-       *
-       * <code>.Protos.UpdateType type = 1;</code>
-       * @return The enum numeric value on the wire for type.
-       */
-      @java.lang.Override public int getTypeValue() {
-        return type_;
-      }
-      /**
-       * <pre>
-       * 更新类型
-       * </pre>
-       *
-       * <code>.Protos.UpdateType type = 1;</code>
-       * @param value The enum numeric value on the wire for type to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTypeValue(int value) {
-        
-        type_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 更新类型
-       * </pre>
-       *
-       * <code>.Protos.UpdateType type = 1;</code>
-       * @return The type.
-       */
-      @java.lang.Override
-      public cn.game.protocol.protobuf.BaseMsg.UpdateType getType() {
-        @SuppressWarnings("deprecation")
-        cn.game.protocol.protobuf.BaseMsg.UpdateType result = cn.game.protocol.protobuf.BaseMsg.UpdateType.valueOf(type_);
-        return result == null ? cn.game.protocol.protobuf.BaseMsg.UpdateType.UNRECOGNIZED : result;
-      }
-      /**
-       * <pre>
-       * 更新类型
-       * </pre>
-       *
-       * <code>.Protos.UpdateType type = 1;</code>
-       * @param value The type to set.
-       * @return This builder for chaining.
-       */
-      public Builder setType(cn.game.protocol.protobuf.BaseMsg.UpdateType value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        type_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 更新类型
-       * </pre>
-       *
-       * <code>.Protos.UpdateType type = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearType() {
-        
-        type_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private cn.game.protocol.protobuf.QuestMsg.QuestInfo quest_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> questBuilder_;
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       * @return Whether the quest field is set.
-       */
-      public boolean hasQuest() {
-        return questBuilder_ != null || quest_ != null;
-      }
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       * @return The quest.
-       */
-      public cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuest() {
-        if (questBuilder_ == null) {
-          return quest_ == null ? cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance() : quest_;
-        } else {
-          return questBuilder_.getMessage();
-        }
-      }
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       */
-      public Builder setQuest(cn.game.protocol.protobuf.QuestMsg.QuestInfo value) {
-        if (questBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          quest_ = value;
-          onChanged();
-        } else {
-          questBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       */
-      public Builder setQuest(
-          cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder builderForValue) {
-        if (questBuilder_ == null) {
-          quest_ = builderForValue.build();
-          onChanged();
-        } else {
-          questBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       */
-      public Builder mergeQuest(cn.game.protocol.protobuf.QuestMsg.QuestInfo value) {
-        if (questBuilder_ == null) {
-          if (quest_ != null) {
-            quest_ =
-              cn.game.protocol.protobuf.QuestMsg.QuestInfo.newBuilder(quest_).mergeFrom(value).buildPartial();
-          } else {
-            quest_ = value;
-          }
-          onChanged();
-        } else {
-          questBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       */
-      public Builder clearQuest() {
-        if (questBuilder_ == null) {
-          quest_ = null;
-          onChanged();
-        } else {
-          quest_ = null;
-          questBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       */
-      public cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder getQuestBuilder() {
-        
-        onChanged();
-        return getQuestFieldBuilder().getBuilder();
-      }
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       */
-      public cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestOrBuilder() {
-        if (questBuilder_ != null) {
-          return questBuilder_.getMessageOrBuilder();
-        } else {
-          return quest_ == null ?
-              cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance() : quest_;
-        }
-      }
-      /**
-       * <pre>
-       * 具体变化的任务，如果是删除，只用到id
-       * </pre>
-       *
-       * <code>.Protos.QuestInfo quest = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> 
-          getQuestFieldBuilder() {
-        if (questBuilder_ == null) {
-          questBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder>(
-                  getQuest(),
-                  getParentForChildren(),
-                  isClean());
-          quest_ = null;
-        }
-        return questBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.QuestPush_20200008)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.QuestPush_20200008)
-    private static final cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008();
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<QuestPush_20200008>
-        PARSER = new com.google.protobuf.AbstractParser<QuestPush_20200008>() {
-      @java.lang.Override
-      public QuestPush_20200008 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new QuestPush_20200008(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<QuestPush_20200008> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<QuestPush_20200008> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface QuestConditionCompletePush_20500001OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.QuestConditionCompletePush_20500001)
       com.google.protobuf.MessageOrBuilder {
@@ -9843,7 +9515,7 @@ public final class QuestMsg {
   }
   /**
    * <pre>
-   * 一个任务条件完成的时候，推送此协议
+   * 一个任务条件完成的时候，推送此协议 ----暂时用不到
    * </pre>
    *
    * Protobuf type {@code Protos.QuestConditionCompletePush_20500001}
@@ -10130,7 +9802,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 一个任务条件完成的时候，推送此协议
+     * 一个任务条件完成的时候，推送此协议 ----暂时用不到
      * </pre>
      *
      * Protobuf type {@code Protos.QuestConditionCompletePush_20500001}
@@ -10483,7 +10155,7 @@ public final class QuestMsg {
   }
   /**
    * <pre>
-   * 对于自动交付（领奖）的任务，服务端领奖之后会推送此协议，也代表此任务完成，客户端根据此协议判断是否删除任务
+   * 对于自动交付（领奖）的任务，服务端领奖之后会推送此协议，也代表此任务完成，客户端根据此协议判断是否删除任务  ----暂时用不到
    * </pre>
    *
    * Protobuf type {@code Protos.QuestRewardPush_20600008}
@@ -10826,7 +10498,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 对于自动交付（领奖）的任务，服务端领奖之后会推送此协议，也代表此任务完成，客户端根据此协议判断是否删除任务
+     * 对于自动交付（领奖）的任务，服务端领奖之后会推送此协议，也代表此任务完成，客户端根据此协议判断是否删除任务  ----暂时用不到
      * </pre>
      *
      * Protobuf type {@code Protos.QuestRewardPush_20600008}
@@ -11442,7 +11114,7 @@ public final class QuestMsg {
   }
   /**
    * <pre>
-   * 接取任务请求，一般是和npc，或者特殊的交互物触发
+   * 接取任务请求，一般是和npc，或者特殊的交互物触发   ----暂时用不到
    * </pre>
    *
    * Protobuf type {@code Protos.QuestAcceptRequest_20000026}
@@ -11698,7 +11370,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 接取任务请求，一般是和npc，或者特殊的交互物触发
+     * 接取任务请求，一般是和npc，或者特殊的交互物触发   ----暂时用不到
      * </pre>
      *
      * Protobuf type {@code Protos.QuestAcceptRequest_20000026}
@@ -12639,7 +12311,7 @@ public final class QuestMsg {
   }
   /**
    * <pre>
-   * 设置优先显示的支线组
+   * 设置优先显示的支线组  ----暂时用不到
    * </pre>
    *
    * Protobuf type {@code Protos.QuestBranchPriorityRequest_20000028}
@@ -12895,7 +12567,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 设置优先显示的支线组
+     * 设置优先显示的支线组  ----暂时用不到
      * </pre>
      *
      * Protobuf type {@code Protos.QuestBranchPriorityRequest_20000028}
@@ -14068,861 +13740,6 @@ public final class QuestMsg {
 
     @java.lang.Override
     public cn.game.protocol.protobuf.QuestMsg.QuestBranchPriorityPush_20300000 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface QuestInfoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.QuestInfo)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
-     * </pre>
-     *
-     * <code>int32 id = 1;</code>
-     * @return The id.
-     */
-    int getId();
-
-    /**
-     * <pre>
-     * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
-     * </pre>
-     *
-     * <code>int32 state = 2;</code>
-     * @return The state.
-     */
-    int getState();
-
-    /**
-     * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-     * </pre>
-     *
-     * <code>repeated int32 finishCount = 3;</code>
-     * @return A list containing the finishCount.
-     */
-    java.util.List<java.lang.Integer> getFinishCountList();
-    /**
-     * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-     * </pre>
-     *
-     * <code>repeated int32 finishCount = 3;</code>
-     * @return The count of finishCount.
-     */
-    int getFinishCountCount();
-    /**
-     * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-     * </pre>
-     *
-     * <code>repeated int32 finishCount = 3;</code>
-     * @param index The index of the element to return.
-     * @return The finishCount at the given index.
-     */
-    int getFinishCount(int index);
-  }
-  /**
-   * <pre>
-   * 单个任务状态
-   * </pre>
-   *
-   * Protobuf type {@code Protos.QuestInfo}
-   */
-  public static final class QuestInfo extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.QuestInfo)
-      QuestInfoOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use QuestInfo.newBuilder() to construct.
-    private QuestInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private QuestInfo() {
-      finishCount_ = emptyIntList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new QuestInfo();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private QuestInfo(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-
-              id_ = input.readInt32();
-              break;
-            }
-            case 16: {
-
-              state_ = input.readInt32();
-              break;
-            }
-            case 24: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                finishCount_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              finishCount_.addInt(input.readInt32());
-              break;
-            }
-            case 26: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                finishCount_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                finishCount_.addInt(input.readInt32());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          finishCount_.makeImmutable(); // C
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.QuestMsg.QuestInfo.class, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder.class);
-    }
-
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
-    /**
-     * <pre>
-     * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
-     * </pre>
-     *
-     * <code>int32 id = 1;</code>
-     * @return The id.
-     */
-    @java.lang.Override
-    public int getId() {
-      return id_;
-    }
-
-    public static final int STATE_FIELD_NUMBER = 2;
-    private int state_;
-    /**
-     * <pre>
-     * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
-     * </pre>
-     *
-     * <code>int32 state = 2;</code>
-     * @return The state.
-     */
-    @java.lang.Override
-    public int getState() {
-      return state_;
-    }
-
-    public static final int FINISHCOUNT_FIELD_NUMBER = 3;
-    private com.google.protobuf.Internal.IntList finishCount_;
-    /**
-     * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-     * </pre>
-     *
-     * <code>repeated int32 finishCount = 3;</code>
-     * @return A list containing the finishCount.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getFinishCountList() {
-      return finishCount_;
-    }
-    /**
-     * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-     * </pre>
-     *
-     * <code>repeated int32 finishCount = 3;</code>
-     * @return The count of finishCount.
-     */
-    public int getFinishCountCount() {
-      return finishCount_.size();
-    }
-    /**
-     * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-     * </pre>
-     *
-     * <code>repeated int32 finishCount = 3;</code>
-     * @param index The index of the element to return.
-     * @return The finishCount at the given index.
-     */
-    public int getFinishCount(int index) {
-      return finishCount_.getInt(index);
-    }
-    private int finishCountMemoizedSerializedSize = -1;
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
-      }
-      if (state_ != 0) {
-        output.writeInt32(2, state_);
-      }
-      if (getFinishCountList().size() > 0) {
-        output.writeUInt32NoTag(26);
-        output.writeUInt32NoTag(finishCountMemoizedSerializedSize);
-      }
-      for (int i = 0; i < finishCount_.size(); i++) {
-        output.writeInt32NoTag(finishCount_.getInt(i));
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
-      }
-      if (state_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, state_);
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < finishCount_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(finishCount_.getInt(i));
-        }
-        size += dataSize;
-        if (!getFinishCountList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        finishCountMemoizedSerializedSize = dataSize;
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestInfo)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.QuestMsg.QuestInfo other = (cn.game.protocol.protobuf.QuestMsg.QuestInfo) obj;
-
-      if (getId()
-          != other.getId()) return false;
-      if (getState()
-          != other.getState()) return false;
-      if (!getFinishCountList()
-          .equals(other.getFinishCountList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
-      hash = (37 * hash) + STATE_FIELD_NUMBER;
-      hash = (53 * hash) + getState();
-      if (getFinishCountCount() > 0) {
-        hash = (37 * hash) + FINISHCOUNT_FIELD_NUMBER;
-        hash = (53 * hash) + getFinishCountList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestInfo prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 单个任务状态
-     * </pre>
-     *
-     * Protobuf type {@code Protos.QuestInfo}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.QuestInfo)
-        cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.QuestMsg.QuestInfo.class, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestInfo.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        id_ = 0;
-
-        state_ = 0;
-
-        finishCount_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestInfo_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestInfo getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestInfo build() {
-        cn.game.protocol.protobuf.QuestMsg.QuestInfo result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.QuestMsg.QuestInfo buildPartial() {
-        cn.game.protocol.protobuf.QuestMsg.QuestInfo result = new cn.game.protocol.protobuf.QuestMsg.QuestInfo(this);
-        int from_bitField0_ = bitField0_;
-        result.id_ = id_;
-        result.state_ = state_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          finishCount_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.finishCount_ = finishCount_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestInfo) {
-          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestInfo)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestInfo other) {
-        if (other == cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
-        }
-        if (other.getState() != 0) {
-          setState(other.getState());
-        }
-        if (!other.finishCount_.isEmpty()) {
-          if (finishCount_.isEmpty()) {
-            finishCount_ = other.finishCount_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureFinishCountIsMutable();
-            finishCount_.addAll(other.finishCount_);
-          }
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.QuestMsg.QuestInfo parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestInfo) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private int id_ ;
-      /**
-       * <pre>
-       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @return The id.
-       */
-      @java.lang.Override
-      public int getId() {
-        return id_;
-      }
-      /**
-       * <pre>
-       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @param value The id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setId(int value) {
-        
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 任务id,Quest表或者MainlineQuest 表id,ExploreQuest
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearId() {
-        
-        id_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int state_ ;
-      /**
-       * <pre>
-       * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
-       * </pre>
-       *
-       * <code>int32 state = 2;</code>
-       * @return The state.
-       */
-      @java.lang.Override
-      public int getState() {
-        return state_;
-      }
-      /**
-       * <pre>
-       * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
-       * </pre>
-       *
-       * <code>int32 state = 2;</code>
-       * @param value The state to set.
-       * @return This builder for chaining.
-       */
-      public Builder setState(int value) {
-        
-        state_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
-       * </pre>
-       *
-       * <code>int32 state = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearState() {
-        
-        state_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.Internal.IntList finishCount_ = emptyIntList();
-      private void ensureFinishCountIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          finishCount_ = mutableCopy(finishCount_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-      /**
-       * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-       * </pre>
-       *
-       * <code>repeated int32 finishCount = 3;</code>
-       * @return A list containing the finishCount.
-       */
-      public java.util.List<java.lang.Integer>
-          getFinishCountList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(finishCount_) : finishCount_;
-      }
-      /**
-       * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-       * </pre>
-       *
-       * <code>repeated int32 finishCount = 3;</code>
-       * @return The count of finishCount.
-       */
-      public int getFinishCountCount() {
-        return finishCount_.size();
-      }
-      /**
-       * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-       * </pre>
-       *
-       * <code>repeated int32 finishCount = 3;</code>
-       * @param index The index of the element to return.
-       * @return The finishCount at the given index.
-       */
-      public int getFinishCount(int index) {
-        return finishCount_.getInt(index);
-      }
-      /**
-       * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-       * </pre>
-       *
-       * <code>repeated int32 finishCount = 3;</code>
-       * @param index The index to set the value at.
-       * @param value The finishCount to set.
-       * @return This builder for chaining.
-       */
-      public Builder setFinishCount(
-          int index, int value) {
-        ensureFinishCountIsMutable();
-        finishCount_.setInt(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-       * </pre>
-       *
-       * <code>repeated int32 finishCount = 3;</code>
-       * @param value The finishCount to add.
-       * @return This builder for chaining.
-       */
-      public Builder addFinishCount(int value) {
-        ensureFinishCountIsMutable();
-        finishCount_.addInt(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-       * </pre>
-       *
-       * <code>repeated int32 finishCount = 3;</code>
-       * @param values The finishCount to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllFinishCount(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureFinishCountIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, finishCount_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
-       * </pre>
-       *
-       * <code>repeated int32 finishCount = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearFinishCount() {
-        finishCount_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.QuestInfo)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.QuestInfo)
-    private static final cn.game.protocol.protobuf.QuestMsg.QuestInfo DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestInfo();
-    }
-
-    public static cn.game.protocol.protobuf.QuestMsg.QuestInfo getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<QuestInfo>
-        PARSER = new com.google.protobuf.AbstractParser<QuestInfo>() {
-      @java.lang.Override
-      public QuestInfo parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new QuestInfo(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<QuestInfo> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<QuestInfo> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.QuestMsg.QuestInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -18271,16 +17088,6 @@ public final class QuestMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_QuestReceiveResponse_20000005_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_QuestActiveRequest_20000006_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_QuestActiveRequest_20000006_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_QuestActiveResponse_20000007_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_QuestActiveResponse_20000007_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_QuestReceiveActiveRequest_20000008_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -18290,6 +17097,21 @@ public final class QuestMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_QuestReceiveActiveResponse_20000009_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QuestGroupPush_20100008_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QuestGroupPush_20100008_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QuestPush_20200008_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QuestPush_20200008_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QuestInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QuestInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor;
   private static final 
@@ -18310,16 +17132,6 @@ public final class QuestMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_QuestGroupPush_20100008_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_QuestGroupPush_20100008_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_QuestPush_20200008_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_QuestPush_20200008_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_QuestConditionCompletePush_20500001_descriptor;
   private static final 
@@ -18356,11 +17168,6 @@ public final class QuestMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_QuestBranchPriorityPush_20300000_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_QuestInfo_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_QuestInfo_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_QuestChallengeGroupInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -18396,48 +17203,45 @@ public final class QuestMsg {
     java.lang.String[] descriptorData = {
       "\n\016QuestMsg.proto\022\006Protos\032\017RewardMsg.prot" +
       "o\032\rBaseMsg.proto\")\n\031QuestListRequest_200" +
-      "00001\022\014\n\004type\030\001 \001(\005\"W\n\032QuestListResponse" +
+      "00001\022\014\n\004type\030\001 \001(\005\"?\n\032QuestListResponse" +
       "_20000002\022!\n\006quests\030\001 \003(\0132\021.Protos.Quest" +
-      "Info\022\026\n\016priorityBranch\030\002 \001(\005\"+\n\034QuestRec" +
-      "eiveRequest_20000004\022\013\n\003ids\030\001 \003(\005\"D\n\035Que" +
-      "stReceiveResponse_20000005\022#\n\007rewards\030\001 " +
-      "\003(\0132\022.Protos.RewardInfo\"\035\n\033QuestActiveRe" +
-      "quest_20000006\"*\n\034QuestActiveResponse_20" +
-      "000007\022\n\n\002id\030\001 \003(\005\"0\n\"QuestReceiveActive" +
-      "Request_20000008\022\n\n\002id\030\001 \001(\005\"J\n#QuestRec" +
-      "eiveActiveResponse_20000009\022#\n\007rewards\030\001" +
-      " \003(\0132\022.Protos.RewardInfo\"3\n#QuestChallen" +
-      "geGroupRequest_20000020\022\014\n\004type\030\001 \001(\005\"W\n" +
-      "$QuestChallengeGroupResponse_20000021\022/\n" +
-      "\006groups\030\001 \003(\0132\037.Protos.QuestChallengeGro" +
-      "upInfo\"7\n)QuestChallengeGroupDetailReque" +
-      "st_20000022\022\n\n\002id\030\001 \001(\005\"O\n*QuestChalleng" +
-      "eGroupDetailResponse_20000023\022!\n\006quests\030" +
-      "\001 \003(\0132\021.Protos.QuestInfo\"\'\n\027QuestGroupPu" +
-      "sh_20100008\022\014\n\004type\030\001 \001(\005\"X\n\022QuestPush_2" +
-      "0200008\022 \n\004type\030\001 \001(\0162\022.Protos.UpdateTyp" +
-      "e\022 \n\005quest\030\002 \001(\0132\021.Protos.QuestInfo\"@\n#Q" +
-      "uestConditionCompletePush_20500001\022\n\n\002id" +
-      "\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\"K\n\030QuestRewardPush" +
-      "_20600008\022\n\n\002id\030\001 \001(\005\022#\n\007rewards\030\002 \003(\0132\022" +
-      ".Protos.RewardInfo\")\n\033QuestAcceptRequest" +
-      "_20000026\022\n\n\002id\030\001 \001(\005\"@\n\034QuestAcceptResp" +
-      "onse_20000027\022 \n\005quest\030\001 \001(\0132\021.Protos.Qu" +
-      "estInfo\"4\n#QuestBranchPriorityRequest_20" +
-      "000028\022\r\n\005group\030\001 \001(\005\"&\n$QuestBranchPrio" +
-      "rityResponse_20000029\"1\n QuestBranchPrio" +
-      "rityPush_20300000\022\r\n\005group\030\001 \001(\005\";\n\tQues" +
-      "tInfo\022\n\n\002id\030\001 \001(\005\022\r\n\005state\030\002 \001(\005\022\023\n\013fini" +
-      "shCount\030\003 \003(\005\"D\n\027QuestChallengeGroupInfo" +
-      "\022\n\n\002id\030\001 \001(\005\022\r\n\005score\030\002 \001(\005\022\016\n\006reward\030\003 " +
-      "\001(\010\"G\n\033QuestUpdateRequest_20000030\022\n\n\002id" +
-      "\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\022\r\n\005count\030\003 \001(\005\"\036\n\034" +
-      "QuestUpdateResponse_20000031\">\n!QuestCho" +
-      "oseRewardRequest_20000033\022\n\n\002id\030\001 \001(\005\022\r\n" +
-      "\005index\030\002 \001(\005\"I\n\"QuestChooseRewardRespons" +
-      "e_20000034\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rew" +
-      "ardInfoB\033\n\031cn.game.protocol.protobufb\006pr" +
-      "oto3"
+      "Info\"+\n\034QuestReceiveRequest_20000004\022\013\n\003" +
+      "ids\030\001 \003(\005\"D\n\035QuestReceiveResponse_200000" +
+      "05\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"" +
+      "3\n\"QuestReceiveActiveRequest_20000008\022\r\n" +
+      "\005index\030\001 \001(\005\"J\n#QuestReceiveActiveRespon" +
+      "se_20000009\022#\n\007rewards\030\001 \003(\0132\022.Protos.Re" +
+      "wardInfo\"\'\n\027QuestGroupPush_20100008\022\014\n\004t" +
+      "ype\030\001 \001(\005\"X\n\022QuestPush_20200008\022 \n\004type\030" +
+      "\001 \001(\0162\022.Protos.UpdateType\022 \n\005quest\030\002 \001(\013" +
+      "2\021.Protos.QuestInfo\";\n\tQuestInfo\022\n\n\002id\030\001" +
+      " \001(\005\022\r\n\005state\030\002 \001(\005\022\023\n\013finishCount\030\003 \003(\005" +
+      "\"3\n#QuestChallengeGroupRequest_20000020\022" +
+      "\014\n\004type\030\001 \001(\005\"W\n$QuestChallengeGroupResp" +
+      "onse_20000021\022/\n\006groups\030\001 \003(\0132\037.Protos.Q" +
+      "uestChallengeGroupInfo\"7\n)QuestChallenge" +
+      "GroupDetailRequest_20000022\022\n\n\002id\030\001 \001(\005\"" +
+      "O\n*QuestChallengeGroupDetailResponse_200" +
+      "00023\022!\n\006quests\030\001 \003(\0132\021.Protos.QuestInfo" +
+      "\"@\n#QuestConditionCompletePush_20500001\022" +
+      "\n\n\002id\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\"K\n\030QuestRewar" +
+      "dPush_20600008\022\n\n\002id\030\001 \001(\005\022#\n\007rewards\030\002 " +
+      "\003(\0132\022.Protos.RewardInfo\")\n\033QuestAcceptRe" +
+      "quest_20000026\022\n\n\002id\030\001 \001(\005\"@\n\034QuestAccep" +
+      "tResponse_20000027\022 \n\005quest\030\001 \001(\0132\021.Prot" +
+      "os.QuestInfo\"4\n#QuestBranchPriorityReque" +
+      "st_20000028\022\r\n\005group\030\001 \001(\005\"&\n$QuestBranc" +
+      "hPriorityResponse_20000029\"1\n QuestBranc" +
+      "hPriorityPush_20300000\022\r\n\005group\030\001 \001(\005\"D\n" +
+      "\027QuestChallengeGroupInfo\022\n\n\002id\030\001 \001(\005\022\r\n\005" +
+      "score\030\002 \001(\005\022\016\n\006reward\030\003 \001(\010\"G\n\033QuestUpda" +
+      "teRequest_20000030\022\n\n\002id\030\001 \001(\005\022\r\n\005index\030" +
+      "\002 \001(\005\022\r\n\005count\030\003 \001(\005\"\036\n\034QuestUpdateRespo" +
+      "nse_20000031\">\n!QuestChooseRewardRequest" +
+      "_20000033\022\n\n\002id\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\"I\n\"" +
+      "QuestChooseRewardResponse_20000034\022#\n\007re" +
+      "wards\030\001 \003(\0132\022.Protos.RewardInfoB\033\n\031cn.ga" +
+      "me.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -18456,7 +17260,7 @@ public final class QuestMsg {
     internal_static_Protos_QuestListResponse_20000002_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestListResponse_20000002_descriptor,
-        new java.lang.String[] { "Quests", "PriorityBranch", });
+        new java.lang.String[] { "Quests", });
     internal_static_Protos_QuestReceiveRequest_20000004_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_Protos_QuestReceiveRequest_20000004_fieldAccessorTable = new
@@ -18469,140 +17273,128 @@ public final class QuestMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestReceiveResponse_20000005_descriptor,
         new java.lang.String[] { "Rewards", });
-    internal_static_Protos_QuestActiveRequest_20000006_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_Protos_QuestActiveRequest_20000006_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QuestActiveRequest_20000006_descriptor,
-        new java.lang.String[] { });
-    internal_static_Protos_QuestActiveResponse_20000007_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_Protos_QuestActiveResponse_20000007_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QuestActiveResponse_20000007_descriptor,
-        new java.lang.String[] { "Id", });
     internal_static_Protos_QuestReceiveActiveRequest_20000008_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_Protos_QuestReceiveActiveRequest_20000008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestReceiveActiveRequest_20000008_descriptor,
-        new java.lang.String[] { "Id", });
+        new java.lang.String[] { "Index", });
     internal_static_Protos_QuestReceiveActiveResponse_20000009_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_Protos_QuestReceiveActiveResponse_20000009_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestReceiveActiveResponse_20000009_descriptor,
         new java.lang.String[] { "Rewards", });
-    internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_Protos_QuestChallengeGroupRequest_20000020_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor,
-        new java.lang.String[] { "Type", });
-    internal_static_Protos_QuestChallengeGroupResponse_20000021_descriptor =
-      getDescriptor().getMessageTypes().get(9);
-    internal_static_Protos_QuestChallengeGroupResponse_20000021_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QuestChallengeGroupResponse_20000021_descriptor,
-        new java.lang.String[] { "Groups", });
-    internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_descriptor =
-      getDescriptor().getMessageTypes().get(10);
-    internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_descriptor,
-        new java.lang.String[] { "Id", });
-    internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_descriptor =
-      getDescriptor().getMessageTypes().get(11);
-    internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_descriptor,
-        new java.lang.String[] { "Quests", });
     internal_static_Protos_QuestGroupPush_20100008_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_Protos_QuestGroupPush_20100008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestGroupPush_20100008_descriptor,
         new java.lang.String[] { "Type", });
     internal_static_Protos_QuestPush_20200008_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_Protos_QuestPush_20200008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestPush_20200008_descriptor,
         new java.lang.String[] { "Type", "Quest", });
+    internal_static_Protos_QuestInfo_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_Protos_QuestInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QuestInfo_descriptor,
+        new java.lang.String[] { "Id", "State", "FinishCount", });
+    internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_Protos_QuestChallengeGroupRequest_20000020_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor,
+        new java.lang.String[] { "Type", });
+    internal_static_Protos_QuestChallengeGroupResponse_20000021_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_Protos_QuestChallengeGroupResponse_20000021_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QuestChallengeGroupResponse_20000021_descriptor,
+        new java.lang.String[] { "Groups", });
+    internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_descriptor,
+        new java.lang.String[] { "Id", });
+    internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_descriptor,
+        new java.lang.String[] { "Quests", });
     internal_static_Protos_QuestConditionCompletePush_20500001_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_Protos_QuestConditionCompletePush_20500001_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestConditionCompletePush_20500001_descriptor,
         new java.lang.String[] { "Id", "Index", });
     internal_static_Protos_QuestRewardPush_20600008_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_QuestRewardPush_20600008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestRewardPush_20600008_descriptor,
         new java.lang.String[] { "Id", "Rewards", });
     internal_static_Protos_QuestAcceptRequest_20000026_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_QuestAcceptRequest_20000026_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestAcceptRequest_20000026_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_QuestAcceptResponse_20000027_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_Protos_QuestAcceptResponse_20000027_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestAcceptResponse_20000027_descriptor,
         new java.lang.String[] { "Quest", });
     internal_static_Protos_QuestBranchPriorityRequest_20000028_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_Protos_QuestBranchPriorityRequest_20000028_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestBranchPriorityRequest_20000028_descriptor,
         new java.lang.String[] { "Group", });
     internal_static_Protos_QuestBranchPriorityResponse_20000029_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_Protos_QuestBranchPriorityResponse_20000029_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestBranchPriorityResponse_20000029_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_QuestBranchPriorityPush_20300000_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_QuestBranchPriorityPush_20300000_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestBranchPriorityPush_20300000_descriptor,
         new java.lang.String[] { "Group", });
-    internal_static_Protos_QuestInfo_descriptor =
-      getDescriptor().getMessageTypes().get(21);
-    internal_static_Protos_QuestInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QuestInfo_descriptor,
-        new java.lang.String[] { "Id", "State", "FinishCount", });
     internal_static_Protos_QuestChallengeGroupInfo_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_QuestChallengeGroupInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChallengeGroupInfo_descriptor,
         new java.lang.String[] { "Id", "Score", "Reward", });
     internal_static_Protos_QuestUpdateRequest_20000030_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_QuestUpdateRequest_20000030_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestUpdateRequest_20000030_descriptor,
         new java.lang.String[] { "Id", "Index", "Count", });
     internal_static_Protos_QuestUpdateResponse_20000031_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Protos_QuestUpdateResponse_20000031_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestUpdateResponse_20000031_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_QuestChooseRewardRequest_20000033_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_Protos_QuestChooseRewardRequest_20000033_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChooseRewardRequest_20000033_descriptor,
         new java.lang.String[] { "Id", "Index", });
     internal_static_Protos_QuestChooseRewardResponse_20000034_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_Protos_QuestChooseRewardResponse_20000034_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChooseRewardResponse_20000034_descriptor,

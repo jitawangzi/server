@@ -26,6 +26,10 @@ public class GlobalConst extends ResourceListener {
 	public static int[] Rogueroll1;		
 	/** 【肉鸽】全场纯加属性类肉鸽规定 */
 	public static int[] Rogueroll2;		
+	/** 【彩蛋肉鸽】触发次数与几率 */
+	public static int[] RogueEasterEgg;		
+	/** 【彩蛋肉鸽】肉鸽组 */
+	public static int[] RogueEasterEggGroup;		
 	/** 【英雄升级】所有职业消耗相同物品 */
 	public static int HeroLvItem;		
 	/** 【图鉴】拥有&每次突破，每个神将固定奖励元宝数 */
@@ -120,6 +124,30 @@ public class GlobalConst extends ResourceListener {
 			Rogueroll2 = Rogueroll2Temp ;			
 		} else {
 			Rogueroll2 = new int[] {};
+		}
+		String RogueEasterEggString = element.getAttribute("RogueEasterEgg"); // 【彩蛋肉鸽】触发次数与几率
+		if (RogueEasterEggString != null && RogueEasterEggString.length() > 0) {
+			String[] RogueEasterEggStrings = RogueEasterEggString.split(";"); 
+			int[] RogueEasterEggTemp = new int[RogueEasterEggStrings.length] ; 
+			for (int i = 0; i < RogueEasterEggStrings.length; i++) {
+				int temp = Integer.parseInt(RogueEasterEggStrings[i]);	
+				RogueEasterEggTemp[i] = temp;
+			}
+			RogueEasterEgg = RogueEasterEggTemp ;			
+		} else {
+			RogueEasterEgg = new int[] {};
+		}
+		String RogueEasterEggGroupString = element.getAttribute("RogueEasterEggGroup"); // 【彩蛋肉鸽】肉鸽组
+		if (RogueEasterEggGroupString != null && RogueEasterEggGroupString.length() > 0) {
+			String[] RogueEasterEggGroupStrings = RogueEasterEggGroupString.split(";"); 
+			int[] RogueEasterEggGroupTemp = new int[RogueEasterEggGroupStrings.length] ; 
+			for (int i = 0; i < RogueEasterEggGroupStrings.length; i++) {
+				int temp = Integer.parseInt(RogueEasterEggGroupStrings[i]);	
+				RogueEasterEggGroupTemp[i] = temp;
+			}
+			RogueEasterEggGroup = RogueEasterEggGroupTemp ;			
+		} else {
+			RogueEasterEggGroup = new int[] {};
 		}
 		HeroLvItem = Integer.parseInt(element.getAttribute("HeroLvItem") == null || element.getAttribute("HeroLvItem").length() == 0 ? "0"
 			: element.getAttribute("HeroLvItem")); // 【英雄升级】所有职业消耗相同物品

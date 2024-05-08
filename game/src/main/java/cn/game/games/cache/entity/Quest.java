@@ -260,7 +260,7 @@ public class Quest implements Serializable, DbEntity {
 			}
 		};
 		conditionContainer = new ConditionContainer();
-		conditionContainer.create(playerId, questConfig.getCondition(), questConfig.getConditionalOr(), condChangeAction,
+		conditionContainer.create(playerId, questConfig.Condition, false, condChangeAction,
 				condAchieveAction, finishAction, params);
 		if (StringUtils.isEmpty(params)) {
 			toParams();

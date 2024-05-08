@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
  */
  public class MonsterConfig {
 
-	/** 怪物ID */
+	/** 怪物ID 怪物id必须1打头 10NN-表示章节 第5位是小关 第6位流水号 */
 	public final int ID;		
 	/** 1-英雄 2-小怪 3-头目 4-boss */
 	public final int Type;		
@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
 	public MonsterConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // 怪物ID
+			: element.getAttribute("ID")); // 怪物ID 怪物id必须1打头 10NN-表示章节 第5位是小关 第6位流水号
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
 			: element.getAttribute("Type")); // 1-英雄 2-小怪 3-头目 4-boss
 		MoveSpeed = Integer.parseInt(element.getAttribute("MoveSpeed") == null || element.getAttribute("MoveSpeed").length() == 0 ? "0"

@@ -3,6 +3,7 @@ package cn.game.protocol.generated.manager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -73,7 +74,7 @@ public class AchievementMissionManager extends ResourceListener {
 			Map<Integer, AchievementMissionConfig> achievementmissions = new HashMap<>();
 			for (Element e : list) {
 				AchievementMissionConfig achievementmission = new AchievementMissionConfig(e);
-				achievementmissions.put(achievementmission.getId(), achievementmission);
+				achievementmissions.put(achievementmission.ID, achievementmission);
 			}			
 
 			this.achievementmissions = com.google.common.collect.ImmutableMap.copyOf(achievementmissions);
