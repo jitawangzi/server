@@ -6,24 +6,19 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-@ConditionType(type = ConditionTypeEnum.UpgradeHero)
-public class UpgradeHero extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroLevelUp };
+@ConditionType(type = ConditionTypeEnum.ReceiveHangup)
+public class ReceiveHangup extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Patrol };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public UpgradeHero() {
+	public ReceiveHangup() {
 
 	}
-	public void updateRequireCount(GameEvent event) {
-		finishCount += event.getIntParameter(0);
-	}
-
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-		return true;
+		return !event.getBoolParameter(0);
 	}
-
 }

@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
@@ -20,6 +21,12 @@ public class ChapterFinish extends AbstractCondition {
 	}
 	public ChapterFinish() {
 
+	}
+
+	@Override
+	public long getFinishCount() {
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		return chapterModule.isBattlePass(getRequireId()) ? 1 : 0;
 	}
 
 	@Override

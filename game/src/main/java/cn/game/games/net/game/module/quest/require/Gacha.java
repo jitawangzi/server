@@ -6,15 +6,15 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-@ConditionType(type = ConditionTypeEnum.UpgradeHero)
-public class UpgradeHero extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroLevelUp };
+@ConditionType(type = ConditionTypeEnum.Gacha)
+public class Gacha extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Draw };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public UpgradeHero() {
+	public Gacha() {
 
 	}
 	public void updateRequireCount(GameEvent event) {

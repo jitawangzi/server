@@ -65,6 +65,8 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 		// 拥有新英雄，奖励固定元宝
 		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward);
+
+		player.handleEvent(EventTypeEnum.Hero, heroConfig.ID);
 	}
 
 	@Override

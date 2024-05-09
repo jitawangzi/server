@@ -6,19 +6,21 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-@ConditionType(type = ConditionTypeEnum.UpgradeHero)
-public class UpgradeHero extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroLevelUp };
+@ConditionType(type = ConditionTypeEnum.CumulativeLogins)
+public class CumulativeLogins extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public UpgradeHero() {
+	public CumulativeLogins() {
 
 	}
-	public void updateRequireCount(GameEvent event) {
-		finishCount += event.getIntParameter(0);
+
+	@Override
+	public long getFinishCount() {
+		return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.CumulativeLogins);
 	}
 
 	@Override

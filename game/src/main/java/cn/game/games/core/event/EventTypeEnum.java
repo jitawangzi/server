@@ -38,7 +38,7 @@ public enum EventTypeEnum {
 	ChapterWin(4, "ChapterWin", "章节胜利"),
 	/** 主角升星 */
 	StarUp(5, "StarUp", "主角升星"),
-	/** 英雄升级 */
+	/** 英雄升级 ,参数：升级次数*/
 	HeroLevelUp(6, "HeroLevelUp", "英雄升级"),
 	/** 英雄突破 */
 	HeroBreak(7, "HeroBreak", "英雄突破"),
@@ -62,6 +62,9 @@ public enum EventTypeEnum {
 	BattleEnd(16, "BattleEnd", "一场战斗结束"),
 
 	ReceiveStamina(18, "ReceiveStamina", "领取体力"),
+	Draw(19, "Draw", "抽卡"),
+	/** 巡逻、挂机  参数：是否是快速巡逻 */
+	Patrol(20, "Patrol", "巡逻、挂机"),
 
 	// 任务相关
 	/** 完成探索关卡,可能和完成关卡合并 */
