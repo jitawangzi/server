@@ -17,10 +17,8 @@ public class UpgradeHero extends AbstractCondition {
 	public UpgradeHero() {
 
 	}
-
 	@Override
 	public boolean checkEventParam(GameEvent event) {
 		return true;
 	}
-
 }

@@ -98,9 +98,9 @@ public class GameEvent {
 	 * @param i
 	 * @return
 	 */
-	public final Object getParameter(int i) {
+	public final <T> T getParameter(int i) {
 
-		return params[i];
+		return (T) params[i];
 	}
 
 	/**

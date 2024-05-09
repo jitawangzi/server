@@ -759,6 +759,7 @@ public class QuestModule extends BasePlayerModule {
 		}
 		case NewDay: {
 			refreshQuest(QuestTypeEnum.Daily);
+			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}
 		case PLAYER_CREATE: {
@@ -771,6 +772,7 @@ public class QuestModule extends BasePlayerModule {
 		}
 		case Charge: {
 			addCumulativeCount(ConditionTypeEnum.AccumulatedRecharge, event.getIntParameter(0));
+			addCumulativeCount(ConditionTypeEnum.RechargeCnt, 1);
 			break;
 		}
 		case ChapterWin: {

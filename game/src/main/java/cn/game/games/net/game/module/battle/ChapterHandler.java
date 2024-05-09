@@ -149,6 +149,8 @@ public class ChapterHandler extends BaseHandler {
 		if (!isFast) {
 			chapterModule.setPatrolRewardTime();
 		}
+		player.handleEvent(EventTypeEnum.Patrol, isFast);
+
 		client.sendProtocol(resp);
 	}
 

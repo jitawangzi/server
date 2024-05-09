@@ -16,6 +16,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -104,6 +105,7 @@ public class HeroHandler extends BaseHandler {
 
 		Set<Hero> updateHeros = new HashSet<Hero>();
 		int loopCount = 0;
+//		int upCount = 0;
 		loop: while (true) {
 			if (loopCount >= 10000) {
 				throw new RuntimeException("maybe infinite loop，loopCount: " + loopCount);
@@ -129,6 +131,8 @@ public class HeroHandler extends BaseHandler {
 				moneyCount += heroLvConfig.LvConsumeMoney;
 				hero.setLevel(curLevel + 1);
 				updateHeros.add(hero);
+//				upCount++;
+				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
 			}
 			loopCount++;
 		}
@@ -141,6 +145,10 @@ public class HeroHandler extends BaseHandler {
 		for (Hero entry : updateHeros) {
 			resp.addHeros(entry.toHeroLevelInfo());
 		}
+//		if (upCount > 0) {
+//			player.handleEvent(EventTypeEnum.HeroLevelUp, upCount);
+//		}
+
 		client.sendProtocol(resp.build());
 	}
 	private void upLevelMax(NetClient client, Object message) {
@@ -181,6 +189,8 @@ public class HeroHandler extends BaseHandler {
 			itemCount += heroLvConfig.LvConsumeItem;
 			moneyCount += heroLvConfig.LvConsumeMoney;
 			maxLevel = level + 1;
+			player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+
 		}
 		if (maxLevel != curLevel) {
 			hero.setLevel(maxLevel);
@@ -188,7 +198,9 @@ public class HeroHandler extends BaseHandler {
 			deleteItems.add(new AbstractMap.SimpleEntry(moneyId,moneyCount)) ; 
 			deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
 			PlayerHelper.delResources(player, deleteItems, ResourceConsumeEnum.HeroLevelUp);
+//			player.handleEvent(EventTypeEnum.HeroLevelUp, maxLevel - curLevel);
 		}
+
 		resp.setLevel(maxLevel);
 		client.sendProtocol(resp.build());
 	}
@@ -354,6 +366,8 @@ public class HeroHandler extends BaseHandler {
 		// 英雄突破，奖励固定元宝
 		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward);
 
+		player.handleEvent(EventTypeEnum.HeroBreak);
+
 		resp.setHero(hero.toHeroInfo());
 		client.sendProtocol(resp.build());
 	}
@@ -454,6 +468,8 @@ public class HeroHandler extends BaseHandler {
 		PlayerHelper.delResources(player, Asset.gold.ID, curConfig.LvConsumeMoney, ResourceConsumeEnum.HeroLevelUp);
 		hero.setLevel(hero.getLevel() + 1);
 //		hero.update();
+		player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+
 		client.sendProtocol(resp.build());
 	}
 }

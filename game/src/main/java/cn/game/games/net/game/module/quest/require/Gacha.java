@@ -6,26 +6,23 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**    
- * 黑市购买商品
- * @date 2024年5月8日 下午5:50:06
- * @author SYQ
- */
-// TODO 
-@ConditionType(type = ConditionTypeEnum.StorePurchases)
-public class StorePurchases extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.BuyItems };
+@ConditionType(type = ConditionTypeEnum.Gacha)
+public class Gacha extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Draw };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public StorePurchases() {
-	};
+	public Gacha() {
+
+	}
+	public void updateRequireCount(GameEvent event) {
+		finishCount += event.getIntParameter(0);
+	}
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-
 		return true;
 	}
 

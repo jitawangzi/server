@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.DrawConfig;
@@ -76,10 +77,12 @@ public class DrawHandler extends BaseHandler {
 		List<RewardInfo> rewards = drawModule.draw(id, count, freeOnce);
 		int gold = drawConfig.DrawMoney * count;
 
+		player.handleEvent(EventTypeEnum.Draw, count);
+
 		resp.addAllRewards(rewards);
 		resp.setGold(gold);
-
 		resp.setDraw(drawModule.buildDrawInfo(id));
+
 		client.sendProtocol(resp.build());
 	}
 
