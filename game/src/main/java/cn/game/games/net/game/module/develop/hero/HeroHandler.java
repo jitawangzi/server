@@ -148,7 +148,6 @@ public class HeroHandler extends BaseHandler {
 //		if (upCount > 0) {
 //			player.handleEvent(EventTypeEnum.HeroLevelUp, upCount);
 //		}
-
 		client.sendProtocol(resp.build());
 	}
 	private void upLevelMax(NetClient client, Object message) {
@@ -198,7 +197,6 @@ public class HeroHandler extends BaseHandler {
 			deleteItems.add(new AbstractMap.SimpleEntry(moneyId,moneyCount)) ; 
 			deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
 			PlayerHelper.delResources(player, deleteItems, ResourceConsumeEnum.HeroLevelUp);
-//			player.handleEvent(EventTypeEnum.HeroLevelUp, maxLevel - curLevel);
 		}
 
 		resp.setLevel(maxLevel);
