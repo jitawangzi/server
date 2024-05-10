@@ -183,10 +183,6 @@ public class ActivityModule extends BasePlayerModule {
 		}
 	}
 
-	@Override
-	public void init() {
-
-	}
 	public Collection<ActivityBase> list() {
 		return this.activities.values();
 	}

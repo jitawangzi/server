@@ -42,28 +42,44 @@ public class GlobalConst extends ResourceListener {
 	public static int[][] RandomCLoudAward;		
 	/** 【队长加成】 */
 	public static int[][] CaptainBonus;		
-	/** 每日任务宝箱积分 */
+	/** 【任务】每日任务宝箱积分 */
 	public static int[] DailyPoint;		
-	/** 每日任务宝箱奖励 */
+	/** 【任务】每日任务宝箱奖励 */
 	public static int[][] DailyTask;		
-	/** 每周任务宝箱积分 */
+	/** 【任务】每周任务宝箱积分 */
 	public static int[] WeeklyPoint;		
-	/** 每周任务宝箱奖励 */
+	/** 【任务】每周任务宝箱奖励 */
 	public static int[][] WeeklyTask;		
-	/** 快速巡逻时长 */
+	/** 【挂机】快速巡逻时长 */
 	public static int QuickPatrolDuration;		
-	/** 巡逻时长上限 */
+	/** 【挂机】巡逻时长上限 */
 	public static int MaximumPatrolDuration;		
-	/** 快速巡逻次数 */
+	/** 【挂机】快速巡逻次数 */
 	public static int QuickPatrolCnt;		
-	/** 月卡附加次数 */
+	/** 【挂机】月卡附加次数 */
 	public static int MonthCardCnt;		
-	/** 快速巡逻消耗 */
+	/** 【挂机】快速巡逻消耗 */
 	public static int QuickPatrolConsume;		
-	/** 广告巡逻次数 */
+	/** 【挂机】广告巡逻次数 */
 	public static int AdPatrolCnt;		
-	/** 日租卡选取数量 */
+	/** 【黑市】日租卡选取数量 */
 	public static int DayCardCnt;		
+	/** 【黑市】黑市格子数量 */
+	public static int HeishiShelvesCnt;		
+	/** 【黑市】黑市刷新 */
+	public static int HeishiFreeRefresh;		
+	/** 【请神】高级抽卡 */
+	public static int[] AdvancedCardDraw;		
+	/** 【请神】至尊抽卡 */
+	public static int[] UltimateCardDraw;		
+	/** 【请神】高级抽卡神将显示组 */
+	public static int[][] AdvancedCardDrawGroup;		
+	/** 【请神】至尊抽卡神将显示组 */
+	public static int[][] UltimateCardDrawGroup;		
+	/** 【7日任务】宝箱积分 */
+	public static int[] SevenDaysPoint;		
+	/** 【7日任务】宝箱奖励 */
+	public static int[][] SevenDaysReward;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -215,7 +231,7 @@ public class GlobalConst extends ResourceListener {
 		} else {
 			CaptainBonus = new int[][] {};
 		}
-		String DailyPointString = element.getAttribute("DailyPoint"); // 每日任务宝箱积分
+		String DailyPointString = element.getAttribute("DailyPoint"); // 【任务】每日任务宝箱积分
 		if (DailyPointString != null && DailyPointString.length() > 0) {
 			String[] DailyPointStrings = DailyPointString.split(";"); 
 			int[] DailyPointTemp = new int[DailyPointStrings.length] ; 
@@ -227,7 +243,7 @@ public class GlobalConst extends ResourceListener {
 		} else {
 			DailyPoint = new int[] {};
 		}
-		String DailyTaskString = element.getAttribute("DailyTask"); // 每日任务宝箱奖励
+		String DailyTaskString = element.getAttribute("DailyTask"); // 【任务】每日任务宝箱奖励
 		if (DailyTaskString != null && DailyTaskString.length() > 0) {
 			String[] DailyTaskStrings = DailyTaskString.split("\\|"); 
 			int[][] DailyTaskTemp = new int[DailyTaskStrings.length][] ; 
@@ -244,7 +260,7 @@ public class GlobalConst extends ResourceListener {
 		} else {
 			DailyTask = new int[][] {};
 		}
-		String WeeklyPointString = element.getAttribute("WeeklyPoint"); // 每周任务宝箱积分
+		String WeeklyPointString = element.getAttribute("WeeklyPoint"); // 【任务】每周任务宝箱积分
 		if (WeeklyPointString != null && WeeklyPointString.length() > 0) {
 			String[] WeeklyPointStrings = WeeklyPointString.split(";"); 
 			int[] WeeklyPointTemp = new int[WeeklyPointStrings.length] ; 
@@ -256,7 +272,7 @@ public class GlobalConst extends ResourceListener {
 		} else {
 			WeeklyPoint = new int[] {};
 		}
-		String WeeklyTaskString = element.getAttribute("WeeklyTask"); // 每周任务宝箱奖励
+		String WeeklyTaskString = element.getAttribute("WeeklyTask"); // 【任务】每周任务宝箱奖励
 		if (WeeklyTaskString != null && WeeklyTaskString.length() > 0) {
 			String[] WeeklyTaskStrings = WeeklyTaskString.split("\\|"); 
 			int[][] WeeklyTaskTemp = new int[WeeklyTaskStrings.length][] ; 
@@ -274,19 +290,110 @@ public class GlobalConst extends ResourceListener {
 			WeeklyTask = new int[][] {};
 		}
 		QuickPatrolDuration = Integer.parseInt(element.getAttribute("QuickPatrolDuration") == null || element.getAttribute("QuickPatrolDuration").length() == 0 ? "0"
-			: element.getAttribute("QuickPatrolDuration")); // 快速巡逻时长
+			: element.getAttribute("QuickPatrolDuration")); // 【挂机】快速巡逻时长
 		MaximumPatrolDuration = Integer.parseInt(element.getAttribute("MaximumPatrolDuration") == null || element.getAttribute("MaximumPatrolDuration").length() == 0 ? "0"
-			: element.getAttribute("MaximumPatrolDuration")); // 巡逻时长上限
+			: element.getAttribute("MaximumPatrolDuration")); // 【挂机】巡逻时长上限
 		QuickPatrolCnt = Integer.parseInt(element.getAttribute("QuickPatrolCnt") == null || element.getAttribute("QuickPatrolCnt").length() == 0 ? "0"
-			: element.getAttribute("QuickPatrolCnt")); // 快速巡逻次数
+			: element.getAttribute("QuickPatrolCnt")); // 【挂机】快速巡逻次数
 		MonthCardCnt = Integer.parseInt(element.getAttribute("MonthCardCnt") == null || element.getAttribute("MonthCardCnt").length() == 0 ? "0"
-			: element.getAttribute("MonthCardCnt")); // 月卡附加次数
+			: element.getAttribute("MonthCardCnt")); // 【挂机】月卡附加次数
 		QuickPatrolConsume = Integer.parseInt(element.getAttribute("QuickPatrolConsume") == null || element.getAttribute("QuickPatrolConsume").length() == 0 ? "0"
-			: element.getAttribute("QuickPatrolConsume")); // 快速巡逻消耗
+			: element.getAttribute("QuickPatrolConsume")); // 【挂机】快速巡逻消耗
 		AdPatrolCnt = Integer.parseInt(element.getAttribute("AdPatrolCnt") == null || element.getAttribute("AdPatrolCnt").length() == 0 ? "0"
-			: element.getAttribute("AdPatrolCnt")); // 广告巡逻次数
+			: element.getAttribute("AdPatrolCnt")); // 【挂机】广告巡逻次数
 		DayCardCnt = Integer.parseInt(element.getAttribute("DayCardCnt") == null || element.getAttribute("DayCardCnt").length() == 0 ? "0"
-			: element.getAttribute("DayCardCnt")); // 日租卡选取数量
+			: element.getAttribute("DayCardCnt")); // 【黑市】日租卡选取数量
+		HeishiShelvesCnt = Integer.parseInt(element.getAttribute("HeishiShelvesCnt") == null || element.getAttribute("HeishiShelvesCnt").length() == 0 ? "0"
+			: element.getAttribute("HeishiShelvesCnt")); // 【黑市】黑市格子数量
+		HeishiFreeRefresh = Integer.parseInt(element.getAttribute("HeishiFreeRefresh") == null || element.getAttribute("HeishiFreeRefresh").length() == 0 ? "0"
+			: element.getAttribute("HeishiFreeRefresh")); // 【黑市】黑市刷新
+		String AdvancedCardDrawString = element.getAttribute("AdvancedCardDraw"); // 【请神】高级抽卡
+		if (AdvancedCardDrawString != null && AdvancedCardDrawString.length() > 0) {
+			String[] AdvancedCardDrawStrings = AdvancedCardDrawString.split(";"); 
+			int[] AdvancedCardDrawTemp = new int[AdvancedCardDrawStrings.length] ; 
+			for (int i = 0; i < AdvancedCardDrawStrings.length; i++) {
+				int temp = Integer.parseInt(AdvancedCardDrawStrings[i]);	
+				AdvancedCardDrawTemp[i] = temp;
+			}
+			AdvancedCardDraw = AdvancedCardDrawTemp ;			
+		} else {
+			AdvancedCardDraw = new int[] {};
+		}
+		String UltimateCardDrawString = element.getAttribute("UltimateCardDraw"); // 【请神】至尊抽卡
+		if (UltimateCardDrawString != null && UltimateCardDrawString.length() > 0) {
+			String[] UltimateCardDrawStrings = UltimateCardDrawString.split(";"); 
+			int[] UltimateCardDrawTemp = new int[UltimateCardDrawStrings.length] ; 
+			for (int i = 0; i < UltimateCardDrawStrings.length; i++) {
+				int temp = Integer.parseInt(UltimateCardDrawStrings[i]);	
+				UltimateCardDrawTemp[i] = temp;
+			}
+			UltimateCardDraw = UltimateCardDrawTemp ;			
+		} else {
+			UltimateCardDraw = new int[] {};
+		}
+		String AdvancedCardDrawGroupString = element.getAttribute("AdvancedCardDrawGroup"); // 【请神】高级抽卡神将显示组
+		if (AdvancedCardDrawGroupString != null && AdvancedCardDrawGroupString.length() > 0) {
+			String[] AdvancedCardDrawGroupStrings = AdvancedCardDrawGroupString.split("\\|"); 
+			int[][] AdvancedCardDrawGroupTemp = new int[AdvancedCardDrawGroupStrings.length][] ; 
+			for (int i = 0; i < AdvancedCardDrawGroupStrings.length; i++) {
+				String[] AdvancedCardDrawGroupStrings2 = AdvancedCardDrawGroupStrings[i].split(";"); 
+				int[] array = new int[AdvancedCardDrawGroupStrings2.length];
+				for (int j = 0; j < AdvancedCardDrawGroupStrings2.length; j++) {
+					int temp = Integer.parseInt(AdvancedCardDrawGroupStrings2[j]);	
+					array[j] = temp;
+				}
+				AdvancedCardDrawGroupTemp[i] = array;
+			}
+			AdvancedCardDrawGroup = AdvancedCardDrawGroupTemp ;			
+		} else {
+			AdvancedCardDrawGroup = new int[][] {};
+		}
+		String UltimateCardDrawGroupString = element.getAttribute("UltimateCardDrawGroup"); // 【请神】至尊抽卡神将显示组
+		if (UltimateCardDrawGroupString != null && UltimateCardDrawGroupString.length() > 0) {
+			String[] UltimateCardDrawGroupStrings = UltimateCardDrawGroupString.split("\\|"); 
+			int[][] UltimateCardDrawGroupTemp = new int[UltimateCardDrawGroupStrings.length][] ; 
+			for (int i = 0; i < UltimateCardDrawGroupStrings.length; i++) {
+				String[] UltimateCardDrawGroupStrings2 = UltimateCardDrawGroupStrings[i].split(";"); 
+				int[] array = new int[UltimateCardDrawGroupStrings2.length];
+				for (int j = 0; j < UltimateCardDrawGroupStrings2.length; j++) {
+					int temp = Integer.parseInt(UltimateCardDrawGroupStrings2[j]);	
+					array[j] = temp;
+				}
+				UltimateCardDrawGroupTemp[i] = array;
+			}
+			UltimateCardDrawGroup = UltimateCardDrawGroupTemp ;			
+		} else {
+			UltimateCardDrawGroup = new int[][] {};
+		}
+		String SevenDaysPointString = element.getAttribute("SevenDaysPoint"); // 【7日任务】宝箱积分
+		if (SevenDaysPointString != null && SevenDaysPointString.length() > 0) {
+			String[] SevenDaysPointStrings = SevenDaysPointString.split(";"); 
+			int[] SevenDaysPointTemp = new int[SevenDaysPointStrings.length] ; 
+			for (int i = 0; i < SevenDaysPointStrings.length; i++) {
+				int temp = Integer.parseInt(SevenDaysPointStrings[i]);	
+				SevenDaysPointTemp[i] = temp;
+			}
+			SevenDaysPoint = SevenDaysPointTemp ;			
+		} else {
+			SevenDaysPoint = new int[] {};
+		}
+		String SevenDaysRewardString = element.getAttribute("SevenDaysReward"); // 【7日任务】宝箱奖励
+		if (SevenDaysRewardString != null && SevenDaysRewardString.length() > 0) {
+			String[] SevenDaysRewardStrings = SevenDaysRewardString.split("\\|"); 
+			int[][] SevenDaysRewardTemp = new int[SevenDaysRewardStrings.length][] ; 
+			for (int i = 0; i < SevenDaysRewardStrings.length; i++) {
+				String[] SevenDaysRewardStrings2 = SevenDaysRewardStrings[i].split(";"); 
+				int[] array = new int[SevenDaysRewardStrings2.length];
+				for (int j = 0; j < SevenDaysRewardStrings2.length; j++) {
+					int temp = Integer.parseInt(SevenDaysRewardStrings2[j]);	
+					array[j] = temp;
+				}
+				SevenDaysRewardTemp[i] = array;
+			}
+			SevenDaysReward = SevenDaysRewardTemp ;			
+		} else {
+			SevenDaysReward = new int[][] {};
+		}
 	}
 	@Override
 	public void load() {

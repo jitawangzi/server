@@ -4,24 +4,26 @@ import org.w3c.dom.Element;
 
 
 /**
- * 商品
+ * 充值
  * 
  * 工具生成的，不要手动修改
  */
- public class ShopItemConfig {
+ public class RechargeConfig {
 
-	/** 商品id */
+	/** ID */
 	public final int ID;		
-	/** 包含物品 商品表ID */
+	/** 商品 */
 	public final int[] Item;		
-	/** 购买参数 1=货币；货币ID；数量 2=充值；数量(免费无需配置) 3=广告 */
+	/** 物品角标 */
+	public final String CornerMarker;		
+	/** 购买参数 1=货币；货币ID；数量 2=充值；数量 3=广告 */
 	public final int[] PurchaseParameter;		
 
-	public ShopItemConfig (Element element) throws Exception {
+	public RechargeConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // 商品id
-		String ItemString = element.getAttribute("Item"); // 包含物品 商品表ID
+			: element.getAttribute("ID")); // ID
+		String ItemString = element.getAttribute("Item"); // 商品
 		if (ItemString != null && ItemString.length() > 0) {
 			String[] ItemStrings = ItemString.split(";"); 
 			int[] ItemTemp = new int[ItemStrings.length] ; 
@@ -33,7 +35,8 @@ import org.w3c.dom.Element;
 		} else {
 			Item = new int[] {};
 		}
-		String PurchaseParameterString = element.getAttribute("PurchaseParameter"); // 购买参数 1=货币；货币ID；数量 2=充值；数量(免费无需配置) 3=广告
+		CornerMarker = element.getAttribute("CornerMarker"); // 物品角标
+		String PurchaseParameterString = element.getAttribute("PurchaseParameter"); // 购买参数 1=货币；货币ID；数量 2=充值；数量 3=广告
 		if (PurchaseParameterString != null && PurchaseParameterString.length() > 0) {
 			String[] PurchaseParameterStrings = PurchaseParameterString.split(";"); 
 			int[] PurchaseParameterTemp = new int[PurchaseParameterStrings.length] ; 

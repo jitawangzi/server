@@ -24,7 +24,6 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Buff;
-import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.op.impl.BuffOp;
@@ -47,7 +46,6 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.buff.BuffValue;
-import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
@@ -498,7 +496,7 @@ public class PlayerHelper {
 			player.getData().setExp(curExp - expConfig.experience);
 			player.getData().setLevel(player.getData().getLevel() + 1);
 			curExp = player.getData().getExp();
-			player.handleEvent(new GameEvent(EventTypeEnum.LevelUp, player, player.getData().getLevel()));
+//			player.handleEvent(new GameEvent(EventTypeEnum.LevelUp, player, player.getData().getLevel()));
 
 			expConfig = UserUpgradeManager.instance().getNullable(player.getData().getLevel());
 			nextexpConfig = UserUpgradeManager.instance().getNullable(player.getData().getLevel() + 1);
@@ -718,13 +716,16 @@ public class PlayerHelper {
 		return rewardItems;
 	}
 
-	public static List<RewardInfo> addResources(long playerId, int[] rewards) {
+	public static List<RewardInfo> addResources(Player player, int[] rewards) {
 
-		List<RewardInfo> ret = new ArrayList<>();
-		for (int i = 0; i < rewards.length - 1; i += 2) {
-			ret.addAll(addResources(playerId, rewards[i], rewards[i + 1]));
+		if (rewards.length > 2) {
+			List<RewardInfo> ret = new ArrayList<>();
+			for (int i = 0; i < rewards.length - 1; i += 2) {
+				ret.addAll(addResources(player, rewards[i], rewards[i + 1]));
+			}
+			return ret;
 		}
-		return addResources(playerId, rewards[0], rewards[1]);
+		return addResources(player, rewards[0], rewards[1]);
 	}
 	/** 
 	 * 一次性增加多个奖励，增加完奖励后推送给客户端一次。
@@ -894,27 +895,27 @@ public class PlayerHelper {
 		switch (type) {
 			case ChapterFinish: {
 				ChapterModule chapterOp = player.getModule(ChapterModule.class);
-				return chapterOp.isBattleLevelPass(id);
+				return chapterOp.isBattlePass(id);
 			}
 			case PlayerLevel: {
 				return operator(player.getData().getLevel(), count, operator);
 			}
 			case AccumulatedRecharge: {
-				return operator(player.getData().getGoldTotal(), count, operator);
+				return operator(player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge), count, operator);
 			}
-			case PlayerCombat: {
-				return true;
-			}
-			case MonthCard: {
-				MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
-				for (int i : extParam) {
-					MonthCard monthCard = monthCardModule.getMonthCard(i);
-					if (monthCard == null) {
-						return false;
-					}
-				}
-				return true;
-			}
+//			case PlayerCombat: {
+//				return true;
+//			}
+//			case MonthCard: {
+//				MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
+//				for (int i : extParam) {
+//					MonthCard monthCard = monthCardModule.getMonthCard(i);
+//					if (monthCard == null) {
+//						return false;
+//					}
+//				}
+//				return true;
+//			}
 			default:
 				throw new IllegalArgumentException(" not suport condition  " + type);
 		}

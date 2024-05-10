@@ -3,32 +3,32 @@ option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
 import "BaseMsg.proto" ;
+import "RewardMsg.proto" ;
 // 商店、充值 相关协议
 
-//查看商品组里面的商品列表
-message ShopGroupItemListRequest_15000001{
-  uint32 group = 1;
+//查看商店里面的商品列表
+message ShopItemListRequest_15000001{
+  uint32 shopId = 1;  // 商店id  Shop表id
 }
 
-message ShopGroupItemListResponse_15000002{
+message ShopItemListResponse_15000002{
 	repeated ShopItemProto items = 1;
 }
 
 // 商品
 message ShopItemProto{
-	string id = 1; // 商品唯一id
-	uint32 configId = 2; // 商品表ShopItemid
+	uint32 itemId = 2; // 商品表ShopItem 表id
 	uint32 buyTimes = 3; // 此商品已经购买次数
-	uint32 discount = 4; // 折扣，70代表7折
 }
 
 //购买商品
 message ShopItemBuyRequest_15000003{
-  string id = 1; // 商品唯一id
+	uint32 shopId = 1; // 商店id  Shop表id
+	uint32 itemId = 2; // 商品表ShopItem 表id
 }
 
 message ShopItemBuyResponse_15000004{
-
+  repeated RewardInfo rewards = 1;  // 获得的具体物品
 }
 
 //==================================月卡===============================
@@ -69,24 +69,26 @@ message MonthCardProto{
 
 //==================================礼包===============================
 
-//购买礼包
-message ShopGiftBuyRequest_15000020{
-  uint32 id = 1; // ShopGift表id
+//购买章节礼包
+message ShopChapterPacksBuyRequest_15000020{
+  uint32 id = 1; // ChapterPacks表id
 }
 
-message ShopGiftBuyResponse_15000021{
+message ShopChapterPacksBuyResponse_15000021{
+  repeated RewardInfo rewards = 2;  // 获得的礼包物品
 }
 
+// 充值
+message ShopRechargeRequest_15000022{
+  uint32 id = 1; // Recharge表id
+}
 
+message ShopRechargeResponse_15000023{
+  repeated RewardInfo rewards = 2;  // 获得的资源
+}
 
 // 支付订单相关参数，客户端收到这个协议就可以利用里面的参数发起支付了
 message PaymentOrderPush_15010020{
 	PaymentOrderProto order = 1;
-}
-
-// 广告观看完毕
-message AdvertiseWatchFinishRequest_15000030{
-}
-message AdvertiseWatchFinishResponse_15000031{
 }
 

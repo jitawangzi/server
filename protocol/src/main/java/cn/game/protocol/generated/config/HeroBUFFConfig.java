@@ -28,20 +28,16 @@ import org.w3c.dom.Element;
 	public final int[] BuffTargetType;		
 	/** Buff效果类型 1-属性变化的buff（加属性） 2-状态buff  3-伤害buff 4-治疗 */
 	public final int BuffEffectType;		
-	/** Buff效果的参数 1-给目标加属性id;属性数值|给目标加属性%id;属性数值 ----额外中毒等 2-1冰冻2麻痹3混乱 3-每秒损失N点血，持续秒（Duration已配）-灼烧，刺骨     属性d_id;数值|属性%_id;数值 4-Calculate_buff_hp=每次治疗量=受治疗目标生命*该buff影响治疗的%/有效次数time */
+	/** Buff效果的参数 1-给目标加属性id;属性数值|给目标加属性%id;属性数值  2-类型（1冰冻2眩晕） 3-每秒损失N点血（流血麻痹） 4-Calculate_buff_hp=每次治疗量=受治疗目标生命*该buff影响治疗的%/有效次数time */
 	public final int[][] BuffParam;		
 	/** 造成技能伤害公式用计算方法名字程序来封装方法实现 伤害buff=Calculate_buff_hurt 治疗buff=Calculate_buff_hp */
 	public final String CalculateFun;		
-	/** 技能伤害参数百分比组    4治疗=总回复hp%/技能持续时间Duration */
+	/** 技能伤害参数百分比组  4治疗=总回复hp%/技能持续时间Duration */
 	public final int[] CalculateParam;		
 	/** buff拥有者是否可释放技能  1-是 0-否 */
 	public final int Release;		
 	/** 是否可叠层  1-是 0-否 */
 	public final String Laminate;		
-	/** buff在身上特效 */
-	public final String BuffEffect;		
-	/** buff在身上图标  例如灼烧和冰冻 */
-	public final String BuffIcon;		
 
 	public HeroBUFFConfig (Element element) throws Exception {
 	
@@ -72,7 +68,7 @@ import org.w3c.dom.Element;
 		}
 		BuffEffectType = Integer.parseInt(element.getAttribute("BuffEffectType") == null || element.getAttribute("BuffEffectType").length() == 0 ? "0"
 			: element.getAttribute("BuffEffectType")); // Buff效果类型 1-属性变化的buff（加属性） 2-状态buff  3-伤害buff 4-治疗
-		String BuffParamString = element.getAttribute("BuffParam"); // Buff效果的参数 1-给目标加属性id;属性数值|给目标加属性%id;属性数值 ----额外中毒等 2-1冰冻2麻痹3混乱 3-每秒损失N点血，持续秒（Duration已配）-灼烧，刺骨     属性d_id;数值|属性%_id;数值 4-Calculate_buff_hp=每次治疗量=受治疗目标生命*该buff影响治疗的%/有效次数time
+		String BuffParamString = element.getAttribute("BuffParam"); // Buff效果的参数 1-给目标加属性id;属性数值|给目标加属性%id;属性数值  2-类型（1冰冻2眩晕） 3-每秒损失N点血（流血麻痹） 4-Calculate_buff_hp=每次治疗量=受治疗目标生命*该buff影响治疗的%/有效次数time
 		if (BuffParamString != null && BuffParamString.length() > 0) {
 			String[] BuffParamStrings = BuffParamString.split("\\|"); 
 			int[][] BuffParamTemp = new int[BuffParamStrings.length][] ; 
@@ -90,7 +86,7 @@ import org.w3c.dom.Element;
 			BuffParam = new int[][] {};
 		}
 		CalculateFun = element.getAttribute("CalculateFun"); // 造成技能伤害公式用计算方法名字程序来封装方法实现 伤害buff=Calculate_buff_hurt 治疗buff=Calculate_buff_hp
-		String CalculateParamString = element.getAttribute("CalculateParam"); // 技能伤害参数百分比组    4治疗=总回复hp%/技能持续时间Duration
+		String CalculateParamString = element.getAttribute("CalculateParam"); // 技能伤害参数百分比组  4治疗=总回复hp%/技能持续时间Duration
 		if (CalculateParamString != null && CalculateParamString.length() > 0) {
 			String[] CalculateParamStrings = CalculateParamString.split(";"); 
 			int[] CalculateParamTemp = new int[CalculateParamStrings.length] ; 
@@ -105,8 +101,6 @@ import org.w3c.dom.Element;
 		Release = Integer.parseInt(element.getAttribute("Release") == null || element.getAttribute("Release").length() == 0 ? "0"
 			: element.getAttribute("Release")); // buff拥有者是否可释放技能  1-是 0-否
 		Laminate = element.getAttribute("Laminate"); // 是否可叠层  1-是 0-否
-		BuffEffect = element.getAttribute("BuffEffect"); // buff在身上特效
-		BuffIcon = element.getAttribute("BuffIcon"); // buff在身上图标  例如灼烧和冰冻
 	}
 	
 

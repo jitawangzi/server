@@ -11,6 +11,7 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
@@ -143,7 +144,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 			curExp -= expConfig.experience;
 			levelsMap.add(id, 1);
 
-			player.handleEvent(new GameEvent(EventTypeEnum.LevelUp, player, id, levelsMap.getValue(id)));
+			player.handleEvent(new GameEvent(EventTypeEnum.LevelUp, id, levelsMap.getValue(id)));
 
 			expConfig = getExpConfig(id, (int) levelsMap.getValue(id));
 			nextExpConfig = getExpConfig(id, (int) (levelsMap.getValue(id) + 1));

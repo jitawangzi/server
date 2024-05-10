@@ -101,13 +101,6 @@ public class ChapterModule extends BasePlayerModule  {
 	@JsonIgnore
 	private long randomSeed;
 
-	@Override
-	public void init() {
-		levels = new HashMap<>();
-		eventTypeMap = new HashMap<Integer, Integer>();
-		battleRandomEvents = new ArrayList<BattleRandomEvent>();
-	}
-
 	public void addChapter(int battleId) {
 		Chapter chapter = chapters.get(battleId);
 		if (chapter == null) {

@@ -234,10 +234,10 @@ public class QuestHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		resp.addAllQuests(PbBuilder.buildQuestByGroup(playerId, QuestTypeEnum.get(group)));
-		if (group == QuestTypeEnum.BranchLine.ID) {
+//		if (group == QuestTypeEnum.BranchLine.ID) {
 //			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
 //			resp.setPriorityBranch(playerExt.getBranchGroup());
-		}
+//		}
 //		resp.addAllGroups(PbBuilder.buildQuestStateByGroup(client.getPlayerId()));
 //		resp.setType(type);
 //		resp.setGroup(group);

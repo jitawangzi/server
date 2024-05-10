@@ -282,15 +282,15 @@ public class TestHandler extends BaseHandler {
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
-//		PlayerManager.getInstance().saveClientCache(playerId);
+		PlayerManager.getInstance().saveClientCache(playerId);
 		
 //		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
 
 //		AttrModule module = player.getModule(AttrModule.class);
 //		module.calcAllAttr();
 //		module.buildBattleAttrs();
-		PlayerHelper.addResources(playerId, 610001, 1);
-		System.out.println();
+//		PlayerHelper.addResources(playerId, 610001, 1);
+//		System.out.println();
 //		System.out.println();
 //		PlayerHelper.refresh(player);
 //		for (int i = 0; i < 100000; i++) {

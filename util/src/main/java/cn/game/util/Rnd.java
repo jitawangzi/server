@@ -341,11 +341,11 @@ public final class Rnd {
 	 * @param count
 	 * @return
 	 */
-	public static List<Weightable> randomWeighableElementsNonRepeating(List<? extends Weightable> list, int count) {
-		List<Weightable> ret = new ArrayList<>();
+	public static <T extends Weightable> List<T> randomWeighableElementsNonRepeating(List<T> list, int count) {
+		List<T> ret = new ArrayList<>();
 		List<Integer> indexs = randomWeighableIndexsNonRepeating(list, count);
 		for (int i = 0; i < indexs.size(); i++) {
-			Weightable weightable = list.get(indexs.get(i));
+			T weightable = list.get(indexs.get(i));
 			ret.add(weightable);
 		}
 		return ret;

@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cn.game.games.net.game.GameServer;
+
 /**    
  * 条件容器，一般管理那种需要持续观察变化的那种条件
  * @date 2022年6月6日 下午12:28:49
@@ -14,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ConditionContainer {
 
 	/** 管理的各种条件，或者说是需求 */
-	transient private List<Condition> requires = new ArrayList<Condition>();
+	private List<Condition> requires = new ArrayList<Condition>();
 	/** 条件之间，是or还是and的关系 */
 	transient private boolean condOr;
 	/** 所有条件达成时的操作 */
@@ -34,7 +36,7 @@ public class ConditionContainer {
 			checkFinish(r);
 		};
 
-		List<Condition> createQuestCondition = ConditionFactory.createConditions(playerId, conditions, condChangeActions,
+		List<Condition> createQuestCondition = ConditionFactory.createAndInitConditions(playerId, conditions, condChangeActions,
 				achieveWrapAction);
 
 		set(createQuestCondition, or, achieveAction);
@@ -47,16 +49,26 @@ public class ConditionContainer {
 			condAchieveActions.accept(r);
 			checkFinish(r);
 		};
-		List<Condition> conditionsCreate = null;
-		if (!StringUtils.isEmpty(dbString)) {
-			String[] condString = dbString.split("\\|");
-			conditionsCreate = ConditionFactory.createConditionfromSaveString(playerId, condString, conditions,
-					condChangeActions, achieveWrapAction);
+		if (GameServer.getInstance().isSinglePlayerTable()) {
+			set(or, achieveAction);
+			if (requires.isEmpty()) {
+				this.requires = ConditionFactory.createAndInitConditions(playerId, conditions, condChangeActions, achieveWrapAction);
+			} else {
+				for (byte i = 0; i < this.requires.size(); i++) {
+					Condition condition = requires.get(i);
+					condition.init(playerId, condition.getCondition(), i, condChangeActions, achieveWrapAction);
+				}
+			}
 		} else {
-			conditionsCreate = ConditionFactory.createConditions(playerId, conditions, condChangeActions, achieveWrapAction);
-//			checkFinish(null);
+			List<Condition> conditionsCreate = null;
+			if (!StringUtils.isEmpty(dbString)) {
+				String[] condString = dbString.split("\\|");
+				conditionsCreate = ConditionFactory.createConditionfromSaveString(playerId, condString, conditions, condChangeActions, achieveWrapAction);
+			} else {
+				conditionsCreate = ConditionFactory.createAndInitConditions(playerId, conditions, condChangeActions, achieveWrapAction);
+			}
+			set(conditionsCreate, or, achieveAction);
 		}
-		set(conditionsCreate, or, achieveAction);
 		return this;
 	}
 
@@ -69,6 +81,11 @@ public class ConditionContainer {
 
 	private void set(List<Condition> requires, boolean condOr, Consumer<Condition> achieveAction) {
 		this.requires = requires;
+		this.condOr = condOr;
+		this.achieveAction = achieveAction;
+	}
+
+	private void set(boolean condOr, Consumer<Condition> achieveAction) {
 		this.condOr = condOr;
 		this.achieveAction = achieveAction;
 	}
@@ -131,18 +148,15 @@ public class ConditionContainer {
 	public void setCondOr(boolean condOr) {
 		this.condOr = condOr;
 	}
-	@Override
-	public String toString() {
-//		StringBuffer buffer = new StringBuffer();
-//		buffer.append(condOr).append("@");
-
-		StringBuffer requiresBuffer = new StringBuffer();
-		for (int i = 0; i < requires.size(); i++) {
-			requiresBuffer.append(requires.get(i).toSaveString()).append("|");
-		}
-//		buffer.append(requiresBuffer);
-		return requiresBuffer.toString();
-	}
+	/*	@Override
+		public String toString() {
+	
+			StringBuffer requiresBuffer = new StringBuffer();
+			for (int i = 0; i < requires.size(); i++) {
+				requiresBuffer.append(requires.get(i).toSaveString()).append("|");
+			}
+			return requiresBuffer.toString();
+		}*/
 
 	public void regEvent() {
 		for (Condition questCondition : requires) {

@@ -16,6 +16,8 @@ import org.w3c.dom.Element;
 	public final int Type;		
 	/** spine预制体 */
 	public final String Prefab;		
+	/** 肉鸽Icon west\src\First_party\art\xiyou UI\肉鸽_roge */
+	public final String RougeIcon;		
 	/** 头像Icon 调用：west\src\First_party\art\xiyou UI\卡牌_card \west\src\First_party\art\xiyou UI\head_头像 */
 	public final String Icon;		
 	/** 出生 动作 */
@@ -52,6 +54,7 @@ import org.w3c.dom.Element;
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
 			: element.getAttribute("Type")); // 1-英雄 2-小怪 3-头目 4-boss
 		Prefab = element.getAttribute("Prefab"); // spine预制体
+		RougeIcon = element.getAttribute("RougeIcon"); // 肉鸽Icon west\src\First_party\art\xiyou UI\肉鸽_roge
 		Icon = element.getAttribute("Icon"); // 头像Icon 调用：west\src\First_party\art\xiyou UI\卡牌_card \west\src\First_party\art\xiyou UI\head_头像
 		StartAction = element.getAttribute("StartAction"); // 出生 动作
 		StandbyAction = element.getAttribute("StandbyAction"); // 休闲待机 动作

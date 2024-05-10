@@ -24,6 +24,7 @@ import cn.game.protocol.generated.config.HeroBookConfig;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.HeroSwordConfig;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
@@ -201,6 +202,9 @@ public class AttrModule extends BasePlayerModule {
 	}
 
 	public void calcBookAttr() {
+		if (!player.isFuncOpen(InitialUI.CardBook)) {
+			return;
+		}
 		bookAttr.clear();
 		Collection<HeroBookConfig> list = HeroBookManager.instance().list();
 		HeroModule heroModule = player.getHeroModule();

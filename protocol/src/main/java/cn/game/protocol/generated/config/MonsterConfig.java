@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 	public final int HP;		
 	/** 攻击 */
 	public final int Attack;		
-	/** 技能ID */
+	/** 技能ID  调用HeroSkillGroup#技能组ID */
 	public final int SkillID;		
 	/** 美术资源id 调用ArtResource#资源总表id */
 	public final int ArtResourceId;		
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
 		Attack = Integer.parseInt(element.getAttribute("Attack") == null || element.getAttribute("Attack").length() == 0 ? "0"
 			: element.getAttribute("Attack")); // 攻击
 		SkillID = Integer.parseInt(element.getAttribute("SkillID") == null || element.getAttribute("SkillID").length() == 0 ? "0"
-			: element.getAttribute("SkillID")); // 技能ID
+			: element.getAttribute("SkillID")); // 技能ID  调用HeroSkillGroup#技能组ID
 		ArtResourceId = Integer.parseInt(element.getAttribute("ArtResourceId") == null || element.getAttribute("ArtResourceId").length() == 0 ? "0"
 			: element.getAttribute("ArtResourceId")); // 美术资源id 调用ArtResource#资源总表id
 	}

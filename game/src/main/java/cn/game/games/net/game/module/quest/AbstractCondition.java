@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.quest;
 
 import java.util.function.Consumer;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 
 import cn.game.games.cache.entity.Player;
@@ -10,7 +11,6 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.manager.ConditionManager;
-import cn.game.util.JsonUtil;
 
 /**
  * 默认实现
@@ -31,7 +31,7 @@ public abstract class AbstractCondition implements Condition {
 
 	protected int finishCount;
 
-	transient protected int condition;
+	protected int condition;
 
 	/** 条件是否完成 */
 	protected boolean achieve;
@@ -126,8 +126,8 @@ public abstract class AbstractCondition implements Condition {
 	}
 	@Override
 	public String toSaveString() {
-		return JsonUtil.toJsonString(this);
-//		return JSON.toJSONString(this, serializeConfig);
+//		return JsonUtil.toJsonString(this);
+		return JSON.toJSONString(this, serializeConfig);
 	}
 	@Override
 	public int getCondition() {

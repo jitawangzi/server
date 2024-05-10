@@ -40,7 +40,7 @@ public class ConditionFactory {
 		return ret;
 	}
 
-	public static Condition createCondition(long playerId, int condition, byte index, Consumer<Condition> updateAction,
+	public static Condition createAndInitCondition(long playerId, int condition, byte index, Consumer<Condition> updateAction,
 			Consumer<Condition> achieveAction) {
 		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
 		Condition questCondition = createCondition(conditionConfig.type);
@@ -49,12 +49,12 @@ public class ConditionFactory {
 
 	}
 
-	public static List<Condition> createConditions(long playerId, List<Integer> conditions, Consumer<Condition> updateAction,
+	public static List<Condition> createAndInitConditions(long playerId, List<Integer> conditions, Consumer<Condition> updateAction,
 			Consumer<Condition> achieveAction) {
 
 		List<Condition> ret = new ArrayList<Condition>(conditions.size());
 		for (byte i = 0; i < conditions.size(); i++) {
-			Condition questCondition = createCondition(playerId, conditions.get(i), i, updateAction, achieveAction);
+			Condition questCondition = createAndInitCondition(playerId, conditions.get(i), i, updateAction, achieveAction);
 			ret.add(questCondition);
 		}
 		return ret;

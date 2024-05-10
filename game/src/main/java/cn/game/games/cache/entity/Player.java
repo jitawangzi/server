@@ -202,6 +202,7 @@ public class Player  {
 		initPlayerModule() ; 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void initPlayerModule() {
 		if (GameServer.getInstance().isSinglePlayerTable()) {
 			HashMap<String, BasePlayerModule> modules = null;

@@ -39,7 +39,7 @@ public class EventModule implements GameEventRegistration {
 
 	@Override
 	public void unregisterEventHandler(EventHandler eventHandler) {
-		registration.registerEventHandler(eventHandler.getEventTypes(), eventHandler);
+		registration.unregisterEventHandler(eventHandler.getEventTypes(), eventHandler);
 	}
 
 	@Override

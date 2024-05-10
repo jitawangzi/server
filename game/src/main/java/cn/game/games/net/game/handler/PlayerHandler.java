@@ -55,7 +55,6 @@ import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OldBuffManager;
 import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.OldErrorMsgEnum;
 import cn.game.protocol.protobuf.BuffMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
@@ -316,7 +315,7 @@ public class PlayerHandler extends BaseHandler {
 					boolean checkUnlock = PlayerManager.getInstance().checkUnlock(playerId);
 					if (!checkUnlock) {
 						client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(),
-								OldErrorMsgEnum.login_forbidden.getId());
+								ErrorMsgEnum.login_forbidden.getId());
 						GameClientManager.getInstance().removeGameClient(((GameClient) client));
 						return;
 					}
@@ -332,7 +331,7 @@ public class PlayerHandler extends BaseHandler {
 				}).onFailure(p -> {
 					log.error("player session  " + passportSessionId + " login error ", p);
 					client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(),
-							OldErrorMsgEnum.unknown.getId());
+							ErrorMsgEnum.unknown.getId());
 				});
 
 		return loginFutrue;
@@ -368,7 +367,7 @@ public class PlayerHandler extends BaseHandler {
 			resp.setPlayerInfo(PbBuilder.buildPlayerInfo(p));
 			resp.setTime(System.currentTimeMillis() + "");
 		} else {
-			errorCode = OldErrorMsgEnum.reconnect_fail.getId();
+			errorCode = ErrorMsgEnum.reconnect_fail.getId();
 		}
 		client.sendProtocol(resp.build(), errorCode);
 	}
@@ -390,13 +389,13 @@ public class PlayerHandler extends BaseHandler {
 		/*		PlayerExt playerExt = player.getExt();
 				List<Integer> eventIdList = playerExt.getEventIdList();
 				if (!eventIdList.contains(eventId)) {
-					netClient.sendProtocol(resp, OldErrorMsgEnum.illegal_request.getId());
+					netClient.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 					return;
 				}*/
 		//添加buff
 		List<Buff> buffs = PlayerHelper.chooseEventOption(player, eventId, id, true);
 		if (buffs == null) {
-			netClient.sendProtocol(resp, OldErrorMsgEnum.resource_not_enough.getId());
+			netClient.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
 		/*		playerExt.removeEventId(eventId);
@@ -499,7 +498,7 @@ public class PlayerHandler extends BaseHandler {
 				response.addAllPlayers(PbBuilder.buildSimplePlayerInfos(sPlayerInfos));
 			} catch (Exception e) {
 				e.printStackTrace();
-				error = OldErrorMsgEnum.player_not_found.getId();
+				error = ErrorMsgEnum.player_not_found.getId();
 			}
 			client.sendProtocol(response.build(), error);
 		});
@@ -517,7 +516,7 @@ public class PlayerHandler extends BaseHandler {
 				response.setPlayer(PbBuilder.buildPlayerShowInfo(simplePlayer));
 			} catch (Exception e) {
 				e.printStackTrace();
-				error = OldErrorMsgEnum.player_not_found.getId();
+				error = ErrorMsgEnum.player_not_found.getId();
 			}
 			client.sendProtocol(response.build(), error);
 		});
@@ -535,7 +534,7 @@ public class PlayerHandler extends BaseHandler {
 //		int nowCount = 0;
 //		int nextBuyCount = nowCount + count;
 //		if (nextBuyCount > maxBuyCount) {
-//			client.sendProtocol(response.build(), OldErrorMsgEnum.buy_power_count_not.getId());
+//			client.sendProtocol(response.build(), ErrorMsgEnum.buy_power_count_not.getId());
 //		}
 //
 //		int buyPrice = 0;
@@ -560,7 +559,7 @@ public class PlayerHandler extends BaseHandler {
 //			return;
 //		}
 //
-//		client.sendProtocol(response.build(), OldErrorMsgEnum.gold_not_enough.getId());
+//		client.sendProtocol(response.build(), ErrorMsgEnum.gold_not_enough.getId());
 //	}
 
 	protected void head(NetClient client, Object message) {
@@ -593,7 +592,7 @@ public class PlayerHandler extends BaseHandler {
 
 		String oldName = player.getData().getName();
 		if (StringUtils.isEmpty(newName)) {
-			client.sendProtocol(resp, OldErrorMsgEnum.unknown.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
 			return;
 		}
 		int var = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
@@ -604,7 +603,7 @@ public class PlayerHandler extends BaseHandler {
 
 		boolean check = TreeWordFilter.check(newName);
 		if (!check) {
-			client.sendProtocol(resp, OldErrorMsgEnum.player_name_illegal.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
 			return;
 		}
 //		Player ofName = PlayerManager.getInstance().getOfName(newName);
@@ -713,7 +712,7 @@ public class PlayerHandler extends BaseHandler {
 			boolean checkUnlock = PlayerManager.getInstance().checkUnlock(playerId);
 			if (!checkUnlock) {
 				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(),
-						OldErrorMsgEnum.login_forbidden.getId());
+						ErrorMsgEnum.login_forbidden.getId());
 				GameClientManager.getInstance().removeGameClient(newGameClient);
 				return;
 			}
@@ -727,14 +726,15 @@ public class PlayerHandler extends BaseHandler {
 			RFuture<String> serverIdFutrue = RedissonUtil.getAsync(CacheType.PLAYER_SERVER_ID.key(uid.get()));
 			serverIdFutrue.onComplete((serverId, e) -> {
 				if (e != null) {
-					failHandler.handle(OldErrorMsgEnum.redis_fail.getId());
+					failHandler.handle(ErrorMsgEnum.redis_fail.getId());
 					return;
 				}
 				if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
 					Future<Message<Object>> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
 							GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(uid.get()).build());
 					requestRemoteServer.onFailure(ee -> {
-						failHandler.handle(OldErrorMsgEnum.request_remote_server.getId());
+						log.error("player login , request to server : " + serverId + " failed ", ee);
+						failHandler.handle(ErrorMsgEnum.request_remote_server.getId());
 					}).onSuccess(r -> {
 						// load from db
 						PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer);
@@ -975,11 +975,11 @@ public class PlayerHandler extends BaseHandler {
 			} catch (Exception e) {
 				log.error(uid + " 初始化失败", e);
 				PlayerManager.getInstance().deletePlayer(id);
-				client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), OldErrorMsgEnum.unknown.getId());
+				client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
 			}
 
 		}).onFailure(r -> {
-			client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), OldErrorMsgEnum.unknown.getId());
+			client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
 			log.error("", r);
 		});
 	}

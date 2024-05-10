@@ -34,8 +34,6 @@ import org.w3c.dom.Element;
 	public final int FunRogueNum;		
 	/** 趣味肉鸽 控制组  趣味肉鸽1id;权重|…|趣味肉鸽2id;权重 */
 	public final Map<Integer,Integer> FunRogueGroup;		
-	/** 当场上有符合合击的神将在时 是否允许合击肉鸽出现  1出现；出现概率；本场最多出现次数 */
-	public final int[] CombinedStrikeControl;		
 
 	public RoguelikeTriggerConfig (Element element) throws Exception {
 	
@@ -94,18 +92,6 @@ import org.w3c.dom.Element;
 			FunRogueGroup = com.google.common.collect.ImmutableMap.copyOf(FunRogueGroupTemp);
 		}else{
 			FunRogueGroup = java.util.Collections.emptyMap() ; 
-		}
-		String CombinedStrikeControlString = element.getAttribute("CombinedStrikeControl"); // 当场上有符合合击的神将在时 是否允许合击肉鸽出现  1出现；出现概率；本场最多出现次数
-		if (CombinedStrikeControlString != null && CombinedStrikeControlString.length() > 0) {
-			String[] CombinedStrikeControlStrings = CombinedStrikeControlString.split(";"); 
-			int[] CombinedStrikeControlTemp = new int[CombinedStrikeControlStrings.length] ; 
-			for (int i = 0; i < CombinedStrikeControlStrings.length; i++) {
-				int temp = Integer.parseInt(CombinedStrikeControlStrings[i]);	
-				CombinedStrikeControlTemp[i] = temp;
-			}
-			CombinedStrikeControl = CombinedStrikeControlTemp ;			
-		} else {
-			CombinedStrikeControl = new int[] {};
 		}
 	}
 	

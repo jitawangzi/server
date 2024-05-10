@@ -1,7 +1,10 @@
 package cn.game.games.net.game.module.activity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.protobuf.Message;
 
@@ -10,58 +13,99 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.FirstChargeManager;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeResponse_11000008;
 import cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo;
-import cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 
 /**    
- * 首冲活动
- * @date 2024年4月23日 下午5:59:15
+ * 单充活动
+ * @date 2024年4月30日 上午11:27:15
  * @author SYQ
  */
 @ActivityType(type = ActivityTypeEnum.FirstCharge)
 public class FirstChargeActivity extends ActivityBase {
 
-	/** 当前充值可以购买的礼包id */
-	private int chargeId;
-	private List<Integer> selectedIndex = new ArrayList<>();
-
-	@Override
-	public List<RewardInfo> receive(int id) {
-		return null;
-	}
+	/** key  ActivityiD  */
+	private Map<Integer, SingleCharge> chargeMap = new HashMap<Integer, SingleCharge>();
 
 	@Override
 	public Message buildActivityInfo() {
-		Builder builder = FirstChargeActivityInfo.newBuilder();
-		builder.setId(chargeId);
-		if (chargeId < 5) {
-			builder.addAllSelectedIndex(selectedIndex);
+		ActivityFirstChargeResponse_11000008.Builder resp = ActivityFirstChargeResponse_11000008.newBuilder();
+		int nowDay = DateUtil.getDay();
+		Collection<FirstChargeConfig> list = FirstChargeManager.instance().list();
+		for (FirstChargeConfig firstChargeConfig : list) {
+			SingleCharge singleCharge = chargeMap.get(firstChargeConfig.ActivityiD);
+			if (singleCharge == null) {
+				continue;
+			}
+			cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo.Builder builder = FirstChargeActivityInfo.newBuilder();
+			builder.setId(firstChargeConfig.ID);
+			int status = getFirstChargeStatus(nowDay, firstChargeConfig, singleCharge);
+			builder.setStatus(status);
+			resp.addSingleCharges(builder.build());
+
 		}
-		return builder.build();
+//		for (Entry<Integer, SingleCharge> entry : chargeMap.entrySet()) {
+//			Integer key = entry.getKey();
+//			SingleCharge singleCharge = entry.getValue();
+//			cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo.Builder builder = FirstChargeActivityInfo.newBuilder();
+//			builder.setId(key) ; 
+//			builder.setCanRewardIndex(nowDay - singleCharge.getDay());
+//			builder.addAllSelectedIndex(singleCharge.getSelectedIndex());
+//			resp.addSingleCharges(builder.build());
+//		}
+		return resp.build();
 	}
 
-	public List<RewardInfo> buy(int cid, List<Integer> selectedList) {
-		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(cid); 
-		List<RewardInfo> ret = new ArrayList<>(); 
-		if (!selectedList.isEmpty()) {
-			for (int i = 0; i < selectedList.size(); i++) {
-				List<RewardInfo> rewards = PlayerHelper.addResources(player, firstChargeConfig.Rewards[selectedList.get(i)][0],
-						firstChargeConfig.Rewards[selectedList.get(i)][1]);
-				ret.addAll(rewards);
-			}
-			this.selectedIndex.addAll(selectedList);
-		}
-		List<RewardInfo> rewards = PlayerHelper.addResources(player, firstChargeConfig.Rewards2);
-		ret.addAll(rewards);
-
-		FirstChargeConfig nextConfig = FirstChargeManager.instance().getNullable(chargeId + 1);
-		if (nextConfig != null) {
-			this.chargeId = nextConfig.ID;
+	private int getFirstChargeStatus(int nowDay, FirstChargeConfig firstChargeConfig, SingleCharge singleCharge) {
+		int status = 0;
+		if (singleCharge.getSelectedIndex().contains(firstChargeConfig.ID)) {
+			status = 2;
 		} else {
-			player.getActivityModule().destroy(this.id);
+			if (nowDay - singleCharge.getDay() >= firstChargeConfig.Order - 1) {
+				status = 1;
+			}
 		}
-		return ret;
+		return status;
+	}
+
+	public boolean buy(int cid) {
+		
+//		FirstChargeActivityConfig singleChargeActivityConfig = SingleChargeActivityManager.instance().get(cid);
+		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(cid);
+		if (firstChargeConfig.Price.length == 0) {
+			return false;
+		}
+		if (firstChargeConfig.Preconditions > 0) {
+			FirstChargeConfig preConfig = FirstChargeManager.instance().get(firstChargeConfig.Preconditions);
+			if (!chargeMap.containsKey(preConfig.ActivityiD)) {
+				return false;
+			}
+		}
+		if (chargeMap.containsKey(firstChargeConfig.ActivityiD)) {
+			return false;
+
+		}
+		SingleCharge charge = new SingleCharge();
+		charge.setDay(DateUtil.getDay());
+		chargeMap.put(firstChargeConfig.ActivityiD, charge);
+		return true;
+	}
+
+	public List<RewardInfo> reward(int cid) {
+		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(cid);
+		SingleCharge singleCharge = chargeMap.get(firstChargeConfig.ActivityiD);
+		if (singleCharge == null) {
+			return null;
+		}
+		int nowDay = DateUtil.getDay();
+		int status = getFirstChargeStatus(nowDay, firstChargeConfig, singleCharge);
+		if (status != 1) {
+			return null;
+		}
+		singleCharge.getSelectedIndex().add(cid);
+		return PlayerHelper.addResources(player, firstChargeConfig.Item);
 	}
 	@Override
 	public void setEvents(EventTypeEnum[] events) {
@@ -70,7 +114,6 @@ public class FirstChargeActivity extends ActivityBase {
 
 	@Override
 	public void startUp() {
-		chargeId = 1;
 	}
 
 	@Override
@@ -78,12 +121,36 @@ public class FirstChargeActivity extends ActivityBase {
 
 	}
 
-	public int getChargeId() {
-		return chargeId;
+//	public SingleCharge getSingleCharge(int chargeId) {
+//		return chargeMap.get(chargeId);
+//	}
+	@Override
+	public List<RewardInfo> receive(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
+
+class SingleCharge {
+	/** 购买日期 */
+	private int day;
+	/** 领过的id */
+	private List<Integer> selectedIndex = new ArrayList<>();
+
+	public int getDay() {
+		return day;
+	}
+
+	public void setDay(int day) {
+		this.day = day;
 	}
 
 	public List<Integer> getSelectedIndex() {
 		return selectedIndex;
+	}
+
+	public void setSelectedIndex(List<Integer> selectedIndex) {
+		this.selectedIndex = selectedIndex;
 	}
 
 }

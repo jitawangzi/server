@@ -22115,32 +22115,32 @@ public final class PlayerMsg {
 
     /**
      * <pre>
-     *购买过的商店礼包id(ShopGift表)
+     *购买过的章节礼包id(ChapterPacks表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 41;</code>
-     * @return A list containing the shopGift.
+     * <code>repeated uint32 chapterPacks = 41;</code>
+     * @return A list containing the chapterPacks.
      */
-    java.util.List<java.lang.Integer> getShopGiftList();
+    java.util.List<java.lang.Integer> getChapterPacksList();
     /**
      * <pre>
-     *购买过的商店礼包id(ShopGift表)
+     *购买过的章节礼包id(ChapterPacks表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 41;</code>
-     * @return The count of shopGift.
+     * <code>repeated uint32 chapterPacks = 41;</code>
+     * @return The count of chapterPacks.
      */
-    int getShopGiftCount();
+    int getChapterPacksCount();
     /**
      * <pre>
-     *购买过的商店礼包id(ShopGift表)
+     *购买过的章节礼包id(ChapterPacks表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 41;</code>
+     * <code>repeated uint32 chapterPacks = 41;</code>
      * @param index The index of the element to return.
-     * @return The shopGift at the given index.
+     * @return The chapterPacks at the given index.
      */
-    int getShopGift(int index);
+    int getChapterPacks(int index);
 
     /**
      * <pre>
@@ -22223,7 +22223,7 @@ public final class PlayerMsg {
       equipParts_ = java.util.Collections.emptyList();
       battles_ = java.util.Collections.emptyList();
       monthCards_ = java.util.Collections.emptyList();
-      shopGift_ = emptyIntList();
+      chapterPacks_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -22442,21 +22442,21 @@ public final class PlayerMsg {
             }
             case 328: {
               if (!((mutable_bitField0_ & 0x00008000) != 0)) {
-                shopGift_ = newIntList();
+                chapterPacks_ = newIntList();
                 mutable_bitField0_ |= 0x00008000;
               }
-              shopGift_.addInt(input.readUInt32());
+              chapterPacks_.addInt(input.readUInt32());
               break;
             }
             case 330: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00008000) != 0) && input.getBytesUntilLimit() > 0) {
-                shopGift_ = newIntList();
+                chapterPacks_ = newIntList();
                 mutable_bitField0_ |= 0x00008000;
               }
               while (input.getBytesUntilLimit() > 0) {
-                shopGift_.addInt(input.readUInt32());
+                chapterPacks_.addInt(input.readUInt32());
               }
               input.popLimit(limit);
               break;
@@ -22530,7 +22530,7 @@ public final class PlayerMsg {
           monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
         }
         if (((mutable_bitField0_ & 0x00008000) != 0)) {
-          shopGift_.makeImmutable(); // C
+          chapterPacks_.makeImmutable(); // C
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -23792,45 +23792,45 @@ public final class PlayerMsg {
       return monthCards_.get(index);
     }
 
-    public static final int SHOPGIFT_FIELD_NUMBER = 41;
-    private com.google.protobuf.Internal.IntList shopGift_;
+    public static final int CHAPTERPACKS_FIELD_NUMBER = 41;
+    private com.google.protobuf.Internal.IntList chapterPacks_;
     /**
      * <pre>
-     *购买过的商店礼包id(ShopGift表)
+     *购买过的章节礼包id(ChapterPacks表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 41;</code>
-     * @return A list containing the shopGift.
+     * <code>repeated uint32 chapterPacks = 41;</code>
+     * @return A list containing the chapterPacks.
      */
     @java.lang.Override
     public java.util.List<java.lang.Integer>
-        getShopGiftList() {
-      return shopGift_;
+        getChapterPacksList() {
+      return chapterPacks_;
     }
     /**
      * <pre>
-     *购买过的商店礼包id(ShopGift表)
+     *购买过的章节礼包id(ChapterPacks表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 41;</code>
-     * @return The count of shopGift.
+     * <code>repeated uint32 chapterPacks = 41;</code>
+     * @return The count of chapterPacks.
      */
-    public int getShopGiftCount() {
-      return shopGift_.size();
+    public int getChapterPacksCount() {
+      return chapterPacks_.size();
     }
     /**
      * <pre>
-     *购买过的商店礼包id(ShopGift表)
+     *购买过的章节礼包id(ChapterPacks表)
      * </pre>
      *
-     * <code>repeated uint32 shopGift = 41;</code>
+     * <code>repeated uint32 chapterPacks = 41;</code>
      * @param index The index of the element to return.
-     * @return The shopGift at the given index.
+     * @return The chapterPacks at the given index.
      */
-    public int getShopGift(int index) {
-      return shopGift_.getInt(index);
+    public int getChapterPacks(int index) {
+      return chapterPacks_.getInt(index);
     }
-    private int shopGiftMemoizedSerializedSize = -1;
+    private int chapterPacksMemoizedSerializedSize = -1;
 
     public static final int CLOUDBOX_FIELD_NUMBER = 50;
     private cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo cloudBox_;
@@ -23995,12 +23995,12 @@ public final class PlayerMsg {
       for (int i = 0; i < monthCards_.size(); i++) {
         output.writeMessage(40, monthCards_.get(i));
       }
-      if (getShopGiftList().size() > 0) {
+      if (getChapterPacksList().size() > 0) {
         output.writeUInt32NoTag(330);
-        output.writeUInt32NoTag(shopGiftMemoizedSerializedSize);
+        output.writeUInt32NoTag(chapterPacksMemoizedSerializedSize);
       }
-      for (int i = 0; i < shopGift_.size(); i++) {
-        output.writeUInt32NoTag(shopGift_.getInt(i));
+      for (int i = 0; i < chapterPacks_.size(); i++) {
+        output.writeUInt32NoTag(chapterPacks_.getInt(i));
       }
       if (cloudBox_ != null) {
         output.writeMessage(50, getCloudBox());
@@ -24126,17 +24126,17 @@ public final class PlayerMsg {
       }
       {
         int dataSize = 0;
-        for (int i = 0; i < shopGift_.size(); i++) {
+        for (int i = 0; i < chapterPacks_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeUInt32SizeNoTag(shopGift_.getInt(i));
+            .computeUInt32SizeNoTag(chapterPacks_.getInt(i));
         }
         size += dataSize;
-        if (!getShopGiftList().isEmpty()) {
+        if (!getChapterPacksList().isEmpty()) {
           size += 2;
           size += com.google.protobuf.CodedOutputStream
               .computeInt32SizeNoTag(dataSize);
         }
-        shopGiftMemoizedSerializedSize = dataSize;
+        chapterPacksMemoizedSerializedSize = dataSize;
       }
       if (cloudBox_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -24200,8 +24200,8 @@ public final class PlayerMsg {
           != other.getFreeRougeTimes()) return false;
       if (!getMonthCardsList()
           .equals(other.getMonthCardsList())) return false;
-      if (!getShopGiftList()
-          .equals(other.getShopGiftList())) return false;
+      if (!getChapterPacksList()
+          .equals(other.getChapterPacksList())) return false;
       if (hasCloudBox() != other.hasCloudBox()) return false;
       if (hasCloudBox()) {
         if (!getCloudBox()
@@ -24291,9 +24291,9 @@ public final class PlayerMsg {
         hash = (37 * hash) + MONTHCARDS_FIELD_NUMBER;
         hash = (53 * hash) + getMonthCardsList().hashCode();
       }
-      if (getShopGiftCount() > 0) {
-        hash = (37 * hash) + SHOPGIFT_FIELD_NUMBER;
-        hash = (53 * hash) + getShopGiftList().hashCode();
+      if (getChapterPacksCount() > 0) {
+        hash = (37 * hash) + CHAPTERPACKS_FIELD_NUMBER;
+        hash = (53 * hash) + getChapterPacksList().hashCode();
       }
       if (hasCloudBox()) {
         hash = (37 * hash) + CLOUDBOX_FIELD_NUMBER;
@@ -24561,7 +24561,7 @@ public final class PlayerMsg {
         } else {
           monthCardsBuilder_.clear();
         }
-        shopGift_ = emptyIntList();
+        chapterPacks_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00008000);
         if (cloudBoxBuilder_ == null) {
           cloudBox_ = null;
@@ -24703,10 +24703,10 @@ public final class PlayerMsg {
           result.monthCards_ = monthCardsBuilder_.build();
         }
         if (((bitField0_ & 0x00008000) != 0)) {
-          shopGift_.makeImmutable();
+          chapterPacks_.makeImmutable();
           bitField0_ = (bitField0_ & ~0x00008000);
         }
-        result.shopGift_ = shopGift_;
+        result.chapterPacks_ = chapterPacks_;
         if (cloudBoxBuilder_ == null) {
           result.cloudBox_ = cloudBox_;
         } else {
@@ -25021,13 +25021,13 @@ public final class PlayerMsg {
             }
           }
         }
-        if (!other.shopGift_.isEmpty()) {
-          if (shopGift_.isEmpty()) {
-            shopGift_ = other.shopGift_;
+        if (!other.chapterPacks_.isEmpty()) {
+          if (chapterPacks_.isEmpty()) {
+            chapterPacks_ = other.chapterPacks_;
             bitField0_ = (bitField0_ & ~0x00008000);
           } else {
-            ensureShopGiftIsMutable();
-            shopGift_.addAll(other.shopGift_);
+            ensureChapterPacksIsMutable();
+            chapterPacks_.addAll(other.chapterPacks_);
           }
           onChanged();
         }
@@ -29105,108 +29105,108 @@ public final class PlayerMsg {
         return monthCardsBuilder_;
       }
 
-      private com.google.protobuf.Internal.IntList shopGift_ = emptyIntList();
-      private void ensureShopGiftIsMutable() {
+      private com.google.protobuf.Internal.IntList chapterPacks_ = emptyIntList();
+      private void ensureChapterPacksIsMutable() {
         if (!((bitField0_ & 0x00008000) != 0)) {
-          shopGift_ = mutableCopy(shopGift_);
+          chapterPacks_ = mutableCopy(chapterPacks_);
           bitField0_ |= 0x00008000;
          }
       }
       /**
        * <pre>
-       *购买过的商店礼包id(ShopGift表)
+       *购买过的章节礼包id(ChapterPacks表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 41;</code>
-       * @return A list containing the shopGift.
+       * <code>repeated uint32 chapterPacks = 41;</code>
+       * @return A list containing the chapterPacks.
        */
       public java.util.List<java.lang.Integer>
-          getShopGiftList() {
+          getChapterPacksList() {
         return ((bitField0_ & 0x00008000) != 0) ?
-                 java.util.Collections.unmodifiableList(shopGift_) : shopGift_;
+                 java.util.Collections.unmodifiableList(chapterPacks_) : chapterPacks_;
       }
       /**
        * <pre>
-       *购买过的商店礼包id(ShopGift表)
+       *购买过的章节礼包id(ChapterPacks表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 41;</code>
-       * @return The count of shopGift.
+       * <code>repeated uint32 chapterPacks = 41;</code>
+       * @return The count of chapterPacks.
        */
-      public int getShopGiftCount() {
-        return shopGift_.size();
+      public int getChapterPacksCount() {
+        return chapterPacks_.size();
       }
       /**
        * <pre>
-       *购买过的商店礼包id(ShopGift表)
+       *购买过的章节礼包id(ChapterPacks表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 41;</code>
+       * <code>repeated uint32 chapterPacks = 41;</code>
        * @param index The index of the element to return.
-       * @return The shopGift at the given index.
+       * @return The chapterPacks at the given index.
        */
-      public int getShopGift(int index) {
-        return shopGift_.getInt(index);
+      public int getChapterPacks(int index) {
+        return chapterPacks_.getInt(index);
       }
       /**
        * <pre>
-       *购买过的商店礼包id(ShopGift表)
+       *购买过的章节礼包id(ChapterPacks表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 41;</code>
+       * <code>repeated uint32 chapterPacks = 41;</code>
        * @param index The index to set the value at.
-       * @param value The shopGift to set.
+       * @param value The chapterPacks to set.
        * @return This builder for chaining.
        */
-      public Builder setShopGift(
+      public Builder setChapterPacks(
           int index, int value) {
-        ensureShopGiftIsMutable();
-        shopGift_.setInt(index, value);
+        ensureChapterPacksIsMutable();
+        chapterPacks_.setInt(index, value);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *购买过的商店礼包id(ShopGift表)
+       *购买过的章节礼包id(ChapterPacks表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 41;</code>
-       * @param value The shopGift to add.
+       * <code>repeated uint32 chapterPacks = 41;</code>
+       * @param value The chapterPacks to add.
        * @return This builder for chaining.
        */
-      public Builder addShopGift(int value) {
-        ensureShopGiftIsMutable();
-        shopGift_.addInt(value);
+      public Builder addChapterPacks(int value) {
+        ensureChapterPacksIsMutable();
+        chapterPacks_.addInt(value);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *购买过的商店礼包id(ShopGift表)
+       *购买过的章节礼包id(ChapterPacks表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 41;</code>
-       * @param values The shopGift to add.
+       * <code>repeated uint32 chapterPacks = 41;</code>
+       * @param values The chapterPacks to add.
        * @return This builder for chaining.
        */
-      public Builder addAllShopGift(
+      public Builder addAllChapterPacks(
           java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureShopGiftIsMutable();
+        ensureChapterPacksIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, shopGift_);
+            values, chapterPacks_);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *购买过的商店礼包id(ShopGift表)
+       *购买过的章节礼包id(ChapterPacks表)
        * </pre>
        *
-       * <code>repeated uint32 shopGift = 41;</code>
+       * <code>repeated uint32 chapterPacks = 41;</code>
        * @return This builder for chaining.
        */
-      public Builder clearShopGift() {
-        shopGift_ = emptyIntList();
+      public Builder clearChapterPacks() {
+        chapterPacks_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00008000);
         onChanged();
         return this;
@@ -29832,7 +29832,7 @@ public final class PlayerMsg {
       "items\030\005 \003(\0132\021.Protos.GoodsInfo\"k\n\nPlayer" +
       "Info\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030" +
       "\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023" +
-      "\n\013offlineTime\030\026 \001(\t\"\212\t\n\rPlayerAllInfo\022\"\n" +
+      "\n\013offlineTime\030\026 \001(\t\"\216\t\n\rPlayerAllInfo\022\"\n" +
       "\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006ass" +
       "ets\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsE" +
       "ntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Play" +
@@ -29851,18 +29851,18 @@ public final class PlayerMsg {
       "s\030\021 \003(\0132\'.Protos.PlayerAllInfo.DragonSki" +
       "llsEntry\022#\n\007battles\030\036 \003(\0132\022.Protos.Battl" +
       "eInfo\022\026\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCa" +
-      "rds\030( \003(\0132\026.Protos.MonthCardProto\022\020\n\010sho" +
-      "pGift\030) \003(\r\022&\n\010cloudBox\0302 \001(\0132\024.Protos.C" +
-      "loudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos.Pat" +
-      "rolInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
-      "alue\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003k" +
-      "ey\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEnt" +
-      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAl" +
-      "chemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:" +
-      "\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
-      "e\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003key\030" +
-      "\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.prot" +
-      "ocol.protobufb\006proto3"
+      "rds\030( \003(\0132\026.Protos.MonthCardProto\022\024\n\014cha" +
+      "pterPacks\030) \003(\r\022&\n\010cloudBox\0302 \001(\0132\024.Prot" +
+      "os.CloudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos" +
+      ".PatrolInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022" +
+      "\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022" +
+      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Level" +
+      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/" +
+      "\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
+      "\001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
+      "value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003" +
+      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game." +
+      "protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -30075,7 +30075,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "ShopGift", "CloudBox", "Patrol", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "ChapterPacks", "CloudBox", "Patrol", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

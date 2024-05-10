@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.commons.lang3.StringUtils;
-
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
@@ -57,6 +55,10 @@ public class Quest implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private static final long serialVersionUID = 1L;
+
+	/** 任务完成条件 */
+//	private transient List<Condition> requires = new ArrayList<Condition>();
+	private ConditionContainer conditionContainer;
 
 	/**
 	 * @mbg.generated
@@ -172,14 +174,6 @@ public class Quest implements Serializable, DbEntity {
 		return new Object[] { playerId, id };
 	}
 
-	/** 任务完成条件 */
-//	private transient List<Condition> requires = new ArrayList<Condition>();
-	private transient ConditionContainer conditionContainer;
-
-//	/** 任务接受条件 */
-	// private transient List<QuestCondition> accept = new
-	// ArrayList<QuestCondition>();
-
 	@Deprecated
 	public void disable() {
 
@@ -254,17 +248,19 @@ public class Quest implements Serializable, DbEntity {
 		};
 		Consumer<Condition> finishAction = t -> {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			QuestModule questOp = player.getModule(QuestModule.class);
+			QuestModule questModule = player.getModule(QuestModule.class);
 			if (this.getState() == QuestHelper.ACCEPTED) {
-				questOp.setState(this, QuestHelper.CAN_GIVEWARD);
+				questModule.setState(this, QuestHelper.CAN_GIVEWARD);
 			}
 		};
-		conditionContainer = new ConditionContainer();
-		conditionContainer.create(playerId, questConfig.Condition, false, condChangeAction,
-				condAchieveAction, finishAction, params);
-		if (StringUtils.isEmpty(params)) {
-			toParams();
+		if (conditionContainer == null) {
+			conditionContainer = new ConditionContainer();
 		}
+		conditionContainer.create(playerId, questConfig.Condition, false, condChangeAction,
+				condAchieveAction, finishAction, null);
+		/*		if (StringUtils.isEmpty(params)) {
+					toParams();
+				}*/
 		regEvent();
 	}
 

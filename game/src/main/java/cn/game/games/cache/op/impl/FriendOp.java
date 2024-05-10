@@ -50,6 +50,9 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 
 	@Override
 	public void init() {
+		if (friends != null) {
+			return;
+		}
 		friends = new HashMap<Long, Friend>();
 		applications = new HashMap<>();
 		myApplications = new HashSet<>();

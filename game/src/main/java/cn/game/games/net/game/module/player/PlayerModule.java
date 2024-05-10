@@ -44,7 +44,7 @@ import io.vertx.core.Promise;
  */
 public class PlayerModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE,
-			EventTypeEnum.LoginFinish, EventTypeEnum.Reconnect, EventTypeEnum.LevelUp, EventTypeEnum.ResourceRemove };
+			EventTypeEnum.LoginFinish, EventTypeEnum.Reconnect, EventTypeEnum.LevelUp, EventTypeEnum.ResourceRemove, EventTypeEnum.FuncOpen };
 
 	/** 玩家拥有的各种id集合，通常是只增加新id，并且id不能重复。 key1:type ,key2:configId*/
 	private Map<Integer, Map<Integer, PlayerIds>> idsMap = new HashMap<Integer, Map<Integer, PlayerIds>>();
@@ -197,9 +197,9 @@ public class PlayerModule extends BasePlayerModule {
 		builder.putAllLevels(expLevelMap.getMap());
 
 		// 礼包
-		Map<Integer, PlayerIds> map = idsMap.get(IdConstant.SHOP_GIFT);
+		Map<Integer, PlayerIds> map = idsMap.get(IdConstant.CHAPTER_PACK);
 		if (map != null) {
-			builder.addAllShopGift(map.keySet());
+			builder.addAllChapterPacks(map.keySet());
 		}
 		
 		if (cloudBox != null && !cloudBox.isEmpty()) {
@@ -212,9 +212,6 @@ public class PlayerModule extends BasePlayerModule {
 		switch (event.getType()) {
 		case LoginFinish: {
 			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
-			if (player.isFuncOpen(InitialUI.RandomBox)) {
-				startCloudBoxTask();
-			}
 			break;
 		}
 		case PLAYER_CREATE: {
@@ -235,15 +232,18 @@ public class PlayerModule extends BasePlayerModule {
 				List<RewardInfo> reward = PlayerHelper.addReward(player, userUpgradeConfig.LvRewardID);
 				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(reward));
 			}
-
-			if (level == InitialUI.RandomBox.DisplayLevel) {
-				startCloudBoxTask();
-			}
 			break;
 		}
 		case ResourceRemove: {
 			int id = event.getIntParameter(0);
 			expLevelMap.removeValue(id);
+			break;
+		}
+		case FuncOpen: {
+			InitialUI func = event.getParameter(0);
+			if (func == InitialUI.RandomBox) {
+				startCloudBoxTask();
+			}
 			break;
 		}
 		}

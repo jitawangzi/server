@@ -17,6 +17,8 @@ public enum Asset{
 	DailyPoint(100202,"DailyPoint","每日任务活跃度",1,3,"获得指定数量后可以领取奖励","task_icon_rihuoyue"),
 	/** 每周任务活跃度 */
 	WeeklyPoint(100203,"WeeklyPoint","每周任务活跃度",1,3,"获得指定数量后可以领取奖励","task_icon_zhouhuoyue"),
+	/** 7日任务活跃度 */
+	SevenDaysPoint(100204,"SevenDaysPoint","7日任务活跃度",1,3,"获得指定数量后可以领取奖励","sevendaygift_icon_integral"),
 	/** 体力 */
 	playerEnergy(100301,"playerEnergy","体力",3,3,"用于挑战、扫荡关卡，获取关卡奖励","physicalpower_icon_01"),
     ;

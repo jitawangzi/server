@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 	public final int BulletSpeed;		
 	/** 子弹击中敌方伤害类型 0直接伤害 1爆炸 2分裂 3怪物之间弹射 */
 	public final int[] HitType;		
-	/** 伤害类型参数 0直接伤害 无 1爆炸 圆形半径(10000 全屏) 2分裂 角度 个数 分裂子弹ID 3弹射敌人数量 */
+	/** 伤害类型参数 0直接伤害 无 1爆炸 圆形半径(10000 全屏) 2分裂 个数；分裂子弹ID 3弹射敌人数量 */
 	public final int[][] HitTypeParam;		
 	/** 造成技能伤害公式 */
 	public final String CalculateFun;		
@@ -34,12 +34,6 @@ import org.w3c.dom.Element;
 	public final int[] AttrEffectConfigId;		
 	/** 技能伤害参数百分比组 看BulletTimes 【多子弹配置】        子弹1伤害%;子弹2伤害%;...;子弹n伤害% 【多子弹分裂配置】  分裂子弹1伤害%;分裂子弹2伤害%;...;分裂子弹n伤害% 【多子弹穿透配置】  穿透子弹1伤害%;穿透子弹2伤害%;...;穿透子弹n伤害% */
 	public final int[] CalculateParam;		
-	/** 子弹特效延迟飞出时间  毫秒 */
-	public final int BulletDelayTime;		
-	/** 子弹特效文件prefab */
-	public final String BulletEffect;		
-	/** 子弹爆炸特效文件prefab */
-	public final String HitEffect;		
 
 	public HeroBulletConfig (Element element) throws Exception {
 	
@@ -79,7 +73,7 @@ import org.w3c.dom.Element;
 		} else {
 			HitType = new int[] {};
 		}
-		String HitTypeParamString = element.getAttribute("HitTypeParam"); // 伤害类型参数 0直接伤害 无 1爆炸 圆形半径(10000 全屏) 2分裂 角度 个数 分裂子弹ID 3弹射敌人数量
+		String HitTypeParamString = element.getAttribute("HitTypeParam"); // 伤害类型参数 0直接伤害 无 1爆炸 圆形半径(10000 全屏) 2分裂 个数；分裂子弹ID 3弹射敌人数量
 		if (HitTypeParamString != null && HitTypeParamString.length() > 0) {
 			String[] HitTypeParamStrings = HitTypeParamString.split("\\|"); 
 			int[][] HitTypeParamTemp = new int[HitTypeParamStrings.length][] ; 
@@ -121,10 +115,6 @@ import org.w3c.dom.Element;
 		} else {
 			CalculateParam = new int[] {};
 		}
-		BulletDelayTime = Integer.parseInt(element.getAttribute("BulletDelayTime") == null || element.getAttribute("BulletDelayTime").length() == 0 ? "0"
-			: element.getAttribute("BulletDelayTime")); // 子弹特效延迟飞出时间  毫秒
-		BulletEffect = element.getAttribute("BulletEffect"); // 子弹特效文件prefab
-		HitEffect = element.getAttribute("HitEffect"); // 子弹爆炸特效文件prefab
 	}
 	
 

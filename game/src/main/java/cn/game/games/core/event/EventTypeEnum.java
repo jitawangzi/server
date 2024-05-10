@@ -23,6 +23,9 @@ public enum EventTypeEnum {
 	/** 充值  // 参数 ： 充值数量*/
 	Charge(112, "Charge", "充值"),
 
+	/** 功能开启 */
+	FuncOpen(113, "FuncOpen", "功能开启 "),
+
 	/** 新添加了某种资源 */
 	ResourceAdd(120, "ResourceAdd", "新添加了某种资源"),
 	/** 某种资源被移除 */
@@ -30,7 +33,7 @@ public enum EventTypeEnum {
 	
 	WatchAds(130, "WatchAds", "看了一次广告"),
 
-	/** 升级 */
+	/** 升级 参数： 经验，升到的等级*/
 	LevelUp(2, "LevelUp", "升级"),
 	/** 通关关卡，包含剧情普通关卡，探索关卡等 */
 	Level(3, "Level", "通关关卡"), // 参数： 关卡id，回合数，剩余人数

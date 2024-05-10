@@ -11,6 +11,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.DrawConfig;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.ResourceConsumeEnum;
@@ -37,13 +38,18 @@ public class DrawHandler extends BaseHandler {
 
 	private void page(NetClient client, Object message) {
 		DrawListRequest_37000001 req = (DrawListRequest_37000001) message;
-		DrawListResponse_37000002.Builder response = DrawListResponse_37000002.newBuilder();
+		DrawListResponse_37000002.Builder resp = DrawListResponse_37000002.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		DrawModule drawModule = player.getModule(DrawModule.class);
 
-		response.setDraw(drawModule.buildDrawInfo(req.getId()));
+		if (!player.isFuncOpen(InitialUI.PleaseGod)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
 
-		client.sendProtocol(response.build());
+		resp.setDraw(drawModule.buildDrawInfo(req.getId()));
+
+		client.sendProtocol(resp.build());
 	}
 
 	private void draw(NetClient client, Object message) {
@@ -51,6 +57,10 @@ public class DrawHandler extends BaseHandler {
 		DrawResponse_37000004.Builder resp = DrawResponse_37000004.newBuilder();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (!player.isFuncOpen(InitialUI.PleaseGod)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
 		DrawModule drawModule = player.getModule(DrawModule.class);
 		boolean ten = req.getTen();
 		boolean freeOnce = req.getFreeOnce();

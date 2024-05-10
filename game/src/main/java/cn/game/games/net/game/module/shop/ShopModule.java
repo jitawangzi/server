@@ -1,52 +1,48 @@
 package cn.game.games.net.game.module.shop;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ShopItemMapper;
-import cn.game.protocol.generated.config.ShopItemConfig;
-import cn.game.protocol.generated.config.ShopItemGroupConfig;
-import cn.game.protocol.generated.manager.ShopItemGroupManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeishiConfig;
+import cn.game.protocol.generated.config.RechargeStoreConfig;
+import cn.game.protocol.generated.config.ShopConfig;
+import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.HeishiManager;
+import cn.game.protocol.generated.manager.RechargeStoreManager;
+import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
-import cn.game.util.DateUtil;
 import cn.game.util.Rnd;
 
 public class ShopModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.NewWeek,
+			EventTypeEnum.LevelUp, EventTypeEnum.FuncOpen };
 
-	private Map<Long, ShopItem> itemsMap = new HashMap<Long, ShopItem>();
-	
-	@JsonIgnore
-	private Multimap<Integer, ShopItem> groupItemsMap = ArrayListMultimap.create();
+//	private Map<Long, ShopItem> itemsMap = new HashMap<Long, ShopItem>();
+	/** key：shopId，value 商品 */
+	private Multimap<Integer, ShopItem> shopItemsMap = ArrayListMultimap.create();
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
 		return new Class<?>[] { ShopItemMapper.class };
 	}
 
-	private void initAddCache(ShopItem item) {
-		itemsMap.put(item.getId(), item);
-		groupItemsMap.put(item.getGroupId(), item);
+	private void initAddCache(int shop, ShopItem item) {
+//		itemsMap.put(item.getId(), item);
+		shopItemsMap.put(shop, item);
 	}
 
-	private void removeCache(ShopItem item) {
-		itemsMap.remove(item.getId());
+	private void removeCache(int shop, ShopItem item) {
+		shopItemsMap.remove(shop, item);
 	}
 
 	@Override
@@ -54,39 +50,27 @@ public class ShopModule extends BasePlayerModule {
 		List<ShopItem> list = (List<ShopItem>) iterator.next();
 		for (ShopItem item : list) {
 //			initAddCache(item);
-			itemsMap.put(item.getId(), item);
+//			itemsMap.put(item.getId(), item);
 		}
 	}
-	
-	@Override
-	public void initFromDbAfter() {
-		for (ShopItem item : itemsMap.values()) {
-			groupItemsMap.put(item.getGroupId(), item);
+
+
+	public List<ShopItem> getShopItems(int shop) {
+		return (List<ShopItem>) shopItemsMap.get(shop);
+	}
+
+	public ShopItem getShopItem(int shop, int itemId) {
+		Collection<ShopItem> collection = shopItemsMap.get(shop);
+		for (ShopItem shopItem : collection) {
+			if (shopItem.getItemId() == itemId) {
+				return shopItem;
+			}
 		}
-	};
-
-	public Collection<ShopItem> getShopItems(int group) {
-		return groupItemsMap.get(group);
-	}
-//	public Collection<ShopItem> getGroupCreateDay(int group) {
-//		return groupItemsMap.get(group);
-//	}
-
-	public ShopItem getShopItem(long uid) {
-		return itemsMap.get(uid);
+		return null;
 	}
 
-	public void initShop() {
-		int day = DateUtil.getDay();
-		Collection<ShopItemGroupConfig> list = ShopItemGroupManager.instance().list(); 
-		for (ShopItemGroupConfig config : list) {
-			initShopItemGroup(day, config);
-		}
-		
-	}
-
-	private void initShopItemGroup(int day, ShopItemGroupConfig config) {
-		List<Integer> calcItemIdList = calcItemIdList(config); 
+	/*private void initShopItemGroup(int day, ShopItemGroupConfig config) {
+		List<Integer> calcItemIdList = calcItemIdList(config);
 		for (Integer itemId : calcItemIdList) {
 			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
 			ShopItem item = new ShopItem();
@@ -98,23 +82,24 @@ public class ShopModule extends BasePlayerModule {
 			item.setCreateDay(day);
 			int discount = randomDiscount(item.getItemId());
 			item.setItemDiscount(discount);
-
+	
 			initAddCache(item);
 			item.insert();
 		}
 	}
-
+	
 	private int randomDiscount(int itemId) {
 		int discount = 0;
 		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
 		if (shopItemConfig.PurchaseType == 2) { // 带折扣的
 			discount = Rnd.randomId(shopItemConfig.Discount);
 		}
+	
 		return discount;
 	}
-
+	
 	private List<Integer> calcItemIdList(ShopItemGroupConfig config) {
-		List<Integer> ret = new ArrayList<>(); 
+		List<Integer> ret = new ArrayList<>();
 		if (config.ShopType == 1) { // 直接配置商品id的
 			if (config.ID1.length > 0) {
 				ret.add(config.ID1[0][0]);
@@ -155,9 +140,44 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 		return ret;
+	}*/
+
+	private void initShop() {
+		refreshShopNewDay();
+		refreshShopNewWeek();
 	}
 
-	private void refreshShop() {
+	private void refreshShopNewDay() {
+		Collection<ShopConfig> shops = ShopManager.instance().list();
+		for (ShopConfig shopConfig : shops) {
+			if (shopConfig.Refresh == 1) {
+				shopItemsMap.removeAll(shopConfig.ID);
+			}
+		}
+		// 刷新黑市
+		int shop = 2;
+		List<HeishiConfig> typeList = HeishiManager.instance().getTypeList(1);
+		HeishiConfig heishiConfig = typeList.get(0);
+		shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
+
+		typeList = HeishiManager.instance().getTypeList(2);
+		List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd.randomWeighableElementsNonRepeating(typeList, GlobalConst.HeishiShelvesCnt - 1);
+		for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
+			shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
+		}
+		// 刷新金币、钻石商店
+		Collection<RechargeStoreConfig> rechargeStore = RechargeStoreManager.instance().list();
+		for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
+			shopItemsMap.put(rechargeStoreConfig.Type, new ShopItem(rechargeStoreConfig.Item));
+		}
+
+	}
+
+	private void refreshShopNewWeek() {
+
+	}
+
+	/*private void refreshShop() {
 		Set<Integer> keySet = new HashSet<Integer>(groupItemsMap.keySet());
 		for (Integer group : keySet) {
 			ShopItemGroupConfig groupConfig = ShopItemGroupManager.instance().get(group);
@@ -191,13 +211,13 @@ public class ShopModule extends BasePlayerModule {
 						removeCache(item);
 					}
 					groupItemsMap.removeAll(group);
-
+	
 					initShopItemGroup(nowDay, groupConfig);
 				}
 			}
-
+	
 		}
-	}
+	}*/
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
@@ -212,14 +232,27 @@ public class ShopModule extends BasePlayerModule {
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
-		// 正常应该是在功能开启时初始化商店。
-		case PLAYER_CREATE: {
-			initShop();
+		case FuncOpen: {
+			InitialUI func = event.getParameter(0);
+			if (func == InitialUI.Shop) {
+				initShop();
+			}
+			break;
 		}
 		case NewDay: {
-			refreshShop();
+			refreshShopNewDay();
+			break;
 		}
+		case NewWeek: {
+			refreshShopNewWeek();
+			break;
 
 		}
+		}
+	}
+
+	@Override
+	public void initFromDbAfter() {
+
 	}
 }

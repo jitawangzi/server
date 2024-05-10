@@ -52,13 +52,11 @@ import cn.game.util.IntMapWrapper;
  */
 public class QuestModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
-			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem };
+			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem,
+			EventTypeEnum.FuncOpen };
 
 	/** 当前激活的任务 */
 	private Map<Integer, Quest>[] quests;
-	@JsonIgnore
-	/** 已完成的任务 ， 不需要这个了，不用查看历史任务 */
-	private Map<Integer, Quest>[] competeQuests;
 	@JsonIgnore
 	// 支线任务保留最后一个任务id
 	private Map<Integer, QuestChallenge> challenges;
@@ -355,23 +353,6 @@ public class QuestModule extends BasePlayerModule {
 		}
 		return false;
 	}
-
-	public Quest getCompelete(int id) {
-
-		for (Map<Integer, Quest> e : competeQuests) {
-			Quest quest = e.get(id);
-			if (quest != null) {
-				return quest;
-			}
-		}
-		return null;
-	}
-
-	public Quest getCompelete(int id, int group) {
-
-		return competeQuests[group].get(id);
-	}
-
 	public Quest get(int id) {
 		QuestConfig questConfig = QuestManager.instance().get(id);
 		return quests[QuestTypeEnum.get(questConfig.Type).ordinal()].get(id);
@@ -397,11 +378,6 @@ public class QuestModule extends BasePlayerModule {
 	public Map<Integer, Quest> getGroup(int type) {
 
 		return quests[QuestTypeEnum.get(type).ordinal()];
-	}
-
-	public Map<Integer, Quest> getCompeteGroup(int group) {
-
-		return competeQuests[group];
 	}
 
 	public Quest open(int id, boolean notify) {
@@ -700,6 +676,46 @@ public class QuestModule extends BasePlayerModule {
 
 	}
 
+	@Override
+	public void init() {
+		if (quests != null) {
+			return;
+		}
+		quests = new HashMap[QuestTypeEnum.values().length];
+		for (int i = 0; i < quests.length; i++) {
+			quests[i] = new HashMap<>();
+		}
+		challenges = new HashMap<>();
+	}
+
+	public void addCumulativeCount(ConditionTypeEnum type, int count) {
+		cumulativeCountMap.add(type.ID, count);
+		/*		int id = type.ID;
+				int arg1 = args.length > 0 ? args[0] : 0;
+				int arg2 = args.length > 1 ? args[1] : 0;
+				Integer oldCount = this.conditionCountMap.get(id, arg1, arg2);
+				int newCount = oldCount == null ? count : oldCount + count;
+				this.conditionCountMap.put(id, arg1, arg2, newCount);*/
+		// TODO 似乎这里如果带参数，应该把不带参数的数量也增加一下。
+//		if (oldCount == null) {
+//			conditionCount = new ConditionCount();
+//			conditionCount.setPlayerId(playerId);
+//			conditionCount.setConditionType(id);
+//			conditionCount.setCount(count);
+//			conditionCount.setArg1(arg1);
+//			conditionCount.setArg2(arg2);
+//			conditionCount.insert();
+//			this.conditionCountMap.put(id, arg1, arg2, count);
+//		} else {
+//			conditionCount.setCount(conditionCount.getCount() + count);
+//			conditionCount.update();
+//		}
+	}
+
+	@Override
+	public void buildPlayerAllInfo(Builder builder) {
+	}
+
 	public void refreshNewQuest(QuestTypeEnum type, boolean notify) {
 		Map<Integer, Quest> group = getGroup(type);
 		if (group == null || group.isEmpty()) {
@@ -762,12 +778,11 @@ public class QuestModule extends BasePlayerModule {
 			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}
-		case PLAYER_CREATE: {
-			initQuestFirst();
-			break;
-		}
-		case LevelUp: {
-			initQuestFirst();
+		case FuncOpen: {
+			InitialUI func = event.getParameter(0);
+			if (func == InitialUI.Task) {
+				initQuestFirst();
+			}
 			break;
 		}
 		case Charge: {
@@ -797,43 +812,5 @@ public class QuestModule extends BasePlayerModule {
 			break;
 		}
 		}
-	}
-
-	@Override
-	public void init() {
-		quests = new HashMap[QuestTypeEnum.values().length];
-		for (int i = 0; i < quests.length; i++) {
-			quests[i] = new HashMap<>();
-		}
-		challenges = new HashMap<>();
-	}
-
-	public void addCumulativeCount(ConditionTypeEnum type, int count) {
-		cumulativeCountMap.add(type.ID, count);
-		/*		int id = type.ID;
-				int arg1 = args.length > 0 ? args[0] : 0;
-				int arg2 = args.length > 1 ? args[1] : 0;
-				Integer oldCount = this.conditionCountMap.get(id, arg1, arg2);
-				int newCount = oldCount == null ? count : oldCount + count;
-				this.conditionCountMap.put(id, arg1, arg2, newCount);*/
-		// TODO 似乎这里如果带参数，应该把不带参数的数量也增加一下。
-//		if (oldCount == null) {
-//			conditionCount = new ConditionCount();
-//			conditionCount.setPlayerId(playerId);
-//			conditionCount.setConditionType(id);
-//			conditionCount.setCount(count);
-//			conditionCount.setArg1(arg1);
-//			conditionCount.setArg2(arg2);
-//			conditionCount.insert();
-//			this.conditionCountMap.put(id, arg1, arg2, count);
-//		} else {
-//			conditionCount.setCount(conditionCount.getCount() + count);
-//			conditionCount.update();
-//		}
-	}
-
-
-	@Override
-	public void buildPlayerAllInfo(Builder builder) {
 	}
 }

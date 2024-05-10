@@ -11,25 +11,17 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.config.FirstChargeConfig;
-import cn.game.protocol.generated.manager.FirstChargeManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000005;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000006;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000003;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeResponse_11000004;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000011;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeResponse_11000008;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRewardRequest_11000012;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRewardResponse_11000013;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityListResponse_11000002;
-import cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyRequest_11000010;
-import cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeBuyResponse_11000011;
-import cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRequest_11000007;
-import cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeResponse_11000008;
-import cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardRequest_11000012;
-import cn.game.protocol.protobuf.ActivityMsg.ActivitySingleChargeRewardResponse_11000013;
-import cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.DateUtil;
 
 /**
  * 活动处理器
@@ -48,28 +40,28 @@ public class ActivityHandler extends BaseHandler {
 		putInvoker(PbProtocol.ActivityListRequest_11000001, (client, message) -> {
 			list(client, message);
 		});
-		putInvoker(PbProtocol.ActivityFirstChargeRequest_11000003, (client, message) -> {
-			firstCharge(client, message);
-		});
-		putInvoker(PbProtocol.ActivityFirstChargeBuyRequest_11000005, (client, message) -> {
-			firstChargeBuy(client, message);
-		});
-		putInvoker(PbProtocol.ActivitySingleChargeRequest_11000007, (client, message) -> {
+//		putInvoker(PbProtocol.ActivityFirstChargeRequest_11000003, (client, message) -> {
+//			firstCharge(client, message);
+//		});
+//		putInvoker(PbProtocol.ActivityFirstChargeBuyRequest_11000005, (client, message) -> {
+//			firstChargeBuy(client, message);
+//		});
+		putInvoker(PbProtocol.ActivityFirstChargeRequest_11000007, (client, message) -> {
 			singleCharge(client, message);
 		});
-		putInvoker(PbProtocol.ActivitySingleChargeBuyRequest_11000010, (client, message) -> {
+		putInvoker(PbProtocol.ActivityFirstChargeBuyRequest_11000010, (client, message) -> {
 			singleChargeBuy(client, message);
 		});
-		putInvoker(PbProtocol.ActivitySingleChargeRewardRequest_11000012, (client, message) -> {
+		putInvoker(PbProtocol.ActivityFirstChargeRewardRequest_11000012, (client, message) -> {
 			singleChargeReward(client, message);
 		});
 	}
 
 	private void empty(NetClient client, Object message) {
-		ActivitySingleChargeBuyRequest_11000010 req = (ActivitySingleChargeBuyRequest_11000010) message;
-		ActivitySingleChargeRewardResponse_11000013.Builder resp = ActivitySingleChargeRewardResponse_11000013.newBuilder();
+		ActivityFirstChargeBuyRequest_11000010 req = (ActivityFirstChargeBuyRequest_11000010) message;
+		ActivityFirstChargeRewardResponse_11000013.Builder resp = ActivityFirstChargeRewardResponse_11000013.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		SingleChargeActivity activityBase = (SingleChargeActivity) player.getActivityModule().get(req.getId());
+		FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(req.getId());
 		if (activityBase == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
@@ -79,10 +71,10 @@ public class ActivityHandler extends BaseHandler {
 	}
 
 	private void singleCharge(NetClient client, Object message) {
-		ActivitySingleChargeRequest_11000007 req = (ActivitySingleChargeRequest_11000007) message;
-		ActivitySingleChargeResponse_11000008.Builder resp = ActivitySingleChargeResponse_11000008.newBuilder();
+		ActivityFirstChargeRequest_11000007 req = (ActivityFirstChargeRequest_11000007) message;
+		ActivityFirstChargeResponse_11000008.Builder resp = ActivityFirstChargeResponse_11000008.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		SingleChargeActivity activityBase = (SingleChargeActivity) player.getActivityModule().get(req.getId());
+		FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(req.getId());
 
 		if (activityBase == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
@@ -93,12 +85,12 @@ public class ActivityHandler extends BaseHandler {
 	}
 
 	private void singleChargeBuy(NetClient client, Object message) {
-		ActivitySingleChargeBuyRequest_11000010 req = (ActivitySingleChargeBuyRequest_11000010) message;
-		ActivitySingleChargeBuyResponse_11000011.Builder resp = ActivitySingleChargeBuyResponse_11000011.newBuilder();
+		ActivityFirstChargeBuyRequest_11000010 req = (ActivityFirstChargeBuyRequest_11000010) message;
+		ActivityFirstChargeBuyResponse_11000011.Builder resp = ActivityFirstChargeBuyResponse_11000011.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		int id = req.getId();
 		int chargeId = req.getChargeId();
-		SingleChargeActivity activityBase = (SingleChargeActivity) player.getActivityModule().get(id);
+		FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(id);
 		if (activityBase == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
@@ -111,32 +103,34 @@ public class ActivityHandler extends BaseHandler {
 	}
 
 	private void singleChargeReward(NetClient client, Object message) {
-		ActivitySingleChargeRewardRequest_11000012 req = (ActivitySingleChargeRewardRequest_11000012) message;
-		ActivitySingleChargeRewardResponse_11000013.Builder resp = ActivitySingleChargeRewardResponse_11000013.newBuilder();
+		ActivityFirstChargeRewardRequest_11000012 req = (ActivityFirstChargeRewardRequest_11000012) message;
+		ActivityFirstChargeRewardResponse_11000013.Builder resp = ActivityFirstChargeRewardResponse_11000013.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		int chargeId = req.getChargeId();
-		int rewardDay = req.getRewardDay();
-		SingleChargeActivity activityBase = (SingleChargeActivity) player.getActivityModule().get(req.getId());
+		FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(req.getId());
 		if (activityBase == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
-		SingleCharge singleCharge = activityBase.getSingleCharge(chargeId);
-		if (singleCharge == null) {
+//		SingleCharge singleCharge = activityBase.getSingleCharge(chargeId);
+//		if (singleCharge == null) {
+//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+//			return;
+//		}
+//		if (rewardDay > DateUtil.getDay() - singleCharge.getDay()) {
+//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+//			return;
+//		}
+//		if (singleCharge.getSelectedIndex().contains(rewardDay)) {
+//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+//			return;
+//		}
+		List<RewardInfo> reward = activityBase.reward(chargeId);
+		if (reward == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
-		if (rewardDay > DateUtil.getDay() - singleCharge.getDay()) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-			return;
-		}
-		if (singleCharge.getSelectedIndex().contains(rewardDay)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-			return;
-		}
-		List<RewardInfo> reward = activityBase.reward(chargeId, rewardDay);
 		resp.addAllRewards(reward);
-
 		client.sendProtocol(resp);
 	}
 	private void list(NetClient client, Object message) {
@@ -153,7 +147,7 @@ public class ActivityHandler extends BaseHandler {
 		client.sendProtocol(resp);
 	}
 
-	private void firstCharge(NetClient client, Object message) {
+	/*private void firstCharge(NetClient client, Object message) {
 		ActivityFirstChargeRequest_11000003 req = (ActivityFirstChargeRequest_11000003) message;
 		ActivityFirstChargeResponse_11000004.Builder resp = ActivityFirstChargeResponse_11000004.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
@@ -164,7 +158,7 @@ public class ActivityHandler extends BaseHandler {
 		}
 		client.sendProtocol(resp);
 	}
-
+	
 	private void firstChargeBuy(NetClient client, Object message) {
 		ActivityFirstChargeBuyRequest_11000005 req = (ActivityFirstChargeBuyRequest_11000005) message;
 		ActivityFirstChargeBuyResponse_11000006.Builder resp = ActivityFirstChargeBuyResponse_11000006.newBuilder();
@@ -172,17 +166,17 @@ public class ActivityHandler extends BaseHandler {
 		int id = req.getId();
 		int chargeId = req.getChargeId();
 		List<Integer> selectedList = req.getSelectedList();
-
+	
 		FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(id);
 		if (activityBase == null || chargeId != activityBase.getChargeId()) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
 		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(chargeId);
-		if (firstChargeConfig.Cnt != selectedList.size()) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-			return;
-		}
+	//		if (firstChargeConfig.Cnt != selectedList.size()) {
+	//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+	//			return;
+	//		}
 		List<Integer> selectedIndex = activityBase.getSelectedIndex();
 		for (Integer integer : selectedList) {
 			if (selectedIndex.contains(integer)) {
@@ -192,11 +186,11 @@ public class ActivityHandler extends BaseHandler {
 		}
 		List<RewardInfo> rewards = activityBase.buy(chargeId, selectedList);
 		resp.addAllRewards(rewards);
-
+	
 		activityBase = (FirstChargeActivity) player.getActivityModule().get(id);
 		if (activityBase != null) {
 			resp.setFirstCharge((FirstChargeActivityInfo) activityBase.buildActivityInfo());
 		}
 		client.sendProtocol(resp);
-	}
+	}*/
 }

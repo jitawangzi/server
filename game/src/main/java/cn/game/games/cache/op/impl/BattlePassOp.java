@@ -59,11 +59,6 @@ public class BattlePassOp extends BasePlayerModule implements IBattlePassOp {
      */
     private int openday;
 
-    @Override
-	public void init() {
-        goldRewardIndex = new BitSet();
-        silverRewardIndex = new BitSet();
-    }
 
     @Override
     public void initLoadData(BattlePass battlePass) {

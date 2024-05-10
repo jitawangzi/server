@@ -10,13 +10,13 @@ import org.w3c.dom.Element;
  */
  public class HeroSkillGroupConfig {
 
-	/** 技能组ID */
+	/** 技能组ID 分为4类 【1怪物技能】   怪物id*10+流水号【3卡牌技能】   卡牌id*10+流水号 【5趣味肉鸽技能】 【6属性肉鸽buff】 */
 	public final int ID;		
 	/** 技能名称 */
 	public final String SkillName;		
-	/** 肉鸽的所有技能id配置 配置：肉鸽1id;技能id1;技能id2|肉鸽2id;技能id1;技能id2 调用HeroSkill#技能id 需要考虑如果该肉鸽没有激活，数组中就没有 学习的肉鸽技能不配这里 */
+	/** 肉鸽的所有技能id配置 配置：肉鸽1id;技能id1;技能id2|肉鸽2id;技能id1;技能id2 调用HeroSkill#技能id 需要考虑如果该肉鸽没有激活，数组中就没有 学习的肉鸽技能不配这里 怪物肉鸽填0 */
 	public final int[][] SkillGroup;		
-	/** 技能类型 1-英雄 2-伙伴 3-全场AOE */
+	/** 技能类型 1-英雄 2-伙伴 3-全场AOE 4-怪物 */
 	public final int SkillType;		
 	/** 权重 技能 直接根据权重确定使用哪个技能 */
 	public final int[] SkillWeight;		
@@ -24,15 +24,15 @@ import org.w3c.dom.Element;
 	public final int SkillTimes;		
 	/** 技能强制cd时间毫秒 */
 	public final int SkillCD;		
-	/** 武将登场施放的技能： 配置：技能id1;技能id2 调用：SKill#技能 */
+	/** 神将登场施放的技能： 配置：技能id1;技能id2 调用：SKill#技能 */
 	public final int[] HeroAppearSkillGroup;		
 	/** 权重 技能 直接根据权重确定使用那个技能 */
 	public final int[] AppearSkillWeight;		
-	/** 武将死亡施放的技能： 配置：技能id1;技能id2 调用：SKill#技能 */
+	/** 神将死亡施放的技能： 配置：技能id1;技能id2 调用：SKill#技能 */
 	public final int[] HeroDieSkillGroup;		
 	/** 权重 技能 直接根据权重确定使用那个技能 */
 	public final int[] DieSkillWeight;		
-	/** 武将复活施放的技能： 配置：技能id1;技能id2 调用：SKill#技能 */
+	/** 神将复活施放的技能： 配置：技能id1;技能id2 调用：SKill#技能 */
 	public final int[] HeroRevivedSkillGroup;		
 	/** 权重 技能 直接根据权重确定使用那个技能 */
 	public final int[] RevivedSkillWeight;		
@@ -40,9 +40,9 @@ import org.w3c.dom.Element;
 	public HeroSkillGroupConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // 技能组ID
+			: element.getAttribute("ID")); // 技能组ID 分为4类 【1怪物技能】   怪物id*10+流水号【3卡牌技能】   卡牌id*10+流水号 【5趣味肉鸽技能】 【6属性肉鸽buff】
 		SkillName = element.getAttribute("SkillName"); // 技能名称
-		String SkillGroupString = element.getAttribute("SkillGroup"); // 肉鸽的所有技能id配置 配置：肉鸽1id;技能id1;技能id2|肉鸽2id;技能id1;技能id2 调用HeroSkill#技能id 需要考虑如果该肉鸽没有激活，数组中就没有 学习的肉鸽技能不配这里
+		String SkillGroupString = element.getAttribute("SkillGroup"); // 肉鸽的所有技能id配置 配置：肉鸽1id;技能id1;技能id2|肉鸽2id;技能id1;技能id2 调用HeroSkill#技能id 需要考虑如果该肉鸽没有激活，数组中就没有 学习的肉鸽技能不配这里 怪物肉鸽填0
 		if (SkillGroupString != null && SkillGroupString.length() > 0) {
 			String[] SkillGroupStrings = SkillGroupString.split("\\|"); 
 			int[][] SkillGroupTemp = new int[SkillGroupStrings.length][] ; 
@@ -60,7 +60,7 @@ import org.w3c.dom.Element;
 			SkillGroup = new int[][] {};
 		}
 		SkillType = Integer.parseInt(element.getAttribute("SkillType") == null || element.getAttribute("SkillType").length() == 0 ? "0"
-			: element.getAttribute("SkillType")); // 技能类型 1-英雄 2-伙伴 3-全场AOE
+			: element.getAttribute("SkillType")); // 技能类型 1-英雄 2-伙伴 3-全场AOE 4-怪物
 		String SkillWeightString = element.getAttribute("SkillWeight"); // 权重 技能 直接根据权重确定使用哪个技能
 		if (SkillWeightString != null && SkillWeightString.length() > 0) {
 			String[] SkillWeightStrings = SkillWeightString.split(";"); 
@@ -77,7 +77,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("SkillTimes")); // 技能使用次数用完就进入CD
 		SkillCD = Integer.parseInt(element.getAttribute("SkillCD") == null || element.getAttribute("SkillCD").length() == 0 ? "0"
 			: element.getAttribute("SkillCD")); // 技能强制cd时间毫秒
-		String HeroAppearSkillGroupString = element.getAttribute("HeroAppearSkillGroup"); // 武将登场施放的技能： 配置：技能id1;技能id2 调用：SKill#技能
+		String HeroAppearSkillGroupString = element.getAttribute("HeroAppearSkillGroup"); // 神将登场施放的技能： 配置：技能id1;技能id2 调用：SKill#技能
 		if (HeroAppearSkillGroupString != null && HeroAppearSkillGroupString.length() > 0) {
 			String[] HeroAppearSkillGroupStrings = HeroAppearSkillGroupString.split(";"); 
 			int[] HeroAppearSkillGroupTemp = new int[HeroAppearSkillGroupStrings.length] ; 
@@ -101,7 +101,7 @@ import org.w3c.dom.Element;
 		} else {
 			AppearSkillWeight = new int[] {};
 		}
-		String HeroDieSkillGroupString = element.getAttribute("HeroDieSkillGroup"); // 武将死亡施放的技能： 配置：技能id1;技能id2 调用：SKill#技能
+		String HeroDieSkillGroupString = element.getAttribute("HeroDieSkillGroup"); // 神将死亡施放的技能： 配置：技能id1;技能id2 调用：SKill#技能
 		if (HeroDieSkillGroupString != null && HeroDieSkillGroupString.length() > 0) {
 			String[] HeroDieSkillGroupStrings = HeroDieSkillGroupString.split(";"); 
 			int[] HeroDieSkillGroupTemp = new int[HeroDieSkillGroupStrings.length] ; 
@@ -125,7 +125,7 @@ import org.w3c.dom.Element;
 		} else {
 			DieSkillWeight = new int[] {};
 		}
-		String HeroRevivedSkillGroupString = element.getAttribute("HeroRevivedSkillGroup"); // 武将复活施放的技能： 配置：技能id1;技能id2 调用：SKill#技能
+		String HeroRevivedSkillGroupString = element.getAttribute("HeroRevivedSkillGroup"); // 神将复活施放的技能： 配置：技能id1;技能id2 调用：SKill#技能
 		if (HeroRevivedSkillGroupString != null && HeroRevivedSkillGroupString.length() > 0) {
 			String[] HeroRevivedSkillGroupStrings = HeroRevivedSkillGroupString.split(";"); 
 			int[] HeroRevivedSkillGroupTemp = new int[HeroRevivedSkillGroupStrings.length] ; 

@@ -8,7 +8,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.LogGame)
 public class LogGame extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Login };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Login, EventTypeEnum.Reconnect };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {

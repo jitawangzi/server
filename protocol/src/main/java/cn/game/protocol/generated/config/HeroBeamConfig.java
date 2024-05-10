@@ -24,8 +24,6 @@ import org.w3c.dom.Element;
 	public final int Duration;		
 	/** 表现类型 1-单次多伤害 2-多次单伤害 */
 	public final int ShowType;		
-	/** 表现类型1参数 多次伤害时间间隔  表现类型2参数 时间间隔 */
-	public final int[] r;		
 
 	public HeroBeamConfig (Element element) throws Exception {
 	
@@ -62,18 +60,6 @@ import org.w3c.dom.Element;
 			: element.getAttribute("Duration")); // 技能持续时间（毫秒）
 		ShowType = Integer.parseInt(element.getAttribute("ShowType") == null || element.getAttribute("ShowType").length() == 0 ? "0"
 			: element.getAttribute("ShowType")); // 表现类型 1-单次多伤害 2-多次单伤害
-		String rString = element.getAttribute("r"); // 表现类型1参数 多次伤害时间间隔  表现类型2参数 时间间隔
-		if (rString != null && rString.length() > 0) {
-			String[] rStrings = rString.split(";"); 
-			int[] rTemp = new int[rStrings.length] ; 
-			for (int i = 0; i < rStrings.length; i++) {
-				int temp = Integer.parseInt(rStrings[i]);	
-				rTemp[i] = temp;
-			}
-			r = rTemp ;			
-		} else {
-			r = new int[] {};
-		}
 	}
 	
 

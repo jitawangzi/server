@@ -9,19 +9,21 @@ public class GG2 {
 		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 		map.put(1, 3);
 		map.put(2, 3);
+		MapObj mapobj = new MapObj();
+		mapobj.map = map;
 		
-		String jsonString = JsonUtil.toJsonString(map);
+		// 这里使用jackson进行序列化和反序列化
+		String jsonString = JsonUtil.toJsonString(mapobj);
 		System.out.println(jsonString);
 		
-		
-//		Collection<RoleFettersConfig> cc = RoleFettersManager.getInstance().list(); 
-//		
-//		List<RoleFettersConfig> list = new ArrayList<>();
-//		list.addAll(cc) ; 
-//		RoleFettersConfig config = new RoleFettersConfig(null) ; 
-//		
-//		BinarySearch.searchFirstBig(list, config); 
-//		
+		MapObj object = JsonUtil.parseObject(jsonString, MapObj.class);
+		System.out.println(object.map.get("1")); // 正确的值
+		System.out.println(object.map.get(1)); // null
+
+	}
+
+	static class MapObj {
+		public HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 	}
 
 }
