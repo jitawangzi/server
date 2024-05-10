@@ -55,8 +55,8 @@ public class QuestModule extends BasePlayerModule {
 			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem,
 			EventTypeEnum.FuncOpen };
 
-	/** 当前激活的任务 */
-	private Map<Integer, Quest>[] quests;
+	/** 当前激活的任务 ,key1 ： QuestTypeEnum, key2: QuestConfig id */
+	private Map<Integer, Map<Integer, Quest>> quests;
 	@JsonIgnore
 	// 支线任务保留最后一个任务id
 	private Map<Integer, QuestChallenge> challenges;
@@ -80,7 +80,7 @@ public class QuestModule extends BasePlayerModule {
 //				quests[e.getQuestGroup()].put(e.getId(), e);
 //			}
 			QuestConfig questConfig = QuestHelper.getQuestConfig(e.getId());
-			quests[QuestTypeEnum.get(questConfig.Type).ordinal()].put(e.getId(), e);
+//			quests[QuestTypeEnum.get(questConfig.Type).ordinal()].put(e.getId(), e);
 		}
 
 //		for (ConditionCount conditionCount : conditionList) {
@@ -91,7 +91,7 @@ public class QuestModule extends BasePlayerModule {
 
 	@Override
 	public void initFromDbAfter() {
-		for (Map<Integer, Quest> e : this.quests) {
+		for (Map<Integer, Quest> e : this.quests.values()) {
 			for (Quest q : e.values()) {
 				q.initCondition();
 			}
@@ -104,7 +104,7 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	public void refreshQuest(QuestTypeEnum type) {
-		Map<Integer, Quest> values = quests[type.ordinal()];
+		Map<Integer, Quest> values = quests.get(type.ID);
 		List<QuestConfig> missionList = QuestManager.instance().getTypeList(type.ID);
 		if (missionList == null) {
 			return;
@@ -134,7 +134,8 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	public int getFinishedCount(QuestTypeEnum type) {
-		Map<Integer, Quest> map = this.quests[type.ordinal()];
+//		Map<Integer, Quest> map = this.quests[type.ordinal()];
+		Map<Integer, Quest> map = this.quests.get(type.ID);
 		int count = 0;
 		for (Quest quest : map.values()) {
 			if (QuestHelper.isFinished(quest)) {
@@ -344,18 +345,25 @@ public class QuestModule extends BasePlayerModule {
 
 	public boolean hasRed() {
 
-		for (int i = 0; i < quests.length; i++) {
-			for (Quest e : quests[i].values()) {
+		for (Map<Integer, Quest> map : quests.values()) {
+			for (Quest e : map.values()) {
 				if (QuestHelper.canReceive(e)) {
 					return true;
 				}
 			}
 		}
+//		for (int i = 0; i < quests.size(); i++) {
+//			for (Quest e : quests[i].values()) {
+//				if (QuestHelper.canReceive(e)) {
+//					return true;
+//				}
+//			}
+//		}
 		return false;
 	}
 	public Quest get(int id) {
 		QuestConfig questConfig = QuestManager.instance().get(id);
-		return quests[QuestTypeEnum.get(questConfig.Type).ordinal()].get(id);
+		return quests.get(questConfig.Type).get(id);
 	}
 
 	public boolean hasBranchGroup(int branchGroup) {
@@ -372,12 +380,12 @@ public class QuestModule extends BasePlayerModule {
 
 	public Map<Integer, Quest> getGroup(QuestTypeEnum missionTypeEnum) {
 
-		return quests[missionTypeEnum.ordinal()];
+		return quests.get(missionTypeEnum.ID);
 	}
 
 	public Map<Integer, Quest> getGroup(int type) {
 
-		return quests[QuestTypeEnum.get(type).ordinal()];
+		return quests.get(type);
 	}
 
 	public Quest open(int id, boolean notify) {
@@ -387,13 +395,13 @@ public class QuestModule extends BasePlayerModule {
 	public Quest open(int id, byte initState, boolean notify) {
 		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
 
-		int group = QuestTypeEnum.get(questConfig.Type).ordinal();
-		if (this.quests[group].get(id) != null) {
+		int group = questConfig.Type;
+		if (this.quests.get(group).get(id) != null) {
 			log.warn(" {} 任务{}重复开启 : ", playerId, questConfig.ID);
 			return null;
 		}
 		Quest quest = new Quest(playerId, id);
-		this.quests[group].put(id, quest);
+		this.quests.get(group).put(id, quest);
 
 		if (notify) {
 			PlayerHelper.sendProtocol(playerId,
@@ -537,13 +545,9 @@ public class QuestModule extends BasePlayerModule {
 		return false;
 	}
 
-	public Map<Integer, Quest>[] getAllGroup() {
-		return this.quests;
-	}
-
 	public List<Integer> canReceiveIds(int group) {
 
-		return this.quests[group].values().stream().filter(QuestHelper::canReceive).map(q -> q.getId())
+		return this.quests.get(group).values().stream().filter(QuestHelper::canReceive).map(q -> q.getId())
 				.collect(Collectors.toList());
 	}
 
@@ -678,12 +682,13 @@ public class QuestModule extends BasePlayerModule {
 
 	@Override
 	public void init() {
-		if (quests != null) {
-			return;
+		if (quests == null) {
+			quests = new HashMap<Integer, Map<Integer, Quest>>();
 		}
-		quests = new HashMap[QuestTypeEnum.values().length];
-		for (int i = 0; i < quests.length; i++) {
-			quests[i] = new HashMap<>();
+		for (QuestTypeEnum type : QuestTypeEnum.values()) {
+			if (!quests.containsKey(type.ID)) {
+				quests.put(type.ID, new HashMap<Integer, Quest>());
+			}
 		}
 		challenges = new HashMap<>();
 	}
@@ -742,7 +747,7 @@ public class QuestModule extends BasePlayerModule {
 	 */
 	private void initQuest(QuestTypeEnum type, boolean notify) {
 
-		Map<Integer, Quest> map = quests[type.ordinal()];
+		Map<Integer, Quest> map = quests.get(type.ID);
 		if (!map.isEmpty()) {
 			return;
 		}

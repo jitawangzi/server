@@ -11,6 +11,7 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.ShopItem;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.player.IdConstant;
@@ -108,6 +109,7 @@ public class ShopHandler extends BaseHandler {
 				shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
 //				shopItem.update();
 //			}
+			player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
 			resp.addAllRewards(resources);
 			client.sendProtocol(resp);
 			return true;

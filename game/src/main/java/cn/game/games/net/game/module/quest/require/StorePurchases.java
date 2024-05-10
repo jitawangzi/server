@@ -11,7 +11,6 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
  * @date 2024年5月8日 下午5:50:06
  * @author SYQ
  */
-// TODO 
 @ConditionType(type = ConditionTypeEnum.StorePurchases)
 public class StorePurchases extends AbstractCondition {
 	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.BuyItems };
@@ -25,8 +24,8 @@ public class StorePurchases extends AbstractCondition {
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-
-		return true;
+		int shopId = event.getIntParameter(0);
+		return shopId == 2;
 	}
 
 }

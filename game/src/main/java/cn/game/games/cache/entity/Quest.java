@@ -188,8 +188,9 @@ public class Quest implements Serializable, DbEntity {
 	}
 
 	public void close() {
-
-		unregEvent();
+		if (state == QuestHelper.ACCEPTED) {
+			unregEvent();
+		}
 //		this.conditionContainer = null;
 	}
 
@@ -270,6 +271,7 @@ public class Quest implements Serializable, DbEntity {
 		}
 	}
 	public void unregEvent() {
+
 		if (conditionContainer != null) {
 			conditionContainer.unregEvent();
 		}

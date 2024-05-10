@@ -81,7 +81,7 @@ public enum EventTypeEnum {
 
 	QuestFinish(21, "QuestFinish", "完成任务"),
 	WeeklyScore(22, "WeeklyScore", "获取周积分"),
-	// 参数 : 商品id，数量 
+	// 参数 : 商店id，商品id，数量
 	BuyItems(28, "BuyItems", "商店购买商品"),
 
 	// 探索事件 
