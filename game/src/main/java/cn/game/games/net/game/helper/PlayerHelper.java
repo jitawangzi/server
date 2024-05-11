@@ -177,28 +177,6 @@ public class PlayerHelper {
 		Player player =  PlayerManager.getInstance().getPlayer(playerId) ; 
 		return isEnough(player, id, count);
 	}
-	/**
-	 * @Description 增加所有类型的资源
-	 * @param playerId
-	 * @param id
-	 * @param value
-	 * @param notify 是否通知客户端  如果直接调用该方法不涉及奖励合并问题则传true, 如果涉及合并则传false，合并后需要推送协议RewardPush_55000501
-	 * @return
-	 */
-	private static List<RewardInfo> addResources(long playerId, int id, int value, boolean notify) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		// 发邮件
-		if (!PlayerManager.getInstance().hasCache(playerId)) {
-//			OfflineResourceAdd add = new OfflineResourceAdd();
-//			add.setItemId(id);
-//			add.setCount(value);
-//			add.setPlayerId(playerId);
-//			add.setType(true);
-//			DAO.execute(OfflineResourceAddMapper.class, MapperConstant.insert, add);
-			return Collections.EMPTY_LIST;
-		}
-		return addResources(player, id, value, notify);
-	}
 
 	/** 
 	 * 合并同id 的资源和道具的数量。 
@@ -256,12 +234,8 @@ public class PlayerHelper {
 		return rewards;
 	}
 
-	public static List<RewardInfo> addResources(long playerId, int id, int value) {
-		return addResources(playerId, id, value, false);
-	}
-
 	public static List<RewardInfo> addResources(Player player, int id, int value) {
-		return addResources(player.getPlayerId(), id, value, false);
+		return addResources(player, id, value, false);
 	}
 
 	/**
@@ -658,15 +632,15 @@ public class PlayerHelper {
 	 * @param rewards
 	 * @return
 	 */
-	public static List<RewardInfo> addResources(long playerId, List<Entry<Integer, Integer>> rewards) {
+	public static List<RewardInfo> addResources(Player player, List<Entry<Integer, Integer>> rewards) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.size() > 0) {
 			for (Entry<Integer, Integer> entry : rewards) {
 
-				List<RewardInfo> rewardItem = addResources(playerId, entry.getKey(), entry.getValue(), false);
+				List<RewardInfo> rewardItem = addResources(player, entry.getKey(), entry.getValue(), false);
 				rewardItems.addAll(rewardItem);
 			}
-			PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 		}
 		return rewardItems;
 	}
@@ -733,14 +707,14 @@ public class PlayerHelper {
 	 * @param rewards
 	 * @return
 	 */
-	public static List<RewardInfo> addResources(long playerId, Set<Pair<Integer, Integer>> rewards) {
+	public static List<RewardInfo> addResources(Player player, Set<Pair<Integer, Integer>> rewards) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.size() > 0) {
 			for (Pair<Integer, Integer> pair : rewards) {
-				List<RewardInfo> rewardItem = addResources(playerId, pair.first, pair.second, false);
+				List<RewardInfo> rewardItem = addResources(player, pair.first, pair.second, false);
 				rewardItems.addAll(rewardItem);
 			}
-			PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 		}
 		return rewardItems;
 	}

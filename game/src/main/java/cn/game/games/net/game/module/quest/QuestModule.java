@@ -28,9 +28,11 @@ import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.AchievementMissionConfig;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.MainlineMissionConfig;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
@@ -39,8 +41,12 @@ import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.QuestManager;
+import cn.game.protocol.generated.manager.QuestPointRewardManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo;
+import cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo;
 import cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
@@ -57,6 +63,9 @@ public class QuestModule extends BasePlayerModule {
 
 	/** 当前激活的任务 ,key1 ： QuestTypeEnum, key2: QuestConfig id */
 	private Map<Integer, Map<Integer, Quest>> quests;
+	/** 任务积分宝箱活跃奖励领取情况 */
+	private Map<Integer, List<Integer>> activeRewardMap = new HashMap<Integer, List<Integer>>();
+
 	@JsonIgnore
 	// 支线任务保留最后一个任务id
 	private Map<Integer, QuestChallenge> challenges;
@@ -101,6 +110,69 @@ public class QuestModule extends BasePlayerModule {
 	@Deprecated
 	public void update(Quest quest) {
 //		QuestHelper.updateBase(quest);
+	}
+
+	public List<Integer> getActiveRewardList(QuestTypeEnum type) {
+		
+		List<Integer> list = activeRewardMap.get(type.ID);
+		if (list == null) {
+			list = new ArrayList<>();
+			activeRewardMap.put(type.ID, list);
+		}
+		return list;
+	}
+
+	public int checkActiveReceive(QuestTypeEnum type, int index) {
+		QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(type.ID);
+		if (index >= questPointRewardConfig.Stage.length) {
+			return ErrorMsgEnum.request_parameter_error.getId();
+		}
+		long point = player.getCurrencyModule().getCount(questPointRewardConfig.PointType);
+		List<Integer> activeRewardList = getActiveRewardList(type);
+		if (activeRewardList.contains(index)) {
+			return ErrorMsgEnum.repeat.getId();
+		}
+		int needPoint = questPointRewardConfig.Stage[index];
+		if (point < needPoint) {
+			return ErrorMsgEnum.illegal_request.getId();
+		}
+		return 0;
+	}
+
+	private int getActivePoint(QuestTypeEnum type) {
+		int id = 0;
+		if (type == QuestTypeEnum.Daily) {
+			id = Asset.DailyPoint.ID;
+		} else if (type == QuestTypeEnum.Weekly) {
+			id = Asset.WeeklyPoint.ID;
+		} else if (type == QuestTypeEnum.SevenDaysCarniva) {
+			id = Asset.SevenDaysPoint.ID;
+		}
+		return (int) player.getCurrencyModule().getCount(id);
+	}
+
+	private int[] getActivePointStage(QuestTypeEnum type) {
+		int[] pointStage = null;
+		if (type == QuestTypeEnum.Daily) {
+			pointStage = GlobalConst.DailyPoint;
+		} else if (type == QuestTypeEnum.Weekly) {
+			pointStage = GlobalConst.WeeklyPoint;
+		} else if (type == QuestTypeEnum.SevenDaysCarniva) {
+			pointStage = GlobalConst.SevenDaysPoint;
+		}
+		return pointStage;
+	}
+
+	public int[] getActivePointReward(QuestTypeEnum type, int index) {
+		int[] reward = null;
+		if (type == QuestTypeEnum.Daily) {
+			reward = GlobalConst.DailyTask[index];
+		} else if (type == QuestTypeEnum.Weekly) {
+			reward = GlobalConst.WeeklyTask[index];
+		} else if (type == QuestTypeEnum.SevenDaysCarniva) {
+			reward = GlobalConst.SevenDaysReward[index];
+		}
+		return reward;
 	}
 
 	public void refreshQuest(QuestTypeEnum type) {
@@ -285,7 +357,7 @@ public class QuestModule extends BasePlayerModule {
 					MailHelper.sendMailMultiLanguage(playerId, 208011, 208009, 208010, MailHelper.SYSTEM, reward);
 					return null;
 				} else {
-					return PlayerHelper.addResources(playerId, reward);
+					return PlayerHelper.addResources(player, reward);
 				}*/
 
 		return PlayerHelper.addReward(player, questConfig.Reward);
@@ -719,6 +791,20 @@ public class QuestModule extends BasePlayerModule {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
+		quests.forEach((k, v) -> {
+			QuestGroupInfo.Builder groupInfo = QuestGroupInfo.newBuilder();
+			groupInfo.setGroup(k);
+			v.forEach((kk, vv) -> {
+				groupInfo.addQuests(vv.toQuestInfo());
+			});
+			builder.addQuestGroups(groupInfo.build());
+		});
+		activeRewardMap.forEach((k, v) -> {
+			QuestGroupPointRewardInfo.Builder rewardInfo = QuestGroupPointRewardInfo.newBuilder();
+			rewardInfo.setGroup(k);
+			rewardInfo.addAllIndex(v);
+			builder.addQuestGroupPointRewards(rewardInfo.build());
+		});
 	}
 
 	public void refreshNewQuest(QuestTypeEnum type, boolean notify) {
@@ -776,10 +862,15 @@ public class QuestModule extends BasePlayerModule {
 		switch (event.getType()) {
 		case NewWeek: {
 			refreshQuest(QuestTypeEnum.Weekly);
+			player.getCurrencyModule().setCount(Asset.WeeklyPoint.ID, 0);
+			getActiveRewardList(QuestTypeEnum.Weekly).clear();
 			break;
 		}
 		case NewDay: {
 			refreshQuest(QuestTypeEnum.Daily);
+			player.getCurrencyModule().setCount(Asset.DailyPoint.ID, 0);
+			getActiveRewardList(QuestTypeEnum.Daily).clear();
+
 			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}

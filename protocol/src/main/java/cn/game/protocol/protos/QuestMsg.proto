@@ -29,13 +29,14 @@ message QuestReceiveResponse_20000005
 	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
 }
 
-// 领取每日任务活跃奖励
-message QuestReceiveActiveRequest_20000008
+// 领取任务活跃积分奖励
+message QuestReceiveActivePointRequest_20000008
 {
-	int32 index = 1 ;  // 0-4，一共5个奖励，领哪个
+	int32 type = 1;		// 任务类型 QuestTypeEnum的id,目前每日任务、每周任务、七日任务有这个积分奖励
+	int32 index = 2 ;  // 0-4，一共5个奖励，领哪个
 }
 
-message QuestReceiveActiveResponse_20000009
+message QuestReceiveActivePointResponse_20000009
 {
 	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
 }
@@ -60,6 +61,20 @@ message QuestInfo
 	int32   state = 2 ; 		// "任务状态,1:能看, 不能接，不能开始 2:可接 3:已接（进行中，未完成）
 	// 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
 	repeated int32 finishCount = 3 ;  // 任务相关条件完成数量统计
+}
+
+// 某组/类型 任务
+message QuestGroupInfo
+{
+	int32 group = 1;   	// QuestTypeEnum 的id，日常，周常等。
+	repeated QuestInfo quests = 2 ;  // 当前类型的任务数据
+}
+
+// 带积分奖励的任务，奖励领取情况
+message QuestGroupPointRewardInfo
+{
+	int32 group = 1;   	// QuestTypeEnum 的id，日常，周常等。
+	repeated int32 index = 2 ;  // 已经领取过的奖励索引(一般是5个奖励，0 - 4 )
 }
 
 //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻这些暂时不会用到︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻

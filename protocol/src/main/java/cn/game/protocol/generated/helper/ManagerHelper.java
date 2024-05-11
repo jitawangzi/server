@@ -31,6 +31,7 @@ import cn.game.protocol.generated.manager.ArtResourceManager;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.generated.manager.RoguelikeManager;
 import cn.game.protocol.generated.manager.HeroBookManager;
+import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.generated.manager.HeroSkillGroupManager;
 import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.RandomAttributeManager;
@@ -95,6 +96,7 @@ public class ManagerHelper {
 		DrawManager.instance().load();
 		RoguelikeManager.instance().load();
 		HeroBookManager.instance().load();
+		QuestPointRewardManager.instance().load();
 		HeroSkillGroupManager.instance().load();
 		AttributeVlalueManager.instance().load();
 		RandomAttributeManager.instance().load();

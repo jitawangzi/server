@@ -245,7 +245,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		// 货币类型
 		ResourceEnum moneyType = ResourceEnum.get(goodsConf.getItemUnitPrice());
 		// 加道具
-		PlayerHelper.addResources(playerId, goodsConf.getItemId(), totalCnt);
+		PlayerHelper.addResources(player, goodsConf.getItemId(), totalCnt);
 		long curMoneyCnt = ItemHelper.getCount(player, moneyType.getId());
 		log.info("player:[{}],buy StoreToken's goods:[{}] succ count:[{}], buy after [{}],count:[{}],consume:[{}]x[{}]",
 				playerId, goodsConf.getId(), orderCnt, moneyType.getName(), curMoneyCnt, moneyType.getName(),
@@ -428,7 +428,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		//自动/非自动使用型的道具
 		} else {
 			int itemId = getItemId(curStoreType, g.getId());
-			PlayerHelper.addResources(playerId, itemId, count);
+			PlayerHelper.addResources(player, itemId, count);
 			reward = RewardItem.valueOf(itemId, count);
 		}
 

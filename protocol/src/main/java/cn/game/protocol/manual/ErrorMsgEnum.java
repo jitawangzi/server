@@ -35,6 +35,8 @@ public enum ErrorMsgEnum{
 
 	/** 玩家数据校验错误。 */
 	player_check_error(50,"player_check_error","玩家数据校验错误。"),
+	/** 重复操作 */
+	repeat(51, "repeat", "重复操作"),
 	/** 资源不足 */
 	resource_not_enough(52,"resource_not_enough","资源不足"),
 	/** 玩家数据不存在 */
@@ -52,10 +54,10 @@ public enum ErrorMsgEnum{
 	not_open(59, "not_open", "一般是时间未到之类未开启"),
 	/** 功能尚未开启  */
 	func_not_open(60, "func_not_open", "功能尚未开启"),
-	/** 玩家名字不合法  */
-	player_name_illegal(61, "player_name_illegal", "玩家名字不合法"),
 	/** 次数不足 */
 	times_limit(62, "times_limit", "次数不足"),
+	/** 非法请求，一般是客户端不够条件进行当前操作 */
+	illegal_request(61, "illegal_request", "非法请求，一般是客户端不够条件进行当前操作"),
 
 	/** 创建角色名字重复 */
 	player_name_repeat(100,"player_name_repeat","创建角色名字重复"),
@@ -67,8 +69,8 @@ public enum ErrorMsgEnum{
 	BattleLevel_pre(106,"BattleLevel_pre","前置关卡没有通关"),
 	/** 购买超上限 */
 	buy_over_limit(108,"buy_over_limit","购买超上限"),
-	/** 非法请求 */
-	illegal_request(109,"illegal_request","非法请求"),
+	/** 玩家名字不合法  */
+	player_name_illegal(109, "player_name_illegal", "玩家名字不合法"),
 	/** 奖励已领取 */
 	reward_have_received(110,"reward_have_received","奖励已领取"),
 	/** 通行证未启用 */
@@ -99,8 +101,6 @@ public enum ErrorMsgEnum{
 	black_friend_not_send(131,"black_friend_not_send","不能跟已经被拉黑的好友说话"),
 	/** 今日购买次数已用完 */
 	buy_power_count_not(132,"buy_power_count_not","今日购买次数已用完"),
-	/** 重复操作 */
-	repeat(134,"repeat","重复操作"),
 	/** 初始化异常 */
 	init_error(135,"init_error","初始化异常"),
 	/** 玩家等级不足 */

@@ -432,7 +432,7 @@ public class ChapterHandler extends BaseHandler {
 //							starRewards.add(starLevelReward.get(star));
 //						}
 //					}
-//					resp.addAllStarRewards(PlayerHelper.addResources(playerId, starRewards));
+//					resp.addAllStarRewards(PlayerHelper.addResources(player, starRewards));
 //				}
 //				
 //				player.handleEvent(new GameEvent(EventTypeEnum.Level, player, attackingId, 5, 5));
@@ -440,7 +440,7 @@ public class ChapterHandler extends BaseHandler {
 ////				int energyExpend = levelConfig.getEnergyExpend();
 ////				if (energyExpend > 0) {
 ////					int lose = energyExpend / 2;
-////					PlayerHelper.addResources(playerId, ResourceEnum.Brawn.getId()0, energyExpend - lose);
+////					PlayerHelper.addResources(player, ResourceEnum.Brawn.getId()0, energyExpend - lose);
 ////					apCost = lose;
 ////				}
 //			}
@@ -482,7 +482,7 @@ public class ChapterHandler extends BaseHandler {
 		int playerExp = BattleHelper.calcPlayerExp(level, apCost);
 		PlayerHelper.addExp(player, playerExp);
 		int coin = BattleHelper.calcCoin(level, apCost);
-		PlayerHelper.addResources(playerId, ResourceEnum.Coin.getId(), coin);
+		PlayerHelper.addResources(player, ResourceEnum.Coin.getId(), coin);
 	
 		resp.setCoin(coin);
 		resp.setPlayerExp(playerExp);

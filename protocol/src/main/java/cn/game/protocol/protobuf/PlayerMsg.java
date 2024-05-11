@@ -22195,6 +22195,94 @@ public final class PlayerMsg {
      * <code>.Protos.PatrolInfo patrol = 51;</code>
      */
     cn.game.protocol.protobuf.BattleMsg.PatrolInfoOrBuilder getPatrolOrBuilder();
+
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> 
+        getQuestGroupsList();
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo getQuestGroups(int index);
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    int getQuestGroupsCount();
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> 
+        getQuestGroupsOrBuilderList();
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder getQuestGroupsOrBuilder(
+        int index);
+
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> 
+        getQuestGroupPointRewardsList();
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo getQuestGroupPointRewards(int index);
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    int getQuestGroupPointRewardsCount();
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder> 
+        getQuestGroupPointRewardsOrBuilderList();
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder getQuestGroupPointRewardsOrBuilder(
+        int index);
   }
   /**
    * <pre>
@@ -22224,6 +22312,8 @@ public final class PlayerMsg {
       battles_ = java.util.Collections.emptyList();
       monthCards_ = java.util.Collections.emptyList();
       chapterPacks_ = emptyIntList();
+      questGroups_ = java.util.Collections.emptyList();
+      questGroupPointRewards_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -22487,6 +22577,24 @@ public final class PlayerMsg {
 
               break;
             }
+            case 442: {
+              if (!((mutable_bitField0_ & 0x00010000) != 0)) {
+                questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>();
+                mutable_bitField0_ |= 0x00010000;
+              }
+              questGroups_.add(
+                  input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 450: {
+              if (!((mutable_bitField0_ & 0x00020000) != 0)) {
+                questGroupPointRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo>();
+                mutable_bitField0_ |= 0x00020000;
+              }
+              questGroupPointRewards_.add(
+                  input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -22531,6 +22639,12 @@ public final class PlayerMsg {
         }
         if (((mutable_bitField0_ & 0x00008000) != 0)) {
           chapterPacks_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x00010000) != 0)) {
+          questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+        }
+        if (((mutable_bitField0_ & 0x00020000) != 0)) {
+          questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -23908,6 +24022,126 @@ public final class PlayerMsg {
       return getPatrol();
     }
 
+    public static final int QUESTGROUPS_FIELD_NUMBER = 55;
+    private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> questGroups_;
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> getQuestGroupsList() {
+      return questGroups_;
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> 
+        getQuestGroupsOrBuilderList() {
+      return questGroups_;
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    @java.lang.Override
+    public int getQuestGroupsCount() {
+      return questGroups_.size();
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo getQuestGroups(int index) {
+      return questGroups_.get(index);
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder getQuestGroupsOrBuilder(
+        int index) {
+      return questGroups_.get(index);
+    }
+
+    public static final int QUESTGROUPPOINTREWARDS_FIELD_NUMBER = 56;
+    private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> questGroupPointRewards_;
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> getQuestGroupPointRewardsList() {
+      return questGroupPointRewards_;
+    }
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder> 
+        getQuestGroupPointRewardsOrBuilderList() {
+      return questGroupPointRewards_;
+    }
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    @java.lang.Override
+    public int getQuestGroupPointRewardsCount() {
+      return questGroupPointRewards_.size();
+    }
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo getQuestGroupPointRewards(int index) {
+      return questGroupPointRewards_.get(index);
+    }
+    /**
+     * <pre>
+     * 任务积分奖励领取记录
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder getQuestGroupPointRewardsOrBuilder(
+        int index) {
+      return questGroupPointRewards_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -24007,6 +24241,12 @@ public final class PlayerMsg {
       }
       if (patrol_ != null) {
         output.writeMessage(51, getPatrol());
+      }
+      for (int i = 0; i < questGroups_.size(); i++) {
+        output.writeMessage(55, questGroups_.get(i));
+      }
+      for (int i = 0; i < questGroupPointRewards_.size(); i++) {
+        output.writeMessage(56, questGroupPointRewards_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -24146,6 +24386,14 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(51, getPatrol());
       }
+      for (int i = 0; i < questGroups_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(55, questGroups_.get(i));
+      }
+      for (int i = 0; i < questGroupPointRewards_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(56, questGroupPointRewards_.get(i));
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -24212,6 +24460,10 @@ public final class PlayerMsg {
         if (!getPatrol()
             .equals(other.getPatrol())) return false;
       }
+      if (!getQuestGroupsList()
+          .equals(other.getQuestGroupsList())) return false;
+      if (!getQuestGroupPointRewardsList()
+          .equals(other.getQuestGroupPointRewardsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -24302,6 +24554,14 @@ public final class PlayerMsg {
       if (hasPatrol()) {
         hash = (37 * hash) + PATROL_FIELD_NUMBER;
         hash = (53 * hash) + getPatrol().hashCode();
+      }
+      if (getQuestGroupsCount() > 0) {
+        hash = (37 * hash) + QUESTGROUPS_FIELD_NUMBER;
+        hash = (53 * hash) + getQuestGroupsList().hashCode();
+      }
+      if (getQuestGroupPointRewardsCount() > 0) {
+        hash = (37 * hash) + QUESTGROUPPOINTREWARDS_FIELD_NUMBER;
+        hash = (53 * hash) + getQuestGroupPointRewardsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -24486,6 +24746,8 @@ public final class PlayerMsg {
           getEquipPartsFieldBuilder();
           getBattlesFieldBuilder();
           getMonthCardsFieldBuilder();
+          getQuestGroupsFieldBuilder();
+          getQuestGroupPointRewardsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -24574,6 +24836,18 @@ public final class PlayerMsg {
         } else {
           patrol_ = null;
           patrolBuilder_ = null;
+        }
+        if (questGroupsBuilder_ == null) {
+          questGroups_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00010000);
+        } else {
+          questGroupsBuilder_.clear();
+        }
+        if (questGroupPointRewardsBuilder_ == null) {
+          questGroupPointRewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00020000);
+        } else {
+          questGroupPointRewardsBuilder_.clear();
         }
         return this;
       }
@@ -24716,6 +24990,24 @@ public final class PlayerMsg {
           result.patrol_ = patrol_;
         } else {
           result.patrol_ = patrolBuilder_.build();
+        }
+        if (questGroupsBuilder_ == null) {
+          if (((bitField0_ & 0x00010000) != 0)) {
+            questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+            bitField0_ = (bitField0_ & ~0x00010000);
+          }
+          result.questGroups_ = questGroups_;
+        } else {
+          result.questGroups_ = questGroupsBuilder_.build();
+        }
+        if (questGroupPointRewardsBuilder_ == null) {
+          if (((bitField0_ & 0x00020000) != 0)) {
+            questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
+            bitField0_ = (bitField0_ & ~0x00020000);
+          }
+          result.questGroupPointRewards_ = questGroupPointRewards_;
+        } else {
+          result.questGroupPointRewards_ = questGroupPointRewardsBuilder_.build();
         }
         onBuilt();
         return result;
@@ -25036,6 +25328,58 @@ public final class PlayerMsg {
         }
         if (other.hasPatrol()) {
           mergePatrol(other.getPatrol());
+        }
+        if (questGroupsBuilder_ == null) {
+          if (!other.questGroups_.isEmpty()) {
+            if (questGroups_.isEmpty()) {
+              questGroups_ = other.questGroups_;
+              bitField0_ = (bitField0_ & ~0x00010000);
+            } else {
+              ensureQuestGroupsIsMutable();
+              questGroups_.addAll(other.questGroups_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.questGroups_.isEmpty()) {
+            if (questGroupsBuilder_.isEmpty()) {
+              questGroupsBuilder_.dispose();
+              questGroupsBuilder_ = null;
+              questGroups_ = other.questGroups_;
+              bitField0_ = (bitField0_ & ~0x00010000);
+              questGroupsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getQuestGroupsFieldBuilder() : null;
+            } else {
+              questGroupsBuilder_.addAllMessages(other.questGroups_);
+            }
+          }
+        }
+        if (questGroupPointRewardsBuilder_ == null) {
+          if (!other.questGroupPointRewards_.isEmpty()) {
+            if (questGroupPointRewards_.isEmpty()) {
+              questGroupPointRewards_ = other.questGroupPointRewards_;
+              bitField0_ = (bitField0_ & ~0x00020000);
+            } else {
+              ensureQuestGroupPointRewardsIsMutable();
+              questGroupPointRewards_.addAll(other.questGroupPointRewards_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.questGroupPointRewards_.isEmpty()) {
+            if (questGroupPointRewardsBuilder_.isEmpty()) {
+              questGroupPointRewardsBuilder_.dispose();
+              questGroupPointRewardsBuilder_ = null;
+              questGroupPointRewards_ = other.questGroupPointRewards_;
+              bitField0_ = (bitField0_ & ~0x00020000);
+              questGroupPointRewardsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getQuestGroupPointRewardsFieldBuilder() : null;
+            } else {
+              questGroupPointRewardsBuilder_.addAllMessages(other.questGroupPointRewards_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -29521,6 +29865,630 @@ public final class PlayerMsg {
         }
         return patrolBuilder_;
       }
+
+      private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> questGroups_ =
+        java.util.Collections.emptyList();
+      private void ensureQuestGroupsIsMutable() {
+        if (!((bitField0_ & 0x00010000) != 0)) {
+          questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>(questGroups_);
+          bitField0_ |= 0x00010000;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> questGroupsBuilder_;
+
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> getQuestGroupsList() {
+        if (questGroupsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(questGroups_);
+        } else {
+          return questGroupsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public int getQuestGroupsCount() {
+        if (questGroupsBuilder_ == null) {
+          return questGroups_.size();
+        } else {
+          return questGroupsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo getQuestGroups(int index) {
+        if (questGroupsBuilder_ == null) {
+          return questGroups_.get(index);
+        } else {
+          return questGroupsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder setQuestGroups(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo value) {
+        if (questGroupsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupsIsMutable();
+          questGroups_.set(index, value);
+          onChanged();
+        } else {
+          questGroupsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder setQuestGroups(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder builderForValue) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          questGroups_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          questGroupsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder addQuestGroups(cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo value) {
+        if (questGroupsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupsIsMutable();
+          questGroups_.add(value);
+          onChanged();
+        } else {
+          questGroupsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder addQuestGroups(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo value) {
+        if (questGroupsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupsIsMutable();
+          questGroups_.add(index, value);
+          onChanged();
+        } else {
+          questGroupsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder addQuestGroups(
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder builderForValue) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          questGroups_.add(builderForValue.build());
+          onChanged();
+        } else {
+          questGroupsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder addQuestGroups(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder builderForValue) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          questGroups_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          questGroupsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder addAllQuestGroups(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> values) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, questGroups_);
+          onChanged();
+        } else {
+          questGroupsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder clearQuestGroups() {
+        if (questGroupsBuilder_ == null) {
+          questGroups_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00010000);
+          onChanged();
+        } else {
+          questGroupsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public Builder removeQuestGroups(int index) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          questGroups_.remove(index);
+          onChanged();
+        } else {
+          questGroupsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder getQuestGroupsBuilder(
+          int index) {
+        return getQuestGroupsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder getQuestGroupsOrBuilder(
+          int index) {
+        if (questGroupsBuilder_ == null) {
+          return questGroups_.get(index);  } else {
+          return questGroupsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> 
+           getQuestGroupsOrBuilderList() {
+        if (questGroupsBuilder_ != null) {
+          return questGroupsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(questGroups_);
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder addQuestGroupsBuilder() {
+        return getQuestGroupsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder addQuestGroupsBuilder(
+          int index) {
+        return getQuestGroupsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 55;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder> 
+           getQuestGroupsBuilderList() {
+        return getQuestGroupsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> 
+          getQuestGroupsFieldBuilder() {
+        if (questGroupsBuilder_ == null) {
+          questGroupsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder>(
+                  questGroups_,
+                  ((bitField0_ & 0x00010000) != 0),
+                  getParentForChildren(),
+                  isClean());
+          questGroups_ = null;
+        }
+        return questGroupsBuilder_;
+      }
+
+      private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> questGroupPointRewards_ =
+        java.util.Collections.emptyList();
+      private void ensureQuestGroupPointRewardsIsMutable() {
+        if (!((bitField0_ & 0x00020000) != 0)) {
+          questGroupPointRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo>(questGroupPointRewards_);
+          bitField0_ |= 0x00020000;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder> questGroupPointRewardsBuilder_;
+
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> getQuestGroupPointRewardsList() {
+        if (questGroupPointRewardsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(questGroupPointRewards_);
+        } else {
+          return questGroupPointRewardsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public int getQuestGroupPointRewardsCount() {
+        if (questGroupPointRewardsBuilder_ == null) {
+          return questGroupPointRewards_.size();
+        } else {
+          return questGroupPointRewardsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo getQuestGroupPointRewards(int index) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          return questGroupPointRewards_.get(index);
+        } else {
+          return questGroupPointRewardsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder setQuestGroupPointRewards(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo value) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupPointRewardsIsMutable();
+          questGroupPointRewards_.set(index, value);
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder setQuestGroupPointRewards(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder builderForValue) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          ensureQuestGroupPointRewardsIsMutable();
+          questGroupPointRewards_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder addQuestGroupPointRewards(cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo value) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupPointRewardsIsMutable();
+          questGroupPointRewards_.add(value);
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder addQuestGroupPointRewards(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo value) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupPointRewardsIsMutable();
+          questGroupPointRewards_.add(index, value);
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder addQuestGroupPointRewards(
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder builderForValue) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          ensureQuestGroupPointRewardsIsMutable();
+          questGroupPointRewards_.add(builderForValue.build());
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder addQuestGroupPointRewards(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder builderForValue) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          ensureQuestGroupPointRewardsIsMutable();
+          questGroupPointRewards_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder addAllQuestGroupPointRewards(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> values) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          ensureQuestGroupPointRewardsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, questGroupPointRewards_);
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder clearQuestGroupPointRewards() {
+        if (questGroupPointRewardsBuilder_ == null) {
+          questGroupPointRewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00020000);
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public Builder removeQuestGroupPointRewards(int index) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          ensureQuestGroupPointRewardsIsMutable();
+          questGroupPointRewards_.remove(index);
+          onChanged();
+        } else {
+          questGroupPointRewardsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder getQuestGroupPointRewardsBuilder(
+          int index) {
+        return getQuestGroupPointRewardsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder getQuestGroupPointRewardsOrBuilder(
+          int index) {
+        if (questGroupPointRewardsBuilder_ == null) {
+          return questGroupPointRewards_.get(index);  } else {
+          return questGroupPointRewardsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder> 
+           getQuestGroupPointRewardsOrBuilderList() {
+        if (questGroupPointRewardsBuilder_ != null) {
+          return questGroupPointRewardsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(questGroupPointRewards_);
+        }
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder addQuestGroupPointRewardsBuilder() {
+        return getQuestGroupPointRewardsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder addQuestGroupPointRewardsBuilder(
+          int index) {
+        return getQuestGroupPointRewardsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 任务积分奖励领取记录
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupPointRewardInfo questGroupPointRewards = 56;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder> 
+           getQuestGroupPointRewardsBuilderList() {
+        return getQuestGroupPointRewardsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder> 
+          getQuestGroupPointRewardsFieldBuilder() {
+        if (questGroupPointRewardsBuilder_ == null) {
+          questGroupPointRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder>(
+                  questGroupPointRewards_,
+                  ((bitField0_ & 0x00020000) != 0),
+                  getParentForChildren(),
+                  isClean());
+          questGroupPointRewards_ = null;
+        }
+        return questGroupPointRewardsBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -29785,84 +30753,87 @@ public final class PlayerMsg {
     java.lang.String[] descriptorData = {
       "\n\017PlayerMsg.proto\022\006Protos\032\017RewardMsg.pro" +
       "to\032\rBaseMsg.proto\032\rShopMsg.proto\032\017Battle" +
-      "Msg.proto\"U\n\033PlayerLoginRequest_01000001" +
-      "\022\021\n\tsessionId\030\001 \001(\t\022\021\n\treconnect\030\002 \001(\010\022\020" +
-      "\n\010verstion\030\003 \001(\t\"d\n\034PlayerLoginResponse_" +
-      "01000002\022#\n\004info\030\001 \001(\0132\025.Protos.PlayerAl" +
-      "lInfo\022\021\n\treconnect\030\002 \001(\010\022\014\n\004time\030\003 \001(\t\"\033" +
-      "\n\031PlayerLogoutPush_01100030\"*\n\032PlayerNam" +
-      "eRequest_01000011\022\014\n\004name\030\001 \001(\t\"\035\n\033Playe" +
-      "rNameResponse_01000012\"*\n\032PlayerHeadRequ" +
-      "est_01000013\022\014\n\004head\030\001 \001(\005\"\035\n\033PlayerHead" +
-      "Response_01000014\"4\n\037PlayerHeadFrameRequ" +
-      "est_01000015\022\021\n\theadFrame\030\001 \001(\005\"\"\n Playe" +
-      "rHeadFrameResponse_01000016\"-\n\034PlayerGen" +
-      "derRequest_01000017\022\r\n\005isMan\030\001 \001(\010\"\037\n\035Pl" +
-      "ayerGenderResponse_01000018\"E\n\036PlayerRec" +
-      "onnecRequest_01000065\022\021\n\tsessionId\030\001 \001(\t" +
-      "\022\020\n\010playerId\030\002 \001(\r\"Z\n\037PlayerReconnecResp" +
-      "onse_01000066\022)\n\nplayerInfo\030\001 \001(\0132\025.Prot" +
-      "os.PlayerAllInfo\022\014\n\004time\030\002 \001(\t\"!\n\037Player" +
-      "HeartbeatRequest_01000005\"0\n PlayerHeart" +
-      "beatResponse_01000006\022\014\n\004time\030\001 \001(\t\"4\n\037P" +
-      "layerBriefInfoRequest_01000007\022\021\n\tplayer" +
-      "Ids\030\001 \003(\t\"M\n PlayerBriefInfoResponse_010" +
-      "00008\022)\n\007players\030\001 \003(\0132\030.Protos.SimplePl" +
-      "ayerInfo\"L\n$PlayerBriefInfoOtherRequest_" +
-      "01000009\022\021\n\tplayerIds\030\001 \003(\t\022\021\n\tserverIds" +
-      "\030\002 \003(\t\"R\n%PlayerBriefInfoOtherResponse_0" +
-      "100000a\022)\n\007players\030\001 \003(\0132\030.Protos.Simple" +
-      "PlayerInfo\"@\n\032PlayerShowRequest_01000039" +
-      "\022\020\n\010playerId\030\001 \001(\t\022\020\n\010serverId\030\002 \001(\t\"E\n\033" +
-      "PlayerShowResponse_0100003a\022&\n\006player\030\001 " +
-      "\001(\0132\026.Protos.PlayerShowInfo\"1\n\035PlayerAlc" +
-      "hemyRequest_01000040\022\020\n\010configId\030\001 \001(\r\" " +
-      "\n\036PlayerAlchemyResponse_01000041\"(\n\030Play" +
-      "erResetPush_01100016\022\014\n\004type\030\001 \001(\005\")\n\030Pl" +
-      "ayerErrorPush_01000099\022\r\n\005error\030\001 \001(\t\"4\n" +
-      "\027ItemUseRequest_01000050\022\n\n\002id\030\001 \001(\r\022\r\n\005" +
-      "param\030\002 \001(\r\">\n\030ItemUseResponse_01000051\022" +
-      "\"\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo\".\n\013A" +
-      "lchemyInfo\022\020\n\010configId\030\001 \001(\r\022\r\n\005level\030\002 " +
-      "\001(\r\"E\n\033PlayerCloudBoxPush_01100040\022&\n\010cl" +
-      "oudBox\030\001 \001(\0132\024.Protos.CloudBoxInfo\" \n\036Pl" +
-      "ayerCloudBoxRequest_01000042\"F\n\037PlayerCl" +
-      "oudBoxResponse_01000043\022#\n\007rewards\030\001 \003(\013" +
-      "2\022.Protos.RewardInfo\"0\n\014CloudBoxInfo\022 \n\005" +
-      "items\030\005 \003(\0132\021.Protos.GoodsInfo\"k\n\nPlayer" +
-      "Info\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030" +
-      "\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023" +
-      "\n\013offlineTime\030\026 \001(\t\"\216\t\n\rPlayerAllInfo\022\"\n" +
-      "\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006ass" +
-      "ets\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsE" +
-      "ntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Play" +
-      "erAllInfo.AssetRecoverEntry\0221\n\006levels\030\004 " +
-      "\003(\0132!.Protos.PlayerAllInfo.LevelsEntry\022\037" +
-      "\n\005items\030\005 \003(\0132\020.Protos.ItemInfo\022)\n\010fashi" +
-      "ons\030\006 \003(\0132\027.Protos.HeroFashionInfo\022\037\n\005he" +
-      "ros\030\007 \003(\0132\020.Protos.HeroInfo\022%\n\006swords\030\010 " +
-      "\003(\0132\025.Protos.HeroSwordInfo\022\024\n\014heroSwordU" +
-      "id\030\t \001(\t\022\035\n\004gems\030\n \003(\0132\017.Protos.GemInfo\022" +
-      "!\n\006equips\030\013 \003(\0132\021.Protos.EquipInfo\022)\n\neq" +
-      "uipParts\030\014 \003(\0132\025.Protos.EquipPartInfo\0225\n" +
-      "\010alchemys\030\016 \003(\0132#.Protos.PlayerAllInfo.A" +
-      "lchemysEntry\0223\n\007dragons\030\020 \003(\0132\".Protos.P" +
-      "layerAllInfo.DragonsEntry\022=\n\014dragonSkill" +
-      "s\030\021 \003(\0132\'.Protos.PlayerAllInfo.DragonSki" +
-      "llsEntry\022#\n\007battles\030\036 \003(\0132\022.Protos.Battl" +
-      "eInfo\022\026\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCa" +
-      "rds\030( \003(\0132\026.Protos.MonthCardProto\022\024\n\014cha" +
-      "pterPacks\030) \003(\r\022&\n\010cloudBox\0302 \001(\0132\024.Prot" +
-      "os.CloudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos" +
-      ".PatrolInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022" +
-      "\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022" +
-      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Level" +
-      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/" +
-      "\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
-      "\001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
-      "value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003" +
-      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game." +
-      "protocol.protobufb\006proto3"
+      "Msg.proto\032\016QuestMsg.proto\"U\n\033PlayerLogin" +
+      "Request_01000001\022\021\n\tsessionId\030\001 \001(\t\022\021\n\tr" +
+      "econnect\030\002 \001(\010\022\020\n\010verstion\030\003 \001(\t\"d\n\034Play" +
+      "erLoginResponse_01000002\022#\n\004info\030\001 \001(\0132\025" +
+      ".Protos.PlayerAllInfo\022\021\n\treconnect\030\002 \001(\010" +
+      "\022\014\n\004time\030\003 \001(\t\"\033\n\031PlayerLogoutPush_01100" +
+      "030\"*\n\032PlayerNameRequest_01000011\022\014\n\004nam" +
+      "e\030\001 \001(\t\"\035\n\033PlayerNameResponse_01000012\"*" +
+      "\n\032PlayerHeadRequest_01000013\022\014\n\004head\030\001 \001" +
+      "(\005\"\035\n\033PlayerHeadResponse_01000014\"4\n\037Pla" +
+      "yerHeadFrameRequest_01000015\022\021\n\theadFram" +
+      "e\030\001 \001(\005\"\"\n PlayerHeadFrameResponse_01000" +
+      "016\"-\n\034PlayerGenderRequest_01000017\022\r\n\005i" +
+      "sMan\030\001 \001(\010\"\037\n\035PlayerGenderResponse_01000" +
+      "018\"E\n\036PlayerReconnecRequest_01000065\022\021\n" +
+      "\tsessionId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\r\"Z\n\037Pl" +
+      "ayerReconnecResponse_01000066\022)\n\nplayerI" +
+      "nfo\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\014\n\004time" +
+      "\030\002 \001(\t\"!\n\037PlayerHeartbeatRequest_0100000" +
+      "5\"0\n PlayerHeartbeatResponse_01000006\022\014\n" +
+      "\004time\030\001 \001(\t\"4\n\037PlayerBriefInfoRequest_01" +
+      "000007\022\021\n\tplayerIds\030\001 \003(\t\"M\n PlayerBrief" +
+      "InfoResponse_01000008\022)\n\007players\030\001 \003(\0132\030" +
+      ".Protos.SimplePlayerInfo\"L\n$PlayerBriefI" +
+      "nfoOtherRequest_01000009\022\021\n\tplayerIds\030\001 " +
+      "\003(\t\022\021\n\tserverIds\030\002 \003(\t\"R\n%PlayerBriefInf" +
+      "oOtherResponse_0100000a\022)\n\007players\030\001 \003(\013" +
+      "2\030.Protos.SimplePlayerInfo\"@\n\032PlayerShow" +
+      "Request_01000039\022\020\n\010playerId\030\001 \001(\t\022\020\n\010se" +
+      "rverId\030\002 \001(\t\"E\n\033PlayerShowResponse_01000" +
+      "03a\022&\n\006player\030\001 \001(\0132\026.Protos.PlayerShowI" +
+      "nfo\"1\n\035PlayerAlchemyRequest_01000040\022\020\n\010" +
+      "configId\030\001 \001(\r\" \n\036PlayerAlchemyResponse_" +
+      "01000041\"(\n\030PlayerResetPush_01100016\022\014\n\004" +
+      "type\030\001 \001(\005\")\n\030PlayerErrorPush_01000099\022\r" +
+      "\n\005error\030\001 \001(\t\"4\n\027ItemUseRequest_01000050" +
+      "\022\n\n\002id\030\001 \001(\r\022\r\n\005param\030\002 \001(\r\">\n\030ItemUseRe" +
+      "sponse_01000051\022\"\n\006reward\030\001 \003(\0132\022.Protos" +
+      ".RewardInfo\".\n\013AlchemyInfo\022\020\n\010configId\030\001" +
+      " \001(\r\022\r\n\005level\030\002 \001(\r\"E\n\033PlayerCloudBoxPus" +
+      "h_01100040\022&\n\010cloudBox\030\001 \001(\0132\024.Protos.Cl" +
+      "oudBoxInfo\" \n\036PlayerCloudBoxRequest_0100" +
+      "0042\"F\n\037PlayerCloudBoxResponse_01000043\022" +
+      "#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"0\n\014" +
+      "CloudBoxInfo\022 \n\005items\030\005 \003(\0132\021.Protos.Goo" +
+      "dsInfo\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name" +
+      "\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\th" +
+      "eadFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\376\t\n\r" +
+      "PlayerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Protos.P" +
+      "layerInfo\0221\n\006assets\030\002 \003(\0132!.Protos.Playe" +
+      "rAllInfo.AssetsEntry\022=\n\014assetRecover\030\003 \003" +
+      "(\0132\'.Protos.PlayerAllInfo.AssetRecoverEn" +
+      "try\0221\n\006levels\030\004 \003(\0132!.Protos.PlayerAllIn" +
+      "fo.LevelsEntry\022\037\n\005items\030\005 \003(\0132\020.Protos.I" +
+      "temInfo\022)\n\010fashions\030\006 \003(\0132\027.Protos.HeroF" +
+      "ashionInfo\022\037\n\005heros\030\007 \003(\0132\020.Protos.HeroI" +
+      "nfo\022%\n\006swords\030\010 \003(\0132\025.Protos.HeroSwordIn" +
+      "fo\022\024\n\014heroSwordUid\030\t \001(\t\022\035\n\004gems\030\n \003(\0132\017" +
+      ".Protos.GemInfo\022!\n\006equips\030\013 \003(\0132\021.Protos" +
+      ".EquipInfo\022)\n\nequipParts\030\014 \003(\0132\025.Protos." +
+      "EquipPartInfo\0225\n\010alchemys\030\016 \003(\0132#.Protos" +
+      ".PlayerAllInfo.AlchemysEntry\0223\n\007dragons\030" +
+      "\020 \003(\0132\".Protos.PlayerAllInfo.DragonsEntr" +
+      "y\022=\n\014dragonSkills\030\021 \003(\0132\'.Protos.PlayerA" +
+      "llInfo.DragonSkillsEntry\022#\n\007battles\030\036 \003(" +
+      "\0132\022.Protos.BattleInfo\022\026\n\016freeRougeTimes\030" +
+      "\037 \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos.Month" +
+      "CardProto\022\024\n\014chapterPacks\030) \003(\r\022&\n\010cloud" +
+      "Box\0302 \001(\0132\024.Protos.CloudBoxInfo\022\"\n\006patro" +
+      "l\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013questGrou" +
+      "ps\0307 \003(\0132\026.Protos.QuestGroupInfo\022A\n\026ques" +
+      "tGroupPointRewards\0308 \003(\0132!.Protos.QuestG" +
+      "roupPointRewardInfo\032-\n\013AssetsEntry\022\013\n\003ke" +
+      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecov" +
+      "erEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032" +
+      "-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001" +
+      "(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
+      "value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001" +
+      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsE" +
+      "ntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031" +
+      "cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -29871,6 +30842,7 @@ public final class PlayerMsg {
           cn.game.protocol.protobuf.BaseMsg.getDescriptor(),
           cn.game.protocol.protobuf.ShopMsg.getDescriptor(),
           cn.game.protocol.protobuf.BattleMsg.getDescriptor(),
+          cn.game.protocol.protobuf.QuestMsg.getDescriptor(),
         });
     internal_static_Protos_PlayerLoginRequest_01000001_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -30075,7 +31047,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "ChapterPacks", "CloudBox", "Patrol", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "ChapterPacks", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
@@ -30116,6 +31088,7 @@ public final class PlayerMsg {
     cn.game.protocol.protobuf.BaseMsg.getDescriptor();
     cn.game.protocol.protobuf.ShopMsg.getDescriptor();
     cn.game.protocol.protobuf.BattleMsg.getDescriptor();
+    cn.game.protocol.protobuf.QuestMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

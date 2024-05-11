@@ -70,7 +70,7 @@ public class BattleMainlineImpl implements IBattleHandler {
 ////				int reward = Rnd.randomKey(monsterReward);
 ////				resp.addAllDungeonRewards(PbBuilder.buildRewardInfo(PlayerHelper.addRewards(playerId, reward)));
 //				
-//				List<RewardItem> addResources = PlayerHelper.addResources(playerId, monsterReward);
+//				List<RewardItem> addResources = PlayerHelper.addResources(player, monsterReward);
 //				resp.addAllDungeonRewards(PbBuilder.buildRewardInfo(addResources));
 //				
 //				//在主线中战斗时，每场战斗胜利时，每名上阵角色好感度+1，每日有上限，具体由配置决定

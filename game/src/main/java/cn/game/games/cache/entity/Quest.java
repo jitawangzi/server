@@ -15,6 +15,7 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.QuestMsg.QuestConditionCompletePush_20500001;
+import cn.game.protocol.protobuf.QuestMsg.QuestInfo;
 
 public class Quest implements Serializable, DbEntity {
 
@@ -299,4 +300,23 @@ public class Quest implements Serializable, DbEntity {
 		}
 	}
 
+	public QuestInfo toQuestInfo() {
+
+		QuestInfo.Builder questInfo = QuestInfo.newBuilder();
+		questInfo.setId(id);
+		if (conditionContainer != null) {
+			List<Condition> requires = conditionContainer.getRequires();
+			if (requires != null) {
+				for (int i = 0; i < requires.size(); i++) {
+					long count = requires.get(i).getFinishCount();
+					if (count >= Integer.MAX_VALUE) {
+						count = Integer.MAX_VALUE;
+					}
+					questInfo.addFinishCount((int) count);
+				}
+			}
+		}
+		questInfo.setState(getState());
+		return questInfo.build();
+	}
 }

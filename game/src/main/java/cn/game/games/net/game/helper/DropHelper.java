@@ -76,14 +76,14 @@ public class DropHelper {
 		List<RewardItem> drop = DropHelper.drop(dropId);
 		Set<Pair<Integer, Integer>> rewards = drop.stream()
 				.map(item -> new Pair<Integer, Integer>(item.getId(), item.getCount())).collect(toSet());
-		return PlayerHelper.addResources(player.getData().getPlayerId(), rewards);
+		return PlayerHelper.addResources(player, rewards);
 	}
 
 	public static List<RewardInfo> drop(Player player, List<Integer> dropIds) {
 		List<RewardItem> drop = DropHelper.drop(dropIds);
 		Set<Pair<Integer, Integer>> rewards = drop.stream()
 				.map(item -> new Pair<Integer, Integer>(item.getId(), item.getCount())).collect(toSet());
-		return PlayerHelper.addResources(player.getData().getPlayerId(), rewards);
+		return PlayerHelper.addResources(player, rewards);
 	}
 
 }

@@ -17,11 +17,11 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
-import cn.game.protocol.generated.config.MissionDailyConfig;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
-import cn.game.protocol.generated.manager.MissionDailyManager;
+import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.QuestMsg.QuestAcceptRequest_20000026;
@@ -36,8 +36,8 @@ import cn.game.protocol.protobuf.QuestMsg.QuestChooseRewardRequest_20000033;
 import cn.game.protocol.protobuf.QuestMsg.QuestChooseRewardResponse_20000034;
 import cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001;
 import cn.game.protocol.protobuf.QuestMsg.QuestListResponse_20000002;
-import cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008;
-import cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveResponse_20000009;
+import cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008;
+import cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointResponse_20000009;
 import cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004;
 import cn.game.protocol.protobuf.QuestMsg.QuestReceiveResponse_20000005;
 import cn.game.protocol.protobuf.QuestMsg.QuestUpdateRequest_20000030;
@@ -58,7 +58,7 @@ public class QuestHandler extends BaseHandler {
 		putInvoker(PbProtocol.QuestListRequest_20000001, this::list);
 		putInvoker(PbProtocol.QuestReceiveRequest_20000004, this::receive);
 		putInvoker(PbProtocol.QuestChooseRewardRequest_20000033, this::chooseReward);
-		putInvoker(PbProtocol.QuestReceiveActiveRequest_20000008, this::activeReceive);
+		putInvoker(PbProtocol.QuestReceiveActivePointRequest_20000008, this::activeReceive);
 		putInvoker(PbProtocol.QuestChallengeGroupRequest_20000020, this::group);
 		putInvoker(PbProtocol.QuestChallengeGroupDetailRequest_20000022, this::groupDetail);
 		putInvoker(PbProtocol.QuestAcceptRequest_20000026, this::accept);
@@ -78,15 +78,11 @@ public class QuestHandler extends BaseHandler {
 		// 是否前端触发
 		QuestConfig missionConfig = QuestHelper.getQuestConfig(id);
 		/*		if (!missionConfig.getIsClentUpdate()) {
-<<<<<<< HEAD
 					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-=======
-					client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
->>>>>>> branch 'dev' of http://10.1.10.103:3800/project-server/server.git
 					return;
 				}*/
-		QuestModule questOp = player.getModule(QuestModule.class);
-		Quest quest = questOp.get(id);
+		QuestModule questModule = player.getModule(QuestModule.class);
+		Quest quest = questModule.get(id);
 		if (quest == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
@@ -105,8 +101,8 @@ public class QuestHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		int group = req.getGroup();
-		QuestModule questOp = player.getModule(QuestModule.class);
-		boolean hasBranchGroup = questOp.hasBranchGroup(group);
+		QuestModule questModule = player.getModule(QuestModule.class);
+		boolean hasBranchGroup = questModule.hasBranchGroup(group);
 		if (!hasBranchGroup) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
@@ -126,20 +122,20 @@ public class QuestHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		int id = req.getId();
-		QuestModule questOp = player.getModule(QuestModule.class);
-		Quest quest = questOp.get(id);
+		QuestModule questModule = player.getModule(QuestModule.class);
+		Quest quest = questModule.get(id);
 		if (quest == null) { // 接任务之前应该已经有了 
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		if (!questOp.canAccept(id)) {
+		if (!questModule.canAccept(id)) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 
-		questOp.setState(quest, QuestHelper.ACCEPTED);
+		questModule.setState(quest, QuestHelper.ACCEPTED);
 
-		resp.setQuest(PbBuilder.buildQuestInfo(quest));
+		resp.setQuest(quest.toQuestInfo());
 		client.sendProtocol(resp);
 	}
 	protected void groupDetail(NetClient client, Object message) {
@@ -148,17 +144,17 @@ public class QuestHandler extends BaseHandler {
 		int id = req.getId();
 		
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		QuestModule questOp = player.getModule(QuestModule.class);
+		QuestModule questModule = player.getModule(QuestModule.class);
 
-		Map<Integer, QuestChallenge> challenges = questOp.getChallenges();
+		Map<Integer, QuestChallenge> challenges = questModule.getChallenges();
 		QuestChallenge questChallenge = challenges.get(id);
 		if (questChallenge != null) {
 			MissionChallengeGroupConfig mission = MissionChallengeGroupManager.getInstance().getMissionChallengeGroupConfig(id);
 			List<Integer> ids = mission.getMissionId();
 			for (Integer qid : ids) {
-				Quest quest = questOp.get(qid);
+				Quest quest = questModule.get(qid);
 				if (quest != null) {
-					resp.addQuests(PbBuilder.buildQuestInfo(quest));
+					resp.addQuests(quest.toQuestInfo());
 				}
 			}
 		}
@@ -171,8 +167,8 @@ public class QuestHandler extends BaseHandler {
 		QuestChallengeGroupResponse_20000021.Builder resp = QuestChallengeGroupResponse_20000021.newBuilder();
 		int type = req.getType();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		QuestModule questOp = player.getModule(QuestModule.class);
-		Map<Integer, QuestChallenge> challenges = questOp.getChallenges();
+		QuestModule questModule = player.getModule(QuestModule.class);
+		Map<Integer, QuestChallenge> challenges = questModule.getChallenges();
 
 		List<MissionChallengeGroupConfig> typeList = MissionChallengeGroupManager.getInstance().getTypeList(type);
 		for (MissionChallengeGroupConfig config : typeList) {
@@ -183,46 +179,26 @@ public class QuestHandler extends BaseHandler {
 		}
 		client.sendProtocol(resp.build());
 	}
-	protected void activeReceive(NetClient client, Object message) {
-		QuestReceiveActiveRequest_20000008 req = (QuestReceiveActiveRequest_20000008) message;
-		QuestReceiveActiveResponse_20000009.Builder resp = QuestReceiveActiveResponse_20000009.newBuilder();
-		int index = req.getIndex();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		QuestModule questOp = player.getModule(QuestModule.class);
-		int finishedCount = questOp.getFinishedCount(QuestTypeEnum.Daily);
-		/*		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-				Integer quest = playerExt.getQuestActive();
-				boolean one = ByteHelp.isOne(playerExt.getQuestActive(), id);
-				if (one) {
-					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-					return;
-				}*/
-		
-		List<MissionDailyConfig> list = MissionDailyManager.getInstance().list();
-		boolean canReward = false;
-		MissionDailyConfig missionDailyConfig = null;
-		for (int i = list.size() - 1; i >= 0; i--) {
-			MissionDailyConfig config = list.get(i);
-			if (finishedCount >= config.getNumber()) {
-				if (index == config.getId()) {
-					canReward = true;
-					missionDailyConfig = config;
-					break;
-				}
-			}
-		}
-		if (!canReward) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+	protected void activeReceive(NetClient client, Object message) {
+		QuestReceiveActivePointRequest_20000008 req = (QuestReceiveActivePointRequest_20000008) message;
+		QuestReceiveActivePointResponse_20000009.Builder resp = QuestReceiveActivePointResponse_20000009.newBuilder();
+		int index = req.getIndex();
+		QuestTypeEnum type = QuestTypeEnum.get(req.getType());
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		QuestModule questModule = player.getModule(QuestModule.class);
+		int error = questModule.checkActiveReceive(type, index);
+		if (error > 0) {
+			client.sendProtocol(resp.build(), error);
 			return;
 		}
-		resp.addAllRewards(PlayerHelper.addResources(playerId, missionDailyConfig.getReward()));
+		QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(type.ID);
 
-//		playerExt.setQuestActive(ByteHelp.modifyBit(quest, id));
+		List<Integer> activeRewardList = questModule.getActiveRewardList(type);
+		activeRewardList.add(index);
 
-		PlayerExt update = PlayerExt.valueOf(playerId);
-//		update.setQuestActive(playerExt.getQuestActive());
-		DAO.updateSelective(update);
+		resp.addAllRewards(PlayerHelper.addResources(player, questPointRewardConfig.Reward[index]));
 
 		client.sendProtocol(resp.build());
 	}
@@ -251,9 +227,9 @@ public class QuestHandler extends BaseHandler {
 		int id = req.getId();
 		int index = req.getIndex();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		QuestModule questOp = player.getModule(QuestModule.class);
+		QuestModule questModule = player.getModule(QuestModule.class);
 
-		List<RewardInfo> rewards = questOp.receive(id, index);
+		List<RewardInfo> rewards = questModule.receive(id, index);
 		if (rewards.isEmpty()) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
@@ -268,19 +244,19 @@ public class QuestHandler extends BaseHandler {
 		List<Integer> ids = req.getIdsList();
 //		int group = req.getGroup();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		QuestModule questOp = player.getModule(QuestModule.class);
+		QuestModule questModule = player.getModule(QuestModule.class);
 
 //		List<Integer> ret = new ArrayList<>();
 //		if (id > 0) {
 //			ret.add(id);
 //		} else {
-//			ret.addAll(questOp.canReceiveIds(group));
+//			ret.addAll(questModule.canReceiveIds(group));
 //		}
 		// 暂时最多领10个
 		// if (ret.size() > 10) {
 		// ret = ret.subList(0, 10);
 		// }
-		List<RewardInfo> rewards = questOp.receive(ids);
+		List<RewardInfo> rewards = questModule.receive(ids);
 		if (rewards.isEmpty()) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;

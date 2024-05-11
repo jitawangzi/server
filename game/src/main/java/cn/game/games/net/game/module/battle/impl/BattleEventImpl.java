@@ -53,7 +53,7 @@ public class BattleEventImpl implements IBattleHandler {
 		BattleEventConfig battleEventConfig = BattleEventManager.getInstance().getBattleEventConfig(randomId);
 		List<Entry<Integer, Integer>> reward = battleEventConfig.getReward();
 //		if (!reward.isEmpty()) {
-//			resp.addAllCommonRewards(PlayerHelper.addResources(playerId, reward));
+//			resp.addAllCommonRewards(PlayerHelper.addResources(player, reward));
 //		}
 		if (battleEventConfig.getRandomReward() > 0) {
 //			List<RewardInfo> addRandomRewards = PlayerHelper.addRandomRewards(playerId,

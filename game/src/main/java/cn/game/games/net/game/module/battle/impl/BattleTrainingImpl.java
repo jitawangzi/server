@@ -70,7 +70,7 @@ public class BattleTrainingImpl implements IBattleHandler {
 
 //		if (player.getData().getTrainingRewardTimes() > 0) {
 //			player.getData().setTrainingRewardTimes(player.getData().getTrainingRewardTimes() - 1);
-//			List<RewardItem> rewardItems = PlayerHelper.addResources(playerId, levelConfig.getSpecialReward());
+//			List<RewardItem> rewardItems = PlayerHelper.addResources(player, levelConfig.getSpecialReward());
 //			resp.addAllSpecialRewards(PbBuilder.buildRewardInfo(rewardItems));
 //		}
 //		if (win) {

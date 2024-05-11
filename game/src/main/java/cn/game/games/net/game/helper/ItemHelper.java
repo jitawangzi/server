@@ -375,7 +375,7 @@ public class ItemHelper {
 	public static List<RewardInfo> addRewards(long playerId, int rewardId) {
 
 		RewardConfig rewardConfig = RewardManager.getInstance().getRewardConfig(rewardId);
-		return PlayerHelper.addResources(playerId, rewardConfig.getInfo());
+		return PlayerHelper.addResources(null, rewardConfig.getInfo());
 
 	}
 
@@ -383,7 +383,7 @@ public class ItemHelper {
 	public static List<RewardInfo> addRandomRewards(long playerId, int rewardId) {
 
 		RewardConfig rewardConfig = RewardManager.getInstance().getRewardConfig(rewardId);
-		return PlayerHelper.addResources(playerId, rewardConfig.getInfo());
+		return PlayerHelper.addResources(null, rewardConfig.getInfo());
 	}
 
 }

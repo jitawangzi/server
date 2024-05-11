@@ -136,8 +136,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int QuestListResponse_20000002 = 0x20000002;    //任务数据  
 	public final static int QuestReceiveRequest_20000004 = 0x20000004;    //领取任务奖励  
 	public final static int QuestReceiveResponse_20000005 = 0x20000005;    
-	public final static int QuestReceiveActiveRequest_20000008 = 0x20000008;    //领取每日任务活跃奖励  
-	public final static int QuestReceiveActiveResponse_20000009 = 0x20000009;    
+	public final static int QuestReceiveActivePointRequest_20000008 = 0x20000008;    //领取任务活跃积分奖励  
+	public final static int QuestReceiveActivePointResponse_20000009 = 0x20000009;    
 	public final static int QuestGroupPush_20100008 = 0x20100008;    //一组任务状态变化通知，一般是有任务可以领奖时，或者加入了新的任务，会推送这个协议  
 	public final static int QuestPush_20200008 = 0x20200008;    //单个任务状态变化通知，一般是任务有变化，或者加入 删除了任务等，会推送这个协议  
 	public final static int QuestChallengeGroupRequest_20000020 = 0x20000020;    //查看某类型挑战组任务----暂时用不到  
@@ -444,9 +444,9 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(QuestReceiveResponse_20000005, cn.game.protocol.protobuf.QuestMsg.QuestReceiveResponse_20000005.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(QuestReceiveActiveRequest_20000008, cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveRequest_20000008.getDefaultInstance()
+		parsersMap.put(QuestReceiveActivePointRequest_20000008, cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(QuestReceiveActiveResponse_20000009, cn.game.protocol.protobuf.QuestMsg.QuestReceiveActiveResponse_20000009.getDefaultInstance()
+		parsersMap.put(QuestReceiveActivePointResponse_20000009, cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointResponse_20000009.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(QuestGroupPush_20100008, cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008.getDefaultInstance()
 				.getParserForType());
@@ -712,8 +712,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("QuestListResponse_20000002", 0x20000002);
 		nameIdMap.put("QuestReceiveRequest_20000004", 0x20000004);
 		nameIdMap.put("QuestReceiveResponse_20000005", 0x20000005);
-		nameIdMap.put("QuestReceiveActiveRequest_20000008", 0x20000008);
-		nameIdMap.put("QuestReceiveActiveResponse_20000009", 0x20000009);
+		nameIdMap.put("QuestReceiveActivePointRequest_20000008", 0x20000008);
+		nameIdMap.put("QuestReceiveActivePointResponse_20000009", 0x20000009);
 		nameIdMap.put("QuestGroupPush_20100008", 0x20100008);
 		nameIdMap.put("QuestPush_20200008", 0x20200008);
 		nameIdMap.put("QuestChallengeGroupRequest_20000020", 0x20000020);

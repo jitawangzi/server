@@ -1,7 +1,6 @@
 package cn.game.games.net.game.helper;
 
 import cn.game.games.cache.entity.Quest;
-import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.QuestManager;
@@ -132,7 +131,7 @@ public class QuestHelper {
 
 	public static void notifyQuestChange(Quest quest, UpdateType type) {
 		long playerId = quest.getPlayerId();
-		QuestPush_20200008 msg = QuestPush_20200008.newBuilder().setType(type).setQuest(PbBuilder.buildQuestInfo(quest))
+		QuestPush_20200008 msg = QuestPush_20200008.newBuilder().setType(type).setQuest(quest.toQuestInfo())
 				.build();
 		PlayerHelper.sendProtocol(playerId, msg);
 	}

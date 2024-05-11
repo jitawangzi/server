@@ -6,7 +6,7 @@ import "RewardMsg.proto" ;
 import "BaseMsg.proto" ;
 import "ShopMsg.proto" ;
 import "BattleMsg.proto" ;
-//import "MissionMsg.proto";
+import "QuestMsg.proto";
 
 /*** 登陆****/
 message PlayerLoginRequest_01000001{
@@ -202,8 +202,7 @@ message PlayerAllInfo{
 
    CloudBoxInfo cloudBox = 50;  // 小云宝箱
    PatrolInfo patrol = 51;//巡逻/挂机
-
-   //repeated MissionInfo mainMissions = 23 ;  // 主线任务数据
-   //repeated MissionInfo branchMissions = 24 ;  // 支线任务数据
+   repeated QuestGroupInfo questGroups = 55 ;  // 任务数据
+   repeated QuestGroupPointRewardInfo questGroupPointRewards = 56 ;  // 任务积分奖励领取记录
 }
 

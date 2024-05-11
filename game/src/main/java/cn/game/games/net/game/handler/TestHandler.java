@@ -213,7 +213,7 @@ public class TestHandler extends BaseHandler {
 	
 				boolean finish = storyOp.finish(id);
 				if (finish) {
-					List<RewardInfo> addResources = PlayerHelper.addResources(playerId, storyConfig.getReward());
+					List<RewardInfo> addResources = PlayerHelper.addResources(player, storyConfig.getReward());
 					response.addAllResource(addResources);
 					PlayerHelper.command(playerId, storyConfig.getCommandList());
 				}
@@ -289,7 +289,7 @@ public class TestHandler extends BaseHandler {
 //		AttrModule module = player.getModule(AttrModule.class);
 //		module.calcAllAttr();
 //		module.buildBattleAttrs();
-//		PlayerHelper.addResources(playerId, 610001, 1);
+//		PlayerHelper.addResources(player, 610001, 1);
 //		System.out.println();
 //		System.out.println();
 //		PlayerHelper.refresh(player);
@@ -433,49 +433,49 @@ public class TestHandler extends BaseHandler {
 //						if (resourceEnum.getType() == 2 && !inExplore) {
 //							continue;
 //						}
-						rewardItems = PlayerHelper.addResources(playerId, resourceEnum.ID, 1000000);
+						rewardItems = PlayerHelper.addResources(player, resourceEnum.ID, 1000000);
 						allRewards.addAll(rewardItems);
 					}
 
 				} else if (goodsType == GoodsTypeEnum.Item.getId()) {
 					Collection<ItemConfig> list = ItemManager.instance().list();
 					for (ItemConfig e : list) {
-						rewardItems = PlayerHelper.addResources(playerId, e.ID, 999);
+						rewardItems = PlayerHelper.addResources(player, e.ID, 999);
 						allRewards.addAll(rewardItems);
 					}
 
 				} else if (goodsType == GoodsTypeEnum.Hero.getId()) {
 					Collection<HeroConfig> list = HeroManager.instance().list();
 					for (HeroConfig e : list) {
-						rewardItems = PlayerHelper.addResources(playerId, e.ID, 1);
+						rewardItems = PlayerHelper.addResources(player, e.ID, 1);
 						allRewards.addAll(rewardItems);
 					}
 				} else {
 
-					List<RewardInfo> tmp = PlayerHelper.addResources(playerId, id, count);
+					List<RewardInfo> tmp = PlayerHelper.addResources(player, id, count);
 					allRewards.addAll(tmp);
 				}
 //				else if (goodsType == GoodsTypeEnum.Role.getId()) {
 //					Collection<RoleConfig> list = RoleManager.getInstance().list();
 //					for (RoleConfig e : list) {
-//						rewardItems = PlayerHelper.addResources(playerId, e.getId(), 1);
+//						rewardItems = PlayerHelper.addResources(player, e.getId(), 1);
 //						allRewards.addAll(rewardItems);
 //					}
 //				} else if (goodsType == GoodsTypeEnum.Skin.getId()) {
 //					Collection<RoleSkinConfig> list = RoleSkinManager.getInstance().list();
 //					for (RoleSkinConfig e : list) {
-//						rewardItems = PlayerHelper.addResources(playerId, e.getId(), 1);
+//						rewardItems = PlayerHelper.addResources(player, e.getId(), 1);
 //						allRewards.addAll(rewardItems);
 //					}
 //				} else if (goodsType == GoodsTypeEnum.Equipment.getId()) {
 //					Collection<EquipmentConfig> list = EquipmentManager.getInstance().list();
 //					for (EquipmentConfig e : list) {
-//						rewardItems = PlayerHelper.addResources(playerId, e.getId(), 1);
+//						rewardItems = PlayerHelper.addResources(player, e.getId(), 1);
 //						allRewards.addAll(rewardItems);
 //					}
 //				}
 			} else {
-				rewardItems = PlayerHelper.addResources(playerId, id, count);
+				rewardItems = PlayerHelper.addResources(player, id, count);
 				allRewards.addAll(rewardItems);
 			}
 

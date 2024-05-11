@@ -174,11 +174,11 @@ public class BattlePassOp extends BasePlayerModule implements IBattlePassOp {
             }
             if (this.recharge && !this.goldRewardIndex.get(i)) {
                 this.goldRewardIndex.set(i);
-                rewardItems.addAll(PlayerHelper.addResources(playerId, config.getGoldMedal()));
+                rewardItems.addAll(PlayerHelper.addResources(player, config.getGoldMedal()));
             }
             if (!this.silverRewardIndex.get(i)) {
                 this.silverRewardIndex.set(i);
-                rewardItems.addAll(PlayerHelper.addResources(playerId, config.getSilverMedal()));
+                rewardItems.addAll(PlayerHelper.addResources(player, config.getSilverMedal()));
             }
         }
         updateBattlPassRewardsInfo();
@@ -197,14 +197,14 @@ public class BattlePassOp extends BasePlayerModule implements IBattlePassOp {
                 if (this.goldRewardIndex.get(level)) {
                     return null;
                 }
-                items.addAll(PlayerHelper.addResources(playerId, config.getGoldMedal()));
+                items.addAll(PlayerHelper.addResources(player, config.getGoldMedal()));
                 this.goldRewardIndex.set(level);
                 break;
             case SILVER:
                 if (this.silverRewardIndex.get(level)) {
                     return null;
                 }
-                items.addAll(PlayerHelper.addResources(playerId, config.getSilverMedal()));
+                items.addAll(PlayerHelper.addResources(player, config.getSilverMedal()));
                 this.silverRewardIndex.set(level);
                 break;
             default:

@@ -71,7 +71,8 @@ public class GameRemoteServerImpl implements GameRemoteServerInterface {
 
 	@Override
 	public List<RewardInfo> addResources(long playerId, int id, int value) {
-		return PlayerHelper.addResources(playerId, id, value);
+//		return PlayerHelper.addResources(player, id, value);
+		return null;
 	}
 	
 	@Override

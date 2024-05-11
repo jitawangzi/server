@@ -107,7 +107,7 @@ public class MailModule extends BasePlayerModule  {
 //				mail.update() ; 
 				DAO.update(mail);
 				/*for (Goods goods : attachmentList) {
-					List<RewardItem> addResources = PlayerHelper.addResources(playerId, goods.getId(), goods.getCount(), false);
+					List<RewardItem> addResources = PlayerHelper.addResources(player, goods.getId(), goods.getCount(), false);
 					list.addAll(addResources);
 				}*/
 				List<AbstractMap.Entry<Integer,Integer>> rewards = new ArrayList<AbstractMap.Entry<Integer,Integer>>(attachmentList.size()) ;
@@ -115,7 +115,7 @@ public class MailModule extends BasePlayerModule  {
 					rewards.add(new AbstractMap.SimpleEntry(goods.getId(),goods.getCount())); 
 				}
 				//合并奖励
-				list = PlayerHelper.addResources(playerId, rewards);
+				list = PlayerHelper.addResources(player, rewards);
 			}
 		}
 		return list;

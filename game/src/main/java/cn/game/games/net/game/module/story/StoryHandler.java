@@ -81,7 +81,7 @@ public class StoryHandler extends BaseHandler {
 		}
 		StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
 
-		List<RewardInfo> addResources = PlayerHelper.addResources(playerId, storyConfig.getReward());
+		List<RewardInfo> addResources = PlayerHelper.addResources(player, storyConfig.getReward());
 		resp.addAllRewards(addResources);
 //		PlayerHelper.command(playerId, storyConfig.getCommandList());
 		client.sendProtocol(resp.build());

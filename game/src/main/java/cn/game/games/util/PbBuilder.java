@@ -36,7 +36,6 @@ import cn.game.games.net.game.manager.UnionManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.award.RewardItem;
 import cn.game.games.net.game.module.chat.GroupAllInfo;
-import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.store.StoreGoods;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
@@ -458,7 +457,7 @@ public class PbBuilder {
 
 		for (Quest e : group2.values()) {
 
-			list.add(buildQuestInfo(e));
+			list.add(e.toQuestInfo());
 		}
 		return list;
 	}
@@ -473,28 +472,11 @@ public class PbBuilder {
 
 		for (Quest e : group2.values()) {
 
-			list.add(buildQuestInfo(e));
+			list.add(e.toQuestInfo());
 		}
 		return list;
 	}
 
-	public static QuestInfo buildQuestInfo(Quest quest) {
-
-		QuestInfo.Builder questInfo = QuestInfo.newBuilder();
-		questInfo.setId(quest.getId());
-		List<Condition> questConditionList = quest.getRequires();
-		if (questConditionList != null) {
-			for (int i = 0; i < questConditionList.size(); i++) {
-				long count = questConditionList.get(i).getFinishCount();
-				if (count >= Integer.MAX_VALUE) {
-					count = Integer.MAX_VALUE;
-				}
-				questInfo.addFinishCount((int) count);
-			}
-		}
-		questInfo.setState(quest.getState());
-		return questInfo.build();
-	}
 
 //	public static ActivityInfo buildActivityInfo(int id) {
 //		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
