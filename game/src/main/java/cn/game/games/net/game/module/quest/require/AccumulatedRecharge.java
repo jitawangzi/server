@@ -16,16 +16,13 @@ public class AccumulatedRecharge extends AbstractCondition {
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-
 	@Override
-	public void updateRequireCount(GameEvent event) {
-		int count = event.getIntParameter(1);
-		finishCount += count;
-	}
+	public long getFinishCount() {
+		return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge);
 
+	}
 	@Override
 	public boolean checkEventParam(GameEvent event) {
 		return true;
 	}
-
 }

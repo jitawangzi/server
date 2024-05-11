@@ -20,7 +20,7 @@ public enum EventTypeEnum {
 	NewWeek(110, "NewWeek", "跨周"),
 	/** 跨月 */
 	NewMonth(111, "NewMonth", "跨月"),
-	/** 充值  // 参数 ： 充值数量*/
+	/** 充值  // 参数 ： 充值数量(rmb)*/
 	Charge(112, "Charge", "充值"),
 
 	/** 功能开启 */
@@ -77,6 +77,7 @@ public enum EventTypeEnum {
 	CardUpGrade(18, "CardUpGrade", "升级卡牌行为，不是真正升级"),
 	// 参数，id，value
 	GetItem(19, "GetItem", "获取资源"),
+	/** 消耗资源： 参数 id，数量 */
 	CostItem(20, "CostItem", "消耗资源"),
 
 	QuestFinish(21, "QuestFinish", "完成任务"),

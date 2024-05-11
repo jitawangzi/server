@@ -1,6 +1,5 @@
 import java.util.HashMap;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
@@ -15,8 +14,7 @@ public class Main {
 		System.out.println(jsonString);
 
 		// 反序列化为 HashMap 对象
-		HashMap<Integer, Integer> object = new ObjectMapper().readValue(jsonString, new TypeReference<HashMap<Integer, Integer>>() {
-		});
+		HashMap<Integer, Integer> object = new ObjectMapper().readValue(jsonString, HashMap.class);
 		System.out.println(object.get("1")); // 获取到了正确的值
 		System.out.println(object.get(1)); // 获取到了正确的值
 	}

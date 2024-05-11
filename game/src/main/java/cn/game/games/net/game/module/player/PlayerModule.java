@@ -55,6 +55,9 @@ public class PlayerModule extends BasePlayerModule {
 	/** 支付成功后的回调 */
 	@JsonIgnore
 	private Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
+	/** 本次订单充了多少钱 */
+	@JsonIgnore
+	private Map<Long, Integer> payRmbs = new HashMap<Long, Integer>();
 	
 	/** 随机宝箱，小云宝箱 */
 	private List<Goods> cloudBox;
@@ -165,6 +168,14 @@ public class PlayerModule extends BasePlayerModule {
 	
 	public void addPayCallback(long uid,Promise<Boolean> callback) {
 		this.payCallback.put(uid, callback); 
+	}
+
+	public void addPayRmbs(long uid, int rmb) {
+		this.payRmbs.put(uid, rmb);
+	}
+
+	public int getPayRmbs(long uid) {
+		return this.payRmbs.get(uid);
 	}
 	
 	public void execPayCallback(long uid) {
