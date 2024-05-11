@@ -240,7 +240,7 @@ public class PlayerModule extends BasePlayerModule {
 			if (exp == Asset.playerExp.ID) {
 				// 给等级奖励
 				UserUpgradeConfig userUpgradeConfig = UserUpgradeManager.instance().get(level);
-				List<RewardInfo> reward = PlayerHelper.addReward(player, userUpgradeConfig.LvRewardID);
+				List<RewardInfo> reward = PlayerHelper.addResources(player, userUpgradeConfig.LvReward);
 				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(reward));
 			}
 			break;

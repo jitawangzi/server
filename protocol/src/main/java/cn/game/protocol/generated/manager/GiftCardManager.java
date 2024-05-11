@@ -38,6 +38,9 @@ public class GiftCardManager extends ResourceListener {
 	public List<GiftCardConfig> getDrawIdList(int DrawId) {
 		return this.DrawIds.get(DrawId);
 	}
+	public Map<Integer,List<GiftCardConfig>> getDrawIds() {
+		return this.DrawIds;
+	}
 	/**
 	 * 获取所有数据
 	 * @return

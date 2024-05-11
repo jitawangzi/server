@@ -38,6 +38,9 @@ public class HeishiManager extends ResourceListener {
 	public List<HeishiConfig> getTypeList(int Type) {
 		return this.Types.get(Type);
 	}
+	public Map<Integer,List<HeishiConfig>> getTypes() {
+		return this.Types;
+	}
 	/**
 	 * 获取所有数据
 	 * @return

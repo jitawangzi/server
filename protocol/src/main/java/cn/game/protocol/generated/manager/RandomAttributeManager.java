@@ -38,6 +38,9 @@ public class RandomAttributeManager extends ResourceListener {
 	public List<RandomAttributeConfig> getRandomAttributeIdList(int RandomAttributeId) {
 		return this.RandomAttributeIds.get(RandomAttributeId);
 	}
+	public Map<Integer,List<RandomAttributeConfig>> getRandomAttributeIds() {
+		return this.RandomAttributeIds;
+	}
 	/**
 	 * 获取所有数据
 	 * @return

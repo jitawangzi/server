@@ -38,6 +38,9 @@ public class RandomGroupManager extends ResourceListener {
 	public List<RandomGroupConfig> getRandomGroupIDList(int RandomGroupID) {
 		return this.RandomGroupIDs.get(RandomGroupID);
 	}
+	public Map<Integer,List<RandomGroupConfig>> getRandomGroupIDs() {
+		return this.RandomGroupIDs;
+	}
 	/**
 	 * 获取所有数据
 	 * @return

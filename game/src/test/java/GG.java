@@ -1,12 +1,15 @@
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import cn.game.protocol.generated.config.QuestConfig;
+
 public class GG {
 	public static void main(String[] args) {
 
-		int[][] x = new int[][] { { 1, 2, 3 }, { 4, 5, 6 } };
-		
-		int[] is = x[1];
-		for (int i : is) {
-			System.out.println(i);
-		}
+		Map<Integer, List<QuestConfig>> Types = new HashMap<>();
+		Types = com.google.common.collect.ImmutableMap.copyOf(Types);
+		Types.remove(0);
 
 	}
 }

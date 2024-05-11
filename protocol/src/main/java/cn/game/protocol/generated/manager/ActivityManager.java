@@ -62,6 +62,9 @@ public class ActivityManager extends ResourceListener {
 	public List<ActivityConfig> getOpenTypeList(int openType) {
 		return this.openTypes.get(openType);
 	}
+	public Map<Integer,List<ActivityConfig>> getOpenTypes() {
+		return this.openTypes;
+	}
 	/**
 	 * 获取所有数据
 	 * @return

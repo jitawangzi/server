@@ -29,6 +29,8 @@ public class QuestManager extends ResourceListener {
 	private Map<Integer, QuestConfig> quests = new HashMap<>();
 	/** 普通索引 */
 	private Map<Integer,List<QuestConfig>> Types = new HashMap<>();
+	/** 普通索引 */
+	private Map<Integer,List<QuestConfig>> Groups = new HashMap<>();
 
 	public static QuestManager instance() {
 		return instance;
@@ -62,6 +64,15 @@ public class QuestManager extends ResourceListener {
 	public List<QuestConfig> getTypeList(int Type) {
 		return this.Types.get(Type);
 	}
+	public List<QuestConfig> getGroupList(int Group) {
+		return this.Groups.get(Group);
+	}
+	public Map<Integer,List<QuestConfig>> getTypes() {
+		return this.Types;
+	}
+	public Map<Integer,List<QuestConfig>> getGroups() {
+		return this.Groups;
+	}
 	/**
 	 * 获取所有数据
 	 * @return
@@ -78,6 +89,7 @@ public class QuestManager extends ResourceListener {
 			
 			Map<Integer, QuestConfig> quests = new HashMap<>();
 			Map<Integer, List<QuestConfig>> Types = new HashMap<>();
+			Map<Integer, List<QuestConfig>> Groups = new HashMap<>();
 			for (Element e : list) {
 				QuestConfig quest = new QuestConfig(e);
 				List<QuestConfig> TypeList = Types.get(quest.Type); 
@@ -86,6 +98,12 @@ public class QuestManager extends ResourceListener {
 					Types.put(quest.Type ,TypeList) ; 
 				}
 				TypeList.add(quest) ;
+				List<QuestConfig> GroupList = Groups.get(quest.Group); 
+				if (GroupList == null){
+					GroupList = new ArrayList<QuestConfig>(2) ; 
+					Groups.put(quest.Group ,GroupList) ; 
+				}
+				GroupList.add(quest) ;
 				QuestConfig old = quests.put(quest.ID, quest);
 				if (old != null) {
 					throw new IllegalArgumentException("[QuestConfig]表存在重复的数据id： " + old.ID);
@@ -93,6 +111,7 @@ public class QuestManager extends ResourceListener {
 			}			
 
 			this.Types = com.google.common.collect.ImmutableMap.copyOf(Types);			
+			this.Groups = com.google.common.collect.ImmutableMap.copyOf(Groups);			
 			this.quests = com.google.common.collect.ImmutableMap.copyOf(quests);
 
 			log.info("load QuestConfig size[{}]", quests.size());

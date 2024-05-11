@@ -797,7 +797,9 @@ public class QuestModule extends BasePlayerModule {
 			v.forEach((kk, vv) -> {
 				groupInfo.addQuests(vv.toQuestInfo());
 			});
-			builder.addQuestGroups(groupInfo.build());
+			if (groupInfo.getQuestsCount() > 0) {
+				builder.addQuestGroups(groupInfo.build());
+			}
 		});
 		activeRewardMap.forEach((k, v) -> {
 			QuestGroupPointRewardInfo.Builder rewardInfo = QuestGroupPointRewardInfo.newBuilder();
@@ -837,10 +839,23 @@ public class QuestModule extends BasePlayerModule {
 		if (!map.isEmpty()) {
 			return;
 		}
-		List<QuestConfig> typeList = QuestManager.instance().getTypeList(type.ID);
-		for (QuestConfig questConfig : typeList) {
-			open(questConfig.ID, notify);
+		if (type == QuestTypeEnum.Achievement) {
+			Map<Integer, List<QuestConfig>> groups = QuestManager.instance().getGroups();
+			groups.forEach((group, list) -> {
+				if (!list.isEmpty()) {
+					QuestConfig questConfig = list.get(0);
+					if (questConfig.Type == QuestTypeEnum.Achievement.ID) {
+						open(questConfig.ID, notify);
+					}
+				}
+			});
+		} else {
+			List<QuestConfig> typeList = QuestManager.instance().getTypeList(type.ID);
+			for (QuestConfig questConfig : typeList) {
+				open(questConfig.ID, notify);
+			}
 		}
+
 	}
 
 	private void initQuestFirst() {
