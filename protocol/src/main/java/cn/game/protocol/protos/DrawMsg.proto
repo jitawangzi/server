@@ -33,5 +33,6 @@ message DrawResponse_37000004{
 	repeated RewardInfo rewards	=	1;	// 抽卡获得的英雄
 	int32 gold =	2;	// 抽卡获得的金币
 	DrawInfo draw = 3;  // 更新相关数据
+	repeated RewardInfo heros	=	4;	// 额外赠送的英雄
 }
 

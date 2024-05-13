@@ -82,10 +82,16 @@ public class DrawModule extends BasePlayerModule {
 	 * @param count
 	 * @return  英雄奖励
 	 */
-	public List<RewardInfo> draw(int id, int count, boolean freeOnce) {
+	public List<List<RewardInfo>> draw(int id, int count, boolean freeOnce) {
+		List<List<RewardInfo>> allRewards = new ArrayList<>();
 		List<GiftCardConfig> giftCardList = GiftCardManager.instance().getDrawIdList(id);
 
 		List<RewardInfo> ret = new ArrayList<>();
+		List<RewardInfo> giftList = new ArrayList<>();
+
+		allRewards.add(ret);
+		allRewards.add(giftList);
+
 		DrawConfig drawConfig = DrawManager.instance().get(id);
 		int gold = drawConfig.DrawMoney * count;
 		for (int i = 0; i < count; i++) {
@@ -102,7 +108,7 @@ public class DrawModule extends BasePlayerModule {
 				int remaining = giftCardConfig.GiftCardCount[curIndex] - curTimes;
 				if (remaining == 0) {
 					// 送卡
-					ret.addAll(PlayerHelper.addReward(player, giftCardConfig.GiftCardRandomId[curIndex]));
+					giftList.addAll(PlayerHelper.addReward(player, giftCardConfig.GiftCardRandomId[curIndex]));
 					// next index
 					if (curIndex < giftCardConfig.GiftCardRandomId.length - 1) {
 						giftIndex.add(giftCardId, 1);
@@ -117,7 +123,7 @@ public class DrawModule extends BasePlayerModule {
 		if (freeOnce) {
 			freeDrawTime.setValue(id, DateUtil.currentTimeSeconds());
 		}
-		return ret;
+		return allRewards;
 	}
 
 }

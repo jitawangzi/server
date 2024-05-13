@@ -2893,6 +2893,50 @@ public final class DrawMsg {
      * <code>.Protos.DrawInfo draw = 3;</code>
      */
     cn.game.protocol.protobuf.DrawMsg.DrawInfoOrBuilder getDrawOrBuilder();
+
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
+        getHerosList();
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfo getHeros(int index);
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    int getHerosCount();
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getHerosOrBuilderList();
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getHerosOrBuilder(
+        int index);
   }
   /**
    * <pre>
@@ -2912,6 +2956,7 @@ public final class DrawMsg {
     }
     private DrawResponse_37000004() {
       rewards_ = java.util.Collections.emptyList();
+      heros_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -2972,6 +3017,15 @@ public final class DrawMsg {
 
               break;
             }
+            case 34: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              heros_.add(
+                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -2989,6 +3043,9 @@ public final class DrawMsg {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           rewards_ = java.util.Collections.unmodifiableList(rewards_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          heros_ = java.util.Collections.unmodifiableList(heros_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -3120,6 +3177,66 @@ public final class DrawMsg {
       return getDraw();
     }
 
+    public static final int HEROS_FIELD_NUMBER = 4;
+    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> heros_;
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getHerosList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getHerosOrBuilderList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    @java.lang.Override
+    public int getHerosCount() {
+      return heros_.size();
+    }
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getHeros(int index) {
+      return heros_.get(index);
+    }
+    /**
+     * <pre>
+     * 额外赠送的英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo heros = 4;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getHerosOrBuilder(
+        int index) {
+      return heros_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3143,6 +3260,9 @@ public final class DrawMsg {
       if (draw_ != null) {
         output.writeMessage(3, getDraw());
       }
+      for (int i = 0; i < heros_.size(); i++) {
+        output.writeMessage(4, heros_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -3163,6 +3283,10 @@ public final class DrawMsg {
       if (draw_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getDraw());
+      }
+      for (int i = 0; i < heros_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, heros_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3188,6 +3312,8 @@ public final class DrawMsg {
         if (!getDraw()
             .equals(other.getDraw())) return false;
       }
+      if (!getHerosList()
+          .equals(other.getHerosList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3208,6 +3334,10 @@ public final class DrawMsg {
       if (hasDraw()) {
         hash = (37 * hash) + DRAW_FIELD_NUMBER;
         hash = (53 * hash) + getDraw().hashCode();
+      }
+      if (getHerosCount() > 0) {
+        hash = (37 * hash) + HEROS_FIELD_NUMBER;
+        hash = (53 * hash) + getHerosList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -3342,6 +3472,7 @@ public final class DrawMsg {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getRewardsFieldBuilder();
+          getHerosFieldBuilder();
         }
       }
       @java.lang.Override
@@ -3360,6 +3491,12 @@ public final class DrawMsg {
         } else {
           draw_ = null;
           drawBuilder_ = null;
+        }
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          herosBuilder_.clear();
         }
         return this;
       }
@@ -3402,6 +3539,15 @@ public final class DrawMsg {
           result.draw_ = draw_;
         } else {
           result.draw_ = drawBuilder_.build();
+        }
+        if (herosBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0)) {
+            heros_ = java.util.Collections.unmodifiableList(heros_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.heros_ = heros_;
+        } else {
+          result.heros_ = herosBuilder_.build();
         }
         onBuilt();
         return result;
@@ -3482,6 +3628,32 @@ public final class DrawMsg {
         }
         if (other.hasDraw()) {
           mergeDraw(other.getDraw());
+        }
+        if (herosBuilder_ == null) {
+          if (!other.heros_.isEmpty()) {
+            if (heros_.isEmpty()) {
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureHerosIsMutable();
+              heros_.addAll(other.heros_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.heros_.isEmpty()) {
+            if (herosBuilder_.isEmpty()) {
+              herosBuilder_.dispose();
+              herosBuilder_ = null;
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              herosBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getHerosFieldBuilder() : null;
+            } else {
+              herosBuilder_.addAllMessages(other.heros_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -4022,6 +4194,318 @@ public final class DrawMsg {
         }
         return drawBuilder_;
       }
+
+      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> heros_ =
+        java.util.Collections.emptyList();
+      private void ensureHerosIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(heros_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> herosBuilder_;
+
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getHerosList() {
+        if (herosBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(heros_);
+        } else {
+          return herosBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public int getHerosCount() {
+        if (herosBuilder_ == null) {
+          return heros_.size();
+        } else {
+          return herosBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getHeros(int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);
+        } else {
+          return herosBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.set(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder addHeros(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder addHeros(
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder addAllHeros(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, heros_);
+          onChanged();
+        } else {
+          herosBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder clearHeros() {
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          herosBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public Builder removeHeros(int index) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.remove(index);
+          onChanged();
+        } else {
+          herosBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getHerosOrBuilder(
+          int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);  } else {
+          return herosBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+           getHerosOrBuilderList() {
+        if (herosBuilder_ != null) {
+          return herosBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(heros_);
+        }
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addHerosBuilder() {
+        return getHerosFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 额外赠送的英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo heros = 4;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
+           getHerosBuilderList() {
+        return getHerosFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+          getHerosFieldBuilder() {
+        if (herosBuilder_ == null) {
+          herosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
+                  heros_,
+                  ((bitField0_ & 0x00000002) != 0),
+                  getParentForChildren(),
+                  isClean());
+          heros_ = null;
+        }
+        return herosBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -4123,10 +4607,11 @@ public final class DrawMsg {
       "\030\002 \001(\005\0329\n\027GiftRemainingTimesEntry\022\013\n\003key" +
       "\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"A\n\024DrawRequest" +
       "_37000003\022\n\n\002id\030\001 \001(\005\022\013\n\003ten\030\002 \001(\010\022\020\n\010fr" +
-      "eeOnce\030\003 \001(\010\"j\n\025DrawResponse_37000004\022#\n" +
-      "\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\022\014\n\004go" +
-      "ld\030\002 \001(\005\022\036\n\004draw\030\003 \001(\0132\020.Protos.DrawInfo" +
-      "B\033\n\031cn.game.protocol.protobufb\006proto3"
+      "eeOnce\030\003 \001(\010\"\215\001\n\025DrawResponse_37000004\022#" +
+      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\022\014\n\004g" +
+      "old\030\002 \001(\005\022\036\n\004draw\030\003 \001(\0132\020.Protos.DrawInf" +
+      "o\022!\n\005heros\030\004 \003(\0132\022.Protos.RewardInfoB\033\n\031" +
+      "cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4168,7 +4653,7 @@ public final class DrawMsg {
     internal_static_Protos_DrawResponse_37000004_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DrawResponse_37000004_descriptor,
-        new java.lang.String[] { "Rewards", "Gold", "Draw", });
+        new java.lang.String[] { "Rewards", "Gold", "Draw", "Heros", });
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }
 

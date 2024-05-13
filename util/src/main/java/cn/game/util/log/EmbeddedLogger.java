@@ -1,4 +1,4 @@
-package cn.game.games.core.log;
+package cn.game.util.log;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

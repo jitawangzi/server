@@ -3,12 +3,11 @@ package performance;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import ch.qos.logback.core.joran.spi.JoranException;
+import cn.game.util.LogbackConfig;
+import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import cn.game.util.LogbackConfig;
-import cn.game.util.RedisUtil;
 
 public class RedisVertxTest {
 
@@ -17,7 +16,7 @@ public class RedisVertxTest {
 		String url = "redis://:32SSDgSDFsa3dsdfgg@192.168.1.67:6379/2";
 		try {
 			LogbackConfig.init(true, "config/logback.xml");
-		} catch (JoranException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 //		new Config().load();

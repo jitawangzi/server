@@ -2,8 +2,6 @@ package cn.game.games.net.game;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -23,7 +21,6 @@ import com.ctrip.framework.apollo.ConfigService;
 import com.google.protobuf.Message;
 import com.sun.tools.attach.VirtualMachine;
 
-import ch.qos.logback.classic.LoggerContext;
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.mq.RocketMQRpcClient;
 import cn.game.core.net.remote.LoginGameServerInterface;
@@ -33,24 +30,20 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.net.vertx.rpc.VertxRpcClient;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
-import cn.game.games.cache.entity.Buff;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossRemoteServerInterface;
-import cn.game.games.net.data.mapper.BuffMapper;
 import cn.game.games.net.data.remote.DataGameServerInterface;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.remote.GameRemoteServerInterface;
-import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.RedissonUtil;
-import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
@@ -58,6 +51,7 @@ import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.TreeWordFilter;
 import cn.game.util.ZkHelper;
 import cn.game.util.file.WatchServiceManager;
+import cn.game.util.log.LoggerManager;
 import cn.game.util.quartz.QuartzInitializer;
 
 /**
@@ -67,7 +61,15 @@ import cn.game.util.quartz.QuartzInitializer;
  */
 public class GameServer implements GameServerMBean {
 
-	private static final Logger log = LoggerFactory.getLogger(GameServer.class);
+	static {
+		// 在这里初始化log，为了下面定义的log实例，能够正常被初始化。
+		try {
+			LoggerManager.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private final Logger log = LoggerFactory.getLogger(GameServer.class);
 	private Properties initialProp;
 	private QuartzInitializer quartzInitializer;
 	private String serverId;
@@ -99,11 +101,14 @@ public class GameServer implements GameServerMBean {
 	}
 
 	public static void main(String args[]) {
-
-		log.info("启动逻辑服。。");
-		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
-
 		try {
+			// log init
+			LoggerManager.init();
+
+			System.err.println(System.getProperty("log4j2.level"));
+
+			instance.log.info("启动逻辑服。。");
+			Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 			instance.start(args);
 		} catch (Throwable e) {
 //			try {
@@ -178,58 +183,6 @@ public class GameServer implements GameServerMBean {
 //		producer.start();
 //		testUpdateBatch();
 	}
-
-	public static void testBatchInsert() {
-		List<Buff> list = new ArrayList<>();
-
-		for (int i = 0; i < 100000; i++) {
-
-			Buff buff = new Buff();
-			buff.setBuffId(1);
-			buff.setId(Rnd.nextLong());
-			buff.setPlayerId(10000L);
-			buff.setTarget(2222L);
-			buff.setUseNum(3);
-			list.add(buff);
-
-			buff = new Buff();
-			buff.setBuffId(2);
-			buff.setId(Rnd.nextLong());
-			buff.setPlayerId(10000L);
-			buff.setLevel(1);
-			buff.setTarget(2222L);
-			buff.setUseNum(3);
-			list.add(buff);
-		}
-
-		DAO.invoke(BuffMapper.class, "batchInsert", list);
-
-	}
-
-	public static void testUpdateBatch() {
-		List<Buff> list = new ArrayList<>();
-
-			Buff buff = new Buff();
-			buff.setBuffId(1);
-			buff.setId(9216803894331940327L);
-			buff.setPlayerId(20000L);
-			buff.setTarget(2222L);
-			buff.setUseNum(3);
-			list.add(buff);
-
-			buff = new Buff();
-			buff.setBuffId(2);
-			buff.setId(9216710231933264623L);
-			buff.setPlayerId(20000L);
-			buff.setLevel(1);
-			buff.setTarget(2222L);
-			buff.setUseNum(3);
-			list.add(buff);
-
-		DAO.invoke(BuffMapper.class, "batchUpate", list);
-
-	}
-
 	private void initGameServerConfig() throws Exception {
 		GameServerStatus.getInstance().start().toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
 		if (GameServerStatus.getInstance().getServerInfo() == null) {
@@ -368,8 +321,8 @@ public class GameServer implements GameServerMBean {
 
 			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
 			// 安全关闭log
-			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-			context.stop();
+			/*			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+						context.stop();*/
 
 		} catch (Throwable e) {
 			log.error("Game Server Shutdown err ", e);

@@ -1,4 +1,4 @@
-package cn.game.games.core.log;
+package cn.game.util.log;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +49,6 @@ public enum LoggerType {
     /* *********************** 其他 ************************* */
     equipmentshape,                                                             //装备幻化
     equipmentwear,                                                              //装备穿戴
-    wingupdate,                                                                 //翅膀强化
     onhook,                                                                     //挂机
     boxlevelup,                                                                 //宝箱升级
     boxopen,                                                                    //宝箱开启
@@ -64,15 +63,11 @@ public enum LoggerType {
     equipgems,                                                                  // 宝石镶嵌
     mergegems,                                                                  // 宝石合成
     propertysnap,                                                               // 玩家属性快照
-    land,                                                                       // 领地系统
-    landfresh,                                                                  // 领地资源刷新
     resourcegrab,                                                               // 领地资源抢夺
-    landupdate,                                                                 // 领地提升
     orderCreate,                                                                // 创建订单
     orderFinish,                                                                // 订单完成
     guildmanagement,                                                            // 公会管理
     guildsnap,                                                                  // 公会成员快照
-    wingunlock,                                                                 // 翅膀解锁
     leagueboss,                                                                 // 公会讨伐
 
     ;

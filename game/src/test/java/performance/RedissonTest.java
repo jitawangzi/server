@@ -7,19 +7,19 @@ import java.util.concurrent.CountDownLatch;
 import org.redisson.api.BatchResult;
 import org.redisson.api.RFuture;
 
-import ch.qos.logback.core.joran.spi.JoranException;
-import cn.game.util.LogbackConfig;
+/*import ch.qos.logback.core.joran.spi.JoranException;
+import cn.game.util.LogbackConfig;*/
 import cn.game.util.RedissonUtil;
 
 public class RedissonTest {
 
 	public static void main(String[] args) throws Exception {
-
-		try {
-			LogbackConfig.init(true, "config/logback.xml");
-		} catch (JoranException e) {
-			e.printStackTrace();
-		}
+		/*
+				try {
+					LogbackConfig.init(true, "config/logback.xml");
+				} catch (JoranException e) {
+					e.printStackTrace();
+				}*/
 		String key = "1234";
 		String value = "SDFSADFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDSF";
 		for (int i = 0; i < 1000; i++) {

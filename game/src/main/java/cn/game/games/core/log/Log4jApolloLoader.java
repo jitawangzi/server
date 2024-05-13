@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.springframework.stereotype.Component;
 
 import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.ConfigService;
@@ -15,6 +14,9 @@ import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 
 import cn.game.util.ApolloLoader;
+import cn.game.util.log.EmbeddedLogger;
+import cn.game.util.log.LoggerType;
+import cn.game.util.log.SystemLogger;
 
 /**
  * 通过spring初始化log4j
@@ -22,7 +24,7 @@ import cn.game.util.ApolloLoader;
  * @date 2021年11月9日 下午5:40:42
  * @author SYQ
  */
-@Component
+//@Component
 public class Log4jApolloLoader extends ApolloLoader {
 
 	private static final String fileName = "log4j.xml";

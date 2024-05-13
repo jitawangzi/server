@@ -84,12 +84,13 @@ public class DrawHandler extends BaseHandler {
 			}
 		}
 		int count = ten ? 10 : 1;
-		List<RewardInfo> rewards = drawModule.draw(id, count, freeOnce);
+		List<List<RewardInfo>> allRewards = drawModule.draw(id, count, freeOnce);
 		int gold = drawConfig.DrawMoney * count;
 
 		player.handleEvent(EventTypeEnum.Draw, count);
 
-		resp.addAllRewards(rewards);
+		resp.addAllRewards(allRewards.get(0));
+		resp.addAllHeros(allRewards.get(1));
 		resp.setGold(gold);
 		resp.setDraw(drawModule.buildDrawInfo(id));
 

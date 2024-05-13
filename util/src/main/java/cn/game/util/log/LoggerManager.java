@@ -1,12 +1,14 @@
-package cn.game.games.core.log;
+package cn.game.util.log;
 
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+
 
 
 /**
@@ -63,7 +65,7 @@ public class LoggerManager {
 		File file = new File(contextPath + fileName);
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         ConfigurationSource source = new ConfigurationSource(in);
-        Configurator.initialize(null, source);
+		LoggerContext initialize = Configurator.initialize(null, source);
 
         EmbeddedLogger.setLevelLogger(EmbeddedLogger.Level.trace, SystemLogger::trace);
         EmbeddedLogger.setLevelLogger(EmbeddedLogger.Level.debug, SystemLogger::debug);
@@ -73,6 +75,12 @@ public class LoggerManager {
         EmbeddedLogger.setLevelLogger(EmbeddedLogger.Level.fatal, SystemLogger::fatal);
 
         flushAll();
+		// 加载log4j2.xml配置文件
+//        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+//        context.setConfigLocation(Main.class.getResource("/log4j2.xml").toURI());
+		// 获取 Root Logger 并设置为配置文件中的级别
+//		initialize.getRootLogger().setLevel(org.apache.logging.log4j.Level.getLevel(initialize.getConfiguration().getLoggerConfig("Root").getLevel().name()));
+
     }
 
 //    @Override

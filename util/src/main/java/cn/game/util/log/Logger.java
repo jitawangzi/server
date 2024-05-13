@@ -1,10 +1,11 @@
-package cn.game.games.core.log;
+package cn.game.util.log;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import org.apache.logging.log4j.Level;
+
 
 /**
  * @author pangjiawei - [Created on 2018/1/31 10:35]

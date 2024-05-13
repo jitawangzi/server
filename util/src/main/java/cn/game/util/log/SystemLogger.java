@@ -1,6 +1,7 @@
-package cn.game.games.core.log;
+package cn.game.util.log;
 
 import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * @author pangjiawei - [Created on 2018/1/30 22:02]
