@@ -60,7 +60,7 @@ public class ShardingSphereUtil {
 
 	public static void main(String[] args) throws Exception {
 
-		genShardingRuleFromSrcDb(true);
+		genShardingRuleFromSrcDb(false);
 //		dropAllRules();
 //		createStorageUnitSql();
 	}

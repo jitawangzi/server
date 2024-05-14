@@ -10,9 +10,24 @@ import "QuestMsg.proto";
 
 /*** 登陆****/
 message PlayerLoginRequest_01000001{
-  string sessionId                    = 1;//登陆服产生的会话id
-  bool reconnect = 2;						// 是否是断线重连,true:断线重连，false:普通登陆
-  string verstion = 3;						// 客户端版本，如果版本不匹配不能登陆
+   string sessionId                    = 1;//登陆服产生的会话id
+   bool reconnect = 2;						// 是否是断线重连,true:断线重连，false:普通登陆
+   string verstion = 3;						// 客户端版本，如果版本不匹配不能登陆
+
+   //其他一些和BI相关的参数
+	string platform = 20;//平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+
+    string deviceId = 25; //设备唯一标识：MAC或者UUID或者IMEI，这里小游戏变为账号id ，即微信的openid
+    string accountId = 26; //登录账号id，这里是微信的unionid
+
+    string adChannel = 30; //推广渠道id
+    string sdkPayChannel = 31; //充值渠道id ：0010安卓充值 ， 0020 IOS充值
+
+	string sdkVersion = 40;  //  SDK版本号：小游戏定死为“NULL”
+	string system = 41;  //  系统: 小游戏定死“system”
+
+//  int32 accountType = 10; //渠道类型
+//	string sdkDeviceId = 24;
 }
 
 /*** 用户登陆,返回游戏数据 ***/

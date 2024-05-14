@@ -20,6 +20,16 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	private String channelId;
 	/**
+	 * 设备唯一标识：MAC或者UUID或者IMEI，这里小游戏变为账号id ，即微信的openid
+	 * @mbg.generated
+	 */
+	private String deviceId;
+	/**
+	 * 登录账号id，这里是微信的unionid
+	 * @mbg.generated
+	 */
+	private String accountId;
+	/**
 	 * 性别 1男2女
 	 * @mbg.generated
 	 */
@@ -191,6 +201,34 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	public void setChannelId(String channelId) {
 		this.channelId = channelId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getAccountId() {
+		return accountId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	/**

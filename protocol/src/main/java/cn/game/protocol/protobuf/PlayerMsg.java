@@ -67,6 +67,146 @@ public final class PlayerMsg {
      */
     com.google.protobuf.ByteString
         getVerstionBytes();
+
+    /**
+     * <pre>
+     *其他一些和BI相关的参数
+     * </pre>
+     *
+     * <code>string deviceId = 14;</code>
+     * @return The deviceId.
+     */
+    java.lang.String getDeviceId();
+    /**
+     * <pre>
+     *其他一些和BI相关的参数
+     * </pre>
+     *
+     * <code>string deviceId = 14;</code>
+     * @return The bytes for deviceId.
+     */
+    com.google.protobuf.ByteString
+        getDeviceIdBytes();
+
+    /**
+     * <pre>
+     *推广渠道id
+     * </pre>
+     *
+     * <code>string adChannel = 21;</code>
+     * @return The adChannel.
+     */
+    java.lang.String getAdChannel();
+    /**
+     * <pre>
+     *推广渠道id
+     * </pre>
+     *
+     * <code>string adChannel = 21;</code>
+     * @return The bytes for adChannel.
+     */
+    com.google.protobuf.ByteString
+        getAdChannelBytes();
+
+    /**
+     * <pre>
+     *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+     * </pre>
+     *
+     * <code>string sdkPayChannel = 13;</code>
+     * @return The sdkPayChannel.
+     */
+    java.lang.String getSdkPayChannel();
+    /**
+     * <pre>
+     *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+     * </pre>
+     *
+     * <code>string sdkPayChannel = 13;</code>
+     * @return The bytes for sdkPayChannel.
+     */
+    com.google.protobuf.ByteString
+        getSdkPayChannelBytes();
+
+    /**
+     * <pre>
+     *登录账号id，这里是微信的unionid
+     * </pre>
+     *
+     * <code>string accountId = 11;</code>
+     * @return The accountId.
+     */
+    java.lang.String getAccountId();
+    /**
+     * <pre>
+     *登录账号id，这里是微信的unionid
+     * </pre>
+     *
+     * <code>string accountId = 11;</code>
+     * @return The bytes for accountId.
+     */
+    com.google.protobuf.ByteString
+        getAccountIdBytes();
+
+    /**
+     * <pre>
+     *  SDK版本号：小游戏定死为“NULL”
+     * </pre>
+     *
+     * <code>string sdkVersion = 22;</code>
+     * @return The sdkVersion.
+     */
+    java.lang.String getSdkVersion();
+    /**
+     * <pre>
+     *  SDK版本号：小游戏定死为“NULL”
+     * </pre>
+     *
+     * <code>string sdkVersion = 22;</code>
+     * @return The bytes for sdkVersion.
+     */
+    com.google.protobuf.ByteString
+        getSdkVersionBytes();
+
+    /**
+     * <pre>
+     *  系统: 小游戏定死“system”
+     * </pre>
+     *
+     * <code>string system = 23;</code>
+     * @return The system.
+     */
+    java.lang.String getSystem();
+    /**
+     * <pre>
+     *  系统: 小游戏定死“system”
+     * </pre>
+     *
+     * <code>string system = 23;</code>
+     * @return The bytes for system.
+     */
+    com.google.protobuf.ByteString
+        getSystemBytes();
+
+    /**
+     * <pre>
+     *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+     * </pre>
+     *
+     * <code>string platform = 25;</code>
+     * @return The platform.
+     */
+    java.lang.String getPlatform();
+    /**
+     * <pre>
+     *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+     * </pre>
+     *
+     * <code>string platform = 25;</code>
+     * @return The bytes for platform.
+     */
+    com.google.protobuf.ByteString
+        getPlatformBytes();
   }
   /**
    * <pre>
@@ -87,6 +227,13 @@ public final class PlayerMsg {
     private PlayerLoginRequest_01000001() {
       sessionId_ = "";
       verstion_ = "";
+      deviceId_ = "";
+      adChannel_ = "";
+      sdkPayChannel_ = "";
+      accountId_ = "";
+      sdkVersion_ = "";
+      system_ = "";
+      platform_ = "";
     }
 
     @java.lang.Override
@@ -134,6 +281,48 @@ public final class PlayerMsg {
               java.lang.String s = input.readStringRequireUtf8();
 
               verstion_ = s;
+              break;
+            }
+            case 90: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              accountId_ = s;
+              break;
+            }
+            case 106: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              sdkPayChannel_ = s;
+              break;
+            }
+            case 114: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              deviceId_ = s;
+              break;
+            }
+            case 170: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              adChannel_ = s;
+              break;
+            }
+            case 178: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              sdkVersion_ = s;
+              break;
+            }
+            case 186: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              system_ = s;
+              break;
+            }
+            case 202: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              platform_ = s;
               break;
             }
             default: {
@@ -275,6 +464,328 @@ public final class PlayerMsg {
       }
     }
 
+    public static final int DEVICEID_FIELD_NUMBER = 14;
+    private volatile java.lang.Object deviceId_;
+    /**
+     * <pre>
+     *其他一些和BI相关的参数
+     * </pre>
+     *
+     * <code>string deviceId = 14;</code>
+     * @return The deviceId.
+     */
+    @java.lang.Override
+    public java.lang.String getDeviceId() {
+      java.lang.Object ref = deviceId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        deviceId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *其他一些和BI相关的参数
+     * </pre>
+     *
+     * <code>string deviceId = 14;</code>
+     * @return The bytes for deviceId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDeviceIdBytes() {
+      java.lang.Object ref = deviceId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        deviceId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ADCHANNEL_FIELD_NUMBER = 21;
+    private volatile java.lang.Object adChannel_;
+    /**
+     * <pre>
+     *推广渠道id
+     * </pre>
+     *
+     * <code>string adChannel = 21;</code>
+     * @return The adChannel.
+     */
+    @java.lang.Override
+    public java.lang.String getAdChannel() {
+      java.lang.Object ref = adChannel_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        adChannel_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *推广渠道id
+     * </pre>
+     *
+     * <code>string adChannel = 21;</code>
+     * @return The bytes for adChannel.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAdChannelBytes() {
+      java.lang.Object ref = adChannel_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        adChannel_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SDKPAYCHANNEL_FIELD_NUMBER = 13;
+    private volatile java.lang.Object sdkPayChannel_;
+    /**
+     * <pre>
+     *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+     * </pre>
+     *
+     * <code>string sdkPayChannel = 13;</code>
+     * @return The sdkPayChannel.
+     */
+    @java.lang.Override
+    public java.lang.String getSdkPayChannel() {
+      java.lang.Object ref = sdkPayChannel_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sdkPayChannel_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+     * </pre>
+     *
+     * <code>string sdkPayChannel = 13;</code>
+     * @return The bytes for sdkPayChannel.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSdkPayChannelBytes() {
+      java.lang.Object ref = sdkPayChannel_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sdkPayChannel_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ACCOUNTID_FIELD_NUMBER = 11;
+    private volatile java.lang.Object accountId_;
+    /**
+     * <pre>
+     *登录账号id，这里是微信的unionid
+     * </pre>
+     *
+     * <code>string accountId = 11;</code>
+     * @return The accountId.
+     */
+    @java.lang.Override
+    public java.lang.String getAccountId() {
+      java.lang.Object ref = accountId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        accountId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *登录账号id，这里是微信的unionid
+     * </pre>
+     *
+     * <code>string accountId = 11;</code>
+     * @return The bytes for accountId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAccountIdBytes() {
+      java.lang.Object ref = accountId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        accountId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SDKVERSION_FIELD_NUMBER = 22;
+    private volatile java.lang.Object sdkVersion_;
+    /**
+     * <pre>
+     *  SDK版本号：小游戏定死为“NULL”
+     * </pre>
+     *
+     * <code>string sdkVersion = 22;</code>
+     * @return The sdkVersion.
+     */
+    @java.lang.Override
+    public java.lang.String getSdkVersion() {
+      java.lang.Object ref = sdkVersion_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sdkVersion_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *  SDK版本号：小游戏定死为“NULL”
+     * </pre>
+     *
+     * <code>string sdkVersion = 22;</code>
+     * @return The bytes for sdkVersion.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSdkVersionBytes() {
+      java.lang.Object ref = sdkVersion_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sdkVersion_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SYSTEM_FIELD_NUMBER = 23;
+    private volatile java.lang.Object system_;
+    /**
+     * <pre>
+     *  系统: 小游戏定死“system”
+     * </pre>
+     *
+     * <code>string system = 23;</code>
+     * @return The system.
+     */
+    @java.lang.Override
+    public java.lang.String getSystem() {
+      java.lang.Object ref = system_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        system_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *  系统: 小游戏定死“system”
+     * </pre>
+     *
+     * <code>string system = 23;</code>
+     * @return The bytes for system.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSystemBytes() {
+      java.lang.Object ref = system_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        system_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PLATFORM_FIELD_NUMBER = 25;
+    private volatile java.lang.Object platform_;
+    /**
+     * <pre>
+     *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+     * </pre>
+     *
+     * <code>string platform = 25;</code>
+     * @return The platform.
+     */
+    @java.lang.Override
+    public java.lang.String getPlatform() {
+      java.lang.Object ref = platform_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        platform_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+     * </pre>
+     *
+     * <code>string platform = 25;</code>
+     * @return The bytes for platform.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPlatformBytes() {
+      java.lang.Object ref = platform_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        platform_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -298,6 +809,27 @@ public final class PlayerMsg {
       if (!getVerstionBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, verstion_);
       }
+      if (!getAccountIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, accountId_);
+      }
+      if (!getSdkPayChannelBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 13, sdkPayChannel_);
+      }
+      if (!getDeviceIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 14, deviceId_);
+      }
+      if (!getAdChannelBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 21, adChannel_);
+      }
+      if (!getSdkVersionBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 22, sdkVersion_);
+      }
+      if (!getSystemBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 23, system_);
+      }
+      if (!getPlatformBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 25, platform_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -316,6 +848,27 @@ public final class PlayerMsg {
       }
       if (!getVerstionBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, verstion_);
+      }
+      if (!getAccountIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, accountId_);
+      }
+      if (!getSdkPayChannelBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, sdkPayChannel_);
+      }
+      if (!getDeviceIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, deviceId_);
+      }
+      if (!getAdChannelBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(21, adChannel_);
+      }
+      if (!getSdkVersionBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(22, sdkVersion_);
+      }
+      if (!getSystemBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(23, system_);
+      }
+      if (!getPlatformBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(25, platform_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -338,6 +891,20 @@ public final class PlayerMsg {
           != other.getReconnect()) return false;
       if (!getVerstion()
           .equals(other.getVerstion())) return false;
+      if (!getDeviceId()
+          .equals(other.getDeviceId())) return false;
+      if (!getAdChannel()
+          .equals(other.getAdChannel())) return false;
+      if (!getSdkPayChannel()
+          .equals(other.getSdkPayChannel())) return false;
+      if (!getAccountId()
+          .equals(other.getAccountId())) return false;
+      if (!getSdkVersion()
+          .equals(other.getSdkVersion())) return false;
+      if (!getSystem()
+          .equals(other.getSystem())) return false;
+      if (!getPlatform()
+          .equals(other.getPlatform())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -356,6 +923,20 @@ public final class PlayerMsg {
           getReconnect());
       hash = (37 * hash) + VERSTION_FIELD_NUMBER;
       hash = (53 * hash) + getVerstion().hashCode();
+      hash = (37 * hash) + DEVICEID_FIELD_NUMBER;
+      hash = (53 * hash) + getDeviceId().hashCode();
+      hash = (37 * hash) + ADCHANNEL_FIELD_NUMBER;
+      hash = (53 * hash) + getAdChannel().hashCode();
+      hash = (37 * hash) + SDKPAYCHANNEL_FIELD_NUMBER;
+      hash = (53 * hash) + getSdkPayChannel().hashCode();
+      hash = (37 * hash) + ACCOUNTID_FIELD_NUMBER;
+      hash = (53 * hash) + getAccountId().hashCode();
+      hash = (37 * hash) + SDKVERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getSdkVersion().hashCode();
+      hash = (37 * hash) + SYSTEM_FIELD_NUMBER;
+      hash = (53 * hash) + getSystem().hashCode();
+      hash = (37 * hash) + PLATFORM_FIELD_NUMBER;
+      hash = (53 * hash) + getPlatform().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -499,6 +1080,20 @@ public final class PlayerMsg {
 
         verstion_ = "";
 
+        deviceId_ = "";
+
+        adChannel_ = "";
+
+        sdkPayChannel_ = "";
+
+        accountId_ = "";
+
+        sdkVersion_ = "";
+
+        system_ = "";
+
+        platform_ = "";
+
         return this;
       }
 
@@ -528,6 +1123,13 @@ public final class PlayerMsg {
         result.sessionId_ = sessionId_;
         result.reconnect_ = reconnect_;
         result.verstion_ = verstion_;
+        result.deviceId_ = deviceId_;
+        result.adChannel_ = adChannel_;
+        result.sdkPayChannel_ = sdkPayChannel_;
+        result.accountId_ = accountId_;
+        result.sdkVersion_ = sdkVersion_;
+        result.system_ = system_;
+        result.platform_ = platform_;
         onBuilt();
         return result;
       }
@@ -585,6 +1187,34 @@ public final class PlayerMsg {
         }
         if (!other.getVerstion().isEmpty()) {
           verstion_ = other.verstion_;
+          onChanged();
+        }
+        if (!other.getDeviceId().isEmpty()) {
+          deviceId_ = other.deviceId_;
+          onChanged();
+        }
+        if (!other.getAdChannel().isEmpty()) {
+          adChannel_ = other.adChannel_;
+          onChanged();
+        }
+        if (!other.getSdkPayChannel().isEmpty()) {
+          sdkPayChannel_ = other.sdkPayChannel_;
+          onChanged();
+        }
+        if (!other.getAccountId().isEmpty()) {
+          accountId_ = other.accountId_;
+          onChanged();
+        }
+        if (!other.getSdkVersion().isEmpty()) {
+          sdkVersion_ = other.sdkVersion_;
+          onChanged();
+        }
+        if (!other.getSystem().isEmpty()) {
+          system_ = other.system_;
+          onChanged();
+        }
+        if (!other.getPlatform().isEmpty()) {
+          platform_ = other.platform_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -847,6 +1477,678 @@ public final class PlayerMsg {
   checkByteStringIsUtf8(value);
         
         verstion_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object deviceId_ = "";
+      /**
+       * <pre>
+       *其他一些和BI相关的参数
+       * </pre>
+       *
+       * <code>string deviceId = 14;</code>
+       * @return The deviceId.
+       */
+      public java.lang.String getDeviceId() {
+        java.lang.Object ref = deviceId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          deviceId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *其他一些和BI相关的参数
+       * </pre>
+       *
+       * <code>string deviceId = 14;</code>
+       * @return The bytes for deviceId.
+       */
+      public com.google.protobuf.ByteString
+          getDeviceIdBytes() {
+        java.lang.Object ref = deviceId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          deviceId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *其他一些和BI相关的参数
+       * </pre>
+       *
+       * <code>string deviceId = 14;</code>
+       * @param value The deviceId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        deviceId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *其他一些和BI相关的参数
+       * </pre>
+       *
+       * <code>string deviceId = 14;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeviceId() {
+        
+        deviceId_ = getDefaultInstance().getDeviceId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *其他一些和BI相关的参数
+       * </pre>
+       *
+       * <code>string deviceId = 14;</code>
+       * @param value The bytes for deviceId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        deviceId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object adChannel_ = "";
+      /**
+       * <pre>
+       *推广渠道id
+       * </pre>
+       *
+       * <code>string adChannel = 21;</code>
+       * @return The adChannel.
+       */
+      public java.lang.String getAdChannel() {
+        java.lang.Object ref = adChannel_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          adChannel_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *推广渠道id
+       * </pre>
+       *
+       * <code>string adChannel = 21;</code>
+       * @return The bytes for adChannel.
+       */
+      public com.google.protobuf.ByteString
+          getAdChannelBytes() {
+        java.lang.Object ref = adChannel_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          adChannel_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *推广渠道id
+       * </pre>
+       *
+       * <code>string adChannel = 21;</code>
+       * @param value The adChannel to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdChannel(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        adChannel_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *推广渠道id
+       * </pre>
+       *
+       * <code>string adChannel = 21;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAdChannel() {
+        
+        adChannel_ = getDefaultInstance().getAdChannel();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *推广渠道id
+       * </pre>
+       *
+       * <code>string adChannel = 21;</code>
+       * @param value The bytes for adChannel to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdChannelBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        adChannel_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object sdkPayChannel_ = "";
+      /**
+       * <pre>
+       *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+       * </pre>
+       *
+       * <code>string sdkPayChannel = 13;</code>
+       * @return The sdkPayChannel.
+       */
+      public java.lang.String getSdkPayChannel() {
+        java.lang.Object ref = sdkPayChannel_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sdkPayChannel_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+       * </pre>
+       *
+       * <code>string sdkPayChannel = 13;</code>
+       * @return The bytes for sdkPayChannel.
+       */
+      public com.google.protobuf.ByteString
+          getSdkPayChannelBytes() {
+        java.lang.Object ref = sdkPayChannel_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sdkPayChannel_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+       * </pre>
+       *
+       * <code>string sdkPayChannel = 13;</code>
+       * @param value The sdkPayChannel to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSdkPayChannel(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        sdkPayChannel_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+       * </pre>
+       *
+       * <code>string sdkPayChannel = 13;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSdkPayChannel() {
+        
+        sdkPayChannel_ = getDefaultInstance().getSdkPayChannel();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *充值渠道id ：0010安卓充值 ， 0020 IOS充值
+       * </pre>
+       *
+       * <code>string sdkPayChannel = 13;</code>
+       * @param value The bytes for sdkPayChannel to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSdkPayChannelBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        sdkPayChannel_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object accountId_ = "";
+      /**
+       * <pre>
+       *登录账号id，这里是微信的unionid
+       * </pre>
+       *
+       * <code>string accountId = 11;</code>
+       * @return The accountId.
+       */
+      public java.lang.String getAccountId() {
+        java.lang.Object ref = accountId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          accountId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *登录账号id，这里是微信的unionid
+       * </pre>
+       *
+       * <code>string accountId = 11;</code>
+       * @return The bytes for accountId.
+       */
+      public com.google.protobuf.ByteString
+          getAccountIdBytes() {
+        java.lang.Object ref = accountId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          accountId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *登录账号id，这里是微信的unionid
+       * </pre>
+       *
+       * <code>string accountId = 11;</code>
+       * @param value The accountId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        accountId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *登录账号id，这里是微信的unionid
+       * </pre>
+       *
+       * <code>string accountId = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccountId() {
+        
+        accountId_ = getDefaultInstance().getAccountId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *登录账号id，这里是微信的unionid
+       * </pre>
+       *
+       * <code>string accountId = 11;</code>
+       * @param value The bytes for accountId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        accountId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object sdkVersion_ = "";
+      /**
+       * <pre>
+       *  SDK版本号：小游戏定死为“NULL”
+       * </pre>
+       *
+       * <code>string sdkVersion = 22;</code>
+       * @return The sdkVersion.
+       */
+      public java.lang.String getSdkVersion() {
+        java.lang.Object ref = sdkVersion_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sdkVersion_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *  SDK版本号：小游戏定死为“NULL”
+       * </pre>
+       *
+       * <code>string sdkVersion = 22;</code>
+       * @return The bytes for sdkVersion.
+       */
+      public com.google.protobuf.ByteString
+          getSdkVersionBytes() {
+        java.lang.Object ref = sdkVersion_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sdkVersion_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *  SDK版本号：小游戏定死为“NULL”
+       * </pre>
+       *
+       * <code>string sdkVersion = 22;</code>
+       * @param value The sdkVersion to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSdkVersion(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        sdkVersion_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *  SDK版本号：小游戏定死为“NULL”
+       * </pre>
+       *
+       * <code>string sdkVersion = 22;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSdkVersion() {
+        
+        sdkVersion_ = getDefaultInstance().getSdkVersion();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *  SDK版本号：小游戏定死为“NULL”
+       * </pre>
+       *
+       * <code>string sdkVersion = 22;</code>
+       * @param value The bytes for sdkVersion to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSdkVersionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        sdkVersion_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object system_ = "";
+      /**
+       * <pre>
+       *  系统: 小游戏定死“system”
+       * </pre>
+       *
+       * <code>string system = 23;</code>
+       * @return The system.
+       */
+      public java.lang.String getSystem() {
+        java.lang.Object ref = system_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          system_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *  系统: 小游戏定死“system”
+       * </pre>
+       *
+       * <code>string system = 23;</code>
+       * @return The bytes for system.
+       */
+      public com.google.protobuf.ByteString
+          getSystemBytes() {
+        java.lang.Object ref = system_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          system_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *  系统: 小游戏定死“system”
+       * </pre>
+       *
+       * <code>string system = 23;</code>
+       * @param value The system to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSystem(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        system_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *  系统: 小游戏定死“system”
+       * </pre>
+       *
+       * <code>string system = 23;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSystem() {
+        
+        system_ = getDefaultInstance().getSystem();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *  系统: 小游戏定死“system”
+       * </pre>
+       *
+       * <code>string system = 23;</code>
+       * @param value The bytes for system to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSystemBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        system_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object platform_ = "";
+      /**
+       * <pre>
+       *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+       * </pre>
+       *
+       * <code>string platform = 25;</code>
+       * @return The platform.
+       */
+      public java.lang.String getPlatform() {
+        java.lang.Object ref = platform_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          platform_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+       * </pre>
+       *
+       * <code>string platform = 25;</code>
+       * @return The bytes for platform.
+       */
+      public com.google.protobuf.ByteString
+          getPlatformBytes() {
+        java.lang.Object ref = platform_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          platform_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+       * </pre>
+       *
+       * <code>string platform = 25;</code>
+       * @param value The platform to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlatform(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        platform_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+       * </pre>
+       *
+       * <code>string platform = 25;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlatform() {
+        
+        platform_ = getDefaultInstance().getPlatform();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+       * </pre>
+       *
+       * <code>string platform = 25;</code>
+       * @param value The bytes for platform to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlatformBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        platform_ = value;
         onChanged();
         return this;
       }
@@ -30753,87 +32055,91 @@ public final class PlayerMsg {
     java.lang.String[] descriptorData = {
       "\n\017PlayerMsg.proto\022\006Protos\032\017RewardMsg.pro" +
       "to\032\rBaseMsg.proto\032\rShopMsg.proto\032\017Battle" +
-      "Msg.proto\032\016QuestMsg.proto\"U\n\033PlayerLogin" +
-      "Request_01000001\022\021\n\tsessionId\030\001 \001(\t\022\021\n\tr" +
-      "econnect\030\002 \001(\010\022\020\n\010verstion\030\003 \001(\t\"d\n\034Play" +
-      "erLoginResponse_01000002\022#\n\004info\030\001 \001(\0132\025" +
-      ".Protos.PlayerAllInfo\022\021\n\treconnect\030\002 \001(\010" +
-      "\022\014\n\004time\030\003 \001(\t\"\033\n\031PlayerLogoutPush_01100" +
-      "030\"*\n\032PlayerNameRequest_01000011\022\014\n\004nam" +
-      "e\030\001 \001(\t\"\035\n\033PlayerNameResponse_01000012\"*" +
-      "\n\032PlayerHeadRequest_01000013\022\014\n\004head\030\001 \001" +
-      "(\005\"\035\n\033PlayerHeadResponse_01000014\"4\n\037Pla" +
-      "yerHeadFrameRequest_01000015\022\021\n\theadFram" +
-      "e\030\001 \001(\005\"\"\n PlayerHeadFrameResponse_01000" +
-      "016\"-\n\034PlayerGenderRequest_01000017\022\r\n\005i" +
-      "sMan\030\001 \001(\010\"\037\n\035PlayerGenderResponse_01000" +
-      "018\"E\n\036PlayerReconnecRequest_01000065\022\021\n" +
-      "\tsessionId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\r\"Z\n\037Pl" +
-      "ayerReconnecResponse_01000066\022)\n\nplayerI" +
-      "nfo\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\014\n\004time" +
-      "\030\002 \001(\t\"!\n\037PlayerHeartbeatRequest_0100000" +
-      "5\"0\n PlayerHeartbeatResponse_01000006\022\014\n" +
-      "\004time\030\001 \001(\t\"4\n\037PlayerBriefInfoRequest_01" +
-      "000007\022\021\n\tplayerIds\030\001 \003(\t\"M\n PlayerBrief" +
-      "InfoResponse_01000008\022)\n\007players\030\001 \003(\0132\030" +
-      ".Protos.SimplePlayerInfo\"L\n$PlayerBriefI" +
-      "nfoOtherRequest_01000009\022\021\n\tplayerIds\030\001 " +
-      "\003(\t\022\021\n\tserverIds\030\002 \003(\t\"R\n%PlayerBriefInf" +
-      "oOtherResponse_0100000a\022)\n\007players\030\001 \003(\013" +
-      "2\030.Protos.SimplePlayerInfo\"@\n\032PlayerShow" +
-      "Request_01000039\022\020\n\010playerId\030\001 \001(\t\022\020\n\010se" +
-      "rverId\030\002 \001(\t\"E\n\033PlayerShowResponse_01000" +
-      "03a\022&\n\006player\030\001 \001(\0132\026.Protos.PlayerShowI" +
-      "nfo\"1\n\035PlayerAlchemyRequest_01000040\022\020\n\010" +
-      "configId\030\001 \001(\r\" \n\036PlayerAlchemyResponse_" +
-      "01000041\"(\n\030PlayerResetPush_01100016\022\014\n\004" +
-      "type\030\001 \001(\005\")\n\030PlayerErrorPush_01000099\022\r" +
-      "\n\005error\030\001 \001(\t\"4\n\027ItemUseRequest_01000050" +
-      "\022\n\n\002id\030\001 \001(\r\022\r\n\005param\030\002 \001(\r\">\n\030ItemUseRe" +
-      "sponse_01000051\022\"\n\006reward\030\001 \003(\0132\022.Protos" +
-      ".RewardInfo\".\n\013AlchemyInfo\022\020\n\010configId\030\001" +
-      " \001(\r\022\r\n\005level\030\002 \001(\r\"E\n\033PlayerCloudBoxPus" +
-      "h_01100040\022&\n\010cloudBox\030\001 \001(\0132\024.Protos.Cl" +
-      "oudBoxInfo\" \n\036PlayerCloudBoxRequest_0100" +
-      "0042\"F\n\037PlayerCloudBoxResponse_01000043\022" +
-      "#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"0\n\014" +
-      "CloudBoxInfo\022 \n\005items\030\005 \003(\0132\021.Protos.Goo" +
-      "dsInfo\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name" +
-      "\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\th" +
-      "eadFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\376\t\n\r" +
-      "PlayerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Protos.P" +
-      "layerInfo\0221\n\006assets\030\002 \003(\0132!.Protos.Playe" +
-      "rAllInfo.AssetsEntry\022=\n\014assetRecover\030\003 \003" +
-      "(\0132\'.Protos.PlayerAllInfo.AssetRecoverEn" +
-      "try\0221\n\006levels\030\004 \003(\0132!.Protos.PlayerAllIn" +
-      "fo.LevelsEntry\022\037\n\005items\030\005 \003(\0132\020.Protos.I" +
-      "temInfo\022)\n\010fashions\030\006 \003(\0132\027.Protos.HeroF" +
-      "ashionInfo\022\037\n\005heros\030\007 \003(\0132\020.Protos.HeroI" +
-      "nfo\022%\n\006swords\030\010 \003(\0132\025.Protos.HeroSwordIn" +
-      "fo\022\024\n\014heroSwordUid\030\t \001(\t\022\035\n\004gems\030\n \003(\0132\017" +
-      ".Protos.GemInfo\022!\n\006equips\030\013 \003(\0132\021.Protos" +
-      ".EquipInfo\022)\n\nequipParts\030\014 \003(\0132\025.Protos." +
-      "EquipPartInfo\0225\n\010alchemys\030\016 \003(\0132#.Protos" +
-      ".PlayerAllInfo.AlchemysEntry\0223\n\007dragons\030" +
-      "\020 \003(\0132\".Protos.PlayerAllInfo.DragonsEntr" +
-      "y\022=\n\014dragonSkills\030\021 \003(\0132\'.Protos.PlayerA" +
-      "llInfo.DragonSkillsEntry\022#\n\007battles\030\036 \003(" +
-      "\0132\022.Protos.BattleInfo\022\026\n\016freeRougeTimes\030" +
-      "\037 \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos.Month" +
-      "CardProto\022\024\n\014chapterPacks\030) \003(\r\022&\n\010cloud" +
-      "Box\0302 \001(\0132\024.Protos.CloudBoxInfo\022\"\n\006patro" +
-      "l\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013questGrou" +
-      "ps\0307 \003(\0132\026.Protos.QuestGroupInfo\022A\n\026ques" +
-      "tGroupPointRewards\0308 \003(\0132!.Protos.QuestG" +
-      "roupPointRewardInfo\032-\n\013AssetsEntry\022\013\n\003ke" +
-      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecov" +
-      "erEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032" +
-      "-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001" +
-      "(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
-      "value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001" +
-      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsE" +
-      "ntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031" +
-      "cn.game.protocol.protobufb\006proto3"
+      "Msg.proto\032\016QuestMsg.proto\"\332\001\n\033PlayerLogi" +
+      "nRequest_01000001\022\021\n\tsessionId\030\001 \001(\t\022\021\n\t" +
+      "reconnect\030\002 \001(\010\022\020\n\010verstion\030\003 \001(\t\022\020\n\010dev" +
+      "iceId\030\016 \001(\t\022\021\n\tadChannel\030\025 \001(\t\022\025\n\rsdkPay" +
+      "Channel\030\r \001(\t\022\021\n\taccountId\030\013 \001(\t\022\022\n\nsdkV" +
+      "ersion\030\026 \001(\t\022\016\n\006system\030\027 \001(\t\022\020\n\010platform" +
+      "\030\031 \001(\t\"d\n\034PlayerLoginResponse_01000002\022#" +
+      "\n\004info\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\021\n\tr" +
+      "econnect\030\002 \001(\010\022\014\n\004time\030\003 \001(\t\"\033\n\031PlayerLo" +
+      "goutPush_01100030\"*\n\032PlayerNameRequest_0" +
+      "1000011\022\014\n\004name\030\001 \001(\t\"\035\n\033PlayerNameRespo" +
+      "nse_01000012\"*\n\032PlayerHeadRequest_010000" +
+      "13\022\014\n\004head\030\001 \001(\005\"\035\n\033PlayerHeadResponse_0" +
+      "1000014\"4\n\037PlayerHeadFrameRequest_010000" +
+      "15\022\021\n\theadFrame\030\001 \001(\005\"\"\n PlayerHeadFrame" +
+      "Response_01000016\"-\n\034PlayerGenderRequest" +
+      "_01000017\022\r\n\005isMan\030\001 \001(\010\"\037\n\035PlayerGender" +
+      "Response_01000018\"E\n\036PlayerReconnecReque" +
+      "st_01000065\022\021\n\tsessionId\030\001 \001(\t\022\020\n\010player" +
+      "Id\030\002 \001(\r\"Z\n\037PlayerReconnecResponse_01000" +
+      "066\022)\n\nplayerInfo\030\001 \001(\0132\025.Protos.PlayerA" +
+      "llInfo\022\014\n\004time\030\002 \001(\t\"!\n\037PlayerHeartbeatR" +
+      "equest_01000005\"0\n PlayerHeartbeatRespon" +
+      "se_01000006\022\014\n\004time\030\001 \001(\t\"4\n\037PlayerBrief" +
+      "InfoRequest_01000007\022\021\n\tplayerIds\030\001 \003(\t\"" +
+      "M\n PlayerBriefInfoResponse_01000008\022)\n\007p" +
+      "layers\030\001 \003(\0132\030.Protos.SimplePlayerInfo\"L" +
+      "\n$PlayerBriefInfoOtherRequest_01000009\022\021" +
+      "\n\tplayerIds\030\001 \003(\t\022\021\n\tserverIds\030\002 \003(\t\"R\n%" +
+      "PlayerBriefInfoOtherResponse_0100000a\022)\n" +
+      "\007players\030\001 \003(\0132\030.Protos.SimplePlayerInfo" +
+      "\"@\n\032PlayerShowRequest_01000039\022\020\n\010player" +
+      "Id\030\001 \001(\t\022\020\n\010serverId\030\002 \001(\t\"E\n\033PlayerShow" +
+      "Response_0100003a\022&\n\006player\030\001 \001(\0132\026.Prot" +
+      "os.PlayerShowInfo\"1\n\035PlayerAlchemyReques" +
+      "t_01000040\022\020\n\010configId\030\001 \001(\r\" \n\036PlayerAl" +
+      "chemyResponse_01000041\"(\n\030PlayerResetPus" +
+      "h_01100016\022\014\n\004type\030\001 \001(\005\")\n\030PlayerErrorP" +
+      "ush_01000099\022\r\n\005error\030\001 \001(\t\"4\n\027ItemUseRe" +
+      "quest_01000050\022\n\n\002id\030\001 \001(\r\022\r\n\005param\030\002 \001(" +
+      "\r\">\n\030ItemUseResponse_01000051\022\"\n\006reward\030" +
+      "\001 \003(\0132\022.Protos.RewardInfo\".\n\013AlchemyInfo" +
+      "\022\020\n\010configId\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"E\n\033Pla" +
+      "yerCloudBoxPush_01100040\022&\n\010cloudBox\030\001 \001" +
+      "(\0132\024.Protos.CloudBoxInfo\" \n\036PlayerCloudB" +
+      "oxRequest_01000042\"F\n\037PlayerCloudBoxResp" +
+      "onse_01000043\022#\n\007rewards\030\001 \003(\0132\022.Protos." +
+      "RewardInfo\"0\n\014CloudBoxInfo\022 \n\005items\030\005 \003(" +
+      "\0132\021.Protos.GoodsInfo\"k\n\nPlayerInfo\022\n\n\002id" +
+      "\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004h" +
+      "ead\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offlineT" +
+      "ime\030\026 \001(\t\"\376\t\n\rPlayerAllInfo\022\"\n\006player\030\001 " +
+      "\001(\0132\022.Protos.PlayerInfo\0221\n\006assets\030\002 \003(\0132" +
+      "!.Protos.PlayerAllInfo.AssetsEntry\022=\n\014as" +
+      "setRecover\030\003 \003(\0132\'.Protos.PlayerAllInfo." +
+      "AssetRecoverEntry\0221\n\006levels\030\004 \003(\0132!.Prot" +
+      "os.PlayerAllInfo.LevelsEntry\022\037\n\005items\030\005 " +
+      "\003(\0132\020.Protos.ItemInfo\022)\n\010fashions\030\006 \003(\0132" +
+      "\027.Protos.HeroFashionInfo\022\037\n\005heros\030\007 \003(\0132" +
+      "\020.Protos.HeroInfo\022%\n\006swords\030\010 \003(\0132\025.Prot" +
+      "os.HeroSwordInfo\022\024\n\014heroSwordUid\030\t \001(\t\022\035" +
+      "\n\004gems\030\n \003(\0132\017.Protos.GemInfo\022!\n\006equips\030" +
+      "\013 \003(\0132\021.Protos.EquipInfo\022)\n\nequipParts\030\014" +
+      " \003(\0132\025.Protos.EquipPartInfo\0225\n\010alchemys\030" +
+      "\016 \003(\0132#.Protos.PlayerAllInfo.AlchemysEnt" +
+      "ry\0223\n\007dragons\030\020 \003(\0132\".Protos.PlayerAllIn" +
+      "fo.DragonsEntry\022=\n\014dragonSkills\030\021 \003(\0132\'." +
+      "Protos.PlayerAllInfo.DragonSkillsEntry\022#" +
+      "\n\007battles\030\036 \003(\0132\022.Protos.BattleInfo\022\026\n\016f" +
+      "reeRougeTimes\030\037 \001(\005\022*\n\nmonthCards\030( \003(\0132" +
+      "\026.Protos.MonthCardProto\022\024\n\014chapterPacks\030" +
+      ") \003(\r\022&\n\010cloudBox\0302 \001(\0132\024.Protos.CloudBo" +
+      "xInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos.PatrolInf" +
+      "o\022+\n\013questGroups\0307 \003(\0132\026.Protos.QuestGro" +
+      "upInfo\022A\n\026questGroupPointRewards\0308 \003(\0132!" +
+      ".Protos.QuestGroupPointRewardInfo\032-\n\013Ass" +
+      "etsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001" +
+      "\0323\n\021AssetRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
+      "lue\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(" +
+      "\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n" +
+      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014Dragons" +
+      "Entry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n" +
+      "\021DragonSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
+      "\030\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.protobufb" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -30849,7 +32155,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerLoginRequest_01000001_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerLoginRequest_01000001_descriptor,
-        new java.lang.String[] { "SessionId", "Reconnect", "Verstion", });
+        new java.lang.String[] { "SessionId", "Reconnect", "Verstion", "DeviceId", "AdChannel", "SdkPayChannel", "AccountId", "SdkVersion", "System", "Platform", });
     internal_static_Protos_PlayerLoginResponse_01000002_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_PlayerLoginResponse_01000002_fieldAccessorTable = new

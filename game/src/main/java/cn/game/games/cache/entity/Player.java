@@ -25,6 +25,7 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.develop.dragon.DragonModule;
@@ -75,6 +76,7 @@ public class Player  {
 	private volatile boolean islogouting;
 	/** 玩家基本数据 */
 	private PlayerData data;
+	private Account account;
 	private transient GameClient gameClient;
 	private List<Long> timerTask = new ArrayList<>();
 
@@ -349,9 +351,16 @@ public class Player  {
 	 * @return
 	 */
 	public boolean isFuncOpen(InitialUI type) {
-		return getPlayerModule().getExpLevelMap().getValue(Asset.playerExp.ID) >= type.DisplayLevel;
+		return getLevel() >= type.DisplayLevel;
 	}
 
+	/** 
+	 * 获取玩家等级
+	 * @return
+	 */
+	public int getLevel() {
+		return getPlayerModule().getExpLevelMap().getValue(Asset.playerExp.ID);
+	}
 	public long getPlayerId() {
 		return playerId;
 	}
@@ -400,6 +409,11 @@ public class Player  {
 		this.paymentAction = paymentAction;
 	}
 
-	
-	
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
 }

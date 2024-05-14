@@ -731,6 +731,11 @@ public final class DateUtil {
 		return (int) (System.currentTimeMillis() / 1000); 
 	}
 
+	public static long currentTimeMillis() {
+
+		return System.currentTimeMillis();
+	}
+
 	/**
 	 * @param args
 	 */

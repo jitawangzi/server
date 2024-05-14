@@ -32,6 +32,7 @@ public class SimplePlayer implements Serializable {
 	public String serverId;
 	/** 被点赞数量 */
 	public int praisedCount;
+	public Object accountAdChannel;
 
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
 			String unionName, long offLinetime) {
@@ -202,5 +203,15 @@ public class SimplePlayer implements Serializable {
 			return false;
 		SimplePlayer other = (SimplePlayer) obj;
 		return other.getId() == this.id;
+	}
+
+	public Object getAccountId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getClientDeviceId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
