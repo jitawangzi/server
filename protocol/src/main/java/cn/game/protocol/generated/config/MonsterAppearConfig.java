@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** 战役ID 使用 Battle#战役 表中的ID */
 	public final int BattleID;		
-	/** 刷怪顺序 同ID同时刷 波次 */
+	/** 刷怪波次 */
 	public final int Round;		
 	/** 开始刷怪时间ms；刷怪持续时长ms   自动生成 */
 	public final int[] RoundStartTime;		
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 		BattleID = Integer.parseInt(element.getAttribute("BattleID") == null || element.getAttribute("BattleID").length() == 0 ? "0"
 			: element.getAttribute("BattleID")); // 战役ID 使用 Battle#战役 表中的ID
 		Round = Integer.parseInt(element.getAttribute("Round") == null || element.getAttribute("Round").length() == 0 ? "0"
-			: element.getAttribute("Round")); // 刷怪顺序 同ID同时刷 波次
+			: element.getAttribute("Round")); // 刷怪波次
 		String RoundStartTimeString = element.getAttribute("RoundStartTime"); // 开始刷怪时间ms；刷怪持续时长ms   自动生成
 		if (RoundStartTimeString != null && RoundStartTimeString.length() > 0) {
 			String[] RoundStartTimeStrings = RoundStartTimeString.split(";"); 

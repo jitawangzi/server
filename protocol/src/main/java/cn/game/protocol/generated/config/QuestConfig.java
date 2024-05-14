@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 	public final int Condition;		
 	/** 任务奖励ID */
 	public final int Reward;		
-	/** 分组，注意分组要唯一， 也就是不同类型的任务组不能相同 */
+	/** 分组，特别注意分组要唯一， 也就是不同类型的任务，分组不能相同 */
 	public final int Group;		
 	/** 当任务完成时 开启的新任务id */
 	public final int[] OpenQuests;		
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 		Reward = Integer.parseInt(element.getAttribute("Reward") == null || element.getAttribute("Reward").length() == 0 ? "0"
 			: element.getAttribute("Reward")); // 任务奖励ID
 		Group = Integer.parseInt(element.getAttribute("Group") == null || element.getAttribute("Group").length() == 0 ? "0"
-			: element.getAttribute("Group")); // 分组，注意分组要唯一， 也就是不同类型的任务组不能相同
+			: element.getAttribute("Group")); // 分组，特别注意分组要唯一， 也就是不同类型的任务，分组不能相同
 		String OpenQuestsString = element.getAttribute("OpenQuests"); // 当任务完成时 开启的新任务id
 		if (OpenQuestsString != null && OpenQuestsString.length() > 0) {
 			String[] OpenQuestsStrings = OpenQuestsString.split(";"); 

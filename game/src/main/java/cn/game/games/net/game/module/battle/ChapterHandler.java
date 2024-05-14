@@ -13,12 +13,10 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.BattleFieldConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.protocol.generated.manager.BattleFieldManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -311,7 +309,7 @@ public class ChapterHandler extends BaseHandler {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		
 		BattleConfig battleConfig = BattleManager.instance().get(dungeonId);
-		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);
+//		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);
 		/*		if (battleConfig.BattleFieldID != id) {
 					client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
 					return;

@@ -22,10 +22,6 @@ public class GlobalConst extends ResourceListener {
 	public static int[][] initItems;		
 	/** 【UID创建取值】参数1版本标识，参数2自增函数起始值 */
 	public static int[] CreateUID;		
-	/** 【肉鸽】全场AOE类肉鸽规定 */
-	public static int[] Rogueroll1;		
-	/** 【肉鸽】全场纯加属性类肉鸽规定 */
-	public static int[] Rogueroll2;		
 	/** 【彩蛋肉鸽】触发次数与几率 */
 	public static int[] RogueEasterEgg;		
 	/** 【彩蛋肉鸽】肉鸽组 */
@@ -42,14 +38,6 @@ public class GlobalConst extends ResourceListener {
 	public static int[][] RandomCLoudAward;		
 	/** 【队长加成】 */
 	public static int[][] CaptainBonus;		
-	/** 【任务】每日任务宝箱积分 */
-	public static int[] DailyPoint;		
-	/** 【任务】每日任务宝箱奖励 */
-	public static int[][] DailyTask;		
-	/** 【任务】每周任务宝箱积分 */
-	public static int[] WeeklyPoint;		
-	/** 【任务】每周任务宝箱奖励 */
-	public static int[][] WeeklyTask;		
 	/** 【挂机】快速巡逻时长 */
 	public static int QuickPatrolDuration;		
 	/** 【挂机】巡逻时长上限 */
@@ -76,10 +64,6 @@ public class GlobalConst extends ResourceListener {
 	public static int[][] AdvancedCardDrawGroup;		
 	/** 【请神】至尊抽卡神将显示组 */
 	public static int[][] UltimateCardDrawGroup;		
-	/** 【7日任务】宝箱积分 */
-	public static int[] SevenDaysPoint;		
-	/** 【7日任务】宝箱奖励 */
-	public static int[][] SevenDaysReward;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -118,30 +102,6 @@ public class GlobalConst extends ResourceListener {
 			CreateUID = CreateUIDTemp ;			
 		} else {
 			CreateUID = new int[] {};
-		}
-		String Rogueroll1String = element.getAttribute("Rogueroll1"); // 【肉鸽】全场AOE类肉鸽规定
-		if (Rogueroll1String != null && Rogueroll1String.length() > 0) {
-			String[] Rogueroll1Strings = Rogueroll1String.split(";"); 
-			int[] Rogueroll1Temp = new int[Rogueroll1Strings.length] ; 
-			for (int i = 0; i < Rogueroll1Strings.length; i++) {
-				int temp = Integer.parseInt(Rogueroll1Strings[i]);	
-				Rogueroll1Temp[i] = temp;
-			}
-			Rogueroll1 = Rogueroll1Temp ;			
-		} else {
-			Rogueroll1 = new int[] {};
-		}
-		String Rogueroll2String = element.getAttribute("Rogueroll2"); // 【肉鸽】全场纯加属性类肉鸽规定
-		if (Rogueroll2String != null && Rogueroll2String.length() > 0) {
-			String[] Rogueroll2Strings = Rogueroll2String.split(";"); 
-			int[] Rogueroll2Temp = new int[Rogueroll2Strings.length] ; 
-			for (int i = 0; i < Rogueroll2Strings.length; i++) {
-				int temp = Integer.parseInt(Rogueroll2Strings[i]);	
-				Rogueroll2Temp[i] = temp;
-			}
-			Rogueroll2 = Rogueroll2Temp ;			
-		} else {
-			Rogueroll2 = new int[] {};
 		}
 		String RogueEasterEggString = element.getAttribute("RogueEasterEgg"); // 【彩蛋肉鸽】触发次数与几率
 		if (RogueEasterEggString != null && RogueEasterEggString.length() > 0) {
@@ -231,64 +191,6 @@ public class GlobalConst extends ResourceListener {
 		} else {
 			CaptainBonus = new int[][] {};
 		}
-		String DailyPointString = element.getAttribute("DailyPoint"); // 【任务】每日任务宝箱积分
-		if (DailyPointString != null && DailyPointString.length() > 0) {
-			String[] DailyPointStrings = DailyPointString.split(";"); 
-			int[] DailyPointTemp = new int[DailyPointStrings.length] ; 
-			for (int i = 0; i < DailyPointStrings.length; i++) {
-				int temp = Integer.parseInt(DailyPointStrings[i]);	
-				DailyPointTemp[i] = temp;
-			}
-			DailyPoint = DailyPointTemp ;			
-		} else {
-			DailyPoint = new int[] {};
-		}
-		String DailyTaskString = element.getAttribute("DailyTask"); // 【任务】每日任务宝箱奖励
-		if (DailyTaskString != null && DailyTaskString.length() > 0) {
-			String[] DailyTaskStrings = DailyTaskString.split("\\|"); 
-			int[][] DailyTaskTemp = new int[DailyTaskStrings.length][] ; 
-			for (int i = 0; i < DailyTaskStrings.length; i++) {
-				String[] DailyTaskStrings2 = DailyTaskStrings[i].split(";"); 
-				int[] array = new int[DailyTaskStrings2.length];
-				for (int j = 0; j < DailyTaskStrings2.length; j++) {
-					int temp = Integer.parseInt(DailyTaskStrings2[j]);	
-					array[j] = temp;
-				}
-				DailyTaskTemp[i] = array;
-			}
-			DailyTask = DailyTaskTemp ;			
-		} else {
-			DailyTask = new int[][] {};
-		}
-		String WeeklyPointString = element.getAttribute("WeeklyPoint"); // 【任务】每周任务宝箱积分
-		if (WeeklyPointString != null && WeeklyPointString.length() > 0) {
-			String[] WeeklyPointStrings = WeeklyPointString.split(";"); 
-			int[] WeeklyPointTemp = new int[WeeklyPointStrings.length] ; 
-			for (int i = 0; i < WeeklyPointStrings.length; i++) {
-				int temp = Integer.parseInt(WeeklyPointStrings[i]);	
-				WeeklyPointTemp[i] = temp;
-			}
-			WeeklyPoint = WeeklyPointTemp ;			
-		} else {
-			WeeklyPoint = new int[] {};
-		}
-		String WeeklyTaskString = element.getAttribute("WeeklyTask"); // 【任务】每周任务宝箱奖励
-		if (WeeklyTaskString != null && WeeklyTaskString.length() > 0) {
-			String[] WeeklyTaskStrings = WeeklyTaskString.split("\\|"); 
-			int[][] WeeklyTaskTemp = new int[WeeklyTaskStrings.length][] ; 
-			for (int i = 0; i < WeeklyTaskStrings.length; i++) {
-				String[] WeeklyTaskStrings2 = WeeklyTaskStrings[i].split(";"); 
-				int[] array = new int[WeeklyTaskStrings2.length];
-				for (int j = 0; j < WeeklyTaskStrings2.length; j++) {
-					int temp = Integer.parseInt(WeeklyTaskStrings2[j]);	
-					array[j] = temp;
-				}
-				WeeklyTaskTemp[i] = array;
-			}
-			WeeklyTask = WeeklyTaskTemp ;			
-		} else {
-			WeeklyTask = new int[][] {};
-		}
 		QuickPatrolDuration = Integer.parseInt(element.getAttribute("QuickPatrolDuration") == null || element.getAttribute("QuickPatrolDuration").length() == 0 ? "0"
 			: element.getAttribute("QuickPatrolDuration")); // 【挂机】快速巡逻时长
 		MaximumPatrolDuration = Integer.parseInt(element.getAttribute("MaximumPatrolDuration") == null || element.getAttribute("MaximumPatrolDuration").length() == 0 ? "0"
@@ -364,35 +266,6 @@ public class GlobalConst extends ResourceListener {
 			UltimateCardDrawGroup = UltimateCardDrawGroupTemp ;			
 		} else {
 			UltimateCardDrawGroup = new int[][] {};
-		}
-		String SevenDaysPointString = element.getAttribute("SevenDaysPoint"); // 【7日任务】宝箱积分
-		if (SevenDaysPointString != null && SevenDaysPointString.length() > 0) {
-			String[] SevenDaysPointStrings = SevenDaysPointString.split(";"); 
-			int[] SevenDaysPointTemp = new int[SevenDaysPointStrings.length] ; 
-			for (int i = 0; i < SevenDaysPointStrings.length; i++) {
-				int temp = Integer.parseInt(SevenDaysPointStrings[i]);	
-				SevenDaysPointTemp[i] = temp;
-			}
-			SevenDaysPoint = SevenDaysPointTemp ;			
-		} else {
-			SevenDaysPoint = new int[] {};
-		}
-		String SevenDaysRewardString = element.getAttribute("SevenDaysReward"); // 【7日任务】宝箱奖励
-		if (SevenDaysRewardString != null && SevenDaysRewardString.length() > 0) {
-			String[] SevenDaysRewardStrings = SevenDaysRewardString.split("\\|"); 
-			int[][] SevenDaysRewardTemp = new int[SevenDaysRewardStrings.length][] ; 
-			for (int i = 0; i < SevenDaysRewardStrings.length; i++) {
-				String[] SevenDaysRewardStrings2 = SevenDaysRewardStrings[i].split(";"); 
-				int[] array = new int[SevenDaysRewardStrings2.length];
-				for (int j = 0; j < SevenDaysRewardStrings2.length; j++) {
-					int temp = Integer.parseInt(SevenDaysRewardStrings2[j]);	
-					array[j] = temp;
-				}
-				SevenDaysRewardTemp[i] = array;
-			}
-			SevenDaysReward = SevenDaysRewardTemp ;			
-		} else {
-			SevenDaysReward = new int[][] {};
 		}
 	}
 	@Override

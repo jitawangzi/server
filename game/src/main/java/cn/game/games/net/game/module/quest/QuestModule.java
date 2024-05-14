@@ -28,7 +28,6 @@ import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.AchievementMissionConfig;
 import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.MainlineMissionConfig;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -130,49 +129,13 @@ public class QuestModule extends BasePlayerModule {
 		long point = player.getCurrencyModule().getCount(questPointRewardConfig.PointType);
 		List<Integer> activeRewardList = getActiveRewardList(type);
 		if (activeRewardList.contains(index)) {
-			return ErrorMsgEnum.repeat_illegal.getId();
+			return ErrorMsgEnum.repeat_request.getId();
 		}
 		int needPoint = questPointRewardConfig.Stage[index];
 		if (point < needPoint) {
 			return ErrorMsgEnum.illegal_request.getId();
 		}
 		return 0;
-	}
-
-	private int getActivePoint(QuestTypeEnum type) {
-		int id = 0;
-		if (type == QuestTypeEnum.Daily) {
-			id = Asset.DailyPoint.ID;
-		} else if (type == QuestTypeEnum.Weekly) {
-			id = Asset.WeeklyPoint.ID;
-		} else if (type == QuestTypeEnum.SevenDaysCarniva) {
-			id = Asset.SevenDaysPoint.ID;
-		}
-		return (int) player.getCurrencyModule().getCount(id);
-	}
-
-	private int[] getActivePointStage(QuestTypeEnum type) {
-		int[] pointStage = null;
-		if (type == QuestTypeEnum.Daily) {
-			pointStage = GlobalConst.DailyPoint;
-		} else if (type == QuestTypeEnum.Weekly) {
-			pointStage = GlobalConst.WeeklyPoint;
-		} else if (type == QuestTypeEnum.SevenDaysCarniva) {
-			pointStage = GlobalConst.SevenDaysPoint;
-		}
-		return pointStage;
-	}
-
-	public int[] getActivePointReward(QuestTypeEnum type, int index) {
-		int[] reward = null;
-		if (type == QuestTypeEnum.Daily) {
-			reward = GlobalConst.DailyTask[index];
-		} else if (type == QuestTypeEnum.Weekly) {
-			reward = GlobalConst.WeeklyTask[index];
-		} else if (type == QuestTypeEnum.SevenDaysCarniva) {
-			reward = GlobalConst.SevenDaysReward[index];
-		}
-		return reward;
 	}
 
 	public void refreshQuest(QuestTypeEnum type) {

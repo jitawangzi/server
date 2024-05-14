@@ -36,7 +36,7 @@ public enum ErrorMsgEnum{
 	/** 玩家数据校验错误。 */
 	player_check_error(50,"player_check_error","玩家数据校验错误。"),
 	/** 非法的重复操作，例如重复领取某任务奖励等。 */
-	repeat_illegal(51, "repeat", "非法的重复操作，例如重复领取某任务奖励等。"),
+	repeat_request(51, "repeat_request", "非法的重复操作，例如重复领取某任务奖励等。"),
 	/** 请求参数校验错误 */
 	request_parameter_error(52, "request_parameter_error", "请求参数校验错误，例如合法值是1、2、3，却发了0"),
 	/** 非法请求，一般是客户端不够条件进行当前操作 */
@@ -120,7 +120,6 @@ public enum ErrorMsgEnum{
 	shop_item_buy_count_max(371, "shop_item_buy_count_max", "商品购买次数达到上限"),
 	month_card_repeated(372, "month_card_repeated", "月卡重复购买"),
 	month_card_not_exist(373, "month_card_not_exist", "月卡不存在"),
-	month_card_reward_repeated(374, "month_card_reward_repeated", "月卡重复领奖"),
 	month_card_condition(375, "month_card_condition", "月卡没有达到购买条件"),
 	shop_gift_condition(378, "shop_gift_condition", "礼包没有达到购买条件"),
 	shop_gift_repeated(379, "shop_gift_repeated", "礼包重复购买"),

@@ -222,7 +222,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		if (monthCard.getIsBuyRewards()) {
-			client.sendProtocol(resp, ErrorMsgEnum.month_card_reward_repeated.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
@@ -248,7 +248,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		if (monthCard.getIsDayRewards()) {
-			client.sendProtocol(resp, ErrorMsgEnum.month_card_reward_repeated.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);

@@ -20,9 +20,9 @@ import org.w3c.dom.Element;
 	public final int AtkSpeed;		
 	/** 怪物大小 填100=100% */
 	public final int scale;		
-	/** 生命 */
+	/** 生命 小怪100% 头目200% BOSS12000% */
 	public final int HP;		
-	/** 攻击 */
+	/** 攻击 100% */
 	public final int Attack;		
 	/** 技能ID  调用HeroSkillGroup#技能组ID */
 	public final int SkillID;		
@@ -42,9 +42,9 @@ import org.w3c.dom.Element;
 		scale = Integer.parseInt(element.getAttribute("scale") == null || element.getAttribute("scale").length() == 0 ? "0"
 			: element.getAttribute("scale")); // 怪物大小 填100=100%
 		HP = Integer.parseInt(element.getAttribute("HP") == null || element.getAttribute("HP").length() == 0 ? "0"
-			: element.getAttribute("HP")); // 生命
+			: element.getAttribute("HP")); // 生命 小怪100% 头目200% BOSS12000%
 		Attack = Integer.parseInt(element.getAttribute("Attack") == null || element.getAttribute("Attack").length() == 0 ? "0"
-			: element.getAttribute("Attack")); // 攻击
+			: element.getAttribute("Attack")); // 攻击 100%
 		SkillID = Integer.parseInt(element.getAttribute("SkillID") == null || element.getAttribute("SkillID").length() == 0 ? "0"
 			: element.getAttribute("SkillID")); // 技能ID  调用HeroSkillGroup#技能组ID
 		ArtResourceId = Integer.parseInt(element.getAttribute("ArtResourceId") == null || element.getAttribute("ArtResourceId").length() == 0 ? "0"
