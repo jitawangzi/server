@@ -16,7 +16,7 @@ import com.ctrip.framework.apollo.ConfigService;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerList;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.util.GameUtil;
 import cn.game.util.ZkHelper;
 import io.vertx.core.Future;
@@ -104,11 +104,11 @@ public class GameServerStatus {
 
 	public int canLogin(String version) {
 		if (serverInfo == null || serverInfo.getStatus() != ServerList.STATUS_RUN) {
-			return OldErrorMsgEnum.server_status.getId();
+			return ErrorMsgEnum.server_status.getId();
 		}
 		boolean equalsVersion = GameUtil.equalsVersion(version, serverInfo.getVersion());
 		if (!equalsVersion) {
-			return OldErrorMsgEnum.version_mismatch.getId();
+			return ErrorMsgEnum.version_mismatch.getId();
 		}
 		return 0;
 	}

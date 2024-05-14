@@ -10,7 +10,7 @@ import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.manager.GameClientManager;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.SpringContextLoader;
@@ -54,7 +54,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 						GameClientManager.getInstance().addGameClientConnection(ws.binaryHandlerID(), client);
 
 					} else {
-						client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), OldErrorMsgEnum.need_login.getId());
+						client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.need_login.getId());
 						log.warn("session[{}]新连接，但是没有先发登录请求，msgID[{}]", ws, msgID);
 						return;
 					}

@@ -36,7 +36,7 @@ import cn.game.protocol.generated.manager.CityEquipmentStoreManager;
 import cn.game.protocol.generated.manager.CityItemStoreManager;
 import cn.game.protocol.generated.manager.StoreGiftManager;
 import cn.game.protocol.generated.manager.StoreManager;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -197,7 +197,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		StoreConfig goodsConf = StoreManager.getInstance().getStoreConfig(goodsId);
 		// 商品已下架
 		if (!goodsConf.getUpDown()) {
-			return OldErrorMsgEnum.not_sale.getId();
+			return ErrorMsgEnum.not_sale.getId();
 		}
 		int maxBuyCnt = goodsConf.getLimitParameters2();
 		// 商品单价
@@ -208,13 +208,13 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		ResourceEnum moneyType = ResourceEnum.get(goodsConf.getItemUnitPrice());
 		// 订单数量异常
 		if (count <= 0) {
-			return OldErrorMsgEnum.illegal_request.getId();
+			return ErrorMsgEnum.illegal_request.getId();
 		}
 		// 购买数量超上限
 		int haveCnt = getBuyCnt(goodsId);
 		int canBuyCnt = maxBuyCnt - haveCnt;
 		if (count > canBuyCnt) {
-			return OldErrorMsgEnum.buy_over_limit.getId();
+			return ErrorMsgEnum.buy_over_limit.getId();
 		}
 		long moneyCnt = ItemHelper.getCount(player, moneyType.getId());
 		log.info("player:[{}],will buy StoreToken's goods:[{}],count:[{}],buy before [{}],count:[{}]",
@@ -228,9 +228,9 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		} else {
 			log.info("player:[{}],buy StoreToken's goods:[{}],count:[{}] fail !! [{}] not enough", playerId,
 					goodsId, count, moneyType.getName());
-			return OldErrorMsgEnum.resource_not_enough.getId();
+			return ErrorMsgEnum.resource_not_enough.getId();
 		}
-		return OldErrorMsgEnum.ok.getId();
+		return ErrorMsgEnum.ok.getId();
 
 	}
 
@@ -363,27 +363,27 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Pair<OldErrorMsgEnum, RewardItem> buy(long uid, int count) {
+	public Pair<ErrorMsgEnum, RewardItem> buy(long uid, int count) {
 		if (curStoreType == null) {
-			return new Pair(OldErrorMsgEnum.store_need_refresh, null);
+			return new Pair(ErrorMsgEnum.store_need_refresh, null);
 		}
 		if (count <= 0) {
-			return new Pair(OldErrorMsgEnum.illegal_request, null);
+			return new Pair(ErrorMsgEnum.illegal_request, null);
 		}
 		if (needRefresh(curStoreType)) {
-			return new Pair(OldErrorMsgEnum.store_need_refresh, null);
+			return new Pair(ErrorMsgEnum.store_need_refresh, null);
 		}
 		Map<Long, StoreGoods> goodsMap = getGoodsMap(curStoreType);
 		if (goodsMap == null) {
-			return new Pair(OldErrorMsgEnum.player_data_not_found, null);
+			return new Pair(ErrorMsgEnum.player_data_not_found, null);
 		}
 		StoreGoods g = goodsMap.get(uid);
 		if (g == null) {
-			return new Pair(OldErrorMsgEnum.player_data_not_found, null);
+			return new Pair(ErrorMsgEnum.player_data_not_found, null);
 		}
 		int total = g.getCount();
 		if (total < count) {
-			return new Pair(OldErrorMsgEnum.illegal_request, null);
+			return new Pair(ErrorMsgEnum.illegal_request, null);
 		}
 
 		int costId = g.getCostId();
@@ -403,11 +403,11 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		
 		boolean enough = PlayerHelper.isEnough(this.playerId, costId, totalCostCount);
 		if (!enough) {
-			return new Pair(OldErrorMsgEnum.resource_not_enough, null);
+			return new Pair(ErrorMsgEnum.resource_not_enough, null);
 		}
 		
 		ItemModule itemModule = player.getModule(ItemModule.class);
-		OldErrorMsgEnum e = OldErrorMsgEnum.ok;
+		ErrorMsgEnum e = ErrorMsgEnum.ok;
 		RewardItem reward = new RewardItem();
 //		if (itemModule.getBagIdleSize() < 1) {
 //			e = ErrorMsgEnum.item_bag_capacity_not_enough;
@@ -417,7 +417,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		if (g.isEquip()) {
 			Equip equip = g.getEquip();
 //			e = itemModule.addNewEquip(equip, false, false);
-			if (e != OldErrorMsgEnum.ok) {
+			if (e != ErrorMsgEnum.ok) {
 				return new Pair(e, reward);
 			}
 			List<RewardInfo> ret = new ArrayList<>();
@@ -444,7 +444,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 		saveStore(new StoreType[] { curStoreType });
 		//触发事件(局间)
 //		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.ExploreBuyItem, costId, totalCostCount));
-		return new Pair(OldErrorMsgEnum.ok, reward);
+		return new Pair(ErrorMsgEnum.ok, reward);
 	}
 
 	/**

@@ -68,7 +68,7 @@ import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
@@ -776,7 +776,7 @@ public class PlayerHelper {
 			Future<io.vertx.core.eventbus.Message<GamePlayerResponse_7d000016>> requestRemoteServer = VxHolder.requestRemoteServer(serverId, gamePlayerRequest_7d000015);
 			requestRemoteServer.onSuccess(resp -> {
 				int errorCode = resp.body().getErrorCode();
-				if (errorCode == OldErrorMsgEnum.not_online.getId()) {
+				if (errorCode == ErrorMsgEnum.not_online.getId()) {
 					PlayerManager.getInstance().resetOnline(playerId);
 				}
 			}).onFailure(e -> {
@@ -1085,7 +1085,7 @@ public class PlayerHelper {
 					} else {
 						log.error(playerId + " getPlayerLock failed", throwable);
 						gameClient.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(),
-								OldErrorMsgEnum.unknown.getId());
+								ErrorMsgEnum.unknown.getId());
 					}
 				});
 			}
@@ -1232,7 +1232,7 @@ public class PlayerHelper {
 	private static void selectPlayerDataFail(Player player, Throwable e) {
 		log.error("player " + player.getData().getPlayerId() + " login error ", e);
 		PlayerManager.getInstance().deletePlayer(player.getPlayerId());
-		PlayerHelper.sendErrorProtocol(player.getData().getPlayerId(), OldErrorMsgEnum.unknown.getId());
+		PlayerHelper.sendErrorProtocol(player.getData().getPlayerId(), ErrorMsgEnum.unknown.getId());
 	}
 
 	public static String getServerConfigVersion() {

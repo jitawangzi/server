@@ -2,11 +2,10 @@ package cn.game.protocol.manual;
 
 /**
  * 错误类型
- * 
- * 工具生成的，不要手动修改
  */
 public enum ErrorMsgEnum{
 
+	// #系统级错误，1-49
 	/** 正常 */
 	ok(0,"ok","正常"),
 	/** 未知错误 */
@@ -33,31 +32,34 @@ public enum ErrorMsgEnum{
 	not_online(11, "not_online", "不在线/不在当前服务器"),
 	session_not_exist(12, "not_online", "session错误，需要先登陆"),
 
+	// #通用错误 50 - 99
 	/** 玩家数据校验错误。 */
 	player_check_error(50,"player_check_error","玩家数据校验错误。"),
-	/** 重复操作 */
-	repeat(51, "repeat", "重复操作"),
-	/** 资源不足 */
-	resource_not_enough(52,"resource_not_enough","资源不足"),
-	/** 玩家数据不存在 */
-	player_data_not_found(53,"player_data_not_found","玩家数据不存在"),
-	/** 配置表数据找不到 */
-	config_data_not_found(54,"config_data_not_found","配置表数据找不到"),
-	/** 等级不足 */
-	player_level_not_enough(56,"player_level_not_enough","等级不足"),
+	/** 非法的重复操作，例如重复领取某任务奖励等。 */
+	repeat_illegal(51, "repeat", "非法的重复操作，例如重复领取某任务奖励等。"),
 	/** 请求参数校验错误 */
-	request_parameter_error(57,"request_parameter_error","请求参数校验错误"),
-
-	/** 条件校验错误 */
-	condition_check_error(58, "condition_check_error", "条件校验错误"),
-	/** 一般是时间未到之类未开启 */
-	not_open(59, "not_open", "一般是时间未到之类未开启"),
-	/** 功能尚未开启  */
-	func_not_open(60, "func_not_open", "功能尚未开启"),
-	/** 次数不足 */
-	times_limit(62, "times_limit", "次数不足"),
+	request_parameter_error(52, "request_parameter_error", "请求参数校验错误，例如合法值是1、2、3，却发了0"),
 	/** 非法请求，一般是客户端不够条件进行当前操作 */
-	illegal_request(61, "illegal_request", "非法请求，一般是客户端不够条件进行当前操作"),
+	illegal_request(53, "illegal_request", "非法请求，一般是客户端不够条件进行当前操作，例如功能未开启，等级不足等等"),
+
+	/** 玩家数据不存在 */
+	player_data_not_found(54, "player_data_not_found", "玩家数据不存在"),
+	/** 条件校验错误 */
+	condition_check_error(55, "condition_check_error", "条件校验错误"),
+	/** 配置表数据找不到 */
+	config_data_not_found(56, "config_data_not_found", "配置表数据找不到"),
+	/** 等级不足 */
+	player_level_not_enough(57, "player_level_not_enough", "等级不足"),
+	/** 一般是时间未到之类未开启 */
+	not_open(58, "not_open", "一般是时间未到之类未开启"),
+	/** 功能尚未开启  */
+	func_not_open(59, "func_not_open", "功能尚未开启"),
+	/** 资源不足 */
+	resource_not_enough(60, "resource_not_enough", "资源不足"),
+	/** 次数不足 */
+	times_limit(61, "times_limit", "次数不足"),
+
+	// 100+ 业务错误。
 
 	/** 创建角色名字重复 */
 	player_name_repeat(100,"player_name_repeat","创建角色名字重复"),
@@ -71,20 +73,23 @@ public enum ErrorMsgEnum{
 	buy_over_limit(108,"buy_over_limit","购买超上限"),
 	/** 玩家名字不合法  */
 	player_name_illegal(109, "player_name_illegal", "玩家名字不合法"),
-	/** 奖励已领取 */
-	reward_have_received(110,"reward_have_received","奖励已领取"),
-	/** 通行证未启用 */
-	battlepass_not_buy(111,"battlepass_not_buy","通行证未启用"),
-	/** 次数不足 */
-	count_not(112,"count_not","次数不足"),
-	/** 好感度等级奖励已领取 */
-	love_lv_reaward_not(113,"love_lv_reaward_not","好感度等级奖励已领取"),
 	/** 不能出售 */
 	not_sale(114,"not_sale","不能出售"),
 	/** 不能使用 */
 	not_use(115,"not_use","不能使用"),
 	/** 没有权限做此操作 */
 	not_jurisdiction(117,"not_jurisdiction","没有权限做此操作"),
+
+	/** 群组人数已满 */
+	max_group_count(122, "max_group_count", "群组人数已满"),
+	/** 玩家已在群组里 */
+	not_player_group(123, "not_player_group", "玩家已在群组里"),
+	/** 玩家的群组数已满 */
+	not_player_group_count(124, "not_player_group_count", "玩家的群组数已满"),
+	/** 群组不存在 */
+	not_group(116, "not_group", "群组不存在"),
+	store_need_refresh(370, "store_need_refresh", "商店需要刷新"),
+
 	/** 名字不合法 */
 	not_name(118,"not_name","名字不合法"),
 	/** 公告不合法 */
@@ -103,28 +108,16 @@ public enum ErrorMsgEnum{
 	buy_power_count_not(132,"buy_power_count_not","今日购买次数已用完"),
 	/** 初始化异常 */
 	init_error(135,"init_error","初始化异常"),
-	/** 玩家等级不足 */
-	level_not_enough(143,"level_not_enough","玩家等级不足"),
 	/** 前置剧情没有完成 */
 	story_pre_not_finish(145,"story_pre_not_finish","前置剧情没有完成"),
 	/** 该名称已存在 */
 	name_exist(166,"name_exist","该名称已存在"),
-	/** 经验值已满 */
-	exp_max(221,"exp_max","经验值已满"),
-	/** 装备不在背包内 */
-	equip_not_in_bag(222,"equip_not_in_bag","装备不在背包内"),
-	/** 背包道具不足 */
-	item_bag_item_not_enough(240,"item_bag_item_not_enough","背包道具不足"),
-	/** 仓库道具不足 */
-	item_repository_item_not_enough(241,"item_repository_item_not_enough","仓库道具不足"),
-	/** 背包容量不足 */
-	item_bag_capacity_not_enough(242,"item_bag_capacity_not_enough","背包容量不足"),
+
+	// 商店，月卡
 	/** 商品不存在 */
 	shop_item_not_exist(370, "shop_item_not_exist", "商品不存在"),
 	/** 商品购买次数达到上限 */
 	shop_item_buy_count_max(371, "shop_item_buy_count_max", "商品购买次数达到上限"),
-
-	// 商店，月卡
 	month_card_repeated(372, "month_card_repeated", "月卡重复购买"),
 	month_card_not_exist(373, "month_card_not_exist", "月卡不存在"),
 	month_card_reward_repeated(374, "month_card_reward_repeated", "月卡重复领奖"),

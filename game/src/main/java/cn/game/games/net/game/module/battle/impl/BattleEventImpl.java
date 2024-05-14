@@ -11,7 +11,7 @@ import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.protocol.generated.config.BattleEventConfig;
 import cn.game.protocol.generated.manager.BattleEventManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 
@@ -30,7 +30,7 @@ public class BattleEventImpl implements IBattleHandler {
 
 		if (!chapterOp.hasBattleEvent(uid)) {
 
-			return OldErrorMsgEnum.player_check_error.getId();
+			return ErrorMsgEnum.player_check_error.getId();
 		}
 
 		return 0;
@@ -45,7 +45,7 @@ public class BattleEventImpl implements IBattleHandler {
 		long uid = chapterOp.getAttackingUid();
 		if (!chapterOp.hasBattleEvent(uid)) {
 
-			return OldErrorMsgEnum.player_check_error.getId();
+			return ErrorMsgEnum.player_check_error.getId();
 		}
 		// 打完事件，给奖励
 		BattleRandomEvent battleEvent = chapterOp.getBattleEvent(uid);

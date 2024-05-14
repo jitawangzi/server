@@ -41,7 +41,7 @@ import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
 import cn.game.util.DateUtil;
@@ -929,7 +929,7 @@ public class PlayerManager {
 		Date unblock = new Date(Long.parseLong(unblockTime));
 		// 解封时间不合法
 		if (unblock.before(now)) {
-			return OldErrorMsgEnum.unknown.getId();
+			return ErrorMsgEnum.unknown.getId();
 		}
 		// 本来已经封号
 		if (isForbidAccount(playerId)) {
@@ -955,7 +955,7 @@ public class PlayerManager {
 		try {
 			SimplePlayer p = getAndLoadSimplePlayer(playerId);
 			if (p == null) {
-				return OldErrorMsgEnum.player_not_found.getId();
+				return ErrorMsgEnum.player_not_found.getId();
 			}
 			ForbidAccount insert = ForbidAccount.valueOf(p, reason, unblock);
 			DAO.insert(insert);
@@ -965,7 +965,7 @@ public class PlayerManager {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return OldErrorMsgEnum.unknown.getId();
+			return ErrorMsgEnum.unknown.getId();
 		}
 	}
 

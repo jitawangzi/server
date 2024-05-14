@@ -11,7 +11,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.socket.handler.Handler;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.Config;
 import cn.game.util.HexUtil;
@@ -35,7 +35,7 @@ public class DispatcherImpl implements Dispatcher {
 
 		int module = protocol.getMsgID() >> 24;
 		if (Config.isModuleDisabled(module)) {
-			client.sendProtocol(PlayerErrorPush_01000099.newBuilder().setError("该功能暂不可用").build(), OldErrorMsgEnum.unknown.getId());
+			client.sendProtocol(PlayerErrorPush_01000099.newBuilder().setError("该功能暂不可用").build(), ErrorMsgEnum.unknown.getId());
 			return;
 		}
 		Handler handler = MODULE_HANDLERS.get(module);

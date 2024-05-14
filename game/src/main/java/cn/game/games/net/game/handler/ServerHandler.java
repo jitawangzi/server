@@ -23,7 +23,7 @@ import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg.CrossGameForwardPush_7d000003;
 import cn.game.protocol.protobuf.ServerMsg.DbTaskProto;
@@ -109,7 +109,7 @@ public class ServerHandler extends BaseHandler {
 		long playerId = request.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player == null || player.isIslogouting()) {
-			resp.setErrorCode(OldErrorMsgEnum.not_online.getId());
+			resp.setErrorCode(ErrorMsgEnum.not_online.getId());
 			client.sendProtocol(resp.build());
 			return;
 		}

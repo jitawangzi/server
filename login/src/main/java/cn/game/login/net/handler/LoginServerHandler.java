@@ -20,7 +20,7 @@ import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto;
 import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder;

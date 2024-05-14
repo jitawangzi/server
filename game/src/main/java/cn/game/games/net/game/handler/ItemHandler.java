@@ -18,7 +18,7 @@
 //import cn.game.protocol.generated.config.OldItemConfig;
 //import cn.game.protocol.generated.enume.ResourceEnum;
 //import cn.game.protocol.generated.manager.OldItemManager;
-//import cn.game.protocol.manual.OldErrorMsgEnum;
+//import cn.game.protocol.manual.ErrorMsgEnum;
 //import cn.game.protocol.protobuf.ItemMsg;
 //import cn.game.protocol.protobuf.PbProtocol;
 //import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -57,7 +57,7 @@
 //		int num = req.getNum();
 //		OldItemConfig itemConfig = OldItemManager.getInstance().getItemConfig(id);
 //		if (itemConfig == null) {
-//			client.sendProtocol(resp, OldErrorMsgEnum.config_data_not_found.getId());
+//			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
 //			return;
 //		}
 //		ItemModule itemModule = PlayerCacheFactory.getCache(client.getPlayerId(), ItemModule.class);
@@ -121,17 +121,17 @@
 //
 //		OldItemConfig item = OldItemManager.getInstance().getItemConfig(id);
 //		if (item == null) {
-//			client.sendProtocol(resp, OldErrorMsgEnum.config_data_not_found.getId());
+//			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
 //			return;
 //		}
 //		ItemModule itemModule = PlayerCacheFactory.getCache(client.getPlayerId(), ItemModule.class);
 //		long itemCount = itemModule.getCount(id);
 //		if (itemCount < count) {
-//			client.sendProtocol(resp, OldErrorMsgEnum.resource_not_enough.getId());
+//			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 //			return;
 //		}
 //		if (!item.getUse()) {
-//			client.sendProtocol(resp, OldErrorMsgEnum.not_use.getId());
+//			client.sendProtocol(resp, ErrorMsgEnum.not_use.getId());
 //			return;
 //		}
 //
@@ -144,7 +144,7 @@
 //		}
 //
 //		if (addEffects.isEmpty()) {
-//			client.sendProtocol(resp, OldErrorMsgEnum.not_use.getId());
+//			client.sendProtocol(resp, ErrorMsgEnum.not_use.getId());
 //			return;
 //		}
 //

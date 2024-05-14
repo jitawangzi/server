@@ -130,7 +130,7 @@ public class QuestModule extends BasePlayerModule {
 		long point = player.getCurrencyModule().getCount(questPointRewardConfig.PointType);
 		List<Integer> activeRewardList = getActiveRewardList(type);
 		if (activeRewardList.contains(index)) {
-			return ErrorMsgEnum.repeat.getId();
+			return ErrorMsgEnum.repeat_illegal.getId();
 		}
 		int needPoint = questPointRewardConfig.Stage[index];
 		if (point < needPoint) {

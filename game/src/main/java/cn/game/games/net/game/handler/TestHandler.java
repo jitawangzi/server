@@ -42,7 +42,7 @@ import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.TestMsg;
@@ -397,7 +397,7 @@ public class TestHandler extends BaseHandler {
 		TestAddItemResponse_6f000009.Builder resp = TestAddItemResponse_6f000009.newBuilder();
 
 		if (!Config.gmOpen) {
-			client.sendProtocol(resp.build(), OldErrorMsgEnum.unknown.getId());
+			client.sendProtocol(resp.build(), ErrorMsgEnum.unknown.getId());
 			return;
 		}
 
@@ -425,7 +425,7 @@ public class TestHandler extends BaseHandler {
 					}
 				}
 				if (!typeCheck) {
-					client.sendProtocol(resp.build(), OldErrorMsgEnum.config_data_not_found.getId());
+					client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
 					return;
 				}
 				if (goodsType == GoodsTypeEnum.Resource.getId()) {
@@ -484,10 +484,10 @@ public class TestHandler extends BaseHandler {
 
 		} catch (IllegalArgumentException e) {
 			log.error("", e);
-			error = OldErrorMsgEnum.config_data_not_found.getId();
+			error = ErrorMsgEnum.config_data_not_found.getId();
 		} catch (Exception e) {
 			log.error("", e);
-			error = OldErrorMsgEnum.unknown.getId();
+			error = ErrorMsgEnum.unknown.getId();
 		}
 		client.sendProtocol(resp.build(), error);
 	}

@@ -13,7 +13,7 @@ import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.MailMsg.MailDeleteRequest_12000007;
 import cn.game.protocol.protobuf.MailMsg.MailDeleteResponse_12000008;
 import cn.game.protocol.protobuf.MailMsg.MailListResponse_12000002;
@@ -53,7 +53,7 @@ public class MailHandler extends BaseHandler {
 		if (id > 0) {
 			Mail mail = mailModule.get(id);
 			if (mail == null) {
-				client.sendProtocol(resp, OldErrorMsgEnum.player_data_not_found.getId());
+				client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
 				return;
 			}
 			mailModule.see(id);

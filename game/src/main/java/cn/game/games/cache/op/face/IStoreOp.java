@@ -3,7 +3,7 @@ package cn.game.games.cache.op.face;
 import java.util.Collection;
 import java.util.List;
 
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.games.net.game.module.award.RewardItem;
 import cn.game.games.cache.entity.Store;
 import cn.game.games.cache.entity.StoreData;
@@ -39,7 +39,7 @@ public interface IStoreOp {
 	 * @param count
 	 * @return 
 	 */
-	public Pair<OldErrorMsgEnum, RewardItem> buy(long uid, int count);
+	public Pair<ErrorMsgEnum, RewardItem> buy(long uid, int count);
 
 	/**
 	 * 持久化商店数据

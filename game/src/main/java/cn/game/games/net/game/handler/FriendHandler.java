@@ -23,7 +23,7 @@ import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendAddPush_30000023;
 import cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007;
@@ -229,7 +229,7 @@ public class FriendHandler extends BaseHandler {
 			}
 			int error = 0;
 			if (simplePlayer == null) {
-				error = OldErrorMsgEnum.player_not_found.getId();
+				error = ErrorMsgEnum.player_not_found.getId();
 			}
 			response.setPlayer(PbBuilder.buildSimplePlayerInfo(simplePlayer));
 			client.sendProtocol(response.build(), error);
@@ -472,7 +472,7 @@ public class FriendHandler extends BaseHandler {
 		FriendOp friendOp = player.getModule(FriendOp.class);
 		if (!friendOp.isFriend(friendId)) {
 
-			client.sendProtocol(resp, OldErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
 		Friend friend = friendOp.getFriend(friendId);

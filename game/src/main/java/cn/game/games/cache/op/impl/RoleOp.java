@@ -63,7 +63,7 @@ import cn.game.protocol.generated.manager.RoleExpManager;
 import cn.game.protocol.generated.manager.RoleManager;
 import cn.game.protocol.generated.manager.RoleRisingStarManager;
 import cn.game.protocol.generated.manager.RoleTagManager;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.ByteHelp;
 import cn.game.util.MapUtil;
@@ -1232,18 +1232,18 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 			PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
 			List<Integer> occTalentNodes = playerExt.getOccTalentNodes();
 			if (occTalentNodes.contains(id)) {
-				return OldErrorMsgEnum.illegal_request.getId();
+				return ErrorMsgEnum.illegal_request.getId();
 			}
 			if (preNode != 0 && !occTalentNodes.contains(preNode)) {
-				return OldErrorMsgEnum.unlock.getId();
+				return ErrorMsgEnum.unlock.getId();
 			}
 			List<Map.Entry<Integer, Integer>> cost = config.getCost();
 			if (!PlayerHelper.delResources(player, cost, ResourceConsumeEnum.OccupationTalentUnlock)) {
-				return OldErrorMsgEnum.resource_not_enough.getId();
+				return ErrorMsgEnum.resource_not_enough.getId();
 			}
 			// 开启天赋技能
 			if (!putOccTalentSkill(id)) {
-				return OldErrorMsgEnum.lock_error.getId();
+				return ErrorMsgEnum.lock_error.getId();
 			}
 		
 			playerExt.addOccTalentNode(id);
@@ -1252,7 +1252,7 @@ public class RoleOp extends BasePlayerModule implements IRoleOp {
 			update.setOcctalentNode(playerExt.getOcctalentNode());
 			DAO.updateSelective(update);*/
 
-		return OldErrorMsgEnum.ok.getId();
+		return ErrorMsgEnum.ok.getId();
 	}
 
 	private boolean putOccTalentSkill(int talentNodeId) {

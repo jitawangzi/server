@@ -26,7 +26,7 @@ import cn.game.games.net.game.helper.ChatHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.OldGlobalConst;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatAgreeGroupInvitationPush_51000060;
 import cn.game.protocol.protobuf.ChatMsg.ChatAgreeGroupOtherServerPush_51000053;
@@ -203,15 +203,15 @@ public class ChatManager {
 	 * @param replyWord
 	 * @param client
 	 */
-	public OldErrorMsgEnum sendPrivateChat(long playerId, String word, String replyWord, long myPlayerId) {
+	public ErrorMsgEnum sendPrivateChat(long playerId, String word, String replyWord, long myPlayerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player == null) {
-			return OldErrorMsgEnum.player_not_online;
+			return ErrorMsgEnum.player_not_online;
 		}
 		
 		// 判断自己是否是对方黑名单
 		if(checkBlack(playerId, myPlayerId)) {
-			return OldErrorMsgEnum.black_friend_chat_not;
+			return ErrorMsgEnum.black_friend_chat_not;
 		}
 		// 私聊的对象的简略信息
 		SimplePlayerInfo sPlayerInfoOther = PbBuilder.buildSimplePlayerInfo(player);
@@ -228,7 +228,7 @@ public class ChatManager {
 		// 发给自己 私聊对象的简略信息
 		sendChat(myPlayerId, word, replyWord, sPlayerInfoOther, myPlayerId, serverId);
 
-		return OldErrorMsgEnum.ok;
+		return ErrorMsgEnum.ok;
 	}
 	
 	/**
@@ -252,11 +252,11 @@ public class ChatManager {
 	 * @param replyWord
 	 * @param client
 	 */
-	public OldErrorMsgEnum sendGroupChat(long groupId, String word, String replyWord, long myPlayerId) {		
+	public ErrorMsgEnum sendGroupChat(long groupId, String word, String replyWord, long myPlayerId) {		
 //		Config.checkText(word);
 
 		if(!hasPlayerGroup(myPlayerId))
-			return OldErrorMsgEnum.unknown;
+			return ErrorMsgEnum.unknown;
 		
 		PlayerGroup playerGroup = null;
 		for (PlayerGroup pGroup : playerGroupInfos.get(myPlayerId)) {
@@ -268,7 +268,7 @@ public class ChatManager {
 		}
 		
 		if(playerGroup == null)
-			return OldErrorMsgEnum.unknown;
+			return ErrorMsgEnum.unknown;
 		
 		Player me = PlayerManager.getInstance().getPlayer(myPlayerId);
 		SimplePlayerInfo sPlayerInfo = PbBuilder.buildSimplePlayerInfo(me);
@@ -288,7 +288,7 @@ public class ChatManager {
 			GameClientManager.getInstance().sendToGameServer(playerGroup.getGroupServerId(), response.build());			
 		}				
 		
-		return OldErrorMsgEnum.ok;
+		return ErrorMsgEnum.ok;
 	}
 	
 	/**
@@ -337,9 +337,9 @@ public class ChatManager {
 	 * @param client
 	 * @param serverId
 	 */
-	public OldErrorMsgEnum sendOtherServerPrivateChat(long playerId, String word, String replyWord, long myPlayerId,
+	public ErrorMsgEnum sendOtherServerPrivateChat(long playerId, String word, String replyWord, long myPlayerId,
 			String serverId) {
-		OldErrorMsgEnum errorMsgEnum = OldErrorMsgEnum.player_not_online;
+		ErrorMsgEnum errorMsgEnum = ErrorMsgEnum.player_not_online;
 		try {
 			// 获取跨服玩家的简略信息
 			SimplePlayer simplePlayer = PlayerManager.getInstance().getAndLoadSimplePlayer(playerId, serverId);
@@ -370,7 +370,7 @@ public class ChatManager {
 			// 发给自己，私聊对象的简略信息
 //			sendChat(myPlayerId, word, replyWord, sPlayerInfoOther, myPlayerId, ServerContext.getInstance().getServerId());
 			
-			errorMsgEnum = OldErrorMsgEnum.ok;
+			errorMsgEnum = ErrorMsgEnum.ok;
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -737,27 +737,27 @@ public class ChatManager {
 	 * @param groupId
 	 * @return
 	 */
-	private OldErrorMsgEnum checkOnePlayerJoinGroup(long myPlayerId, long groupId) {
+	private ErrorMsgEnum checkOnePlayerJoinGroup(long myPlayerId, long groupId) {
 		// 校验玩家要加入群组 是否合法
 		if (hasPlayerGroup(myPlayerId)) {
 			if (checkPlayerGroupCount(myPlayerId) + 1 > playerJohnGroupMaxCount)
-				return OldErrorMsgEnum.not_player_group_count;
+				return ErrorMsgEnum.not_player_group_count;
 
 			for (PlayerGroup oneGroup : playerGroupInfos.get(myPlayerId)) {
 				if (oneGroup.getGroupId().longValue() == groupId)
-					return OldErrorMsgEnum.not_player_group;
+					return ErrorMsgEnum.not_player_group;
 			}
 		}
 
 		// 校验申请信息是否存在
 		if (!hasGroupApplications(myPlayerId))
-			return OldErrorMsgEnum.unknown;
+			return ErrorMsgEnum.unknown;
 		else {
 			if (!playerGroupApplications.get(myPlayerId).containsKey(groupId))
-				return OldErrorMsgEnum.unknown;
+				return ErrorMsgEnum.unknown;
 		}					
 		
-		return OldErrorMsgEnum.ok;
+		return ErrorMsgEnum.ok;
 	}
 	
 	/**
@@ -769,17 +769,17 @@ public class ChatManager {
 	 * @param isAgree 是否同意
 	 * @return
 	 */
-	public OldErrorMsgEnum agreeOneGroupInvitation(long myPlayerId, long groupId, String serverId, boolean isAgree) {
-		OldErrorMsgEnum errorMsgEnum = OldErrorMsgEnum.ok;		
+	public ErrorMsgEnum agreeOneGroupInvitation(long myPlayerId, long groupId, String serverId, boolean isAgree) {
+		ErrorMsgEnum errorMsgEnum = ErrorMsgEnum.ok;		
 		
 		// 同意
 		if (isAgree) {	
 			errorMsgEnum = checkOnePlayerJoinGroup(myPlayerId, groupId);
-			if(errorMsgEnum != OldErrorMsgEnum.ok)
+			if(errorMsgEnum != ErrorMsgEnum.ok)
 				return errorMsgEnum;
 			
 			errorMsgEnum = joinOneGroup(myPlayerId, groupId, serverId, isAgree, true);
-			if(errorMsgEnum != OldErrorMsgEnum.ok)
+			if(errorMsgEnum != ErrorMsgEnum.ok)
 				return errorMsgEnum;
 		}
 								
@@ -798,10 +798,10 @@ public class ChatManager {
 	 * @param serverId
 	 * @param isAgree
 	 */
-	public OldErrorMsgEnum agreeOneOtherGroupInvitation(long myPlayerId, long groupId, String serverId, boolean isAgree) {
+	public ErrorMsgEnum agreeOneOtherGroupInvitation(long myPlayerId, long groupId, String serverId, boolean isAgree) {
 		if(isAgree) {
-			OldErrorMsgEnum errorMsgEnum = checkOnePlayerJoinGroup(myPlayerId, groupId);
-			if(errorMsgEnum != OldErrorMsgEnum.ok)
+			ErrorMsgEnum errorMsgEnum = checkOnePlayerJoinGroup(myPlayerId, groupId);
+			if(errorMsgEnum != ErrorMsgEnum.ok)
 				return errorMsgEnum;
 		}
 		
@@ -821,7 +821,7 @@ public class ChatManager {
 		// 转发协议
 		GameClientManager.getInstance().sendToGameServer(serverId, pushResponse.build());
 			
-		return OldErrorMsgEnum.ok;
+		return ErrorMsgEnum.ok;
 	}
 	
 	/**
@@ -830,8 +830,8 @@ public class ChatManager {
 	 * @param groupId 要加入的群组
 	 * @param isAgree 是否同意
 	 */
-	public OldErrorMsgEnum otherServerApprovalGroup(long myPlayerId, long groupId, String serverId, boolean isAgree, String name, long sendPlayerId) {
-		OldErrorMsgEnum errorMsgEnum = OldErrorMsgEnum.ok;
+	public ErrorMsgEnum otherServerApprovalGroup(long myPlayerId, long groupId, String serverId, boolean isAgree, String name, long sendPlayerId) {
+		ErrorMsgEnum errorMsgEnum = ErrorMsgEnum.ok;
 		if(isAgree) {			
 			errorMsgEnum = joinOneGroup(myPlayerId, groupId, serverId, isAgree, false);						
 		}
@@ -848,14 +848,14 @@ public class ChatManager {
 	 * @param isAgree
 	 * @return
 	 */
-	private OldErrorMsgEnum joinOneGroup(long myPlayerId, long groupId, String serverId, boolean isAgree, boolean playerAdd) {
+	private ErrorMsgEnum joinOneGroup(long myPlayerId, long groupId, String serverId, boolean isAgree, boolean playerAdd) {
 		// 校验群组是否存在
 		if ((!hasGroup(groupId)) || (!hasGroupMember(groupId)))
-			return OldErrorMsgEnum.not_group;
+			return ErrorMsgEnum.not_group;
 
 		// 校验群组是否满员
 		if (groupMemberInfos.get(groupId).size() + 1 > groupMaxMemberCount)
-			return OldErrorMsgEnum.max_group_count;
+			return ErrorMsgEnum.max_group_count;
 
 		joinOneGroupG(groupId, myPlayerId, serverId);
 		
@@ -863,7 +863,7 @@ public class ChatManager {
 		if(playerAdd)
 			joinOneGroupP(myPlayerId, groupId, serverId);
 		
-		return OldErrorMsgEnum.ok;
+		return ErrorMsgEnum.ok;
 	}
 	
 	/**
@@ -893,7 +893,7 @@ public class ChatManager {
 	 * @param serverId
 	 * @return
 	 */
-	public OldErrorMsgEnum joinOneGroupP(long myPlayerId, long groupId, String serverId) {
+	public ErrorMsgEnum joinOneGroupP(long myPlayerId, long groupId, String serverId) {
 		
 		PlayerGroup playerGroup = new PlayerGroup();
 		playerGroup.setGroupId(groupId);
@@ -910,7 +910,7 @@ public class ChatManager {
 		// 更新db
 		ChatHelper.insertPlayerGroup(playerGroup);
 
-		return OldErrorMsgEnum.ok;
+		return ErrorMsgEnum.ok;
 	}
 
 	/**
@@ -1293,19 +1293,19 @@ public class ChatManager {
 	 * @param client
 	 * @param newName
 	 */
-	public OldErrorMsgEnum setGroupName(long groupId, long myPlayerId, String newName) {
+	public ErrorMsgEnum setGroupName(long groupId, long myPlayerId, String newName) {
 		if (!checkGroupJurisdiction(groupId, myPlayerId)) {
-			return OldErrorMsgEnum.not_jurisdiction;
+			return ErrorMsgEnum.not_jurisdiction;
 		}
 
 		if (Config.checkKeyWord(newName)) {
-			return OldErrorMsgEnum.not_name;
+			return ErrorMsgEnum.not_name;
 		}
 
 		groupInfos.get(groupId).setName(newName);
 		ChatHelper.updateGroup(groupInfos.get(groupId));
 
-		return OldErrorMsgEnum.ok;
+		return ErrorMsgEnum.ok;
 	}
 
 	/**
@@ -1335,19 +1335,19 @@ public class ChatManager {
 	 * @param notice
 	 * @param serverId
 	 */
-	public OldErrorMsgEnum setGroupNotice(Long groupId, long myPlayerId, String notice) {
+	public ErrorMsgEnum setGroupNotice(Long groupId, long myPlayerId, String notice) {
 
 		if (!checkGroupJurisdiction(groupId, myPlayerId)) {
-			return OldErrorMsgEnum.not_jurisdiction;
+			return ErrorMsgEnum.not_jurisdiction;
 		}
 
 		if (Config.checkKeyWord(notice)) {
-			return OldErrorMsgEnum.not_notice;
+			return ErrorMsgEnum.not_notice;
 		}
 
 		groupInfos.get(groupId).setNotice(notice);
 		ChatHelper.updateGroup(groupInfos.get(groupId));
 
-		return OldErrorMsgEnum.ok;
+		return ErrorMsgEnum.ok;
 	}
 }

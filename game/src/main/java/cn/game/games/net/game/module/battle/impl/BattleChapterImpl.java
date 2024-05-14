@@ -35,12 +35,12 @@ public class BattleChapterImpl implements IBattleHandler {
 		// 检查章节事件开启条件，是否可以进行当前操作
 //		boolean checkCondition = PlayerHelper.checkCondition(playerId, chapterConfig.getCondition());
 //		if (!checkCondition) {
-//			return OldErrorMsgEnum.player_check_error.getId();
+//			return ErrorMsgEnum.player_check_error.getId();
 //		}
 //		// 检查关卡开启条件，是否可以进行当前操作
 //		checkCondition = PlayerHelper.checkCondition(playerId, levelConfig.getCondition());
 //		if (!checkCondition) {
-//			return OldErrorMsgEnum.player_check_error.getId();
+//			return ErrorMsgEnum.player_check_error.getId();
 //		}
 
 		// 可以打这个关了

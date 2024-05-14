@@ -34,7 +34,7 @@ import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OldItemManager;
 import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
-import cn.game.protocol.manual.OldErrorMsgEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
@@ -205,17 +205,17 @@ public class ItemHelper {
 	public static int teamItemUseCheck(int lineupId, int itemId) {
 		ItemConsumablesConfig itemConfig = ItemConsumablesManager.getInstance().getItemConsumablesConfig(itemId);
 		if (lineupId != OldGlobalConst.exploreTeamId && lineupId != OldGlobalConst.exploreTeamId) {
-			return OldErrorMsgEnum.player_check_error.getId();
+			return ErrorMsgEnum.player_check_error.getId();
 		}
 //		0-无限制
 //		1-表世界使用
 //		2-里世界使用
 		int limit = itemConfig.getTeamLimit();
 		if (limit == 1 && lineupId != OldGlobalConst.exploreTeamId) {
-			return OldErrorMsgEnum.not_use.getId();
+			return ErrorMsgEnum.not_use.getId();
 		}
 		if (limit == 2 && lineupId != OldGlobalConst.exploreTeamId) {
-			return OldErrorMsgEnum.not_use.getId();
+			return ErrorMsgEnum.not_use.getId();
 		}
 
 		return 0;
