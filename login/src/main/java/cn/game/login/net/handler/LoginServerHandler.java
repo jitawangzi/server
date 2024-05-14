@@ -1,10 +1,7 @@
 package cn.game.login.net.handler;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONObject;
 
 import cn.game.core.base.ActiveServerListManager;
@@ -16,14 +13,12 @@ import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.PayOrderMapper;
-import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto;
 import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder;
+import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidRequest_7d000018;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
@@ -31,7 +26,6 @@ import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
-import cn.game.util.ObjUtil;
 import cn.game.util.RedissonUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
@@ -124,7 +118,8 @@ public class LoginServerHandler extends BaseHandler {
 				return;
 			}
 			User u = (User) retU;
-			client.sendProtocol(LoginPlayerUidResponse_7d000019.newBuilder().setUid(u.getId()));
+			client.sendProtocol(
+					LoginPlayerUidResponse_7d000019.newBuilder().setUid(u.getId()).setAccountId(u.getThirdUid()).setDeviceId(u.getUsername()).build());
 		});
 	}
 	protected void gameStatus(NetClient client, Object message) {

@@ -14,8 +14,6 @@ import javax.management.ObjectName;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.RequestCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.protobuf.Message;
@@ -51,7 +49,9 @@ import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.TreeWordFilter;
 import cn.game.util.ZkHelper;
 import cn.game.util.file.WatchServiceManager;
+import cn.game.util.log.CommonLogger;
 import cn.game.util.log.LoggerManager;
+import cn.game.util.log.SystemLogger;
 import cn.game.util.quartz.QuartzInitializer;
 
 /**
@@ -61,18 +61,20 @@ import cn.game.util.quartz.QuartzInitializer;
  */
 public class GameServer implements GameServerMBean {
 
-	static {
-		// 在这里初始化log，为了下面定义的log实例，能够正常被初始化。
-		try {
-			LoggerManager.init();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	private final Logger log = LoggerFactory.getLogger(GameServer.class);
+//	static {
+//		// 在这里初始化log，为了下面定义的log实例，能够正常被初始化。
+//		try {
+//			LoggerManager.init();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+	private static final String gameServerKey = "game.serever.id";
+
+//	private final Logger log = LoggerFactory.getLogger(GameServer.class);
 	private Properties initialProp;
 	private QuartzInitializer quartzInitializer;
-	private String serverId;
+//	private String serverId;
 	private static final GameServer instance = new GameServer();
 
 	@Deprecated
@@ -102,12 +104,12 @@ public class GameServer implements GameServerMBean {
 
 	public static void main(String args[]) {
 		try {
-			// log init
-			LoggerManager.init();
+//			ServerContext.parseGameServerId(args);
+//			LoggerManager.init();
+//			System.err.println(System.getProperty("log4j2.level"));
+//			CommonLogger.info("启动逻辑服。。");
+//			instance.log.info("启动逻辑服。。");
 
-			System.err.println(System.getProperty("log4j2.level"));
-
-			instance.log.info("启动逻辑服。。");
 			Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 			instance.start(args);
 		} catch (Throwable e) {
@@ -124,11 +126,15 @@ public class GameServer implements GameServerMBean {
 	}
 
 	public void start(String[] args) throws Exception {
+		String serverId = parseGameServerId(args);
+		LoggerManager.init();
+//		System.err.println(System.getProperty("log4j2.level"));
+		CommonLogger.info("启动逻辑服。。");
+//		instance.log.info("启动逻辑服。。");
+
 		long start = System.currentTimeMillis();
 		RedissonUtil.getInstance().init();
 		ZkHelper.init();
-
-		String serverId = parseServerId(args);
 		ServerContext.getInstance().init(ServerType.Game, serverId);
 		IdUtil.init();
 
@@ -151,7 +157,7 @@ public class GameServer implements GameServerMBean {
 		new Thread(WatchServiceManager.getInstance().setWatchDirs("xml", "config"), "WatchServiceManager").start();
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 		mBeanServer.registerMBean(instance,
-				new ObjectName("net.game:type=GameServer,name=GameServer_" + instance.getServerId()));
+				new ObjectName("net.game:type=GameServer,name=GameServer_" + ServerContext.getInstance().getServerId()));
 
 		initHotUpdate();
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -178,7 +184,8 @@ public class GameServer implements GameServerMBean {
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);
 //		log.info("max player id :" + dbMaxPlayerId);
-		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
+//		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
+		CommonLogger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", serverId, (System.currentTimeMillis() - start) / 1000));
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
 //		producer.start();
 //		testUpdateBatch();
@@ -190,6 +197,23 @@ public class GameServer implements GameServerMBean {
 					"GameServerInfo is null，cant find serverId from zookeeper ,serverId "
 							+ ServerContext.getInstance().getServerId());
 		}
+	}
+
+	private String parseGameServerId(String[] args) {
+		String serverId = null;
+		if (args.length == 0) {
+			serverId = System.getProperty(gameServerKey);
+			if (serverId == null) {
+				serverId = System.getenv(gameServerKey);
+			}
+		} else {
+			serverId = args[0];
+		}
+		if (serverId == null) {
+			throw new IllegalArgumentException("没有设置 gameServerId");
+		}
+		System.setProperty(gameServerKey, serverId);
+		return serverId;
 	}
 
 	private void initHotUpdate() {
@@ -268,27 +292,12 @@ public class GameServer implements GameServerMBean {
 		}
 	}
 
-	private String parseServerId(String[] args) {
-		String serverKey = "game.serever.id";
-		String serverId = null;
-		if (args.length == 0) {
-			serverId = System.getProperty(serverKey);
-			if (serverId == null) {
-				serverId = System.getenv(serverKey);
-			}
-		} else {
-			serverId = args[0];
-			System.setProperty(serverKey, serverId);
-		}
-		if (serverId == null) {
-			throw new IllegalArgumentException("没有设置 serverId");
-		}
-		return serverId;
-	}
 
 	public void shutdown() {
 		long start = System.currentTimeMillis();
-		log.info("Game Server starts to shutdown ...");
+//		log.info("Game Server starts to shutdown ...");
+		CommonLogger.info("Game Server starts to shutdown ...");
+
 		// 停止超时维护线程
 		// ClientMaintaining clientMaintaining =
 		// ClientManage.getInstance().getClientMaintaining();
@@ -306,7 +315,8 @@ public class GameServer implements GameServerMBean {
 			// 关闭websocket
 			VxHolder.vertx.undeploy(wsVerticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
 		} catch (Exception e) {
-			log.error("", e);
+//			log.error("", e);
+			SystemLogger.error("", e);
 		}
 		TaskManager.getInstance().shutdown();
 		try {
@@ -320,19 +330,17 @@ public class GameServer implements GameServerMBean {
 
 			VxHolder.vertx.close().toCompletionStage().toCompletableFuture().get(300, TimeUnit.SECONDS);
 
-			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
+//			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
+			CommonLogger.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
 			// 安全关闭log
 			/*			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 						context.stop();*/
 
 		} catch (Throwable e) {
-			log.error("Game Server Shutdown err ", e);
+//			log.error("Game Server Shutdown err ", e);
+			SystemLogger.error("Game Server Shutdown err ", e);
 		}
 
-	}
-
-	public String getServerId() {
-		return serverId;
 	}
 
 	public long nextPlayerId() {
@@ -384,7 +392,7 @@ public class GameServer implements GameServerMBean {
 	 */
 	@Deprecated
 	public boolean isLocalServer(String serverId) {
-		return StringUtils.isEmpty(serverId) || this.serverId.equals(serverId);
+		return StringUtils.isEmpty(serverId) || ServerContext.getInstance().getServerId().equals(serverId);
 	}
 
 	public String getServerId(ServerType serverType) {

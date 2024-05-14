@@ -15,6 +15,7 @@ public class CommonLogger extends Logger {
         catching(objects);
     }
 
+
     public static void warn(final Object... objects) {
         String log = LoggerType.splice(objects);
         if (!StringUtils.isEmpty(log)) {

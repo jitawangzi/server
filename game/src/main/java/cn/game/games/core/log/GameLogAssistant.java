@@ -48,7 +48,7 @@ public class GameLogAssistant extends Logger {
 		return new Object[] { getCurrentTimeLogText(), APP_KEY, account.version != null ? account.version : "null", logName, logVersion, stepNum,
 				ServerContext.getInstance().getServerId(), account.adChannel != null ? account.adChannel : "null",
 				player.getData().getAccountId() != null ? player.getData().getAccountId() : "null",
-				player.getPlayerId(), player.getLevel(), -1, account.getSdkDeviceId() != null ? account.getSdkDeviceId() : "null" };
+				player.getPlayerId(), player.getLevel(), -1, player.getData().getDeviceId() != null ? player.getData().getDeviceId() : "null" };
 	}
 
 	/**

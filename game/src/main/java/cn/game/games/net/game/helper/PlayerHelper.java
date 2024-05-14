@@ -43,6 +43,7 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.buff.BuffValue;
@@ -67,7 +68,6 @@ import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
@@ -1057,7 +1057,7 @@ public class PlayerHelper {
 		return false;
 	}
 
-	public static void startLoadPlayerFromDb(GameClient gameClient, PlayerData dbPlayer) {
+	public static void startLoadPlayerFromDb(GameClient gameClient, PlayerData dbPlayer, Account account) {
 
 		Long playerId = dbPlayer.getPlayerId();
 		BiConsumer<Boolean, ? super Throwable> action = (v, throwable) -> {
@@ -1066,6 +1066,7 @@ public class PlayerHelper {
 
 			Player player = new Player(dbPlayer);
 			player.setGameClient(gameClient);
+			player.setAccount(account);
 			// load from db
 			PlayerHelper.selectPlayerData(player);
 

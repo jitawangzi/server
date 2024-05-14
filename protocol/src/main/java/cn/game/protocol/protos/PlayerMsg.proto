@@ -16,16 +16,15 @@ message PlayerLoginRequest_01000001{
 
    //其他一些和BI相关的参数
 	string platform = 20;//平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
-
-    string deviceId = 25; //设备唯一标识：MAC或者UUID或者IMEI，这里小游戏变为账号id ，即微信的openid
-    string accountId = 26; //登录账号id，这里是微信的unionid
-
     string adChannel = 30; //推广渠道id
     string sdkPayChannel = 31; //充值渠道id ：0010安卓充值 ， 0020 IOS充值
 
 	string sdkVersion = 40;  //  SDK版本号：小游戏定死为“NULL”
 	string system = 41;  //  系统: 小游戏定死“system”
 
+//    string deviceId = 25; //设备唯一标识：MAC或者UUID或者IMEI，这里小游戏变为账号id ，即微信的openid
+//    string accountId = 26; //登录账号id，这里是微信的unionid
+// 这两个暂时用不到
 //  int32 accountType = 10; //渠道类型
 //	string sdkDeviceId = 24;
 }

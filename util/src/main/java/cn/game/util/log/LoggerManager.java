@@ -56,6 +56,10 @@ public class LoggerManager {
         } else {
             cylog = logPath + "/logs/cylog";
         }
+		String serverid = System.getProperty("game.serever.id");
+		if (serverid != null) {
+			cylog += "/" + serverid;
+		}
         System.setProperty("SEVER_PATH_CYLOG", cylog);
 
 

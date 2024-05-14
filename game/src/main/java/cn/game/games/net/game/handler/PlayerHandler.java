@@ -33,6 +33,7 @@ import cn.game.games.net.game.helper.EventHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.player.PlayerModule;
@@ -672,12 +673,16 @@ public class PlayerHandler extends BaseHandler {
 		}
 		// 新session,重新登陆
 		final AtomicLong uid = new AtomicLong();
+		StringBuffer accountId = new StringBuffer();
+		StringBuffer deviceId = new StringBuffer();
 		Future<Message<LoginPlayerUidResponse_7d000019>> uidFuture = VxHolder.requestRemoteServer(
 				ServerType.Login,
 				LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build());
 //		Future<Long> uidFuture = GameServer.getInstance().getLoginGameServerInterface().getUid2(passportSessionId);
 		uidFuture.compose(r -> {
 			uid.set(r.body().getUid());
+			accountId.append(r.body().getAccountId());
+			deviceId.append(r.body().getDeviceId());
 			return DAO.execute(PlayerDataMapper.class,
 					MapperConstant.selectByPrimaryKey, uid.get());
 
@@ -693,7 +698,7 @@ public class PlayerHandler extends BaseHandler {
 				RFuture<Boolean> playerLockFuture = PlayerHelper.trySetServerId(uid.get());
 				playerLockFuture.onComplete((v,throwable) -> {
 					if (v) {
-						createPlayer(client, uid.longValue(), null, true, 0, false, true);
+						createPlayer(accountId.toString(), deviceId.toString(), client, uid.longValue(), null, true, 0, false, true);
 					}else {
 						failHandler.handle(ErrorMsgEnum.player_lock.getId());
 						log.error("create player error  ", throwable);
@@ -736,12 +741,14 @@ public class PlayerHandler extends BaseHandler {
 						log.error("player login , request to server : " + serverId + " failed ", ee);
 						failHandler.handle(ErrorMsgEnum.request_remote_server.getId());
 					}).onSuccess(r -> {
+						Account account = new Account(req);
 						// load from db
-						PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer);
+						PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer, account);
 					});
 				} else {
+					Account account = new Account(req);
 					// load from db
-					PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer);
+					PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer, account);
 				}
 			});
 		}).onFailure(p -> {
@@ -865,7 +872,7 @@ public class PlayerHandler extends BaseHandler {
 				});
 	}*/
 
-	public void createPlayer(NetClient client, long uid, String name, boolean isMan, int head,
+	public void createPlayer(String accountId, String deviceId, NetClient client, long uid, String name, boolean isMan, int head,
 			boolean isPc, boolean autoCreate) {
 //		PlayerLoginResponse_01000002.Builder builder = PlayerLoginResponse_01000002.newBuilder();
 		PlayerData playerData = new PlayerData();
@@ -908,6 +915,8 @@ public class PlayerHandler extends BaseHandler {
 //			playerData.setName(name);
 //		}
 		playerData.setName(name);
+		playerData.setAccountId(accountId);
+		playerData.setDeviceId(deviceId);
 		playerData.setHead(Rnd.randomOne(HeadPortraitManager.instance().list()).ID);
 		playerData.setHeadFrame(Rnd.randomOne(HeadBoxManager.instance().list()).ID);
 		playerData.setRegion(AddressUtil.getCityInfo(client.getIp()));

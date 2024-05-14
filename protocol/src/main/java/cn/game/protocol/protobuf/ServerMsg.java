@@ -7963,6 +7963,46 @@ public final class ServerMsg {
      * @return The uid.
      */
     long getUid();
+
+    /**
+     * <pre>
+     * unionid
+     * </pre>
+     *
+     * <code>string accountId = 2;</code>
+     * @return The accountId.
+     */
+    java.lang.String getAccountId();
+    /**
+     * <pre>
+     * unionid
+     * </pre>
+     *
+     * <code>string accountId = 2;</code>
+     * @return The bytes for accountId.
+     */
+    com.google.protobuf.ByteString
+        getAccountIdBytes();
+
+    /**
+     * <pre>
+     * openid
+     * </pre>
+     *
+     * <code>string deviceId = 3;</code>
+     * @return The deviceId.
+     */
+    java.lang.String getDeviceId();
+    /**
+     * <pre>
+     * openid
+     * </pre>
+     *
+     * <code>string deviceId = 3;</code>
+     * @return The bytes for deviceId.
+     */
+    com.google.protobuf.ByteString
+        getDeviceIdBytes();
   }
   /**
    * Protobuf type {@code Protos.LoginPlayerUidResponse_7d000019}
@@ -7977,6 +8017,8 @@ public final class ServerMsg {
       super(builder);
     }
     private LoginPlayerUidResponse_7d000019() {
+      accountId_ = "";
+      deviceId_ = "";
     }
 
     @java.lang.Override
@@ -8012,6 +8054,18 @@ public final class ServerMsg {
             case 8: {
 
               uid_ = input.readInt64();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              accountId_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              deviceId_ = s;
               break;
             }
             default: {
@@ -8057,6 +8111,98 @@ public final class ServerMsg {
       return uid_;
     }
 
+    public static final int ACCOUNTID_FIELD_NUMBER = 2;
+    private volatile java.lang.Object accountId_;
+    /**
+     * <pre>
+     * unionid
+     * </pre>
+     *
+     * <code>string accountId = 2;</code>
+     * @return The accountId.
+     */
+    @java.lang.Override
+    public java.lang.String getAccountId() {
+      java.lang.Object ref = accountId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        accountId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * unionid
+     * </pre>
+     *
+     * <code>string accountId = 2;</code>
+     * @return The bytes for accountId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAccountIdBytes() {
+      java.lang.Object ref = accountId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        accountId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DEVICEID_FIELD_NUMBER = 3;
+    private volatile java.lang.Object deviceId_;
+    /**
+     * <pre>
+     * openid
+     * </pre>
+     *
+     * <code>string deviceId = 3;</code>
+     * @return The deviceId.
+     */
+    @java.lang.Override
+    public java.lang.String getDeviceId() {
+      java.lang.Object ref = deviceId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        deviceId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * openid
+     * </pre>
+     *
+     * <code>string deviceId = 3;</code>
+     * @return The bytes for deviceId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDeviceIdBytes() {
+      java.lang.Object ref = deviceId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        deviceId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -8074,6 +8220,12 @@ public final class ServerMsg {
       if (uid_ != 0L) {
         output.writeInt64(1, uid_);
       }
+      if (!getAccountIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, accountId_);
+      }
+      if (!getDeviceIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, deviceId_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -8086,6 +8238,12 @@ public final class ServerMsg {
       if (uid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, uid_);
+      }
+      if (!getAccountIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, accountId_);
+      }
+      if (!getDeviceIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, deviceId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -8104,6 +8262,10 @@ public final class ServerMsg {
 
       if (getUid()
           != other.getUid()) return false;
+      if (!getAccountId()
+          .equals(other.getAccountId())) return false;
+      if (!getDeviceId()
+          .equals(other.getDeviceId())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -8118,6 +8280,10 @@ public final class ServerMsg {
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getUid());
+      hash = (37 * hash) + ACCOUNTID_FIELD_NUMBER;
+      hash = (53 * hash) + getAccountId().hashCode();
+      hash = (37 * hash) + DEVICEID_FIELD_NUMBER;
+      hash = (53 * hash) + getDeviceId().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -8253,6 +8419,10 @@ public final class ServerMsg {
         super.clear();
         uid_ = 0L;
 
+        accountId_ = "";
+
+        deviceId_ = "";
+
         return this;
       }
 
@@ -8280,6 +8450,8 @@ public final class ServerMsg {
       public cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019 buildPartial() {
         cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019 result = new cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019(this);
         result.uid_ = uid_;
+        result.accountId_ = accountId_;
+        result.deviceId_ = deviceId_;
         onBuilt();
         return result;
       }
@@ -8330,6 +8502,14 @@ public final class ServerMsg {
         if (other == cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019.getDefaultInstance()) return this;
         if (other.getUid() != 0L) {
           setUid(other.getUid());
+        }
+        if (!other.getAccountId().isEmpty()) {
+          accountId_ = other.accountId_;
+          onChanged();
+        }
+        if (!other.getDeviceId().isEmpty()) {
+          deviceId_ = other.deviceId_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -8387,6 +8567,198 @@ public final class ServerMsg {
       public Builder clearUid() {
         
         uid_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object accountId_ = "";
+      /**
+       * <pre>
+       * unionid
+       * </pre>
+       *
+       * <code>string accountId = 2;</code>
+       * @return The accountId.
+       */
+      public java.lang.String getAccountId() {
+        java.lang.Object ref = accountId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          accountId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * unionid
+       * </pre>
+       *
+       * <code>string accountId = 2;</code>
+       * @return The bytes for accountId.
+       */
+      public com.google.protobuf.ByteString
+          getAccountIdBytes() {
+        java.lang.Object ref = accountId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          accountId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * unionid
+       * </pre>
+       *
+       * <code>string accountId = 2;</code>
+       * @param value The accountId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        accountId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * unionid
+       * </pre>
+       *
+       * <code>string accountId = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccountId() {
+        
+        accountId_ = getDefaultInstance().getAccountId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * unionid
+       * </pre>
+       *
+       * <code>string accountId = 2;</code>
+       * @param value The bytes for accountId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        accountId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object deviceId_ = "";
+      /**
+       * <pre>
+       * openid
+       * </pre>
+       *
+       * <code>string deviceId = 3;</code>
+       * @return The deviceId.
+       */
+      public java.lang.String getDeviceId() {
+        java.lang.Object ref = deviceId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          deviceId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * openid
+       * </pre>
+       *
+       * <code>string deviceId = 3;</code>
+       * @return The bytes for deviceId.
+       */
+      public com.google.protobuf.ByteString
+          getDeviceIdBytes() {
+        java.lang.Object ref = deviceId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          deviceId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * openid
+       * </pre>
+       *
+       * <code>string deviceId = 3;</code>
+       * @param value The deviceId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        deviceId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * openid
+       * </pre>
+       *
+       * <code>string deviceId = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeviceId() {
+        
+        deviceId_ = getDefaultInstance().getDeviceId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * openid
+       * </pre>
+       *
+       * <code>string deviceId = 3;</code>
+       * @param value The bytes for deviceId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        deviceId_ = value;
         onChanged();
         return this;
       }
@@ -18255,33 +18627,34 @@ public final class ServerMsg {
       "usPublish_7d000017\022\020\n\010serverId\030\002 \001(\t\022\031\n\021" +
       "onlinePlayerCount\030\003 \001(\r\";\n\036LoginPlayerUi" +
       "dRequest_7d000018\022\031\n\021passportSessionId\030\001" +
-      " \001(\t\".\n\037LoginPlayerUidResponse_7d000019\022" +
-      "\013\n\003uid\030\001 \001(\003\"]\n\"PaymentOrderCreateReques" +
-      "t_7d000020\022\020\n\010playerId\030\001 \001(\004\022\021\n\tsessionI" +
-      "d\030\002 \001(\t\022\022\n\ngoodsPrice\030\004 \001(\r\"`\n#PaymentOr" +
-      "derCreateResponse_7d000021\022(\n\005order\030\001 \001(" +
-      "\0132\031.Protos.PaymentOrderProto\022\017\n\007orderId\030" +
-      "\003 \001(\004\"A\n PaymentOrderShipRequest_7d00002" +
-      "2\022\020\n\010playerId\030\001 \001(\004\022\013\n\003uid\030\003 \001(\004\"4\n!Paym" +
-      "entOrderShipResponse_7d000023\022\017\n\007success" +
-      "\030\001 \001(\010\"p\n\035GameCrossForwardPush_7d000002\022" +
-      "\020\n\010serverId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\004\022\n\n\002i" +
-      "d\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\terrorCode\030\005 \001(\r" +
-      "\"^\n\035CrossGameForwardPush_7d000003\022\020\n\010pla" +
-      "yerId\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n" +
-      "\terrorCode\030\005 \001(\r\"t\n!GameCrossPlayerBroad" +
-      "cast_7d000005\022\020\n\010serverId\030\001 \003(\t\022\020\n\010playe" +
-      "rId\030\002 \003(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\te" +
-      "rrorCode\030\005 \001(\r\"I\n\033GameCrossBroadcast_7d0" +
-      "00008\022\020\n\010serverId\030\001 \003(\t\022\n\n\002id\030\002 \001(\r\022\014\n\004d" +
-      "ata\030\003 \001(\014\"I\n\025GameDataPush_7d00000a\022\023\n\013ma" +
-      "pperClass\030\001 \001(\t\022\016\n\006method\030\002 \001(\t\022\013\n\003arg\030\003" +
-      " \001(\014\"?\n\013DbTaskProto\022\023\n\013mapperClass\030\001 \001(\t" +
-      "\022\016\n\006method\030\002 \001(\t\022\013\n\003arg\030\003 \001(\014\"B\n\032GameDat" +
-      "aPushBatch_7d00000b\022$\n\007dbTasks\030\001 \003(\0132\023.P" +
-      "rotos.DbTaskProto\"*\n\033GameDataPushBatch2_" +
-      "7d00000c\022\013\n\003arg\030\001 \001(\014B\033\n\031cn.game.protoco" +
-      "l.protobufb\006proto3"
+      " \001(\t\"S\n\037LoginPlayerUidResponse_7d000019\022" +
+      "\013\n\003uid\030\001 \001(\003\022\021\n\taccountId\030\002 \001(\t\022\020\n\010devic" +
+      "eId\030\003 \001(\t\"]\n\"PaymentOrderCreateRequest_7" +
+      "d000020\022\020\n\010playerId\030\001 \001(\004\022\021\n\tsessionId\030\002" +
+      " \001(\t\022\022\n\ngoodsPrice\030\004 \001(\r\"`\n#PaymentOrder" +
+      "CreateResponse_7d000021\022(\n\005order\030\001 \001(\0132\031" +
+      ".Protos.PaymentOrderProto\022\017\n\007orderId\030\003 \001" +
+      "(\004\"A\n PaymentOrderShipRequest_7d000022\022\020" +
+      "\n\010playerId\030\001 \001(\004\022\013\n\003uid\030\003 \001(\004\"4\n!Payment" +
+      "OrderShipResponse_7d000023\022\017\n\007success\030\001 " +
+      "\001(\010\"p\n\035GameCrossForwardPush_7d000002\022\020\n\010" +
+      "serverId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\004\022\n\n\002id\030\003" +
+      " \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\terrorCode\030\005 \001(\r\"^\n" +
+      "\035CrossGameForwardPush_7d000003\022\020\n\010player" +
+      "Id\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\ter" +
+      "rorCode\030\005 \001(\r\"t\n!GameCrossPlayerBroadcas" +
+      "t_7d000005\022\020\n\010serverId\030\001 \003(\t\022\020\n\010playerId" +
+      "\030\002 \003(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\terro" +
+      "rCode\030\005 \001(\r\"I\n\033GameCrossBroadcast_7d0000" +
+      "08\022\020\n\010serverId\030\001 \003(\t\022\n\n\002id\030\002 \001(\r\022\014\n\004data" +
+      "\030\003 \001(\014\"I\n\025GameDataPush_7d00000a\022\023\n\013mappe" +
+      "rClass\030\001 \001(\t\022\016\n\006method\030\002 \001(\t\022\013\n\003arg\030\003 \001(" +
+      "\014\"?\n\013DbTaskProto\022\023\n\013mapperClass\030\001 \001(\t\022\016\n" +
+      "\006method\030\002 \001(\t\022\013\n\003arg\030\003 \001(\014\"B\n\032GameDataPu" +
+      "shBatch_7d00000b\022$\n\007dbTasks\030\001 \003(\0132\023.Prot" +
+      "os.DbTaskProto\"*\n\033GameDataPushBatch2_7d0" +
+      "0000c\022\013\n\003arg\030\001 \001(\014B\033\n\031cn.game.protocol.p" +
+      "rotobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -18371,7 +18744,7 @@ public final class ServerMsg {
     internal_static_Protos_LoginPlayerUidResponse_7d000019_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_LoginPlayerUidResponse_7d000019_descriptor,
-        new java.lang.String[] { "Uid", });
+        new java.lang.String[] { "Uid", "AccountId", "DeviceId", });
     internal_static_Protos_PaymentOrderCreateRequest_7d000020_descriptor =
       getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_PaymentOrderCreateRequest_7d000020_fieldAccessorTable = new
