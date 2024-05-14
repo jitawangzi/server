@@ -1,11 +1,11 @@
 package cn.game.protocol.manual;
 
 /**
- * @Description 资源消耗类型
+ * @Description 操作类型
  * @date 2020年10月9日 上午10:46:02
  * @author SYQ
  */
-public enum ResourceConsumeEnum{
+public enum OpType{
 
 	/** 源质解锁 */
 	OriginUnlock(1, "OriginUnlock", "源质解锁"),
@@ -65,14 +65,14 @@ public enum ResourceConsumeEnum{
 	private String name ; 
 	private String desc ; 
 
-	private ResourceConsumeEnum(int id, String name, String desc) {
+	private OpType(int id, String name, String desc) {
 		this.id = id; 
 		this.name = name; 
 		this.desc = desc; 
 	}
 	
-	public static ResourceConsumeEnum get(int id) {
-		ResourceConsumeEnum[] values = ResourceConsumeEnum.values();
+	public static OpType get(int id) {
+		OpType[] values = OpType.values();
 		for (int i = 0, len = values.length; i < len; i++) {
 			if (values[i].getId() == id) {
 				return values[i];

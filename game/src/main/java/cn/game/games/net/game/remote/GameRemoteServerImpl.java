@@ -17,7 +17,7 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.chat.GroupAllInfo;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
@@ -78,7 +78,7 @@ public class GameRemoteServerImpl implements GameRemoteServerInterface {
 	@Override
 	public boolean delResources(long playerId, int id, int value) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		return PlayerHelper.delResources(player, id, value, ResourceConsumeEnum.GM);
+		return PlayerHelper.delResources(player, id, value, OpType.GM);
 	}
 
 	@Override

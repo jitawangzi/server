@@ -10,7 +10,7 @@ import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.manual.GoodsTypeEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
@@ -66,9 +66,9 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 		return add(configId, 1);
 	}
 
-	public abstract boolean del(int configId, int count, ResourceConsumeEnum... args);
+	public abstract boolean del(int configId, int count, OpType... args);
 
-	public abstract boolean del(long uid, ResourceConsumeEnum... args);
+	public abstract boolean del(long uid, OpType... args);
 
 	public boolean isEnough(int configId, int count) {
 		if (count <= 0) {

@@ -1279,6 +1279,60 @@ public final class DrawMsg {
 
     /**
      * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+    int getGiftMaxTimesCount();
+    /**
+     * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+    boolean containsGiftMaxTimes(
+        int key);
+    /**
+     * Use {@link #getGiftMaxTimesMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getGiftMaxTimes();
+    /**
+     * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getGiftMaxTimesMap();
+    /**
+     * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+
+    int getGiftMaxTimesOrDefault(
+        int key,
+        int defaultValue);
+    /**
+     * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+
+    int getGiftMaxTimesOrThrow(
+        int key);
+
+    /**
+     * <pre>
      * 距离下次免费单抽的时间(秒)
      * </pre>
      *
@@ -1351,6 +1405,19 @@ public final class DrawMsg {
               nextFreeTime_ = input.readInt32();
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                giftMaxTimes_ = com.google.protobuf.MapField.newMapField(
+                    GiftMaxTimesDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+              giftMaxTimes__ = input.readMessage(
+                  GiftMaxTimesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              giftMaxTimes_.getMutableMap().put(
+                  giftMaxTimes__.getKey(), giftMaxTimes__.getValue());
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -1382,6 +1449,8 @@ public final class DrawMsg {
       switch (number) {
         case 1:
           return internalGetGiftRemainingTimes();
+        case 3:
+          return internalGetGiftMaxTimes();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -1492,6 +1561,103 @@ public final class DrawMsg {
       return map.get(key);
     }
 
+    public static final int GIFTMAXTIMES_FIELD_NUMBER = 3;
+    private static final class GiftMaxTimesDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.Integer> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.Integer>newDefaultInstance(
+                  cn.game.protocol.protobuf.DrawMsg.internal_static_Protos_DrawInfo_GiftMaxTimesEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Integer> giftMaxTimes_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+    internalGetGiftMaxTimes() {
+      if (giftMaxTimes_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            GiftMaxTimesDefaultEntryHolder.defaultEntry);
+      }
+      return giftMaxTimes_;
+    }
+
+    public int getGiftMaxTimesCount() {
+      return internalGetGiftMaxTimes().getMap().size();
+    }
+    /**
+     * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsGiftMaxTimes(
+        int key) {
+      
+      return internalGetGiftMaxTimes().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getGiftMaxTimesMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getGiftMaxTimes() {
+      return getGiftMaxTimesMap();
+    }
+    /**
+     * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getGiftMaxTimesMap() {
+      return internalGetGiftMaxTimes().getMap();
+    }
+    /**
+     * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+    @java.lang.Override
+
+    public int getGiftMaxTimesOrDefault(
+        int key,
+        int defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetGiftMaxTimes().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+     */
+    @java.lang.Override
+
+    public int getGiftMaxTimesOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetGiftMaxTimes().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     public static final int NEXTFREETIME_FIELD_NUMBER = 2;
     private int nextFreeTime_;
     /**
@@ -1530,6 +1696,12 @@ public final class DrawMsg {
       if (nextFreeTime_ != 0) {
         output.writeInt32(2, nextFreeTime_);
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetGiftMaxTimes(),
+          GiftMaxTimesDefaultEntryHolder.defaultEntry,
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -1553,6 +1725,16 @@ public final class DrawMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, nextFreeTime_);
       }
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
+           : internalGetGiftMaxTimes().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+        giftMaxTimes__ = GiftMaxTimesDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, giftMaxTimes__);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1570,6 +1752,8 @@ public final class DrawMsg {
 
       if (!internalGetGiftRemainingTimes().equals(
           other.internalGetGiftRemainingTimes())) return false;
+      if (!internalGetGiftMaxTimes().equals(
+          other.internalGetGiftMaxTimes())) return false;
       if (getNextFreeTime()
           != other.getNextFreeTime()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -1586,6 +1770,10 @@ public final class DrawMsg {
       if (!internalGetGiftRemainingTimes().getMap().isEmpty()) {
         hash = (37 * hash) + GIFTREMAININGTIMES_FIELD_NUMBER;
         hash = (53 * hash) + internalGetGiftRemainingTimes().hashCode();
+      }
+      if (!internalGetGiftMaxTimes().getMap().isEmpty()) {
+        hash = (37 * hash) + GIFTMAXTIMES_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetGiftMaxTimes().hashCode();
       }
       hash = (37 * hash) + NEXTFREETIME_FIELD_NUMBER;
       hash = (53 * hash) + getNextFreeTime();
@@ -1702,6 +1890,8 @@ public final class DrawMsg {
         switch (number) {
           case 1:
             return internalGetGiftRemainingTimes();
+          case 3:
+            return internalGetGiftMaxTimes();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -1713,6 +1903,8 @@ public final class DrawMsg {
         switch (number) {
           case 1:
             return internalGetMutableGiftRemainingTimes();
+          case 3:
+            return internalGetMutableGiftMaxTimes();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -1745,6 +1937,7 @@ public final class DrawMsg {
       public Builder clear() {
         super.clear();
         internalGetMutableGiftRemainingTimes().clear();
+        internalGetMutableGiftMaxTimes().clear();
         nextFreeTime_ = 0;
 
         return this;
@@ -1776,6 +1969,8 @@ public final class DrawMsg {
         int from_bitField0_ = bitField0_;
         result.giftRemainingTimes_ = internalGetGiftRemainingTimes();
         result.giftRemainingTimes_.makeImmutable();
+        result.giftMaxTimes_ = internalGetGiftMaxTimes();
+        result.giftMaxTimes_.makeImmutable();
         result.nextFreeTime_ = nextFreeTime_;
         onBuilt();
         return result;
@@ -1827,6 +2022,8 @@ public final class DrawMsg {
         if (other == cn.game.protocol.protobuf.DrawMsg.DrawInfo.getDefaultInstance()) return this;
         internalGetMutableGiftRemainingTimes().mergeFrom(
             other.internalGetGiftRemainingTimes());
+        internalGetMutableGiftMaxTimes().mergeFrom(
+            other.internalGetGiftMaxTimes());
         if (other.getNextFreeTime() != 0) {
           setNextFreeTime(other.getNextFreeTime());
         }
@@ -2012,6 +2209,162 @@ public final class DrawMsg {
       public Builder putAllGiftRemainingTimes(
           java.util.Map<java.lang.Integer, java.lang.Integer> values) {
         internalGetMutableGiftRemainingTimes().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.Integer> giftMaxTimes_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetGiftMaxTimes() {
+        if (giftMaxTimes_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              GiftMaxTimesDefaultEntryHolder.defaultEntry);
+        }
+        return giftMaxTimes_;
+      }
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetMutableGiftMaxTimes() {
+        onChanged();;
+        if (giftMaxTimes_ == null) {
+          giftMaxTimes_ = com.google.protobuf.MapField.newMapField(
+              GiftMaxTimesDefaultEntryHolder.defaultEntry);
+        }
+        if (!giftMaxTimes_.isMutable()) {
+          giftMaxTimes_ = giftMaxTimes_.copy();
+        }
+        return giftMaxTimes_;
+      }
+
+      public int getGiftMaxTimesCount() {
+        return internalGetGiftMaxTimes().getMap().size();
+      }
+      /**
+       * <pre>
+       * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsGiftMaxTimes(
+          int key) {
+        
+        return internalGetGiftMaxTimes().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getGiftMaxTimesMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getGiftMaxTimes() {
+        return getGiftMaxTimesMap();
+      }
+      /**
+       * <pre>
+       * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getGiftMaxTimesMap() {
+        return internalGetGiftMaxTimes().getMap();
+      }
+      /**
+       * <pre>
+       * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+       */
+      @java.lang.Override
+
+      public int getGiftMaxTimesOrDefault(
+          int key,
+          int defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetGiftMaxTimes().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+       */
+      @java.lang.Override
+
+      public int getGiftMaxTimesOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetGiftMaxTimes().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearGiftMaxTimes() {
+        internalGetMutableGiftMaxTimes().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+       */
+
+      public Builder removeGiftMaxTimes(
+          int key) {
+        
+        internalGetMutableGiftMaxTimes().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer>
+      getMutableGiftMaxTimes() {
+        return internalGetMutableGiftMaxTimes().getMutableMap();
+      }
+      /**
+       * <pre>
+       * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+       */
+      public Builder putGiftMaxTimes(
+          int key,
+          int value) {
+        
+        
+        internalGetMutableGiftMaxTimes().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       * 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; giftMaxTimes = 3;</code>
+       */
+
+      public Builder putAllGiftMaxTimes(
+          java.util.Map<java.lang.Integer, java.lang.Integer> values) {
+        internalGetMutableGiftMaxTimes().getMutableMap()
             .putAll(values);
         return this;
       }
@@ -4580,6 +4933,11 @@ public final class DrawMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_DrawInfo_GiftMaxTimesEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_DrawInfo_GiftMaxTimesEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_DrawRequest_37000003_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -4601,17 +4959,20 @@ public final class DrawMsg {
       "\n\rDrawMsg.proto\022\006Protos\032\017RewardMsg.proto" +
       "\"&\n\030DrawListRequest_37000001\022\n\n\002id\030\001 \001(\005" +
       "\";\n\031DrawListResponse_37000002\022\036\n\004draw\030\001 " +
-      "\001(\0132\020.Protos.DrawInfo\"\241\001\n\010DrawInfo\022D\n\022gi" +
+      "\001(\0132\020.Protos.DrawInfo\"\220\002\n\010DrawInfo\022D\n\022gi" +
       "ftRemainingTimes\030\001 \003(\0132(.Protos.DrawInfo" +
-      ".GiftRemainingTimesEntry\022\024\n\014nextFreeTime" +
-      "\030\002 \001(\005\0329\n\027GiftRemainingTimesEntry\022\013\n\003key" +
-      "\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"A\n\024DrawRequest" +
-      "_37000003\022\n\n\002id\030\001 \001(\005\022\013\n\003ten\030\002 \001(\010\022\020\n\010fr" +
-      "eeOnce\030\003 \001(\010\"\215\001\n\025DrawResponse_37000004\022#" +
-      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\022\014\n\004g" +
-      "old\030\002 \001(\005\022\036\n\004draw\030\003 \001(\0132\020.Protos.DrawInf" +
-      "o\022!\n\005heros\030\004 \003(\0132\022.Protos.RewardInfoB\033\n\031" +
-      "cn.game.protocol.protobufb\006proto3"
+      ".GiftRemainingTimesEntry\0228\n\014giftMaxTimes" +
+      "\030\003 \003(\0132\".Protos.DrawInfo.GiftMaxTimesEnt" +
+      "ry\022\024\n\014nextFreeTime\030\002 \001(\005\0329\n\027GiftRemainin" +
+      "gTimesEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:" +
+      "\0028\001\0323\n\021GiftMaxTimesEntry\022\013\n\003key\030\001 \001(\005\022\r\n" +
+      "\005value\030\002 \001(\005:\0028\001\"A\n\024DrawRequest_37000003" +
+      "\022\n\n\002id\030\001 \001(\005\022\013\n\003ten\030\002 \001(\010\022\020\n\010freeOnce\030\003 " +
+      "\001(\010\"\215\001\n\025DrawResponse_37000004\022#\n\007rewards" +
+      "\030\001 \003(\0132\022.Protos.RewardInfo\022\014\n\004gold\030\002 \001(\005" +
+      "\022\036\n\004draw\030\003 \001(\0132\020.Protos.DrawInfo\022!\n\005hero" +
+      "s\030\004 \003(\0132\022.Protos.RewardInfoB\033\n\031cn.game.p" +
+      "rotocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4635,12 +4996,18 @@ public final class DrawMsg {
     internal_static_Protos_DrawInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DrawInfo_descriptor,
-        new java.lang.String[] { "GiftRemainingTimes", "NextFreeTime", });
+        new java.lang.String[] { "GiftRemainingTimes", "GiftMaxTimes", "NextFreeTime", });
     internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_descriptor =
       internal_static_Protos_DrawInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DrawInfo_GiftRemainingTimesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_Protos_DrawInfo_GiftMaxTimesEntry_descriptor =
+      internal_static_Protos_DrawInfo_descriptor.getNestedTypes().get(1);
+    internal_static_Protos_DrawInfo_GiftMaxTimesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_DrawInfo_GiftMaxTimesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_DrawRequest_37000003_descriptor =
       getDescriptor().getMessageTypes().get(3);

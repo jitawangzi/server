@@ -29,7 +29,7 @@ import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroLvManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
@@ -140,7 +140,7 @@ public class HeroHandler extends BaseHandler {
 		List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
 		deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
 		deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
-		PlayerHelper.delResources(player, deleteItems, ResourceConsumeEnum.HeroLevelUp);
+		PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
 
 		for (Hero entry : updateHeros) {
 			resp.addHeros(entry.toHeroLevelInfo());
@@ -196,7 +196,7 @@ public class HeroHandler extends BaseHandler {
 			List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
 			deleteItems.add(new AbstractMap.SimpleEntry(moneyId,moneyCount)) ; 
 			deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
-			PlayerHelper.delResources(player, deleteItems, ResourceConsumeEnum.HeroLevelUp);
+			PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
 		}
 
 		resp.setLevel(maxLevel);
@@ -356,7 +356,7 @@ public class HeroHandler extends BaseHandler {
 			return;
 		}
 		for (String string : consumedUidList) {
-			player.getHeroModule().del(Long.parseLong(string), ResourceConsumeEnum.HeroConflate);
+			player.getHeroModule().del(Long.parseLong(string), OpType.HeroConflate);
 		}
 		hero.setStar(nextQualityStarConfig.Star);
 		hero.setQuality(nextQualityStarConfig.InitialQuality);
@@ -462,8 +462,8 @@ public class HeroHandler extends BaseHandler {
 			return;
 		}
 
-		PlayerHelper.delResources(player, GlobalConst.HeroLvItem, curConfig.LvConsumeItem, ResourceConsumeEnum.HeroLevelUp);
-		PlayerHelper.delResources(player, Asset.gold.ID, curConfig.LvConsumeMoney, ResourceConsumeEnum.HeroLevelUp);
+		PlayerHelper.delResources(player, GlobalConst.HeroLvItem, curConfig.LvConsumeItem, OpType.HeroLevelUp);
+		PlayerHelper.delResources(player, Asset.gold.ID, curConfig.LvConsumeMoney, OpType.HeroLevelUp);
 		hero.setLevel(hero.getLevel() + 1);
 //		hero.update();
 		player.handleEvent(EventTypeEnum.HeroLevelUp, hero);

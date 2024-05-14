@@ -14,7 +14,7 @@ import cn.game.protocol.generated.config.DrawConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001;
 import cn.game.protocol.protobuf.DrawMsg.DrawListResponse_37000002;
 import cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003;
@@ -77,7 +77,7 @@ public class DrawHandler extends BaseHandler {
 				return;
 			}
 		} else {
-			boolean delResources = PlayerHelper.delResources(player, ten ? drawConfig.DrawConsumeId[1] : drawConfig.DrawConsumeId[0], ResourceConsumeEnum.Draw);
+			boolean delResources = PlayerHelper.delResources(player, ten ? drawConfig.DrawConsumeId[1] : drawConfig.DrawConsumeId[0], OpType.Draw);
 			if (!delResources) {
 				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 				return;

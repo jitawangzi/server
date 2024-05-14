@@ -278,6 +278,7 @@ public class GameServer implements GameServerMBean {
 			}
 		} else {
 			serverId = args[0];
+			System.setProperty(serverKey, serverId);
 		}
 		if (serverId == null) {
 			throw new IllegalArgumentException("没有设置 serverId");

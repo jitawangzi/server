@@ -54,8 +54,6 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
 public class PlayerManager {
-
-
 	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
 	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
 

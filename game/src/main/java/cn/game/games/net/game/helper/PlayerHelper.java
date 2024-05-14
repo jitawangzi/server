@@ -69,7 +69,7 @@ import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OldErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -247,7 +247,7 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(Player player, int id, int value, int mode, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, int id, int value, int mode, OpType consumeType) {
 		if (value <= 0) {
 			return true;
 		}
@@ -263,11 +263,11 @@ public class PlayerHelper {
 
 	}
 
-	public static boolean delResources(Player player, int id, int value, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, int id, int value, OpType consumeType) {
 		return delResources(player, id, value, consumeType, true);
 	}
 
-	public static boolean delResources(Player player, int consumeId, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, int consumeId, OpType consumeType) {
 		if (consumeId == 0) {
 			return true;
 		}
@@ -284,7 +284,7 @@ public class PlayerHelper {
 	 * @param notify 是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
 	 * @return
 	 */
-	public static boolean delResources(Player player, int id, int value, ResourceConsumeEnum consumeType, boolean notify) {
+	public static boolean delResources(Player player, int id, int value, OpType consumeType, boolean notify) {
 
 		if (value <= 0) {
 			return true;
@@ -327,7 +327,7 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(Player player, List<Entry<Integer, Integer>> list, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, List<Entry<Integer, Integer>> list, OpType consumeType) {
 
 		if (list == null || list.isEmpty()) {
 			return true;
@@ -348,7 +348,7 @@ public class PlayerHelper {
 		return false;
 	}
 
-	public static boolean delResources(Player player, int[][] list, ResourceConsumeEnum consumeType) {
+	public static boolean delResources(Player player, int[][] list, OpType consumeType) {
 
 		if (list == null || list.length == 0) {
 			return true;
@@ -976,7 +976,7 @@ public class PlayerHelper {
 
 		EventOptionConfig config = EventOptionManager.getInstance().getEventOptionConfig(optionId);
 		// 选择时花费
-		if (!PlayerHelper.delResources(player, config.getChooseCost(), ResourceConsumeEnum.EventOptin)) {
+		if (!PlayerHelper.delResources(player, config.getChooseCost(), OpType.EventOptin)) {
 			return null;
 		}
 		List<Buff> ret = new ArrayList<>();

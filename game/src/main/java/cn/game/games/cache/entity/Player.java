@@ -43,7 +43,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
@@ -316,7 +316,7 @@ public class Player  {
 		Promise<Boolean> promise = Promise.promise(); 
 		
 		if (costType == ShopHelper.COST_TYPE_RESOURCE) {
-			boolean delResources = PlayerHelper.delResources(this, cost[1], cost[2], ResourceConsumeEnum.BuyGoods);
+			boolean delResources = PlayerHelper.delResources(this, cost[1], cost[2], OpType.BuyGoods);
 			if (!delResources) {
 				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.resource_not_enough.getId());
 				promise.complete(false);

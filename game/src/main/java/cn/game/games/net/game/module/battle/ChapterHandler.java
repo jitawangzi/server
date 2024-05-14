@@ -22,7 +22,7 @@ import cn.game.protocol.generated.manager.BattleFieldManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
@@ -96,7 +96,7 @@ public class ChapterHandler extends BaseHandler {
 					return;
 				}
 				// 消耗
-				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, ResourceConsumeEnum.None)) {
+				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.None)) {
 					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 					return;
 				}
@@ -110,7 +110,7 @@ public class ChapterHandler extends BaseHandler {
 					return;
 				}
 				// 消耗
-				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, ResourceConsumeEnum.None)) {
+				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.None)) {
 					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 					return;
 				}
@@ -339,7 +339,7 @@ public class ChapterHandler extends BaseHandler {
 //			return;
 //		}
 
-		if (!PlayerHelper.delResources(player, battleConfig.cost, ResourceConsumeEnum.None)) {
+		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.None)) {
 			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}

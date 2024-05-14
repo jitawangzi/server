@@ -14,7 +14,7 @@ import com.google.common.collect.Multimap;
 import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.net.game.helper.ItemHelper;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 
 /**    
  * 这里通常处理不能重叠的那些东西
@@ -83,12 +83,12 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	}
 
 	@Override
-	public boolean del(int itemId, int count, ResourceConsumeEnum... args) {
+	public boolean del(int itemId, int count, OpType... args) {
 		throw new UnsupportedOperationException("不支持通过配置表id删除不能重叠的物品");
 	}
 
 	@Override
-	public boolean del(long uid, ResourceConsumeEnum... args) {
+	public boolean del(long uid, OpType... args) {
 
 		T item = uid_items.get(uid);
 		if (item == null)

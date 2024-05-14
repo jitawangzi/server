@@ -66,13 +66,17 @@ public class DrawModule extends BasePlayerModule {
 		cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder newBuilder = DrawInfo.newBuilder();
 		newBuilder.setNextFreeTime(getNextFreeTime(id));
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> mapMax = new HashMap<Integer, Integer>();
 		List<GiftCardConfig> drawIdList = GiftCardManager.instance().getDrawIdList(id);
 		for (GiftCardConfig giftCardConfig : drawIdList) {
 			int curTimes = drawTimes.getValue(giftCardConfig.ID);
-			map.put(giftCardConfig.GiftCardQuality, giftCardConfig.GiftCardCount[giftIndex.getValue(giftCardConfig.ID)] - curTimes);
+			int maxTimes = giftCardConfig.GiftCardCount[giftIndex.getValue(giftCardConfig.ID)];
+			mapMax.put(giftCardConfig.GiftCardQuality, maxTimes);
+			map.put(giftCardConfig.GiftCardQuality, maxTimes - curTimes);
 		}
 
 		newBuilder.putAllGiftRemainingTimes(map);
+		newBuilder.putAllGiftMaxTimes(mapMax);
 		return newBuilder.build();
 	}
 

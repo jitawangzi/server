@@ -12,8 +12,8 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.DayOperationMapper;
 import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.net.game.module.award.OpType;
 import cn.game.games.util.DAO;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 /**    
@@ -45,7 +45,7 @@ public class DayOp extends BasePlayerModule implements IDayOp{
 	@Override
 	public int getCount(OpType type) {
 		
-		DayOperation dayOperation = this.dayOperations.get(type.getType()); 
+		DayOperation dayOperation = this.dayOperations.get(type.getId());
 		if (dayOperation==null) {
 			return 0 ; 
 		}
@@ -59,14 +59,14 @@ public class DayOp extends BasePlayerModule implements IDayOp{
 
 	@Override
 	public void addCount(OpType type, int count) {
-		DayOperation dayOperation = this.dayOperations.get(type.getType()); 
+		DayOperation dayOperation = this.dayOperations.get(type.getId());
 		if (dayOperation==null) {
 			dayOperation = new DayOperation() ; 
 			dayOperation.setPlayerId(playerId) ; 
-			dayOperation.setType(type.getType()) ; 
+			dayOperation.setType(type.getId());
 			dayOperation.setCount(count) ; 
 			insert(dayOperation) ; 
-			this.dayOperations.put(type.getType(), dayOperation) ; 
+			this.dayOperations.put(type.getId(), dayOperation);
 		} else {
 			dayOperation.setCount(dayOperation.getCount()+count) ; 
 			update(dayOperation) ; 

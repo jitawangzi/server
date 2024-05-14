@@ -30,7 +30,7 @@ import cn.game.protocol.generated.enume.EffectEnum;
 import cn.game.protocol.generated.enume.EffectTargetEnum;
 import cn.game.protocol.generated.enume.EffectTargetTypeEnum;
 import cn.game.protocol.generated.manager.OldBuffManager;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.BuffMsg.BuffPush_0100010b;
 import cn.game.protocol.protobuf.BuffMsg.BuffShowPush_0100010d;
@@ -215,7 +215,7 @@ public class BuffHelper {
 
 			} else {
 
-				PlayerHelper.delResources(player, idParam, Math.abs(numParam), mode, ResourceConsumeEnum.Effect);
+				PlayerHelper.delResources(player, idParam, Math.abs(numParam), mode, OpType.Effect);
 				buffLog.info("player[{}],buff[{}]效果,扣除了资源[{}][{}]", playerId, buff, idParam, Math.abs(numParam));
 			}
 

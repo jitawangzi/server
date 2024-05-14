@@ -37,7 +37,7 @@ import cn.game.protocol.generated.manager.CityItemStoreManager;
 import cn.game.protocol.generated.manager.StoreGiftManager;
 import cn.game.protocol.generated.manager.StoreManager;
 import cn.game.protocol.manual.OldErrorMsgEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.StoreMsg.StoreGoodsInfo;
@@ -222,7 +222,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 
 		if (PlayerHelper.isEnough(playerId, moneyType.getId(), orderPrice)) {
 			// 扣钱
-			PlayerHelper.delResources(player, moneyType.getId(), orderPrice, ResourceConsumeEnum.BuyGoods);
+			PlayerHelper.delResources(player, moneyType.getId(), orderPrice, OpType.BuyGoods);
 			buyGoods(goodsConf, count);
 
 		} else {
@@ -439,7 +439,7 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 			goodsMap.remove(uid);
 		}
 		
-		PlayerHelper.delResources(player, costId, totalCostCount, ResourceConsumeEnum.BuyGoods);
+		PlayerHelper.delResources(player, costId, totalCostCount, OpType.BuyGoods);
 //		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.BuyItems, g.getId(), count));
 		saveStore(new StoreType[] { curStoreType });
 		//触发事件(局间)

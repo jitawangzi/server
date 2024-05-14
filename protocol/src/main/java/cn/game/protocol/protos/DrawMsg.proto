@@ -17,6 +17,8 @@ message DrawListResponse_37000002{
 message DrawInfo{
 	// 还有xxx次赠送xxx品质的卡，key:品质,value:次数
 	map<int32,int32> giftRemainingTimes = 1;
+	// 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+	map<int32,int32> giftMaxTimes = 3;
 	int32 nextFreeTime = 2;  // 距离下次免费单抽的时间(秒)
 }
 

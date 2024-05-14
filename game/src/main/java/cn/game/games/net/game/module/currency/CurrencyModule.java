@@ -14,7 +14,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -64,7 +64,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	}
 
 	@Override
-	public boolean del(int configId, int count, ResourceConsumeEnum... args) {
+	public boolean del(int configId, int count, OpType... args) {
 
 		if (count <= 0) {
 			return true;
@@ -124,7 +124,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	}
 
 	@Override
-	public boolean del(long uid, ResourceConsumeEnum... args) {
+	public boolean del(long uid, OpType... args) {
 		throw new UnsupportedOperationException();
 	}
 

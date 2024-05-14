@@ -10,7 +10,7 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.ItemHelper;
-import cn.game.protocol.manual.ResourceConsumeEnum;
+import cn.game.protocol.manual.OpType;
 
 /**    
  * 这里通常处理能重叠的那些东西
@@ -85,7 +85,7 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	 * 减少指定道具数量
 	 */
 	@Override
-	public boolean del(int itemId, int count, ResourceConsumeEnum... args) {
+	public boolean del(int itemId, int count, OpType... args) {
 		T item = id_items.get(itemId);
 		if (item == null)
 			return false;
@@ -103,7 +103,7 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	}
 
 	@Override
-	public boolean del(long uid, ResourceConsumeEnum... args) {
+	public boolean del(long uid, OpType... args) {
 		throw new UnsupportedOperationException("不支持通过uid删除");
 	}
 
