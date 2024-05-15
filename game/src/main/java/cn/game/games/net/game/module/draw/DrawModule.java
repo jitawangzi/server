@@ -101,14 +101,15 @@ public class DrawModule extends BasePlayerModule {
 
 		DrawConfig drawConfig = DrawManager.instance().get(id);
 		int gold = drawConfig.DrawMoney * count;
-		int drawRandomId = drawConfig.DrawRandomId;
+		int firstDrawRandomId = drawConfig.DrawRandomId;
+		int nextDrawRandomId = drawConfig.DrawRandomId;
 		if (count == 10 && isFirstTen) {
-			drawRandomId = GlobalConst.FirstMandatoryDraw;
+			firstDrawRandomId = GlobalConst.FirstMandatoryDraw;
 			isFirstTen = false;
 		}
 		
 		for (int i = 0; i < count; i++) {
-			List<RewardInfo> reward = PlayerHelper.addReward(player, drawRandomId, OpType.Draw);
+			List<RewardInfo> reward = PlayerHelper.addReward(player, i == 0 ? firstDrawRandomId : nextDrawRandomId, OpType.Draw);
 			ret.addAll(reward);
 
 			for (GiftCardConfig giftCardConfig : giftCardList) {
