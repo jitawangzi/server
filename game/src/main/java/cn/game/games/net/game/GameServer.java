@@ -6,7 +6,6 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 import javax.management.MBeanServer;
@@ -84,13 +83,6 @@ public class GameServer implements GameServerMBean {
 	private ConcurrentMap<String, GameRemoteServerInterface> gameServerInterfacesSync = new ConcurrentHashMap<String, GameRemoteServerInterface>();
 	private ConcurrentMap<String, GameRemoteServerInterface> gameServerInterfacesAsync = new ConcurrentHashMap<String, GameRemoteServerInterface>();
 
-	@Deprecated
-	private long maxPlayerId;
-	@Deprecated
-	private long minPlayerId;
-	@Deprecated
-	private AtomicLong dbMaxPlayerId;
-
 	private RpcClient rpcClient;
 	private String[] serverIds = new String[ServerType.values().length];
 	private String wsVerticle;
@@ -110,7 +102,6 @@ public class GameServer implements GameServerMBean {
 //			CommonLogger.info("启动逻辑服。。");
 //			instance.log.info("启动逻辑服。。");
 
-			Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 			instance.start(args);
 		} catch (Throwable e) {
 //			try {
@@ -130,6 +121,8 @@ public class GameServer implements GameServerMBean {
 		LoggerManager.init();
 //		System.err.println(System.getProperty("log4j2.level"));
 		CommonLogger.info("启动逻辑服。。");
+		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
+
 //		instance.log.info("启动逻辑服。。");
 
 		long start = System.currentTimeMillis();
@@ -343,12 +336,12 @@ public class GameServer implements GameServerMBean {
 
 	}
 
-	public long nextPlayerId() {
-		if (this.dbMaxPlayerId.get() >= this.maxPlayerId) {
-			return 0;
-		}
-		return this.dbMaxPlayerId.incrementAndGet();
-	}
+//	public long nextPlayerId() {
+//		if (this.dbMaxPlayerId.get() >= this.maxPlayerId) {
+//			return 0;
+//		}
+//		return this.dbMaxPlayerId.incrementAndGet();
+//	}
 
 	public LoginGameServerInterface getLoginGameServerInterface() {
 		return loginGameServerInterface;
@@ -367,18 +360,6 @@ public class GameServer implements GameServerMBean {
 	public DataGameServerInterface getDataGameCallback(Consumer<?> callBackTask) {
 		return RpcFactory.getImplCallback(rpcClient, DataGameServerInterface.class, callBackTask,
 				getServerId(ServerType.Data));
-	}
-
-	public long getMaxPlayerId() {
-		return maxPlayerId;
-	}
-
-	public long getMinPlayerId() {
-		return minPlayerId;
-	}
-
-	public AtomicLong getDbMaxPlayerId() {
-		return dbMaxPlayerId;
 	}
 
 //	public void setDataServerSyncDefault() {

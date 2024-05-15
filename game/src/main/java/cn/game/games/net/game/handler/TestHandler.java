@@ -25,7 +25,6 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
-import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -42,7 +41,6 @@ import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.TestMsg;
@@ -526,7 +524,8 @@ public class TestHandler extends BaseHandler {
 
 				@Override
 				public void run() {
-					long id = GameServer.getInstance().nextPlayerId();
+//					long id = GameServer.getInstance().nextPlayerId();
+					long id = 0;
 					// TODO Auto-generated method stub
 					PlayerData player = new PlayerData();
 					// player.setSeq(seq) ;
