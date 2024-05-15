@@ -56,6 +56,7 @@ import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OldBuffManager;
 import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BuffMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
@@ -148,7 +149,7 @@ public class PlayerHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		List<RewardInfo> goods = PlayerHelper.addGoods(player, cloudBox);
+		List<RewardInfo> goods = PlayerHelper.addGoods(player, cloudBox, OpType.CloudBox);
 		resp.addAllRewards(goods);
 		client.sendProtocol(resp);
 		playerModule.setCloudBox(null);
@@ -951,7 +952,7 @@ public class PlayerHandler extends BaseHandler {
 				PlayerManager.getInstance().initAdd(player);
 
 				// 初始的资源
-				PlayerHelper.addResources(player, GlobalConst.initItems);
+				PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 				PlayerHelper.initNewPlayerData(player);
 
 				player.handleEvent(EventTypeEnum.Login);

@@ -16,6 +16,7 @@ import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.AssetRestoreConfig;
 import cn.game.protocol.generated.manager.AssetRestoreManager;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 /**    
@@ -95,7 +96,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 					return;
 				}
 				player.getPlayerModule().updateTime(IdConstant.MONEY_RECOVERY, id);
-				PlayerHelper.addResources(player, id, 1);
+				PlayerHelper.addResources(player, id, 1, OpType.TimerRecovery);
 			});
 			timerTask.put(id, timer);
 		}

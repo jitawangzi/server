@@ -204,7 +204,7 @@ public class BuffHelper {
 				int bei = getBuffRewardMultiple(playerId);
 				buffLog.info("player[{}],buff[{}]效果,加资源前奖励倍数[{}]", playerId, buff, bei);
 				numParam = numParam * bei;
-				List<RewardInfo> addResources = PlayerHelper.addResources(player, idParam, numParam);
+				List<RewardInfo> addResources = PlayerHelper.addResources(player, idParam, numParam, null);
 				buffLog.info("player[{}],buff[{}]效果,添加了资源[{}][{}]", playerId, buff, idParam, numParam);
 				/*if (notify) {
 					RewardPush_55000501.Builder pushR = RewardPush_55000501.newBuilder();
@@ -264,7 +264,7 @@ public class BuffHelper {
 			List<RewardInfo> res = new ArrayList<>();
 			int num = 1;
 			for (int id : reward) {
-				List<RewardInfo> addResources = PlayerHelper.addResources(player, id, num);
+				List<RewardInfo> addResources = PlayerHelper.addResources(player, id, num, null);
 				buffLog.info("player[{}],buff[{}]效果,给玩家随机增加了资源[{}][{}]个", playerId, buff, id, num);
 				res.addAll(addResources);
 			}

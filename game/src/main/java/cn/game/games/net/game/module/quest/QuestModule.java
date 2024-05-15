@@ -42,6 +42,7 @@ import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo;
@@ -323,7 +324,7 @@ public class QuestModule extends BasePlayerModule {
 					return PlayerHelper.addResources(player, reward);
 				}*/
 
-		return PlayerHelper.addReward(player, questConfig.Reward);
+		return PlayerHelper.addReward(player, questConfig.Reward, OpType.Quest);
 
 	}
 

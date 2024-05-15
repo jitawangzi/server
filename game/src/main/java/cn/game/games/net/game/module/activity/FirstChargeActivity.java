@@ -13,6 +13,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.FirstChargeManager;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeResponse_11000008;
 import cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -105,7 +106,7 @@ public class FirstChargeActivity extends ActivityBase {
 			return null;
 		}
 		singleCharge.getSelectedIndex().add(cid);
-		return PlayerHelper.addResources(player, firstChargeConfig.Item);
+		return PlayerHelper.addResources(player, firstChargeConfig.Item, OpType.FirstCharge);
 	}
 	@Override
 	public void setEvents(EventTypeEnum[] events) {

@@ -17,7 +17,7 @@ public class Account {
     private String roleInfo;
 //    public final String sdkDeviceId;//设备唯一号
     public final String sdkVersion;//设备唯一号
-	public final String platform;// 平台标示： 1 IOS APP ，2 安卓 APP ，3 IOS小游戏，4 安卓小游戏，5 window 微信小游戏，6 mac微信小游戏
+	public final int platform;// 平台标示： 1 IOS APP ，2 安卓 APP ，3 IOS小游戏，4 安卓小游戏，5 window 微信小游戏，6 mac微信小游戏
     public final String sdkPayChannel;//sdk充值渠道
 	public final String system;// 系统: 小游戏定死“system”
 
@@ -51,7 +51,7 @@ public class Account {
         this.roleInfo = roleInfo;
     }
 
-    public String getPlatform() {
+	public int getPlatform() {
         return platform;
     }
 }

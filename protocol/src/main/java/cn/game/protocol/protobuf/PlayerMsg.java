@@ -73,20 +73,10 @@ public final class PlayerMsg {
      *其他一些和BI相关的参数
      * </pre>
      *
-     * <code>string platform = 20;</code>
+     * <code>int32 platform = 20;</code>
      * @return The platform.
      */
-    java.lang.String getPlatform();
-    /**
-     * <pre>
-     *其他一些和BI相关的参数
-     * </pre>
-     *
-     * <code>string platform = 20;</code>
-     * @return The bytes for platform.
-     */
-    com.google.protobuf.ByteString
-        getPlatformBytes();
+    int getPlatform();
 
     /**
      * <pre>
@@ -187,7 +177,6 @@ public final class PlayerMsg {
     private PlayerLoginRequest_01000001() {
       sessionId_ = "";
       verstion_ = "";
-      platform_ = "";
       adChannel_ = "";
       sdkPayChannel_ = "";
       sdkVersion_ = "";
@@ -241,10 +230,9 @@ public final class PlayerMsg {
               verstion_ = s;
               break;
             }
-            case 162: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 160: {
 
-              platform_ = s;
+              platform_ = input.readInt32();
               break;
             }
             case 242: {
@@ -411,49 +399,18 @@ public final class PlayerMsg {
     }
 
     public static final int PLATFORM_FIELD_NUMBER = 20;
-    private volatile java.lang.Object platform_;
+    private int platform_;
     /**
      * <pre>
      *其他一些和BI相关的参数
      * </pre>
      *
-     * <code>string platform = 20;</code>
+     * <code>int32 platform = 20;</code>
      * @return The platform.
      */
     @java.lang.Override
-    public java.lang.String getPlatform() {
-      java.lang.Object ref = platform_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        platform_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     *其他一些和BI相关的参数
-     * </pre>
-     *
-     * <code>string platform = 20;</code>
-     * @return The bytes for platform.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPlatformBytes() {
-      java.lang.Object ref = platform_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        platform_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getPlatform() {
+      return platform_;
     }
 
     public static final int ADCHANNEL_FIELD_NUMBER = 30;
@@ -663,8 +620,8 @@ public final class PlayerMsg {
       if (!getVerstionBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, verstion_);
       }
-      if (!getPlatformBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 20, platform_);
+      if (platform_ != 0) {
+        output.writeInt32(20, platform_);
       }
       if (!getAdChannelBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 30, adChannel_);
@@ -697,8 +654,9 @@ public final class PlayerMsg {
       if (!getVerstionBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, verstion_);
       }
-      if (!getPlatformBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(20, platform_);
+      if (platform_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(20, platform_);
       }
       if (!getAdChannelBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(30, adChannel_);
@@ -733,8 +691,8 @@ public final class PlayerMsg {
           != other.getReconnect()) return false;
       if (!getVerstion()
           .equals(other.getVerstion())) return false;
-      if (!getPlatform()
-          .equals(other.getPlatform())) return false;
+      if (getPlatform()
+          != other.getPlatform()) return false;
       if (!getAdChannel()
           .equals(other.getAdChannel())) return false;
       if (!getSdkPayChannel()
@@ -762,7 +720,7 @@ public final class PlayerMsg {
       hash = (37 * hash) + VERSTION_FIELD_NUMBER;
       hash = (53 * hash) + getVerstion().hashCode();
       hash = (37 * hash) + PLATFORM_FIELD_NUMBER;
-      hash = (53 * hash) + getPlatform().hashCode();
+      hash = (53 * hash) + getPlatform();
       hash = (37 * hash) + ADCHANNEL_FIELD_NUMBER;
       hash = (53 * hash) + getAdChannel().hashCode();
       hash = (37 * hash) + SDKPAYCHANNEL_FIELD_NUMBER;
@@ -914,7 +872,7 @@ public final class PlayerMsg {
 
         verstion_ = "";
 
-        platform_ = "";
+        platform_ = 0;
 
         adChannel_ = "";
 
@@ -1017,9 +975,8 @@ public final class PlayerMsg {
           verstion_ = other.verstion_;
           onChanged();
         }
-        if (!other.getPlatform().isEmpty()) {
-          platform_ = other.platform_;
-          onChanged();
+        if (other.getPlatform() != 0) {
+          setPlatform(other.getPlatform());
         }
         if (!other.getAdChannel().isEmpty()) {
           adChannel_ = other.adChannel_;
@@ -1301,63 +1258,30 @@ public final class PlayerMsg {
         return this;
       }
 
-      private java.lang.Object platform_ = "";
+      private int platform_ ;
       /**
        * <pre>
        *其他一些和BI相关的参数
        * </pre>
        *
-       * <code>string platform = 20;</code>
+       * <code>int32 platform = 20;</code>
        * @return The platform.
        */
-      public java.lang.String getPlatform() {
-        java.lang.Object ref = platform_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          platform_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      @java.lang.Override
+      public int getPlatform() {
+        return platform_;
       }
       /**
        * <pre>
        *其他一些和BI相关的参数
        * </pre>
        *
-       * <code>string platform = 20;</code>
-       * @return The bytes for platform.
-       */
-      public com.google.protobuf.ByteString
-          getPlatformBytes() {
-        java.lang.Object ref = platform_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          platform_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *其他一些和BI相关的参数
-       * </pre>
-       *
-       * <code>string platform = 20;</code>
+       * <code>int32 platform = 20;</code>
        * @param value The platform to set.
        * @return This builder for chaining.
        */
-      public Builder setPlatform(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      public Builder setPlatform(int value) {
+        
         platform_ = value;
         onChanged();
         return this;
@@ -1367,32 +1291,12 @@ public final class PlayerMsg {
        *其他一些和BI相关的参数
        * </pre>
        *
-       * <code>string platform = 20;</code>
+       * <code>int32 platform = 20;</code>
        * @return This builder for chaining.
        */
       public Builder clearPlatform() {
         
-        platform_ = getDefaultInstance().getPlatform();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *其他一些和BI相关的参数
-       * </pre>
-       *
-       * <code>string platform = 20;</code>
-       * @param value The bytes for platform to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPlatformBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        platform_ = value;
+        platform_ = 0;
         onChanged();
         return this;
       }
@@ -31686,7 +31590,7 @@ public final class PlayerMsg {
       "Msg.proto\032\016QuestMsg.proto\"\265\001\n\033PlayerLogi" +
       "nRequest_01000001\022\021\n\tsessionId\030\001 \001(\t\022\021\n\t" +
       "reconnect\030\002 \001(\010\022\020\n\010verstion\030\003 \001(\t\022\020\n\010pla" +
-      "tform\030\024 \001(\t\022\021\n\tadChannel\030\036 \001(\t\022\025\n\rsdkPay" +
+      "tform\030\024 \001(\005\022\021\n\tadChannel\030\036 \001(\t\022\025\n\rsdkPay" +
       "Channel\030\037 \001(\t\022\022\n\nsdkVersion\030( \001(\t\022\016\n\006sys" +
       "tem\030) \001(\t\"d\n\034PlayerLoginResponse_0100000" +
       "2\022#\n\004info\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\021" +

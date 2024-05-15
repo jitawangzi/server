@@ -33,6 +33,7 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.op.impl.FriendOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
@@ -1016,10 +1017,7 @@ public class PlayerManager {
 
 		Future<List<Object>> dbFuture = saveClientCache(playerId, true).onComplete(r -> {
 			OnLineTaskManager.getInstance().removeScheduledTask(playerId);
-			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			if (player != null) {
-				player.cancelAllTimer();
-			}
+			PlayerManager.getInstance().getPlayer(playerId);
 			deletePlayer(playerId);
 		});
 		RFuture<Boolean> deleteAsync = RedissonUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
@@ -1039,7 +1037,7 @@ public class PlayerManager {
 	 * @Description 保存在线玩家缓存数据到数据库
 	 * @param playerId
 	 * @param logout
-	 *            是否记录离线时间
+	 *            是否是退出时
 	 * @return 
 	 */
 	public Future<List<Object>> saveClientCache(long playerId, boolean logout) {
@@ -1052,6 +1050,11 @@ public class PlayerManager {
 					data.setOfflineTime(System.currentTimeMillis());
 					data.setGameTime(data.getGameTime()
 							+ (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
+
+					player.cancelAllTimer();
+					GameLogger.logout(player);
+					// TODO 异步保存SimplePlayer 到redis。
+
 				}
 				if (GameServer.getInstance().isSinglePlayerTable()) {
 					data.beforeSave();

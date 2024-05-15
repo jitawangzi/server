@@ -64,6 +64,8 @@ public class GlobalConst extends ResourceListener {
 	public static int[][] AdvancedCardDrawGroup;		
 	/** 【请神】至尊抽卡神将显示组 */
 	public static int[][] UltimateCardDrawGroup;		
+	/** 【请神】第1次必抽-掉落id */
+	public static int FirstMandatoryDraw;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -267,6 +269,8 @@ public class GlobalConst extends ResourceListener {
 		} else {
 			UltimateCardDrawGroup = new int[][] {};
 		}
+		FirstMandatoryDraw = Integer.parseInt(element.getAttribute("FirstMandatoryDraw") == null || element.getAttribute("FirstMandatoryDraw").length() == 0 ? "0"
+			: element.getAttribute("FirstMandatoryDraw")); // 【请神】第1次必抽-掉落id
 	}
 	@Override
 	public void load() {

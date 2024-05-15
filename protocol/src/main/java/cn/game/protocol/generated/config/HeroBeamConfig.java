@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 	public final int[] RangeParam;		
 	/** 造成技能伤害公式用计算方法名字程序来封装方法实现 */
 	public final String CalculateFun;		
-	/** 技能伤害参数百分比组 */
+	/** 技能伤害参数百分比组  暂定用队长属性计算 */
 	public final int[] CalculateParam;		
 	/** 技能持续时间（毫秒） */
 	public final int Duration;		
@@ -44,7 +44,7 @@ import org.w3c.dom.Element;
 			RangeParam = new int[] {};
 		}
 		CalculateFun = element.getAttribute("CalculateFun"); // 造成技能伤害公式用计算方法名字程序来封装方法实现
-		String CalculateParamString = element.getAttribute("CalculateParam"); // 技能伤害参数百分比组
+		String CalculateParamString = element.getAttribute("CalculateParam"); // 技能伤害参数百分比组  暂定用队长属性计算
 		if (CalculateParamString != null && CalculateParamString.length() > 0) {
 			String[] CalculateParamStrings = CalculateParamString.split(";"); 
 			int[] CalculateParamTemp = new int[CalculateParamStrings.length] ; 

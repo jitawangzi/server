@@ -41,6 +41,7 @@ import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.TestMsg;
@@ -53,6 +54,7 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
 import cn.game.util.SpringContextLoader;
+import cn.game.util.log.CommonLogger;
 
 @Component
 public class TestHandler extends BaseHandler {
@@ -282,6 +284,9 @@ public class TestHandler extends BaseHandler {
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
 		PlayerManager.getInstance().saveClientCache(playerId);
 		
+		CommonLogger.error("what the fuck by common logger");
+		log.error("what the fuck by log");
+
 //		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
 
 //		AttrModule module = player.getModule(AttrModule.class);
@@ -431,26 +436,26 @@ public class TestHandler extends BaseHandler {
 //						if (resourceEnum.getType() == 2 && !inExplore) {
 //							continue;
 //						}
-						rewardItems = PlayerHelper.addResources(player, resourceEnum.ID, 1000000);
+						rewardItems = PlayerHelper.addResources(player, resourceEnum.ID, 1000000, OpType.Test);
 						allRewards.addAll(rewardItems);
 					}
 
 				} else if (goodsType == GoodsTypeEnum.Item.getId()) {
 					Collection<ItemConfig> list = ItemManager.instance().list();
 					for (ItemConfig e : list) {
-						rewardItems = PlayerHelper.addResources(player, e.ID, 999);
+						rewardItems = PlayerHelper.addResources(player, e.ID, 999, OpType.Test);
 						allRewards.addAll(rewardItems);
 					}
 
 				} else if (goodsType == GoodsTypeEnum.Hero.getId()) {
 					Collection<HeroConfig> list = HeroManager.instance().list();
 					for (HeroConfig e : list) {
-						rewardItems = PlayerHelper.addResources(player, e.ID, 1);
+						rewardItems = PlayerHelper.addResources(player, e.ID, 1, OpType.Test);
 						allRewards.addAll(rewardItems);
 					}
 				} else {
 
-					List<RewardInfo> tmp = PlayerHelper.addResources(player, id, count);
+					List<RewardInfo> tmp = PlayerHelper.addResources(player, id, count, OpType.Test);
 					allRewards.addAll(tmp);
 				}
 //				else if (goodsType == GoodsTypeEnum.Role.getId()) {
@@ -473,7 +478,7 @@ public class TestHandler extends BaseHandler {
 //					}
 //				}
 			} else {
-				rewardItems = PlayerHelper.addResources(player, id, count);
+				rewardItems = PlayerHelper.addResources(player, id, count, OpType.Test);
 				allRewards.addAll(rewardItems);
 			}
 

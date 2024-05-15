@@ -179,6 +179,7 @@ public class GameServer implements GameServerMBean {
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		CommonLogger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", serverId, (System.currentTimeMillis() - start) / 1000));
+		// 记录bi
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
 //		producer.start();
 //		testUpdateBatch();

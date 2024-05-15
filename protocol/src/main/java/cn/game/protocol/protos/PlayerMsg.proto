@@ -15,7 +15,7 @@ message PlayerLoginRequest_01000001{
    string verstion = 3;						// 客户端版本，如果版本不匹配不能登陆
 
    //其他一些和BI相关的参数
-	string platform = 20;//平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+	int32 platform = 20;//平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
     string adChannel = 30; //推广渠道id
     string sdkPayChannel = 31; //充值渠道id ：0010安卓充值 ， 0020 IOS充值
 

@@ -2,12 +2,10 @@ package cn.game.games.net.game.module.currency;
 
 import java.util.ListIterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -22,7 +20,7 @@ import cn.game.util.IntMapWrapper;
 import cn.game.util.MapWrapper;
 
 public class CurrencyModule extends GoodsModule<Currency, Currency> {
-	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
+//	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
 	/** 货币,key:  {@link Money}*/
 	private MapWrapper currencyMap = new MapWrapper();
 	@Override
@@ -75,6 +73,10 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	@Override
 	public Currency get(int configId) {
 		return new Currency(configId, getCount(configId));
+	}
+
+	public Currency get(Asset asset) {
+		return new Currency(asset.ID, getCount(asset.ID));
 	}
 
 	@Override
@@ -149,8 +151,9 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 			expConfig = getExpConfig(id, (int) levelsMap.getValue(id));
 			nextExpConfig = getExpConfig(id, (int) (levelsMap.getValue(id) + 1));
 
-			levellog.info("opType[levelUp]playerId[{}]exp[{}]newLevel[{}]", player.getData().getPlayerId(), id,
-					levelsMap.getValue(id));
+//			levellog.info("opType[levelUp]playerId[{}]exp[{}]newLevel[{}]", player.getData().getPlayerId(), id,
+//					levelsMap.getValue(id));
+			GameLogger.levelUp(player);
 		}
 		if (curExp > expConfig.experience) {
 			curExp = expConfig.experience;

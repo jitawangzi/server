@@ -33,8 +33,8 @@ import cn.game.protocol.generated.manager.ItemConsumablesManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OldItemManager;
 import cn.game.protocol.generated.manager.RewardManager;
-import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
@@ -375,7 +375,7 @@ public class ItemHelper {
 	public static List<RewardInfo> addRewards(long playerId, int rewardId) {
 
 		RewardConfig rewardConfig = RewardManager.getInstance().getRewardConfig(rewardId);
-		return PlayerHelper.addResources(null, rewardConfig.getInfo());
+		return PlayerHelper.addResources(null, rewardConfig.getInfo(),null);
 
 	}
 
@@ -383,7 +383,7 @@ public class ItemHelper {
 	public static List<RewardInfo> addRandomRewards(long playerId, int rewardId) {
 
 		RewardConfig rewardConfig = RewardManager.getInstance().getRewardConfig(rewardId);
-		return PlayerHelper.addResources(null, rewardConfig.getInfo());
+		return PlayerHelper.addResources(null, rewardConfig.getInfo(),null);
 	}
 
 }

@@ -16,7 +16,7 @@ public enum InitialUI{
 	/**  */
 	Supervalue(100102,1001,"Supervalue",4,0,"超值","Texture/Lobby/main_icon_chaozhi"),
 	/**  */
-	Firstpayment(100103,1001,"Firstpayment",1,0,"首充","Texture/Lobby/main_icon_shouchong"),
+	Firstpayment(100103,1001,"Firstpayment",2,0,"首充","Texture/Lobby/main_icon_shouchong"),
 	/**  */
 	Sevendays(100104,1001,"Sevendays",4,0,"7日","Texture/Lobby/main_icon_seven"),
 	/**  */
@@ -26,7 +26,7 @@ public enum InitialUI{
 	/**  */
 	Ranking(100107,1001,"Ranking",5,0,"排行","Texture/Lobby/main_icon_rank"),
 	/**  */
-	PleaseGod(100108,1001,"PleaseGod",2,0,"请神","Texture/Lobby/main_icon_qingshen"),
+	PleaseGod(100108,1001,"PleaseGod",1,0,"请神","Texture/Lobby/main_icon_qingshen"),
 	/**  */
 	RandomBox(100109,1001,"RandomBox",3,0,"随机宝箱","Texture/Lobby/main_icon_baoxiang"),
 	/**  */
@@ -34,25 +34,25 @@ public enum InitialUI{
 	/**  */
 	HangingUpp(100111,1001,"HangingUpp",5,0,"挂机","Texture/Lobby/main_icon_guaji"),
 	/**  */
-	Build(100112,1001,"Build",10,0,"建造","Texture/common/main_icon_build"),
+	Build(100112,1001,"Build",30,0,"建造","Texture/common/main_icon_build"),
 	/**  */
-	CardMain(2001,0,"CardMain",3,0,"神将",""),
+	CardMain(2001,0,"CardMain",2,0,"神将",""),
 	/**  */
-	CardLv(200101,2001,"CardLv",3,0,"神将升级",""),
+	CardLv(200101,2001,"CardLv",2,0,"神将升级",""),
 	/**  */
-	CardBreak(200102,2001,"CardBreak",5,0,"神将突破",""),
+	CardBreak(200102,2001,"CardBreak",2,0,"神将突破",""),
 	/**  */
 	CardTreasure(200103,2001,"CardTreasure",30,0,"神将法宝",""),
 	/**  */
-	CardBook(200104,2001,"CardBook",5,0,"神将图鉴",""),
+	CardBook(200104,2001,"CardBook",10,0,"神将图鉴",""),
 	/**  */
-	ThreeWorld(3001,0,"ThreeWorld",1,0,"三界",""),
+	ThreeWorld(3001,0,"ThreeWorld",10,0,"三界",""),
 	/**  */
-	Consciousness(300101,3001,"Consciousness",1,0,"神元",""),
+	Consciousness(300101,3001,"Consciousness",10,0,"神元",""),
 	/**  */
-	Experience(4001,0,"Experience",1,0,"历练",""),
+	Experience(4001,0,"Experience",10,0,"历练",""),
 	/**  */
-	Travel(400101,4001,"Travel",1,0,"游历",""),
+	Travel(400101,4001,"Travel",10,0,"游历",""),
 	/**  */
 	Elite(400102,4001,"Elite",30,0,"精英挑战",""),
 	/**  */
@@ -66,7 +66,11 @@ public enum InitialUI{
 	/**  */
 	XinMoShiLian(4001052,400105,"XinMoShiLian",30,0,"心魔试炼",""),
 	/**  */
-	Welfare(5001,0,"Welfare",1,0,"福利",""),
+	YaoWangBiePao(400106,4001,"YaoWangBiePao",30,0,"妖王别跑",""),
+	/**  */
+	ShiLuoZhenJing(400107,4001,"ShiLuoZhenJing",30,0,"失落真经",""),
+	/**  */
+	Welfare(5001,0,"Welfare",10,0,"福利",""),
 	/**  */
 	ChapterGift(500101,5001,"ChapterGift",1,0,"章节礼包",""),
 	/**  */

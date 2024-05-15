@@ -15,6 +15,7 @@ import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -81,7 +82,7 @@ public class BattleChapterImpl implements IBattleHandler {
 		}
 		// 发送奖励
 		List<RewardInfo> allRewards = new ArrayList<RewardInfo>();
-		List<RewardInfo> rewards = PlayerHelper.addReward(player, win ? battleConfig.WinRandom : battleConfig.FailRandom);
+		List<RewardInfo> rewards = PlayerHelper.addReward(player, win ? battleConfig.WinRandom : battleConfig.FailRandom, OpType.BattleEnd);
 		allRewards.addAll(rewards);
 		String convertAwardFUN = battleConfig.ConvertAwardFUN;
 		if (!StringUtils.isEmpty(convertAwardFUN)) {
@@ -97,7 +98,7 @@ public class BattleChapterImpl implements IBattleHandler {
 				}
 				if (index >= 0) {
 					for (int i = 0; i < battleConfig.FUNFactor[index]; i++) {
-						List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index]);
+						List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index], OpType.BattleEnd);
 						allRewards.addAll(reward);
 					}
 				}
@@ -114,7 +115,7 @@ public class BattleChapterImpl implements IBattleHandler {
 				}
 				if (index >= 0) {
 					for (int i = 0; i < battleConfig.FUNFactor[index]; i++) {
-						List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index]);
+						List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index], OpType.BattleEnd);
 						allRewards.addAll(reward);
 					}
 				}

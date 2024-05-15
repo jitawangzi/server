@@ -122,4 +122,8 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	public Collection<T> getByConfigId(int configId) {
 		return id_items.get(configId);
 	}
+
+	public int getSizeDeduplication() {
+		return id_items.keys().size();
+	}
 }

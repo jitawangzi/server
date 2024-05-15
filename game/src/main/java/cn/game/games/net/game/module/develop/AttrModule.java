@@ -58,6 +58,9 @@ public class AttrModule extends BasePlayerModule {
 	private IntMapWrapper alchemyAttr = new IntMapWrapper();
 	private IntMapWrapper bookAttr = new IntMapWrapper();
 
+	/** 战斗力 */
+	private int power;
+
 	/** 
 	 * 计算所有属性，给客户端战斗时使用。
 	 */
@@ -289,6 +292,10 @@ public class AttrModule extends BasePlayerModule {
 	public void initFromDbAfter() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public int getPower() {
+		return power;
 	}
 
 	@Override

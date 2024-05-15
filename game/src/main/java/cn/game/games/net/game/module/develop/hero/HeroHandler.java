@@ -224,8 +224,8 @@ public class HeroHandler extends BaseHandler {
 			itemCount += heroLvConfig.LvConsumeItem;
 			money += heroLvConfig.LvConsumeMoney;
 		}
-		PlayerHelper.addResources(player, GlobalConst.HeroLvItem, itemCount);
-		PlayerHelper.addResources(player, Asset.gold.ID, money);
+		PlayerHelper.addResources(player, GlobalConst.HeroLvItem, itemCount, OpType.HeroLvReset);
+		PlayerHelper.addResources(player, Asset.gold.ID, money, OpType.HeroLvReset);
 
 		hero.setLevel(1);
 		client.sendProtocol(resp.build());
@@ -257,13 +257,13 @@ public class HeroHandler extends BaseHandler {
 			itemsMap.compute(omniItemID, (k, v) -> v == null ? itemCount : v + itemCount);
 		}
 		List<HeroInfo> heroInfos = new ArrayList<>();
-		List<RewardInfo> resources = PlayerHelper.addResources(player, heroConfig.ID, sameIdHeros);
+		List<RewardInfo> resources = PlayerHelper.addResources(player, heroConfig.ID, sameIdHeros, OpType.HeroQualityReset);
 		for (RewardInfo rewardInfo : resources) {
 			heroInfos.add(rewardInfo.getRole());
 		}
 		List<ItemInfo> itemInfos = new ArrayList<>();
 		for (Entry<Integer, Integer> entry : itemsMap.entrySet()) {
-			List<RewardInfo> resources2 = PlayerHelper.addResources(player, entry.getKey(), entry.getValue());
+			List<RewardInfo> resources2 = PlayerHelper.addResources(player, entry.getKey(), entry.getValue(), OpType.HeroQualityReset);
 			for (RewardInfo rewardInfo : resources2) {
 				itemInfos.add(rewardInfo.getItem());
 			}
@@ -362,7 +362,7 @@ public class HeroHandler extends BaseHandler {
 		hero.setQuality(nextQualityStarConfig.InitialQuality);
 
 		// 英雄突破，奖励固定元宝
-		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward);
+		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.HeroConflate);
 
 		player.handleEvent(EventTypeEnum.HeroBreak);
 

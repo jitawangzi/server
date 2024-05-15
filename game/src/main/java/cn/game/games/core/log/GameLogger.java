@@ -1,6 +1,13 @@
 package cn.game.games.core.log;
 
+import cn.game.core.base.ServerContext;
+import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.manual.OpType;
 import cn.game.util.log.Logger;
+import cn.game.util.log.LoggerType;
+import cn.game.util.log.SystemLogger;
 
 //
 //import java.util.List;
@@ -128,111 +135,114 @@ public class GameLogger extends Logger {
 //        LoggerType.serverevent.logger.info(LoggerType.splice(array));
 //    }
 //
+
+	/**
+	 * 心跳
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，在线用户数，排队人数
+	 */
+	public static void heart() {
+		try {
+			Object[] array = new Object[] { getCurrentTimeLogText(), GameLogAssistant.APP_KEY, "null", LoggerType.heart.name(), LoggerType.heart.version,
+					"1010", ServerContext.getInstance().getServerId(), PlayerManager.getInstance().getOnlineCount() };
+			LoggerType.heart.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
 //
-//	/**
-//	 * 心跳
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，在线用户数，排队人数
-//	 */
-//    public static void heart(long onlineCount) {
-//        try {
-//            Object[] array = new Object[]{getCurrentTimeLogText(), GameLogAssistant.APP_KEY, "null", LoggerType.heart.name(), LoggerType.heart.version, "1010", TTBase.getInstance().getCurNodeId(), onlineCount, LoginQueueManger.getInstance().getToLogins().size(), GameLogAssistant.TIME_ZONE};
-//            LoggerType.heart.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * 登入服务器
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 角色名，登录ip，价值虚拟币总量, 获取总卡牌数，获取去重卡牌数， 时区
-//	 */
-//    public static void login(Player player) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login.name(), LoggerType.login.version, "2050")),
-//                    player.getName(), player.getAccount().ip, player.getNumeric(Currency.diamond), 0, 0, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.login.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * 创建角色
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 角色名`，角色性别，时区
-//	 */
-//    public static void rolebuild(Player player) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolebuild.name(), LoggerType.rolebuild.version, "3025")),
-//                    player.getName(), 1, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.rolebuild.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * 创建角色
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 角色名，登录ip，价值虚拟币总量，时区
-//	 */
-//    public static void rolelogin(Player player) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolelogin.name(), LoggerType.rolelogin.version, "3030")),
-//                    player.getName(), player.getNumeric(Currency.diamond), GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.rolelogin.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * 登出游戏
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 角色名，登录ip，价值虚拟币总量，在线时长（单位S）, Vip等级, 剩余体力值, 获取总卡牌数, 获取去重卡牌数, 时区
-//	 */
-//    public static void logout(Player player) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.logout.name(), LoggerType.logout.version, "9999")),
-//                    player.getName(), player.getNumeric(Currency.diamond), GameLogAssistant.calculatePlayerOnlineDurationSecond(player), player.getVipLevel(), 0, 0, 0,
-//                    GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.logout.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * 升级
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 角色名，升级后等级,升级前等级,升级时长,时区
-//	 */
-//    public static void levelUp(Player player) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.levelup.name(), LoggerType.levelup.version, "6010")),
-//                    player.getName(), player.getLevel(), Math.max(0, player.getLevel() - 1), 0, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.levelup.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
+	/**
+	 * 登入服务器
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 角色名，登录ip，价值虚拟币总量, 获取总卡牌数，获取去重卡牌数， 时区
+	 */
+	public static void login(Player player) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login.name(), LoggerType.login.version, "2050")),
+					player.getData().getName() == null ? "null" : player.getData().getName(),
+					player.getGameClient().getIp(), player.getCurrencyModule().get(Asset.diamond.ID), player.getHeroModule().list().size(),
+					player.getHeroModule().getSizeDeduplication(),
+					GameLogAssistant.TIME_ZONE };
+			LoggerType.login.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
+	/**
+	 * 创建角色
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 角色名`，角色性别，时区
+	 */
+	public static void rolebuild(Player player) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolebuild.name(), LoggerType.rolebuild.version, "3025")),
+					player.getData().getName() == null ? "null" : player.getData().getName(), player.getData().getGender() ? 1 : 2,
+					player.getAccount().getPlatform() };
+			LoggerType.rolebuild.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
+	/**
+	 * 创建角色
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 角色名，登录ip，价值虚拟币总量，时区
+	 */
+	public static void rolelogin(Player player) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolelogin.name(), LoggerType.rolelogin.version, "3030")),
+					player.getData().getName() == null ? "null" : player.getData().getName(), player.getCurrencyModule().get(Asset.diamond.ID),
+					player.getAccount().getPlatform() };
+			LoggerType.rolelogin.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
+	/**
+	 * 登出游戏
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 角色名，登录ip，价值虚拟币总量，在线时长（单位S）, Vip等级, 剩余体力值, 获取总卡牌数, 获取去重卡牌数, 时区
+	 */
+	public static void logout(Player player) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.logout.name(), LoggerType.logout.version, "9999")),
+					player.getData().getName(),
+					player.getCurrencyModule().get(Asset.diamond), GameLogAssistant.calculatePlayerOnlineDurationSecond(player), player.getData().getVipLevel(),
+					player.getCurrencyModule().get(Asset.playerEnergy), player.getAttrModule().getPower(), player.getChapterModule().getMainBattleHighest(),
+					player.getAccount().getPlatform() };
+			LoggerType.logout.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
+	/**
+	 * 升级
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 角色名，升级后等级,升级前等级,升级时长,时区
+	 */
+	public static void levelUp(Player player) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.levelup.name(), LoggerType.levelup.version, "6010")),
+					player.getData().getName(), player.getLevel(), Math.max(0, player.getLevel() - 1), 0, GameLogAssistant.TIME_ZONE };
+			LoggerType.levelup.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
 //	/**
 //	 * 商城日志
 //	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
@@ -241,42 +251,40 @@ public class GameLogger extends Logger {
 //	 * vip等级
 //	 * 时区
 //	 */
-//    public static void shoptrade(Player player, List<Reward> rewardList, List<Reward> cost, int shopId, int secondShopId, int buyNum) {
-//        try {
-//            int itemType = -1;
-//            int itemId = -1;
-//            long itemCount = 0;
-//            if (CollectionUtil.isNotEmpty(rewardList)) {
-//                for (Reward reward : rewardList) {
-//                    itemType = reward.getType();
-//                    itemId = reward.getItemTemplateId();
-//                    itemCount = reward.getValue();
-//                    break;
-//                }
-//            }
-//            int type = ItemService.getItemTypeBy(itemId);
+//	public static void shoptrade(Player player, List<Reward> rewardList, List<Reward> cost, int shopId, int secondShopId, int buyNum) {
+//		try {
+//			int itemType = -1;
+//			int itemId = -1;
+//			long itemCount = 0;
+//			if (CollectionUtil.isNotEmpty(rewardList)) {
+//				for (Reward reward : rewardList) {
+//					itemType = reward.getType();
+//					itemId = reward.getItemTemplateId();
+//					itemCount = reward.getValue();
+//					break;
+//				}
+//			}
+//			int type = ItemService.getItemTypeBy(itemId);
 //
-//            int moneyType = -1;
-//            long moneyNum = 0;
-//            if (CollectionUtil.isNotEmpty(cost)) {
-//                for (Reward reward : cost) {
-//                    moneyType = reward.getItemTemplateId();
-//                    moneyNum = reward.getValue();
-//                    break;
-//                }
-//            }
+//			int moneyType = -1;
+//			long moneyNum = 0;
+//			if (CollectionUtil.isNotEmpty(cost)) {
+//				for (Reward reward : cost) {
+//					moneyType = reward.getItemTemplateId();
+//					moneyNum = reward.getValue();
+//					break;
+//				}
+//			}
 //
-//
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.shoptrade.name(), LoggerType.shoptrade.version, "7010")),
-//                    type, itemId, buyNum, moneyType, moneyNum, shopId, player.getVipLevel(), GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.shoptrade.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
+//			Object[] array = new Object[] {
+//					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.shoptrade.name(), LoggerType.shoptrade.version, "7010")), type,
+//					itemId, buyNum, moneyType, moneyNum, shopId, player.getVipLevel(), GameLogAssistant.TIME_ZONE };
+//			LoggerType.shoptrade.logger.info(LoggerType.splice(array));
+//		} catch (Exception e) {
+//			SystemLogger.error(e);
+//		}
+//	}
+
 //	/**
 //	 * 完成称号任务
 //	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
@@ -316,28 +324,26 @@ public class GameLogger extends Logger {
 //    }
 //
 //
-//	/**
-//	 * 货币获得与消耗
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 物品类型id , 物品id, 获得或消耗方式id, 获得或消耗数量, Vip等级, 获得或消耗位置, 行为, 剩余总量, 时区
-//	 */
-//    public static void item(Player player, Item item, int count, BehaviorType behaviorType, boolean isAdd) {
-//        try {
-//            int type = ItemService.getItemTypeBy(item.getTemplateId());
+	/**
+	 * 货币获得与消耗
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 物品类型id , 物品id, 获得或消耗方式id, 获得或消耗数量, Vip等级, 获得或消耗位置, 行为, 剩余总量, 时区
+	 */
+	public static void item(Player player, int id, int count, OpType opType, boolean isAdd) {
+		try {
+//			int type = ItemService.getItemTypeBy(item.getTemplateId());
 //
-//
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.item.name(), LoggerType.item.version, "B2110")),
-//                    type, item.getTemplateId(), behaviorType.getText(), count, player.getVipLevel(), GameLogAssistant.getSubcauseIdByBehaviorType(player, behaviorType),
-//                    isAdd ? 1 : -1, player.getBagModel().getItemCount(item.getTemplateId()),
-//                    GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.item.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
+//			Object[] array = new Object[] {
+//					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.item.name(), LoggerType.item.version, "B2110")), type,
+//					item.getTemplateId(), behaviorType.getText(), count, player.getVipLevel(),
+//					GameLogAssistant.getSubcauseIdByBehaviorType(player, behaviorType), isAdd ? 1 : -1, player.getBagModel().getItemCount(item.getTemplateId()),
+//					GameLogAssistant.TIME_ZONE };
+//			LoggerType.item.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
 //
 //	/**
 //	 * 充值
@@ -347,21 +353,19 @@ public class GameLogger extends Logger {
 //	 * 价值虚拟币总量, Vip等级,商品id, 订单号
 //	 * 时区
 //	 */
-//    public static void recharge(Player player, Receipt receipt, PayItem payItem, int diamondCount, String currency) {
-//        try {
-//            int cur = "CNY".equals(currency) ? 11 : 0;
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, "B5000")),
-//                    payItem.dollarPrice / 100.00, player.getAccount().sdkPayChannel, diamondCount, 1, player.getAccount().ip,
-//                    player.getCurrencyModel().getCurrency(Currency.diamond), 0, receipt.getGoodsId(), receipt.getCoOrderId(),
-//                    GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.recharge.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
+//	public static void recharge(Player player, Receipt receipt, PayItem payItem, int diamondCount, String currency) {
+//		try {
+//			int cur = "CNY".equals(currency) ? 11 : 1;
+//			Object[] array = new Object[] {
+//					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, "5000")),
+//					rmb, player.getAccount().sdkPayChannel, diamondCount, cur, player.getGameClient().getIp(),
+//					player.getCurrencyModule().get(Asset.diamond), 0, receipt.getGoodsId(), receipt.getCoOrderId(), player.getAccount().getPlatform() };
+//			LoggerType.recharge.logger.info(LoggerType.splice(array));
+//		} catch (Exception e) {
+//			SystemLogger.error(e);
+//		}
+//	}
+
 //	/**
 //	 * 充值
 //	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id

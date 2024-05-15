@@ -27,7 +27,9 @@ import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.activity.ActivityModule;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.currency.CurrencyModule;
+import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.dragon.DragonModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
@@ -194,6 +196,14 @@ public class Player  {
 
 	public FuncModule getFuncModule() {
 		return getModule(FuncModule.class);
+	}
+
+	public AttrModule getAttrModule() {
+		return getModule(AttrModule.class);
+	}
+
+	public ChapterModule getChapterModule() {
+		return getModule(ChapterModule.class);
 	}
 	public Player() {
 	}

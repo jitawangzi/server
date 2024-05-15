@@ -27,6 +27,7 @@ import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRequest_15000010;
@@ -75,7 +76,7 @@ public class ShopHandler extends BaseHandler {
 		Future<Boolean> pay = player.pay(rechargeConfig.PurchaseParameter);
 		pay.onComplete(t -> {
 			if (t.result()) {
-				List<RewardInfo> resources = PlayerHelper.addResources(player, rechargeConfig.Item);
+				List<RewardInfo> resources = PlayerHelper.addResources(player, rechargeConfig.Item, OpType.ShopTrade);
 				resp.addAllRewards(resources);
 				client.sendProtocol(resp.build());
 			} else {
@@ -104,7 +105,7 @@ public class ShopHandler extends BaseHandler {
 
 		final int[] itemsAdd = shopItemConfig.Item;
 		Supplier<Boolean> addItemAction = () -> {
-			List<RewardInfo> resources = PlayerHelper.addResources(player, itemsAdd);
+			List<RewardInfo> resources = PlayerHelper.addResources(player, itemsAdd, OpType.ShopTrade);
 //			if (shopItemConfig.PurchaseCnt > 0) {
 				shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
 //				shopItem.update();
@@ -112,6 +113,7 @@ public class ShopHandler extends BaseHandler {
 			player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
 			resp.addAllRewards(resources);
 			client.sendProtocol(resp);
+//			GameLogger.shoptrade(player, null, null, shopId, shopId, itemId);
 			return true;
 		};
 
@@ -226,7 +228,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
-		PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards);
+		PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
 
 		monthCard.setIsBuyRewards(true);
 		monthCard.update();
@@ -252,7 +254,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
-		PlayerHelper.addResources(player, monthCardConfig.DailyRewards);
+		PlayerHelper.addResources(player, monthCardConfig.DailyRewards, OpType.MonthCardDay);
 
 		monthCard.setIsDayRewards(true);
 		monthCard.update();
@@ -285,7 +287,7 @@ public class ShopHandler extends BaseHandler {
 		pay.onComplete(t -> {
 			if (t.result()) {
 				playerModule.addId(IdConstant.CHAPTER_PACK, id);
-				List<RewardInfo> resources = PlayerHelper.addResources(player, chapterPacksConfig.Item);
+				List<RewardInfo> resources = PlayerHelper.addResources(player, chapterPacksConfig.Item, OpType.ChapterGift);
 				resp.addAllRewards(resources);
 				client.sendProtocol(resp.build());
 			}else {

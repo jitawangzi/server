@@ -15,6 +15,7 @@ import cn.game.protocol.generated.manager.AssetRestoreManager;
 import cn.game.protocol.generated.manager.AttrEffectCoefficientManager;
 import cn.game.protocol.generated.manager.PlotManager;
 import cn.game.protocol.generated.manager.HeadPortraitManager;
+import cn.game.protocol.generated.manager.EnergyCalculationManager;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.generated.manager.FirstChargeManager;
@@ -80,6 +81,7 @@ public class ManagerHelper {
 		AttrEffectCoefficientManager.instance().load();
 		PlotManager.instance().load();
 		HeadPortraitManager.instance().load();
+		EnergyCalculationManager.instance().load();
 		FundPassManager.instance().load();
 		ShopManager.instance().load();
 		FirstChargeManager.instance().load();

@@ -26,6 +26,7 @@ import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 import cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -240,7 +241,7 @@ public class PlayerModule extends BasePlayerModule {
 			if (exp == Asset.playerExp.ID) {
 				// 给等级奖励
 				UserUpgradeConfig userUpgradeConfig = UserUpgradeManager.instance().get(level);
-				List<RewardInfo> reward = PlayerHelper.addResources(player, userUpgradeConfig.LvReward);
+				List<RewardInfo> reward = PlayerHelper.addResources(player, userUpgradeConfig.LvReward, OpType.PlayerLevelUp);
 				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(reward));
 			}
 			break;

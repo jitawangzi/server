@@ -136,10 +136,10 @@ public class ChapterHandler extends BaseHandler {
 		int exp = patrolConfig.IncomeEXP * minute;
 		int gold = patrolConfig.IncomeGold * minute;
 
-		PlayerHelper.addResources(player, Asset.playerExp.ID, exp);
-		PlayerHelper.addResources(player, Asset.gold.ID, gold);
+		PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);
+		PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Patrol);
 		for (int i = 0; i < hours; i++) {
-			List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.IncomeRandomID);
+			List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.IncomeRandomID, OpType.Patrol);
 			resp.addAllRewards(reward);
 		}
 		resp.setExp(exp);
@@ -242,7 +242,7 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index]);
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index], OpType.BattleEnd);
 		rewards.add(index);
 	
 		resp.addAllReward(reward);
@@ -393,7 +393,7 @@ public class ChapterHandler extends BaseHandler {
 		long attackingUid = chapterModule.getAttackingUid();
 		int attackingDungeonId = chapterModule.getAttackingDungeonId();
 		int lineupId = chapterModule.getLineupId();
-		if (attackingId == 0 || attackingType == 0) {
+		if (attackingType == 0) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}

@@ -31,6 +31,7 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.ItemMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -69,6 +70,7 @@ import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
@@ -215,7 +217,7 @@ public class PlayerHelper {
 		}
 	}
 
-	public static List<RewardInfo> addResources(Player player, int id, int value, boolean notify) {
+	public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType, boolean notify) {
 		if (value < 0) {
 			return Collections.EMPTY_LIST;
 		}
@@ -225,6 +227,10 @@ public class PlayerHelper {
 			rewards = goodsModule.addReward(id, value);
 			log.info("player[{}] addReward  id[{}]count[{}]", player.getPlayerId(), id, value);
 			player.handleEvent(EventTypeEnum.GetItem, id, value);
+			int goodsType = ItemHelper.getGoodsType(id);
+			if (goodsType != GoodsTypeEnum.Resource.getId()) {
+				GameLogger.item(player, id, value, opType, true);
+			}
 			if (notify && !rewards.isEmpty()) {
 				player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
 			}
@@ -234,8 +240,8 @@ public class PlayerHelper {
 		return rewards;
 	}
 
-	public static List<RewardInfo> addResources(Player player, int id, int value) {
-		return addResources(player, id, value, false);
+	public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType) {
+		return addResources(player, id, value, opType, false);
 	}
 
 	/**
@@ -400,9 +406,9 @@ public class PlayerHelper {
 	 * @param randomRewardId
 	 * @return
 	 */
-	public static List<RewardInfo> addReward(Player player, int randomRewardId) {
+	public static List<RewardInfo> addReward(Player player, int randomRewardId, OpType opType) {
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId); 
-		List<RewardInfo> resources = addResources(player, randomGivenConfig.MustGiven, false);
+		List<RewardInfo> resources = addResources(player, randomGivenConfig.MustGiven, opType, false);
 		if (randomGivenConfig.RandomNumber.length > 0) {
 			int randomCount = 0;
 			if (randomGivenConfig.RandomNumber.length == 1) {
@@ -417,7 +423,7 @@ public class PlayerHelper {
 				int group = randomGivenConfig.RandomParameterGroupId[randomIndex];
 				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
 				RandomGroupConfig groupConfig = Rnd.randomOne(randomGroupIDList);
-				resources.addAll(addResources(player, groupConfig.AssetID, groupConfig.Several));
+				resources.addAll(addResources(player, groupConfig.AssetID, groupConfig.Several, opType));
 			}
 		}
 		return resources;
@@ -504,6 +510,7 @@ public class PlayerHelper {
 
 		player.handleEvent(EventTypeEnum.PLAYER_CREATE);
 
+		GameLogger.rolebuild(player);
 	}
 
 	/**
@@ -532,6 +539,8 @@ public class PlayerHelper {
 			e.printStackTrace();
 		}
 		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.LoginFinish));
+		GameLogger.login(player);
+		GameLogger.rolelogin(player);
 	}
 
 
@@ -632,12 +641,12 @@ public class PlayerHelper {
 	 * @param rewards
 	 * @return
 	 */
-	public static List<RewardInfo> addResources(Player player, List<Entry<Integer, Integer>> rewards) {
+	public static List<RewardInfo> addResources(Player player, List<Entry<Integer, Integer>> rewards, OpType opType) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.size() > 0) {
 			for (Entry<Integer, Integer> entry : rewards) {
 
-				List<RewardInfo> rewardItem = addResources(player, entry.getKey(), entry.getValue(), false);
+				List<RewardInfo> rewardItem = addResources(player, entry.getKey(), entry.getValue(), opType, false);
 				rewardItems.addAll(rewardItem);
 			}
 			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
@@ -645,15 +654,15 @@ public class PlayerHelper {
 		return rewardItems;
 	}
 
-	public static List<RewardInfo> addResources(Player player, int[][] rewards) {
-		return addResources(player, rewards, false);
+	public static List<RewardInfo> addResources(Player player, int[][] rewards, OpType opType) {
+		return addResources(player, rewards, opType, false);
 	}
 
-	public static List<RewardInfo> addGoods(Player player, List<Goods> goods) {
+	public static List<RewardInfo> addGoods(Player player, List<Goods> goods, OpType opType) {
 
 		List<RewardInfo> ret = new ArrayList<>();
 		for (Goods g : goods) {
-			ret.addAll(addResources(player, g.getId(), g.getCount()));
+			ret.addAll(addResources(player, g.getId(), g.getCount(), opType));
 		}
 		return ret;
 	}
@@ -674,12 +683,12 @@ public class PlayerHelper {
 //		return rewardItems;
 //	}
 
-	public static List<RewardInfo> addResources(Player player, int[][] rewards, boolean notify) {
+	public static List<RewardInfo> addResources(Player player, int[][] rewards, OpType opType, boolean notify) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.length > 0) {
 			for (int i = 0; i < rewards.length; i++) {
 				for (int j = 0; j < rewards[i].length; j += 2) {
-					List<RewardInfo> rewardItem = addResources(player, rewards[i][j], rewards[i][j + 1], false);
+					List<RewardInfo> rewardItem = addResources(player, rewards[i][j], rewards[i][j + 1], opType, false);
 					rewardItems.addAll(rewardItem);
 				}
 			}
@@ -690,16 +699,16 @@ public class PlayerHelper {
 		return rewardItems;
 	}
 
-	public static List<RewardInfo> addResources(Player player, int[] rewards) {
+	public static List<RewardInfo> addResources(Player player, int[] rewards, OpType opType) {
 
 		if (rewards.length > 2) {
 			List<RewardInfo> ret = new ArrayList<>();
 			for (int i = 0; i < rewards.length - 1; i += 2) {
-				ret.addAll(addResources(player, rewards[i], rewards[i + 1]));
+				ret.addAll(addResources(player, rewards[i], rewards[i + 1], opType));
 			}
 			return ret;
 		}
-		return addResources(player, rewards[0], rewards[1]);
+		return addResources(player, rewards[0], rewards[1], opType);
 	}
 	/** 
 	 * 一次性增加多个奖励，增加完奖励后推送给客户端一次。
@@ -707,11 +716,11 @@ public class PlayerHelper {
 	 * @param rewards
 	 * @return
 	 */
-	public static List<RewardInfo> addResources(Player player, Set<Pair<Integer, Integer>> rewards) {
+	public static List<RewardInfo> addResources(Player player, Set<Pair<Integer, Integer>> rewards, OpType opType) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.size() > 0) {
 			for (Pair<Integer, Integer> pair : rewards) {
-				List<RewardInfo> rewardItem = addResources(player, pair.first, pair.second, false);
+				List<RewardInfo> rewardItem = addResources(player, pair.first, pair.second, opType, false);
 				rewardItems.addAll(rewardItem);
 			}
 			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));

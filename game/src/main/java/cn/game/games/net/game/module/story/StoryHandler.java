@@ -1,7 +1,5 @@
 package cn.game.games.net.game.module.story;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -14,7 +12,6 @@ import cn.game.protocol.generated.config.StoryConfig;
 import cn.game.protocol.generated.manager.StoryManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.StoryMsg.StoryFinishRequest_14000003;
 import cn.game.protocol.protobuf.StoryMsg.StoryFinishResponse_14000004;
 import cn.game.protocol.protobuf.StoryMsg.StoryStartRequest_14000001;
@@ -81,8 +78,8 @@ public class StoryHandler extends BaseHandler {
 		}
 		StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
 
-		List<RewardInfo> addResources = PlayerHelper.addResources(player, storyConfig.getReward());
-		resp.addAllRewards(addResources);
+//		List<RewardInfo> addResources = PlayerHelper.addResources(player, storyConfig.getReward());
+//		resp.addAllRewards(addResources);
 //		PlayerHelper.command(playerId, storyConfig.getCommandList());
 		client.sendProtocol(resp.build());
 	}

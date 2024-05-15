@@ -11,9 +11,11 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.DrawConfig;
 import cn.game.protocol.generated.config.GiftCardConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.generated.manager.GiftCardManager;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.DrawMsg.DrawInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -28,6 +30,7 @@ public class DrawModule extends BasePlayerModule {
 	private IntMapWrapper drawTimes = new IntMapWrapper();
 	/** 免费单抽的时间 key：DrawConfig 表id */
 	private IntMapWrapper freeDrawTime = new IntMapWrapper();
+	private boolean isFirstTen = true;
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -98,10 +101,15 @@ public class DrawModule extends BasePlayerModule {
 
 		DrawConfig drawConfig = DrawManager.instance().get(id);
 		int gold = drawConfig.DrawMoney * count;
+		int drawRandomId = drawConfig.DrawRandomId;
+		if (count == 10 && isFirstTen) {
+			drawRandomId = GlobalConst.FirstMandatoryDraw;
+			isFirstTen = false;
+		}
+		
 		for (int i = 0; i < count; i++) {
-			List<RewardInfo> reward = PlayerHelper.addReward(player, drawConfig.DrawRandomId);
+			List<RewardInfo> reward = PlayerHelper.addReward(player, drawRandomId, OpType.Draw);
 			ret.addAll(reward);
-
 
 			for (GiftCardConfig giftCardConfig : giftCardList) {
 
@@ -112,7 +120,7 @@ public class DrawModule extends BasePlayerModule {
 				int remaining = giftCardConfig.GiftCardCount[curIndex] - curTimes;
 				if (remaining == 0) {
 					// 送卡
-					giftList.addAll(PlayerHelper.addReward(player, giftCardConfig.GiftCardRandomId[curIndex]));
+					giftList.addAll(PlayerHelper.addReward(player, giftCardConfig.GiftCardRandomId[curIndex], OpType.Draw));
 					// next index
 					if (curIndex < giftCardConfig.GiftCardRandomId.length - 1) {
 						giftIndex.add(giftCardId, 1);
@@ -122,7 +130,7 @@ public class DrawModule extends BasePlayerModule {
 			}
 		}
 		if (gold > 0) {
-			PlayerHelper.addResources(player, Asset.gold.ID, gold);
+			PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Draw);
 		}
 		if (freeOnce) {
 			freeDrawTime.setValue(id, DateUtil.currentTimeSeconds());

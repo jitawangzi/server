@@ -198,7 +198,7 @@ public class QuestHandler extends BaseHandler {
 		List<Integer> activeRewardList = questModule.getActiveRewardList(type);
 		activeRewardList.add(index);
 
-		resp.addAllRewards(PlayerHelper.addResources(player, questPointRewardConfig.Reward[index]));
+		resp.addAllRewards(PlayerHelper.addResources(player, questPointRewardConfig.Reward[index], null));
 
 		client.sendProtocol(resp.build());
 	}
