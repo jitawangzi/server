@@ -1,5 +1,9 @@
 package cn.game.games.core.log;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
@@ -551,29 +555,38 @@ public class GameLogger extends Logger {
 //        }
 //    }
 //
-//	/**
-//	 * pve 战斗
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 关卡id,战斗类型,NpcId,战斗结果,地图id,评价星级,关卡类型,关卡用时(秒),关卡所用回合
-//	 * 剩余体力,上阵卡牌战力总和,当前关卡推荐战力,上阵卡牌1,上阵卡牌2,上阵卡牌3,角色属性,
-//	 * 时区
-//	 */
-//    public static void pvefight(Player player, int stageId, int type, boolean result, long time, int round, Attributes attributes) {
-//        try {
-//            String re = "0";
-//            if (result) {
-//                re = "1";
-//            }
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.pvefight.name(), LoggerType.pvefight.version, "B4100")),
-//                    stageId, type, "null", re, "null", "null", "null", time, round, 0, 0, 0, "null", "null", "null", attributes.getAttributeMap().toString(), GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.pvefight.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
+	/**
+	 * pve 战斗
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 关卡id,战斗类型,NpcId,战斗结果,地图id,评价星级,关卡类型,关卡用时(秒),关卡所用回合
+	 * 剩余体力,上阵卡牌战力总和,当前关卡推荐战力,上阵卡牌1,上阵卡牌2,上阵卡牌3,角色属性,
+	 * 时区
+	 */
+	public static void pvefight(Player player, int stageId, int type, boolean result, long time, int round) {
+		try {
+//			BattleConfig battleConfig = BattleManager.instance().get(stageId);
+			String re = "0";
+			if (result) {
+				re = "1";
+			}
+			Set<Long> battleHeros = player.getHeroModule().getBattleHeros();
+			List<Long> heroList = new ArrayList<>(battleHeros);
+
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.pvefight.name(), LoggerType.pvefight.version, "B4100")), stageId,
+					type, re, "null", time,
+					heroList.size() > 0 ? heroList.get(0) : "null",
+					heroList.size() > 1 ? heroList.get(1) : "null", heroList.size() > 2 ? heroList.get(2) : "null",
+					heroList.size() > 3 ? heroList.get(3) : "null", heroList.size() > 4 ? heroList.get(4) : "null",
+					heroList.size() > 5 ? heroList.get(5) : "null",
+					player.getAccount().getPlatform(), player.getAttrModule().getPower(), round
+			};
+			LoggerType.pvefight.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
 //
 //	/**
 //	 * 新手引导

@@ -39,8 +39,11 @@ public class Chapter implements Serializable, DbEntity {
 	 */
 	private Integer hpPercent;
 
-	/** 战斗时长（秒） */
+	/** 最长战斗时长（秒） */
 	private int battleTime;
+	
+	/** 本章打了多少次 */
+	private int finishTimes;
 	/**
 	 * @mbg.generated
 	 */
@@ -133,6 +136,14 @@ public class Chapter implements Serializable, DbEntity {
 //	public Class<?> getMapperClass() {
 //		return cn.game.games.net.data.mapper.ChapterMapper.class;
 //	}
+
+	public int getFinishTimes() {
+		return finishTimes;
+	}
+
+	public void setFinishTimes(int finishTimes) {
+		this.finishTimes = finishTimes;
+	}
 
 	/**
 	 * @mbg.generated
