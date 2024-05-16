@@ -186,6 +186,12 @@ public abstract class AbstractCondition implements Condition {
 	}
 
 	@Override
+	public void init(Player player) {
+		this.player = player;
+		this.playerId = player.getPlayerId();
+	}
+
+	@Override
 	public void addCount(int count) {
 		if (count <= 0) {
 			return;

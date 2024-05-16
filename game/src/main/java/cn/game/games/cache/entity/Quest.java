@@ -233,7 +233,17 @@ public class Quest implements Serializable, DbEntity {
 
 	public void initCondition() {
 
-		if (this.state != QuestHelper.ACCEPTED) {
+
+		if (this.state < QuestHelper.ACCEPTED) {
+			return;
+		}
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		if (this.state > QuestHelper.ACCEPTED) {
+			List<Condition> requires = conditionContainer.getRequires();
+			for (Condition condition : requires) {
+				condition.init(player);
+			}
 			return;
 		}
 		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
@@ -249,7 +259,6 @@ public class Quest implements Serializable, DbEntity {
 //			QuestHelper.updateParams(this);
 		};
 		Consumer<Condition> finishAction = t -> {
-			Player player = PlayerManager.getInstance().getPlayer(playerId);
 			QuestModule questModule = player.getModule(QuestModule.class);
 			if (this.getState() == QuestHelper.ACCEPTED) {
 				questModule.setState(this, QuestHelper.CAN_GIVEWARD);

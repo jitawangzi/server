@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.quest;
 
 import java.util.function.Consumer;
 
+import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventHandler;
 
 public interface Condition extends EventHandler {
@@ -74,6 +75,8 @@ public interface Condition extends EventHandler {
 	 * @param quest
 	 */
 	void init(long playerId, int condition, byte index, Consumer<Condition> updateAction, Consumer<Condition> achieveAction);
+
+	void init(Player player);
 
 	void registerEvent();
 
