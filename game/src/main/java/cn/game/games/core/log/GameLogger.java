@@ -1,9 +1,13 @@
 package cn.game.games.core.log;
 
 import cn.game.core.base.ServerContext;
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.util.log.Logger;
 import cn.game.util.log.LoggerType;
@@ -243,6 +247,19 @@ public class GameLogger extends Logger {
 		}
 	}
 
+	public static void getHero(Player player, Hero hero, OpType opType) {
+		try {
+			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.gethero.name(), LoggerType.gethero.version, "B8110")),
+					hero.getConfigId(), heroConfig.InitialQuality, hero.getId(), opType, player.getHeroModule().list().size(),
+					player.getHeroModule().getSizeDeduplication(), player.getAccount().getPlatform() };
+			LoggerType.gethero.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
 //	/**
 //	 * 商城日志
 //	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
@@ -304,26 +321,24 @@ public class GameLogger extends Logger {
 //        }
 //    }
 //
-//	/**
-//	 * 货币获得与消耗
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 获得或消耗方式id, 获得或消耗数量, 获得或消耗后总量, 货币id,Vip等级, 获得与消耗位置, 行为 ,时区
-//	 */
-//    public static void money(Player player, Currency currency, long count, BehaviorType behaviorType, boolean isIncrease) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.money.name(), LoggerType.money.version, "8010")),
-//                    behaviorType.getText(), count, player.getCurrencyModel().getCurrency(currency), currency.getId(), player.getVipLevel(), GameLogAssistant.getSubcauseIdByBehaviorType(player, behaviorType), isIncrease ? 1 : -1,
-//                    GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.money.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//
+	/**
+	 * 货币获得与消耗
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 获得或消耗方式id, 获得或消耗数量, 获得或消耗后总量, 货币id,Vip等级, 获得与消耗位置, 行为 ,时区
+	 */
+	public static void money(Player player, int id, long count, OpType opType, boolean isIncrease) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.money.name(), LoggerType.money.version, "8010")),
+					opType.name(), count, player.getCurrencyModule().get(id), id, player.getData().getVipLevel(),
+					"null", isIncrease ? 1 : -1, player.getAccount().getPlatform() };
+			LoggerType.money.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
 	/**
 	 * 货币获得与消耗
 	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
@@ -332,14 +347,14 @@ public class GameLogger extends Logger {
 	 */
 	public static void item(Player player, int id, int count, OpType opType, boolean isAdd) {
 		try {
-//			int type = ItemService.getItemTypeBy(item.getTemplateId());
-//
-//			Object[] array = new Object[] {
-//					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.item.name(), LoggerType.item.version, "B2110")), type,
-//					item.getTemplateId(), behaviorType.getText(), count, player.getVipLevel(),
-//					GameLogAssistant.getSubcauseIdByBehaviorType(player, behaviorType), isAdd ? 1 : -1, player.getBagModel().getItemCount(item.getTemplateId()),
-//					GameLogAssistant.TIME_ZONE };
-//			LoggerType.item.logger.info(LoggerType.splice(array));
+			int type = ItemHelper.getGoodsType(id);
+
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.item.name(), LoggerType.item.version, "B2110")), type, id,
+					opType.name(), count, player.getData().getVipLevel(),
+					GameLogAssistant.getSubcauseIdByBehaviorType(player, opType), isAdd ? 1 : -1, player.getGoodsModule(id).getCount(id),
+					player.getAccount().getPlatform() };
+			LoggerType.item.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}

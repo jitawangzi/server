@@ -179,7 +179,7 @@ public class PlayerHandler extends BaseHandler {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 				return;
 			}
-			List<RewardInfo> reward = player.getHeroModule().addReward(param, 1);
+			List<RewardInfo> reward = player.getHeroModule().addReward(param, 1, OpType.None);
 			ret.addAll(reward);
 		} else {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
@@ -699,7 +699,11 @@ public class PlayerHandler extends BaseHandler {
 				RFuture<Boolean> playerLockFuture = PlayerHelper.trySetServerId(uid.get());
 				playerLockFuture.onComplete((v,throwable) -> {
 					if (v) {
-						createPlayer(accountId.toString(), deviceId.toString(), client, uid.longValue(), null, true, 0, false, true);
+						Account account = new Account(req);
+						account.accountId = accountId.toString();
+						account.deviceId = deviceId.toString();
+
+						createPlayer(account, client, uid.longValue(), null, true, 0, false, true);
 					}else {
 						failHandler.handle(ErrorMsgEnum.player_lock.getId());
 						log.error("create player error  ", throwable);
@@ -873,7 +877,7 @@ public class PlayerHandler extends BaseHandler {
 				});
 	}*/
 
-	public void createPlayer(String accountId, String deviceId, NetClient client, long uid, String name, boolean isMan, int head,
+	public void createPlayer(Account account, NetClient client, long uid, String name, boolean isMan, int head,
 			boolean isPc, boolean autoCreate) {
 //		PlayerLoginResponse_01000002.Builder builder = PlayerLoginResponse_01000002.newBuilder();
 		PlayerData playerData = new PlayerData();
@@ -916,8 +920,8 @@ public class PlayerHandler extends BaseHandler {
 //			playerData.setName(name);
 //		}
 		playerData.setName(name);
-		playerData.setAccountId(accountId);
-		playerData.setDeviceId(deviceId);
+		playerData.setAccountId(account.accountId);
+		playerData.setDeviceId(account.deviceId);
 		playerData.setHead(Rnd.randomOne(HeadPortraitManager.instance().list()).ID);
 		playerData.setHeadFrame(Rnd.randomOne(HeadBoxManager.instance().list()).ID);
 		playerData.setRegion(AddressUtil.getCityInfo(client.getIp()));
@@ -947,7 +951,7 @@ public class PlayerHandler extends BaseHandler {
 
 				Player player = new Player(playerData);
 				player.setGameClient((GameClient) client);
-//				player.setExt(playerExt);
+				player.setAccount(account);
 
 				PlayerManager.getInstance().initAdd(player);
 

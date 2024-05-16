@@ -8,14 +8,14 @@ public class Account {
     public static final String DEVICE_TYPE_IOS = "ios";
 
 	private int accountType;// 账号类型,作用未知
-//    private String accountId;//账号
+	public String accountId;// 账号
     public final String payChannel;//充值渠道
-//    public final String deviceId;//设备id
+	public String deviceId;// 设备id
     public final String version;//客户端版本
     public final String adChannel;//推广渠道
 
     private String roleInfo;
-//    public final String sdkDeviceId;//设备唯一号
+	public String sdkDeviceId;// 设备唯一号
     public final String sdkVersion;//设备唯一号
 	public final int platform;// 平台标示： 1 IOS APP ，2 安卓 APP ，3 IOS小游戏，4 安卓小游戏，5 window 微信小游戏，6 mac微信小游戏
     public final String sdkPayChannel;//sdk充值渠道

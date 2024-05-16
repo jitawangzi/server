@@ -38,6 +38,7 @@
         <Property name="file_pvefight">pvefight</Property>
         <Property name="file_achievement">achievement</Property>
         <Property name="file_activationcode">activationcode</Property>
+        <Property name="file_gethero">gethero</Property>
 
 
         <!-- *********************** 其他 ************************* -->
@@ -217,6 +218,9 @@
 
         <AsyncLogger name="activationcode" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="activationcode"/>
+        </AsyncLogger>
+        <AsyncLogger name="gethero" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="gethero"/>
         </AsyncLogger>
 
         <AsyncLogger name="arena" level="info" includeLocation="false" additivity="false">
@@ -682,6 +686,16 @@
         <RollingRandomAccessFile name="activationcode"
                                  immediateFlush="true"
                                  filePattern="${path_cy_game}/${file_activationcode}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="gethero"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_gethero}.log.${date_suffix}">
             <PatternLayout charset="UTF-8" pattern="%m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/>

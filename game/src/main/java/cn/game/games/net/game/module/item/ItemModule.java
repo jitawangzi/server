@@ -9,6 +9,7 @@ import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -36,7 +37,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 	 * 增加一个道具数量
 	 */
 	@Override
-	public Item add(int itemId, int count) {
+	public Item add(int itemId, int count, OpType opType) {
 		if (count <= 0) {
 			return null;
 		}
@@ -46,9 +47,9 @@ public class ItemModule extends AbstractItemModule<Item> {
 			ChapterModule chapterModule = player.getModule(ChapterModule.class);
 			itemId = Asset.gold.ID ; 
 			count = chapterModule.calcPatrolGold(itemConfig.Para);
-			return player.getCurrencyModule().add(itemId, count);
+			return player.getCurrencyModule().add(itemId, count, opType);
 		}
-		return super.add(itemId, count);
+		return super.add(itemId, count, opType);
 	}
 
 //	@Override

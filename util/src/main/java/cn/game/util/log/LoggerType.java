@@ -44,6 +44,7 @@ public enum LoggerType {
     activity,                                                                   // 参与活动
     arena,                                                                      // 竞技场
     activationcode,                                                             //激活码激活
+	gethero, // 获取卡牌
 
     /* *********************** 其他 ************************* */
 	equipmentshape, // 装备幻化

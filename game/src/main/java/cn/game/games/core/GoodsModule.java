@@ -22,7 +22,7 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 
 	public abstract long getCount(int configId);
 
-	public abstract Object add(int configId, int count);
+	public abstract Object add(int configId, int count, OpType opType);
 
 	public abstract T newInstance();
 
@@ -43,9 +43,9 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 
 	}
 
-	public List<RewardInfo> addReward(int configId, int count) {
+	public List<RewardInfo> addReward(int configId, int count, OpType opType) {
 		List<RewardInfo> list = new ArrayList<RewardInfo>(1);
-		Object object = add(configId, count);
+		Object object = add(configId, count, opType);
 		if (object == null) {
 			return list;
 		}
@@ -62,8 +62,8 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	}
 
 
-	public Object add(int configId) {
-		return add(configId, 1);
+	public Object add(int configId, OpType opType) {
+		return add(configId, 1, opType);
 	}
 
 	public abstract boolean del(int configId, int count, OpType... args);

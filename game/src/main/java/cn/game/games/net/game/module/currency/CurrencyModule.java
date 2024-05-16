@@ -46,7 +46,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	}
 
 	@Override
-	public Currency add(int configId, int count) {
+	public Currency add(int configId, int count, OpType opType) {
 
 		if (count < 0) {
 			return new Currency(configId, 0);

@@ -6,37 +6,33 @@ import java.util.Map;
 /**
  * 物品类型
  * 
- * 工具生成的，不要手动修改
  */
 public enum GoodsTypeEnum{
 
 	/** 玩家资源类 */
-	Resource(1,"Resource","玩家资源类"),
+	Resource(1, "玩家资源类"),
 	/** 道具 */
-	Item(2,"Item","道具"),
+	Item(2, "道具"),
 	/** 英雄*/
-	Hero(3, "Hero", "英雄"),
+	Hero(3, "英雄"),
 	/** 装备 */
-	Equipment(7, "Equipment", "装备"),
+	Equipment(7, "装备"),
 	/** 英雄时装 */
-	Fashion(8, "Equipment", "英雄时装"),
-	Gem(9, "Gem", "宝石"),
+	Fashion(8, "英雄时装"), Gem(9, "宝石"),
 	/** 龙 */
-	Dragon(11, "Dragon", "龙"),
+	Dragon(11, "龙"),
 	/** 龙技能 */
-	DragonSkill(12, "DragonSkill", "龙技能"),
+	DragonSkill(12, "龙技能"),
 
-	Sword(6, "Sword", "武器"),
+	Sword(6, "武器"),
 
 	/** 角色 */
-	Role(44, "Role", "角色"),
+	Role(44, "角色"),
 	/** 皮肤 */
-	Skin(88, "Skin", "皮肤"),
+	Skin(88, "皮肤"),
     ;
 	/** id */
 	private int id ; 
-	/** 名称 */
-	private String name ; 
 	/** 名称 */
 	private String desc ; 
 
@@ -47,9 +43,8 @@ public enum GoodsTypeEnum{
 		}
 	}
 
-	private GoodsTypeEnum(int id, String name, String desc) {
+	private GoodsTypeEnum(int id, String desc) {
 		this.id = id; 
-		this.name = name; 
 		this.desc = desc; 
 	}
 	
@@ -75,9 +70,6 @@ public enum GoodsTypeEnum{
 
 	public int getId(){
 		return this.id;
-	}
-	public String getName(){
-		return this.name;
 	}
 	public String getDesc(){
 		return this.desc;

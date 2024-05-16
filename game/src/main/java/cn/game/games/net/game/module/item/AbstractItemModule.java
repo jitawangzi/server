@@ -57,7 +57,7 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	 * 增加一个道具数量
 	 */
 	@Override
-	public T add(int itemId, int count) {
+	public T add(int itemId, int count, OpType opType) {
 		if (count <= 0) {
 			return null;
 		}

@@ -11,6 +11,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.module.account.Account;
+import cn.game.protocol.manual.OpType;
 import cn.game.util.DateUtil;
 import cn.game.util.log.Logger;
 
@@ -130,5 +131,9 @@ public class GameLogAssistant extends Logger {
 		}
 
 		return sb.toString();
+	}
+
+	public static String getSubcauseIdByBehaviorType(Player player, OpType opType) {
+		return "null";
 	}
 }

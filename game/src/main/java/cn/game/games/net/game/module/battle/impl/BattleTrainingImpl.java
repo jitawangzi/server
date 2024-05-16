@@ -34,9 +34,9 @@ public class BattleTrainingImpl implements IBattleHandler {
 			return ErrorMsgEnum.config_data_not_found.getId();
 		}
 		//等级限制
-		if (routineTrainingConfig.getLevel() > player.getData().getLevel()) {
-			return ErrorMsgEnum.unlock.getId();
-		}
+//		if (routineTrainingConfig.getLevel() > player.getData().getLevel()) {
+//			return ErrorMsgEnum.unlock.getId();
+//		}
 
 		int profession = routineTrainingConfig.getProfession();
 
@@ -48,9 +48,9 @@ public class BattleTrainingImpl implements IBattleHandler {
 		//检查开启时间
 		List<Integer> openTime = routineTrainingConfig.getOpenTime();
 		int dayOfWeek = DateUtil.getDayOfWeek();
-		if (!openTime.contains(dayOfWeek)) {
-			return ErrorMsgEnum.unlock.getId();
-		}
+//		if (!openTime.contains(dayOfWeek)) {
+//			return ErrorMsgEnum.unlock.getId();
+//		}
 		//检查前进阶训练关卡
 		RoutineTrainingConfig config = RoutineTrainingManager.getInstance().getRoutineTrainingConfigNullable(dungeonId - 1);
 		if (config != null && config.getProfession() == routineTrainingConfig.getProfession()) {

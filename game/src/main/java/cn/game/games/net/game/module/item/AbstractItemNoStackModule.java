@@ -64,7 +64,7 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	}
 
 	@Override
-	public List<T> add(int itemId, int count) {
+	public List<T> add(int itemId, int count, OpType opType) {
 		if (count <= 0) {
 			return null;
 		}

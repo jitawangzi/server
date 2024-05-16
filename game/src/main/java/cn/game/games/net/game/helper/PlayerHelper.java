@@ -48,6 +48,7 @@ import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.buff.BuffValue;
+import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
@@ -70,7 +71,6 @@ import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
@@ -99,9 +99,9 @@ import io.vertx.core.Handler;
 public class PlayerHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(PlayerHelper.class);
-	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
-	private static final Logger resourceDelLog = LoggerFactory.getLogger("resourceDelLog");
-	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
+//	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
+//	private static final Logger resourceDelLog = LoggerFactory.getLogger("resourceDelLog");
+//	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
 
 	public static boolean isEnough(Player player, List<Entry<Integer, Integer>> list) {
 
@@ -224,13 +224,10 @@ public class PlayerHelper {
 		List<RewardInfo> rewards = null;
 		try {
 			GoodsModule goodsModule = player.getGoodsModule(id);
-			rewards = goodsModule.addReward(id, value);
+			rewards = goodsModule.addReward(id, value, opType);
 			log.info("player[{}] addReward  id[{}]count[{}]", player.getPlayerId(), id, value);
 			player.handleEvent(EventTypeEnum.GetItem, id, value);
-			int goodsType = ItemHelper.getGoodsType(id);
-			if (goodsType != GoodsTypeEnum.Resource.getId()) {
-				GameLogger.item(player, id, value, opType, true);
-			}
+			BIHelper.resrouceUpdate(player, id, value, opType, true);
 			if (notify && !rewards.isEmpty()) {
 				player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
 			}
@@ -315,13 +312,14 @@ public class PlayerHelper {
 
 		if (ret) {
 			player.handleEvent(EventTypeEnum.CostItem, id, value);
-			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", player.getPlayerId(), id, value,
-					consumeType == null ? "NO_DEFINE" : consumeType.getName());
+//			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", player.getPlayerId(), id, value,
+//					consumeType == null ? "NO_DEFINE" : consumeType.getName());
 			if (notify) {
 				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
 				player.getGameClient().sendProtocol(spendPush.build());
 			}
+			BIHelper.resrouceUpdate(player, id, value, consumeType, false);
 		}
 		return ret;
 	}
@@ -480,7 +478,7 @@ public class PlayerHelper {
 
 			expConfig = UserUpgradeManager.instance().getNullable(player.getData().getLevel());
 			nextexpConfig = UserUpgradeManager.instance().getNullable(player.getData().getLevel() + 1);
-			levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", player.getData().getPlayerId(), player.getData().getLevel());
+//			levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", player.getData().getPlayerId(), player.getData().getLevel());
 		}
 		if (curExp > expConfig.experience) {
 			curExp = expConfig.experience;
@@ -1232,7 +1230,7 @@ public class PlayerHelper {
 
 				GameClientManager.getInstance().broadcastOnlineToOtherServer(playerId, true, null);
 
-				loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]", playerId, false, true, 0);
+//				loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]", playerId, false, true, 0);
 			} catch (Exception e) {
 				selectPlayerDataFail(player, e);
 			}

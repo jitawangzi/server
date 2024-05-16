@@ -364,15 +364,15 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Pair<ErrorMsgEnum, RewardItem> buy(long uid, int count) {
-		if (curStoreType == null) {
-			return new Pair(ErrorMsgEnum.store_need_refresh, null);
-		}
+//		if (curStoreType == null) {
+//			return new Pair(ErrorMsgEnum.store_need_refresh, null);
+//		}
 		if (count <= 0) {
 			return new Pair(ErrorMsgEnum.illegal_request, null);
 		}
-		if (needRefresh(curStoreType)) {
-			return new Pair(ErrorMsgEnum.store_need_refresh, null);
-		}
+//		if (needRefresh(curStoreType)) {
+//			return new Pair(ErrorMsgEnum.store_need_refresh, null);
+//		}
 		Map<Long, StoreGoods> goodsMap = getGoodsMap(curStoreType);
 		if (goodsMap == null) {
 			return new Pair(ErrorMsgEnum.player_data_not_found, null);

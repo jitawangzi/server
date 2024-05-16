@@ -2,11 +2,13 @@ package cn.game.games.net.game.module.develop.hero;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -54,6 +56,16 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 //	}
 
 	@Override
+	public List<Hero> add(int itemId, int count, OpType opType) {
+		List<Hero> list = super.add(itemId, count, opType);
+		
+		for (Hero hero : list) {
+			GameLogger.getHero(player, hero, opType);
+		}
+		return list;
+	}
+
+	@Override
 	public void setInstanceAfter(Hero hero) {
 		ObjUtil.setDefaultValue(hero);
 		if (this.heroUid == 0) {
@@ -66,7 +78,6 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 		// 拥有新英雄，奖励固定元宝
 		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.NewHeroReward);
-
 		player.handleEvent(EventTypeEnum.Hero, heroConfig.ID);
 	}
 
