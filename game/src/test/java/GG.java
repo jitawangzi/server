@@ -6,5 +6,6 @@ public class GG {
 		
 		byte[] allBytes = Files.readAllBytes(Paths.get("d:/log4j2.xml"));
 		System.out.println(allBytes.length);
+//		System.out.println(0x01000005);
 	}
 }
