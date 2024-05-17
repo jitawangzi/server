@@ -255,8 +255,8 @@ public class VxHolder {
 	public static void request(HttpMethod method, String requestURI, JsonObject param, Handler<JsonObject> successHandler,
 			Handler<Throwable> failedHandler) {
 		HttpRequest<Buffer> request = httpClient.requestAbs(method, requestURI)
-				.expect(ResponsePredicate.SC_SUCCESS)
-				.expect(ResponsePredicate.JSON);
+//				.expect(ResponsePredicate.JSON),
+				.expect(ResponsePredicate.SC_SUCCESS);
 
 		Future<HttpResponse<Buffer>> responseFutrue = null;
 		if (method == HttpMethod.GET) {
@@ -284,7 +284,7 @@ public class VxHolder {
 
 		httpClient.getAbs(requestURI)
 				.expect(ResponsePredicate.SC_SUCCESS)
-				.expect(ResponsePredicate.JSON)
+//				.expect(ResponsePredicate.JSON)
 				.send()
 				.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));
@@ -303,7 +303,7 @@ public class VxHolder {
 
 		httpClient.post(requestURI)
 				.expect(ResponsePredicate.SC_SUCCESS)
-				.expect(ResponsePredicate.JSON)
+//				.expect(ResponsePredicate.JSON)
 				.sendJson(body)
 				.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));

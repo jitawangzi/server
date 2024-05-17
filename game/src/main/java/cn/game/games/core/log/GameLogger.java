@@ -169,8 +169,7 @@ public class GameLogger extends Logger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login.name(), LoggerType.login.version, "2050")),
 					player.getData().getName() == null ? "null" : player.getData().getName(),
-					player.getGameClient().getIp(), player.getCurrencyModule().getCount(Asset.diamond.ID), player.getHeroModule().list().size(),
-					player.getHeroModule().getSizeDeduplication() };
+					player.getGameClient().getIp(), player.getCurrencyModule().getCount(Asset.diamond.ID) };
 			LoggerType.login.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
