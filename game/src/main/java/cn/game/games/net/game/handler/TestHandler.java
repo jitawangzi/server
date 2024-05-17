@@ -23,6 +23,7 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -286,8 +287,8 @@ public class TestHandler extends BaseHandler {
 		
 		CommonLogger.error("what the fuck by common logger");
 		log.error("what the fuck by log");
+		GameLogger.heart();
 
-		System.exit(1);
 
 //		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
 

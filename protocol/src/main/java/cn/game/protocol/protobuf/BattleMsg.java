@@ -6952,24 +6952,62 @@ public final class BattleMsg {
      * Battle表的id
      * </pre>
      *
-     * <code>uint32 id = 1;</code>
-     * @return The id.
+     * <code>repeated uint32 id = 1;</code>
+     * @return A list containing the id.
      */
-    int getId();
+    java.util.List<java.lang.Integer> getIdList();
+    /**
+     * <pre>
+     * Battle表的id
+     * </pre>
+     *
+     * <code>repeated uint32 id = 1;</code>
+     * @return The count of id.
+     */
+    int getIdCount();
+    /**
+     * <pre>
+     * Battle表的id
+     * </pre>
+     *
+     * <code>repeated uint32 id = 1;</code>
+     * @param index The index of the element to return.
+     * @return The id at the given index.
+     */
+    int getId(int index);
 
     /**
      * <pre>
      * 0、1、2   代表首次，半血、无损奖励
      * </pre>
      *
-     * <code>uint32 index = 2;</code>
-     * @return The index.
+     * <code>repeated uint32 index = 2;</code>
+     * @return A list containing the index.
      */
-    int getIndex();
+    java.util.List<java.lang.Integer> getIndexList();
+    /**
+     * <pre>
+     * 0、1、2   代表首次，半血、无损奖励
+     * </pre>
+     *
+     * <code>repeated uint32 index = 2;</code>
+     * @return The count of index.
+     */
+    int getIndexCount();
+    /**
+     * <pre>
+     * 0、1、2   代表首次，半血、无损奖励
+     * </pre>
+     *
+     * <code>repeated uint32 index = 2;</code>
+     * @param index The index of the element to return.
+     * @return The index at the given index.
+     */
+    int getIndex(int index);
   }
   /**
    * <pre>
-   *领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励
+   *领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。
    * </pre>
    *
    * Protobuf type {@code Protos.BattleRewardRequest_13000022}
@@ -6984,6 +7022,8 @@ public final class BattleMsg {
       super(builder);
     }
     private BattleRewardRequest_13000022() {
+      id_ = emptyIntList();
+      index_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -7006,6 +7046,7 @@ public final class BattleMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -7017,13 +7058,45 @@ public final class BattleMsg {
               done = true;
               break;
             case 8: {
-
-              id_ = input.readUInt32();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                id_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              id_.addInt(input.readUInt32());
+              break;
+            }
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                id_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                id_.addInt(input.readUInt32());
+              }
+              input.popLimit(limit);
               break;
             }
             case 16: {
-
-              index_ = input.readUInt32();
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                index_ = newIntList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              index_.addInt(input.readUInt32());
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
+                index_ = newIntList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                index_.addInt(input.readUInt32());
+              }
+              input.popLimit(limit);
               break;
             }
             default: {
@@ -7041,6 +7114,12 @@ public final class BattleMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          id_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          index_.makeImmutable(); // C
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -7059,34 +7138,84 @@ public final class BattleMsg {
     }
 
     public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    private com.google.protobuf.Internal.IntList id_;
     /**
      * <pre>
      * Battle表的id
      * </pre>
      *
-     * <code>uint32 id = 1;</code>
-     * @return The id.
+     * <code>repeated uint32 id = 1;</code>
+     * @return A list containing the id.
      */
     @java.lang.Override
-    public int getId() {
+    public java.util.List<java.lang.Integer>
+        getIdList() {
       return id_;
     }
+    /**
+     * <pre>
+     * Battle表的id
+     * </pre>
+     *
+     * <code>repeated uint32 id = 1;</code>
+     * @return The count of id.
+     */
+    public int getIdCount() {
+      return id_.size();
+    }
+    /**
+     * <pre>
+     * Battle表的id
+     * </pre>
+     *
+     * <code>repeated uint32 id = 1;</code>
+     * @param index The index of the element to return.
+     * @return The id at the given index.
+     */
+    public int getId(int index) {
+      return id_.getInt(index);
+    }
+    private int idMemoizedSerializedSize = -1;
 
     public static final int INDEX_FIELD_NUMBER = 2;
-    private int index_;
+    private com.google.protobuf.Internal.IntList index_;
     /**
      * <pre>
      * 0、1、2   代表首次，半血、无损奖励
      * </pre>
      *
-     * <code>uint32 index = 2;</code>
-     * @return The index.
+     * <code>repeated uint32 index = 2;</code>
+     * @return A list containing the index.
      */
     @java.lang.Override
-    public int getIndex() {
+    public java.util.List<java.lang.Integer>
+        getIndexList() {
       return index_;
     }
+    /**
+     * <pre>
+     * 0、1、2   代表首次，半血、无损奖励
+     * </pre>
+     *
+     * <code>repeated uint32 index = 2;</code>
+     * @return The count of index.
+     */
+    public int getIndexCount() {
+      return index_.size();
+    }
+    /**
+     * <pre>
+     * 0、1、2   代表首次，半血、无损奖励
+     * </pre>
+     *
+     * <code>repeated uint32 index = 2;</code>
+     * @param index The index of the element to return.
+     * @return The index at the given index.
+     */
+    public int getIndex(int index) {
+      return index_.getInt(index);
+    }
+    private int indexMemoizedSerializedSize = -1;
 
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
@@ -7102,11 +7231,20 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeUInt32(1, id_);
+      getSerializedSize();
+      if (getIdList().size() > 0) {
+        output.writeUInt32NoTag(10);
+        output.writeUInt32NoTag(idMemoizedSerializedSize);
       }
-      if (index_ != 0) {
-        output.writeUInt32(2, index_);
+      for (int i = 0; i < id_.size(); i++) {
+        output.writeUInt32NoTag(id_.getInt(i));
+      }
+      if (getIndexList().size() > 0) {
+        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(indexMemoizedSerializedSize);
+      }
+      for (int i = 0; i < index_.size(); i++) {
+        output.writeUInt32NoTag(index_.getInt(i));
       }
       unknownFields.writeTo(output);
     }
@@ -7117,13 +7255,33 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(1, id_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < id_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeUInt32SizeNoTag(id_.getInt(i));
+        }
+        size += dataSize;
+        if (!getIdList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        idMemoizedSerializedSize = dataSize;
       }
-      if (index_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(2, index_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < index_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeUInt32SizeNoTag(index_.getInt(i));
+        }
+        size += dataSize;
+        if (!getIndexList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        indexMemoizedSerializedSize = dataSize;
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -7140,10 +7298,10 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 other = (cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022) obj;
 
-      if (getId()
-          != other.getId()) return false;
-      if (getIndex()
-          != other.getIndex()) return false;
+      if (!getIdList()
+          .equals(other.getIdList())) return false;
+      if (!getIndexList()
+          .equals(other.getIndexList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -7155,10 +7313,14 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
-      hash = (37 * hash) + INDEX_FIELD_NUMBER;
-      hash = (53 * hash) + getIndex();
+      if (getIdCount() > 0) {
+        hash = (37 * hash) + ID_FIELD_NUMBER;
+        hash = (53 * hash) + getIdList().hashCode();
+      }
+      if (getIndexCount() > 0) {
+        hash = (37 * hash) + INDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getIndexList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7256,7 +7418,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励
+     *领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。
      * </pre>
      *
      * Protobuf type {@code Protos.BattleRewardRequest_13000022}
@@ -7296,10 +7458,10 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
-
-        index_ = 0;
-
+        id_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        index_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -7326,7 +7488,16 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 result = new cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          id_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
         result.id_ = id_;
+        if (((bitField0_ & 0x00000002) != 0)) {
+          index_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
         result.index_ = index_;
         onBuilt();
         return result;
@@ -7376,11 +7547,25 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (!other.id_.isEmpty()) {
+          if (id_.isEmpty()) {
+            id_ = other.id_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureIdIsMutable();
+            id_.addAll(other.id_);
+          }
+          onChanged();
         }
-        if (other.getIndex() != 0) {
-          setIndex(other.getIndex());
+        if (!other.index_.isEmpty()) {
+          if (index_.isEmpty()) {
+            index_ = other.index_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureIndexIsMutable();
+            index_.addAll(other.index_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -7410,32 +7595,65 @@ public final class BattleMsg {
         }
         return this;
       }
+      private int bitField0_;
 
-      private int id_ ;
-      /**
-       * <pre>
-       * Battle表的id
-       * </pre>
-       *
-       * <code>uint32 id = 1;</code>
-       * @return The id.
-       */
-      @java.lang.Override
-      public int getId() {
-        return id_;
+      private com.google.protobuf.Internal.IntList id_ = emptyIntList();
+      private void ensureIdIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          id_ = mutableCopy(id_);
+          bitField0_ |= 0x00000001;
+         }
       }
       /**
        * <pre>
        * Battle表的id
        * </pre>
        *
-       * <code>uint32 id = 1;</code>
+       * <code>repeated uint32 id = 1;</code>
+       * @return A list containing the id.
+       */
+      public java.util.List<java.lang.Integer>
+          getIdList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(id_) : id_;
+      }
+      /**
+       * <pre>
+       * Battle表的id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
+       * @return The count of id.
+       */
+      public int getIdCount() {
+        return id_.size();
+      }
+      /**
+       * <pre>
+       * Battle表的id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
+       * @param index The index of the element to return.
+       * @return The id at the given index.
+       */
+      public int getId(int index) {
+        return id_.getInt(index);
+      }
+      /**
+       * <pre>
+       * Battle表的id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
+       * @param index The index to set the value at.
        * @param value The id to set.
        * @return This builder for chaining.
        */
-      public Builder setId(int value) {
-        
-        id_ = value;
+      public Builder setId(
+          int index, int value) {
+        ensureIdIsMutable();
+        id_.setInt(index, value);
         onChanged();
         return this;
       }
@@ -7444,41 +7662,105 @@ public final class BattleMsg {
        * Battle表的id
        * </pre>
        *
-       * <code>uint32 id = 1;</code>
+       * <code>repeated uint32 id = 1;</code>
+       * @param value The id to add.
+       * @return This builder for chaining.
+       */
+      public Builder addId(int value) {
+        ensureIdIsMutable();
+        id_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Battle表的id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
+       * @param values The id to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllId(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureIdIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, id_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Battle表的id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
-        
-        id_ = 0;
+        id_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
 
-      private int index_ ;
-      /**
-       * <pre>
-       * 0、1、2   代表首次，半血、无损奖励
-       * </pre>
-       *
-       * <code>uint32 index = 2;</code>
-       * @return The index.
-       */
-      @java.lang.Override
-      public int getIndex() {
-        return index_;
+      private com.google.protobuf.Internal.IntList index_ = emptyIntList();
+      private void ensureIndexIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          index_ = mutableCopy(index_);
+          bitField0_ |= 0x00000002;
+         }
       }
       /**
        * <pre>
        * 0、1、2   代表首次，半血、无损奖励
        * </pre>
        *
-       * <code>uint32 index = 2;</code>
+       * <code>repeated uint32 index = 2;</code>
+       * @return A list containing the index.
+       */
+      public java.util.List<java.lang.Integer>
+          getIndexList() {
+        return ((bitField0_ & 0x00000002) != 0) ?
+                 java.util.Collections.unmodifiableList(index_) : index_;
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励
+       * </pre>
+       *
+       * <code>repeated uint32 index = 2;</code>
+       * @return The count of index.
+       */
+      public int getIndexCount() {
+        return index_.size();
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励
+       * </pre>
+       *
+       * <code>repeated uint32 index = 2;</code>
+       * @param index The index of the element to return.
+       * @return The index at the given index.
+       */
+      public int getIndex(int index) {
+        return index_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励
+       * </pre>
+       *
+       * <code>repeated uint32 index = 2;</code>
+       * @param index The index to set the value at.
        * @param value The index to set.
        * @return This builder for chaining.
        */
-      public Builder setIndex(int value) {
-        
-        index_ = value;
+      public Builder setIndex(
+          int index, int value) {
+        ensureIndexIsMutable();
+        index_.setInt(index, value);
         onChanged();
         return this;
       }
@@ -7487,12 +7769,44 @@ public final class BattleMsg {
        * 0、1、2   代表首次，半血、无损奖励
        * </pre>
        *
-       * <code>uint32 index = 2;</code>
+       * <code>repeated uint32 index = 2;</code>
+       * @param value The index to add.
+       * @return This builder for chaining.
+       */
+      public Builder addIndex(int value) {
+        ensureIndexIsMutable();
+        index_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励
+       * </pre>
+       *
+       * <code>repeated uint32 index = 2;</code>
+       * @param values The index to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllIndex(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureIndexIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, index_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0、1、2   代表首次，半血、无损奖励
+       * </pre>
+       *
+       * <code>repeated uint32 index = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearIndex() {
-        
-        index_ = 0;
+        index_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
       }
@@ -11892,8 +12206,8 @@ public final class BattleMsg {
       "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"$\n\"B" +
       "attleRougeRefreshRequest_13000005\"%\n#Bat" +
       "tleRougeRefreshResponse_13000006\"9\n\034Batt" +
-      "leRewardRequest_13000022\022\n\n\002id\030\001 \001(\r\022\r\n\005" +
-      "index\030\002 \001(\r\"C\n\035BattleRewardResponse_1300" +
+      "leRewardRequest_13000022\022\n\n\002id\030\001 \003(\r\022\r\n\005" +
+      "index\030\002 \003(\r\"C\n\035BattleRewardResponse_1300" +
       "0023\022\"\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo" +
       "\"I\n\"BattlePatrolRewardRequest_13000044\022\016" +
       "\n\006isFast\030\001 \001(\010\022\023\n\013advertising\030\002 \001(\010\"e\n#B" +

@@ -206,8 +206,8 @@ public class ChapterHandler extends BaseHandler {
 		BattleRewardRequest_13000022 req = (BattleRewardRequest_13000022) message;
 		BattleRewardResponse_13000023.Builder resp = BattleRewardResponse_13000023.newBuilder();
 	
-		int id = req.getId();
-		int index = req.getIndex();
+		List<Integer> idList = req.getIdList();
+		List<Integer> indexList = req.getIndexList();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 
 		if (!player.isFuncOpen(InitialUI.ChapterBox)) {
@@ -216,36 +216,48 @@ public class ChapterHandler extends BaseHandler {
 		}
 		long playerId = player.getPlayerId();
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		boolean pass = chapterModule.isExploreChapterPass(id);
-		if (!pass) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
+		for (int i = 0; i < indexList.size(); i++) {
+			int index = indexList.get(i);
+			int id = idList.get(i);
+			boolean pass = chapterModule.isExploreChapterPass(id);
+			if (!pass) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+				return;
+			}
+			Chapter chapter = chapterModule.getChapter(id);
+			List<Integer> rewards = chapter.getRewards();
+			if (rewards.contains(index)) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+				return;
+			}
+			int minute = chapter.getBattleTime() / 60;
+			BattleConfig battleConfig = BattleManager.instance().get(id);
+
+			if (index == 0 && minute < battleConfig.BattleBoxTrigger[0]) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+				return;
+			}
+			if (index == 1 && minute < battleConfig.BattleBoxTrigger[1]) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+				return;
+			}
+			if (index == 2 && !chapter.getPass()) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+				return;
+			}
 		}
-		Chapter chapter = chapterModule.getChapter(id);
-		List<Integer> rewards = chapter.getRewards();
-		if (rewards.contains(index)) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
+
+		for (int i = 0; i < indexList.size(); i++) {
+			int index = indexList.get(i);
+			int id = idList.get(i);
+			BattleConfig battleConfig = BattleManager.instance().get(id);
+
+			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index], OpType.BattleEnd);
+
+			resp.addAllReward(reward);
+			Chapter chapter = chapterModule.getChapter(id);
+			chapter.getRewards().add(index);
 		}
-		int minute =   chapter.getBattleTime() / 60 ; 
-		BattleConfig battleConfig = BattleManager.instance().get(id);
-		
-		if (index == 0 && minute < battleConfig.BattleBoxTrigger[0]) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		if (index == 1 && minute < battleConfig.BattleBoxTrigger[1]) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		if (index == 2 && !chapter.getPass()) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index], OpType.BattleEnd);
-		rewards.add(index);
-	
-		resp.addAllReward(reward);
 
 		client.sendProtocol(resp);
 	

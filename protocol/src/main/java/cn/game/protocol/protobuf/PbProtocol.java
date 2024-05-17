@@ -36,7 +36,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleFieldEndResponse_13000004 = 0x13000004;    //结束关卡战斗  
 	public final static int BattleRougeRefreshRequest_13000005 = 0x13000005;    //肉鸽刷新,每天前3次免费，第四次看广告。  
 	public final static int BattleRougeRefreshResponse_13000006 = 0x13000006;    //肉鸽刷新  
-	public final static int BattleRewardRequest_13000022 = 0x13000022;    //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励  
+	public final static int BattleRewardRequest_13000022 = 0x13000022;    //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。  
 	public final static int BattleRewardResponse_13000023 = 0x13000023;    
 	public final static int BattlePatrolRewardRequest_13000044 = 0x13000044;    //领取巡逻奖励  
 	public final static int BattlePatrolRewardResponse_13000045 = 0x13000045;    

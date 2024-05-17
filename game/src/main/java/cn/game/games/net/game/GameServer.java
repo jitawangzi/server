@@ -38,6 +38,7 @@ import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.remote.GameRemoteServerInterface;
+import cn.game.games.util.BIHelper;
 import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
@@ -173,6 +174,7 @@ public class GameServer implements GameServerMBean {
 //		ChatManager.getInstance().init();
 		PlayerManager.getInstance().init();
 		ClassManager.getInstance().init();
+		BIHelper.start();
 
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
