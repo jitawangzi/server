@@ -330,6 +330,7 @@ public class GameServer implements GameServerMBean {
 
 //			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
 			CommonLogger.warn("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
+			String.format("Game Server  safe  shutdown, use  time %d ms ", System.currentTimeMillis() - start);
 			// 安全关闭log
 			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 			context.stop();
@@ -337,6 +338,7 @@ public class GameServer implements GameServerMBean {
 		} catch (Throwable e) {
 //			log.error("Game Server Shutdown err ", e);
 			SystemLogger.error("Game Server Shutdown err ", e);
+			e.printStackTrace();
 		}
 
 	}

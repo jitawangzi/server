@@ -1,7 +1,5 @@
 package cn.game.login.net.clientpacket.vertx;
 
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -172,6 +170,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 						}
 					});
 				} else {
+					log.warn("wechat login fail , token {} ,errcode {} ", token, errcode);
 					// -1 系统繁忙，此时请开发者稍候再试
 //					0	请求成功	
 //					40029	code 无效	

@@ -23,6 +23,7 @@ import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.ZkHelper;
+import cn.game.util.log.LoggerManager;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
 
@@ -32,6 +33,13 @@ import io.vertx.core.VertxOptions;
  * @author SYQ
  */
 public class LoginServer {
+	static {
+		try {
+			LoggerManager.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	private static final Logger log = LoggerFactory.getLogger(LoginServer.class);
 
 	private static LoginServer instance = new LoginServer();
@@ -42,7 +50,7 @@ public class LoginServer {
 	private LoginServer() {
 	}
 
-	private int serverId;
+	private String serverId;
 
 	public void start(String[] args) throws Exception {
 
@@ -54,7 +62,7 @@ public class LoginServer {
 		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig(); // config instance is singleton for
 																					// each namespace and is never null
 		int vertHttpPort = config.getIntProperty("vertx.http.port", 0);
-		String serverId = config.getProperty("login.server.id", "");
+		serverId = config.getProperty("login.server.id", "");
 		ServerContext.getInstance().init(ServerType.Login, serverId);
 		IdUtil.init();
 //		LogbackConfig.init(config.getBooleanProperty("initLogback", false),
@@ -130,14 +138,6 @@ public class LoginServer {
 		log.info("Login Server Shutdown...");
 		SpringContextLoader.getContext().close();
 		log.info("Login Server Shutdown success...");
-	}
-
-	public int getServerId() {
-		return serverId;
-	}
-
-	public void setServerId(int serverId) {
-		this.serverId = serverId;
 	}
 
 }

@@ -443,5 +443,7 @@ public class PbProtocolGenerator {
 		if (protoToJava) {
 			Proto2Java.main(new String[] { protoPath, javaSrc });
 		}
+		// 手写枚举，生成excel，给客户端用。
+		EnumToExcel.main(args);
 	}
 }

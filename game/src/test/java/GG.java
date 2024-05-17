@@ -5,10 +5,9 @@ public class GG {
 	public static long firstTime = System.currentTimeMillis();
 
 	public static void main(String[] args) throws Exception {
-		for (int i = 0; i < 11; i++) {
-			Thread.sleep(1);
-			test2();
-		}
+		String metafolder = System.getenv("metafolder");
+		String dir = metafolder + "/../Excels";
+		System.out.println(dir);
 	}
 
 	private static void test() throws InterruptedException {
