@@ -25,7 +25,7 @@ public class GameLogAssistant extends Logger {
 	/**
 	 * 全游戏唯一标识
 	 */
-	public static final String APP_KEY = "1679368730877";
+	public static final String APP_KEY = "23121231442121";
 
 	public static String TIME_ZONE = "-1";
 

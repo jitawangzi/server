@@ -1,25 +1,40 @@
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
+import com.google.common.util.concurrent.RateLimiter;
 
 public class GG {
+	public static int x = 0;
+	public static long firstTime = System.currentTimeMillis();
+
 	public static void main(String[] args) throws Exception {
-		
-		List<String> allLines = Files.readAllLines(Paths.get("d:/ErrorMsgEnum.java"), Charset.forName("utf-8"));
-		for (String string : allLines) {
-			string = string.replaceFirst(",", "");
-			int index1 = string.indexOf("\"", 0);
-			int index2 = string.indexOf("\"", index1 + 1);
-			if (index1 < 0) {
-				System.out.println(string);
-				continue;
-			}
-			String string1 = string.substring(0, index1 - 1);
-			String string2 = string.substring(index2 + 1, string.length());
-
-			System.out.println(string1 + string2);
+		for (int i = 0; i < 11; i++) {
+			Thread.sleep(1);
+			test2();
 		}
+	}
 
+	private static void test() throws InterruptedException {
+		RateLimiter rateLimiter = RateLimiter.create(5);
+
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < 2; i++) {
+			Thread.sleep(50);
+			if (!rateLimiter.tryAcquire()) {
+				System.err.println("失败了" + i);
+			}
+		}
+		System.out.println(System.currentTimeMillis() - start);
+//		if (!rateLimiter.tryAcquire()) {
+//			System.err.println("失败了");
+//		}
+	}
+
+	private static void test2() throws InterruptedException {
+		if (x++ >= 10) {
+			if (System.currentTimeMillis() - firstTime < 1000) {
+				System.err.println("太快了");
+			} else {
+				x = 0;
+				firstTime = System.currentTimeMillis();
+			}
+		}
 	}
 }

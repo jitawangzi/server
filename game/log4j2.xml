@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--级别:TRACE > DEBUG > INFO > WARN > ERROR > FATAL-->
 <Configuration status="info" shutdownHook="disable">
+
     <Properties>
+         <Property name="shutdownCallbackRegistry">org.apache.logging.log4j.core.impl.Log4jContextFactory</Property>
+    
         <Property name="path_system">${sys:SEVER_PATH}/logs/system</Property>
         <Property name="path_game">${sys:SEVER_PATH}/logs/game</Property>
         <Property name="path_cy_game">${sys:SEVER_PATH_CYLOG}</Property>
@@ -59,14 +62,8 @@
 
     <Loggers>
 
-        <logger name="org.hibernate" level="warn"/>
-        <logger name="org.reflections" level="warn"/>
-        <logger name="net.sf.ehcache" level="warn"/>
         <logger name="io.netty" level="warn"/>
-        <logger name="com.mchange" level="warn"/>
-        <logger name="io.lettuce" level="warn"/>
         <logger name="org.redisson" level="warn"/>
-        <logger name="com.baidu" level="warn"/>
         <logger name="org.apache" level="warn"/>
         <logger name="org.quartz" level="warn"/>
 

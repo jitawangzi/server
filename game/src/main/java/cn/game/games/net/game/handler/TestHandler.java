@@ -287,6 +287,8 @@ public class TestHandler extends BaseHandler {
 		CommonLogger.error("what the fuck by common logger");
 		log.error("what the fuck by log");
 
+		System.exit(1);
+
 //		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
 
 //		AttrModule module = player.getModule(AttrModule.class);

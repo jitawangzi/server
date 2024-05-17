@@ -17,6 +17,7 @@ import com.google.protobuf.TextFormat;
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.protocol.bytes.BaseByteProtocol;
+import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.Config;
 import cn.game.util.HexUtil;
@@ -43,8 +44,8 @@ public class GameClient extends AbstractNetClient {
 
 	/** 当前处理的消息序号 */
 	private int curMessageSeq;
-
 	private static final int MAX_RECENT_MESSAGES = 10;
+	// 每秒最多处理10个消息
 	/** 发送给玩家最近的几条消息，如果客户端没有收到某个包，重新请求时会下发 ， 
 	 * key: 消息序号 value: 消息序号对应的返回包
 	 * 断线重连时需要保留。*/
@@ -58,6 +59,9 @@ public class GameClient extends AbstractNetClient {
 			return size() > MAX_RECENT_MESSAGES;
 		}
 	};
+
+	public int packetMaxCountPerSecond = 0;
+	public long firstPacketTime = System.currentTimeMillis();
 
 	/** 
 	 * 客户端重连时的属性复制
@@ -245,6 +249,17 @@ public class GameClient extends AbstractNetClient {
 
 	@Override
 	public boolean needProcess(IProtocol<?> protocol) {
+		if (packetMaxCountPerSecond++ >= 10) {
+			long now = System.currentTimeMillis();
+			if (now - firstPacketTime < 1000) {
+//				// 超过消息数量，关闭连接
+				GameClientManager.getInstance().removeGameClient(this);
+				log.warn("GameClient[{}] Requested too frequently, force disconnect", toDetailString());
+			} else {
+				packetMaxCountPerSecond = 0;
+				firstPacketTime = now;
+			}
+		}
 		int seq = protocol.getSeq();
 		if (seq < 0) {
 			return true;

@@ -169,7 +169,7 @@ public class GameLogger extends Logger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login.name(), LoggerType.login.version, "2050")),
 					player.getData().getName() == null ? "null" : player.getData().getName(),
-					player.getGameClient().getIp(), player.getCurrencyModule().get(Asset.diamond.ID), player.getHeroModule().list().size(),
+					player.getGameClient().getIp(), player.getCurrencyModule().getCount(Asset.diamond.ID), player.getHeroModule().list().size(),
 					player.getHeroModule().getSizeDeduplication(),
 					GameLogAssistant.TIME_ZONE };
 			LoggerType.login.logger.info(LoggerType.splice(array));
@@ -206,7 +206,7 @@ public class GameLogger extends Logger {
 		try {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolelogin.name(), LoggerType.rolelogin.version, "3030")),
-					player.getData().getName() == null ? "null" : player.getData().getName(), player.getCurrencyModule().get(Asset.diamond.ID),
+					player.getData().getName() == null ? "null" : player.getData().getName(), player.getCurrencyModule().getCount(Asset.diamond.ID),
 					player.getAccount().getPlatform() };
 			LoggerType.rolelogin.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -225,8 +225,10 @@ public class GameLogger extends Logger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.logout.name(), LoggerType.logout.version, "9999")),
 					player.getData().getName(),
-					player.getCurrencyModule().get(Asset.diamond), GameLogAssistant.calculatePlayerOnlineDurationSecond(player), player.getData().getVipLevel(),
-					player.getCurrencyModule().get(Asset.playerEnergy), player.getAttrModule().getPower(), player.getChapterModule().getMainBattleHighest(),
+					player.getCurrencyModule().getCount(Asset.diamond.ID), GameLogAssistant.calculatePlayerOnlineDurationSecond(player),
+					player.getData().getVipLevel(),
+					player.getCurrencyModule().getCount(Asset.playerEnergy.ID), player.getAttrModule().getPower(),
+					player.getChapterModule().getMainBattleHighest(),
 					player.getAccount().getPlatform() };
 			LoggerType.logout.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -335,7 +337,7 @@ public class GameLogger extends Logger {
 		try {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.money.name(), LoggerType.money.version, "8010")),
-					opType.name(), count, player.getCurrencyModule().get(id), id, player.getData().getVipLevel(),
+					opType.name(), count, player.getCurrencyModule().getCount(id), id, player.getData().getVipLevel(),
 					"null", isIncrease ? 1 : -1, player.getAccount().getPlatform() };
 			LoggerType.money.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {

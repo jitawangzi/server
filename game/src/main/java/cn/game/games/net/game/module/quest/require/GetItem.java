@@ -6,20 +6,16 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**
- * 消耗物品
- * 
- */
-@ConditionType(type = ConditionTypeEnum.ConsumeItem)
-public class ExertsStamina extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.CostItem };
+@ConditionType(type = ConditionTypeEnum.GetItem)
+public class GetItem extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.GetItem };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
 
-	public ExertsStamina() {
+	public GetItem() {
 
 	}
 

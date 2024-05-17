@@ -8,19 +8,19 @@ package cn.game.protocol.generated.enume;
 public enum Asset{
 
 	/** 元宝 */
-	diamond(100001,"diamond","元宝",1,4,"游戏中的万用货币","recharge_icon_01"),
+	diamond(100001,"diamond","元宝",1,6,"游戏中的万用货币","recharge_icon_01"),
 	/** 金币 */
-	gold(100002,"gold","金币",1,3,"游戏中购买物品的标准货币","recharge_icon_07"),
+	gold(100002,"gold","金币",1,6,"游戏中购买物品的标准货币","recharge_icon_07"),
 	/** 经验 */
-	playerExp(100201,"playerExp","经验",2,3,"提升玩家等级之用","com_icon_jingyan"),
+	playerExp(100201,"playerExp","经验",2,5,"提升玩家等级之用","com_icon_jingyan"),
 	/** 每日任务活跃度 */
-	DailyPoint(100202,"DailyPoint","每日任务活跃度",1,3,"获得指定数量后可以领取奖励","task_icon_rihuoyue"),
+	DailyPoint(100202,"DailyPoint","每日任务活跃度",1,5,"获得指定数量后可以领取奖励","task_icon_rihuoyue"),
 	/** 每周任务活跃度 */
-	WeeklyPoint(100203,"WeeklyPoint","每周任务活跃度",1,3,"获得指定数量后可以领取奖励","task_icon_zhouhuoyue"),
+	WeeklyPoint(100203,"WeeklyPoint","每周任务活跃度",1,5,"获得指定数量后可以领取奖励","task_icon_zhouhuoyue"),
 	/** 7日任务活跃度 */
-	SevenDaysPoint(100204,"SevenDaysPoint","7日任务活跃度",1,3,"获得指定数量后可以领取奖励","sevendaygift_icon_integral"),
+	SevenDaysPoint(100204,"SevenDaysPoint","7日任务活跃度",1,5,"获得指定数量后可以领取奖励","sevendaygift_icon_integral"),
 	/** 体力 */
-	playerEnergy(100301,"playerEnergy","体力",3,3,"用于挑战、扫荡关卡，获取关卡奖励","physicalpower_icon_01"),
+	playerEnergy(100301,"playerEnergy","体力",3,5,"用于挑战、扫荡关卡，获取关卡奖励","physicalpower_icon_01"),
     ;
 	/** ID */
 	public final int ID ; 

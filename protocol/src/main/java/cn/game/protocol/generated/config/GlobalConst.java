@@ -66,6 +66,16 @@ public class GlobalConst extends ResourceListener {
 	public static int[][] UltimateCardDrawGroup;		
 	/** 【请神】第1次必抽-掉落id */
 	public static int FirstMandatoryDraw;		
+	/** 【妖王别跑】速战次数 */
+	public static int DemonKingCnt;		
+	/** 【妖王别跑】速战消耗 */
+	public static int[][] DemonKingConsume;		
+	/** 【道心磨砺】免费次数 */
+	public static int DaoHeartFreeCnt;		
+	/** 【道心磨砺】付费次数 */
+	public static int DaoHeartPayCnt;		
+	/** 【道心磨砺】购买消耗 */
+	public static int[][] DaoHeartConsume;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -271,6 +281,46 @@ public class GlobalConst extends ResourceListener {
 		}
 		FirstMandatoryDraw = Integer.parseInt(element.getAttribute("FirstMandatoryDraw") == null || element.getAttribute("FirstMandatoryDraw").length() == 0 ? "0"
 			: element.getAttribute("FirstMandatoryDraw")); // 【请神】第1次必抽-掉落id
+		DemonKingCnt = Integer.parseInt(element.getAttribute("DemonKingCnt") == null || element.getAttribute("DemonKingCnt").length() == 0 ? "0"
+			: element.getAttribute("DemonKingCnt")); // 【妖王别跑】速战次数
+		String DemonKingConsumeString = element.getAttribute("DemonKingConsume"); // 【妖王别跑】速战消耗
+		if (DemonKingConsumeString != null && DemonKingConsumeString.length() > 0) {
+			String[] DemonKingConsumeStrings = DemonKingConsumeString.split("\\|"); 
+			int[][] DemonKingConsumeTemp = new int[DemonKingConsumeStrings.length][] ; 
+			for (int i = 0; i < DemonKingConsumeStrings.length; i++) {
+				String[] DemonKingConsumeStrings2 = DemonKingConsumeStrings[i].split(";"); 
+				int[] array = new int[DemonKingConsumeStrings2.length];
+				for (int j = 0; j < DemonKingConsumeStrings2.length; j++) {
+					int temp = Integer.parseInt(DemonKingConsumeStrings2[j]);	
+					array[j] = temp;
+				}
+				DemonKingConsumeTemp[i] = array;
+			}
+			DemonKingConsume = DemonKingConsumeTemp ;			
+		} else {
+			DemonKingConsume = new int[][] {};
+		}
+		DaoHeartFreeCnt = Integer.parseInt(element.getAttribute("DaoHeartFreeCnt") == null || element.getAttribute("DaoHeartFreeCnt").length() == 0 ? "0"
+			: element.getAttribute("DaoHeartFreeCnt")); // 【道心磨砺】免费次数
+		DaoHeartPayCnt = Integer.parseInt(element.getAttribute("DaoHeartPayCnt") == null || element.getAttribute("DaoHeartPayCnt").length() == 0 ? "0"
+			: element.getAttribute("DaoHeartPayCnt")); // 【道心磨砺】付费次数
+		String DaoHeartConsumeString = element.getAttribute("DaoHeartConsume"); // 【道心磨砺】购买消耗
+		if (DaoHeartConsumeString != null && DaoHeartConsumeString.length() > 0) {
+			String[] DaoHeartConsumeStrings = DaoHeartConsumeString.split("\\|"); 
+			int[][] DaoHeartConsumeTemp = new int[DaoHeartConsumeStrings.length][] ; 
+			for (int i = 0; i < DaoHeartConsumeStrings.length; i++) {
+				String[] DaoHeartConsumeStrings2 = DaoHeartConsumeStrings[i].split(";"); 
+				int[] array = new int[DaoHeartConsumeStrings2.length];
+				for (int j = 0; j < DaoHeartConsumeStrings2.length; j++) {
+					int temp = Integer.parseInt(DaoHeartConsumeStrings2[j]);	
+					array[j] = temp;
+				}
+				DaoHeartConsumeTemp[i] = array;
+			}
+			DaoHeartConsume = DaoHeartConsumeTemp ;			
+		} else {
+			DaoHeartConsume = new int[][] {};
+		}
 	}
 	@Override
 	public void load() {

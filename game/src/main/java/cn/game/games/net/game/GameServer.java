@@ -12,7 +12,9 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.rocketmq.client.producer.RequestCallback;
+import org.slf4j.LoggerFactory;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.protobuf.Message;
@@ -151,7 +153,6 @@ public class GameServer implements GameServerMBean {
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 		mBeanServer.registerMBean(instance,
 				new ObjectName("net.game:type=GameServer,name=GameServer_" + ServerContext.getInstance().getServerId()));
-
 		initHotUpdate();
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -179,6 +180,9 @@ public class GameServer implements GameServerMBean {
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		CommonLogger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", serverId, (System.currentTimeMillis() - start) / 1000));
+
+//		Thread.sleep(3000);
+//		System.exit(1);
 		// 记录bi
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
 //		producer.start();
@@ -310,7 +314,7 @@ public class GameServer implements GameServerMBean {
 			VxHolder.vertx.undeploy(wsVerticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
 		} catch (Exception e) {
 //			log.error("", e);
-			SystemLogger.error("", e);
+			CommonLogger.error(e);
 		}
 		TaskManager.getInstance().shutdown();
 		try {
@@ -325,10 +329,10 @@ public class GameServer implements GameServerMBean {
 			VxHolder.vertx.close().toCompletionStage().toCompletableFuture().get(300, TimeUnit.SECONDS);
 
 //			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
-			CommonLogger.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
+			CommonLogger.warn("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
 			// 安全关闭log
-			/*			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-						context.stop();*/
+			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+			context.stop();
 
 		} catch (Throwable e) {
 //			log.error("Game Server Shutdown err ", e);

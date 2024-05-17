@@ -19,8 +19,8 @@ public enum ConditionTypeEnum{
 	EliteFinish(7,"EliteFinish","通关历练（精英）"),
 	/** 领取体力 */
 	ReceiveStamina(8,"ReceiveStamina","领取体力"),
-	/** 消耗体力 */
-	ExertsStamina(9,"ExertsStamina","消耗体力"),
+	/** 消耗物品 */
+	ConsumeItem(9,"ConsumeItem","消耗物品"),
 	/** 观看广告 */
 	WatchAds(10,"WatchAds","观看广告"),
 	/** 击杀怪物（小怪+头目） */
@@ -51,6 +51,14 @@ public enum ConditionTypeEnum{
 	ReceiveHangup(23,"ReceiveHangup","领取挂机奖励"),
 	/** 英雄等级 */
 	HeroLevel(24,"HeroLevel","英雄等级"),
+	/** 登录游戏 */
+	LogInGame(25,"LogInGame","登录游戏"),
+	/** 获取物品 */
+	GetItem(26,"GetItem","获取物品"),
+	/** 上阵英雄 */
+	BattleHeroQuality(29,"BattleHeroQuality","上阵英雄"),
+	/** 上阵英雄 */
+	BattleHeroLv(30,"BattleHeroLv","上阵英雄"),
     ;
 	/** id */
 	public final int ID ; 

@@ -16,7 +16,7 @@ public enum InitialUI{
 	/**  */
 	Supervalue(100102,1001,"Supervalue",4,0,"超值","Texture/Lobby/main_icon_chaozhi"),
 	/**  */
-	Firstpayment(100103,1001,"Firstpayment",2,0,"首充","Texture/Lobby/main_icon_shouchong"),
+	Firstpayment(100103,1001,"Firstpayment",1,0,"首充","Texture/Lobby/main_icon_shouchong"),
 	/**  */
 	Sevendays(100104,1001,"Sevendays",4,0,"7日","Texture/Lobby/main_icon_seven"),
 	/**  */
@@ -26,7 +26,7 @@ public enum InitialUI{
 	/**  */
 	Ranking(100107,1001,"Ranking",5,0,"排行","Texture/Lobby/main_icon_rank"),
 	/**  */
-	PleaseGod(100108,1001,"PleaseGod",1,0,"请神","Texture/Lobby/main_icon_qingshen"),
+	PleaseGod(100108,1001,"PleaseGod",2,0,"请神","Texture/Lobby/main_icon_qingshen"),
 	/**  */
 	RandomBox(100109,1001,"RandomBox",3,0,"随机宝箱","Texture/Lobby/main_icon_baoxiang"),
 	/**  */
