@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
  * 
  * 工具生成的，不要手动修改
  */
- public class FundPassUpgradeConfig {
+public class FundPassUpgradeConfig extends ExpConfig {
 
 	/** 等级 */
 	public final int ID;		
@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 
 	public FundPassUpgradeConfig (Element element) throws Exception {
 	
+		super(element);
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 等级
 		ExpType = Integer.parseInt(element.getAttribute("ExpType") == null || element.getAttribute("ExpType").length() == 0 ? "0"
