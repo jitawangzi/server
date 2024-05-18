@@ -118,7 +118,8 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 //			String grant_type = "authorization_code";
 			String url = String.format(WechatHelper.WX_AUTH_URL_STRING, Config.wechat_appid, Config.wechat_secret, code);
 			VxHolder.get(url, r -> {
-				int errcode = r.getInteger("errcode");
+				String errorcodestring = r.getString("errcode");
+				int errcode = Integer.parseInt(errorcodestring == null ? "0" : errorcodestring);
 				String errmsg = r.getString("errmsg");
 				log.debug("wechat login errcode", errcode) ; 
 				log.debug("wechat login errmsg", errmsg) ; 

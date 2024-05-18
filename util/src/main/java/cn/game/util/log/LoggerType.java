@@ -85,7 +85,7 @@ public enum LoggerType {
 
     LoggerType() {
         // 现在默认v3版本了
-		this("v1");
+		this("v3");
     }
 
     LoggerType(String version) {
