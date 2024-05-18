@@ -212,6 +212,7 @@ message PlayerAllInfo{
    int32 freeRougeTimes = 31; 				// 每日免费肉鸽刷新次数。
 
    repeated MonthCardProto monthCards  = 40;        //月卡
+   bool monthCardDoubleBonus = 42 ; 			// 是否可以领取双月卡奖励。
    repeated uint32 chapterPacks  = 41;        //购买过的章节礼包id(ChapterPacks表)
 
    CloudBoxInfo cloudBox = 50;  // 小云宝箱
