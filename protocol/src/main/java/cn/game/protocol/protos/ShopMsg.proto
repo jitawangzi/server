@@ -120,4 +120,10 @@ message ShopFundPassRewardResponse_15000033{
   repeated RewardInfo rewards = 2;  // 获得的物品
 }
 
+// 通行证数据
+message FundPassInfo{
+  int32 id = 1;  // FundPass表id
+  repeated int32 rewardIds = 2;  // FundPassReward表id，已经领取过的奖励id
+}
+
 
