@@ -17,6 +17,7 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -90,11 +91,11 @@ public class ChapterHandler extends BaseHandler {
 			if (advertising) {
 				int quickPatrolCount = chapterModule.getAdPatrolCount();
 				if (quickPatrolCount >= GlobalConst.AdPatrolCnt) {
-					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+					client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 					return;
 				}
 				// 消耗
-				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.None)) {
+				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.Patrol)) {
 					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 					return;
 				}
@@ -103,12 +104,12 @@ public class ChapterHandler extends BaseHandler {
 
 			} else {
 				int quickPatrolCount = chapterModule.getQuickPatrolCount();
-				if (quickPatrolCount >= GlobalConst.QuickPatrolCnt) {
-					client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+				if (quickPatrolCount >= GlobalConst.QuickPatrolCnt + player.getWelfareValue(WelfareTypeEnum.QuicPatrolCnt)) {
+					client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 					return;
 				}
 				// 消耗
-				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.None)) {
+				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.Patrol)) {
 					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 					return;
 				}
@@ -133,8 +134,11 @@ public class ChapterHandler extends BaseHandler {
 
 		PatrolConfig patrolConfig = PatrolManager.instance().get(chapterModule.getMainBattleHighest());
 
-		int exp = patrolConfig.IncomeEXP * minute;
-		int gold = patrolConfig.IncomeGold * minute;
+		float incomeRate = player.getWelfareValue(WelfareTypeEnum.PatrolIncome);
+		float rate = 1 + (incomeRate / 10000);
+
+		int exp = (int) (patrolConfig.IncomeEXP * minute * rate);
+		int gold = (int) (patrolConfig.IncomeGold * minute * rate);
 
 		PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);
 		PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Patrol);
@@ -349,7 +353,7 @@ public class ChapterHandler extends BaseHandler {
 //			return;
 //		}
 
-		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.None)) {
+		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart)) {
 			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}

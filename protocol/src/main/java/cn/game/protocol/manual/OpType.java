@@ -34,7 +34,7 @@ public enum OpType{
 	HeroQualityReset(106, "英雄品质重置"),
 	MonthCardBuy(107, "月卡购买"),
 	MonthCardDay(108, "月卡每日奖励"),
-	ChapterGift(109, "章节礼包"),
+	MonthCardDoubleBonus(109, "双月卡奖励"),
 
 	Mail(110, "邮件"),
 	Test(111, "测试添加"),
@@ -46,6 +46,9 @@ public enum OpType{
 
 	CloudBox(115, "小云宝箱"),
 	FirstCharge(116, "首冲"),
+	ChapterGift(117, "章节礼包"),
+
+	BattleStart(200, "战役开始"),
 
 	None(999, "未定义"),
 

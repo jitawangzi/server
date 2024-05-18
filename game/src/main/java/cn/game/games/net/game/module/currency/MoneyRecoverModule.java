@@ -13,8 +13,8 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.player.IdConstant;
-import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.AssetRestoreConfig;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.AssetRestoreManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -110,13 +110,14 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	private int getRecoverMax(int id) {
 		AssetRestoreConfig assetRestoreConfig = AssetRestoreManager.instance().get(id);
 		int max = assetRestoreConfig.maxShow;
-		if (assetRestoreConfig.maxType == 1) {
-			// 此处需要加月卡体力
-			MonthCardModule module = player.getModule(MonthCardModule.class);
-			if (module.hasMonthCard()) {
-				max += assetRestoreConfig.maxValue;
-			}
-		}
+//		if (assetRestoreConfig.maxType == 1) {
+//			// 此处需要加月卡体力
+//			MonthCardModule module = player.getModule(MonthCardModule.class);
+//			if (module.hasMonthCard()) {
+//				max += assetRestoreConfig.maxValue;
+//			}
+//		}
+		max += player.getWelfareValue(WelfareTypeEnum.PlayerEnergy);
 		max *= assetRestoreConfig.maxMultiple;
 		return max;
 	}

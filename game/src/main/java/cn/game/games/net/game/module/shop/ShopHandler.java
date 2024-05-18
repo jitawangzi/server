@@ -18,6 +18,7 @@ import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.ChapterPacksConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.RechargeConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
@@ -36,6 +37,8 @@ import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardResponse_15000013;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardRequest_15000014;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardResponse_15000015;
+import cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016;
+import cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusResponse_15000017;
 import cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020;
 import cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyResponse_15000021;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003;
@@ -64,7 +67,28 @@ public class ShopHandler extends BaseHandler {
 		putInvoker(PbProtocol.MonthCardDayRewardRequest_15000014, this::monthCardDayReward);
 		putInvoker(PbProtocol.ShopChapterPacksBuyRequest_15000020, this::buyChapterPacks);
 		putInvoker(PbProtocol.ShopRechargeRequest_15000022, this::recharge);
+		putInvoker(PbProtocol.MonthCardDoubleBonusRequest_15000016, this::doubleBonus);
 //		putInvoker(PbProtocol.AdvertiseWatchFinishRequest_15000030, this::advertise);
+	}
+
+	private void doubleBonus(NetClient client, Object message) {
+		MonthCardDoubleBonusRequest_15000016 req = (MonthCardDoubleBonusRequest_15000016) message;
+		MonthCardDoubleBonusResponse_15000017.Builder resp = MonthCardDoubleBonusResponse_15000017.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
+		if (monthCardModule.isDoubleBonus()) {
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		if (!monthCardModule.canDoubleBonus()) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		monthCardModule.setDoubleBonus(true);
+		
+		resp.addAllRewards(PlayerHelper.addResources(player, GlobalConst.DoubleBonus, OpType.MonthCardDoubleBonus));
+
+		client.sendProtocol(resp.build());
 	}
 
 	private void recharge(NetClient client, Object message) {

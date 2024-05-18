@@ -193,6 +193,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int MonthCardBuyRewardResponse_15000013 = 0x15000013;    
 	public final static int MonthCardDayRewardRequest_15000014 = 0x15000014;    //领取月卡每日奖励  
 	public final static int MonthCardDayRewardResponse_15000015 = 0x15000015;    
+	public final static int MonthCardDoubleBonusRequest_15000016 = 0x15000016;    //领取双月卡一次性奖励  
+	public final static int MonthCardDoubleBonusResponse_15000017 = 0x15000017;    
 	public final static int ShopChapterPacksBuyRequest_15000020 = 0x15000020;    //购买章节礼包  
 	public final static int ShopChapterPacksBuyResponse_15000021 = 0x15000021;    
 	public final static int ShopRechargeRequest_15000022 = 0x15000022;    //充值  
@@ -558,6 +560,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(MonthCardDayRewardResponse_15000015, cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardResponse_15000015.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(MonthCardDoubleBonusRequest_15000016, cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(MonthCardDoubleBonusResponse_15000017, cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusResponse_15000017.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(ShopChapterPacksBuyRequest_15000020, cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ShopChapterPacksBuyResponse_15000021, cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyResponse_15000021.getDefaultInstance()
@@ -769,6 +775,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("MonthCardBuyRewardResponse_15000013", 0x15000013);
 		nameIdMap.put("MonthCardDayRewardRequest_15000014", 0x15000014);
 		nameIdMap.put("MonthCardDayRewardResponse_15000015", 0x15000015);
+		nameIdMap.put("MonthCardDoubleBonusRequest_15000016", 0x15000016);
+		nameIdMap.put("MonthCardDoubleBonusResponse_15000017", 0x15000017);
 		nameIdMap.put("ShopChapterPacksBuyRequest_15000020", 0x15000020);
 		nameIdMap.put("ShopChapterPacksBuyResponse_15000021", 0x15000021);
 		nameIdMap.put("ShopRechargeRequest_15000022", 0x15000022);

@@ -42,8 +42,12 @@ import cn.game.games.net.game.module.player.VarModule;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
+import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
+import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
+import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -353,6 +357,25 @@ public class Player  {
 			promise.complete(true);
 		}
 		return promise.future() ; 
+	}
+
+	/** 
+	 * 获取福利的加成值
+	 * @param type
+	 * @return
+	 */
+	public int getWelfareValue(WelfareTypeEnum type) {
+		int ret = 0;
+		// 月卡加成
+		MonthCardModule monthCardModule = getModule(MonthCardModule.class);
+		Set<Integer> keySet = monthCardModule.getMonthCards().keySet();
+		for (Integer id : keySet) {
+			MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
+			if (monthCardConfig.Benefit1.containsKey(type.ID)) {
+				ret += monthCardConfig.Benefit1.get(type.ID);
+			}
+		}
+		return ret;
 	}
 
 	/** 

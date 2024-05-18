@@ -83,7 +83,8 @@ public class EnumToExcel {
 				if (findex == 1) { // 额外增加name字段的数据
 					row.add(e.name());
 				}
-				row.add(field.get(e));
+				// 这里数字类型要转成string，不然有可能被读出来1.0这样的值。
+				row.add(field.get(e).toString());
 				findex++;
 			}
 			data.add(row);

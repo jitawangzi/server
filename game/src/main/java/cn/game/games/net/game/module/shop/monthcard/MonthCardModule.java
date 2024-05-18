@@ -118,19 +118,36 @@ public class MonthCardModule extends BasePlayerModule {
 		if (doubleBonus) {
 			builder.setMonthCardDoubleBonus(false);
 		} else {
-			boolean all = true;
-			Collection<MonthCardConfig> list = MonthCardManager.instance().list();
-			for (MonthCardConfig monthCardConfig : list) {
-				if (!monthCards.containsKey(monthCardConfig.ID)) {
-					all = false;
-				}
-			}
-			builder.setMonthCardDoubleBonus(all);
+			builder.setMonthCardDoubleBonus(canDoubleBonus());
 		}
+	}
+
+	public boolean canDoubleBonus() {
+
+		boolean all = true;
+		Collection<MonthCardConfig> list = MonthCardManager.instance().list();
+		for (MonthCardConfig monthCardConfig : list) {
+			if (!monthCards.containsKey(monthCardConfig.ID)) {
+				all = false;
+			}
+		}
+		return all;
 	}
 
 	public boolean hasMonthCard() {
 		return !monthCards.isEmpty();
-
 	}
+
+	public boolean isDoubleBonus() {
+		return doubleBonus;
+	}
+
+	public void setDoubleBonus(boolean doubleBonus) {
+		this.doubleBonus = doubleBonus;
+	}
+
+	public Map<Integer, MonthCard> getMonthCards() {
+		return monthCards;
+	}
+
 }

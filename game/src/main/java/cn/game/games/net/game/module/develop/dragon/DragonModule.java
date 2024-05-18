@@ -43,10 +43,11 @@ public class DragonModule extends AbstractItemNoStackModule<Dragon> {
 		}
 		DragonConfig dragonConfig = DragonManager.instance().get(hero.getConfigId());
 		if (dragonConfig.DragonConsumeSkillId > 0) {
-			player.getDragonSkillModule().add(dragonConfig.DragonConsumeSkillId, OpType.None);
+			player.getDragonSkillModule().add(dragonConfig.DragonConsumeSkillId, OpType.Init);
 		}
 
 	}
+
 
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {

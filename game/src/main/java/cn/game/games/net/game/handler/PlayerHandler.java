@@ -179,8 +179,8 @@ public class PlayerHandler extends BaseHandler {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 				return;
 			}
-			List<RewardInfo> reward = player.getHeroModule().addReward(param, 1, OpType.None);
-			ret.addAll(reward);
+//			List<RewardInfo> reward = player.getHeroModule().addReward(param, 1, OpType.None);
+//			ret.addAll(reward);
 		} else {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;

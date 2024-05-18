@@ -1,5 +1,7 @@
 package cn.game.protocol.generated.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.w3c.dom.Element;
 
 
@@ -23,7 +25,7 @@ import org.w3c.dom.Element;
 	/** 每日领取 */
 	public final int[] DailyRewards;		
 	/** 福利 */
-	public final int[][] Benefit1;		
+	public final Map<Integer,Integer> Benefit1;		
 
 	public MonthCardConfig (Element element) throws Exception {
 	
@@ -76,19 +78,16 @@ import org.w3c.dom.Element;
 		String Benefit1String = element.getAttribute("Benefit1"); // 福利
 		if (Benefit1String != null && Benefit1String.length() > 0) {
 			String[] Benefit1Strings = Benefit1String.split("\\|"); 
-			int[][] Benefit1Temp = new int[Benefit1Strings.length][] ; 
+			Map<Integer,Integer> Benefit1Temp = new HashMap<Integer,Integer>(Benefit1Strings.length) ; 
 			for (int i = 0; i < Benefit1Strings.length; i++) {
-				String[] Benefit1Strings2 = Benefit1Strings[i].split(";"); 
-				int[] array = new int[Benefit1Strings2.length];
-				for (int j = 0; j < Benefit1Strings2.length; j++) {
-					int temp = Integer.parseInt(Benefit1Strings2[j]);	
-					array[j] = temp;
-				}
-				Benefit1Temp[i] = array;
+				String[] split = Benefit1Strings[i].split(";", 2);
+				Integer key = Integer.parseInt(split[0]);
+				Integer value = Integer.parseInt(split[1]);
+				Benefit1Temp.put(key, value) ; 				
 			}
-			Benefit1 = Benefit1Temp ;			
-		} else {
-			Benefit1 = new int[][] {};
+			Benefit1 = com.google.common.collect.ImmutableMap.copyOf(Benefit1Temp);
+		}else{
+			Benefit1 = java.util.Collections.emptyMap() ; 
 		}
 	}
 	
