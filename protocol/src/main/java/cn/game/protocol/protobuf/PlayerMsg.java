@@ -22949,6 +22949,16 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 是否可以领取双月卡奖励。
+     * </pre>
+     *
+     * <code>bool monthCardDoubleBonus = 42;</code>
+     * @return The monthCardDoubleBonus.
+     */
+    boolean getMonthCardDoubleBonus();
+
+    /**
+     * <pre>
      *购买过的章节礼包id(ChapterPacks表)
      * </pre>
      *
@@ -23383,6 +23393,11 @@ public final class PlayerMsg {
                 chapterPacks_.addInt(input.readUInt32());
               }
               input.popLimit(limit);
+              break;
+            }
+            case 336: {
+
+              monthCardDoubleBonus_ = input.readBool();
               break;
             }
             case 402: {
@@ -24740,6 +24755,21 @@ public final class PlayerMsg {
       return monthCards_.get(index);
     }
 
+    public static final int MONTHCARDDOUBLEBONUS_FIELD_NUMBER = 42;
+    private boolean monthCardDoubleBonus_;
+    /**
+     * <pre>
+     * 是否可以领取双月卡奖励。
+     * </pre>
+     *
+     * <code>bool monthCardDoubleBonus = 42;</code>
+     * @return The monthCardDoubleBonus.
+     */
+    @java.lang.Override
+    public boolean getMonthCardDoubleBonus() {
+      return monthCardDoubleBonus_;
+    }
+
     public static final int CHAPTERPACKS_FIELD_NUMBER = 41;
     private com.google.protobuf.Internal.IntList chapterPacks_;
     /**
@@ -25070,6 +25100,9 @@ public final class PlayerMsg {
       for (int i = 0; i < chapterPacks_.size(); i++) {
         output.writeUInt32NoTag(chapterPacks_.getInt(i));
       }
+      if (monthCardDoubleBonus_ != false) {
+        output.writeBool(42, monthCardDoubleBonus_);
+      }
       if (cloudBox_ != null) {
         output.writeMessage(50, getCloudBox());
       }
@@ -25212,6 +25245,10 @@ public final class PlayerMsg {
         }
         chapterPacksMemoizedSerializedSize = dataSize;
       }
+      if (monthCardDoubleBonus_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(42, monthCardDoubleBonus_);
+      }
       if (cloudBox_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(50, getCloudBox());
@@ -25282,6 +25319,8 @@ public final class PlayerMsg {
           != other.getFreeRougeTimes()) return false;
       if (!getMonthCardsList()
           .equals(other.getMonthCardsList())) return false;
+      if (getMonthCardDoubleBonus()
+          != other.getMonthCardDoubleBonus()) return false;
       if (!getChapterPacksList()
           .equals(other.getChapterPacksList())) return false;
       if (hasCloudBox() != other.hasCloudBox()) return false;
@@ -25377,6 +25416,9 @@ public final class PlayerMsg {
         hash = (37 * hash) + MONTHCARDS_FIELD_NUMBER;
         hash = (53 * hash) + getMonthCardsList().hashCode();
       }
+      hash = (37 * hash) + MONTHCARDDOUBLEBONUS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getMonthCardDoubleBonus());
       if (getChapterPacksCount() > 0) {
         hash = (37 * hash) + CHAPTERPACKS_FIELD_NUMBER;
         hash = (53 * hash) + getChapterPacksList().hashCode();
@@ -25657,6 +25699,8 @@ public final class PlayerMsg {
         } else {
           monthCardsBuilder_.clear();
         }
+        monthCardDoubleBonus_ = false;
+
         chapterPacks_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00008000);
         if (cloudBoxBuilder_ == null) {
@@ -25810,6 +25854,7 @@ public final class PlayerMsg {
         } else {
           result.monthCards_ = monthCardsBuilder_.build();
         }
+        result.monthCardDoubleBonus_ = monthCardDoubleBonus_;
         if (((bitField0_ & 0x00008000) != 0)) {
           chapterPacks_.makeImmutable();
           bitField0_ = (bitField0_ & ~0x00008000);
@@ -26146,6 +26191,9 @@ public final class PlayerMsg {
               monthCardsBuilder_.addAllMessages(other.monthCards_);
             }
           }
+        }
+        if (other.getMonthCardDoubleBonus() != false) {
+          setMonthCardDoubleBonus(other.getMonthCardDoubleBonus());
         }
         if (!other.chapterPacks_.isEmpty()) {
           if (chapterPacks_.isEmpty()) {
@@ -30283,6 +30331,49 @@ public final class PlayerMsg {
         return monthCardsBuilder_;
       }
 
+      private boolean monthCardDoubleBonus_ ;
+      /**
+       * <pre>
+       * 是否可以领取双月卡奖励。
+       * </pre>
+       *
+       * <code>bool monthCardDoubleBonus = 42;</code>
+       * @return The monthCardDoubleBonus.
+       */
+      @java.lang.Override
+      public boolean getMonthCardDoubleBonus() {
+        return monthCardDoubleBonus_;
+      }
+      /**
+       * <pre>
+       * 是否可以领取双月卡奖励。
+       * </pre>
+       *
+       * <code>bool monthCardDoubleBonus = 42;</code>
+       * @param value The monthCardDoubleBonus to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMonthCardDoubleBonus(boolean value) {
+        
+        monthCardDoubleBonus_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是否可以领取双月卡奖励。
+       * </pre>
+       *
+       * <code>bool monthCardDoubleBonus = 42;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMonthCardDoubleBonus() {
+        
+        monthCardDoubleBonus_ = false;
+        onChanged();
+        return this;
+      }
+
       private com.google.protobuf.Internal.IntList chapterPacks_ = emptyIntList();
       private void ensureChapterPacksIsMutable() {
         if (!((bitField0_ & 0x00008000) != 0)) {
@@ -31637,7 +31728,7 @@ public final class PlayerMsg {
       " \003(\0132\021.Protos.GoodsInfo\"k\n\nPlayerInfo\022\n\n" +
       "\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014" +
       "\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offli" +
-      "neTime\030\026 \001(\t\"\376\t\n\rPlayerAllInfo\022\"\n\006player" +
+      "neTime\030\026 \001(\t\"\234\n\n\rPlayerAllInfo\022\"\n\006player" +
       "\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006assets\030\002 \003" +
       "(\0132!.Protos.PlayerAllInfo.AssetsEntry\022=\n" +
       "\014assetRecover\030\003 \003(\0132\'.Protos.PlayerAllIn" +
@@ -31656,21 +31747,21 @@ public final class PlayerMsg {
       "2\'.Protos.PlayerAllInfo.DragonSkillsEntr" +
       "y\022#\n\007battles\030\036 \003(\0132\022.Protos.BattleInfo\022\026" +
       "\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCards\030( \003" +
-      "(\0132\026.Protos.MonthCardProto\022\024\n\014chapterPac" +
-      "ks\030) \003(\r\022&\n\010cloudBox\0302 \001(\0132\024.Protos.Clou" +
-      "dBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos.Patrol" +
-      "Info\022+\n\013questGroups\0307 \003(\0132\026.Protos.Quest" +
-      "GroupInfo\022A\n\026questGroupPointRewards\0308 \003(" +
-      "\0132!.Protos.QuestGroupPointRewardInfo\032-\n\013" +
-      "AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:" +
-      "\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n" +
-      "\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001" +
-      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry" +
-      "\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014Drag" +
-      "onsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001" +
-      "\0323\n\021DragonSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
-      "lue\030\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.protob" +
-      "ufb\006proto3"
+      "(\0132\026.Protos.MonthCardProto\022\034\n\024monthCardD" +
+      "oubleBonus\030* \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&" +
+      "\n\010cloudBox\0302 \001(\0132\024.Protos.CloudBoxInfo\022\"" +
+      "\n\006patrol\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013qu" +
+      "estGroups\0307 \003(\0132\026.Protos.QuestGroupInfo\022" +
+      "A\n\026questGroupPointRewards\0308 \003(\0132!.Protos" +
+      ".QuestGroupPointRewardInfo\032-\n\013AssetsEntr" +
+      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021Ass" +
+      "etRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001" +
+      "(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
+      "lue\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 " +
+      "\001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013" +
+      "\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021Dragon" +
+      "SkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:" +
+      "\0028\001B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -31884,7 +31975,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "ChapterPacks", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
