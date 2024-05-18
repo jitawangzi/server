@@ -76,6 +76,8 @@ public class GlobalConst extends ResourceListener {
 	public static int DaoHeartPayCnt;		
 	/** 【道心磨砺】购买消耗 */
 	public static int[][] DaoHeartConsume;		
+	/** 【月卡】双月卡奖励 */
+	public static int[][] DoubleBonus;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -320,6 +322,23 @@ public class GlobalConst extends ResourceListener {
 			DaoHeartConsume = DaoHeartConsumeTemp ;			
 		} else {
 			DaoHeartConsume = new int[][] {};
+		}
+		String DoubleBonusString = element.getAttribute("DoubleBonus"); // 【月卡】双月卡奖励
+		if (DoubleBonusString != null && DoubleBonusString.length() > 0) {
+			String[] DoubleBonusStrings = DoubleBonusString.split("\\|"); 
+			int[][] DoubleBonusTemp = new int[DoubleBonusStrings.length][] ; 
+			for (int i = 0; i < DoubleBonusStrings.length; i++) {
+				String[] DoubleBonusStrings2 = DoubleBonusStrings[i].split(";"); 
+				int[] array = new int[DoubleBonusStrings2.length];
+				for (int j = 0; j < DoubleBonusStrings2.length; j++) {
+					int temp = Integer.parseInt(DoubleBonusStrings2[j]);	
+					array[j] = temp;
+				}
+				DoubleBonusTemp[i] = array;
+			}
+			DoubleBonus = DoubleBonusTemp ;			
+		} else {
+			DoubleBonus = new int[][] {};
 		}
 	}
 	@Override

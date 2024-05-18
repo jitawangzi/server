@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 	/** 商品id */
 	public final int ID;		
-	/** 包含物品 商品表ID */
+	/** 包含物品 */
 	public final int[] Item;		
 	/** 购买参数 1=货币；货币ID；数量 2=充值；数量(免费无需配置) 3=广告 */
 	public final int[] PurchaseParameter;		
@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 商品id
-		String ItemString = element.getAttribute("Item"); // 包含物品 商品表ID
+		String ItemString = element.getAttribute("Item"); // 包含物品
 		if (ItemString != null && ItemString.length() > 0) {
 			String[] ItemStrings = ItemString.split(";"); 
 			int[] ItemTemp = new int[ItemStrings.length] ; 

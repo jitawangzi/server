@@ -10,6 +10,7 @@ import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.PacksChoiceManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.RechargeStoreManager;
+import cn.game.protocol.generated.manager.RandomBUFFManager;
 import cn.game.protocol.generated.manager.HeroSkillManager;
 import cn.game.protocol.generated.manager.AssetRestoreManager;
 import cn.game.protocol.generated.manager.AttrEffectCoefficientManager;
@@ -79,6 +80,7 @@ public class ManagerHelper {
 		PacksChoiceManager.instance().load();
 		UserUpgradeManager.instance().load();
 		RechargeStoreManager.instance().load();
+		RandomBUFFManager.instance().load();
 		HeroSkillManager.instance().load();
 		AssetRestoreManager.instance().load();
 		AttrEffectCoefficientManager.instance().load();

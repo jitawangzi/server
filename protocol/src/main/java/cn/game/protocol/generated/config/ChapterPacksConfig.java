@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 	/** ID */
 	public final int ID;		
-	/** 购买条件 */
+	/** 购买条件 Condition#条件 */
 	public final int Condition;		
 	/** 礼包顺序 */
 	public final int Order;		
@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // ID
 		Condition = Integer.parseInt(element.getAttribute("Condition") == null || element.getAttribute("Condition").length() == 0 ? "0"
-			: element.getAttribute("Condition")); // 购买条件
+			: element.getAttribute("Condition")); // 购买条件 Condition#条件
 		Order = Integer.parseInt(element.getAttribute("Order") == null || element.getAttribute("Order").length() == 0 ? "0"
 			: element.getAttribute("Order")); // 礼包顺序
 		String ItemString = element.getAttribute("Item"); // 礼包内容 ID；数量|ID；数量

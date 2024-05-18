@@ -191,11 +191,6 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id); 
-		boolean checkCondition = PlayerHelper.checkCondition(player, monthCardConfig.ConditionID);
-		if (!checkCondition) {
-			client.sendProtocol(resp, ErrorMsgEnum.month_card_condition.getId());
-			return;
-		}
 		int[] cost = monthCardConfig.Price;
 		
 		Future<Boolean> pay = player.pay(cost); 
