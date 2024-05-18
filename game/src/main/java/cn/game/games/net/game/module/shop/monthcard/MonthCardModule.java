@@ -22,6 +22,8 @@ public class MonthCardModule extends BasePlayerModule {
 
 	/** 一张月卡奖励周期(天) */
 //	public static final int rechargeDays = 30;
+	/** 双月卡期间，是否领取过奖励 */
+	private boolean doubleBonus;
 
 	private Map<Integer, MonthCard> monthCards = new HashMap<>();;
 
@@ -59,6 +61,7 @@ public class MonthCardModule extends BasePlayerModule {
 		// 正常应该是在功能开启时初始化商店。
 		case NewDay: {
 			resetDayReward();
+			checkExpire();
 		}
 		}
 
@@ -88,6 +91,10 @@ public class MonthCardModule extends BasePlayerModule {
 	
 	@Override
 	public void initFromDbAfter() {
+		checkExpire();
+	}
+
+	private void checkExpire() {
 		long nowTime = System.currentTimeMillis();
 		Collection<MonthCard> values = monthCards.values(); 
 		List<Integer> removeList = new ArrayList<>();
@@ -99,6 +106,7 @@ public class MonthCardModule extends BasePlayerModule {
 		}
 		for (Integer integer : removeList) {
 			monthCards.remove(integer) ; 
+			doubleBonus = false;
 		}
 	};
 
@@ -106,6 +114,18 @@ public class MonthCardModule extends BasePlayerModule {
 	public void buildPlayerAllInfo(Builder builder) {
 		for (MonthCard monthCard : monthCards.values()) {
 			builder.addMonthCards(monthCard.toProto());
+		}
+		if (doubleBonus) {
+			builder.setMonthCardDoubleBonus(false);
+		} else {
+			boolean all = true;
+			Collection<MonthCardConfig> list = MonthCardManager.instance().list();
+			for (MonthCardConfig monthCardConfig : list) {
+				if (!monthCards.containsKey(monthCardConfig.ID)) {
+					all = false;
+				}
+			}
+			builder.setMonthCardDoubleBonus(all);
 		}
 	}
 

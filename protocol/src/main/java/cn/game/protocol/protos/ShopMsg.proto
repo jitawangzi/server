@@ -59,6 +59,15 @@ message MonthCardDayRewardRequest_15000014{
 message MonthCardDayRewardResponse_15000015{
 }
 
+
+//领取双月卡一次性奖励
+message MonthCardDoubleBonusRequest_15000016{
+}
+
+message MonthCardDoubleBonusResponse_15000017{
+}
+
+
 message MonthCardProto{
 	uint32 id = 1; // MonthCard表id
 	uint32 expireTime = 2; // 月卡过期时间（秒时间戳）,0表示不过期
