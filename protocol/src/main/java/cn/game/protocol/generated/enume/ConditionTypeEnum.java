@@ -59,6 +59,8 @@ public enum ConditionTypeEnum{
 	BattleHeroQuality(29,"BattleHeroQuality","上阵英雄"),
 	/** 上阵英雄 */
 	BattleHeroLv(30,"BattleHeroLv","上阵英雄"),
+	/** 等级条件 */
+	LvCondition(31,"LvCondition","等级条件"),
     ;
 	/** id */
 	public final int ID ; 

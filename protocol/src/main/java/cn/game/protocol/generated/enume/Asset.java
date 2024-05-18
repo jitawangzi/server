@@ -19,6 +19,8 @@ public enum Asset{
 	WeeklyPoint(100203,"WeeklyPoint","每周任务活跃度",1,5,"获得指定数量后可以领取奖励","task_icon_zhouhuoyue"),
 	/** 7日任务活跃度 */
 	SevenDaysPoint(100204,"SevenDaysPoint","7日任务活跃度",1,5,"获得指定数量后可以领取奖励","sevendaygift_icon_integral"),
+	/** 通行证经验 */
+	FundPass(100205,"FundPass","通行证经验",2,5,"获得指定数量后可以领取奖励",""),
 	/** 体力 */
 	playerEnergy(100301,"playerEnergy","体力",3,5,"用于挑战、扫荡关卡，获取关卡奖励","physicalpower_icon_01"),
     ;

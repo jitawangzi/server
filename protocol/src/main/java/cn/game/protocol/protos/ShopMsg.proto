@@ -68,7 +68,6 @@ message MonthCardDoubleBonusResponse_15000017{
 	  repeated RewardInfo rewards = 1;  // 获得的具体物品
 }
 
-
 message MonthCardProto{
 	uint32 id = 1; // MonthCard表id
 	uint32 expireTime = 2; // 月卡过期时间（秒时间戳）,0表示不过期
@@ -101,4 +100,24 @@ message ShopRechargeResponse_15000023{
 message PaymentOrderPush_15010020{
 	PaymentOrderProto order = 1;
 }
+
+
+//==================================通行证===============================
+//购买通行证
+message ShopFundPassBuyRequest_15000030{
+  uint32 id = 1; // FundPass表id
+}
+
+message ShopFundPassBuyResponse_15000031{
+}
+
+//领取通行证奖励
+message ShopFundPassRewardRequest_15000032{
+  uint32 id = 1; // FundPassRewards表id
+}
+
+message ShopFundPassRewardResponse_15000033{
+  repeated RewardInfo rewards = 2;  // 获得的物品
+}
+
 

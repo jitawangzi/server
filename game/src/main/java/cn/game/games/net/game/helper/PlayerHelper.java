@@ -871,7 +871,7 @@ public class PlayerHelper {
 		int id = conditionConfig.idParam;
 		int count = conditionConfig.numParam;
 		int[] extParam = conditionConfig.extParam;
-		int operator = conditionConfig.operator;
+//		int operator = conditionConfig.operator;
 
 		switch (type) {
 			case ChapterFinish: {
@@ -879,10 +879,12 @@ public class PlayerHelper {
 				return chapterOp.isBattlePass(id);
 			}
 			case PlayerLevel: {
-				return operator(player.getData().getLevel(), count, operator);
+//				return operator(player.getData().getLevel(), count, operator);
+				return player.getData().getLevel() >= count;
 			}
 			case AccumulatedRecharge: {
-				return operator(player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge), count, operator);
+//				return operator(player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge), count, operator);
+				return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge) >= count;
 			}
 //			case PlayerCombat: {
 //				return true;

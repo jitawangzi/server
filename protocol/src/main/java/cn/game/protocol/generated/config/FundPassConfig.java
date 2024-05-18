@@ -10,21 +10,23 @@ import org.w3c.dom.Element;
  */
  public class FundPassConfig {
 
-	/** 索引 */
+	/** ID */
 	public final int ID;		
 	/** 活动ID */
 	public final int ActivityiD;		
+	/** 是否需要经验升级 */
+	public final boolean Exp;		
 	/** 售价 */
 	public final int[] Price;		
-	/** 奖励 */
-	public final int BundleID;		
 
 	public FundPassConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
-			: element.getAttribute("ID")); // 索引
+			: element.getAttribute("ID")); // ID
 		ActivityiD = Integer.parseInt(element.getAttribute("ActivityiD") == null || element.getAttribute("ActivityiD").length() == 0 ? "0"
 			: element.getAttribute("ActivityiD")); // 活动ID
+		Exp = Boolean.parseBoolean(element.getAttribute("Exp") == null || element.getAttribute("Exp").length() == 0 ? "false"
+			: element.getAttribute("Exp")); // 是否需要经验升级
 		String PriceString = element.getAttribute("Price"); // 售价
 		if (PriceString != null && PriceString.length() > 0) {
 			String[] PriceStrings = PriceString.split(";"); 
@@ -37,8 +39,6 @@ import org.w3c.dom.Element;
 		} else {
 			Price = new int[] {};
 		}
-		BundleID = Integer.parseInt(element.getAttribute("BundleID") == null || element.getAttribute("BundleID").length() == 0 ? "0"
-			: element.getAttribute("BundleID")); // 奖励
 	}
 	
 

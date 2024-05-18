@@ -44,8 +44,6 @@ public class GlobalConst extends ResourceListener {
 	public static int MaximumPatrolDuration;		
 	/** 【挂机】快速巡逻次数 */
 	public static int QuickPatrolCnt;		
-	/** 【挂机】月卡附加次数 */
-	public static int MonthCardCnt;		
 	/** 【挂机】快速巡逻消耗 */
 	public static int QuickPatrolConsume;		
 	/** 【挂机】广告巡逻次数 */
@@ -211,8 +209,6 @@ public class GlobalConst extends ResourceListener {
 			: element.getAttribute("MaximumPatrolDuration")); // 【挂机】巡逻时长上限
 		QuickPatrolCnt = Integer.parseInt(element.getAttribute("QuickPatrolCnt") == null || element.getAttribute("QuickPatrolCnt").length() == 0 ? "0"
 			: element.getAttribute("QuickPatrolCnt")); // 【挂机】快速巡逻次数
-		MonthCardCnt = Integer.parseInt(element.getAttribute("MonthCardCnt") == null || element.getAttribute("MonthCardCnt").length() == 0 ? "0"
-			: element.getAttribute("MonthCardCnt")); // 【挂机】月卡附加次数
 		QuickPatrolConsume = Integer.parseInt(element.getAttribute("QuickPatrolConsume") == null || element.getAttribute("QuickPatrolConsume").length() == 0 ? "0"
 			: element.getAttribute("QuickPatrolConsume")); // 【挂机】快速巡逻消耗
 		AdPatrolCnt = Integer.parseInt(element.getAttribute("AdPatrolCnt") == null || element.getAttribute("AdPatrolCnt").length() == 0 ? "0"

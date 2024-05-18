@@ -3,6 +3,7 @@ package cn.game.protocol.generated.helper;
 import cn.game.protocol.generated.manager.HeroBUFFManager;
 import cn.game.protocol.generated.manager.HeroBeamManager;
 import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.RoguelikeTriggerManager;
@@ -73,6 +74,7 @@ public class ManagerHelper {
 		HeroBUFFManager.instance().load();
 		HeroBeamManager.instance().load();
 		ActivityManager.instance().load();
+		FundPassUpgradeManager.instance().load();
 		ShopItemManager.instance().load();
 		RechargeManager.instance().load();
 		RoguelikeTriggerManager.instance().load();

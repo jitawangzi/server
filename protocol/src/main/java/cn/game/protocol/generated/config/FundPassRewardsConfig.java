@@ -12,65 +12,36 @@ import org.w3c.dom.Element;
 
 	/** ID */
 	public final int ID;		
-	/** 索引 */
+	/** 索引 FundPass#基金通行证的ID */
 	public final int Index;		
 	/** 等级 */
 	public final int Lv;		
-	/** 解锁消耗 0=自动解锁不消耗 1=货币；货币id；数量 2=玩家等级 3=开启主线章节 */
-	public final int[] UnlockCost;		
-	/** 免费奖励 */
-	public final int[] FreeRewards;		
-	/** 付费奖励 */
-	public final int[][] PaidRewards;		
+	/** 解锁条件 条件表 */
+	public final int Condition;		
+	/** 奖励 */
+	public final int[] Reward;		
 
 	public FundPassRewardsConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // ID
 		Index = Integer.parseInt(element.getAttribute("Index") == null || element.getAttribute("Index").length() == 0 ? "0"
-			: element.getAttribute("Index")); // 索引
+			: element.getAttribute("Index")); // 索引 FundPass#基金通行证的ID
 		Lv = Integer.parseInt(element.getAttribute("Lv") == null || element.getAttribute("Lv").length() == 0 ? "0"
 			: element.getAttribute("Lv")); // 等级
-		String UnlockCostString = element.getAttribute("UnlockCost"); // 解锁消耗 0=自动解锁不消耗 1=货币；货币id；数量 2=玩家等级 3=开启主线章节
-		if (UnlockCostString != null && UnlockCostString.length() > 0) {
-			String[] UnlockCostStrings = UnlockCostString.split(";"); 
-			int[] UnlockCostTemp = new int[UnlockCostStrings.length] ; 
-			for (int i = 0; i < UnlockCostStrings.length; i++) {
-				int temp = Integer.parseInt(UnlockCostStrings[i]);	
-				UnlockCostTemp[i] = temp;
+		Condition = Integer.parseInt(element.getAttribute("Condition") == null || element.getAttribute("Condition").length() == 0 ? "0"
+			: element.getAttribute("Condition")); // 解锁条件 条件表
+		String RewardString = element.getAttribute("Reward"); // 奖励
+		if (RewardString != null && RewardString.length() > 0) {
+			String[] RewardStrings = RewardString.split(";"); 
+			int[] RewardTemp = new int[RewardStrings.length] ; 
+			for (int i = 0; i < RewardStrings.length; i++) {
+				int temp = Integer.parseInt(RewardStrings[i]);	
+				RewardTemp[i] = temp;
 			}
-			UnlockCost = UnlockCostTemp ;			
+			Reward = RewardTemp ;			
 		} else {
-			UnlockCost = new int[] {};
-		}
-		String FreeRewardsString = element.getAttribute("FreeRewards"); // 免费奖励
-		if (FreeRewardsString != null && FreeRewardsString.length() > 0) {
-			String[] FreeRewardsStrings = FreeRewardsString.split(";"); 
-			int[] FreeRewardsTemp = new int[FreeRewardsStrings.length] ; 
-			for (int i = 0; i < FreeRewardsStrings.length; i++) {
-				int temp = Integer.parseInt(FreeRewardsStrings[i]);	
-				FreeRewardsTemp[i] = temp;
-			}
-			FreeRewards = FreeRewardsTemp ;			
-		} else {
-			FreeRewards = new int[] {};
-		}
-		String PaidRewardsString = element.getAttribute("PaidRewards"); // 付费奖励
-		if (PaidRewardsString != null && PaidRewardsString.length() > 0) {
-			String[] PaidRewardsStrings = PaidRewardsString.split("\\|"); 
-			int[][] PaidRewardsTemp = new int[PaidRewardsStrings.length][] ; 
-			for (int i = 0; i < PaidRewardsStrings.length; i++) {
-				String[] PaidRewardsStrings2 = PaidRewardsStrings[i].split(";"); 
-				int[] array = new int[PaidRewardsStrings2.length];
-				for (int j = 0; j < PaidRewardsStrings2.length; j++) {
-					int temp = Integer.parseInt(PaidRewardsStrings2[j]);	
-					array[j] = temp;
-				}
-				PaidRewardsTemp[i] = array;
-			}
-			PaidRewards = PaidRewardsTemp ;			
-		} else {
-			PaidRewards = new int[][] {};
+			Reward = new int[] {};
 		}
 	}
 	

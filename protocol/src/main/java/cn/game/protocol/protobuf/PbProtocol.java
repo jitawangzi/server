@@ -200,6 +200,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int ShopRechargeRequest_15000022 = 0x15000022;    //充值  
 	public final static int ShopRechargeResponse_15000023 = 0x15000023;    
 	public final static int PaymentOrderPush_15010020 = 0x15010020;    //支付订单相关参数，客户端收到这个协议就可以利用里面的参数发起支付了  
+	public final static int ShopFundPassBuyRequest_15000030 = 0x15000030;    //购买通行证  
+	public final static int ShopFundPassBuyResponse_15000031 = 0x15000031;    
+	public final static int ShopFundPassRewardRequest_15000032 = 0x15000032;    //领取通行证奖励  
+	public final static int ShopFundPassRewardResponse_15000033 = 0x15000033;    
 	public final static int StoryStartRequest_14000001 = 0x14000001;    //剧情开始  
 	public final static int StoryStartResponse_14000002 = 0x14000002;    
 	public final static int StoryFinishRequest_14000003 = 0x14000003;    //剧情结束  
@@ -574,6 +578,14 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PaymentOrderPush_15010020, cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(ShopFundPassBuyRequest_15000030, cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ShopFundPassBuyResponse_15000031, cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ShopFundPassRewardRequest_15000032, cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ShopFundPassRewardResponse_15000033, cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(StoryStartRequest_14000001, cn.game.protocol.protobuf.StoryMsg.StoryStartRequest_14000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(StoryStartResponse_14000002, cn.game.protocol.protobuf.StoryMsg.StoryStartResponse_14000002.getDefaultInstance()
@@ -782,6 +794,10 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("ShopRechargeRequest_15000022", 0x15000022);
 		nameIdMap.put("ShopRechargeResponse_15000023", 0x15000023);
 		nameIdMap.put("PaymentOrderPush_15010020", 0x15010020);
+		nameIdMap.put("ShopFundPassBuyRequest_15000030", 0x15000030);
+		nameIdMap.put("ShopFundPassBuyResponse_15000031", 0x15000031);
+		nameIdMap.put("ShopFundPassRewardRequest_15000032", 0x15000032);
+		nameIdMap.put("ShopFundPassRewardResponse_15000033", 0x15000033);
 		nameIdMap.put("StoryStartRequest_14000001", 0x14000001);
 		nameIdMap.put("StoryStartResponse_14000002", 0x14000002);
 		nameIdMap.put("StoryFinishRequest_14000003", 0x14000003);

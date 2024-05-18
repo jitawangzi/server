@@ -12027,6 +12027,2363 @@ public final class ShopMsg {
 
   }
 
+  public interface ShopFundPassBuyRequest_15000030OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ShopFundPassBuyRequest_15000030)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * FundPass表id
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+  }
+  /**
+   * <pre>
+   *==================================通行证===============================
+   *购买通行证
+   * </pre>
+   *
+   * Protobuf type {@code Protos.ShopFundPassBuyRequest_15000030}
+   */
+  public static final class ShopFundPassBuyRequest_15000030 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ShopFundPassBuyRequest_15000030)
+      ShopFundPassBuyRequest_15000030OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ShopFundPassBuyRequest_15000030.newBuilder() to construct.
+    private ShopFundPassBuyRequest_15000030(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ShopFundPassBuyRequest_15000030() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ShopFundPassBuyRequest_15000030();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ShopFundPassBuyRequest_15000030(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyRequest_15000030_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyRequest_15000030_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.class, cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * FundPass表id
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 other = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *==================================通行证===============================
+     *购买通行证
+     * </pre>
+     *
+     * Protobuf type {@code Protos.ShopFundPassBuyRequest_15000030}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ShopFundPassBuyRequest_15000030)
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyRequest_15000030_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyRequest_15000030_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.class, cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyRequest_15000030_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 build() {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 buildPartial() {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 result = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030(this);
+        result.id_ = id_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030) {
+          return mergeFrom((cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 other) {
+        if (other == cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       * FundPass表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * FundPass表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * FundPass表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ShopFundPassBuyRequest_15000030)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ShopFundPassBuyRequest_15000030)
+    private static final cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030();
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ShopFundPassBuyRequest_15000030>
+        PARSER = new com.google.protobuf.AbstractParser<ShopFundPassBuyRequest_15000030>() {
+      @java.lang.Override
+      public ShopFundPassBuyRequest_15000030 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ShopFundPassBuyRequest_15000030(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ShopFundPassBuyRequest_15000030> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ShopFundPassBuyRequest_15000030> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ShopFundPassBuyResponse_15000031OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ShopFundPassBuyResponse_15000031)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code Protos.ShopFundPassBuyResponse_15000031}
+   */
+  public static final class ShopFundPassBuyResponse_15000031 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ShopFundPassBuyResponse_15000031)
+      ShopFundPassBuyResponse_15000031OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ShopFundPassBuyResponse_15000031.newBuilder() to construct.
+    private ShopFundPassBuyResponse_15000031(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ShopFundPassBuyResponse_15000031() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ShopFundPassBuyResponse_15000031();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ShopFundPassBuyResponse_15000031(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyResponse_15000031_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyResponse_15000031_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031.class, cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 other = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.ShopFundPassBuyResponse_15000031}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ShopFundPassBuyResponse_15000031)
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyResponse_15000031_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyResponse_15000031_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031.class, cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassBuyResponse_15000031_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 build() {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 buildPartial() {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 result = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031) {
+          return mergeFrom((cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 other) {
+        if (other == cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ShopFundPassBuyResponse_15000031)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ShopFundPassBuyResponse_15000031)
+    private static final cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031();
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ShopFundPassBuyResponse_15000031>
+        PARSER = new com.google.protobuf.AbstractParser<ShopFundPassBuyResponse_15000031>() {
+      @java.lang.Override
+      public ShopFundPassBuyResponse_15000031 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ShopFundPassBuyResponse_15000031(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ShopFundPassBuyResponse_15000031> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ShopFundPassBuyResponse_15000031> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ShopFundPassRewardRequest_15000032OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ShopFundPassRewardRequest_15000032)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * FundPassRewards表id
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+  }
+  /**
+   * <pre>
+   *领取通行证奖励
+   * </pre>
+   *
+   * Protobuf type {@code Protos.ShopFundPassRewardRequest_15000032}
+   */
+  public static final class ShopFundPassRewardRequest_15000032 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ShopFundPassRewardRequest_15000032)
+      ShopFundPassRewardRequest_15000032OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ShopFundPassRewardRequest_15000032.newBuilder() to construct.
+    private ShopFundPassRewardRequest_15000032(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ShopFundPassRewardRequest_15000032() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ShopFundPassRewardRequest_15000032();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ShopFundPassRewardRequest_15000032(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardRequest_15000032_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardRequest_15000032_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.class, cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * FundPassRewards表id
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 other = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *领取通行证奖励
+     * </pre>
+     *
+     * Protobuf type {@code Protos.ShopFundPassRewardRequest_15000032}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ShopFundPassRewardRequest_15000032)
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardRequest_15000032_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardRequest_15000032_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.class, cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardRequest_15000032_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 build() {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 buildPartial() {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 result = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032(this);
+        result.id_ = id_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032) {
+          return mergeFrom((cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 other) {
+        if (other == cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       * FundPassRewards表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * FundPassRewards表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * FundPassRewards表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ShopFundPassRewardRequest_15000032)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ShopFundPassRewardRequest_15000032)
+    private static final cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032();
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ShopFundPassRewardRequest_15000032>
+        PARSER = new com.google.protobuf.AbstractParser<ShopFundPassRewardRequest_15000032>() {
+      @java.lang.Override
+      public ShopFundPassRewardRequest_15000032 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ShopFundPassRewardRequest_15000032(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ShopFundPassRewardRequest_15000032> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ShopFundPassRewardRequest_15000032> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ShopFundPassRewardResponse_15000033OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ShopFundPassRewardResponse_15000033)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
+        getRewardsList();
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    int getRewardsCount();
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList();
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code Protos.ShopFundPassRewardResponse_15000033}
+   */
+  public static final class ShopFundPassRewardResponse_15000033 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ShopFundPassRewardResponse_15000033)
+      ShopFundPassRewardResponse_15000033OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ShopFundPassRewardResponse_15000033.newBuilder() to construct.
+    private ShopFundPassRewardResponse_15000033(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ShopFundPassRewardResponse_15000033() {
+      rewards_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ShopFundPassRewardResponse_15000033();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ShopFundPassRewardResponse_15000033(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              rewards_.add(
+                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          rewards_ = java.util.Collections.unmodifiableList(rewards_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardResponse_15000033_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardResponse_15000033_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.class, cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.Builder.class);
+    }
+
+    public static final int REWARDS_FIELD_NUMBER = 2;
+    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public int getRewardsCount() {
+      return rewards_.size();
+    }
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+      return rewards_.get(index);
+    }
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index) {
+      return rewards_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < rewards_.size(); i++) {
+        output.writeMessage(2, rewards_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < rewards_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, rewards_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 other = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033) obj;
+
+      if (!getRewardsList()
+          .equals(other.getRewardsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getRewardsCount() > 0) {
+        hash = (37 * hash) + REWARDS_FIELD_NUMBER;
+        hash = (53 * hash) + getRewardsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.ShopFundPassRewardResponse_15000033}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ShopFundPassRewardResponse_15000033)
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardResponse_15000033_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardResponse_15000033_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.class, cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getRewardsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          rewardsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopFundPassRewardResponse_15000033_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 build() {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 buildPartial() {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 result = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033(this);
+        int from_bitField0_ = bitField0_;
+        if (rewardsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            rewards_ = java.util.Collections.unmodifiableList(rewards_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.rewards_ = rewards_;
+        } else {
+          result.rewards_ = rewardsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033) {
+          return mergeFrom((cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 other) {
+        if (other == cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.getDefaultInstance()) return this;
+        if (rewardsBuilder_ == null) {
+          if (!other.rewards_.isEmpty()) {
+            if (rewards_.isEmpty()) {
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureRewardsIsMutable();
+              rewards_.addAll(other.rewards_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.rewards_.isEmpty()) {
+            if (rewardsBuilder_.isEmpty()) {
+              rewardsBuilder_.dispose();
+              rewardsBuilder_ = null;
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              rewardsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getRewardsFieldBuilder() : null;
+            } else {
+              rewardsBuilder_.addAllMessages(other.rewards_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_ =
+        java.util.Collections.emptyList();
+      private void ensureRewardsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(rewards_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
+
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+        if (rewardsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(rewards_);
+        } else {
+          return rewardsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public int getRewardsCount() {
+        if (rewardsBuilder_ == null) {
+          return rewards_.size();
+        } else {
+          return rewardsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);
+        } else {
+          return rewardsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.set(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addAllRewards(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, rewards_);
+          onChanged();
+        } else {
+          rewardsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder clearRewards() {
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          rewardsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder removeRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.remove(index);
+          onChanged();
+        } else {
+          rewardsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+          int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);  } else {
+          return rewardsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+           getRewardsOrBuilderList() {
+        if (rewardsBuilder_ != null) {
+          return rewardsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(rewards_);
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder() {
+        return getRewardsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
+           getRewardsBuilderList() {
+        return getRewardsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+          getRewardsFieldBuilder() {
+        if (rewardsBuilder_ == null) {
+          rewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
+                  rewards_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          rewards_ = null;
+        }
+        return rewardsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ShopFundPassRewardResponse_15000033)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ShopFundPassRewardResponse_15000033)
+    private static final cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033();
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ShopFundPassRewardResponse_15000033>
+        PARSER = new com.google.protobuf.AbstractParser<ShopFundPassRewardResponse_15000033>() {
+      @java.lang.Override
+      public ShopFundPassRewardResponse_15000033 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ShopFundPassRewardResponse_15000033(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ShopFundPassRewardResponse_15000033> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ShopFundPassRewardResponse_15000033> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_ShopItemListRequest_15000001_descriptor;
   private static final 
@@ -12122,6 +14479,26 @@ public final class ShopMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_PaymentOrderPush_15010020_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ShopFundPassBuyRequest_15000030_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ShopFundPassBuyRequest_15000030_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ShopFundPassBuyResponse_15000031_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ShopFundPassBuyResponse_15000031_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ShopFundPassRewardRequest_15000032_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ShopFundPassRewardRequest_15000032_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ShopFundPassRewardResponse_15000033_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ShopFundPassRewardResponse_15000033_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -12160,8 +14537,13 @@ public final class ShopMsg {
       "D\n\035ShopRechargeResponse_15000023\022#\n\007rewa" +
       "rds\030\002 \003(\0132\022.Protos.RewardInfo\"E\n\031Payment" +
       "OrderPush_15010020\022(\n\005order\030\001 \001(\0132\031.Prot" +
-      "os.PaymentOrderProtoB\033\n\031cn.game.protocol" +
-      ".protobufb\006proto3"
+      "os.PaymentOrderProto\"-\n\037ShopFundPassBuyR" +
+      "equest_15000030\022\n\n\002id\030\001 \001(\r\"\"\n ShopFundP" +
+      "assBuyResponse_15000031\"0\n\"ShopFundPassR" +
+      "ewardRequest_15000032\022\n\n\002id\030\001 \001(\r\"J\n#Sho" +
+      "pFundPassRewardResponse_15000033\022#\n\007rewa" +
+      "rds\030\002 \003(\0132\022.Protos.RewardInfoB\033\n\031cn.game" +
+      ".protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -12283,6 +14665,30 @@ public final class ShopMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PaymentOrderPush_15010020_descriptor,
         new java.lang.String[] { "Order", });
+    internal_static_Protos_ShopFundPassBuyRequest_15000030_descriptor =
+      getDescriptor().getMessageTypes().get(19);
+    internal_static_Protos_ShopFundPassBuyRequest_15000030_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ShopFundPassBuyRequest_15000030_descriptor,
+        new java.lang.String[] { "Id", });
+    internal_static_Protos_ShopFundPassBuyResponse_15000031_descriptor =
+      getDescriptor().getMessageTypes().get(20);
+    internal_static_Protos_ShopFundPassBuyResponse_15000031_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ShopFundPassBuyResponse_15000031_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_ShopFundPassRewardRequest_15000032_descriptor =
+      getDescriptor().getMessageTypes().get(21);
+    internal_static_Protos_ShopFundPassRewardRequest_15000032_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ShopFundPassRewardRequest_15000032_descriptor,
+        new java.lang.String[] { "Id", });
+    internal_static_Protos_ShopFundPassRewardResponse_15000033_descriptor =
+      getDescriptor().getMessageTypes().get(22);
+    internal_static_Protos_ShopFundPassRewardResponse_15000033_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ShopFundPassRewardResponse_15000033_descriptor,
+        new java.lang.String[] { "Rewards", });
     cn.game.protocol.protobuf.BaseMsg.getDescriptor();
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }
