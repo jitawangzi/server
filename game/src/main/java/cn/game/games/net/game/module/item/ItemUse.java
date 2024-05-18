@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.RewardItem;
 import cn.game.protocol.generated.enume.ResourceEnum;
 import cn.game.util.IndexedEnum;
@@ -14,7 +13,7 @@ public enum ItemUse implements IndexedEnum {
     EXP(2) {
         @Override
         public List<RewardItem> use(Player player, int id, int num, int param) {
-            PlayerHelper.addExp(player, num * param);
+//            PlayerHelper.addExp(player, num * param);
             List<RewardItem> rewardItems = new ArrayList<>();
             RewardItem rewardItem = new RewardItem();
             rewardItem.setId(ResourceEnum.Exp.getId());

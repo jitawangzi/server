@@ -58,7 +58,6 @@ import cn.game.protocol.generated.config.GameCommandConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RandomGroupConfig;
 import cn.game.protocol.generated.config.RewardConfig;
-import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.config.versionConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.ConditionManager;
@@ -68,7 +67,6 @@ import cn.game.protocol.generated.manager.GameCommandManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.RewardManager;
-import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -239,6 +237,10 @@ public class PlayerHelper {
 
 	public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType) {
 		return addResources(player, id, value, opType, false);
+	}
+
+	public static List<RewardInfo> addResources(Player player, int id, int value) {
+		return addResources(player, id, value, OpType.None, false);
 	}
 
 	/**
@@ -462,29 +464,6 @@ public class PlayerHelper {
 			}
 		}
 		return ret;
-	}
-
-	@Deprecated
-	public static Player addExp(Player player, int exp) {
-		int curExp = player.getData().getExp() + exp;
-		UserUpgradeConfig expConfig = UserUpgradeManager.instance().get(player.getData().getLevel());
-		UserUpgradeConfig nextexpConfig = UserUpgradeManager.instance().getNullable(player.getData().getLevel() + 1);
-
-		while (curExp >= expConfig.experience && nextexpConfig != null) {
-			player.getData().setExp(curExp - expConfig.experience);
-			player.getData().setLevel(player.getData().getLevel() + 1);
-			curExp = player.getData().getExp();
-//			player.handleEvent(new GameEvent(EventTypeEnum.LevelUp, player, player.getData().getLevel()));
-
-			expConfig = UserUpgradeManager.instance().getNullable(player.getData().getLevel());
-			nextexpConfig = UserUpgradeManager.instance().getNullable(player.getData().getLevel() + 1);
-//			levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", player.getData().getPlayerId(), player.getData().getLevel());
-		}
-		if (curExp > expConfig.experience) {
-			curExp = expConfig.experience;
-		}
-		player.getData().setExp(curExp);
-		return player;
 	}
 
 	/**
@@ -805,7 +784,7 @@ public class PlayerHelper {
 	 */
 	public static boolean checkCondition(Player player, List<Integer> conditions) {
 
-		return checkCondition(player, conditions, false, null);
+		return checkCondition(player, conditions, false);
 	}
 
 	public static boolean checkCondition(Player player, int[] conditions) {
@@ -822,34 +801,24 @@ public class PlayerHelper {
 	 */
 	public static boolean checkCondition(Player player, List<Integer> conditions, boolean or) {
 
-		return checkCondition(player, conditions, or, null);
-	}
-
-	public static boolean checkCondition(Player player, List<Integer> conditions, boolean or, GameEvent param) {
-
 		if (conditions.isEmpty()) {
 			return true ; 
 		}
 		if (or) {
 			for (Integer e : conditions) {
-				if (checkCondition(player, e, param)) {
+				if (checkCondition(player, e)) {
 					return true; 
 				}
 			}
 		} else {
 			for (Integer e : conditions) {
-				if (!checkCondition(player, e, param)) {
+				if (!checkCondition(player, e)) {
 					return false; 
 				}
 			}
 			return true;
 		}
 		return false;
-	}
-
-	public static boolean checkCondition(Player player, List<Integer> conditions, GameEvent param) {
-		return checkCondition(player, conditions, false, param);
-		
 	}
 
 	/**
@@ -860,7 +829,7 @@ public class PlayerHelper {
 	 *            需要传入待检查的一些参数
 	 * @return
 	 */
-	public static boolean checkCondition(Player player, int condition, Object... param) {
+	public static boolean checkCondition(Player player, int condition) {
 		if (condition == 0) {
 			return true;
 		}
@@ -871,34 +840,21 @@ public class PlayerHelper {
 		int id = conditionConfig.idParam;
 		int count = conditionConfig.numParam;
 		int[] extParam = conditionConfig.extParam;
-//		int operator = conditionConfig.operator;
-
 		switch (type) {
-			case ChapterFinish: {
-				ChapterModule chapterOp = player.getModule(ChapterModule.class);
-				return chapterOp.isBattlePass(id);
-			}
 			case PlayerLevel: {
-//				return operator(player.getData().getLevel(), count, operator);
-				return player.getData().getLevel() >= count;
+				return player.getLevel() >= count;
+			}
+			case LvCondition: {
+				return player.getPlayerModule().getExpLevelMap().getValue(id) >= count;
+			}
+			case ChapterFinish: {
+				ChapterModule chapterModule = player.getModule(ChapterModule.class);
+				return chapterModule.isBattlePass(id);
 			}
 			case AccumulatedRecharge: {
 //				return operator(player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge), count, operator);
 				return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge) >= count;
 			}
-//			case PlayerCombat: {
-//				return true;
-//			}
-//			case MonthCard: {
-//				MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
-//				for (int i : extParam) {
-//					MonthCard monthCard = monthCardModule.getMonthCard(i);
-//					if (monthCard == null) {
-//						return false;
-//					}
-//				}
-//				return true;
-//			}
 			default:
 				throw new IllegalArgumentException(" not suport condition  " + type);
 		}

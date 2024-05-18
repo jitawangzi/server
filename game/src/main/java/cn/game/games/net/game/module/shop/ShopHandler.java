@@ -1,7 +1,9 @@
 package cn.game.games.net.game.module.shop;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import org.springframework.stereotype.Component;
@@ -18,12 +20,16 @@ import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.ChapterPacksConfig;
+import cn.game.protocol.generated.config.FundPassConfig;
+import cn.game.protocol.generated.config.FundPassRewardsConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.RechargeConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.ChapterPacksManager;
+import cn.game.protocol.generated.manager.FundPassManager;
+import cn.game.protocol.generated.manager.FundPassRewardsManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
@@ -41,6 +47,10 @@ import cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusResponse_15000017;
 import cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020;
 import cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyResponse_15000021;
+import cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030;
+import cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031;
+import cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032;
+import cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyResponse_15000004;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001;
@@ -68,7 +78,68 @@ public class ShopHandler extends BaseHandler {
 		putInvoker(PbProtocol.ShopChapterPacksBuyRequest_15000020, this::buyChapterPacks);
 		putInvoker(PbProtocol.ShopRechargeRequest_15000022, this::recharge);
 		putInvoker(PbProtocol.MonthCardDoubleBonusRequest_15000016, this::doubleBonus);
+		putInvoker(PbProtocol.ShopFundPassBuyRequest_15000030, this::fundPassBuy);
+		putInvoker(PbProtocol.ShopFundPassRewardRequest_15000032, this::fundPassReward);
 //		putInvoker(PbProtocol.AdvertiseWatchFinishRequest_15000030, this::advertise);
+	}
+
+	private void fundPassBuy(NetClient client, Object message) {
+		ShopFundPassBuyRequest_15000030 req = (ShopFundPassBuyRequest_15000030) message;
+		ShopFundPassBuyResponse_15000031.Builder resp = ShopFundPassBuyResponse_15000031.newBuilder();
+		int id = req.getId();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (!player.isFuncOpen(InitialUI.Passport)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ShopModule shopModule = player.getShopModule();
+		Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
+		if (fundPassRewardsMap.containsKey(id)) {
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
+		Future<Boolean> pay = player.pay(fundPassConfig.Price);
+
+		pay.onComplete(t -> {
+			if (t.result()) {
+				fundPassRewardsMap.put(id, new ArrayList<Integer>());
+				client.sendProtocol(resp.build());
+			} else {
+				client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+			}
+		});
+	}
+	private void fundPassReward(NetClient client, Object message) {
+		ShopFundPassRewardRequest_15000032 req = (ShopFundPassRewardRequest_15000032) message;
+		ShopFundPassRewardResponse_15000033.Builder resp = ShopFundPassRewardResponse_15000033.newBuilder();
+		int id = req.getId();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (!player.isFuncOpen(InitialUI.Passport)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		FundPassRewardsConfig fundPassRewardsConfig = FundPassRewardsManager.instance().get(id);
+
+		ShopModule shopModule = player.getShopModule();
+		Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
+		if (!fundPassRewardsMap.containsKey(fundPassRewardsConfig.Index)) {
+			client.sendProtocol(resp, ErrorMsgEnum.fundpass_not_buy.getId());
+			return;
+		}
+		List<Integer> list = fundPassRewardsMap.get(fundPassRewardsConfig.Index);
+		if (list.contains(id)) {
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		boolean checkCondition = PlayerHelper.checkCondition(player, fundPassRewardsConfig.Condition);
+		if (!checkCondition) {
+			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+			return;
+		}
+		list.add(id);
+		resp.addAllRewards(PlayerHelper.addResources(player, fundPassRewardsConfig.Reward, OpType.FundPass));
+		client.sendProtocol(resp.build());
 	}
 
 	private void doubleBonus(NetClient client, Object message) {
@@ -85,7 +156,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		monthCardModule.setDoubleBonus(true);
-		
+
 		resp.addAllRewards(PlayerHelper.addResources(player, GlobalConst.DoubleBonus, OpType.MonthCardDoubleBonus));
 
 		client.sendProtocol(resp.build());

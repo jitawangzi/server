@@ -107,6 +107,10 @@ public enum ErrorMsgEnum {
 	/** 该名称已存在 */
 	name_exist(166, "该名称已存在"),
 
+	// 英雄
+	hero_level_max(180, "英雄等级到达上限"),
+	hero_break_max(181, "英雄突破到达上限"),
+
 	// 商店，月卡
 	/** 商品不存在 */
 	shop_item_not_exist(370, "商品不存在"),
@@ -120,9 +124,7 @@ public enum ErrorMsgEnum {
 	shop_gift_condition(378, "礼包没有达到购买条件"),
 	shop_gift_repeated(379, "礼包重复购买"),
 
-	// 英雄
-	hero_level_max(380, "英雄等级到达上限"),
-	hero_break_max(381, "英雄突破到达上限"),
+	fundpass_not_buy(380, "没有购买通行证"),
 
 	;
 

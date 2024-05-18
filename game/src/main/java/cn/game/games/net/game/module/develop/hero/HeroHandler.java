@@ -304,6 +304,7 @@ public class HeroHandler extends BaseHandler {
 		if (replaceHero != null) {
 			battleHeros.remove(replaceHero.getId());
 		}
+		player.handleEvent(EventTypeEnum.HeroBattle, hero);
 		battleHeros.add(uid);
 		client.sendProtocol(resp.build());
 	}

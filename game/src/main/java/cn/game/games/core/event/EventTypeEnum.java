@@ -5,173 +5,153 @@ package cn.game.games.core.event;
  */
 public enum EventTypeEnum {
 	/** 创建新玩家 */
-	PLAYER_CREATE(100, "PLAYER_CREATE", "创建新玩家"),
+	PLAYER_CREATE(100, "创建新玩家"),
 	/** 开始登陆 */
-	Login(101, "Login", "开始登陆"),
+	Login(101, "开始登陆"),
 	/** 登陆完成 */
-	LoginFinish(102, "LoginFinish", "登陆完成"),
+	LoginFinish(102, "登陆完成"),
 	/** 重连 */
-	Reconnect(103, "Reconnect", "重连"),
+	Reconnect(103, "重连"),
 	/** 早5点跨天 */
-	NewDay5(108, "Day5Refresh", "早5点跨天"),
+	NewDay5(108, "早5点跨天"),
 	/** 过晚上12点，跨天 */
-	NewDay(109, "NewDay", "过晚上12点，跨天"),
+	NewDay(109, "过晚上12点，跨天"),
 	/** 跨周 */
-	NewWeek(110, "NewWeek", "跨周"),
+	NewWeek(110, "跨周"),
 	/** 跨月 */
-	NewMonth(111, "NewMonth", "跨月"),
+	NewMonth(111, "跨月"),
 	/** 充值  // 参数 ： 充值数量(rmb)*/
-	Charge(112, "Charge", "充值"),
+	Charge(112, "充值"),
 
 	/** 功能开启 */
-	FuncOpen(113, "FuncOpen", "功能开启 "),
+	FuncOpen(113, "功能开启 "),
 
 	/** 新添加了某种资源 */
-	ResourceAdd(120, "ResourceAdd", "新添加了某种资源"),
+	ResourceAdd(120, "新添加了某种资源"),
 	/** 某种资源被移除 */
-	ResourceRemove(120, "ResourceRemove", "某种资源被移除"),
+	ResourceRemove(120, "某种资源被移除"),
 	
-	WatchAds(130, "WatchAds", "看了一次广告"),
+	WatchAds(130, "看了一次广告"),
 
 	/** 升级 参数： 经验，升到的等级*/
-	LevelUp(2, "LevelUp", "升级"),
+	LevelUp(2, "升级"),
 	/** 通关关卡，包含剧情普通关卡，探索关卡等 */
-	Level(3, "Level", "通关关卡"), // 参数： 关卡id，回合数，剩余人数
+	Level(3, "通关关卡"), // 参数： 关卡id，回合数，剩余人数
 	/** 章节胜利  参数: 章节id*/
-	ChapterWin(4, "ChapterWin", "章节胜利"),
+	ChapterWin(4, "章节胜利"),
 	/** 主角升星 */
-	StarUp(5, "StarUp", "主角升星"),
-	/** 英雄升级 ,参数：英雄*/
-	HeroLevelUp(6, "HeroLevelUp", "英雄升级"),
+	StarUp(5, "主角升星"),
+	/** 英雄升级 参数：英雄*/
+	HeroLevelUp(6, "英雄升级"),
 	/** 英雄突破 */
-	HeroBreak(7, "HeroBreak", "英雄突破"),
+	HeroBreak(7, "英雄突破"),
 	/** 伙伴升星 */
-	RoleStarUp(8, "RoleStarUp", "伙伴升星"),
+	RoleStarUp(8, "伙伴升星"),
 	/** 技能升级 */
-	SkillUp(9, "SkillUp", "技能升级"),
+	SkillUp(9, "技能升级"),
 	/** 获得技能 */
-	Skill(10, "Skill", "获得技能"),
+	Skill(10, "获得技能"),
 	/** 获得装备 */
-	Equip(11, "Equip", "获得装备"),
+	Equip(11, "获得装备"),
 	/** 装备强化 */
-	EquipUp(12, "EquipUp", "装备强化"),
-	/** 喂经验素材 */
-	RoleExp(13, "RoleExp", "喂经验素材"),
-	/** 伙伴培养 */
-	RoleTrain(14, "RoleTrain", "伙伴培养"),
+	EquipUp(12, "装备强化"),
+	/** 英雄上阵 参数，hero */
+	HeroBattle(14, "英雄上阵"),
 	/** 获得英雄 */
-	Hero(15, "Hero", "获得英雄"),
-	/** 一场战斗结束，参数,战役id，关卡id，输赢，杀怪数量 ,boss数量*/
-	BattleEnd(16, "BattleEnd", "一场战斗结束"),
+	Hero(15, "获得英雄"),
+	/** 一场战斗结束，参数战役id，关卡id，输赢，杀怪数量 ,boss数量*/
+	BattleEnd(16, "一场战斗结束"),
 
-	ReceiveStamina(18, "ReceiveStamina", "领取体力"),
-	Draw(19, "Draw", "抽卡"),
+	ReceiveStamina(18, "领取体力"), Draw(19, "抽卡"),
 	/** 巡逻、挂机  参数：是否是快速巡逻 */
-	Patrol(20, "Patrol", "巡逻、挂机"),
+	Patrol(20, "巡逻、挂机"),
 
 	// 任务相关
-	/** 完成探索关卡,可能和完成关卡合并 */
-//	ExploreLevel(16, "ExploreLevel", "完成探索关卡"),
+	/** 完成探索关卡可能和完成关卡合并 */
+//	ExploreLevel(16, "完成探索关卡"),
 	/** 完成意识空间 */
-//	AwarenessSpace(17, "AwarenessSpace", "完成意识空间"),
-	CardUpGrade(18, "CardUpGrade", "升级卡牌行为，不是真正升级"),
+//	AwarenessSpace(17, "完成意识空间"),
+	CardUpGrade(18, "升级卡牌行为，不是真正升级"),
 	// 参数，id，value
-	GetItem(19, "GetItem", "获取资源"),
+	GetItem(19, "获取资源"),
 	/** 消耗资源： 参数 id，数量 */
-	CostItem(20, "CostItem", "消耗资源"),
+	CostItem(20, "消耗资源"),
 
-	QuestFinish(21, "QuestFinish", "完成任务"),
-	WeeklyScore(22, "WeeklyScore", "获取周积分"),
+	QuestFinish(21, "完成任务"), WeeklyScore(22, "获取周积分"),
 	// 参数 : 商店id，商品id，数量
-	BuyItems(28, "BuyItems", "商店购买商品"),
+	BuyItems(28, "商店购买商品"),
 
 	// 探索事件 
 	/** 探索中经过一回合 */
-	ExploreRound(30, "ExploreRound","探索中经过一回合"),
+	ExploreRound(30, "探索中经过一回合"),
 	/** 探索中人经过一回合 */
-	ExplorePlayerRound(31, "ExplorePlayerRound", "探索中人经过一回合"),
+	ExplorePlayerRound(31, "探索中人经过一回合"),
 	/** 探索中怪或者中立单位经过一回合 */
-	ExploreNpcRound(32, "ExploreNpcRound", "探索中怪或者中立单位经过一回合"),
+	ExploreNpcRound(32, "探索中怪或者中立单位经过一回合"),
 	/** 进入某探索地图 */
-	ExploreMapEnter(35, "ExploreMapEnter", "进入某探索地图"),
+	ExploreMapEnter(35, "进入某探索地图"),
 	
 	/** 出探索地图 */
-	ExploreMapEnd(47, "ExploreMapEnd", "出探索地图"),
+	ExploreMapEnd(47, "出探索地图"),
 	/** 跨探索区域 */
-	ExploreLevelEnd(36, "ExploreLevel", "跨探索区域"),
+	ExploreLevelEnd(36, "跨探索区域"),
 	/** 探索结束 */
-	ExploreEnd(37, "ExploreEnd", "探索结束"),
+	ExploreEnd(37, "探索结束"),
 	/** 探索开始 */
-	ExploreStart(34, "ExploreStart", "探索开始"),
+	ExploreStart(34, "探索开始"),
 	
 	/** 通关某探索章 */
-	ExploreClearance(38, "ExploreClearance", "通关某探索章"),
-	/** 探索角色复活,参数，探索角色uid */
-	ExploreRoleResurrection(39, "ExploreRoleResurrection", "探索角色复活"),
+	ExploreClearance(38, "通关某探索章"),
+	/** 探索角色复活参数，探索角色uid */
+	ExploreRoleResurrection(39, "探索角色复活"),
 	
 	/** 9-战斗中损失属性值 参数1:角色uid 参数2:属性id 参数3:损失值 */
-	ExploreWoundedInBattle(41, "WoundedInBattle", "战斗中损失属性值"),
+	ExploreWoundedInBattle(41, "战斗中损失属性值"),
 	/** 10-战斗胜利 */
-	ExploreBattleWin(42, "BattleWin", "战斗胜利"),
+	ExploreBattleWin(42, "战斗胜利"),
 	/** 11-探索地图购买道具(不包括局间) */
-	ExploreExploreStoreBuy(43, "ExploreStoreBuy", "探索地图购买道具"),
+	ExploreExploreStoreBuy(43, "探索地图购买道具"),
 	/** 12-获取晶矿结晶 */
-	ExploreMaterialReward(44, "ExploreMaterialReward", "获取晶矿结晶"),
+	ExploreMaterialReward(44, "获取晶矿结晶"),
 	/** 13-宝箱、遗骸获得物品 */
-	ExploreBoxAndRemainsReward(45, "ExploreBoxAndRemainsReward", "宝箱、遗骸获得物品"),
+	ExploreBoxAndRemainsReward(45, "宝箱、遗骸获得物品"),
 	/** 14-获得金币 */
-	ExploreGetCoin(45, "ExploreGetCoin", "获得金币"),
-	/** 补给值小于某值,参数： 补给值 */
-	SupplyLessThanOneValue(46, "SupplyLessThanOneValue", "补给值小于某值"),
-	/** 忽略,啥也不干,只是占位,为了配置数据正确 */
-	Ignore(50, "Ignore", "忽略"),
+	ExploreGetCoin(45, "获得金币"),
+	/** 补给值小于某值参数： 补给值 */
+	SupplyLessThanOneValue(46, "补给值小于某值"),
+	/** 忽略啥也不干,只是占位,为了配置数据正确 */
+	Ignore(50, "忽略"),
 
 	//成就相关
 	/** 开启战斗 : 战役id，关卡id*/
-	BattleStart(54, "BattleStart", "开启战斗"),
+	BattleStart(54, "开启战斗"),
 	/** 角色更换技能 */
-	SwitchSkills(61, "SwitchSkills", "角色更换技能"),
+	SwitchSkills(61, "角色更换技能"),
 	/** 探索后获得资源 */
-	ExploreGetResources(62, "ExploreGetResources", "探索后获得资源"),
+	ExploreGetResources(62, "探索后获得资源"),
 	/** 使用道具 */
-	ItemUse(68, "ItemUse", "使用道具"),
+	ItemUse(68, "使用道具"),
 	/** 收集图鉴 */
-	CollectAtlas(70, "CollectAtlas", "收集图鉴"),
+	CollectAtlas(70, "收集图鉴"),
 	/** 固定装备升级 */
-	FixedEquipmentLevel(71, "FixedEquipmentLevel", "固定装备升级"),
+	FixedEquipmentLevel(71, "固定装备升级"),
 	/** buff改变 */
-	BuffChange(75, "BuffChange", "buff改变"),
+	BuffChange(75, "buff改变"),
 
-	/** 某游戏事件完成 ,参数： 事件id */
-	GameEventFinish(76, "GameEventFinish", "某游戏事件完成"),
+	/** 某游戏事件完成 参数： 事件id */
+	GameEventFinish(76, "某游戏事件完成"),
 
 	;
 	private int id;
-	private String name;
 	private String desc;
 
-	private EventTypeEnum(int id, String name, String desc) {
+	private EventTypeEnum(int id, String desc) {
 		this.id = id;
-		this.name = name;
 		this.desc = desc;
-	}
-
-	public static EventTypeEnum get(int id) {
-		EventTypeEnum[] values = EventTypeEnum.values();
-		for (int i = 0, len = values.length; i < len; i++) {
-			if (values[i].getId() == id) {
-				return values[i];
-			}
-		}
-		return null;
 	}
 
 	public int getId() {
 		return this.id;
-	}
-
-	public String getName() {
-		return this.name;
 	}
 
 	public String getDesc() {

@@ -48,6 +48,8 @@ public enum OpType{
 	FirstCharge(116, "首冲"),
 	ChapterGift(117, "章节礼包"),
 
+	FundPass(120, "通行证"),
+
 	BattleStart(200, "战役开始"),
 
 	None(999, "未定义"),

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.cache.entity.PlayerIds;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
@@ -29,21 +31,17 @@ public class MoneyRecoverModule extends BasePlayerModule {
 			EventTypeEnum.LoginFinish,
 			EventTypeEnum.ResourceRemove, EventTypeEnum.ResourceAdd };
 
+	@JsonIgnore
 	private Map<Integer, Long> timerTask = new HashMap<Integer, Long>();
 	
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
-			Collection<AssetRestoreConfig> list = AssetRestoreManager.instance().list();
-			for (AssetRestoreConfig moneyRecoveryConfig : list) {
-				if (player.getCurrencyModule().has(moneyRecoveryConfig.ID)) {
-					startRecoveryTask(moneyRecoveryConfig.ID);
-				}
-			}
 			break;
 		}
 		case LoginFinish: {
+
 			Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.MONEY_RECOVERY);
 			idsSet.stream().filter(id -> !player.getCurrencyModule().has(id)).collect(Collectors.toList())
 					.forEach(id -> player.getPlayerModule().removeId(IdConstant.MONEY_RECOVERY, id));
@@ -64,7 +62,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 					ids.update();
 				}
 			}
-
+			startAllRecoveryTask();
 			break;
 		}
 		case ResourceAdd: {
@@ -99,6 +97,15 @@ public class MoneyRecoverModule extends BasePlayerModule {
 				PlayerHelper.addResources(player, id, 1, OpType.TimerRecovery);
 			});
 			timerTask.put(id, timer);
+		}
+	}
+
+	private void startAllRecoveryTask() {
+		Collection<AssetRestoreConfig> list = AssetRestoreManager.instance().list();
+		for (AssetRestoreConfig moneyRecoveryConfig : list) {
+			if (player.getCurrencyModule().has(moneyRecoveryConfig.ID)) {
+				startRecoveryTask(moneyRecoveryConfig.ID);
+			}
 		}
 	}
 

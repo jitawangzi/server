@@ -224,11 +224,14 @@ public class PlayerModule extends BasePlayerModule {
 		switch (event.getType()) {
 		case LoginFinish: {
 			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
+			initLevel();
+			if (player.isFuncOpen(InitialUI.RandomBox)) {
+				startCloudBoxTask();
+			}
 			break;
 		}
 		case PLAYER_CREATE: {
 			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
-			expLevelMap.add(Asset.playerExp.ID, 1);
 			break;
 		}
 		case Reconnect: {
@@ -258,6 +261,16 @@ public class PlayerModule extends BasePlayerModule {
 			}
 			break;
 		}
+		}
+	}
+
+	private void initLevel() {
+		for (Asset asset : Asset.values()) {
+			if (asset.Type == 2) {
+				if (!expLevelMap.hasValue(asset.ID)) {
+					expLevelMap.add(asset.ID, 1);
+				}
+			}
 		}
 	}
 

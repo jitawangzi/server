@@ -7,14 +7,14 @@ import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.LogInGame)
-public class LogGame2 extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Login, EventTypeEnum.Reconnect };
+public class LogInGame extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public LogGame2() {
+	public LogInGame() {
 
 	}
 	@Override

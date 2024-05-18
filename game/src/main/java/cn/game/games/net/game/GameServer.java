@@ -12,9 +12,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.rocketmq.client.producer.RequestCallback;
-import org.slf4j.LoggerFactory;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.protobuf.Message;
@@ -334,8 +332,8 @@ public class GameServer implements GameServerMBean {
 			CommonLogger.warn("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
 			String.format("Game Server  safe  shutdown, use  time %d ms ", System.currentTimeMillis() - start);
 			// 安全关闭log
-			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-			context.stop();
+//			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+//			context.stop();
 
 		} catch (Throwable e) {
 //			log.error("Game Server Shutdown err ", e);

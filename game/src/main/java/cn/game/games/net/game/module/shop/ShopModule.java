@@ -1,8 +1,12 @@
 package cn.game.games.net.game.module.shop;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -12,24 +16,33 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ShopItemMapper;
+import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeishiConfig;
 import cn.game.protocol.generated.config.RechargeStoreConfig;
 import cn.game.protocol.generated.config.ShopConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.HeishiManager;
 import cn.game.protocol.generated.manager.RechargeStoreManager;
 import cn.game.protocol.generated.manager.ShopManager;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
 import cn.game.util.Rnd;
 
 public class ShopModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.NewWeek,
-			EventTypeEnum.LevelUp, EventTypeEnum.FuncOpen };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LoginFinish, EventTypeEnum.NewDay,
+			EventTypeEnum.NewWeek,
+			EventTypeEnum.LevelUp, EventTypeEnum.FuncOpen, EventTypeEnum.CostItem };
 
 //	private Map<Long, ShopItem> itemsMap = new HashMap<Long, ShopItem>();
 	/** key：shopId，value 商品 */
 	private Multimap<Integer, ShopItem> shopItemsMap = ArrayListMultimap.create();
+	/** 通行证里领完的奖励,key: 通行证id，购买过的 */
+	private Map<Integer, List<Integer>> fundPassRewardsMap = new HashMap<Integer, List<Integer>>();
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -142,6 +155,21 @@ public class ShopModule extends BasePlayerModule {
 		return ret;
 	}*/
 
+
+	private void initFundPass() {
+		Collection<FundPassConfig> list = FundPassManager.instance().list();
+		for (FundPassConfig fundPassConfig : list) {
+			if (fundPassConfig.Price.length == 0) {
+				if (!this.fundPassRewardsMap.containsKey(fundPassConfig.ID)) {
+					this.fundPassRewardsMap.put(fundPassConfig.ID, new ArrayList<Integer>());
+				}
+			}
+		}
+	}
+	public Map<Integer, List<Integer>> getFundPassRewardsMap() {
+		return fundPassRewardsMap;
+	}
+
 	private void initShop() {
 		refreshShopNewDay();
 		refreshShopNewWeek();
@@ -221,7 +249,12 @@ public class ShopModule extends BasePlayerModule {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-
+		this.fundPassRewardsMap.forEach((k, v) -> {
+			FundPassInfo.Builder fb = FundPassInfo.newBuilder();
+			fb.setId(k) ; 
+			fb.addAllRewardIds(v);
+			builder.addFundPass(fb.build());
+		});
 	}
 
 	@Override
@@ -236,7 +269,13 @@ public class ShopModule extends BasePlayerModule {
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.Shop) {
 				initShop();
+			} else if (func == InitialUI.Passport) {
+				initFundPass();
 			}
+			break;
+		}
+		case LoginFinish: {
+			initFundPass();
 			break;
 		}
 		case NewDay: {
@@ -247,6 +286,25 @@ public class ShopModule extends BasePlayerModule {
 			refreshShopNewWeek();
 			break;
 
+		}
+		case CostItem: {
+			int id = event.getIntParameter(0);
+			int count = event.getIntParameter(1);
+			if (id == Asset.playerEnergy.ID) {
+				boolean addExp = false;
+				Set<Integer> keySet = fundPassRewardsMap.keySet();
+				for (Integer pass : keySet) {
+					FundPassConfig fundPassConfig = FundPassManager.instance().get(pass);
+					if (fundPassConfig.Exp) {
+						addExp = true;
+						break;
+					}
+				}
+				if (addExp) {
+					PlayerHelper.addResources(player, Asset.FundPass.ID, count, OpType.None);
+				}
+			}
+			break;
 		}
 		}
 	}

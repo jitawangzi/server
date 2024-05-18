@@ -10,6 +10,7 @@ import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.Money;
+import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -153,7 +154,9 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 
 //			levellog.info("opType[levelUp]playerId[{}]exp[{}]newLevel[{}]", player.getData().getPlayerId(), id,
 //					levelsMap.getValue(id));
-			GameLogger.levelUp(player);
+			if (id == Asset.playerExp.ID) {
+				GameLogger.levelUp(player);
+			}
 		}
 		if (curExp > expConfig.experience) {
 			curExp = expConfig.experience;
@@ -164,6 +167,8 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	public ExpConfig getExpConfig(int id, int level) {
 		if (id == Asset.playerExp.ID) {
 			return UserUpgradeManager.instance().getNullable(level);
+		} else if (id == Asset.FundPass.ID) {
+			return FundPassUpgradeManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}
