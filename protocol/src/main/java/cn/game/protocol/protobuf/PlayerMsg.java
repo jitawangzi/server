@@ -22988,6 +22988,50 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.ShopMsg.FundPassInfo> 
+        getFundPassList();
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    cn.game.protocol.protobuf.ShopMsg.FundPassInfo getFundPass(int index);
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    int getFundPassCount();
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder> 
+        getFundPassOrBuilderList();
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder getFundPassOrBuilder(
+        int index);
+
+    /**
+     * <pre>
      * 小云宝箱
      * </pre>
      *
@@ -23156,6 +23200,7 @@ public final class PlayerMsg {
       battles_ = java.util.Collections.emptyList();
       monthCards_ = java.util.Collections.emptyList();
       chapterPacks_ = emptyIntList();
+      fundPass_ = java.util.Collections.emptyList();
       questGroups_ = java.util.Collections.emptyList();
       questGroupPointRewards_ = java.util.Collections.emptyList();
     }
@@ -23400,6 +23445,15 @@ public final class PlayerMsg {
               monthCardDoubleBonus_ = input.readBool();
               break;
             }
+            case 354: {
+              if (!((mutable_bitField0_ & 0x00010000) != 0)) {
+                fundPass_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.FundPassInfo>();
+                mutable_bitField0_ |= 0x00010000;
+              }
+              fundPass_.add(
+                  input.readMessage(cn.game.protocol.protobuf.ShopMsg.FundPassInfo.parser(), extensionRegistry));
+              break;
+            }
             case 402: {
               cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo.Builder subBuilder = null;
               if (cloudBox_ != null) {
@@ -23427,18 +23481,18 @@ public final class PlayerMsg {
               break;
             }
             case 442: {
-              if (!((mutable_bitField0_ & 0x00010000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00020000) != 0)) {
                 questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>();
-                mutable_bitField0_ |= 0x00010000;
+                mutable_bitField0_ |= 0x00020000;
               }
               questGroups_.add(
                   input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.parser(), extensionRegistry));
               break;
             }
             case 450: {
-              if (!((mutable_bitField0_ & 0x00020000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00040000) != 0)) {
                 questGroupPointRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo>();
-                mutable_bitField0_ |= 0x00020000;
+                mutable_bitField0_ |= 0x00040000;
               }
               questGroupPointRewards_.add(
                   input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.parser(), extensionRegistry));
@@ -23490,9 +23544,12 @@ public final class PlayerMsg {
           chapterPacks_.makeImmutable(); // C
         }
         if (((mutable_bitField0_ & 0x00010000) != 0)) {
-          questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+          fundPass_ = java.util.Collections.unmodifiableList(fundPass_);
         }
         if (((mutable_bitField0_ & 0x00020000) != 0)) {
+          questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+        }
+        if (((mutable_bitField0_ & 0x00040000) != 0)) {
           questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
         }
         this.unknownFields = unknownFields.build();
@@ -24810,6 +24867,66 @@ public final class PlayerMsg {
     }
     private int chapterPacksMemoizedSerializedSize = -1;
 
+    public static final int FUNDPASS_FIELD_NUMBER = 44;
+    private java.util.List<cn.game.protocol.protobuf.ShopMsg.FundPassInfo> fundPass_;
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.ShopMsg.FundPassInfo> getFundPassList() {
+      return fundPass_;
+    }
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder> 
+        getFundPassOrBuilderList() {
+      return fundPass_;
+    }
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    @java.lang.Override
+    public int getFundPassCount() {
+      return fundPass_.size();
+    }
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.FundPassInfo getFundPass(int index) {
+      return fundPass_.get(index);
+    }
+    /**
+     * <pre>
+     *领过的通行证奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder getFundPassOrBuilder(
+        int index) {
+      return fundPass_.get(index);
+    }
+
     public static final int CLOUDBOX_FIELD_NUMBER = 50;
     private cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo cloudBox_;
     /**
@@ -25103,6 +25220,9 @@ public final class PlayerMsg {
       if (monthCardDoubleBonus_ != false) {
         output.writeBool(42, monthCardDoubleBonus_);
       }
+      for (int i = 0; i < fundPass_.size(); i++) {
+        output.writeMessage(44, fundPass_.get(i));
+      }
       if (cloudBox_ != null) {
         output.writeMessage(50, getCloudBox());
       }
@@ -25249,6 +25369,10 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(42, monthCardDoubleBonus_);
       }
+      for (int i = 0; i < fundPass_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(44, fundPass_.get(i));
+      }
       if (cloudBox_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(50, getCloudBox());
@@ -25323,6 +25447,8 @@ public final class PlayerMsg {
           != other.getMonthCardDoubleBonus()) return false;
       if (!getChapterPacksList()
           .equals(other.getChapterPacksList())) return false;
+      if (!getFundPassList()
+          .equals(other.getFundPassList())) return false;
       if (hasCloudBox() != other.hasCloudBox()) return false;
       if (hasCloudBox()) {
         if (!getCloudBox()
@@ -25422,6 +25548,10 @@ public final class PlayerMsg {
       if (getChapterPacksCount() > 0) {
         hash = (37 * hash) + CHAPTERPACKS_FIELD_NUMBER;
         hash = (53 * hash) + getChapterPacksList().hashCode();
+      }
+      if (getFundPassCount() > 0) {
+        hash = (37 * hash) + FUNDPASS_FIELD_NUMBER;
+        hash = (53 * hash) + getFundPassList().hashCode();
       }
       if (hasCloudBox()) {
         hash = (37 * hash) + CLOUDBOX_FIELD_NUMBER;
@@ -25622,6 +25752,7 @@ public final class PlayerMsg {
           getEquipPartsFieldBuilder();
           getBattlesFieldBuilder();
           getMonthCardsFieldBuilder();
+          getFundPassFieldBuilder();
           getQuestGroupsFieldBuilder();
           getQuestGroupPointRewardsFieldBuilder();
         }
@@ -25703,6 +25834,12 @@ public final class PlayerMsg {
 
         chapterPacks_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00008000);
+        if (fundPassBuilder_ == null) {
+          fundPass_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00010000);
+        } else {
+          fundPassBuilder_.clear();
+        }
         if (cloudBoxBuilder_ == null) {
           cloudBox_ = null;
         } else {
@@ -25717,13 +25854,13 @@ public final class PlayerMsg {
         }
         if (questGroupsBuilder_ == null) {
           questGroups_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00010000);
+          bitField0_ = (bitField0_ & ~0x00020000);
         } else {
           questGroupsBuilder_.clear();
         }
         if (questGroupPointRewardsBuilder_ == null) {
           questGroupPointRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00020000);
+          bitField0_ = (bitField0_ & ~0x00040000);
         } else {
           questGroupPointRewardsBuilder_.clear();
         }
@@ -25860,6 +25997,15 @@ public final class PlayerMsg {
           bitField0_ = (bitField0_ & ~0x00008000);
         }
         result.chapterPacks_ = chapterPacks_;
+        if (fundPassBuilder_ == null) {
+          if (((bitField0_ & 0x00010000) != 0)) {
+            fundPass_ = java.util.Collections.unmodifiableList(fundPass_);
+            bitField0_ = (bitField0_ & ~0x00010000);
+          }
+          result.fundPass_ = fundPass_;
+        } else {
+          result.fundPass_ = fundPassBuilder_.build();
+        }
         if (cloudBoxBuilder_ == null) {
           result.cloudBox_ = cloudBox_;
         } else {
@@ -25871,18 +26017,18 @@ public final class PlayerMsg {
           result.patrol_ = patrolBuilder_.build();
         }
         if (questGroupsBuilder_ == null) {
-          if (((bitField0_ & 0x00010000) != 0)) {
+          if (((bitField0_ & 0x00020000) != 0)) {
             questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
-            bitField0_ = (bitField0_ & ~0x00010000);
+            bitField0_ = (bitField0_ & ~0x00020000);
           }
           result.questGroups_ = questGroups_;
         } else {
           result.questGroups_ = questGroupsBuilder_.build();
         }
         if (questGroupPointRewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00020000) != 0)) {
+          if (((bitField0_ & 0x00040000) != 0)) {
             questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
-            bitField0_ = (bitField0_ & ~0x00020000);
+            bitField0_ = (bitField0_ & ~0x00040000);
           }
           result.questGroupPointRewards_ = questGroupPointRewards_;
         } else {
@@ -26205,6 +26351,32 @@ public final class PlayerMsg {
           }
           onChanged();
         }
+        if (fundPassBuilder_ == null) {
+          if (!other.fundPass_.isEmpty()) {
+            if (fundPass_.isEmpty()) {
+              fundPass_ = other.fundPass_;
+              bitField0_ = (bitField0_ & ~0x00010000);
+            } else {
+              ensureFundPassIsMutable();
+              fundPass_.addAll(other.fundPass_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.fundPass_.isEmpty()) {
+            if (fundPassBuilder_.isEmpty()) {
+              fundPassBuilder_.dispose();
+              fundPassBuilder_ = null;
+              fundPass_ = other.fundPass_;
+              bitField0_ = (bitField0_ & ~0x00010000);
+              fundPassBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getFundPassFieldBuilder() : null;
+            } else {
+              fundPassBuilder_.addAllMessages(other.fundPass_);
+            }
+          }
+        }
         if (other.hasCloudBox()) {
           mergeCloudBox(other.getCloudBox());
         }
@@ -26215,7 +26387,7 @@ public final class PlayerMsg {
           if (!other.questGroups_.isEmpty()) {
             if (questGroups_.isEmpty()) {
               questGroups_ = other.questGroups_;
-              bitField0_ = (bitField0_ & ~0x00010000);
+              bitField0_ = (bitField0_ & ~0x00020000);
             } else {
               ensureQuestGroupsIsMutable();
               questGroups_.addAll(other.questGroups_);
@@ -26228,7 +26400,7 @@ public final class PlayerMsg {
               questGroupsBuilder_.dispose();
               questGroupsBuilder_ = null;
               questGroups_ = other.questGroups_;
-              bitField0_ = (bitField0_ & ~0x00010000);
+              bitField0_ = (bitField0_ & ~0x00020000);
               questGroupsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getQuestGroupsFieldBuilder() : null;
@@ -26241,7 +26413,7 @@ public final class PlayerMsg {
           if (!other.questGroupPointRewards_.isEmpty()) {
             if (questGroupPointRewards_.isEmpty()) {
               questGroupPointRewards_ = other.questGroupPointRewards_;
-              bitField0_ = (bitField0_ & ~0x00020000);
+              bitField0_ = (bitField0_ & ~0x00040000);
             } else {
               ensureQuestGroupPointRewardsIsMutable();
               questGroupPointRewards_.addAll(other.questGroupPointRewards_);
@@ -26254,7 +26426,7 @@ public final class PlayerMsg {
               questGroupPointRewardsBuilder_.dispose();
               questGroupPointRewardsBuilder_ = null;
               questGroupPointRewards_ = other.questGroupPointRewards_;
-              bitField0_ = (bitField0_ & ~0x00020000);
+              bitField0_ = (bitField0_ & ~0x00040000);
               questGroupPointRewardsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getQuestGroupPointRewardsFieldBuilder() : null;
@@ -30481,6 +30653,318 @@ public final class PlayerMsg {
         return this;
       }
 
+      private java.util.List<cn.game.protocol.protobuf.ShopMsg.FundPassInfo> fundPass_ =
+        java.util.Collections.emptyList();
+      private void ensureFundPassIsMutable() {
+        if (!((bitField0_ & 0x00010000) != 0)) {
+          fundPass_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.FundPassInfo>(fundPass_);
+          bitField0_ |= 0x00010000;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ShopMsg.FundPassInfo, cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder, cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder> fundPassBuilder_;
+
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ShopMsg.FundPassInfo> getFundPassList() {
+        if (fundPassBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(fundPass_);
+        } else {
+          return fundPassBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public int getFundPassCount() {
+        if (fundPassBuilder_ == null) {
+          return fundPass_.size();
+        } else {
+          return fundPassBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.FundPassInfo getFundPass(int index) {
+        if (fundPassBuilder_ == null) {
+          return fundPass_.get(index);
+        } else {
+          return fundPassBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder setFundPass(
+          int index, cn.game.protocol.protobuf.ShopMsg.FundPassInfo value) {
+        if (fundPassBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFundPassIsMutable();
+          fundPass_.set(index, value);
+          onChanged();
+        } else {
+          fundPassBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder setFundPass(
+          int index, cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder builderForValue) {
+        if (fundPassBuilder_ == null) {
+          ensureFundPassIsMutable();
+          fundPass_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          fundPassBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder addFundPass(cn.game.protocol.protobuf.ShopMsg.FundPassInfo value) {
+        if (fundPassBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFundPassIsMutable();
+          fundPass_.add(value);
+          onChanged();
+        } else {
+          fundPassBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder addFundPass(
+          int index, cn.game.protocol.protobuf.ShopMsg.FundPassInfo value) {
+        if (fundPassBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFundPassIsMutable();
+          fundPass_.add(index, value);
+          onChanged();
+        } else {
+          fundPassBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder addFundPass(
+          cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder builderForValue) {
+        if (fundPassBuilder_ == null) {
+          ensureFundPassIsMutable();
+          fundPass_.add(builderForValue.build());
+          onChanged();
+        } else {
+          fundPassBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder addFundPass(
+          int index, cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder builderForValue) {
+        if (fundPassBuilder_ == null) {
+          ensureFundPassIsMutable();
+          fundPass_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          fundPassBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder addAllFundPass(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.ShopMsg.FundPassInfo> values) {
+        if (fundPassBuilder_ == null) {
+          ensureFundPassIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, fundPass_);
+          onChanged();
+        } else {
+          fundPassBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder clearFundPass() {
+        if (fundPassBuilder_ == null) {
+          fundPass_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00010000);
+          onChanged();
+        } else {
+          fundPassBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public Builder removeFundPass(int index) {
+        if (fundPassBuilder_ == null) {
+          ensureFundPassIsMutable();
+          fundPass_.remove(index);
+          onChanged();
+        } else {
+          fundPassBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder getFundPassBuilder(
+          int index) {
+        return getFundPassFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder getFundPassOrBuilder(
+          int index) {
+        if (fundPassBuilder_ == null) {
+          return fundPass_.get(index);  } else {
+          return fundPassBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder> 
+           getFundPassOrBuilderList() {
+        if (fundPassBuilder_ != null) {
+          return fundPassBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(fundPass_);
+        }
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder addFundPassBuilder() {
+        return getFundPassFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.ShopMsg.FundPassInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder addFundPassBuilder(
+          int index) {
+        return getFundPassFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.ShopMsg.FundPassInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *领过的通行证奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.FundPassInfo fundPass = 44;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder> 
+           getFundPassBuilderList() {
+        return getFundPassFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ShopMsg.FundPassInfo, cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder, cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder> 
+          getFundPassFieldBuilder() {
+        if (fundPassBuilder_ == null) {
+          fundPassBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.ShopMsg.FundPassInfo, cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder, cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder>(
+                  fundPass_,
+                  ((bitField0_ & 0x00010000) != 0),
+                  getParentForChildren(),
+                  isClean());
+          fundPass_ = null;
+        }
+        return fundPassBuilder_;
+      }
+
       private cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo cloudBox_;
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo, cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo.Builder, cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfoOrBuilder> cloudBoxBuilder_;
@@ -30794,9 +31278,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> questGroups_ =
         java.util.Collections.emptyList();
       private void ensureQuestGroupsIsMutable() {
-        if (!((bitField0_ & 0x00010000) != 0)) {
+        if (!((bitField0_ & 0x00020000) != 0)) {
           questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>(questGroups_);
-          bitField0_ |= 0x00010000;
+          bitField0_ |= 0x00020000;
          }
       }
 
@@ -30990,7 +31474,7 @@ public final class PlayerMsg {
       public Builder clearQuestGroups() {
         if (questGroupsBuilder_ == null) {
           questGroups_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00010000);
+          bitField0_ = (bitField0_ & ~0x00020000);
           onChanged();
         } else {
           questGroupsBuilder_.clear();
@@ -31095,7 +31579,7 @@ public final class PlayerMsg {
           questGroupsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder>(
                   questGroups_,
-                  ((bitField0_ & 0x00010000) != 0),
+                  ((bitField0_ & 0x00020000) != 0),
                   getParentForChildren(),
                   isClean());
           questGroups_ = null;
@@ -31106,9 +31590,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> questGroupPointRewards_ =
         java.util.Collections.emptyList();
       private void ensureQuestGroupPointRewardsIsMutable() {
-        if (!((bitField0_ & 0x00020000) != 0)) {
+        if (!((bitField0_ & 0x00040000) != 0)) {
           questGroupPointRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo>(questGroupPointRewards_);
-          bitField0_ |= 0x00020000;
+          bitField0_ |= 0x00040000;
          }
       }
 
@@ -31302,7 +31786,7 @@ public final class PlayerMsg {
       public Builder clearQuestGroupPointRewards() {
         if (questGroupPointRewardsBuilder_ == null) {
           questGroupPointRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00020000);
+          bitField0_ = (bitField0_ & ~0x00040000);
           onChanged();
         } else {
           questGroupPointRewardsBuilder_.clear();
@@ -31407,7 +31891,7 @@ public final class PlayerMsg {
           questGroupPointRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder>(
                   questGroupPointRewards_,
-                  ((bitField0_ & 0x00020000) != 0),
+                  ((bitField0_ & 0x00040000) != 0),
                   getParentForChildren(),
                   isClean());
           questGroupPointRewards_ = null;
@@ -31728,7 +32212,7 @@ public final class PlayerMsg {
       " \003(\0132\021.Protos.GoodsInfo\"k\n\nPlayerInfo\022\n\n" +
       "\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014" +
       "\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offli" +
-      "neTime\030\026 \001(\t\"\234\n\n\rPlayerAllInfo\022\"\n\006player" +
+      "neTime\030\026 \001(\t\"\304\n\n\rPlayerAllInfo\022\"\n\006player" +
       "\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006assets\030\002 \003" +
       "(\0132!.Protos.PlayerAllInfo.AssetsEntry\022=\n" +
       "\014assetRecover\030\003 \003(\0132\'.Protos.PlayerAllIn" +
@@ -31749,6 +32233,7 @@ public final class PlayerMsg {
       "\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCards\030( \003" +
       "(\0132\026.Protos.MonthCardProto\022\034\n\024monthCardD" +
       "oubleBonus\030* \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&" +
+      "\n\010fundPass\030, \003(\0132\024.Protos.FundPassInfo\022&" +
       "\n\010cloudBox\0302 \001(\0132\024.Protos.CloudBoxInfo\022\"" +
       "\n\006patrol\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013qu" +
       "estGroups\0307 \003(\0132\026.Protos.QuestGroupInfo\022" +
@@ -31975,7 +32460,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
