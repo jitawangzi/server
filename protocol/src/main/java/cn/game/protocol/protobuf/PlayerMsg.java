@@ -23032,6 +23032,16 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     *黑市手动刷新次数
+     * </pre>
+     *
+     * <code>int32 heishiFreshTimes = 46;</code>
+     * @return The heishiFreshTimes.
+     */
+    int getHeishiFreshTimes();
+
+    /**
+     * <pre>
      * 小云宝箱
      * </pre>
      *
@@ -23452,6 +23462,11 @@ public final class PlayerMsg {
               }
               fundPass_.add(
                   input.readMessage(cn.game.protocol.protobuf.ShopMsg.FundPassInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 368: {
+
+              heishiFreshTimes_ = input.readInt32();
               break;
             }
             case 402: {
@@ -24927,6 +24942,21 @@ public final class PlayerMsg {
       return fundPass_.get(index);
     }
 
+    public static final int HEISHIFRESHTIMES_FIELD_NUMBER = 46;
+    private int heishiFreshTimes_;
+    /**
+     * <pre>
+     *黑市手动刷新次数
+     * </pre>
+     *
+     * <code>int32 heishiFreshTimes = 46;</code>
+     * @return The heishiFreshTimes.
+     */
+    @java.lang.Override
+    public int getHeishiFreshTimes() {
+      return heishiFreshTimes_;
+    }
+
     public static final int CLOUDBOX_FIELD_NUMBER = 50;
     private cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo cloudBox_;
     /**
@@ -25223,6 +25253,9 @@ public final class PlayerMsg {
       for (int i = 0; i < fundPass_.size(); i++) {
         output.writeMessage(44, fundPass_.get(i));
       }
+      if (heishiFreshTimes_ != 0) {
+        output.writeInt32(46, heishiFreshTimes_);
+      }
       if (cloudBox_ != null) {
         output.writeMessage(50, getCloudBox());
       }
@@ -25373,6 +25406,10 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(44, fundPass_.get(i));
       }
+      if (heishiFreshTimes_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(46, heishiFreshTimes_);
+      }
       if (cloudBox_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(50, getCloudBox());
@@ -25449,6 +25486,8 @@ public final class PlayerMsg {
           .equals(other.getChapterPacksList())) return false;
       if (!getFundPassList()
           .equals(other.getFundPassList())) return false;
+      if (getHeishiFreshTimes()
+          != other.getHeishiFreshTimes()) return false;
       if (hasCloudBox() != other.hasCloudBox()) return false;
       if (hasCloudBox()) {
         if (!getCloudBox()
@@ -25553,6 +25592,8 @@ public final class PlayerMsg {
         hash = (37 * hash) + FUNDPASS_FIELD_NUMBER;
         hash = (53 * hash) + getFundPassList().hashCode();
       }
+      hash = (37 * hash) + HEISHIFRESHTIMES_FIELD_NUMBER;
+      hash = (53 * hash) + getHeishiFreshTimes();
       if (hasCloudBox()) {
         hash = (37 * hash) + CLOUDBOX_FIELD_NUMBER;
         hash = (53 * hash) + getCloudBox().hashCode();
@@ -25840,6 +25881,8 @@ public final class PlayerMsg {
         } else {
           fundPassBuilder_.clear();
         }
+        heishiFreshTimes_ = 0;
+
         if (cloudBoxBuilder_ == null) {
           cloudBox_ = null;
         } else {
@@ -26006,6 +26049,7 @@ public final class PlayerMsg {
         } else {
           result.fundPass_ = fundPassBuilder_.build();
         }
+        result.heishiFreshTimes_ = heishiFreshTimes_;
         if (cloudBoxBuilder_ == null) {
           result.cloudBox_ = cloudBox_;
         } else {
@@ -26376,6 +26420,9 @@ public final class PlayerMsg {
               fundPassBuilder_.addAllMessages(other.fundPass_);
             }
           }
+        }
+        if (other.getHeishiFreshTimes() != 0) {
+          setHeishiFreshTimes(other.getHeishiFreshTimes());
         }
         if (other.hasCloudBox()) {
           mergeCloudBox(other.getCloudBox());
@@ -30965,6 +31012,49 @@ public final class PlayerMsg {
         return fundPassBuilder_;
       }
 
+      private int heishiFreshTimes_ ;
+      /**
+       * <pre>
+       *黑市手动刷新次数
+       * </pre>
+       *
+       * <code>int32 heishiFreshTimes = 46;</code>
+       * @return The heishiFreshTimes.
+       */
+      @java.lang.Override
+      public int getHeishiFreshTimes() {
+        return heishiFreshTimes_;
+      }
+      /**
+       * <pre>
+       *黑市手动刷新次数
+       * </pre>
+       *
+       * <code>int32 heishiFreshTimes = 46;</code>
+       * @param value The heishiFreshTimes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHeishiFreshTimes(int value) {
+        
+        heishiFreshTimes_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *黑市手动刷新次数
+       * </pre>
+       *
+       * <code>int32 heishiFreshTimes = 46;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHeishiFreshTimes() {
+        
+        heishiFreshTimes_ = 0;
+        onChanged();
+        return this;
+      }
+
       private cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo cloudBox_;
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo, cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo.Builder, cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfoOrBuilder> cloudBoxBuilder_;
@@ -32212,7 +32302,7 @@ public final class PlayerMsg {
       " \003(\0132\021.Protos.GoodsInfo\"k\n\nPlayerInfo\022\n\n" +
       "\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014" +
       "\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offli" +
-      "neTime\030\026 \001(\t\"\304\n\n\rPlayerAllInfo\022\"\n\006player" +
+      "neTime\030\026 \001(\t\"\336\n\n\rPlayerAllInfo\022\"\n\006player" +
       "\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006assets\030\002 \003" +
       "(\0132!.Protos.PlayerAllInfo.AssetsEntry\022=\n" +
       "\014assetRecover\030\003 \003(\0132\'.Protos.PlayerAllIn" +
@@ -32233,20 +32323,21 @@ public final class PlayerMsg {
       "\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCards\030( \003" +
       "(\0132\026.Protos.MonthCardProto\022\034\n\024monthCardD" +
       "oubleBonus\030* \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&" +
-      "\n\010fundPass\030, \003(\0132\024.Protos.FundPassInfo\022&" +
-      "\n\010cloudBox\0302 \001(\0132\024.Protos.CloudBoxInfo\022\"" +
-      "\n\006patrol\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013qu" +
-      "estGroups\0307 \003(\0132\026.Protos.QuestGroupInfo\022" +
-      "A\n\026questGroupPointRewards\0308 \003(\0132!.Protos" +
-      ".QuestGroupPointRewardInfo\032-\n\013AssetsEntr" +
-      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021Ass" +
-      "etRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001" +
-      "(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
-      "lue\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 " +
-      "\001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013" +
-      "\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021Dragon" +
-      "SkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:" +
-      "\0028\001B\033\n\031cn.game.protocol.protobufb\006proto3"
+      "\n\010fundPass\030, \003(\0132\024.Protos.FundPassInfo\022\030" +
+      "\n\020heishiFreshTimes\030. \001(\005\022&\n\010cloudBox\0302 \001" +
+      "(\0132\024.Protos.CloudBoxInfo\022\"\n\006patrol\0303 \001(\013" +
+      "2\022.Protos.PatrolInfo\022+\n\013questGroups\0307 \003(" +
+      "\0132\026.Protos.QuestGroupInfo\022A\n\026questGroupP" +
+      "ointRewards\0308 \003(\0132!.Protos.QuestGroupPoi" +
+      "ntRewardInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r" +
+      "\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry" +
+      "\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Leve" +
+      "lsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032" +
+      "/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002" +
+      " \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n" +
+      "\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n" +
+      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game" +
+      ".protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -32460,7 +32551,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

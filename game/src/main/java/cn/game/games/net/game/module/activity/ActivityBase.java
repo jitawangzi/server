@@ -4,17 +4,16 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.Message;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventHandler;
-import cn.game.games.core.event.GameEvent;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**
- * 基本的活动，这个活动可能是全体活动，也可能是玩家的活动，或者都是
+ * 基本的活动，这个活动可能是全体活动，也可能是玩家的活动
  * 
  * @date 2021年6月9日 下午12:15:20
  * @author SYQ
@@ -24,9 +23,6 @@ public abstract class ActivityBase implements EventHandler {
 	private static transient final boolean fieldBased = true;
 	private static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
 
-	@JsonIgnore
-	protected transient Player player;
-
 	/** 配置表id */
 	protected int id;
 	/** 活动状态 */
@@ -35,20 +31,27 @@ public abstract class ActivityBase implements EventHandler {
 	/** 活动实际开始/参加时间 */
 	protected long startTime;
 
-	public abstract Message buildActivityInfo();
+	public abstract Message buildActivityShowInfo();
+
+	public ActivityInfo buildActivityInfo() {
+		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
+		builder.setId(id);
+		builder.setStateValue(state);
+		return builder.build();
+	}
 
 	public abstract List<RewardInfo> receive(int id);
 
 	/** 活动开始，可以参加活动 */
 	public void startUp() {
-		player.getActivityModule().syncActivityState(id);
+//		player.getActivityModule().syncActivityState(id);
 		this.state = ActivityState.START_VALUE;
 		this.startTime = System.currentTimeMillis();
 	}
 
 	/** 活动结束,可能还保留，领取活动奖励等 */
 	public void shutDown() {
-		player.getActivityModule().syncActivityState(id);
+//		syncActivityState(id);
 		this.state = ActivityState.CLOSE_VALUE;
 	}
 
@@ -62,18 +65,12 @@ public abstract class ActivityBase implements EventHandler {
 
 	public void init(int id, Player player, boolean isNew) {
 
-		this.player = player;
 //		ActivityStateManager.getInstance().registerEventHandler(events, this);
 		this.id = id;
 		if (isNew) {
 			startUp();
 		}
-
 	}
-
-	@Override
-	public void handleEvent(GameEvent event) {
-	};
 
 	/**
 	 * 转化为存储字符用于存储 ，如果活动不需要保存到数据库，复写这个方法，返回null

@@ -35,10 +35,10 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 
 	private static ActivityStateManager instance = new ActivityStateManager();
 
-	// 当前开启的活动id,一般是按时间开启的全体活动
+	// 当前开启的活动id（2状态）,一般是按时间开启的全体活动
 	private Set<Integer> activeActivitys = new HashSet<>();
 
-	// 缓存活动状态，不保存0
+	// 1、2、3 状态的活动id ,只是根据时间开启的活动,
 	private Map<Integer, Integer> states = new ConcurrentHashMap<>();
 	/** 全体活动 */
 	public ActivityModule activityModule = new ActivityModule();
@@ -63,7 +63,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	public void close(int id) {
 
 		activeActivitys.remove(Integer.valueOf(id));
-		activityModule.end(id);
+		activityModule.shutdown(id);
 	}
 
 	public void start() {
@@ -72,6 +72,9 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		for (ActivityConfig activityConfig : ActivityManager.instance().list()) {
 			int id = activityConfig.ID;
 			if (activityConfig.disable) {
+				continue;
+			}
+			if (activityConfig.viewTime == null) { // 不根据时间开启
 				continue;
 			}
 			if (activityConfig.viewTime != null && nowDate.before(activityConfig.viewTime)) { // 暂时未达可见时间
@@ -179,7 +182,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	 * 获取同一周期内，多次活动的活动索引及状态,同一时间只有一个活动有效,只会返回start，和end状态
 	 * 
 	 * @param id
-	 * @return null 如果没有活跃的活动
+	 * @return null 如果没有活跃的活动 <第几个开启--状态>
 	 */
 	private Pair<Integer, ActivityState> getActivityState(int id) {
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
@@ -240,7 +243,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	}
 
 	/**
-	 * 获取活动的实际开启时间（有的活动有多个开启时间）
+	 * 获取本期活动的开启时间（有的活动有多个开启时间）(按照时间开启的活动)
 	 * 
 	 * @param id
 	 * @return null 如果活动都关闭了
@@ -254,6 +257,22 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		Date startDate = activityConfig.startTime.get(activity.first);
 		startDate = changeDateByPeriod(startDate, activityConfig.period, getPeriodPass(id));
 		return startDate;
+	}
+
+	/** 
+	 * 获取本期活动的结束时间(按照时间开启的活动)
+	 * @param id
+	 * @return
+	 */
+	public Date getEndDate(int id) {
+		Pair<Integer, ActivityState> activity = getActivityState(id);
+		if (activity == null) {
+			return null;
+		}
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		Date endDate = activityConfig.endTime.get(activity.first);
+		endDate = changeDateByPeriod(endDate, activityConfig.period, getPeriodPass(id));
+		return endDate;
 	}
 
 	public Date changeDateByPeriod(Date date, int period, int periodPass) {
@@ -320,11 +339,11 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 
 						player.getGameClient().getContext().runOnContext(r -> {
 							ActivityModule activityModule = player.getActivityModule();
-							activityModule.end(id);
+							activityModule.shutdown(id);
 						});
 					}
 				} else {
-					activityModule.end(id);
+					activityModule.shutdown(id);
 					activeActivitys.remove(id);
 				}
 			});
@@ -420,10 +439,13 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 
 		List<ActivityInfo> activityInfos = new ArrayList<>();
 		for (Integer id : getShowIds()) {
-			ActivityInfo activityInfo = ActivityInfo.newBuilder().setId(id).setStateValue(getState(id)).setStartTime(getOpenTimeRemaining(id)).build();
-			activityInfos.add(activityInfo);
+			activityInfos.add(buildActivityInfo(id));
 		}
 		return activityInfos;
+	}
+
+	public ActivityInfo buildActivityInfo(int id) {
+		return ActivityInfo.newBuilder().setId(id).setStateValue(getState(id)).setStartTime(getOpenTimeRemaining(id)).build();
 	}
 
 	/**
@@ -448,13 +470,12 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	 * @return
 	 */
 	public int getOpenTimeRemaining(int id) {
-		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		List<Date> startTime = activityConfig.startTime;
-		Date now = new Date();
-		for (Date date : startTime) {
-			if (now.before(date)) { return (int) DateUtil.howLong(TimeUnit.SECONDS, date, now); }
+		Date startDate = getStartDate(id);
+		if (startDate == null) {
+			return 0;
 		}
-		return 0;
+		Date now = new Date();
+		return (int) DateUtil.howLong(TimeUnit.SECONDS, startDate, now);
 	}
 
 	public void initGlobal() {

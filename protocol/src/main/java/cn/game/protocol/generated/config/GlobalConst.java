@@ -54,6 +54,8 @@ public class GlobalConst extends ResourceListener {
 	public static int HeishiShelvesCnt;		
 	/** 【黑市】黑市刷新 */
 	public static int HeishiFreeRefresh;		
+	/** 【黑市】付费刷新 */
+	public static int[] HeishiPayfrseh;		
 	/** 【请神】高级抽卡 */
 	public static int[] AdvancedCardDraw;		
 	/** 【请神】至尊抽卡 */
@@ -219,6 +221,18 @@ public class GlobalConst extends ResourceListener {
 			: element.getAttribute("HeishiShelvesCnt")); // 【黑市】黑市格子数量
 		HeishiFreeRefresh = Integer.parseInt(element.getAttribute("HeishiFreeRefresh") == null || element.getAttribute("HeishiFreeRefresh").length() == 0 ? "0"
 			: element.getAttribute("HeishiFreeRefresh")); // 【黑市】黑市刷新
+		String HeishiPayfrsehString = element.getAttribute("HeishiPayfrseh"); // 【黑市】付费刷新
+		if (HeishiPayfrsehString != null && HeishiPayfrsehString.length() > 0) {
+			String[] HeishiPayfrsehStrings = HeishiPayfrsehString.split(";"); 
+			int[] HeishiPayfrsehTemp = new int[HeishiPayfrsehStrings.length] ; 
+			for (int i = 0; i < HeishiPayfrsehStrings.length; i++) {
+				int temp = Integer.parseInt(HeishiPayfrsehStrings[i]);	
+				HeishiPayfrsehTemp[i] = temp;
+			}
+			HeishiPayfrseh = HeishiPayfrsehTemp ;			
+		} else {
+			HeishiPayfrseh = new int[] {};
+		}
 		String AdvancedCardDrawString = element.getAttribute("AdvancedCardDraw"); // 【请神】高级抽卡
 		if (AdvancedCardDrawString != null && AdvancedCardDrawString.length() > 0) {
 			String[] AdvancedCardDrawStrings = AdvancedCardDrawString.split(";"); 

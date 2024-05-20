@@ -187,6 +187,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int ShopItemListResponse_15000002 = 0x15000002;    
 	public final static int ShopItemBuyRequest_15000003 = 0x15000003;    //购买商品  
 	public final static int ShopItemBuyResponse_15000004 = 0x15000004;    
+	public final static int ShopHeishiRefreshRequest_15000005 = 0x15000005;    //手动刷新黑市请求  
+	public final static int ShopHeishiRefreshResponse_15000006 = 0x15000006;    
 	public final static int MonthCardBuyRequest_15000010 = 0x15000010;    //购买月卡  
 	public final static int MonthCardBuyResponse_15000011 = 0x15000011;    
 	public final static int MonthCardBuyRewardRequest_15000012 = 0x15000012;    //领取月卡购买奖励，每个月卡只能领取一次  
@@ -552,6 +554,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(ShopItemBuyResponse_15000004, cn.game.protocol.protobuf.ShopMsg.ShopItemBuyResponse_15000004.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(ShopHeishiRefreshRequest_15000005, cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ShopHeishiRefreshResponse_15000006, cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshResponse_15000006.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(MonthCardBuyRequest_15000010, cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRequest_15000010.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(MonthCardBuyResponse_15000011, cn.game.protocol.protobuf.ShopMsg.MonthCardBuyResponse_15000011.getDefaultInstance()
@@ -781,6 +787,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("ShopItemListResponse_15000002", 0x15000002);
 		nameIdMap.put("ShopItemBuyRequest_15000003", 0x15000003);
 		nameIdMap.put("ShopItemBuyResponse_15000004", 0x15000004);
+		nameIdMap.put("ShopHeishiRefreshRequest_15000005", 0x15000005);
+		nameIdMap.put("ShopHeishiRefreshResponse_15000006", 0x15000006);
 		nameIdMap.put("MonthCardBuyRequest_15000010", 0x15000010);
 		nameIdMap.put("MonthCardBuyResponse_15000011", 0x15000011);
 		nameIdMap.put("MonthCardBuyRewardRequest_15000012", 0x15000012);

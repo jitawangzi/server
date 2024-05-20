@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 	public final int openParam;		
 	/** 重置类型： 空着 ：不重置，一次性活动 1 日 2 周 3 月 */
 	public final int resetType;		
-	/** 达到此时间，显示活动 */
+	/** 达到此时间，显示活动 时间格式举例，注意日和时间之间有空格： 2024-05-04 21:59:59 */
 	public final Date viewTime;		
 	/** 活动彻底销毁，不在展示 */
 	public final List<Date> destroyTime;		
@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("openParam")); // 开启参数
 		resetType = Integer.parseInt(element.getAttribute("resetType") == null || element.getAttribute("resetType").length() == 0 ? "0"
 			: element.getAttribute("resetType")); // 重置类型： 空着 ：不重置，一次性活动 1 日 2 周 3 月
-		String viewTimeTemp = element.getAttribute("viewTime"); // 达到此时间，显示活动
+		String viewTimeTemp = element.getAttribute("viewTime"); // 达到此时间，显示活动 时间格式举例，注意日和时间之间有空格： 2024-05-04 21:59:59
 		viewTime = viewTimeTemp != null && viewTimeTemp.length() > 0 ? DateUtil.parse(viewTimeTemp) : null;
 		
 		String destroyTimeString = element.getAttribute("destroyTime"); // 活动彻底销毁，不在展示

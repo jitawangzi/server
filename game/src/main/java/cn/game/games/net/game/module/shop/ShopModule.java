@@ -43,6 +43,7 @@ public class ShopModule extends BasePlayerModule {
 	private Multimap<Integer, ShopItem> shopItemsMap = ArrayListMultimap.create();
 	/** 通行证里领完的奖励,key: 通行证id，购买过的 */
 	private Map<Integer, List<Integer>> fundPassRewardsMap = new HashMap<Integer, List<Integer>>();
+	private int heishiRefreshTimes;
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -156,6 +157,14 @@ public class ShopModule extends BasePlayerModule {
 	}*/
 
 
+	public int getHeishiRefreshTimes() {
+		return heishiRefreshTimes;
+	}
+
+	public void setHeishiRefreshTimes(int heishiRefreshTimes) {
+		this.heishiRefreshTimes = heishiRefreshTimes;
+	}
+
 	private void initFundPass() {
 		Collection<FundPassConfig> list = FundPassManager.instance().list();
 		for (FundPassConfig fundPassConfig : list) {
@@ -183,7 +192,20 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 		// 刷新黑市
+		refreshHeishiItems();
+		heishiRefreshTimes = 0;
+		// 刷新金币、钻石商店
+		Collection<RechargeStoreConfig> rechargeStore = RechargeStoreManager.instance().list();
+		for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
+			shopItemsMap.put(rechargeStoreConfig.Type, new ShopItem(rechargeStoreConfig.Item));
+		}
+	}
+
+	public void refreshHeishiItems() {
+		// 刷新黑市
 		int shop = 2;
+		shopItemsMap.removeAll(shop);
+
 		List<HeishiConfig> typeList = HeishiManager.instance().getTypeList(1);
 		HeishiConfig heishiConfig = typeList.get(0);
 		shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
@@ -193,12 +215,6 @@ public class ShopModule extends BasePlayerModule {
 		for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
 			shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
 		}
-		// 刷新金币、钻石商店
-		Collection<RechargeStoreConfig> rechargeStore = RechargeStoreManager.instance().list();
-		for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
-			shopItemsMap.put(rechargeStoreConfig.Type, new ShopItem(rechargeStoreConfig.Item));
-		}
-
 	}
 
 	private void refreshShopNewWeek() {
@@ -255,6 +271,7 @@ public class ShopModule extends BasePlayerModule {
 			fb.addAllRewardIds(v);
 			builder.addFundPass(fb.build());
 		});
+		builder.setHeishiFreshTimes(heishiRefreshTimes);
 	}
 
 	@Override

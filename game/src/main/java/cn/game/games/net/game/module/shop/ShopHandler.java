@@ -26,6 +26,7 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.RechargeConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.ChapterPacksManager;
 import cn.game.protocol.generated.manager.FundPassManager;
@@ -51,6 +52,8 @@ import cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030;
 import cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031;
 import cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032;
 import cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033;
+import cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005;
+import cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshResponse_15000006;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyResponse_15000004;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001;
@@ -80,9 +83,42 @@ public class ShopHandler extends BaseHandler {
 		putInvoker(PbProtocol.MonthCardDoubleBonusRequest_15000016, this::doubleBonus);
 		putInvoker(PbProtocol.ShopFundPassBuyRequest_15000030, this::fundPassBuy);
 		putInvoker(PbProtocol.ShopFundPassRewardRequest_15000032, this::fundPassReward);
+		putInvoker(PbProtocol.ShopHeishiRefreshRequest_15000005, this::heishiRefresh);
 //		putInvoker(PbProtocol.AdvertiseWatchFinishRequest_15000030, this::advertise);
 	}
 
+	private void heishiRefresh(NetClient client, Object message) {
+		ShopHeishiRefreshRequest_15000005 req = (ShopHeishiRefreshRequest_15000005) message;
+		ShopHeishiRefreshResponse_15000006.Builder resp = ShopHeishiRefreshResponse_15000006.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (!player.isFuncOpen(InitialUI.Passport)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ShopModule shopModule = player.getShopModule();
+		int heishiRefreshTimes = shopModule.getHeishiRefreshTimes();
+		if (heishiRefreshTimes == 0) {
+			player.handleEvent(EventTypeEnum.WatchAds);
+		}else {
+			if (heishiRefreshTimes > GlobalConst.HeishiPayfrseh.length + 1) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
+				return;
+			}
+			boolean delResources = PlayerHelper.delResources(player, Asset.diamond.ID, GlobalConst.HeishiPayfrseh[heishiRefreshTimes - 1], OpType.HeishiFresh);
+			if (!delResources) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+				return;
+			}
+		}
+		shopModule.setHeishiRefreshTimes(heishiRefreshTimes + 1);
+		shopModule.refreshHeishiItems();
+
+		List<ShopItem> shopItems = shopModule.getShopItems(2);
+		for (ShopItem shopItem : shopItems) {
+			resp.addItems(shopItem.toProto());
+		}
+		client.sendProtocol(resp.build());
+	}
 	private void fundPassBuy(NetClient client, Object message) {
 		ShopFundPassBuyRequest_15000030 req = (ShopFundPassBuyRequest_15000030) message;
 		ShopFundPassBuyResponse_15000031.Builder resp = ShopFundPassBuyResponse_15000031.newBuilder();

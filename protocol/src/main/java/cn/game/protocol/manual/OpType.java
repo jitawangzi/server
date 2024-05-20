@@ -24,6 +24,8 @@ public enum OpType{
 	HeroLevelUp(50, "英雄升级"),
 	HeroConflate(51, "英雄合成"),
 
+	HeishiFresh(53, "黑市刷新"),
+
 	// 可以增加奖励的。
 	Init(100, "初始化增加的"),
 	Quest(101, "任务奖励"),

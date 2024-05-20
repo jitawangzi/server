@@ -32,6 +32,7 @@ public class ActivityModule extends BasePlayerModule {
 	/** 已经开始的活动，只是展示的不在这里。  */
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
 
+	@Deprecated
 	public int getState(int id) {
 		if (activities.containsKey(id)) {
 			return activities.get(id).getState();
@@ -43,8 +44,8 @@ public class ActivityModule extends BasePlayerModule {
 
 		Map<Integer, ActivityInfo> activityInfos = new HashMap<Integer, ActivityMsg.ActivityInfo>();
 		for (Integer id : activities.keySet()) {
-			ActivityInfo activityInfo = ActivityInfo.newBuilder().setId(id).setStateValue(getState(id)).build();
-			activityInfos.put(id, activityInfo);
+//			ActivityInfo activityInfo = ActivityInfo.newBuilder().setId(id).setStateValue(getState(id)).build();
+			activityInfos.put(id, buildActivityInfo(id));
 		}
 		return activityInfos;
 	}
@@ -61,19 +62,27 @@ public class ActivityModule extends BasePlayerModule {
 	/** 
 	 * 同步某个活动的状态。 
 	 * @param id
+	 * @return 
 	 */
-	public void syncActivityState(int id) {
+	public ActivityInfo buildActivityInfo(int id) {
 		ActivityBase activityBase = activities.get(id);
+		if (activityBase != null) {
+			return activityBase.buildActivityInfo();
+		}
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);
+		int state = 0;
 		if (activityBase != null) {
-			int state = getState(id);
-			builder.setStateValue(state);
-			if (state == ActivityState.VIEW_VALUE) {
-				int openTimeRemaining = ActivityStateManager.getInstance().getOpenTimeRemaining(id);
-				builder.setStartTime(openTimeRemaining);
-			}
+			state = activityBase.getState();
+		} else {
+			state = ActivityStateManager.getInstance().getState(id);
 		}
+		builder.setStateValue(state);
+		if (state == ActivityState.VIEW_VALUE) {
+			int openTimeRemaining = ActivityStateManager.getInstance().getOpenTimeRemaining(id);
+			builder.setStartTime(openTimeRemaining);
+		}
+		return builder.build();
 	}
 
 	/** 
@@ -146,7 +155,7 @@ public class ActivityModule extends BasePlayerModule {
 	}
 
 
-	public void end(int id) {
+	public void shutdown(int id) {
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
 		if (activityConfig.isMultiplayer && player != null) {
 			return ;
@@ -154,6 +163,7 @@ public class ActivityModule extends BasePlayerModule {
 		ActivityBase activityBase = this.activities.get(id);
 		if (activityBase != null) {
 			activityBase.shutDown();
+//			syncActivityState(Acti);
 //			update(id);
 		}
 	}
@@ -189,6 +199,7 @@ public class ActivityModule extends BasePlayerModule {
 			if (activityBase != null) {
 				this.activities.put(activityConfig.ID, activityBase);
 				activityBase.init(activityConfig.ID, player, true);
+//				syncActivityState(id);
 //				initAdd(activityConfig.ID);
 			}
 		}

@@ -215,6 +215,7 @@ message PlayerAllInfo{
    bool monthCardDoubleBonus = 42 ; 			// 是否可以领取双月卡奖励。
    repeated uint32 chapterPacks  = 41;        //购买过的章节礼包id(ChapterPacks表)
    repeated FundPassInfo fundPass  = 44;        //领过的通行证奖励
+   int32 heishiFreshTimes = 46;        //黑市手动刷新次数
 
    CloudBoxInfo cloudBox = 50;  // 小云宝箱
    PatrolInfo patrol = 51;//巡逻/挂机

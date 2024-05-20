@@ -11,7 +11,7 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.activity.impl.FirstChargeActivity;
+import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000011;
@@ -82,7 +82,7 @@ public class ActivityHandler extends BaseHandler {
 			return;
 		}
 
-		client.sendProtocol(activityBase.buildActivityInfo());
+		client.sendProtocol(activityBase.buildActivityShowInfo());
 	}
 
 	private void singleChargeBuy(NetClient client, Object message) {

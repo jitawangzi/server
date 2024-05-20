@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.activity.impl;
+package cn.game.games.net.game.module.activity.impl.player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,8 @@ import java.util.List;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.games.net.game.module.activity.ActivityType;
+import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
@@ -18,7 +18,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
 @ActivityType(type = ActivityTypeEnum.SevenDaysCarnival)
-public class SevenDayHappyActivity extends ActivityBase {
+public class SevenDayHappyActivity extends PlayerActivityBase {
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 	/** 活动哪天开启的 */
 	private int openDay;
@@ -26,7 +26,7 @@ public class SevenDayHappyActivity extends ActivityBase {
 	private List<Integer> initDays = new ArrayList<>();
 
 	@Override
-	public Message buildActivityInfo() {
+	public Message buildActivityShowInfo() {
 		ActivityFirstChargeResponse_11000008.Builder resp = ActivityFirstChargeResponse_11000008.newBuilder();
 		int nowDay = DateUtil.getDay();
 		Collection<FirstChargeConfig> list = FirstChargeManager.instance().list();
@@ -56,4 +56,5 @@ public class SevenDayHappyActivity extends ActivityBase {
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
+
 }

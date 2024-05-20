@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.activity.impl;
+package cn.game.games.net.game.module.activity.impl.player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,8 +10,8 @@ import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.games.net.game.module.activity.ActivityType;
+import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.FirstChargeManager;
@@ -27,14 +27,14 @@ import cn.game.util.DateUtil;
  * @author SYQ
  */
 @ActivityType(type = ActivityTypeEnum.FirstCharge)
-public class FirstChargeActivity extends ActivityBase {
+public class FirstChargeActivity extends PlayerActivityBase {
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 
 	/** key  ActivityiD  */
 	private Map<Integer, SingleCharge> chargeMap = new HashMap<Integer, SingleCharge>();
 
 	@Override
-	public Message buildActivityInfo() {
+	public Message buildActivityShowInfo() {
 		ActivityFirstChargeResponse_11000008.Builder resp = ActivityFirstChargeResponse_11000008.newBuilder();
 		int nowDay = DateUtil.getDay();
 		Collection<FirstChargeConfig> list = FirstChargeManager.instance().list();
