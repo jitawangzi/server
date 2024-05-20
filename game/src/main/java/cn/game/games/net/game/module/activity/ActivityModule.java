@@ -2,12 +2,14 @@ package cn.game.games.net.game.module.activity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import cn.game.games.cache.entity.Activity;
 import cn.game.games.core.BasePlayerModule;
@@ -23,6 +25,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 
 public class ActivityModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
@@ -47,7 +50,7 @@ public class ActivityModule extends BasePlayerModule {
 	}
 
 	private void initNewActivity() {
-		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(1);
+		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_CREATE);
 		if (openTypeList != null) {
 			for (ActivityConfig activityConfig : openTypeList) {
 				open(activityConfig.ID);
@@ -72,6 +75,24 @@ public class ActivityModule extends BasePlayerModule {
 			}
 		}
 	}
+
+	/** 
+	 * 获取活动的结束时间
+	 * @param id
+	 * @return
+	 */
+	public long getEndTime(int id) {
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		List<Date> startTime = activityConfig.startTime;
+		Date now = new Date();
+		for (Date date : startTime) {
+			if (now.before(date)) {
+				return (int) DateUtil.howLong(TimeUnit.SECONDS, date, now);
+			}
+		}
+		return 0;
+	}
+
 	@Override
 	public void initFromDbAfter() {
 

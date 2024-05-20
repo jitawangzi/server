@@ -32,6 +32,9 @@ public abstract class ActivityBase implements EventHandler {
 	/** 活动状态 */
 	protected int state;
 
+	/** 活动实际开始/参加时间 */
+	protected long startTime;
+
 	public abstract Message buildActivityInfo();
 
 	public abstract List<RewardInfo> receive(int id);
@@ -40,6 +43,7 @@ public abstract class ActivityBase implements EventHandler {
 	public void startUp() {
 		player.getActivityModule().syncActivityState(id);
 		this.state = ActivityState.START_VALUE;
+		this.startTime = System.currentTimeMillis();
 	}
 
 	/** 活动结束,可能还保留，领取活动奖励等 */
