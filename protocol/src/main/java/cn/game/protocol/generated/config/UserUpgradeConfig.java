@@ -16,6 +16,8 @@ import org.w3c.dom.Element;
 	public final int experience;		
 	/** 奖励货币或卡牌或物品1id;奖励1数量|...|货币或卡牌或物品Nid;奖励N数量 */
 	public final int[][] LvReward;		
+	/** 提升战力 */
+	public final int Combatpower;		
 
 	public UserUpgradeConfig (Element element) throws Exception {
 	
@@ -41,6 +43,8 @@ import org.w3c.dom.Element;
 		} else {
 			LvReward = new int[][] {};
 		}
+		Combatpower = Integer.parseInt(element.getAttribute("Combatpower") == null || element.getAttribute("Combatpower").length() == 0 ? "0"
+			: element.getAttribute("Combatpower")); // 提升战力
 	}
 	
 

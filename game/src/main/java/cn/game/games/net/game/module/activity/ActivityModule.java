@@ -26,11 +26,12 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 public class ActivityModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
+	/** 已经开始的活动，只是展示的不在这里。  */
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
 
 	public int getState(int id) {
 		if (activities.containsKey(id)) {
-			return ActivityState.START_VALUE;
+			return activities.get(id).getState();
 		}
 		return ActivityStateManager.getInstance().getState(id);
 	}
@@ -50,6 +51,24 @@ public class ActivityModule extends BasePlayerModule {
 		if (openTypeList != null) {
 			for (ActivityConfig activityConfig : openTypeList) {
 				open(activityConfig.ID);
+			}
+		}
+	}
+
+	/** 
+	 * 同步某个活动的状态。 
+	 * @param id
+	 */
+	public void syncActivityState(int id) {
+		ActivityBase activityBase = activities.get(id);
+		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
+		builder.setId(id);
+		if (activityBase != null) {
+			int state = getState(id);
+			builder.setStateValue(state);
+			if (state == ActivityState.VIEW_VALUE) {
+				int openTimeRemaining = ActivityStateManager.getInstance().getOpenTimeRemaining(id);
+				builder.setStartTime(openTimeRemaining);
 			}
 		}
 	}

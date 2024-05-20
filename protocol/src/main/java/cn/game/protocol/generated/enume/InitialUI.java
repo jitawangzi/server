@@ -16,10 +16,6 @@ public enum InitialUI{
 	/**  */
 	Supervalue(100102,1001,"Supervalue",4,0,"超值","Texture/Lobby/main_icon_chaozhi"),
 	/**  */
-	Firstpayment(100103,1001,"Firstpayment",1,0,"首充","Texture/Lobby/main_icon_shouchong"),
-	/**  */
-	Sevendays(100104,1001,"Sevendays",4,0,"7日","Texture/Lobby/main_icon_seven"),
-	/**  */
 	Letter(100105,1001,"Letter",4,0,"信件","Texture/Lobby/main_icon_mail"),
 	/**  */
 	Task(100106,1001,"Task",4,0,"任务","Texture/Lobby/main_icon_quest"),

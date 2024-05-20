@@ -41,7 +41,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	// 缓存活动状态，不保存0
 	private Map<Integer, Integer> states = new ConcurrentHashMap<>();
 	/** 全体活动 */
-	public ActivityModule activityOp = new ActivityModule();
+	public ActivityModule activityModule = new ActivityModule();
 
 	public static ActivityStateManager getInstance() {
 		return instance;
@@ -63,7 +63,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	public void close(int id) {
 
 		activeActivitys.remove(Integer.valueOf(id));
-		activityOp.end(id);
+		activityModule.end(id);
 	}
 
 	public void start() {
@@ -291,7 +291,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 						});
 					}
 				} else {
-					activityOp.open(id);
+					activityModule.open(id);
 					activeActivitys.add(id);
 				}
 			});
@@ -324,7 +324,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 						});
 					}
 				} else {
-					activityOp.end(id);
+					activityModule.end(id);
 					activeActivitys.remove(id);
 				}
 			});
@@ -357,7 +357,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 				}
 			} else {
 				removeState(id);
-				activityOp.destroy(id);
+				activityModule.destroy(id);
 			}
 //			});
 		}

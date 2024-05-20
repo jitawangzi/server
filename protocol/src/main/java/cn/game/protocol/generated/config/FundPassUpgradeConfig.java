@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
  * 
  * 工具生成的，不要手动修改
  */
-public class FundPassUpgradeConfig extends ExpConfig {
+ public class FundPassUpgradeConfig extends ExpConfig {
 
 	/** 等级 */
 	public final int ID;		

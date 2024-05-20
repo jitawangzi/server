@@ -9,8 +9,8 @@ import com.google.protobuf.Message;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventHandler;
-import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**
@@ -26,33 +26,31 @@ public abstract class ActivityBase implements EventHandler {
 
 	@JsonIgnore
 	protected transient Player player;
-	/** 监听的事件，通常在玩家活动里监听事件 */
-	protected transient EventTypeEnum[] events;
 
 	/** 配置表id */
 	protected int id;
+	/** 活动状态 */
+	protected int state;
 
 	public abstract Message buildActivityInfo();
 
 	public abstract List<RewardInfo> receive(int id);
 
-	@Override
-	public EventTypeEnum[] getEventTypes() {
-		return events;
+	/** 活动开始，可以参加活动 */
+	public void startUp() {
+		player.getActivityModule().syncActivityState(id);
+		this.state = ActivityState.START_VALUE;
 	}
 
-	/** 活动开始 */
-	public abstract void startUp();
+	/** 活动结束,可能还保留，领取活动奖励等 */
+	public void shutDown() {
+		player.getActivityModule().syncActivityState(id);
+		this.state = ActivityState.CLOSE_VALUE;
+	}
 
-	/** 活动结束 */
-	public abstract void shutDown();
-
-	/** 彻底销毁活动，不再展示 */
+	/** 彻底销毁活动，不再展示，删除活动数据 */
 	public void destroy() {
 	};
-
-	@JsonIgnore
-	public abstract void setEvents(EventTypeEnum[] events);
 
 	public boolean newDay() {
 		return false;
@@ -61,7 +59,6 @@ public abstract class ActivityBase implements EventHandler {
 	public void init(int id, Player player, boolean isNew) {
 
 		this.player = player;
-		setEvents(events);
 //		ActivityStateManager.getInstance().registerEventHandler(events, this);
 		this.id = id;
 		if (isNew) {
@@ -86,4 +83,9 @@ public abstract class ActivityBase implements EventHandler {
 	public int getId() {
 		return id;
 	}
+
+	public int getState() {
+		return state;
+	}
+
 }
