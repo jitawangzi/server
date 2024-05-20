@@ -140,6 +140,9 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	public void refreshQuest(QuestTypeEnum type) {
+		if (!player.isFuncOpen(InitialUI.Task)) {
+			return;
+		}
 		Map<Integer, Quest> values = quests.get(type.ID);
 		List<QuestConfig> missionList = QuestManager.instance().getTypeList(type.ID);
 		if (missionList == null) {
