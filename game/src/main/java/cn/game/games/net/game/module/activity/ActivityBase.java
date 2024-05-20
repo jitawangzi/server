@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.activity;
 
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
@@ -8,11 +9,13 @@ import com.google.protobuf.Message;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventHandler;
+import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 
 /**
  * 基本的活动，这个活动可能是全体活动，也可能是玩家的活动
@@ -98,19 +101,25 @@ public abstract class ActivityBase implements EventHandler {
 		return startTime;
 	}
 
+	/** 
+	 * 获取活动的结束时间
+	 * @return
+	 */
 	public long getEndTime() {
 		long endTime = 0 ; 
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
 		if (activityConfig.durationType > 0) {
 			if (activityConfig.durationType == 1) {
-//				endTime
+				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.duration);
 			} else if (activityConfig.durationType == 2) {
 				endTime = startTime + activityConfig.duration * 1000;
-			} else {
-
+			}
+		} else {
+			Date endDate = ActivityStateManager.getInstance().getEndDate(id);
+			if (endDate != null) {
+				endTime = endDate.getTime();
 			}
 		}
-		return startTime;
+		return endTime;
 	}
-
 }

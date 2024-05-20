@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import cn.game.games.cache.entity.Activity;
@@ -92,31 +93,36 @@ public class ActivityModule extends BasePlayerModule {
 
 	@Override
 	public void initFromDbAfter() {
-
+		long nowTime = System.currentTimeMillis();
 		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
-		List<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
+		Set<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
 		// 这里注意一个活动，多开启时间的
 		List<Integer> deleteIds = new ArrayList<>();
 		for (ActivityBase activityBase : activities.values()) {
 			int cid = activityBase.getId();
 			ActivityConfig activityConfig = ActivityManager.instance().get(cid);
-			if (activityBase instanceof PlayerActivityBase) {
-				long startTime = activityBase.getStartTime();
-
+			if (activityConfig.openType == 0) { // 按照时间开启的
+				// 活动已经彻底关闭了
+				if (!showList.contains(cid)) // 活动已经彻底关闭了
+				{
+//					delete(cid);
+					deleteIds.add(cid);
+					continue;
+				}
+			} else {
+				long endTime = activityBase.getEndTime();
+				if (endTime > 0 && endTime < nowTime) {
+					deleteIds.add(cid);
+					continue;
+				}
 			}
-			// 活动已经彻底关闭了
-			if (!showList.contains(cid)) // 活动已经彻底关闭了
-			{
-//				delete(cid);
-				deleteIds.add(cid);
-			} else { // init from db
-//				ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(), player);
-				activityBase.init(cid, player, false);
-			}
+//			ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(), player);
+			activityBase.init(cid, player, false);
 		}
 		for (Integer integer : deleteIds) {
 			activities.remove(integer);
 		}
+		// 可能符合开启条件的新任务。
 		for (Integer integer : openList) {
 			if (!activities.containsKey(integer)) {
 				open(integer);
@@ -304,7 +310,7 @@ public class ActivityModule extends BasePlayerModule {
 //		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
-		List<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
+		Set<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
 		// 这里注意一个活动，多开启时间的
 		if (list != null) {
 			for (Activity activity : list) {

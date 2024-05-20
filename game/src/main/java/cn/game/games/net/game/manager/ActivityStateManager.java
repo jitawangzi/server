@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -453,15 +452,15 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	 * 
 	 * @return
 	 */
-	public List<Integer> getOpenIds() {
+	public Set<Integer> getOpenIds() {
 
-		List<Integer> list = new ArrayList<>();
-		for (Entry<Integer, Integer> e : this.states.entrySet()) {
-			if (e.getValue() == ActivityState.START_VALUE) {
-				list.add(e.getKey());
-			}
-		}
-		return list;
+//		List<Integer> list = new ArrayList<>();
+//		for (Entry<Integer, Integer> e : this.states.entrySet()) {
+//			if (e.getValue() == ActivityState.START_VALUE) {
+//				list.add(e.getKey());
+//			}
+//		}
+		return activeActivitys;
 	}
 
 	/** 

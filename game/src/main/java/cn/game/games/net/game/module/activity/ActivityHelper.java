@@ -8,4 +8,7 @@ public class ActivityHelper {
 	public static final int OPENTYPE_PLAYER_LEVEL = 3;
 	/** 按时间开启 */
 	public static final int OPENTYPE_DATE = 4;
+
+	/** 普通的七日狂欢 */
+	public static final int SEVENDAYS_CARNIVAL = 1;
 }

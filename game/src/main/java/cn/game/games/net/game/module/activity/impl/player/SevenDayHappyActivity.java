@@ -20,9 +20,7 @@ import cn.game.util.DateUtil;
 @ActivityType(type = ActivityTypeEnum.SevenDaysCarnival)
 public class SevenDayHappyActivity extends PlayerActivityBase {
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
-	/** 活动哪天开启的 */
-	private int openDay;
-	/** 已经初始过任务的天 */
+	/** 已经初始过任务的天  1 - 7 */
 	private List<Integer> initDays = new ArrayList<>();
 
 	@Override
@@ -36,8 +34,6 @@ public class SevenDayHappyActivity extends PlayerActivityBase {
 	@Override
 	public void startUp() {
 		super.startUp();
-
-		this.openDay = DateUtil.getDay();
 		// 开启任务
 		QuestModule questModule = player.getQuestModule();
 

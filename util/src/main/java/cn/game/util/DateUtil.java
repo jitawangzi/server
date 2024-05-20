@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -314,64 +316,34 @@ public final class DateUtil {
 	}
 
 	/**
-	 * 获取n天后0点的毫秒时间戳
+	 * 获取当前时间 n天后0点的毫秒时间戳
 	 * 
 	 * @param step
 	 * @return
 	 */
-	public static long nextDayStartTime(int step) {
+	public static long nextDayStartTime(int days) {
+		return nextDayStartTime(System.currentTimeMillis(), days);
+	}
 
-		// 获取当前日期
-		LocalDate currentDate = LocalDate.now();
+	/** 
+	 * 获取当前时间 n天后0点的秒时间戳
+	 * @param step
+	 * @return
+	 */
+	public static int nextDayStartTimeSecond(int days) {
 
-		LocalDate targetDate = currentDate.plusDays(step);
+		return (int) (nextDayStartTime(System.currentTimeMillis(), days) / 1000);
+	}
 
+	public static long nextDayStartTime(long startTime, int days) {
+		Instant instant = Instant.ofEpochMilli(startTime);
+		LocalDateTime specificDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+		LocalDate targetDate = specificDateTime.toLocalDate().plusDays(days);
 		// 设置时间为 0 点 0 分 0 秒
 		LocalDateTime targetDateTime = targetDate.atStartOfDay();
 		// 获取时间戳（秒）
-		return targetDateTime.toEpochSecond(java.time.ZoneOffset.UTC);
-	}
-
-	/**
-	 * @Title: getDayByStep
-	 * @Description: 返回离当前日期指定步长的日期
-	 * @param step
-	 * @return String 返回类型
-	 */
-	public static String getDayByStep(int step, String pattern) {
-		String result = "";
-		Calendar calendar = Calendar.getInstance();
-		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		calendar.set(Calendar.DAY_OF_MONTH, day - step);
-		result = getTimeByPattern(calendar.getTime(), pattern);
-		return result;
-	}
-
-	/**
-	 * 获取下一个星期日期
-	 * 
-	 * @return
-	 */
-	public static String getNextWeek(int step) {
-		String result = "";
-		Calendar calendar = Calendar.getInstance();
-		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		int dayOweek = calendar.get(Calendar.DAY_OF_WEEK);
-		int diff = step - dayOweek;
-		calendar.set(Calendar.DAY_OF_MONTH, day + diff);
-		result = getTimeByPattern(calendar.getTime(), "yyyy年MM月dd日");
-		return result;
-	}
-
-	/**
-	 * 是否是周二
-	 * 
-	 * @return boolean true 是 false不是
-	 */
-	public static boolean isTuesday() {
-		Calendar calendar = Calendar.getInstance();
-		int dayOweek = calendar.get(Calendar.DAY_OF_WEEK);
-		return dayOweek == Calendar.TUESDAY;
+		long timestamp = targetDateTime.toEpochSecond(ZoneOffset.UTC);
+		return timestamp * 1000;
 	}
 
 	/**
@@ -386,36 +358,6 @@ public final class DateUtil {
 			today = 7;
 		}
 		return today;
-	}
-
-	/**
-	 * 返回当前日期（一个月中）
-	 * 
-	 * @param time
-	 * @return
-	 */
-	public static int getmonthofNow(Date time) {
-		try {
-			Calendar calendar = new GregorianCalendar();
-			calendar.setTime(time);
-			return calendar.get(Calendar.DAY_OF_MONTH);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		return 0;
-	}
-
-	/**
-	 * 返回当前时间戳后的指定时间戳
-	 * 
-	 * @param unit
-	 * @param expires
-	 * @return
-	 */
-	public static long getFutureTimeMillis(TimeUnit unit, long expires) {
-		long futureTimeMillis = 0;
-		futureTimeMillis = unit.toMillis(expires) + System.currentTimeMillis();
-		return futureTimeMillis;
 	}
 
 	/**
@@ -457,42 +399,6 @@ public final class DateUtil {
 		} else {
 			return "" + num;
 		}
-	}
-	/**
-	 * @Title: getLastSunday
-	 * @Description: 取当前日期之前的星期日
-	 * @return String 返回类型
-	 */
-	public static String getLastSunday() {
-		String val = "";
-		Calendar calendar = Calendar.getInstance();
-		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		int dayOweek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-		calendar.set(Calendar.DAY_OF_MONTH, day - dayOweek);
-		val = getTimeByPattern(calendar.getTime(), "yyyyMMdd");
-		return val;
-	}
-
-	/**
-	 * 是否为星期六
-	 * 
-	 * @return
-	 */
-	public static boolean isSaturday() {
-		Calendar calendar = Calendar.getInstance();
-		int dayOweek = calendar.get(Calendar.DAY_OF_WEEK);
-		return dayOweek == Calendar.SATURDAY;
-	}
-
-	/**
-	 * 是否为星期天
-	 * 
-	 * @return
-	 */
-	public static boolean isSunDay() {
-		Calendar calendar = Calendar.getInstance();
-		int dayOweek = calendar.get(Calendar.DAY_OF_WEEK);
-		return dayOweek == Calendar.SUNDAY;
 	}
 
 	/**
@@ -646,6 +552,19 @@ public final class DateUtil {
 		return (int) (System.currentTimeMillis()/1000);
 	}
 
+	/** 
+	 * 计算当前时间与特定时间之间相隔的天数（日期数）
+	 * @param timeMillis
+	 * @return
+	 */
+	public static int calcDays(long timeMillis) {
+
+		LocalDate currentDate = LocalDate.now();
+		Instant instant = Instant.ofEpochMilli(timeMillis);
+		LocalDate specificDate = instant.atZone(ZoneOffset.UTC).toLocalDate();
+		return (int) ChronoUnit.DAYS.between(specificDate, currentDate);
+	}
+
 	public static int calcBetweenDays(Date startDate, Date endDate) {
 		if (startDate != null && endDate != null) {
 			Date startDate0AM = getAM0Date(startDate);
@@ -659,6 +578,11 @@ public final class DateUtil {
 		}
 	}
 
+	/** 
+	 * 获取指定日期的0点时间
+	 * @param date
+	 * @return
+	 */
 	public static Date getAM0Date(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
