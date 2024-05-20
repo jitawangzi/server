@@ -47,7 +47,7 @@ public class ActivityModule extends BasePlayerModule {
 	}
 
 	private void initNewActivity() {
-		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(1);
+		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_CREATE);
 		if (openTypeList != null) {
 			for (ActivityConfig activityConfig : openTypeList) {
 				open(activityConfig.ID);
