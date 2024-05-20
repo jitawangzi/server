@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.activity.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class SevenDayHappyActivity extends ActivityBase {
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 	/** 活动哪天开启的 */
 	private int openDay;
+	/** 已经初始过任务的天 */
+	private List<Integer> initDays = new ArrayList<>();
 
 	@Override
 	public Message buildActivityInfo() {
