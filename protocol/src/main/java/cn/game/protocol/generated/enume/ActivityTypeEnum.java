@@ -9,6 +9,10 @@ public enum ActivityTypeEnum{
 
 	/** 首冲 */
 	FirstCharge(1,"FirstCharge","首冲"),
+	/** 七日狂欢 */
+	SevenDaysCarnival(2,"SevenDaysCarnival","七日狂欢"),
+	/** 7日签到 */
+	SevenDaysSignin(3,"SevenDaysSignin","7日签到"),
     ;
 	/** 活动类型 */
 	public final int ID ; 

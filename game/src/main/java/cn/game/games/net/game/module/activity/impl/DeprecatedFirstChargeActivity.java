@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.activity;
+package cn.game.games.net.game.module.activity.impl;
 
 import java.util.ArrayList;
 import java.util.List;

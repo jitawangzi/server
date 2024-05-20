@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 	public final int openType;		
 	/** 开启参数 */
 	public final int openParam;		
-	/** 重置类型： 0 不重置，一次性活动 1 日 2 周 3 月 */
+	/** 重置类型： 空着 ：不重置，一次性活动 1 日 2 周 3 月 */
 	public final int resetType;		
 	/** 达到此时间，显示活动 */
 	public final Date viewTime;		
@@ -32,6 +32,10 @@ import org.w3c.dom.Element;
 	public final List<Date> startTime;		
 	/** 活动结束时间，结束后活动不能参加，可以查看 */
 	public final List<Date> endTime;		
+	/** 持续时间类型 1：天 2：秒 针对非时间开启的活动 */
+	public final int durationType;		
+	/** 活动持续时间 活动整个开启时间 */
+	public final int duration;		
 	/** 距离下次开启活动的时间（秒），大于0表示周期性的开启 */
 	public final int period;		
 	/** 参加活动的等级限制 */
@@ -42,6 +46,8 @@ import org.w3c.dom.Element;
 	public final boolean disable;		
 	/** 玩家单人活动，或者多人参加的活动 */
 	public final boolean isMultiplayer;		
+	/** 图标路径 */
+	public final String IconPath;		
 
 	public ActivityConfig (Element element) throws Exception {
 	
@@ -54,7 +60,7 @@ import org.w3c.dom.Element;
 		openParam = Integer.parseInt(element.getAttribute("openParam") == null || element.getAttribute("openParam").length() == 0 ? "0"
 			: element.getAttribute("openParam")); // 开启参数
 		resetType = Integer.parseInt(element.getAttribute("resetType") == null || element.getAttribute("resetType").length() == 0 ? "0"
-			: element.getAttribute("resetType")); // 重置类型： 0 不重置，一次性活动 1 日 2 周 3 月
+			: element.getAttribute("resetType")); // 重置类型： 空着 ：不重置，一次性活动 1 日 2 周 3 月
 		String viewTimeTemp = element.getAttribute("viewTime"); // 达到此时间，显示活动
 		viewTime = viewTimeTemp != null && viewTimeTemp.length() > 0 ? DateUtil.parse(viewTimeTemp) : null;
 		
@@ -94,6 +100,10 @@ import org.w3c.dom.Element;
 		} else {
 			endTime = java.util.Collections.emptyList();
 		}
+		durationType = Integer.parseInt(element.getAttribute("durationType") == null || element.getAttribute("durationType").length() == 0 ? "0"
+			: element.getAttribute("durationType")); // 持续时间类型 1：天 2：秒 针对非时间开启的活动
+		duration = Integer.parseInt(element.getAttribute("duration") == null || element.getAttribute("duration").length() == 0 ? "0"
+			: element.getAttribute("duration")); // 活动持续时间 活动整个开启时间
 		period = Integer.parseInt(element.getAttribute("period") == null || element.getAttribute("period").length() == 0 ? "0"
 			: element.getAttribute("period")); // 距离下次开启活动的时间（秒），大于0表示周期性的开启
 		levelLimit = Integer.parseInt(element.getAttribute("levelLimit") == null || element.getAttribute("levelLimit").length() == 0 ? "0"
@@ -119,6 +129,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("disable")); // 是否禁用
 		isMultiplayer = Boolean.parseBoolean(element.getAttribute("isMultiplayer") == null || element.getAttribute("isMultiplayer").length() == 0 ? "false"
 			: element.getAttribute("isMultiplayer")); // 玩家单人活动，或者多人参加的活动
+		IconPath = element.getAttribute("IconPath"); // 图标路径
 	}
 	
 

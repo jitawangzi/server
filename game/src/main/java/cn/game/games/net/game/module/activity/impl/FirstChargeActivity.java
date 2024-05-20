@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.activity;
+package cn.game.games.net.game.module.activity.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +10,8 @@ import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.activity.ActivityBase;
+import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.FirstChargeManager;
@@ -26,6 +28,7 @@ import cn.game.util.DateUtil;
  */
 @ActivityType(type = ActivityTypeEnum.FirstCharge)
 public class FirstChargeActivity extends ActivityBase {
+	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 
 	/** key  ActivityiD  */
 	private Map<Integer, SingleCharge> chargeMap = new HashMap<Integer, SingleCharge>();
@@ -108,19 +111,6 @@ public class FirstChargeActivity extends ActivityBase {
 		singleCharge.getSelectedIndex().add(cid);
 		return PlayerHelper.addResources(player, firstChargeConfig.Item, OpType.FirstCharge);
 	}
-	@Override
-	public void setEvents(EventTypeEnum[] events) {
-
-	}
-
-	@Override
-	public void startUp() {
-	}
-
-	@Override
-	public void shutDown() {
-
-	}
 
 //	public SingleCharge getSingleCharge(int chargeId) {
 //		return chargeMap.get(chargeId);
@@ -129,6 +119,11 @@ public class FirstChargeActivity extends ActivityBase {
 	public List<RewardInfo> receive(int id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public EventTypeEnum[] getEventTypes() {
+		return events;
 	}
 }
 
