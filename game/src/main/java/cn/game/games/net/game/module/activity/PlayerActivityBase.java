@@ -32,8 +32,8 @@ public abstract class PlayerActivityBase extends ActivityBase {
 
 	@Override
 	public void init(int id, Player player, boolean isNew) {
-		super.init(id, null, isNew);
 		this.player = player;
+		super.init(id, null, isNew);
 	}
 
 	@Override

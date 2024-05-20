@@ -8,6 +8,8 @@ import com.google.protobuf.Message;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventHandler;
+import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -66,6 +68,9 @@ public abstract class ActivityBase implements EventHandler {
 	public void init(int id, Player player, boolean isNew) {
 
 //		ActivityStateManager.getInstance().registerEventHandler(events, this);
+		if (player != null) {
+			player.registerEventHandler(getEventTypes(), this);
+		}
 		this.id = id;
 		if (isNew) {
 			startUp();
@@ -87,6 +92,25 @@ public abstract class ActivityBase implements EventHandler {
 
 	public int getState() {
 		return state;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public long getEndTime() {
+		long endTime = 0 ; 
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		if (activityConfig.durationType > 0) {
+			if (activityConfig.durationType == 1) {
+//				endTime
+			} else if (activityConfig.durationType == 2) {
+				endTime = startTime + activityConfig.duration * 1000;
+			} else {
+
+			}
+		}
+		return startTime;
 	}
 
 }

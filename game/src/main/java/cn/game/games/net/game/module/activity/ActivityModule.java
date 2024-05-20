@@ -22,7 +22,6 @@ import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -65,24 +64,13 @@ public class ActivityModule extends BasePlayerModule {
 	 * @return 
 	 */
 	public ActivityInfo buildActivityInfo(int id) {
+		// 已经开始过的
 		ActivityBase activityBase = activities.get(id);
 		if (activityBase != null) {
 			return activityBase.buildActivityInfo();
 		}
-		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
-		builder.setId(id);
-		int state = 0;
-		if (activityBase != null) {
-			state = activityBase.getState();
-		} else {
-			state = ActivityStateManager.getInstance().getState(id);
-		}
-		builder.setStateValue(state);
-		if (state == ActivityState.VIEW_VALUE) {
-			int openTimeRemaining = ActivityStateManager.getInstance().getOpenTimeRemaining(id);
-			builder.setStartTime(openTimeRemaining);
-		}
-		return builder.build();
+		// 尚未开始的
+		return ActivityStateManager.getInstance().buildActivityInfo(id);
 	}
 
 	/** 
@@ -112,6 +100,10 @@ public class ActivityModule extends BasePlayerModule {
 		for (ActivityBase activityBase : activities.values()) {
 			int cid = activityBase.getId();
 			ActivityConfig activityConfig = ActivityManager.instance().get(cid);
+			if (activityBase instanceof PlayerActivityBase) {
+				long startTime = activityBase.getStartTime();
+
+			}
 			// 活动已经彻底关闭了
 			if (!showList.contains(cid)) // 活动已经彻底关闭了
 			{

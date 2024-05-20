@@ -91,7 +91,7 @@ public class ShopHandler extends BaseHandler {
 		ShopHeishiRefreshRequest_15000005 req = (ShopHeishiRefreshRequest_15000005) message;
 		ShopHeishiRefreshResponse_15000006.Builder resp = ShopHeishiRefreshResponse_15000006.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.Passport)) {
+		if (!player.isFuncOpen(InitialUI.Shop)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
 			return;
 		}

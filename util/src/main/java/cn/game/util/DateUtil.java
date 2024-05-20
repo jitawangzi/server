@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -312,57 +314,22 @@ public final class DateUtil {
 	}
 
 	/**
-	 * 获取距离当前分钟
+	 * 获取n天后0点的毫秒时间戳
 	 * 
 	 * @param step
 	 * @return
 	 */
-	public static String getNextMinute(int step) {
-		String result = "";
-		Calendar calendar = Calendar.getInstance();
-		int min = calendar.get(Calendar.MINUTE);
-		calendar.set(Calendar.MINUTE, min + step);
-		result = getTimeByPattern(calendar.getTime(), "yyyy年MM月dd日HH时mm分");
-		return result;
-	}
+	public static long nextDayStartTime(int step) {
 
-	/**
-	 * 获取距离当前时间
-	 * 
-	 * @param step
-	 * @return
-	 */
-	public static String getNextHour(int step) {
-		String result = "";
-		Calendar calendar = Calendar.getInstance();
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-		calendar.set(Calendar.HOUR_OF_DAY, hour + step);
-		result = getTimeByPattern(calendar.getTime(), "yyyy年MM月dd日HH时");
-		return result;
-	}
+		// 获取当前日期
+		LocalDate currentDate = LocalDate.now();
 
-	/**
-	 * 获取下一天日期
-	 * 
-	 * @param step
-	 * @return
-	 */
-	public static String getNextDay(int step) {
-		String result = "";
-		Calendar calendar = Calendar.getInstance();
-		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		calendar.set(Calendar.DAY_OF_MONTH, day + step);
-		result = getTimeByPattern(calendar.getTime(), "yyyy年MM月dd日");
-		return result;
-	}
+		LocalDate targetDate = currentDate.plusDays(step);
 
-	public static String getNextDay2(int step) {
-		String result = "";
-		Calendar calendar = Calendar.getInstance();
-		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		calendar.set(Calendar.DAY_OF_MONTH, day + step);
-		result = getTimeByPattern(calendar.getTime(), "yyyy-MM-dd");
-		return result;
+		// 设置时间为 0 点 0 分 0 秒
+		LocalDateTime targetDateTime = targetDate.atStartOfDay();
+		// 获取时间戳（秒）
+		return targetDateTime.toEpochSecond(java.time.ZoneOffset.UTC);
 	}
 
 	/**
@@ -491,30 +458,6 @@ public final class DateUtil {
 			return "" + num;
 		}
 	}
-
-	/**
-	 * @Title: getMinute
-	 * @Description: 返回两时间戳之间的分钟数
-	 * @param start
-	 * @param end
-	 * @return long 返回类型
-	 */
-	public static long getMinute(Date start, Date end) {
-		long ret = 0;
-		long time1 = start.getTime();
-		long time2 = end.getTime();
-		long remainingTime = time2 - time1;
-		if (remainingTime > 0) {
-			long days = remainingTime / DAY_MILLIS;
-			long hours = (remainingTime % DAY_MILLIS) / HOUR_MILLIS;
-			long minutes = (remainingTime % HOUR_MILLIS) / MINUTE_MILLIS;
-			ret += days * 24 * 60;
-			ret += hours * 60;
-			ret += minutes;
-		}
-		return ret;
-	}
-
 	/**
 	 * @Title: getLastSunday
 	 * @Description: 取当前日期之前的星期日
