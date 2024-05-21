@@ -458,6 +458,33 @@ public class QuestModule extends BasePlayerModule {
 		return quest;
 	}
 
+	/** 
+	 * 关闭某个活动
+	 * @param id
+	 * @param notify
+	 */
+	public void close(int id, boolean notify) {
+		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
+
+		int group = questConfig.Type;
+		Map<Integer, Quest> map = this.quests.get(group);
+		if (map != null) {
+			Quest remove = map.remove(id);
+			if (remove != null) {
+				remove.close();
+				if (notify) {
+					QuestHelper.notifyQuestChange(remove, UpdateType.DELETE);
+				}
+			}
+		}
+	}
+
+	public void close(int[] ids, boolean notify) {
+		for (int i : ids) {
+			close(i, notify);
+		}
+	}
+
 	public void open(QuestConfig questConfig, boolean notify) {
 
 		open(questConfig.ID, QuestHelper.SHOW, notify);

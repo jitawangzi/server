@@ -46,7 +46,7 @@ public abstract class ActivityBase implements EventHandler {
 	}
 
 	/** 
-	 * 当活动状态修改时，同步活动数据
+	 * 当活动状态修改时，同步当前活动数据
 	 */
 	public abstract void syncActivityInfo();
 
@@ -101,6 +101,10 @@ public abstract class ActivityBase implements EventHandler {
 
 	public long getStartTime() {
 		return startTime;
+	}
+
+	public void setState(int state) {
+		this.state = state;
 	}
 
 	/** 

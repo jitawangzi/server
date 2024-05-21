@@ -24,6 +24,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -94,9 +95,26 @@ public class ActivityModule extends BasePlayerModule {
 
 	@Override
 	public void initFromDbAfter() {
+		checkExpired();
+		// 这里注意一个活动，多开启时间的
+		for (ActivityBase activityBase : activities.values()) {
+			activityBase.init(activityBase.getId(), player, false);
+		}
+		// 可能符合开启条件的新任务。
+		Set<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
+		for (Integer id : openList) {
+			if (!activities.containsKey(id)) {
+				open(id);
+			}
+		}
+	};
+
+	/** 
+	 * 关闭过期的活动
+	 */
+	private void checkExpired() {
 		long nowTime = System.currentTimeMillis();
 		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
-		Set<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
 		// 这里注意一个活动，多开启时间的
 		List<Integer> deleteIds = new ArrayList<>();
 		for (ActivityBase activityBase : activities.values()) {
@@ -106,30 +124,27 @@ public class ActivityModule extends BasePlayerModule {
 				// 活动已经彻底关闭了
 				if (!showList.contains(cid)) // 活动已经彻底关闭了
 				{
-//					delete(cid);
 					deleteIds.add(cid);
-					continue;
 				}
 			} else {
 				long endTime = activityBase.getEndTime();
-				if (endTime > 0 && endTime < nowTime) {
-					deleteIds.add(cid);
-					continue;
+				if (endTime > 0) {
+					long remaining = endTime - nowTime;
+					if (remaining > 0) {
+						player.setTimerTask(remaining, r -> {
+							destroy(cid);
+						});
+					} else {
+						deleteIds.add(cid);
+					}
+
 				}
 			}
-//			ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(), player);
-			activityBase.init(cid, player, false);
 		}
-		for (Integer integer : deleteIds) {
-			activities.remove(integer);
+		for (Integer id : deleteIds) {
+			destroy(id, false);
 		}
-		// 可能符合开启条件的新任务。
-		for (Integer integer : openList) {
-			if (!activities.containsKey(integer)) {
-				open(integer);
-			}
-		}
-	};
+	}
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -154,11 +169,15 @@ public class ActivityModule extends BasePlayerModule {
 	}
 
 
+	/** 
+	 * 关闭活动，依然保留活动数据
+	 * @param id
+	 */
 	public void shutdown(int id) {
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		if (activityConfig.isMultiplayer && player != null) {
-			return ;
-		}
+//		if (activityConfig.isMultiplayer && player != null) {
+//			return ;
+//		}
 		ActivityBase activityBase = this.activities.get(id);
 		if (activityBase != null) {
 			activityBase.shutDown();
@@ -169,17 +188,22 @@ public class ActivityModule extends BasePlayerModule {
 	}
 
 
+	/** 
+	 * 彻底销毁活动，删除数据， 不再展示。 
+	 * @param id
+	 */
 	public void destroy(int id) {
-//		Player player = PlayerManager.getInstance().getPlayer(playerId);
-//		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-//		if (!activityConfig.isMultiplayer && player != null) {
-//			return ;
-//		}
+		destroy(id, true);
+	}
 
+	public void destroy(int id, boolean notify) {
 		ActivityBase activityBase = this.activities.remove(id);
 		if (activityBase != null) {
+			if (notify) {
+				activityBase.setState(ActivityState.NONE_VALUE);
+				activityBase.syncActivityInfo();
+			}
 			activityBase.destroy();
-			delete(id);
 		}
 	}
 
@@ -251,6 +275,7 @@ public class ActivityModule extends BasePlayerModule {
 			break;
 		}
 		case NewDay: {
+			checkExpired();
 			newDay();
 			break;
 		}
@@ -353,6 +378,11 @@ public class ActivityModule extends BasePlayerModule {
 		}
 		// 重载已开启过的爬塔活动数据
 //		reloadClimbingTowerData();
+	}
+
+	@Override
+	protected int getInitOrder() {
+		return INIT_PRIORITY_LOW;
 	}
 
 }

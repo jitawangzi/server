@@ -35,6 +35,7 @@ public class NewDayJob implements Job
 			Player player = PlayerManager.getInstance().getPlayer(gameClient.getPlayerId());
 			PlayerHelper.addTask(gameClient.getPlayerId(), r -> {
 				PlayerHelper.refresh(player);
+				// TODO 通知客户端跨天了， 使用登陆来刷新所有数据。
 			});
 		}
 	}

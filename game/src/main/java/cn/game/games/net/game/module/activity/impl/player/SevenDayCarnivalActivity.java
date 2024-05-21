@@ -50,6 +50,19 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 		openDay(1);
 	}
 
+	@Override
+	public void destroy() {
+		// 移除七日任务
+		QuestModule questModule = player.getQuestModule();
+		for (Integer day : initDays) {
+			SevenDaysCarnivalConfig config = SevenDaysCarnivalManager.instance().getUITypeDay(ActivityHelper.SEVENDAYS_CARNIVAL, day);
+			if (config == null) {
+				return;
+			}
+			questModule.close(config.TaskID, false);
+		}
+	};
+
 	private void openDay(int day) {
 		SevenDaysCarnivalConfig config = SevenDaysCarnivalManager.instance().getUITypeDay(ActivityHelper.SEVENDAYS_CARNIVAL, day);
 		if (config == null) {
