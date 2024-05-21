@@ -81,4 +81,19 @@ message SevenDaysQuest{
 	repeated QuestInfo quests = 2 ;  // 当前天数里面的任务。
 }
 
+// 七日签到,查看七日签到数据
+message ActivitySevenDaysSigninInfoRequest_11000024{
+   uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+}
+message ActivitySevenDaysSigninInfoResponse_11000025{
+   uint32 day = 1; 		//领完第几天的奖励
+   bool canSignin = 2; 	//是否可以领签到奖励，当天领完就不能再领了。隔天才能领下一天的
+}
 
+// 七日签到,签到领奖
+message ActivitySevenDaysSigninRequest_11000026{
+   uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+}
+message ActivitySevenDaysSigninResponse_11000027{
+   repeated RewardInfo rewards = 2;  // 获得的物品
+}

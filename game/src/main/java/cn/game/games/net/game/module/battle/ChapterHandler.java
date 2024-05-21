@@ -223,11 +223,11 @@ public class ChapterHandler extends BaseHandler {
 		for (int i = 0; i < indexList.size(); i++) {
 			int index = indexList.get(i);
 			int id = idList.get(i);
-			boolean pass = chapterModule.isExploreChapterPass(id);
-			if (!pass) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-				return;
-			}
+//			boolean pass = chapterModule.isExploreChapterPass(id);
+//			if (!pass) {
+//				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+//				return;
+//			}
 			Chapter chapter = chapterModule.getChapter(id);
 			List<Integer> rewards = chapter.getRewards();
 			if (rewards.contains(index)) {

@@ -51,6 +51,9 @@ public enum OpType{
 	ChapterGift(117, "章节礼包"),
 
 	FundPass(120, "通行证"),
+	SevenDaysSignin(121, "七日签到活动"),
+
+	ItemChoose(130, "自选道具"),
 
 	BattleStart(200, "战役开始"),
 

@@ -32,6 +32,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int ActivityFirstChargeRewardResponse_11000013 = 0x11000013;    
 	public final static int ActivitySevenDaysCarnivalRequest_11000020 = 0x11000020;    //七日狂欢  
 	public final static int ActivitySevenDaysCarnivalResponse_11000021 = 0x11000021;    
+	public final static int ActivitySevenDaysSigninInfoRequest_11000024 = 0x11000024;    //七日签到,查看七日签到数据  
+	public final static int ActivitySevenDaysSigninInfoResponse_11000025 = 0x11000025;    
+	public final static int ActivitySevenDaysSigninRequest_11000026 = 0x11000026;    //七日签到,签到领奖  
+	public final static int ActivitySevenDaysSigninResponse_11000027 = 0x11000027;    
 	public final static int BattleFieldStartRequest_13000001 = 0x13000001;    //开始关卡战斗请求  
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
 	public final static int BattleFieldEndRequest_13000003 = 0x13000003;    //结束关卡战斗请求  
@@ -96,6 +100,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HeroLevelResetResponse_16000008 = 0x16000008;    //客户端看看自己读表返还升级的材料  
 	public final static int HeroQualityResetRequest_16000011 = 0x16000011;    //英雄品质重置  
 	public final static int HeroQualityResetResponse_16000012 = 0x16000012;    
+	public final static int ItemUseRequest_0b000003 = 0x0b000003;    //使用道具  
+	public final static int ItemUseResponse_0b000004 = 0x0b000004;    //使用道具后可能会给资源，道具等。  
 	public final static int MailListRequest_12000001 = 0x12000001;    //请求邮件列表。  
 	public final static int MailListResponse_12000002 = 0x12000002;    //邮件列表数据  
 	public final static int MailSeeRequest_12000003 = 0x12000003;    //查看未读邮件  
@@ -246,6 +252,14 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(ActivitySevenDaysCarnivalResponse_11000021, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(ActivitySevenDaysSigninInfoRequest_11000024, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninInfoRequest_11000024.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySevenDaysSigninInfoResponse_11000025, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninInfoResponse_11000025.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySevenDaysSigninRequest_11000026, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninRequest_11000026.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySevenDaysSigninResponse_11000027, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninResponse_11000027.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(BattleFieldStartRequest_13000001, cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleFieldStartResponse_13000002, cn.game.protocol.protobuf.BattleMsg.BattleFieldStartResponse_13000002.getDefaultInstance()
@@ -373,6 +387,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(HeroQualityResetRequest_16000011, cn.game.protocol.protobuf.HeroMsg.HeroQualityResetRequest_16000011.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroQualityResetResponse_16000012, cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ItemUseRequest_0b000003, cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ItemUseResponse_0b000004, cn.game.protocol.protobuf.ItemMsg.ItemUseResponse_0b000004.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(MailListRequest_12000001, cn.game.protocol.protobuf.MailMsg.MailListRequest_12000001.getDefaultInstance()
 				.getParserForType());
@@ -638,6 +656,10 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("ActivityFirstChargeRewardResponse_11000013", 0x11000013);
 		nameIdMap.put("ActivitySevenDaysCarnivalRequest_11000020", 0x11000020);
 		nameIdMap.put("ActivitySevenDaysCarnivalResponse_11000021", 0x11000021);
+		nameIdMap.put("ActivitySevenDaysSigninInfoRequest_11000024", 0x11000024);
+		nameIdMap.put("ActivitySevenDaysSigninInfoResponse_11000025", 0x11000025);
+		nameIdMap.put("ActivitySevenDaysSigninRequest_11000026", 0x11000026);
+		nameIdMap.put("ActivitySevenDaysSigninResponse_11000027", 0x11000027);
 		nameIdMap.put("BattleFieldStartRequest_13000001", 0x13000001);
 		nameIdMap.put("BattleFieldStartResponse_13000002", 0x13000002);
 		nameIdMap.put("BattleFieldEndRequest_13000003", 0x13000003);
@@ -702,6 +724,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("HeroLevelResetResponse_16000008", 0x16000008);
 		nameIdMap.put("HeroQualityResetRequest_16000011", 0x16000011);
 		nameIdMap.put("HeroQualityResetResponse_16000012", 0x16000012);
+		nameIdMap.put("ItemUseRequest_0b000003", 0x0b000003);
+		nameIdMap.put("ItemUseResponse_0b000004", 0x0b000004);
 		nameIdMap.put("MailListRequest_12000001", 0x12000001);
 		nameIdMap.put("MailListResponse_12000002", 0x12000002);
 		nameIdMap.put("MailSeeRequest_12000003", 0x12000003);

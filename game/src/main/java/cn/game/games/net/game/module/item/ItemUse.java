@@ -1,28 +1,33 @@
 package cn.game.games.net.game.module.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.module.award.RewardItem;
-import cn.game.protocol.generated.enume.ResourceEnum;
+import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.ItemConfig;
+import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.ItemManager;
+import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IndexedEnum;
 import cn.game.util.IndexedEnumUtil;
 
 public enum ItemUse implements IndexedEnum {
-    EXP(2) {
+	HeroChoose(4) {
         @Override
-        public List<RewardItem> use(Player player, int id, int num, int param) {
-//            PlayerHelper.addExp(player, num * param);
-            List<RewardItem> rewardItems = new ArrayList<>();
-            RewardItem rewardItem = new RewardItem();
-            rewardItem.setId(ResourceEnum.Exp.getId());
-            rewardItem.setCount(num * param);
-            rewardItems.add(rewardItem);
-            return rewardItems;
-        }
-    }
-    ;
+		public List<RewardInfo> use(Player player, int id, int num, int param) {
+        	if (num != 1) {
+				throw new IllegalArgumentException("请求选择hero道具数量应该是1");
+			}
+			ItemConfig itemConfig = ItemManager.instance().get(id);
+			HeroConfig heroConfig = HeroManager.instance().get(param);
+			if (itemConfig.Para != heroConfig.InitialQuality) {
+				throw new IllegalArgumentException("请求选择hero 的id 和品质不符。");
+			}
+			return player.getHeroModule().addReward(param, 1, OpType.ItemChoose);
+		}
+	};
+
     private final int index;
 
     private ItemUse(int index) {
@@ -34,7 +39,7 @@ public enum ItemUse implements IndexedEnum {
         return index;
     }
 
-    public abstract List<RewardItem> use(Player player, int id, int num, int param);
+	public abstract List<RewardInfo> use(Player player, int id, int num, int param);
 
     public static final List<ItemUse> lists = IndexedEnumUtil.toIndexes(ItemUse.values());
 

@@ -1,0 +1,19 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+import "RewardMsg.proto" ;
+//import "BaseMsg.proto" ;
+
+// 道具相关协议
+//使用道具
+message ItemUseRequest_0b000003{
+     uint32 id = 1;				//道具ID（Item表id）
+     uint32 count = 2;		    //使用数量
+     uint32 param = 3;          // 道具使用参数，比如当道具的ItemType为4任选英雄道具时，为选择的英雄id
+}
+
+// 使用道具后可能会给资源，道具等。
+message ItemUseResponse_0b000004{
+	 repeated RewardInfo reward  = 1; // 获取的东西
+}

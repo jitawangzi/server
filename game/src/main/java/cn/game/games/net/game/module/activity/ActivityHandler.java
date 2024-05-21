@@ -13,6 +13,7 @@ import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
 import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivity;
+import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -26,6 +27,10 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityListResponse_11000002;
 import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020;
 import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021;
+import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninInfoRequest_11000024;
+import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninInfoResponse_11000025;
+import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninRequest_11000026;
+import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninResponse_11000027;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
@@ -64,6 +69,12 @@ public class ActivityHandler extends BaseHandler {
 		putInvoker(PbProtocol.ActivitySevenDaysCarnivalRequest_11000020, (client, message) -> {
 			sevenDaysCarnival(client, message);
 		});
+		putInvoker(PbProtocol.ActivitySevenDaysSigninInfoRequest_11000024, (client, message) -> {
+			sevenDaysSigninInfo(client, message);
+		});
+		putInvoker(PbProtocol.ActivitySevenDaysSigninRequest_11000026, (client, message) -> {
+			sevenDaysSignin(client, message);
+		});
 	}
 
 	private void empty(NetClient client, Object message) {
@@ -79,6 +90,47 @@ public class ActivityHandler extends BaseHandler {
 		client.sendProtocol(resp);
 	}
 
+	private void sevenDaysSigninInfo(NetClient client, Object message) {
+		ActivitySevenDaysSigninInfoRequest_11000024 req = (ActivitySevenDaysSigninInfoRequest_11000024) message;
+		ActivitySevenDaysSigninInfoResponse_11000025 resp = ActivitySevenDaysSigninInfoResponse_11000025.getDefaultInstance();
+		int id = req.getId();
+		ActivityConfig activityConfig = ActivityManager.instance().getNullable(id);
+		if (activityConfig == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
+			return;
+		}
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		SevenDaysSignin activityBase = (SevenDaysSignin) player.getActivityModule().get(id);
+		if (activityBase == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		client.sendProtocol(activityBase.buildActivityShowInfo());
+	}
+
+	private void sevenDaysSignin(NetClient client, Object message) {
+		ActivitySevenDaysSigninRequest_11000026 req = (ActivitySevenDaysSigninRequest_11000026) message;
+		ActivitySevenDaysSigninResponse_11000027.Builder resp = ActivitySevenDaysSigninResponse_11000027.newBuilder();
+		int id = req.getId();
+		ActivityConfig activityConfig = ActivityManager.instance().getNullable(id);
+		if (activityConfig == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+			return;
+		}
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		SevenDaysSignin activityBase = (SevenDaysSignin) player.getActivityModule().get(id);
+		if (activityBase == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		if (activityBase.isSignin()) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		List<RewardInfo> receive = activityBase.receive(0);
+		resp.addAllRewards(receive);
+		client.sendProtocol(resp.build());
+	}
 	private void sevenDaysCarnival(NetClient client, Object message) {
 		ActivitySevenDaysCarnivalRequest_11000020 req = (ActivitySevenDaysCarnivalRequest_11000020) message;
 		ActivitySevenDaysCarnivalResponse_11000021.Builder resp = ActivitySevenDaysCarnivalResponse_11000021.newBuilder();

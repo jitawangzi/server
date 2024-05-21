@@ -50,6 +50,11 @@ public abstract class ActivityBase implements EventHandler {
 	 */
 	public abstract void syncActivityInfo();
 
+	/** 
+	 * 领取活动奖励，看情况使用，适合活动奖励比较简单的情况。 
+	 * @param id
+	 * @return
+	 */
 	public abstract List<RewardInfo> receive(int id);
 
 	/** 活动开始，可以参加活动 */
