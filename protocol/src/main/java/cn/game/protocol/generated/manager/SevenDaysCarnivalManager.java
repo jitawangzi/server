@@ -23,8 +23,8 @@ public class SevenDaysCarnivalManager extends ResourceListener {
 	private static SevenDaysCarnivalManager instance = new SevenDaysCarnivalManager();
 	private static final String xmlFileName = "SevenDaysCarnival";
 	
-	/** 总数据，按id取值 */
-	private Map<Integer, SevenDaysCarnivalConfig> sevendayscarnivals = new HashMap<>();
+	/** 唯一索引 */
+	private Map<Long,SevenDaysCarnivalConfig> TypeDays = new HashMap<>();
 
 	public static SevenDaysCarnivalManager instance() {
 		return instance;
@@ -32,35 +32,34 @@ public class SevenDaysCarnivalManager extends ResourceListener {
 	private SevenDaysCarnivalManager() {
 		WatchServiceManager.getInstance().register(this);
 	}
-	/**
-	 * 根据id获取数据，一般用这个方法，如果数据不存在，一般是配置错误，直接抛出异常
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public SevenDaysCarnivalConfig get(int id) {
-		SevenDaysCarnivalConfig config = this.sevendayscarnivals.get(id);
-		if (config == null) { 
-			throw new NullPointerException("【SevenDaysCarnival】表的" + "id【" + id + "】不存在"); 
-		}
-		return config;
-	}
-	/**
-	 * 根据id获取数据，允许返回null
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public SevenDaysCarnivalConfig getNullable(int id) {
-		return this.sevendayscarnivals.get(id);
-	}
 
+	private long hashIndexUnique1(int Type,int Day) {
+		if (Type > 999999) {
+			throw new IllegalArgumentException("Type 唯一索引范围超过最大值999999");
+		}
+		if (Day > 999999) {
+			throw new IllegalArgumentException("Day 唯一索引范围超过最大值999999");
+		}
+		long result = 0;
+		result = result | (long) Type << 43;
+		result = result | (long) Day << 22;
+		return result;
+	}
+	/**
+	 * 根据唯一索引获取一条数据
+	 * 
+	 * @param  Type Day
+	 * @return
+	 */
+	public SevenDaysCarnivalConfig getUITypeDay(int Type,int Day) {
+		return this.TypeDays.get(hashIndexUnique1(Type,Day));
+	}
 	/**
 	 * 获取所有数据
 	 * @return
 	 */
 	public Collection<SevenDaysCarnivalConfig> list() {
-		return this.sevendayscarnivals.values();
+		return TypeDays.values();
 	}
 	@Override
 	public void load() {
@@ -69,18 +68,18 @@ public class SevenDaysCarnivalManager extends ResourceListener {
 			Document document = XmlUtils.load(classLoader.getResourceAsStream("xml/" + xmlFileName + ".xml"));
 			Element[] list = XmlUtils.getChildrenByName(document.getDocumentElement(), xmlFileName);
 			
-			Map<Integer, SevenDaysCarnivalConfig> sevendayscarnivals = new HashMap<>();
 			for (Element e : list) {
 				SevenDaysCarnivalConfig sevendayscarnival = new SevenDaysCarnivalConfig(e);
-				SevenDaysCarnivalConfig old = sevendayscarnivals.put(sevendayscarnival.ID, sevendayscarnival);
-				if (old != null) {
-					throw new IllegalArgumentException("[SevenDaysCarnivalConfig]表存在重复的数据id： " + old.ID);
+  				Long hashIndexUnique1 = hashIndexUnique1(sevendayscarnival.Type,sevendayscarnival.Day) ; 
+				SevenDaysCarnivalConfig old1 = TypeDays.put(hashIndexUnique1 ,sevendayscarnival);
+				if (old1 != null) {
+					throw new IllegalArgumentException("[SevenDaysCarnivalConfig]表重复的唯一索引[Type,Day] , 重复id : " + old1.ID +" "  + sevendayscarnival.ID);
 				}
 			}			
 
-			this.sevendayscarnivals = com.google.common.collect.ImmutableMap.copyOf(sevendayscarnivals);
+  			this.TypeDays = com.google.common.collect.ImmutableMap.copyOf(TypeDays);
 
-			log.info("load SevenDaysCarnivalConfig size[{}]", sevendayscarnivals.size());
+  			log.info("load SevenDaysCarnivalConfig size[{}]",this.TypeDays.size()) ;
 
 		} catch (Exception e) {
 			throw new RuntimeException("load SevenDaysCarnivalConfig error", e);

@@ -45,6 +45,11 @@ public abstract class ActivityBase implements EventHandler {
 		return builder.build();
 	}
 
+	/** 
+	 * 当活动状态修改时，同步活动数据
+	 */
+	public abstract void syncActivityInfo();
+
 	public abstract List<RewardInfo> receive(int id);
 
 	/** 活动开始，可以参加活动 */
@@ -71,9 +76,6 @@ public abstract class ActivityBase implements EventHandler {
 	public void init(int id, Player player, boolean isNew) {
 
 //		ActivityStateManager.getInstance().registerEventHandler(events, this);
-		if (player != null) {
-			player.registerEventHandler(getEventTypes(), this);
-		}
 		this.id = id;
 		if (isNew) {
 			startUp();

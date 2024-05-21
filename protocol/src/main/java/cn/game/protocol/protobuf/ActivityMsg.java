@@ -7341,6 +7341,2394 @@ public final class ActivityMsg {
 
   }
 
+  public interface ActivitySevenDaysCarnivalRequest_11000020OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ActivitySevenDaysCarnivalRequest_11000020)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+  }
+  /**
+   * <pre>
+   * 七日狂欢
+   * </pre>
+   *
+   * Protobuf type {@code Protos.ActivitySevenDaysCarnivalRequest_11000020}
+   */
+  public static final class ActivitySevenDaysCarnivalRequest_11000020 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ActivitySevenDaysCarnivalRequest_11000020)
+      ActivitySevenDaysCarnivalRequest_11000020OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ActivitySevenDaysCarnivalRequest_11000020.newBuilder() to construct.
+    private ActivitySevenDaysCarnivalRequest_11000020(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ActivitySevenDaysCarnivalRequest_11000020() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ActivitySevenDaysCarnivalRequest_11000020();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActivitySevenDaysCarnivalRequest_11000020(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 other = (cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 七日狂欢
+     * </pre>
+     *
+     * Protobuf type {@code Protos.ActivitySevenDaysCarnivalRequest_11000020}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ActivitySevenDaysCarnivalRequest_11000020)
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 build() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 result = new cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020(this);
+        result.id_ = id_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ActivitySevenDaysCarnivalRequest_11000020)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ActivitySevenDaysCarnivalRequest_11000020)
+    private static final cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ActivitySevenDaysCarnivalRequest_11000020>
+        PARSER = new com.google.protobuf.AbstractParser<ActivitySevenDaysCarnivalRequest_11000020>() {
+      @java.lang.Override
+      public ActivitySevenDaysCarnivalRequest_11000020 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ActivitySevenDaysCarnivalRequest_11000020(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ActivitySevenDaysCarnivalRequest_11000020> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ActivitySevenDaysCarnivalRequest_11000020> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ActivitySevenDaysCarnivalResponse_11000021OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ActivitySevenDaysCarnivalResponse_11000021)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest> 
+        getSevenDayList();
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest getSevenDay(int index);
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    int getSevenDayCount();
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder> 
+        getSevenDayOrBuilderList();
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder getSevenDayOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code Protos.ActivitySevenDaysCarnivalResponse_11000021}
+   */
+  public static final class ActivitySevenDaysCarnivalResponse_11000021 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ActivitySevenDaysCarnivalResponse_11000021)
+      ActivitySevenDaysCarnivalResponse_11000021OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ActivitySevenDaysCarnivalResponse_11000021.newBuilder() to construct.
+    private ActivitySevenDaysCarnivalResponse_11000021(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ActivitySevenDaysCarnivalResponse_11000021() {
+      sevenDay_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ActivitySevenDaysCarnivalResponse_11000021();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActivitySevenDaysCarnivalResponse_11000021(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                sevenDay_ = new java.util.ArrayList<cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              sevenDay_.add(
+                  input.readMessage(cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          sevenDay_ = java.util.Collections.unmodifiableList(sevenDay_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.Builder.class);
+    }
+
+    public static final int SEVENDAY_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest> sevenDay_;
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest> getSevenDayList() {
+      return sevenDay_;
+    }
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder> 
+        getSevenDayOrBuilderList() {
+      return sevenDay_;
+    }
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    @java.lang.Override
+    public int getSevenDayCount() {
+      return sevenDay_.size();
+    }
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest getSevenDay(int index) {
+      return sevenDay_.get(index);
+    }
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder getSevenDayOrBuilder(
+        int index) {
+      return sevenDay_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < sevenDay_.size(); i++) {
+        output.writeMessage(1, sevenDay_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < sevenDay_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, sevenDay_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 other = (cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021) obj;
+
+      if (!getSevenDayList()
+          .equals(other.getSevenDayList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getSevenDayCount() > 0) {
+        hash = (37 * hash) + SEVENDAY_FIELD_NUMBER;
+        hash = (53 * hash) + getSevenDayList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.ActivitySevenDaysCarnivalResponse_11000021}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ActivitySevenDaysCarnivalResponse_11000021)
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.class, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getSevenDayFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (sevenDayBuilder_ == null) {
+          sevenDay_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          sevenDayBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 build() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 result = new cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021(this);
+        int from_bitField0_ = bitField0_;
+        if (sevenDayBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            sevenDay_ = java.util.Collections.unmodifiableList(sevenDay_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.sevenDay_ = sevenDay_;
+        } else {
+          result.sevenDay_ = sevenDayBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.getDefaultInstance()) return this;
+        if (sevenDayBuilder_ == null) {
+          if (!other.sevenDay_.isEmpty()) {
+            if (sevenDay_.isEmpty()) {
+              sevenDay_ = other.sevenDay_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureSevenDayIsMutable();
+              sevenDay_.addAll(other.sevenDay_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.sevenDay_.isEmpty()) {
+            if (sevenDayBuilder_.isEmpty()) {
+              sevenDayBuilder_.dispose();
+              sevenDayBuilder_ = null;
+              sevenDay_ = other.sevenDay_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              sevenDayBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getSevenDayFieldBuilder() : null;
+            } else {
+              sevenDayBuilder_.addAllMessages(other.sevenDay_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest> sevenDay_ =
+        java.util.Collections.emptyList();
+      private void ensureSevenDayIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          sevenDay_ = new java.util.ArrayList<cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest>(sevenDay_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder> sevenDayBuilder_;
+
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest> getSevenDayList() {
+        if (sevenDayBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(sevenDay_);
+        } else {
+          return sevenDayBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public int getSevenDayCount() {
+        if (sevenDayBuilder_ == null) {
+          return sevenDay_.size();
+        } else {
+          return sevenDayBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest getSevenDay(int index) {
+        if (sevenDayBuilder_ == null) {
+          return sevenDay_.get(index);
+        } else {
+          return sevenDayBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder setSevenDay(
+          int index, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest value) {
+        if (sevenDayBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSevenDayIsMutable();
+          sevenDay_.set(index, value);
+          onChanged();
+        } else {
+          sevenDayBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder setSevenDay(
+          int index, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder builderForValue) {
+        if (sevenDayBuilder_ == null) {
+          ensureSevenDayIsMutable();
+          sevenDay_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          sevenDayBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder addSevenDay(cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest value) {
+        if (sevenDayBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSevenDayIsMutable();
+          sevenDay_.add(value);
+          onChanged();
+        } else {
+          sevenDayBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder addSevenDay(
+          int index, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest value) {
+        if (sevenDayBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSevenDayIsMutable();
+          sevenDay_.add(index, value);
+          onChanged();
+        } else {
+          sevenDayBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder addSevenDay(
+          cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder builderForValue) {
+        if (sevenDayBuilder_ == null) {
+          ensureSevenDayIsMutable();
+          sevenDay_.add(builderForValue.build());
+          onChanged();
+        } else {
+          sevenDayBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder addSevenDay(
+          int index, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder builderForValue) {
+        if (sevenDayBuilder_ == null) {
+          ensureSevenDayIsMutable();
+          sevenDay_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          sevenDayBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder addAllSevenDay(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest> values) {
+        if (sevenDayBuilder_ == null) {
+          ensureSevenDayIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, sevenDay_);
+          onChanged();
+        } else {
+          sevenDayBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder clearSevenDay() {
+        if (sevenDayBuilder_ == null) {
+          sevenDay_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          sevenDayBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public Builder removeSevenDay(int index) {
+        if (sevenDayBuilder_ == null) {
+          ensureSevenDayIsMutable();
+          sevenDay_.remove(index);
+          onChanged();
+        } else {
+          sevenDayBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder getSevenDayBuilder(
+          int index) {
+        return getSevenDayFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder getSevenDayOrBuilder(
+          int index) {
+        if (sevenDayBuilder_ == null) {
+          return sevenDay_.get(index);  } else {
+          return sevenDayBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder> 
+           getSevenDayOrBuilderList() {
+        if (sevenDayBuilder_ != null) {
+          return sevenDayBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(sevenDay_);
+        }
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder addSevenDayBuilder() {
+        return getSevenDayFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder addSevenDayBuilder(
+          int index) {
+        return getSevenDayFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>repeated .Protos.SevenDaysQuest sevenDay = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder> 
+           getSevenDayBuilderList() {
+        return getSevenDayFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder> 
+          getSevenDayFieldBuilder() {
+        if (sevenDayBuilder_ == null) {
+          sevenDayBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder>(
+                  sevenDay_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          sevenDay_ = null;
+        }
+        return sevenDayBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ActivitySevenDaysCarnivalResponse_11000021)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ActivitySevenDaysCarnivalResponse_11000021)
+    private static final cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ActivitySevenDaysCarnivalResponse_11000021>
+        PARSER = new com.google.protobuf.AbstractParser<ActivitySevenDaysCarnivalResponse_11000021>() {
+      @java.lang.Override
+      public ActivitySevenDaysCarnivalResponse_11000021 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ActivitySevenDaysCarnivalResponse_11000021(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ActivitySevenDaysCarnivalResponse_11000021> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ActivitySevenDaysCarnivalResponse_11000021> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SevenDaysQuestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.SevenDaysQuest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 第几天。 1- 7
+     * </pre>
+     *
+     * <code>int32 day = 1;</code>
+     * @return The day.
+     */
+    int getDay();
+
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestInfo> 
+        getQuestsList();
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuests(int index);
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    int getQuestsCount();
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> 
+        getQuestsOrBuilderList();
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code Protos.SevenDaysQuest}
+   */
+  public static final class SevenDaysQuest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.SevenDaysQuest)
+      SevenDaysQuestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SevenDaysQuest.newBuilder() to construct.
+    private SevenDaysQuest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SevenDaysQuest() {
+      quests_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SevenDaysQuest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SevenDaysQuest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              day_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                quests_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              quests_.add(
+                  input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          quests_ = java.util.Collections.unmodifiableList(quests_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SevenDaysQuest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SevenDaysQuest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.class, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder.class);
+    }
+
+    public static final int DAY_FIELD_NUMBER = 1;
+    private int day_;
+    /**
+     * <pre>
+     * 第几天。 1- 7
+     * </pre>
+     *
+     * <code>int32 day = 1;</code>
+     * @return The day.
+     */
+    @java.lang.Override
+    public int getDay() {
+      return day_;
+    }
+
+    public static final int QUESTS_FIELD_NUMBER = 2;
+    private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestInfo> quests_;
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestInfo> getQuestsList() {
+      return quests_;
+    }
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> 
+        getQuestsOrBuilderList() {
+      return quests_;
+    }
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    @java.lang.Override
+    public int getQuestsCount() {
+      return quests_.size();
+    }
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuests(int index) {
+      return quests_.get(index);
+    }
+    /**
+     * <pre>
+     * 当前天数里面的任务。
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestInfo quests = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestsOrBuilder(
+        int index) {
+      return quests_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (day_ != 0) {
+        output.writeInt32(1, day_);
+      }
+      for (int i = 0; i < quests_.size(); i++) {
+        output.writeMessage(2, quests_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (day_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, day_);
+      }
+      for (int i = 0; i < quests_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, quests_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest other = (cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest) obj;
+
+      if (getDay()
+          != other.getDay()) return false;
+      if (!getQuestsList()
+          .equals(other.getQuestsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DAY_FIELD_NUMBER;
+      hash = (53 * hash) + getDay();
+      if (getQuestsCount() > 0) {
+        hash = (37 * hash) + QUESTS_FIELD_NUMBER;
+        hash = (53 * hash) + getQuestsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.SevenDaysQuest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.SevenDaysQuest)
+        cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SevenDaysQuest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SevenDaysQuest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.class, cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getQuestsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        day_ = 0;
+
+        if (questsBuilder_ == null) {
+          quests_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          questsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.internal_static_Protos_SevenDaysQuest_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest build() {
+        cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest buildPartial() {
+        cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest result = new cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest(this);
+        int from_bitField0_ = bitField0_;
+        result.day_ = day_;
+        if (questsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            quests_ = java.util.Collections.unmodifiableList(quests_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.quests_ = quests_;
+        } else {
+          result.quests_ = questsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest) {
+          return mergeFrom((cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest other) {
+        if (other == cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.getDefaultInstance()) return this;
+        if (other.getDay() != 0) {
+          setDay(other.getDay());
+        }
+        if (questsBuilder_ == null) {
+          if (!other.quests_.isEmpty()) {
+            if (quests_.isEmpty()) {
+              quests_ = other.quests_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureQuestsIsMutable();
+              quests_.addAll(other.quests_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.quests_.isEmpty()) {
+            if (questsBuilder_.isEmpty()) {
+              questsBuilder_.dispose();
+              questsBuilder_ = null;
+              quests_ = other.quests_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              questsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getQuestsFieldBuilder() : null;
+            } else {
+              questsBuilder_.addAllMessages(other.quests_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int day_ ;
+      /**
+       * <pre>
+       * 第几天。 1- 7
+       * </pre>
+       *
+       * <code>int32 day = 1;</code>
+       * @return The day.
+       */
+      @java.lang.Override
+      public int getDay() {
+        return day_;
+      }
+      /**
+       * <pre>
+       * 第几天。 1- 7
+       * </pre>
+       *
+       * <code>int32 day = 1;</code>
+       * @param value The day to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDay(int value) {
+        
+        day_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 第几天。 1- 7
+       * </pre>
+       *
+       * <code>int32 day = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDay() {
+        
+        day_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestInfo> quests_ =
+        java.util.Collections.emptyList();
+      private void ensureQuestsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          quests_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestInfo>(quests_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> questsBuilder_;
+
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestInfo> getQuestsList() {
+        if (questsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(quests_);
+        } else {
+          return questsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public int getQuestsCount() {
+        if (questsBuilder_ == null) {
+          return quests_.size();
+        } else {
+          return questsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo getQuests(int index) {
+        if (questsBuilder_ == null) {
+          return quests_.get(index);
+        } else {
+          return questsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder setQuests(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestInfo value) {
+        if (questsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestsIsMutable();
+          quests_.set(index, value);
+          onChanged();
+        } else {
+          questsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder setQuests(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder builderForValue) {
+        if (questsBuilder_ == null) {
+          ensureQuestsIsMutable();
+          quests_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          questsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder addQuests(cn.game.protocol.protobuf.QuestMsg.QuestInfo value) {
+        if (questsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestsIsMutable();
+          quests_.add(value);
+          onChanged();
+        } else {
+          questsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder addQuests(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestInfo value) {
+        if (questsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestsIsMutable();
+          quests_.add(index, value);
+          onChanged();
+        } else {
+          questsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder addQuests(
+          cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder builderForValue) {
+        if (questsBuilder_ == null) {
+          ensureQuestsIsMutable();
+          quests_.add(builderForValue.build());
+          onChanged();
+        } else {
+          questsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder addQuests(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder builderForValue) {
+        if (questsBuilder_ == null) {
+          ensureQuestsIsMutable();
+          quests_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          questsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder addAllQuests(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.QuestMsg.QuestInfo> values) {
+        if (questsBuilder_ == null) {
+          ensureQuestsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, quests_);
+          onChanged();
+        } else {
+          questsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder clearQuests() {
+        if (questsBuilder_ == null) {
+          quests_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          questsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public Builder removeQuests(int index) {
+        if (questsBuilder_ == null) {
+          ensureQuestsIsMutable();
+          quests_.remove(index);
+          onChanged();
+        } else {
+          questsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder getQuestsBuilder(
+          int index) {
+        return getQuestsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder getQuestsOrBuilder(
+          int index) {
+        if (questsBuilder_ == null) {
+          return quests_.get(index);  } else {
+          return questsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> 
+           getQuestsOrBuilderList() {
+        if (questsBuilder_ != null) {
+          return questsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(quests_);
+        }
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder addQuestsBuilder() {
+        return getQuestsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder addQuestsBuilder(
+          int index) {
+        return getQuestsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.QuestMsg.QuestInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 当前天数里面的任务。
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestInfo quests = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder> 
+           getQuestsBuilderList() {
+        return getQuestsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder> 
+          getQuestsFieldBuilder() {
+        if (questsBuilder_ == null) {
+          questsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.QuestMsg.QuestInfo, cn.game.protocol.protobuf.QuestMsg.QuestInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestInfoOrBuilder>(
+                  quests_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          quests_ = null;
+        }
+        return questsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.SevenDaysQuest)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.SevenDaysQuest)
+    private static final cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest();
+    }
+
+    public static cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SevenDaysQuest>
+        PARSER = new com.google.protobuf.AbstractParser<SevenDaysQuest>() {
+      @java.lang.Override
+      public SevenDaysQuest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SevenDaysQuest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SevenDaysQuest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SevenDaysQuest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_ActivityListRequest_11000001_descriptor;
   private static final 
@@ -7396,6 +9784,21 @@ public final class ActivityMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_FirstChargeActivityInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_SevenDaysQuest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_SevenDaysQuest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -7406,32 +9809,39 @@ public final class ActivityMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\021ActivityMsg.proto\022\006Protos\032\017RewardMsg.p" +
-      "roto\"\036\n\034ActivityListRequest_11000001\"H\n\035" +
-      "ActivityListResponse_11000002\022\'\n\tactivit" +
-      "ys\030\001 \003(\0132\024.Protos.ActivityInfo\"S\n\014Activi" +
-      "tyInfo\022\n\n\002id\030\001 \001(\r\022$\n\005state\030\002 \001(\0162\025.Prot" +
-      "os.ActivityState\022\021\n\tstartTime\030\003 \001(\005\"D\n\032A" +
-      "ctivityStatePush_11100006\022&\n\010activity\030\001 " +
-      "\001(\0132\024.Protos.ActivityInfo\"1\n#ActivityFir" +
-      "stChargeRequest_11000007\022\n\n\002id\030\001 \001(\r\"^\n$" +
-      "ActivityFirstChargeResponse_11000008\0226\n\r" +
-      "singleCharges\030\001 \003(\0132\037.Protos.FirstCharge" +
-      "ActivityInfo\"F\n&ActivityFirstChargeBuyRe" +
-      "quest_11000010\022\n\n\002id\030\001 \001(\r\022\020\n\010chargeId\030\002" +
-      " \001(\r\")\n\'ActivityFirstChargeBuyResponse_1" +
-      "1000011\"I\n)ActivityFirstChargeRewardRequ" +
-      "est_11000012\022\n\n\002id\030\001 \001(\r\022\020\n\010chargeId\030\002 \001" +
-      "(\r\"Q\n*ActivityFirstChargeRewardResponse_" +
-      "11000013\022#\n\007rewards\030\002 \003(\0132\022.Protos.Rewar" +
-      "dInfo\"5\n\027FirstChargeActivityInfo\022\n\n\002id\030\001" +
-      " \001(\r\022\016\n\006status\030\002 \001(\005*9\n\rActivityState\022\010\n" +
-      "\004NONE\020\000\022\010\n\004VIEW\020\001\022\t\n\005START\020\002\022\t\n\005CLOSE\020\003B" +
-      "\033\n\031cn.game.protocol.protobufb\006proto3"
+      "roto\032\016QuestMsg.proto\"\036\n\034ActivityListRequ" +
+      "est_11000001\"H\n\035ActivityListResponse_110" +
+      "00002\022\'\n\tactivitys\030\001 \003(\0132\024.Protos.Activi" +
+      "tyInfo\"S\n\014ActivityInfo\022\n\n\002id\030\001 \001(\r\022$\n\005st" +
+      "ate\030\002 \001(\0162\025.Protos.ActivityState\022\021\n\tstar" +
+      "tTime\030\003 \001(\005\"D\n\032ActivityStatePush_1110000" +
+      "6\022&\n\010activity\030\001 \001(\0132\024.Protos.ActivityInf" +
+      "o\"1\n#ActivityFirstChargeRequest_11000007" +
+      "\022\n\n\002id\030\001 \001(\r\"^\n$ActivityFirstChargeRespo" +
+      "nse_11000008\0226\n\rsingleCharges\030\001 \003(\0132\037.Pr" +
+      "otos.FirstChargeActivityInfo\"F\n&Activity" +
+      "FirstChargeBuyRequest_11000010\022\n\n\002id\030\001 \001" +
+      "(\r\022\020\n\010chargeId\030\002 \001(\r\")\n\'ActivityFirstCha" +
+      "rgeBuyResponse_11000011\"I\n)ActivityFirst" +
+      "ChargeRewardRequest_11000012\022\n\n\002id\030\001 \001(\r" +
+      "\022\020\n\010chargeId\030\002 \001(\r\"Q\n*ActivityFirstCharg" +
+      "eRewardResponse_11000013\022#\n\007rewards\030\002 \003(" +
+      "\0132\022.Protos.RewardInfo\"5\n\027FirstChargeActi" +
+      "vityInfo\022\n\n\002id\030\001 \001(\r\022\016\n\006status\030\002 \001(\005\"7\n)" +
+      "ActivitySevenDaysCarnivalRequest_1100002" +
+      "0\022\n\n\002id\030\001 \001(\r\"V\n*ActivitySevenDaysCarniv" +
+      "alResponse_11000021\022(\n\010sevenDay\030\001 \003(\0132\026." +
+      "Protos.SevenDaysQuest\"@\n\016SevenDaysQuest\022" +
+      "\013\n\003day\030\001 \001(\005\022!\n\006quests\030\002 \003(\0132\021.Protos.Qu" +
+      "estInfo*9\n\rActivityState\022\010\n\004NONE\020\000\022\010\n\004VI" +
+      "EW\020\001\022\t\n\005START\020\002\022\t\n\005CLOSE\020\003B\033\n\031cn.game.pr" +
+      "otocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           cn.game.protocol.protobuf.RewardMsg.getDescriptor(),
+          cn.game.protocol.protobuf.QuestMsg.getDescriptor(),
         });
     internal_static_Protos_ActivityListRequest_11000001_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -7499,7 +9909,26 @@ public final class ActivityMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FirstChargeActivityInfo_descriptor,
         new java.lang.String[] { "Id", "Status", });
+    internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ActivitySevenDaysCarnivalRequest_11000020_descriptor,
+        new java.lang.String[] { "Id", });
+    internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ActivitySevenDaysCarnivalResponse_11000021_descriptor,
+        new java.lang.String[] { "SevenDay", });
+    internal_static_Protos_SevenDaysQuest_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_Protos_SevenDaysQuest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_SevenDaysQuest_descriptor,
+        new java.lang.String[] { "Day", "Quests", });
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
+    cn.game.protocol.protobuf.QuestMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

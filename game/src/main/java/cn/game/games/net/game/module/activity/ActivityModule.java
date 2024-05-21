@@ -20,6 +20,7 @@ import cn.game.games.net.data.mapper.ActivityMapper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
@@ -28,7 +29,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
 public class ActivityModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LevelUp };
 	/** 已经开始的活动，只是展示的不在这里。  */
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
 
@@ -161,6 +162,7 @@ public class ActivityModule extends BasePlayerModule {
 		ActivityBase activityBase = this.activities.get(id);
 		if (activityBase != null) {
 			activityBase.shutDown();
+			activityBase.syncActivityInfo();
 //			syncActivityState(Acti);
 //			update(id);
 		}
@@ -197,7 +199,7 @@ public class ActivityModule extends BasePlayerModule {
 			if (activityBase != null) {
 				this.activities.put(activityConfig.ID, activityBase);
 				activityBase.init(activityConfig.ID, player, true);
-//				syncActivityState(id);
+				activityBase.syncActivityInfo();
 //				initAdd(activityConfig.ID);
 			}
 		}
@@ -246,6 +248,19 @@ public class ActivityModule extends BasePlayerModule {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
 			initNewActivity();
+			break;
+		}
+		case LevelUp: {
+			int type = event.getIntParameter(0);
+			int level = event.getIntParameter(1);
+			if (type == Asset.playerExp.ID) {
+				List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_LEVEL);
+				for (ActivityConfig activityConfig : openTypeList) {
+					if (activityConfig.openParam == level) {
+						open(activityConfig.ID);
+					}
+				}
+			}
 			break;
 		}
 		}

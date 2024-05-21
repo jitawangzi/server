@@ -12,6 +12,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
+import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivity;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000011;
@@ -21,6 +22,8 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRewardRequest_11
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRewardResponse_11000013;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityListResponse_11000002;
+import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020;
+import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
@@ -56,6 +59,9 @@ public class ActivityHandler extends BaseHandler {
 		putInvoker(PbProtocol.ActivityFirstChargeRewardRequest_11000012, (client, message) -> {
 			singleChargeReward(client, message);
 		});
+		putInvoker(PbProtocol.ActivitySevenDaysCarnivalRequest_11000020, (client, message) -> {
+			sevenDaysCarnival(client, message);
+		});
 	}
 
 	private void empty(NetClient client, Object message) {
@@ -69,6 +75,19 @@ public class ActivityHandler extends BaseHandler {
 		}
 
 		client.sendProtocol(resp);
+	}
+
+	private void sevenDaysCarnival(NetClient client, Object message) {
+		ActivitySevenDaysCarnivalRequest_11000020 req = (ActivitySevenDaysCarnivalRequest_11000020) message;
+		ActivitySevenDaysCarnivalResponse_11000021.Builder resp = ActivitySevenDaysCarnivalResponse_11000021.newBuilder();
+		int id = req.getId();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		SevenDayCarnivalActivity activityBase = (SevenDayCarnivalActivity) player.getActivityModule().get(id);
+		if (activityBase == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		client.sendProtocol(activityBase.buildActivityShowInfo());
 	}
 
 	private void singleCharge(NetClient client, Object message) {

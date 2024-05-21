@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 	public final int ID;		
 	/** ActivityTypeEnum的id,根据不同的类型，读取具体的活动配置 */
 	public final int type;		
-	/** 开启类型： 1 创建账号 2 创建账号后xx天 3 玩家到达指定等级 4 具体时间段 */
+	/** 开启类型：  0 具体时间段  1 创建账号  2 创建账号后xx天  3 玩家到达指定等级 */
 	public final int openType;		
 	/** 开启参数 */
 	public final int openParam;		
@@ -56,7 +56,7 @@ import org.w3c.dom.Element;
 		type = Integer.parseInt(element.getAttribute("type") == null || element.getAttribute("type").length() == 0 ? "0"
 			: element.getAttribute("type")); // ActivityTypeEnum的id,根据不同的类型，读取具体的活动配置
 		openType = Integer.parseInt(element.getAttribute("openType") == null || element.getAttribute("openType").length() == 0 ? "0"
-			: element.getAttribute("openType")); // 开启类型： 1 创建账号 2 创建账号后xx天 3 玩家到达指定等级 4 具体时间段
+			: element.getAttribute("openType")); // 开启类型：  0 具体时间段  1 创建账号  2 创建账号后xx天  3 玩家到达指定等级
 		openParam = Integer.parseInt(element.getAttribute("openParam") == null || element.getAttribute("openParam").length() == 0 ? "0"
 			: element.getAttribute("openParam")); // 开启参数
 		resetType = Integer.parseInt(element.getAttribute("resetType") == null || element.getAttribute("resetType").length() == 0 ? "0"

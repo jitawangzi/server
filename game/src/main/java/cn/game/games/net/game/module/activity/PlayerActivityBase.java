@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.manager.ActivityStateManager;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityStatePush_11100006;
 
 /**
  * 玩家自己的活动
@@ -18,21 +16,16 @@ public abstract class PlayerActivityBase extends ActivityBase {
 	@JsonIgnore
 	protected transient Player player;
 
-	public void syncActivityState(int id) {
-		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
-		builder.setId(id);
+	@Override
+	public void syncActivityInfo() {
 
-		builder.setStateValue(state);
-		if (state == ActivityState.VIEW_VALUE) {
-			int openTimeRemaining = ActivityStateManager.getInstance().getOpenTimeRemaining(id);
-			builder.setStartTime(openTimeRemaining);
-		}
-
+		player.getGameClient().sendProtocol(ActivityStatePush_11100006.newBuilder().setActivity(buildActivityInfo()).build());
 	}
 
 	@Override
 	public void init(int id, Player player, boolean isNew) {
 		this.player = player;
+		player.registerEventHandler(getEventTypes(), this);
 		super.init(id, null, isNew);
 	}
 

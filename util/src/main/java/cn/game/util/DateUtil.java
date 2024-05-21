@@ -557,7 +557,7 @@ public final class DateUtil {
 	 * @param timeMillis
 	 * @return
 	 */
-	public static int calcDays(long timeMillis) {
+	public static int diffDays(long timeMillis) {
 
 		LocalDate currentDate = LocalDate.now();
 		Instant instant = Instant.ofEpochMilli(timeMillis);
@@ -608,9 +608,7 @@ public final class DateUtil {
 	 */
 	public static void main(String[] args) {
 
-//		int day = getDay(1);
-//		System.out.println(day);
-		System.out.println(parse("2202-03-05 13:02:00"));
+		System.out.println(diffDays(System.currentTimeMillis() - DAY_MILLIS));
 
 		// System.out.println(DateUtil.getTimeByPattern(new Date()));
 		// System.out.println(DateUtil.timeStrToCn("20081212 22:22"));

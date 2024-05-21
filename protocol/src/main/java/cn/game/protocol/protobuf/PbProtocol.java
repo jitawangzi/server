@@ -30,6 +30,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int ActivityFirstChargeBuyResponse_11000011 = 0x11000011;    
 	public final static int ActivityFirstChargeRewardRequest_11000012 = 0x11000012;    //领取首冲礼包奖励  
 	public final static int ActivityFirstChargeRewardResponse_11000013 = 0x11000013;    
+	public final static int ActivitySevenDaysCarnivalRequest_11000020 = 0x11000020;    //七日狂欢  
+	public final static int ActivitySevenDaysCarnivalResponse_11000021 = 0x11000021;    
 	public final static int BattleFieldStartRequest_13000001 = 0x13000001;    //开始关卡战斗请求  
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
 	public final static int BattleFieldEndRequest_13000003 = 0x13000003;    //结束关卡战斗请求  
@@ -239,6 +241,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(ActivityFirstChargeRewardRequest_11000012, cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRewardRequest_11000012.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ActivityFirstChargeRewardResponse_11000013, cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRewardResponse_11000013.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySevenDaysCarnivalRequest_11000020, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ActivitySevenDaysCarnivalResponse_11000021, cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleFieldStartRequest_13000001, cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001.getDefaultInstance()
 				.getParserForType());
@@ -630,6 +636,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("ActivityFirstChargeBuyResponse_11000011", 0x11000011);
 		nameIdMap.put("ActivityFirstChargeRewardRequest_11000012", 0x11000012);
 		nameIdMap.put("ActivityFirstChargeRewardResponse_11000013", 0x11000013);
+		nameIdMap.put("ActivitySevenDaysCarnivalRequest_11000020", 0x11000020);
+		nameIdMap.put("ActivitySevenDaysCarnivalResponse_11000021", 0x11000021);
 		nameIdMap.put("BattleFieldStartRequest_13000001", 0x13000001);
 		nameIdMap.put("BattleFieldStartResponse_13000002", 0x13000002);
 		nameIdMap.put("BattleFieldEndRequest_13000003", 0x13000003);

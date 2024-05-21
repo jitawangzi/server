@@ -294,7 +294,7 @@ public class QuestModule extends BasePlayerModule {
 			update(quest);
 		}
 		if (questConfig.OpenQuests.length > 0) {
-			open(questConfig.OpenQuests);
+			open(questConfig.OpenQuests, true);
 		}
 
 		// 成就类型的任务，可能需要完成一个在开启一个。
@@ -472,10 +472,10 @@ public class QuestModule extends BasePlayerModule {
 		return list;
 	}
 
-	public void open(int[] ids) {
+	public void open(int[] ids, boolean notify) {
 
 		for (int id : ids) {
-			open(id, true);
+			open(id, notify);
 		}
 	}
 

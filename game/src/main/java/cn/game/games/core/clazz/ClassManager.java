@@ -65,6 +65,9 @@ public class ClassManager {
 		AbstractCondition newInstance = null;
 		try {
 			Class<? extends AbstractCondition> clazz = conditionClass.get(type);
+			if (clazz == null) {
+				throw new IllegalArgumentException("ConditionClass is null, condition type : " + type);
+			}
 			newInstance = clazz.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
