@@ -303,14 +303,25 @@ public class HeroHandler extends BaseHandler {
 		HeroModule heroModule = player.getHeroModule();
 		Hero hero = heroModule.get(uid);
 		if (hero == null) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
 			return;
 		}
 		Set<Long> battleHeros = heroModule.getBattleHeros();
 		if (battleHeros.contains(uid)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
+		// 日租卡检查。
+		List<Long> freeDayHeros = heroModule.getFreeDayHeros();
+		if (freeDayHeros.contains(uid)) {
+			for (Long bid : battleHeros) {
+				if (freeDayHeros.contains(bid)) {
+					client.sendProtocol(resp.build(), ErrorMsgEnum.hero_day_rent_max.getId());
+					return;
+				}
+			}
+		}
+
 		// 有没有同职业的在阵上
 		int career = HeroHelper.getCareer(hero.getConfigId());
 		Hero replaceHero = null;

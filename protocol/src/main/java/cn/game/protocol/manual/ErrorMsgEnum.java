@@ -125,6 +125,7 @@ public enum ErrorMsgEnum {
 	shop_gift_repeated(379, "礼包重复购买"),
 
 	fundpass_not_buy(380, "没有购买通行证"),
+	hero_day_rent_max(390, "日租卡最多能上一个"),
 
 	;
 
