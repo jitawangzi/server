@@ -36,6 +36,8 @@ import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateResponse_16000004;
+import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030;
+import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031;
 import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetRequest_16000007;
 import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetResponse_16000008;
 import cn.game.protocol.protobuf.HeroMsg.HeroQualityResetRequest_16000011;
@@ -67,6 +69,7 @@ public class HeroHandler extends BaseHandler {
 		putInvoker(PbProtocol.HeroBattleRequest_16000005, this::battle);
 		putInvoker(PbProtocol.HeroLevelResetRequest_16000007, this::levelReset);
 		putInvoker(PbProtocol.HeroQualityResetRequest_16000011, this::qualityReset);
+		putInvoker(PbProtocol.HeroFreeDayRentRequest_16000030, this::freeDayRent);
 	}
 
 	private void empty(NetClient client, Object message) {
@@ -79,6 +82,23 @@ public class HeroHandler extends BaseHandler {
 		if (hero == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
+		}
+		client.sendProtocol(resp.build());
+	}
+
+	private void freeDayRent(NetClient client, Object message) {
+		HeroFreeDayRentRequest_16000030 req = (HeroFreeDayRentRequest_16000030) message;
+		HeroFreeDayRentResponse_16000031.Builder resp = HeroFreeDayRentResponse_16000031.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		List<Long> freeDayHeros = heroModule.getFreeDayHeros();
+		if (!freeDayHeros.isEmpty()) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		heroModule.refreshFreeDayHero();
+		for (Long uid : freeDayHeros) {
+			resp.addHeros(heroModule.get(uid).toHeroInfo());
 		}
 		client.sendProtocol(resp.build());
 	}

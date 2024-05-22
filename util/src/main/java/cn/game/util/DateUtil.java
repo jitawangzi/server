@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
@@ -562,6 +563,19 @@ public final class DateUtil {
 		LocalDate currentDate = LocalDate.now();
 		Instant instant = Instant.ofEpochMilli(timeMillis);
 		LocalDate specificDate = instant.atZone(ZoneOffset.UTC).toLocalDate();
+		return (int) ChronoUnit.DAYS.between(specificDate, currentDate);
+	}
+
+	/** 
+	 * 计算当前时间与特定时间之间相隔的天数（日期数）
+	 * @param dateTimeStr  "yyyy-MM-dd HH:mm:ss"  格式
+	 * @return
+	 */
+	public static int diffDays(String dateTimeStr) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern_en);
+		LocalDateTime specificDateTime = LocalDateTime.parse(dateTimeStr, formatter);
+		LocalDate specificDate = specificDateTime.toLocalDate();
+		LocalDate currentDate = LocalDate.now();
 		return (int) ChronoUnit.DAYS.between(specificDate, currentDate);
 	}
 

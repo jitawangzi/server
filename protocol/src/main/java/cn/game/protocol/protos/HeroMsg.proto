@@ -74,4 +74,13 @@ message HeroQualityResetResponse_16000012{
 }
 
 
+//请求免费英雄日租卡，这个只有在功能开启的时候请求一下，不能重复请求
+message HeroFreeDayRentRequest_16000030{
+}
+
+message HeroFreeDayRentResponse_16000031{
+	repeated HeroInfo heros = 1;	// 免费日租英雄
+}
+
+
 

@@ -334,6 +334,28 @@ public final class Rnd {
 		}
 		return ret;
 	}
+	public static int[] getRandomNumbers(int[] array, int count) {
+		if (count > array.length) {
+			throw new IllegalArgumentException("Count cannot be greater than the array length.");
+		}
+
+		Random random = new Random();
+
+		// Fisher-Yates 洗牌算法
+		for (int i = array.length - 1; i > 0; i--) {
+			int j = random.nextInt(i + 1);
+			// 交换 array[i] 和 array[j]
+			int temp = array[i];
+			array[i] = array[j];
+			array[j] = temp;
+		}
+
+		// 取出前 count 个元素
+		int[] result = new int[count];
+		System.arraycopy(array, 0, result, 0, count);
+
+		return result;
+	}
 	/**
 	 * 按权重随机出指定数量的不重复的元素索引
 	 * 
@@ -445,12 +467,46 @@ public final class Rnd {
 	 * @param count
 	 * @return
 	 */
-	public static List<Integer> randomSubArray(int[] array, int count) {
+	public static List<Integer> randomSubList(int[] array, int count) {
 		List<Integer> res = new ArrayList<>();
 		for (int i : array) {
 			res.add(i);
 		}
 		return randomSubList(res, count);
+	}
+
+	/** 
+	 * 从一个数组中，随机出指定数量的元素
+	 * @param array
+	 * @param count
+	 * @return
+	 */
+	public static int[] randomSubArray(int[] array, int count) {
+		if (count >= array.length) {
+			return array;
+		}
+		int[] ret = new int[count];
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = -1;
+		}
+		int a = 0;
+		for (int i = 0; i < RANDOM_MAX; i++) {
+			int index = nextInt(array.length);
+			boolean has = false;
+			for (int j = 0; j < ret.length; j++) {
+				if (ret[j] == array[index]) {
+					has = true;
+					break;
+				}
+			}
+			if (!has) {
+				ret[a++] = array[index];
+				if (a == count) {
+					break;
+				}
+			}
+		}
+		return ret;
 	}
 
 	/** 
@@ -541,12 +597,10 @@ public final class Rnd {
 	}
 
 	public static void main(String args[]) {
-		for (int i = 0; i < 1000; i++) {
-			int nextInt = nextInt(1, 3);
-			if (nextInt >= 3) {
-
-				System.out.println(nextInt);
-			}
+		int[] x = new int[] {11,22,33,44,55,66} ; 
+		int[] randomSubArray = randomSubArray(x, 3);
+		for (int i : randomSubArray) {
+			System.out.println(i);
 		}
 	}
 }

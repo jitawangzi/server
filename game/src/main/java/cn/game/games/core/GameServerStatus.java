@@ -17,6 +17,7 @@ import com.ctrip.framework.apollo.ConfigService;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerList;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.ZkHelper;
 import io.vertx.core.Future;
@@ -115,6 +116,22 @@ public class GameServerStatus {
 
 	public ServerList getServerInfo() {
 		return serverInfo;
+	}
+
+	/** 
+	 * 获取开服到现在多少天了
+	 * @return
+	 */
+	public int getOpenDaysBetweenNow() {
+		return DateUtil.diffDays(serverInfo.getServerOpenTime());
+	}
+
+	/** 
+	 * 获取开服第多少天
+	 * @return
+	 */
+	public int getOpenDays() {
+		return getOpenDaysBetweenNow() + 1;
 	}
 
 }

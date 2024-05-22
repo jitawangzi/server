@@ -25,6 +25,8 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 
     private Integer internalPort;
 
+	private String ServerOpenTime;
+
     private Integer seq;
 	private Integer type;
 	private String version;
@@ -116,6 +118,14 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 
 	public void setPriorty(Integer priorty) {
 		this.priorty = priorty;
+	}
+
+	public String getServerOpenTime() {
+		return ServerOpenTime;
+	}
+
+	public void setServerOpenTime(String serverOpenTime) {
+		ServerOpenTime = serverOpenTime;
 	}
 
 	@Override

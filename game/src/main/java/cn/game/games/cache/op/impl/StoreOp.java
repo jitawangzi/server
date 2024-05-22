@@ -570,9 +570,9 @@ public class StoreOp extends BasePlayerModule implements IStoreOp{
 				continue;
 			}
 			CityEquipmentStoreConfig conf = confs.get(index);
-			Equip equip = equipOp.gen(conf.getEquipmentId());
-			StoreGoods s = StoreGoods.valueOf(conf, equip);
-			this.cityEquipMap.put(s.getUid(), s);
+//			Equip equip = equipOp.gen(conf.getEquipmentId());
+//			StoreGoods s = StoreGoods.valueOf(conf, equip);
+//			this.cityEquipMap.put(s.getUid(), s);
 		}
 		
 		this.storeData.setCityEquipRefreshTime(day);

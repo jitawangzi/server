@@ -216,6 +216,7 @@ message PlayerAllInfo{
    repeated uint32 chapterPacks  = 41;        //购买过的章节礼包id(ChapterPacks表)
    repeated FundPassInfo fundPass  = 44;        //领过的通行证奖励
    int32 heishiFreshTimes = 46;        //黑市手动刷新次数
+   repeated string freeDayRentHeros = 47;  //免费日租卡的英雄id
 
    CloudBoxInfo cloudBox = 50;  // 小云宝箱
    PatrolInfo patrol = 51;//巡逻/挂机

@@ -260,7 +260,7 @@ public class BuffHelper {
 			break;
 		}
 		case GetRandomGoods: {
-			List<Integer> reward = Rnd.randomSubArray(extParam, numParam);
+			List<Integer> reward = Rnd.randomSubList(extParam, numParam);
 			List<RewardInfo> res = new ArrayList<>();
 			int num = 1;
 			for (int id : reward) {

@@ -23042,6 +23042,47 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     *免费日租卡的英雄id
+     * </pre>
+     *
+     * <code>repeated string freeDayRentHeros = 47;</code>
+     * @return A list containing the freeDayRentHeros.
+     */
+    java.util.List<java.lang.String>
+        getFreeDayRentHerosList();
+    /**
+     * <pre>
+     *免费日租卡的英雄id
+     * </pre>
+     *
+     * <code>repeated string freeDayRentHeros = 47;</code>
+     * @return The count of freeDayRentHeros.
+     */
+    int getFreeDayRentHerosCount();
+    /**
+     * <pre>
+     *免费日租卡的英雄id
+     * </pre>
+     *
+     * <code>repeated string freeDayRentHeros = 47;</code>
+     * @param index The index of the element to return.
+     * @return The freeDayRentHeros at the given index.
+     */
+    java.lang.String getFreeDayRentHeros(int index);
+    /**
+     * <pre>
+     *免费日租卡的英雄id
+     * </pre>
+     *
+     * <code>repeated string freeDayRentHeros = 47;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the freeDayRentHeros at the given index.
+     */
+    com.google.protobuf.ByteString
+        getFreeDayRentHerosBytes(int index);
+
+    /**
+     * <pre>
      * 小云宝箱
      * </pre>
      *
@@ -23211,6 +23252,7 @@ public final class PlayerMsg {
       monthCards_ = java.util.Collections.emptyList();
       chapterPacks_ = emptyIntList();
       fundPass_ = java.util.Collections.emptyList();
+      freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       questGroups_ = java.util.Collections.emptyList();
       questGroupPointRewards_ = java.util.Collections.emptyList();
     }
@@ -23469,6 +23511,15 @@ public final class PlayerMsg {
               heishiFreshTimes_ = input.readInt32();
               break;
             }
+            case 378: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00020000) != 0)) {
+                freeDayRentHeros_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00020000;
+              }
+              freeDayRentHeros_.add(s);
+              break;
+            }
             case 402: {
               cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo.Builder subBuilder = null;
               if (cloudBox_ != null) {
@@ -23496,18 +23547,18 @@ public final class PlayerMsg {
               break;
             }
             case 442: {
-              if (!((mutable_bitField0_ & 0x00020000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00040000) != 0)) {
                 questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>();
-                mutable_bitField0_ |= 0x00020000;
+                mutable_bitField0_ |= 0x00040000;
               }
               questGroups_.add(
                   input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.parser(), extensionRegistry));
               break;
             }
             case 450: {
-              if (!((mutable_bitField0_ & 0x00040000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00080000) != 0)) {
                 questGroupPointRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo>();
-                mutable_bitField0_ |= 0x00040000;
+                mutable_bitField0_ |= 0x00080000;
               }
               questGroupPointRewards_.add(
                   input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.parser(), extensionRegistry));
@@ -23562,9 +23613,12 @@ public final class PlayerMsg {
           fundPass_ = java.util.Collections.unmodifiableList(fundPass_);
         }
         if (((mutable_bitField0_ & 0x00020000) != 0)) {
-          questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+          freeDayRentHeros_ = freeDayRentHeros_.getUnmodifiableView();
         }
         if (((mutable_bitField0_ & 0x00040000) != 0)) {
+          questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+        }
+        if (((mutable_bitField0_ & 0x00080000) != 0)) {
           questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
         }
         this.unknownFields = unknownFields.build();
@@ -24957,6 +25011,57 @@ public final class PlayerMsg {
       return heishiFreshTimes_;
     }
 
+    public static final int FREEDAYRENTHEROS_FIELD_NUMBER = 47;
+    private com.google.protobuf.LazyStringList freeDayRentHeros_;
+    /**
+     * <pre>
+     *免费日租卡的英雄id
+     * </pre>
+     *
+     * <code>repeated string freeDayRentHeros = 47;</code>
+     * @return A list containing the freeDayRentHeros.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getFreeDayRentHerosList() {
+      return freeDayRentHeros_;
+    }
+    /**
+     * <pre>
+     *免费日租卡的英雄id
+     * </pre>
+     *
+     * <code>repeated string freeDayRentHeros = 47;</code>
+     * @return The count of freeDayRentHeros.
+     */
+    public int getFreeDayRentHerosCount() {
+      return freeDayRentHeros_.size();
+    }
+    /**
+     * <pre>
+     *免费日租卡的英雄id
+     * </pre>
+     *
+     * <code>repeated string freeDayRentHeros = 47;</code>
+     * @param index The index of the element to return.
+     * @return The freeDayRentHeros at the given index.
+     */
+    public java.lang.String getFreeDayRentHeros(int index) {
+      return freeDayRentHeros_.get(index);
+    }
+    /**
+     * <pre>
+     *免费日租卡的英雄id
+     * </pre>
+     *
+     * <code>repeated string freeDayRentHeros = 47;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the freeDayRentHeros at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getFreeDayRentHerosBytes(int index) {
+      return freeDayRentHeros_.getByteString(index);
+    }
+
     public static final int CLOUDBOX_FIELD_NUMBER = 50;
     private cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo cloudBox_;
     /**
@@ -25256,6 +25361,9 @@ public final class PlayerMsg {
       if (heishiFreshTimes_ != 0) {
         output.writeInt32(46, heishiFreshTimes_);
       }
+      for (int i = 0; i < freeDayRentHeros_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 47, freeDayRentHeros_.getRaw(i));
+      }
       if (cloudBox_ != null) {
         output.writeMessage(50, getCloudBox());
       }
@@ -25410,6 +25518,14 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(46, heishiFreshTimes_);
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < freeDayRentHeros_.size(); i++) {
+          dataSize += computeStringSizeNoTag(freeDayRentHeros_.getRaw(i));
+        }
+        size += dataSize;
+        size += 2 * getFreeDayRentHerosList().size();
+      }
       if (cloudBox_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(50, getCloudBox());
@@ -25488,6 +25604,8 @@ public final class PlayerMsg {
           .equals(other.getFundPassList())) return false;
       if (getHeishiFreshTimes()
           != other.getHeishiFreshTimes()) return false;
+      if (!getFreeDayRentHerosList()
+          .equals(other.getFreeDayRentHerosList())) return false;
       if (hasCloudBox() != other.hasCloudBox()) return false;
       if (hasCloudBox()) {
         if (!getCloudBox()
@@ -25594,6 +25712,10 @@ public final class PlayerMsg {
       }
       hash = (37 * hash) + HEISHIFRESHTIMES_FIELD_NUMBER;
       hash = (53 * hash) + getHeishiFreshTimes();
+      if (getFreeDayRentHerosCount() > 0) {
+        hash = (37 * hash) + FREEDAYRENTHEROS_FIELD_NUMBER;
+        hash = (53 * hash) + getFreeDayRentHerosList().hashCode();
+      }
       if (hasCloudBox()) {
         hash = (37 * hash) + CLOUDBOX_FIELD_NUMBER;
         hash = (53 * hash) + getCloudBox().hashCode();
@@ -25883,6 +26005,8 @@ public final class PlayerMsg {
         }
         heishiFreshTimes_ = 0;
 
+        freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00020000);
         if (cloudBoxBuilder_ == null) {
           cloudBox_ = null;
         } else {
@@ -25897,13 +26021,13 @@ public final class PlayerMsg {
         }
         if (questGroupsBuilder_ == null) {
           questGroups_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00020000);
+          bitField0_ = (bitField0_ & ~0x00040000);
         } else {
           questGroupsBuilder_.clear();
         }
         if (questGroupPointRewardsBuilder_ == null) {
           questGroupPointRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00040000);
+          bitField0_ = (bitField0_ & ~0x00080000);
         } else {
           questGroupPointRewardsBuilder_.clear();
         }
@@ -26050,6 +26174,11 @@ public final class PlayerMsg {
           result.fundPass_ = fundPassBuilder_.build();
         }
         result.heishiFreshTimes_ = heishiFreshTimes_;
+        if (((bitField0_ & 0x00020000) != 0)) {
+          freeDayRentHeros_ = freeDayRentHeros_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00020000);
+        }
+        result.freeDayRentHeros_ = freeDayRentHeros_;
         if (cloudBoxBuilder_ == null) {
           result.cloudBox_ = cloudBox_;
         } else {
@@ -26061,18 +26190,18 @@ public final class PlayerMsg {
           result.patrol_ = patrolBuilder_.build();
         }
         if (questGroupsBuilder_ == null) {
-          if (((bitField0_ & 0x00020000) != 0)) {
+          if (((bitField0_ & 0x00040000) != 0)) {
             questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
-            bitField0_ = (bitField0_ & ~0x00020000);
+            bitField0_ = (bitField0_ & ~0x00040000);
           }
           result.questGroups_ = questGroups_;
         } else {
           result.questGroups_ = questGroupsBuilder_.build();
         }
         if (questGroupPointRewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00040000) != 0)) {
+          if (((bitField0_ & 0x00080000) != 0)) {
             questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
-            bitField0_ = (bitField0_ & ~0x00040000);
+            bitField0_ = (bitField0_ & ~0x00080000);
           }
           result.questGroupPointRewards_ = questGroupPointRewards_;
         } else {
@@ -26424,6 +26553,16 @@ public final class PlayerMsg {
         if (other.getHeishiFreshTimes() != 0) {
           setHeishiFreshTimes(other.getHeishiFreshTimes());
         }
+        if (!other.freeDayRentHeros_.isEmpty()) {
+          if (freeDayRentHeros_.isEmpty()) {
+            freeDayRentHeros_ = other.freeDayRentHeros_;
+            bitField0_ = (bitField0_ & ~0x00020000);
+          } else {
+            ensureFreeDayRentHerosIsMutable();
+            freeDayRentHeros_.addAll(other.freeDayRentHeros_);
+          }
+          onChanged();
+        }
         if (other.hasCloudBox()) {
           mergeCloudBox(other.getCloudBox());
         }
@@ -26434,7 +26573,7 @@ public final class PlayerMsg {
           if (!other.questGroups_.isEmpty()) {
             if (questGroups_.isEmpty()) {
               questGroups_ = other.questGroups_;
-              bitField0_ = (bitField0_ & ~0x00020000);
+              bitField0_ = (bitField0_ & ~0x00040000);
             } else {
               ensureQuestGroupsIsMutable();
               questGroups_.addAll(other.questGroups_);
@@ -26447,7 +26586,7 @@ public final class PlayerMsg {
               questGroupsBuilder_.dispose();
               questGroupsBuilder_ = null;
               questGroups_ = other.questGroups_;
-              bitField0_ = (bitField0_ & ~0x00020000);
+              bitField0_ = (bitField0_ & ~0x00040000);
               questGroupsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getQuestGroupsFieldBuilder() : null;
@@ -26460,7 +26599,7 @@ public final class PlayerMsg {
           if (!other.questGroupPointRewards_.isEmpty()) {
             if (questGroupPointRewards_.isEmpty()) {
               questGroupPointRewards_ = other.questGroupPointRewards_;
-              bitField0_ = (bitField0_ & ~0x00040000);
+              bitField0_ = (bitField0_ & ~0x00080000);
             } else {
               ensureQuestGroupPointRewardsIsMutable();
               questGroupPointRewards_.addAll(other.questGroupPointRewards_);
@@ -26473,7 +26612,7 @@ public final class PlayerMsg {
               questGroupPointRewardsBuilder_.dispose();
               questGroupPointRewardsBuilder_ = null;
               questGroupPointRewards_ = other.questGroupPointRewards_;
-              bitField0_ = (bitField0_ & ~0x00040000);
+              bitField0_ = (bitField0_ & ~0x00080000);
               questGroupPointRewardsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getQuestGroupPointRewardsFieldBuilder() : null;
@@ -31055,6 +31194,152 @@ public final class PlayerMsg {
         return this;
       }
 
+      private com.google.protobuf.LazyStringList freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureFreeDayRentHerosIsMutable() {
+        if (!((bitField0_ & 0x00020000) != 0)) {
+          freeDayRentHeros_ = new com.google.protobuf.LazyStringArrayList(freeDayRentHeros_);
+          bitField0_ |= 0x00020000;
+         }
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @return A list containing the freeDayRentHeros.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getFreeDayRentHerosList() {
+        return freeDayRentHeros_.getUnmodifiableView();
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @return The count of freeDayRentHeros.
+       */
+      public int getFreeDayRentHerosCount() {
+        return freeDayRentHeros_.size();
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @param index The index of the element to return.
+       * @return The freeDayRentHeros at the given index.
+       */
+      public java.lang.String getFreeDayRentHeros(int index) {
+        return freeDayRentHeros_.get(index);
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the freeDayRentHeros at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getFreeDayRentHerosBytes(int index) {
+        return freeDayRentHeros_.getByteString(index);
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @param index The index to set the value at.
+       * @param value The freeDayRentHeros to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFreeDayRentHeros(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureFreeDayRentHerosIsMutable();
+        freeDayRentHeros_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @param value The freeDayRentHeros to add.
+       * @return This builder for chaining.
+       */
+      public Builder addFreeDayRentHeros(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureFreeDayRentHerosIsMutable();
+        freeDayRentHeros_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @param values The freeDayRentHeros to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllFreeDayRentHeros(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureFreeDayRentHerosIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, freeDayRentHeros_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFreeDayRentHeros() {
+        freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00020000);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *免费日租卡的英雄id
+       * </pre>
+       *
+       * <code>repeated string freeDayRentHeros = 47;</code>
+       * @param value The bytes of the freeDayRentHeros to add.
+       * @return This builder for chaining.
+       */
+      public Builder addFreeDayRentHerosBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureFreeDayRentHerosIsMutable();
+        freeDayRentHeros_.add(value);
+        onChanged();
+        return this;
+      }
+
       private cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo cloudBox_;
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo, cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo.Builder, cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfoOrBuilder> cloudBoxBuilder_;
@@ -31368,9 +31653,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> questGroups_ =
         java.util.Collections.emptyList();
       private void ensureQuestGroupsIsMutable() {
-        if (!((bitField0_ & 0x00020000) != 0)) {
+        if (!((bitField0_ & 0x00040000) != 0)) {
           questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>(questGroups_);
-          bitField0_ |= 0x00020000;
+          bitField0_ |= 0x00040000;
          }
       }
 
@@ -31564,7 +31849,7 @@ public final class PlayerMsg {
       public Builder clearQuestGroups() {
         if (questGroupsBuilder_ == null) {
           questGroups_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00020000);
+          bitField0_ = (bitField0_ & ~0x00040000);
           onChanged();
         } else {
           questGroupsBuilder_.clear();
@@ -31669,7 +31954,7 @@ public final class PlayerMsg {
           questGroupsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder>(
                   questGroups_,
-                  ((bitField0_ & 0x00020000) != 0),
+                  ((bitField0_ & 0x00040000) != 0),
                   getParentForChildren(),
                   isClean());
           questGroups_ = null;
@@ -31680,9 +31965,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> questGroupPointRewards_ =
         java.util.Collections.emptyList();
       private void ensureQuestGroupPointRewardsIsMutable() {
-        if (!((bitField0_ & 0x00040000) != 0)) {
+        if (!((bitField0_ & 0x00080000) != 0)) {
           questGroupPointRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo>(questGroupPointRewards_);
-          bitField0_ |= 0x00040000;
+          bitField0_ |= 0x00080000;
          }
       }
 
@@ -31876,7 +32161,7 @@ public final class PlayerMsg {
       public Builder clearQuestGroupPointRewards() {
         if (questGroupPointRewardsBuilder_ == null) {
           questGroupPointRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00040000);
+          bitField0_ = (bitField0_ & ~0x00080000);
           onChanged();
         } else {
           questGroupPointRewardsBuilder_.clear();
@@ -31981,7 +32266,7 @@ public final class PlayerMsg {
           questGroupPointRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder>(
                   questGroupPointRewards_,
-                  ((bitField0_ & 0x00040000) != 0),
+                  ((bitField0_ & 0x00080000) != 0),
                   getParentForChildren(),
                   isClean());
           questGroupPointRewards_ = null;
@@ -32302,7 +32587,7 @@ public final class PlayerMsg {
       " \003(\0132\021.Protos.GoodsInfo\"k\n\nPlayerInfo\022\n\n" +
       "\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014" +
       "\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offli" +
-      "neTime\030\026 \001(\t\"\336\n\n\rPlayerAllInfo\022\"\n\006player" +
+      "neTime\030\026 \001(\t\"\370\n\n\rPlayerAllInfo\022\"\n\006player" +
       "\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006assets\030\002 \003" +
       "(\0132!.Protos.PlayerAllInfo.AssetsEntry\022=\n" +
       "\014assetRecover\030\003 \003(\0132\'.Protos.PlayerAllIn" +
@@ -32324,20 +32609,21 @@ public final class PlayerMsg {
       "(\0132\026.Protos.MonthCardProto\022\034\n\024monthCardD" +
       "oubleBonus\030* \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&" +
       "\n\010fundPass\030, \003(\0132\024.Protos.FundPassInfo\022\030" +
-      "\n\020heishiFreshTimes\030. \001(\005\022&\n\010cloudBox\0302 \001" +
-      "(\0132\024.Protos.CloudBoxInfo\022\"\n\006patrol\0303 \001(\013" +
-      "2\022.Protos.PatrolInfo\022+\n\013questGroups\0307 \003(" +
-      "\0132\026.Protos.QuestGroupInfo\022A\n\026questGroupP" +
-      "ointRewards\0308 \003(\0132!.Protos.QuestGroupPoi" +
-      "ntRewardInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r" +
-      "\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry" +
-      "\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Leve" +
-      "lsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032" +
-      "/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002" +
-      " \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n" +
-      "\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n" +
-      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game" +
-      ".protocol.protobufb\006proto3"
+      "\n\020heishiFreshTimes\030. \001(\005\022\030\n\020freeDayRentH" +
+      "eros\030/ \003(\t\022&\n\010cloudBox\0302 \001(\0132\024.Protos.Cl" +
+      "oudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos.Patr" +
+      "olInfo\022+\n\013questGroups\0307 \003(\0132\026.Protos.Que" +
+      "stGroupInfo\022A\n\026questGroupPointRewards\0308 " +
+      "\003(\0132!.Protos.QuestGroupPointRewardInfo\032-" +
+      "\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
+      "\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003key\030\001 \001(\r\022" +
+      "\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key" +
+      "\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchemysEnt" +
+      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014Dr" +
+      "agonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
+      "8\001\0323\n\021DragonSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
+      "value\030\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.prot" +
+      "obufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -32551,7 +32837,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

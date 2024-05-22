@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 	/** ID */
 	public final int ID;		
-	/** 领取天数 */
+	/** 登录天数 */
 	public final int Days;		
 	/** 包含物品 */
 	public final int[][] Item;		
@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // ID
 		Days = Integer.parseInt(element.getAttribute("Days") == null || element.getAttribute("Days").length() == 0 ? "0"
-			: element.getAttribute("Days")); // 领取天数
+			: element.getAttribute("Days")); // 登录天数
 		String ItemString = element.getAttribute("Item"); // 包含物品
 		if (ItemString != null && ItemString.length() > 0) {
 			String[] ItemStrings = ItemString.split("\\|"); 

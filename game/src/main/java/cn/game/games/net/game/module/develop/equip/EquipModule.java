@@ -1,27 +1,14 @@
 package cn.game.games.net.game.module.develop.equip;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.EquipMapper;
-import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
-import cn.game.protocol.generated.config.EquipmentBuffConfig;
-import cn.game.protocol.generated.config.EquipmentConfig;
-import cn.game.protocol.generated.config.EquipmentEnumConfig;
-import cn.game.protocol.generated.config.OldGlobalConst;
-import cn.game.protocol.generated.manager.EquipmentBuffManager;
-import cn.game.protocol.generated.manager.EquipmentEnumManager;
-import cn.game.protocol.generated.manager.EquipmentManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.Rnd;
 /**    
  * 装备模块
  * @date 2024年2月19日 上午10:55:53
@@ -69,85 +56,6 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 
 	}
 	
-	public Equip gen(int configId) {
-		EquipmentConfig equipmentConfig = EquipmentManager.getInstance().getEquipmentConfigNullable(configId);
-		if (equipmentConfig == null) {
-			return null;
-		}
-		if (equipmentConfig.getType() == GameConstants.FIXED_EQUIP) {
-			return null;
-		}
-		Equip equip = new Equip();
-		equip.setPlayerId(playerId);
-//		equip.setDictId(configId);
-//		equip.setRoleId(0);
-//		equip.setPos((byte) 0);
-//		equip.setStrength((byte) 0);
-//		equip.setExp(0);
-//		equipmentConfig.getBuff().forEach(e-> equip.addBuff(e));
-
-		EquipmentEnumConfig buffConfig = EquipmentEnumManager.getInstance()
-				.getEquipmentEnumConfigNullable(equipmentConfig.getQuality());
-		// 随机装备效果
-		if (buffConfig != null) {
-			List<EquipmentBuffConfig> configs = new ArrayList<>();
-			List<EquipmentBuffConfig> groupList = EquipmentBuffManager.getInstance()
-					.getGroupList(equipmentConfig.getGroup());
-
-			if (groupList != null && groupList.size() > 0) {
-				for (EquipmentBuffConfig config : groupList) {
-					if (equipmentConfig.getQuality() >= config.getQualityLimit()) {
-						configs.add(config);
-					}
-				}
-			}
-
-			// 根据权重随机
-			int buffNum = buffConfig.getBuffNum();
-
-			//a.	第一个词缀出现的概率为80%；
-			//b.	如果第一个出现，第二个词缀的概率为70%；
-			//c.	如果第二个出现，第三个词缀的概率为50%；
-			if (buffNum > 0) {
-				List<Integer> equipmentAffixProbability = OldGlobalConst.equipmentAffixProbability;
-				int i = 0;
-				int rnd = buffNum;
-				while (rnd > 0) {
-					int random = Rnd.get(0, 100);
-					if (random > equipmentAffixProbability.get(i)) {
-						break;
-					}
-					rnd--;
-					i++;
-				}
-				buffNum = (i == 0) ? 0 : buffNum - rnd;
-			}
-			boolean hasLegend = false;
-			int total = 0;
-			for (int i = 0; i < configs.size(); i++) {
-				total += configs.get(i).weight();
-			}
-
-			while (configs.size() > 0 && buffNum > 0) {
-				int rand = Rnd.nextInt(total);
-				int current = 0;
-				for (int i = 0; i < configs.size(); i++) {
-					if (configs.get(i).getIsLegend() && hasLegend) {
-						continue;
-					}
-					current += configs.get(i).weight();
-					if (rand < current) {
-
-						break;
-					}
-				}
-				buffNum--;
-			}
-		}
-		long id = IdUtil.getId();
-		equip.setId(id);
-		return equip;
-	}
 	@Override
 	public void setInstanceAfter(Equip equip) {
 //		EquipManager.in

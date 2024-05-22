@@ -9153,6 +9153,1337 @@ public final class HeroMsg {
 
   }
 
+  public interface HeroFreeDayRentRequest_16000030OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.HeroFreeDayRentRequest_16000030)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   *请求免费英雄日租卡，这个只有在功能开启的时候请求一下，不能重复请求
+   * </pre>
+   *
+   * Protobuf type {@code Protos.HeroFreeDayRentRequest_16000030}
+   */
+  public static final class HeroFreeDayRentRequest_16000030 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.HeroFreeDayRentRequest_16000030)
+      HeroFreeDayRentRequest_16000030OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use HeroFreeDayRentRequest_16000030.newBuilder() to construct.
+    private HeroFreeDayRentRequest_16000030(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private HeroFreeDayRentRequest_16000030() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new HeroFreeDayRentRequest_16000030();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private HeroFreeDayRentRequest_16000030(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentRequest_16000030_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030.class, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 other = (cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *请求免费英雄日租卡，这个只有在功能开启的时候请求一下，不能重复请求
+     * </pre>
+     *
+     * Protobuf type {@code Protos.HeroFreeDayRentRequest_16000030}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.HeroFreeDayRentRequest_16000030)
+        cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentRequest_16000030_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030.class, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 build() {
+        cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 buildPartial() {
+        cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 result = new cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030) {
+          return mergeFrom((cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 other) {
+        if (other == cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.HeroFreeDayRentRequest_16000030)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.HeroFreeDayRentRequest_16000030)
+    private static final cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030();
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<HeroFreeDayRentRequest_16000030>
+        PARSER = new com.google.protobuf.AbstractParser<HeroFreeDayRentRequest_16000030>() {
+      @java.lang.Override
+      public HeroFreeDayRentRequest_16000030 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new HeroFreeDayRentRequest_16000030(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<HeroFreeDayRentRequest_16000030> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<HeroFreeDayRentRequest_16000030> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface HeroFreeDayRentResponse_16000031OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.HeroFreeDayRentResponse_16000031)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> 
+        getHerosList();
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index);
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    int getHerosCount();
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+        getHerosOrBuilderList();
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code Protos.HeroFreeDayRentResponse_16000031}
+   */
+  public static final class HeroFreeDayRentResponse_16000031 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.HeroFreeDayRentResponse_16000031)
+      HeroFreeDayRentResponse_16000031OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use HeroFreeDayRentResponse_16000031.newBuilder() to construct.
+    private HeroFreeDayRentResponse_16000031(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private HeroFreeDayRentResponse_16000031() {
+      heros_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new HeroFreeDayRentResponse_16000031();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private HeroFreeDayRentResponse_16000031(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HeroInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              heros_.add(
+                  input.readMessage(cn.game.protocol.protobuf.BaseMsg.HeroInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          heros_ = java.util.Collections.unmodifiableList(heros_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentResponse_16000031_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentResponse_16000031_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031.class, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031.Builder.class);
+    }
+
+    public static final int HEROS_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_;
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> getHerosList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+        getHerosOrBuilderList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public int getHerosCount() {
+      return heros_.size();
+    }
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index) {
+      return heros_.get(index);
+    }
+    /**
+     * <pre>
+     * 免费日租英雄
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+        int index) {
+      return heros_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < heros_.size(); i++) {
+        output.writeMessage(1, heros_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < heros_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, heros_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 other = (cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031) obj;
+
+      if (!getHerosList()
+          .equals(other.getHerosList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getHerosCount() > 0) {
+        hash = (37 * hash) + HEROS_FIELD_NUMBER;
+        hash = (53 * hash) + getHerosList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.HeroFreeDayRentResponse_16000031}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.HeroFreeDayRentResponse_16000031)
+        cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentResponse_16000031_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentResponse_16000031_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031.class, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getHerosFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          herosBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroFreeDayRentResponse_16000031_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 build() {
+        cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 buildPartial() {
+        cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 result = new cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031(this);
+        int from_bitField0_ = bitField0_;
+        if (herosBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            heros_ = java.util.Collections.unmodifiableList(heros_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.heros_ = heros_;
+        } else {
+          result.heros_ = herosBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031) {
+          return mergeFrom((cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 other) {
+        if (other == cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031.getDefaultInstance()) return this;
+        if (herosBuilder_ == null) {
+          if (!other.heros_.isEmpty()) {
+            if (heros_.isEmpty()) {
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureHerosIsMutable();
+              heros_.addAll(other.heros_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.heros_.isEmpty()) {
+            if (herosBuilder_.isEmpty()) {
+              herosBuilder_.dispose();
+              herosBuilder_ = null;
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              herosBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getHerosFieldBuilder() : null;
+            } else {
+              herosBuilder_.addAllMessages(other.heros_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_ =
+        java.util.Collections.emptyList();
+      private void ensureHerosIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HeroInfo>(heros_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> herosBuilder_;
+
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> getHerosList() {
+        if (herosBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(heros_);
+        } else {
+          return herosBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public int getHerosCount() {
+        if (herosBuilder_ == null) {
+          return heros_.size();
+        } else {
+          return herosBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);
+        } else {
+          return herosBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.set(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addHeros(cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addHeros(
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addAllHeros(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfo> values) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, heros_);
+          onChanged();
+        } else {
+          herosBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder clearHeros() {
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          herosBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder removeHeros(int index) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.remove(index);
+          onChanged();
+        } else {
+          herosBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder getHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+          int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);  } else {
+          return herosBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+           getHerosOrBuilderList() {
+        if (herosBuilder_ != null) {
+          return herosBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(heros_);
+        }
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder addHerosBuilder() {
+        return getHerosFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder addHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 免费日租英雄
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder> 
+           getHerosBuilderList() {
+        return getHerosFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+          getHerosFieldBuilder() {
+        if (herosBuilder_ == null) {
+          herosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder>(
+                  heros_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          heros_ = null;
+        }
+        return herosBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.HeroFreeDayRentResponse_16000031)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.HeroFreeDayRentResponse_16000031)
+    private static final cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031();
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<HeroFreeDayRentResponse_16000031>
+        PARSER = new com.google.protobuf.AbstractParser<HeroFreeDayRentResponse_16000031>() {
+      @java.lang.Override
+      public HeroFreeDayRentResponse_16000031 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new HeroFreeDayRentResponse_16000031(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<HeroFreeDayRentResponse_16000031> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<HeroFreeDayRentResponse_16000031> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_HeroUpLevelRequest_16000001_descriptor;
   private static final 
@@ -9223,6 +10554,16 @@ public final class HeroMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_HeroQualityResetResponse_16000012_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_HeroFreeDayRentRequest_16000030_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_HeroFreeDayRentResponse_16000031_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_HeroFreeDayRentResponse_16000031_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -9250,8 +10591,11 @@ public final class HeroMsg {
       "0008\"/\n HeroQualityResetRequest_16000011" +
       "\022\013\n\003uid\030\001 \001(\t\"e\n!HeroQualityResetRespons" +
       "e_16000012\022\037\n\005heros\030\001 \003(\0132\020.Protos.HeroI" +
-      "nfo\022\037\n\005items\030\002 \003(\0132\020.Protos.ItemInfoB\033\n\031" +
-      "cn.game.protocol.protobufb\006proto3"
+      "nfo\022\037\n\005items\030\002 \003(\0132\020.Protos.ItemInfo\"!\n\037" +
+      "HeroFreeDayRentRequest_16000030\"C\n HeroF" +
+      "reeDayRentResponse_16000031\022\037\n\005heros\030\001 \003" +
+      "(\0132\020.Protos.HeroInfoB\033\n\031cn.game.protocol" +
+      ".protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9342,6 +10686,18 @@ public final class HeroMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroQualityResetResponse_16000012_descriptor,
         new java.lang.String[] { "Heros", "Items", });
+    internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_Protos_HeroFreeDayRentRequest_16000030_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_HeroFreeDayRentResponse_16000031_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_Protos_HeroFreeDayRentResponse_16000031_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_HeroFreeDayRentResponse_16000031_descriptor,
+        new java.lang.String[] { "Heros", });
     cn.game.protocol.protobuf.BaseMsg.getDescriptor();
   }
 
