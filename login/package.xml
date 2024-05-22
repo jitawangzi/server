@@ -47,4 +47,11 @@
 <!--             </includes> -->
 <!--         </fileSet> -->
     </fileSets>
+    	<files>
+<!-- 	单个文件 -->
+		<file>
+			<source>./log4j2.xml</source>
+			<outputDirectory>/</outputDirectory>
+		</file>
+	</files>
 </assembly>
