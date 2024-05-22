@@ -60,6 +60,10 @@ public class EnumToExcel {
 			header2.add(field.getName());
 			header3.add(field.getType().getSimpleName().toLowerCase());
 //			header4.add(field.get(ItemTypeEnum.values()[0]));
+			// 随便在加点,第四行第一列不让为null
+			if (findex == 0) {
+				header4.add("ID");
+			}
 			findex++;
 		}
 		data.add(header1);
@@ -84,6 +88,7 @@ public class EnumToExcel {
 			}
 			data.add(row);
 		}
+
 		return data;
 	}
 

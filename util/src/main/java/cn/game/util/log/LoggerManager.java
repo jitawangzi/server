@@ -106,7 +106,7 @@ public class LoggerManager {
 
     private static void flushAll() {
         for (LoggerType loggerType : LoggerType.values()) {
-            loggerType.logger.error("null");
+			loggerType.logger.info("null");
         }
     }
 }

@@ -106,6 +106,9 @@ public class LoginServer {
 		});
 
 		log.info("登录服启动成功。耗时[{}]s", (System.currentTimeMillis() - start) / 1000);
+
+		log.warn("warn 级别的日志");
+		log.error("error 级别的日志");
 	}
 
 	public static void main(String[] args) {
