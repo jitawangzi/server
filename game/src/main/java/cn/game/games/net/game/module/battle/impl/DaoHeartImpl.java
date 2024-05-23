@@ -1,125 +1,83 @@
 package cn.game.games.net.game.module.battle.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.log.GameLogger;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.IBattleHandler;
-import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.config.BattleLevelConfig;
+import cn.game.protocol.generated.config.RoutineTrainingConfig;
+import cn.game.protocol.generated.manager.BattleLevelManager;
+import cn.game.protocol.generated.manager.RoutineTrainingManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
-import cn.game.protocol.manual.OpType;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 
 public class DaoHeartImpl implements IBattleHandler {
 
 	@Override
 	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
+		ChapterModule chapterOp = player.getModule(ChapterModule.class);
+
+		RoutineTrainingConfig routineTrainingConfig = RoutineTrainingManager.getInstance().getRoutineTrainingConfig(dungeonId);
+		if (routineTrainingConfig == null) {
+			return ErrorMsgEnum.config_data_not_found.getId();
+		}
+		//等级限制
+//		if (routineTrainingConfig.getLevel() > player.getData().getLevel()) {
+//			return ErrorMsgEnum.unlock.getId();
+//		}
+
+		int profession = routineTrainingConfig.getProfession();
+
+		//检查职业
+		boolean checkPro = chapterOp.checkProfession(playerId, profession, lineupId, type);
+		if (!checkPro) {
+//			return ErrorMsgEnum.routinetranin_profession_not_match.getId();
+		}
+		//检查开启时间
+		List<Integer> openTime = routineTrainingConfig.getOpenTime();
+		int dayOfWeek = DateUtil.getDayOfWeek();
+//		if (!openTime.contains(dayOfWeek)) {
+//			return ErrorMsgEnum.unlock.getId();
+//		}
+		//检查前进阶训练关卡
+		RoutineTrainingConfig config = RoutineTrainingManager.getInstance().getRoutineTrainingConfigNullable(dungeonId - 1);
+		if (config != null && config.getProfession() == routineTrainingConfig.getProfession()) {
+			if (!chapterOp.checkPreTraining(config)) {
+				return ErrorMsgEnum.BattleLevel_pre.getId();
+			}
+		}
 		return 0;
 	}
 
 	@Override
 	public int battleEnd(long playerId, BattleFieldEndRequest_13000003 request, BattleFieldEndResponse_13000004.Builder resp) {
-		boolean win = request.getWin();
-		int killMonsterCount = request.getKillMonsterCount();
-		int hpPercent = request.getHpPercent();
-
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterOp = player.getModule(ChapterModule.class);
+		int id = chapterOp.getAttackingId();
+		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(id);
 
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		Chapter chapter = chapterModule.getChapter(chapterModule.getAttackingDungeonId());
-		BattleConfig battleConfig = BattleManager.instance().get(chapter.getBattleId());
+//		if (player.getData().getTrainingRewardTimes() > 0) {
+//			player.getData().setTrainingRewardTimes(player.getData().getTrainingRewardTimes() - 1);
+//			List<RewardItem> rewardItems = PlayerHelper.addResources(player, levelConfig.getSpecialReward());
+//			resp.addAllSpecialRewards(PbBuilder.buildRewardInfo(rewardItems));
+//		}
+//		if (win) {
+//			chapterOp.addBattleLevelPass(id, starList);
+//		}
 
-		if (hpPercent > chapter.getHpPercent()) {
-			chapter.setHpPercent(hpPercent);
-		}
-		if (killMonsterCount > chapter.getKillMonsterCount()) {
-			chapter.setKillMonsterCount(killMonsterCount);
-		}
-		if (!chapter.getPass() && win) {
-			chapter.setPass(true);
-			if (battleConfig.BattleType == 1) {
-				chapterModule.setMainBattleHighest(chapter.getBattleId());
-			}
-		}
-		if (win) {
-			player.handleEvent(EventTypeEnum.ChapterWin, battleConfig.ID);
-		}
-		chapter.setFinishTimes(chapter.getFinishTimes() + 1);
-		GameLogger.pvefight(player, battleConfig.ID, 1, win, request.getBattleTime(), chapter.getFinishTimes());
-
-		if (request.getBattleTime() > chapter.getBattleTime()) {
-			chapter.setBattleTime(request.getBattleTime());
-		}
-		// 发送奖励
-		List<RewardInfo> allRewards = new ArrayList<RewardInfo>();
-		List<RewardInfo> rewards = PlayerHelper.addReward(player, win ? battleConfig.WinRandom : battleConfig.FailRandom, OpType.BattleEnd);
-		allRewards.addAll(rewards);
-		String convertAwardFUN = battleConfig.ConvertAwardFUN;
-		if (!StringUtils.isEmpty(convertAwardFUN)) {
-			switch (convertAwardFUN) {
-			case "FunKillConvertAward": {
-				int index = -1 ; 
-				for (int i = 0; i < battleConfig.FUNCondition.length; i++) {
-					int tmp = battleConfig.FUNCondition[i];
-					if (killMonsterCount >= tmp) {
-						index = i ; 
-						break;
-					}
-				}
-				if (index >= 0) {
-					for (int i = 0; i < battleConfig.FUNFactor[index]; i++) {
-						List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index], OpType.BattleEnd);
-						allRewards.addAll(reward);
-					}
-				}
-				break;
-			}
-			case "FunKillScoreAward": {
-				int index = -1;
-				for (int i = 0; i < battleConfig.FUNCondition.length; i++) {
-					int tmp = battleConfig.FUNCondition[i];
-					if (killMonsterCount >= tmp) {
-						index = i;
-						break;
-					}
-				}
-				if (index >= 0) {
-					for (int i = 0; i < battleConfig.FUNFactor[index]; i++) {
-						List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FUNRandom[index], OpType.BattleEnd);
-						allRewards.addAll(reward);
-					}
-				}
-				break;
-			}
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + convertAwardFUN);
-			}
-		}
-
-		// 增加次数。
-		chapterModule.addChapterTimes(battleConfig.ID);
-
-		resp.addAllRewards(allRewards);
 		return 0;
 	}
 
 	@Override
 	public int getType() {
-		return DungeonTypeEnum.BattleChapter.getId();
+		return DungeonTypeEnum.DaoHeart.getId();
 	}
 
 }
