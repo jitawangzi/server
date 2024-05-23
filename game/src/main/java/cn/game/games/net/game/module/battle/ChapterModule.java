@@ -1,8 +1,13 @@
 package cn.game.games.net.game.module.battle;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -57,7 +62,8 @@ import cn.game.util.Rnd;
  * @author SYQ
  */
 public class ChapterModule extends BasePlayerModule  {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay, EventTypeEnum.LoginFinish };
+	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
 	/** 主线战役 */
 	private Map<Integer, Chapter> chapters = new HashMap<>();;
@@ -100,6 +106,9 @@ public class ChapterModule extends BasePlayerModule  {
 	private long uid;
 	@JsonIgnore
 	private long randomSeed;
+
+	/** 储存的体力 （具体产生体力时的时间） */
+	private List<Integer> storeStaminas = new ArrayList<>();
 
 	public void addChapter(int battleId) {
 		Chapter chapter = chapters.get(battleId);
@@ -538,6 +547,44 @@ public class ChapterModule extends BasePlayerModule  {
 		return 0;
 	}
 
+	public boolean addStoreStaminas(int time) {
+		if (storeStaminas.size() >= 60) {
+			return false;
+		}
+		storeStaminas.add(time);
+		return true;
+	}
+
+	public void updateStoreStaminas() {
+		Instant instant = Instant.ofEpochMilli(player.getData().getOfflineTime());
+		LocalDateTime lastOnlineTime = instant.atZone(ZoneOffset.UTC).toLocalDateTime();
+		LocalDateTime currentOnlineTime = LocalDateTime.now();
+
+		List<LocalDateTime> rewardTimes = calculateRewardTimes(lastOnlineTime, currentOnlineTime);
+
+		for (LocalDateTime rewardTime : rewardTimes) {
+			if (rewardTime.isAfter(lastOnlineTime) && rewardTime.isBefore(currentOnlineTime)) {
+				boolean ret = addStoreStaminas((int) rewardTime.toEpochSecond(ZoneOffset.UTC));
+				if (!ret) {
+					break;
+				}
+			}
+		}
+	}
+
+	private List<LocalDateTime> calculateRewardTimes(LocalDateTime from, LocalDateTime to) {
+		List<LocalDateTime> rewardTimes = new ArrayList<>();
+		LocalDateTime startOfDay = from.toLocalDate().atStartOfDay();
+
+		for (LocalDateTime date = startOfDay; date.isBefore(to.plusDays(1)); date = date.plusDays(1)) {
+			for (int hour : REWARD_HOURS) {
+				LocalDateTime rewardTime = date.with(LocalTime.of(hour, 0));
+				rewardTimes.add(rewardTime);
+			}
+		}
+
+		return rewardTimes;
+	}
 
 	public List<BattleRandomEvent> listBattleEvents() {
 		return this.battleRandomEvents;
@@ -591,6 +638,10 @@ public class ChapterModule extends BasePlayerModule  {
 		this.adPatrolCount = adPatrolCount;
 	}
 
+	public List<Integer> getStoreStaminas() {
+		return storeStaminas;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		// TODO Auto-generated method stub
@@ -610,6 +661,10 @@ public class ChapterModule extends BasePlayerModule  {
 			newDay();
 			break;
 		}
+		case LoginFinish: {
+			updateStoreStaminas();
+			break;
+		}
 		}
 	}
 
@@ -624,8 +679,19 @@ public class ChapterModule extends BasePlayerModule  {
 	}
 	@Override
 	public void initFromDbAfter() {
-
+		int now = DateUtil.currentTimeSeconds();
+		Iterator<Integer> iterator = storeStaminas.iterator();
+		while (iterator.hasNext()) {
+			Integer time = (Integer) iterator.next();
+			if (isStaminaExpire(now, time)) {
+				iterator.remove();
+			}
+		}
 	};
+
+	public boolean isStaminaExpire(int now, int time) {
+		return now - time > DateUtil.DAY_SECONDS * 7;
+	}
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
@@ -637,6 +703,8 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		builder.setPatrol(
 				PatrolInfo.newBuilder().setAdPatrolCount(adPatrolCount).setQuickPatrolCount(quickPatrolCount).setRewardTime(lastPatrolRewardTime).build());
+
+		builder.addAllStoreStaminas(storeStaminas);
 	}
 
 }

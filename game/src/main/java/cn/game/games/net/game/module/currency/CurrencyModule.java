@@ -15,7 +15,9 @@ import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
+import cn.game.protocol.protobuf.PlayerMsg.ExpLevelInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerExpLevelPush_01100050;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.MapWrapper;
@@ -162,6 +164,10 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 			curExp = expConfig.experience;
 		}
 		currencyMap.setValue(id, curExp);
+
+		player.getGameClient().sendProtocol(PlayerExpLevelPush_01100050.newBuilder()
+				.setExpLevel(ExpLevelInfo.newBuilder().setId(id).setExp((int) currencyMap.getValue(id)).setLevel(levelsMap.getValue(id)).build()).build());
+
 	}
 
 	public ExpConfig getExpConfig(int id, int level) {

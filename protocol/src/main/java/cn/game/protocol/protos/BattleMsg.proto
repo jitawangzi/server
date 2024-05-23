@@ -90,3 +90,11 @@ message PatrolInfo{
 	int32 quickPatrolCount = 2;		// 快速巡逻次数，巡逻过的次数
 	int32 adPatrolCount = 3;		// 看广告快速巡逻次数，巡逻过的次数
 }
+
+/*** 领取体力 ***/
+message BattleStaminaRequest_13000050{
+	int32 time = 1; //领取哪个时间的体力
+}
+
+message BattleStaminaResponse_13000051{
+}

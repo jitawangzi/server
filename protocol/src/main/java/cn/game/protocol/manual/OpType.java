@@ -55,6 +55,7 @@ public enum OpType{
 
 	ItemChoose(130, "自选道具"),
 	FreeHeroDayRent(131, "免费英雄日租卡"),
+	StoreStamina(132, "储存的体力"),
 
 	BattleStart(200, "战役开始"),
 

@@ -177,6 +177,17 @@ message CloudBoxInfo{
      repeated GoodsInfo items  = 5; // 宝箱里的物品
 }
 
+message ExpLevelInfo{
+    uint32 id = 1;		//Asset表id,用来区分什么类型的经验或者等级
+    uint32 exp = 2;  	//当前经验
+    uint32 level = 3;	//当前等级。
+
+}
+
+/*** 如果经验和等级有变化的时候，推送这个协议，客户端用这个数据覆盖本地数据。 ***/
+message PlayerExpLevelPush_01100050{
+   ExpLevelInfo expLevel = 1;   //
+}
 
 //用户基本信息
 message PlayerInfo{
@@ -217,6 +228,7 @@ message PlayerAllInfo{
    repeated FundPassInfo fundPass  = 44;        //领过的通行证奖励
    int32 heishiFreshTimes = 46;        //黑市手动刷新次数
    repeated string freeDayRentHeros = 47;  //免费日租卡的英雄id
+   repeated int32 storeStaminas = 48;  //储存的体力时间，秒时间戳
 
    CloudBoxInfo cloudBox = 50;  // 小云宝箱
    PatrolInfo patrol = 51;//巡逻/挂机

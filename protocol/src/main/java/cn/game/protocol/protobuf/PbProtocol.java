@@ -46,6 +46,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleRewardResponse_13000023 = 0x13000023;    
 	public final static int BattlePatrolRewardRequest_13000044 = 0x13000044;    //领取巡逻奖励  
 	public final static int BattlePatrolRewardResponse_13000045 = 0x13000045;    
+	public final static int BattleStaminaRequest_13000050 = 0x13000050;    //领取体力  
+	public final static int BattleStaminaResponse_13000051 = 0x13000051;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    //龙解锁  
 	public final static int DragonUnlockResponse_17000002 = 0x17000002;    
 	public final static int DragonStarUpRequest_17000003 = 0x17000003;    //龙升星  
@@ -142,6 +144,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerCloudBoxPush_01100040 = 0x01100040;    //产生小云宝箱 推送  
 	public final static int PlayerCloudBoxRequest_01000042 = 0x01000042;    //领取小云宝箱奖励  
 	public final static int PlayerCloudBoxResponse_01000043 = 0x01000043;    
+	public final static int PlayerExpLevelPush_01100050 = 0x01100050;    //如果经验和等级有变化的时候，推送这个协议，客户端用这个数据覆盖本地数据。  
 	public final static int QuestListRequest_20000001 = 0x20000001;    //查看某类任务数据,一般在任务功能开启时，客户端请求一下。  
 	public final static int QuestListResponse_20000002 = 0x20000002;    //任务数据  
 	public final static int QuestReceiveRequest_20000004 = 0x20000004;    //领取任务奖励  
@@ -281,6 +284,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattlePatrolRewardRequest_13000044, cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattlePatrolRewardResponse_13000045, cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleStaminaRequest_13000050, cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleStaminaResponse_13000051, cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DragonUnlockRequest_17000001, cn.game.protocol.protobuf.DragonMsg.DragonUnlockRequest_17000001.getDefaultInstance()
 				.getParserForType());
@@ -473,6 +480,8 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(PlayerCloudBoxRequest_01000042, cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerCloudBoxResponse_01000043, cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerExpLevelPush_01100050, cn.game.protocol.protobuf.PlayerMsg.PlayerExpLevelPush_01100050.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(QuestListRequest_20000001, cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.getDefaultInstance()
 				.getParserForType());
@@ -676,6 +685,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleRewardResponse_13000023", 0x13000023);
 		nameIdMap.put("BattlePatrolRewardRequest_13000044", 0x13000044);
 		nameIdMap.put("BattlePatrolRewardResponse_13000045", 0x13000045);
+		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);
+		nameIdMap.put("BattleStaminaResponse_13000051", 0x13000051);
 		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
 		nameIdMap.put("DragonUnlockResponse_17000002", 0x17000002);
 		nameIdMap.put("DragonStarUpRequest_17000003", 0x17000003);
@@ -772,6 +783,7 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerCloudBoxPush_01100040", 0x01100040);
 		nameIdMap.put("PlayerCloudBoxRequest_01000042", 0x01000042);
 		nameIdMap.put("PlayerCloudBoxResponse_01000043", 0x01000043);
+		nameIdMap.put("PlayerExpLevelPush_01100050", 0x01100050);
 		nameIdMap.put("QuestListRequest_20000001", 0x20000001);
 		nameIdMap.put("QuestListResponse_20000002", 0x20000002);
 		nameIdMap.put("QuestReceiveRequest_20000004", 0x20000004);

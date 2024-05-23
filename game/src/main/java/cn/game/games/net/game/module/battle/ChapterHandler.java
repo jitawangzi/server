@@ -32,6 +32,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
+import cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050;
+import cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -54,6 +56,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleRewardRequest_13000022, (client, message) -> chapterReward(client, message));
 		putInvoker(PbProtocol.BattleRougeRefreshRequest_13000005, (client, message) -> rougeRefresh(client, message));
 		putInvoker(PbProtocol.BattlePatrolRewardRequest_13000044, this::patrolReward);
+		putInvoker(PbProtocol.BattleStaminaRequest_13000050, this::stamina);
 
 	}
 
@@ -65,6 +68,28 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void stamina(NetClient client, Object message) {
+		BattleStaminaRequest_13000050 req = (BattleStaminaRequest_13000050) message;
+		BattleStaminaResponse_13000051.Builder resp = BattleStaminaResponse_13000051.newBuilder();
+		int time = req.getTime();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		List<Integer> storeStaminas = chapterModule.getStoreStaminas();
+		if (!storeStaminas.contains(time)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		storeStaminas.remove(Integer.valueOf(time));
+		if (chapterModule.isStaminaExpire(DateUtil.currentTimeSeconds(), time)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.stamina_expire.getId());
+			return;
+		}
+		PlayerHelper.addResources(player, Asset.playerEnergy.ID, 30, OpType.StoreStamina);
 
 		client.sendProtocol(resp);
 	}

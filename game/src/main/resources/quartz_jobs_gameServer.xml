@@ -61,6 +61,28 @@
 			</cron>
 		</trigger>
 	</job>
+		<job>
+		<job-detail>
+			<name>StoreStaminaJob</name>
+			<group>group1</group>
+			<description>每天免费给体力</description>
+			<job-class>cn.game.games.net.game.jobs.StoreStaminaJob
+			</job-class>
+			<volatility>false</volatility>
+			<durability>false</durability>
+			<recover>false</recover>
+		</job-detail>
+		<trigger>
+			<cron>
+				<name>StoreStaminaJob</name>
+				<group>group1</group>
+				<description>每日0点</description>
+				<job-name>Job-StoreStaminaJob</job-name>
+				<job-group>job-group1</job-group>
+				<cron-expression>0 0 6,12,18,22 * * ?</cron-expression>
+			</cron>
+		</trigger>
+	</job>
 <!-- 	<JOB> -->
 <!-- 		<JOB-DETAIL> -->
 <!-- 			<NAME>SHOPJOB</NAME> -->

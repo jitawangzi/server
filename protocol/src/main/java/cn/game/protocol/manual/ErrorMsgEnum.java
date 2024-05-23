@@ -126,6 +126,7 @@ public enum ErrorMsgEnum {
 
 	fundpass_not_buy(380, "没有购买通行证"),
 	hero_day_rent_max(390, "日租卡最多能上一个"),
+	stamina_expire(391, "体力过期了"),
 
 	;
 

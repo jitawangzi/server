@@ -135,70 +135,6 @@ public final class DateUtil {
 		return sb.toString();
 	}
 
-	/***
-	 * 返回当前月的第一天
-	 * 
-	 * @return , yyyyMMdd
-	 */
-	public static String getCurrentMonthOfStart() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.YEAR) + "" + (calendar.get(Calendar.MONTH) + 1) + "01";
-	}
-
-	/***
-	 * 返回指定月的第一天
-	 * 
-	 * @return , yyyyMMdd
-	 */
-	public static String getMonthOfStart(int month) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MONTH, month);
-		return calendar.get(Calendar.YEAR) + "" + (calendar.get(Calendar.MONTH) + 1) + "01";
-	}
-
-	/***
-	 * 返回当前月的最后一天
-	 * 
-	 * @return, yyyyMMdd
-	 */
-	public static String getCurrentMonthOfEnd() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.YEAR) + "" + (calendar.get(Calendar.MONTH) + 1) + "" + calendar.get(Calendar.DAY_OF_MONTH);
-	}
-
-	/***
-	 * 返回上月的第一天
-	 * 
-	 * @return , yyyyMMdd
-	 */
-	public static String getPreMonthOfStart() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-		return calendar.get(Calendar.YEAR) + "" + (calendar.get(Calendar.MONTH) + 1) + "01";
-	}
-
-	/***
-	 * 返回上月的最后一天
-	 * 
-	 * @return, yyyyMMdd
-	 */
-	public static String getPreMonthOfEnd() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-		return calendar.get(Calendar.YEAR) + "" + (calendar.get(Calendar.MONTH) + 1) + "" + calendar.get(Calendar.DAY_OF_MONTH);
-	}
-
-	/***
-	 * 返回下一个月份的总天数
-	 * 
-	 * @return
-	 */
-	public static int getNextMonthOfDays() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH + 1));
-		return calendar.get(Calendar.DAY_OF_MONTH);
-	}
-	
 	/**
 	 * 获取当前月的总天数
 	 * @return
@@ -217,17 +153,6 @@ public final class DateUtil {
 		calendar.setTime(date);
 		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 	} 
-
-	/***
-	 * 返回指定月的最后一天
-	 * 
-	 * @return, yyyyMMdd
-	 */
-	public static String getMonthOfEnd(int month) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MONTH, month);
-		return calendar.get(Calendar.YEAR) + "" + (calendar.get(Calendar.MONTH) + 1) + "" + calendar.get(Calendar.DAY_OF_MONTH);
-	}
 
 	/**
 	 * 计算时间差 (时间单位,开始时间,结束时间)
