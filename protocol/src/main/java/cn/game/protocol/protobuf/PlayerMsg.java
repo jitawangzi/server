@@ -24267,6 +24267,16 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 当前通关最新的道心磨砺关卡id（DaoHeart）表id
+     * </pre>
+     *
+     * <code>int32 daoHeartId = 32;</code>
+     * @return The daoHeartId.
+     */
+    int getDaoHeartId();
+
+    /**
+     * <pre>
      *月卡
      * </pre>
      *
@@ -24852,6 +24862,11 @@ public final class PlayerMsg {
             case 248: {
 
               freeRougeTimes_ = input.readInt32();
+              break;
+            }
+            case 256: {
+
+              daoHeartId_ = input.readInt32();
               break;
             }
             case 322: {
@@ -26237,6 +26252,21 @@ public final class PlayerMsg {
       return freeRougeTimes_;
     }
 
+    public static final int DAOHEARTID_FIELD_NUMBER = 32;
+    private int daoHeartId_;
+    /**
+     * <pre>
+     * 当前通关最新的道心磨砺关卡id（DaoHeart）表id
+     * </pre>
+     *
+     * <code>int32 daoHeartId = 32;</code>
+     * @return The daoHeartId.
+     */
+    @java.lang.Override
+    public int getDaoHeartId() {
+      return daoHeartId_;
+    }
+
     public static final int MONTHCARDS_FIELD_NUMBER = 40;
     private java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> monthCards_;
     /**
@@ -26798,6 +26828,9 @@ public final class PlayerMsg {
       if (freeRougeTimes_ != 0) {
         output.writeInt32(31, freeRougeTimes_);
       }
+      if (daoHeartId_ != 0) {
+        output.writeInt32(32, daoHeartId_);
+      }
       for (int i = 0; i < monthCards_.size(); i++) {
         output.writeMessage(40, monthCards_.get(i));
       }
@@ -26951,6 +26984,10 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(31, freeRougeTimes_);
       }
+      if (daoHeartId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(32, daoHeartId_);
+      }
       for (int i = 0; i < monthCards_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(40, monthCards_.get(i));
@@ -27071,6 +27108,8 @@ public final class PlayerMsg {
           .equals(other.getBattlesList())) return false;
       if (getFreeRougeTimes()
           != other.getFreeRougeTimes()) return false;
+      if (getDaoHeartId()
+          != other.getDaoHeartId()) return false;
       if (!getMonthCardsList()
           .equals(other.getMonthCardsList())) return false;
       if (getMonthCardDoubleBonus()
@@ -27174,6 +27213,8 @@ public final class PlayerMsg {
       }
       hash = (37 * hash) + FREEROUGETIMES_FIELD_NUMBER;
       hash = (53 * hash) + getFreeRougeTimes();
+      hash = (37 * hash) + DAOHEARTID_FIELD_NUMBER;
+      hash = (53 * hash) + getDaoHeartId();
       if (getMonthCardsCount() > 0) {
         hash = (37 * hash) + MONTHCARDS_FIELD_NUMBER;
         hash = (53 * hash) + getMonthCardsList().hashCode();
@@ -27470,6 +27511,8 @@ public final class PlayerMsg {
         }
         freeRougeTimes_ = 0;
 
+        daoHeartId_ = 0;
+
         if (monthCardsBuilder_ == null) {
           monthCards_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00004000);
@@ -27634,6 +27677,7 @@ public final class PlayerMsg {
           result.battles_ = battlesBuilder_.build();
         }
         result.freeRougeTimes_ = freeRougeTimes_;
+        result.daoHeartId_ = daoHeartId_;
         if (monthCardsBuilder_ == null) {
           if (((bitField0_ & 0x00004000) != 0)) {
             monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
@@ -27974,6 +28018,9 @@ public final class PlayerMsg {
         }
         if (other.getFreeRougeTimes() != 0) {
           setFreeRougeTimes(other.getFreeRougeTimes());
+        }
+        if (other.getDaoHeartId() != 0) {
+          setDaoHeartId(other.getDaoHeartId());
         }
         if (monthCardsBuilder_ == null) {
           if (!other.monthCards_.isEmpty()) {
@@ -31877,6 +31924,49 @@ public final class PlayerMsg {
         return this;
       }
 
+      private int daoHeartId_ ;
+      /**
+       * <pre>
+       * 当前通关最新的道心磨砺关卡id（DaoHeart）表id
+       * </pre>
+       *
+       * <code>int32 daoHeartId = 32;</code>
+       * @return The daoHeartId.
+       */
+      @java.lang.Override
+      public int getDaoHeartId() {
+        return daoHeartId_;
+      }
+      /**
+       * <pre>
+       * 当前通关最新的道心磨砺关卡id（DaoHeart）表id
+       * </pre>
+       *
+       * <code>int32 daoHeartId = 32;</code>
+       * @param value The daoHeartId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDaoHeartId(int value) {
+        
+        daoHeartId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前通关最新的道心磨砺关卡id（DaoHeart）表id
+       * </pre>
+       *
+       * <code>int32 daoHeartId = 32;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDaoHeartId() {
+        
+        daoHeartId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> monthCards_ =
         java.util.Collections.emptyList();
       private void ensureMonthCardsIsMutable() {
@@ -34207,7 +34297,7 @@ public final class PlayerMsg {
       "el\030\001 \001(\0132\024.Protos.ExpLevelInfo\"k\n\nPlayer" +
       "Info\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030" +
       "\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023" +
-      "\n\013offlineTime\030\026 \001(\t\"\217\013\n\rPlayerAllInfo\022\"\n" +
+      "\n\013offlineTime\030\026 \001(\t\"\243\013\n\rPlayerAllInfo\022\"\n" +
       "\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006ass" +
       "ets\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsE" +
       "ntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Play" +
@@ -34225,26 +34315,26 @@ public final class PlayerMsg {
       "layerAllInfo.DragonsEntry\022=\n\014dragonSkill" +
       "s\030\021 \003(\0132\'.Protos.PlayerAllInfo.DragonSki" +
       "llsEntry\022#\n\007battles\030\036 \003(\0132\022.Protos.Battl" +
-      "eInfo\022\026\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCa" +
-      "rds\030( \003(\0132\026.Protos.MonthCardProto\022\034\n\024mon" +
-      "thCardDoubleBonus\030* \001(\010\022\024\n\014chapterPacks\030" +
-      ") \003(\r\022&\n\010fundPass\030, \003(\0132\024.Protos.FundPas" +
-      "sInfo\022\030\n\020heishiFreshTimes\030. \001(\005\022\030\n\020freeD" +
-      "ayRentHeros\030/ \003(\t\022\025\n\rstoreStaminas\0300 \003(\005" +
-      "\022&\n\010cloudBox\0302 \001(\0132\024.Protos.CloudBoxInfo" +
-      "\022\"\n\006patrol\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013" +
-      "questGroups\0307 \003(\0132\026.Protos.QuestGroupInf" +
-      "o\022A\n\026questGroupPointRewards\0308 \003(\0132!.Prot" +
-      "os.QuestGroupPointRewardInfo\032-\n\013AssetsEn" +
-      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021A" +
-      "ssetRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002" +
-      " \001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
-      "value\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030" +
-      "\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry" +
-      "\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021Drag" +
-      "onSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
-      "\r:\0028\001B\033\n\031cn.game.protocol.protobufb\006prot" +
-      "o3"
+      "eInfo\022\026\n\016freeRougeTimes\030\037 \001(\005\022\022\n\ndaoHear" +
+      "tId\030  \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos.M" +
+      "onthCardProto\022\034\n\024monthCardDoubleBonus\030* " +
+      "\001(\010\022\024\n\014chapterPacks\030) \003(\r\022&\n\010fundPass\030, " +
+      "\003(\0132\024.Protos.FundPassInfo\022\030\n\020heishiFresh" +
+      "Times\030. \001(\005\022\030\n\020freeDayRentHeros\030/ \003(\t\022\025\n" +
+      "\rstoreStaminas\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132\024" +
+      ".Protos.CloudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.P" +
+      "rotos.PatrolInfo\022+\n\013questGroups\0307 \003(\0132\026." +
+      "Protos.QuestGroupInfo\022A\n\026questGroupPoint" +
+      "Rewards\0308 \003(\0132!.Protos.QuestGroupPointRe" +
+      "wardInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
+      "value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003" +
+      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEn" +
+      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rA" +
+      "lchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r" +
+      ":\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005val" +
+      "ue\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003key" +
+      "\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.pro" +
+      "tocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -34470,7 +34560,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "DaoHeartId", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

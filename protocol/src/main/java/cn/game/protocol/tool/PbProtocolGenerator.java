@@ -96,7 +96,9 @@ public class PbProtocolGenerator {
 				}
 				lines.add(str);
 				// System.out.println(str);
-				if (str.indexOf("java_package") > -1) {
+				if (str.trim().startsWith("//")) {
+					continue;
+				} else if (str.indexOf("java_package") > -1) {
 					int begin = str.indexOf("\"");
 					int end = str.lastIndexOf("\"");
 					String p = str.substring(begin + 1, end).trim();
@@ -166,14 +168,11 @@ public class PbProtocolGenerator {
 //		generateClient(messages, "protos.d.ts.vm", jsPath + File.separator + "protos.d.ts", chareset);
 //		generateClient(messages, "ProtosEnum.ts.vm", jsPath + File.separator + "ProtosEnum.ts", chareset);
 
+		// 所有proto，生成到一个文件里给客户端使用
 		File clientAllProto = new File(jsPath + File.separator + "all.proto");
-//		Files.newWriter(file, null)
 		BufferedWriter writer = new BufferedWriter(new FileWriter(clientAllProto));
-
-		
 		
 		//option optimize_for = LITE_RUNTIME;
-		;
 		writer.write("syntax = \"proto3\";" + "\n");
 		writer.write("package Protos;" + "\n");
 		writer.write("\n");

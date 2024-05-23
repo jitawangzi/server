@@ -5,9 +5,9 @@ import "RewardMsg.proto" ;
 // 章节关卡协议
 // 开始关卡战斗请求
 message BattleFieldStartRequest_13000001{
-	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表战役Battle表
-	uint32 typeId = 2; // 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id
-	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。
+	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺
+	uint32 typeId = 2; // 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id; 2则是DaoHeart表id
+	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。不一定有。
 }
 
 // 开始关卡战斗返回
@@ -98,3 +98,46 @@ message BattleStaminaRequest_13000050{
 
 message BattleStaminaResponse_13000051{
 }
+
+// ****************************************道心磨砺********************************************
+///*** 查看道心磨砺数据 ***/
+//message BattleDaoHeartRequest_13000055{
+//}
+//
+//message BattleDaoHeartResponse_13000056{
+//	int32 id = 2;					// 当前通关到的最新的战役id （DaoHeart）表id
+//}
+
+/*** 扫荡道心磨砺关卡 ***/
+message BattleDaoHeartSweepRequest_13000060{
+	int32 id = 2;					// （DaoHeart）表id
+}
+message BattleDaoHeartSweepResponse_13000061{
+	repeated RewardInfo rewards = 1;//
+}
+
+/*** 一键扫荡道心磨砺关卡 ***/
+message BattleDaoHeartSweepBatchRequest_13000062{
+	int32 id = 2;					// （DaoHeart）表id
+}
+message BattleDaoHeartSweepBatchResponse_13000063{
+	repeated RewardInfo rewards = 1;//
+}
+
+
+/*** 查看道心磨砺通关奖励领取情况 ***/
+message BattleDaoHeartSweepRequest_13000064{
+}
+message BattleDaoHeartSweepResponse_13000065{
+	repeated int32 id = 2;					// 已经领取过通关奖励的关卡id， （DaoHeart）表id
+}
+
+/*** 领取道心磨砺关卡通关奖励 ***/
+message BattleDaoHeartSweepRequest_13000066{
+	int32 id = 1;					// （DaoHeart）表id
+}
+message BattleDaoHeartSweepResponse_13000067{
+	repeated RewardInfo rewards = 1;//
+}
+
+
