@@ -228,11 +228,11 @@ public class ShopHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
 			return;
 		}
-		if (shopItem.getItemBuyTimes() > 0) {
+		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
+		if (shopItemConfig.ShopItemQuota > 0 && shopItem.getItemBuyTimes() >= shopItemConfig.ShopItemQuota) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());
 			return;
 		}
-		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
 
 		final int[] itemsAdd = shopItemConfig.Item;
 		Supplier<Boolean> addItemAction = () -> {
