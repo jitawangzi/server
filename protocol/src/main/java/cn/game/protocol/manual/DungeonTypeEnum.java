@@ -9,8 +9,8 @@ public enum DungeonTypeEnum{
 
 	/** 列传 */
 	BattleChapter(1,"BattleChapter","列传"),
-	/** 进阶训练 */
-	RoutineTraining(2,"RoutineTraining","进阶训练"),
+	/** 道心磨砺战斗 */
+	DaoHeart(2, "DaoHeart", "道心磨砺战斗"),
 	/** 突发事件 */
 	BattleEvent(3,"BattleEvent","突发事件"),
 	/** 探索战斗 */

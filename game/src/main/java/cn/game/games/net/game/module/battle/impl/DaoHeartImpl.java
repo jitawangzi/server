@@ -21,32 +21,13 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
-/**    
- * 战役
- * @date 2024年4月12日 下午7:17:56
- * @author SYQ
- */
-public class BattleChapterImpl implements IBattleHandler {
+public class DaoHeartImpl implements IBattleHandler {
 
 	@Override
 	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
-		ChapterModule chapterOp = player.getModule(ChapterModule.class);
-
-		// 检查章节事件开启条件，是否可以进行当前操作
-//		boolean checkCondition = PlayerHelper.checkCondition(playerId, chapterConfig.getCondition());
-//		if (!checkCondition) {
-//			return ErrorMsgEnum.player_check_error.getId();
-//		}
-//		// 检查关卡开启条件，是否可以进行当前操作
-//		checkCondition = PlayerHelper.checkCondition(playerId, levelConfig.getCondition());
-//		if (!checkCondition) {
-//			return ErrorMsgEnum.player_check_error.getId();
-//		}
-
-		// 可以打这个关了
-		chapterOp.addChapter(dungeonId);
 		return 0;
 	}
 

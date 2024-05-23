@@ -220,7 +220,7 @@ message PlayerAllInfo{
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
    repeated BattleInfo battles = 30;        //打过的战役，包括通关的和非通关的。
    int32 freeRougeTimes = 31; 				// 每日免费肉鸽刷新次数。
-   int32 daoHeartId = 32;					// 当前通关最新的道心磨砺关卡id（DaoHeart）表id
+//   int32 daoHeartId = 32;					// 当前通关最新的道心磨砺关卡id（DaoHeart）表id
 
    repeated MonthCardProto monthCards  = 40;        //月卡
    bool monthCardDoubleBonus = 42 ; 			// 是否可以领取双月卡奖励。

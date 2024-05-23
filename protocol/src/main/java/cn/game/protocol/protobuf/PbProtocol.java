@@ -48,11 +48,13 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattlePatrolRewardResponse_13000045 = 0x13000045;    
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    
 	public final static int BattleStaminaResponse_13000051 = 0x13000051;    
+	public final static int BattleDaoHeartRequest_13000055 = 0x13000055;    
+	public final static int BattleDaoHeartResponse_13000056 = 0x13000056;    
 	public final static int BattleDaoHeartSweepRequest_13000060 = 0x13000060;    
-	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    //领取体力  
+	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    //道心磨砺  
 	public final static int BattleDaoHeartSweepBatchRequest_13000062 = 0x13000062;    
-	public final static int BattleDaoHeartSweepBatchResponse_13000063 = 0x13000063;    //道心磨砺  
-	public final static int BattleDaoHeartSweepRequest_13000064 = 0x13000064;    //int32 id = 2;					   当前通关到的最新的战役id （DaoHeart）表id  
+	public final static int BattleDaoHeartSweepBatchResponse_13000063 = 0x13000063;    
+	public final static int BattleDaoHeartSweepRequest_13000064 = 0x13000064;    
 	public final static int BattleDaoHeartSweepResponse_13000065 = 0x13000065;    
 	public final static int BattleDaoHeartSweepRequest_13000066 = 0x13000066;    
 	public final static int BattleDaoHeartSweepResponse_13000067 = 0x13000067;    
@@ -296,6 +298,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleStaminaRequest_13000050, cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleStaminaResponse_13000051, cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleDaoHeartRequest_13000055, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleDaoHeartResponse_13000056, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleDaoHeartSweepRequest_13000060, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060.getDefaultInstance()
 				.getParserForType());
@@ -711,6 +717,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattlePatrolRewardResponse_13000045", 0x13000045);
 		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);
 		nameIdMap.put("BattleStaminaResponse_13000051", 0x13000051);
+		nameIdMap.put("BattleDaoHeartRequest_13000055", 0x13000055);
+		nameIdMap.put("BattleDaoHeartResponse_13000056", 0x13000056);
 		nameIdMap.put("BattleDaoHeartSweepRequest_13000060", 0x13000060);
 		nameIdMap.put("BattleDaoHeartSweepResponse_13000061", 0x13000061);
 		nameIdMap.put("BattleDaoHeartSweepBatchRequest_13000062", 0x13000062);

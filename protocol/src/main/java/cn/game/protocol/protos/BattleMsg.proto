@@ -101,12 +101,14 @@ message BattleStaminaResponse_13000051{
 
 // ****************************************道心磨砺********************************************
 ///*** 查看道心磨砺数据 ***/
-//message BattleDaoHeartRequest_13000055{
-//}
-//
-//message BattleDaoHeartResponse_13000056{
-//	int32 id = 2;					// 当前通关到的最新的战役id （DaoHeart）表id
-//}
+message BattleDaoHeartRequest_13000055{
+}
+
+message BattleDaoHeartResponse_13000056{
+	int32 id = 1;					// 当前通关到的最新的战役id （DaoHeart）表id
+	int32 freeSweepRemaning = 2;      // 免费剩余扫荡次数。
+	int32 paySweepRemaning = 3;      // 收费剩余扫荡次数。
+}
 
 /*** 扫荡道心磨砺关卡 ***/
 message BattleDaoHeartSweepRequest_13000060{
@@ -118,7 +120,8 @@ message BattleDaoHeartSweepResponse_13000061{
 
 /*** 一键扫荡道心磨砺关卡 ***/
 message BattleDaoHeartSweepBatchRequest_13000062{
-	int32 id = 2;					// （DaoHeart）表id
+	int32 id = 1;					// （DaoHeart）表id
+	bool pay = 2;				// 是否直接使用付费次数。
 }
 message BattleDaoHeartSweepBatchResponse_13000063{
 	repeated RewardInfo rewards = 1;//

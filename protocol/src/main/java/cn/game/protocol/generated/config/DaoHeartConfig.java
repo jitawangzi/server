@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 	/** ID */
 	public final int ID;		
-	/** 类型 1=普通 2=精英 */
+	/** 类型 1=道心历练 2=心魔试炼 */
 	public final int Type;		
 	/** 战役ID */
 	public final int BattleID;		
@@ -22,27 +22,21 @@ import org.w3c.dom.Element;
 	public final int AtkValue;		
 	/** 资源图 */
 	public final String Res;		
-	/** BUFF类型 1=增益 2=减益 */
-	public final int BuffType;		
-	/** 高难预警属性 */
-	public final int[][] Attribute;		
-	/** 高难预警文本 */
-	public final String BUFFText;		
-	/** 高难预警图标 */
-	public final String BUFFRes;		
-	/** 首通奖励 */
-	public final int[] FirstPassReward;		
+	/** BUFF条数 1=增益 2=减益 */
+	public final int[][] Cnt;		
+	/** 首通奖励 掉落ID */
+	public final int FirstPassReward;		
 	/** 扫荡奖励 */
-	public final int[] SweepReward;		
+	public final int SweepReward;		
 	/** 通关奖励 */
-	public final int[] ClearGameReward;		
+	public final int ClearGameReward;		
 
 	public DaoHeartConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // ID
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
-			: element.getAttribute("Type")); // 类型 1=普通 2=精英
+			: element.getAttribute("Type")); // 类型 1=道心历练 2=心魔试炼
 		BattleID = Integer.parseInt(element.getAttribute("BattleID") == null || element.getAttribute("BattleID").length() == 0 ? "0"
 			: element.getAttribute("BattleID")); // 战役ID
 		PreBattle = Integer.parseInt(element.getAttribute("PreBattle") == null || element.getAttribute("PreBattle").length() == 0 ? "0"
@@ -50,63 +44,29 @@ import org.w3c.dom.Element;
 		AtkValue = Integer.parseInt(element.getAttribute("AtkValue") == null || element.getAttribute("AtkValue").length() == 0 ? "0"
 			: element.getAttribute("AtkValue")); // 推荐战力
 		Res = element.getAttribute("Res"); // 资源图
-		BuffType = Integer.parseInt(element.getAttribute("BuffType") == null || element.getAttribute("BuffType").length() == 0 ? "0"
-			: element.getAttribute("BuffType")); // BUFF类型 1=增益 2=减益
-		String AttributeString = element.getAttribute("Attribute"); // 高难预警属性
-		if (AttributeString != null && AttributeString.length() > 0) {
-			String[] AttributeStrings = AttributeString.split("\\|"); 
-			int[][] AttributeTemp = new int[AttributeStrings.length][] ; 
-			for (int i = 0; i < AttributeStrings.length; i++) {
-				String[] AttributeStrings2 = AttributeStrings[i].split(";"); 
-				int[] array = new int[AttributeStrings2.length];
-				for (int j = 0; j < AttributeStrings2.length; j++) {
-					int temp = Integer.parseInt(AttributeStrings2[j]);	
+		String CntString = element.getAttribute("Cnt"); // BUFF条数 1=增益 2=减益
+		if (CntString != null && CntString.length() > 0) {
+			String[] CntStrings = CntString.split("\\|"); 
+			int[][] CntTemp = new int[CntStrings.length][] ; 
+			for (int i = 0; i < CntStrings.length; i++) {
+				String[] CntStrings2 = CntStrings[i].split(";"); 
+				int[] array = new int[CntStrings2.length];
+				for (int j = 0; j < CntStrings2.length; j++) {
+					int temp = Integer.parseInt(CntStrings2[j]);	
 					array[j] = temp;
 				}
-				AttributeTemp[i] = array;
+				CntTemp[i] = array;
 			}
-			Attribute = AttributeTemp ;			
+			Cnt = CntTemp ;			
 		} else {
-			Attribute = new int[][] {};
+			Cnt = new int[][] {};
 		}
-		BUFFText = element.getAttribute("BUFFText"); // 高难预警文本
-		BUFFRes = element.getAttribute("BUFFRes"); // 高难预警图标
-		String FirstPassRewardString = element.getAttribute("FirstPassReward"); // 首通奖励
-		if (FirstPassRewardString != null && FirstPassRewardString.length() > 0) {
-			String[] FirstPassRewardStrings = FirstPassRewardString.split(";"); 
-			int[] FirstPassRewardTemp = new int[FirstPassRewardStrings.length] ; 
-			for (int i = 0; i < FirstPassRewardStrings.length; i++) {
-				int temp = Integer.parseInt(FirstPassRewardStrings[i]);	
-				FirstPassRewardTemp[i] = temp;
-			}
-			FirstPassReward = FirstPassRewardTemp ;			
-		} else {
-			FirstPassReward = new int[] {};
-		}
-		String SweepRewardString = element.getAttribute("SweepReward"); // 扫荡奖励
-		if (SweepRewardString != null && SweepRewardString.length() > 0) {
-			String[] SweepRewardStrings = SweepRewardString.split(";"); 
-			int[] SweepRewardTemp = new int[SweepRewardStrings.length] ; 
-			for (int i = 0; i < SweepRewardStrings.length; i++) {
-				int temp = Integer.parseInt(SweepRewardStrings[i]);	
-				SweepRewardTemp[i] = temp;
-			}
-			SweepReward = SweepRewardTemp ;			
-		} else {
-			SweepReward = new int[] {};
-		}
-		String ClearGameRewardString = element.getAttribute("ClearGameReward"); // 通关奖励
-		if (ClearGameRewardString != null && ClearGameRewardString.length() > 0) {
-			String[] ClearGameRewardStrings = ClearGameRewardString.split(";"); 
-			int[] ClearGameRewardTemp = new int[ClearGameRewardStrings.length] ; 
-			for (int i = 0; i < ClearGameRewardStrings.length; i++) {
-				int temp = Integer.parseInt(ClearGameRewardStrings[i]);	
-				ClearGameRewardTemp[i] = temp;
-			}
-			ClearGameReward = ClearGameRewardTemp ;			
-		} else {
-			ClearGameReward = new int[] {};
-		}
+		FirstPassReward = Integer.parseInt(element.getAttribute("FirstPassReward") == null || element.getAttribute("FirstPassReward").length() == 0 ? "0"
+			: element.getAttribute("FirstPassReward")); // 首通奖励 掉落ID
+		SweepReward = Integer.parseInt(element.getAttribute("SweepReward") == null || element.getAttribute("SweepReward").length() == 0 ? "0"
+			: element.getAttribute("SweepReward")); // 扫荡奖励
+		ClearGameReward = Integer.parseInt(element.getAttribute("ClearGameReward") == null || element.getAttribute("ClearGameReward").length() == 0 ? "0"
+			: element.getAttribute("ClearGameReward")); // 通关奖励
 	}
 	
 

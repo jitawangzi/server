@@ -44,7 +44,7 @@ public enum InitialUI{
 	/**  */
 	ThreeWorld(3001,0,"ThreeWorld",10,0,"三界",""),
 	/**  */
-	Consciousness(300101,3001,"Consciousness",10,0,"神元",""),
+	Consciousness(300101,3001,"Consciousness",10,0,"修炼",""),
 	/**  */
 	Experience(4001,0,"Experience",10,0,"历练",""),
 	/**  */

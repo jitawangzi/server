@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 	/** 肉鸽id */
 	public final int ID;		
-	/** 肉鸽类型 1-英雄 2-伙伴 3-全场AOE 4-纯加属性% */
+	/** 肉鸽类型 1-英雄 2-伙伴 3-修炼技能 4-纯加属性% */
 	public final int RogueType;		
 	/** 肉鸽底板品质 品质  1-白色  2-绿色  3-蓝色  4-紫色  5-金色  6-红色  7-彩色  8-永恒  9-唯一 */
 	public final String quality;		
@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 	public final int CallHero;		
 	/** 肉鸽星级显示 配置：品质id;星级数量  1-白色  2-绿色  3-蓝色  4-紫色  5-金色  6-红色  7-彩色  8-永恒  9-唯一 */
 	public final int[] RogueStar;		
-	/** 技能组id  调用HeroSkillGroup#技能组id 用来判定是同组id */
+	/** 同组id标识 */
 	public final int HeroSkillGroupId;		
 	/** 技能组id标识  此列用来去Almost_HeroSkill——HeroSkillGroup#技能组——SkillGroup序列中找第几个数组 */
 	public final int SkillGroupMark;		
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 肉鸽id
 		RogueType = Integer.parseInt(element.getAttribute("RogueType") == null || element.getAttribute("RogueType").length() == 0 ? "0"
-			: element.getAttribute("RogueType")); // 肉鸽类型 1-英雄 2-伙伴 3-全场AOE 4-纯加属性%
+			: element.getAttribute("RogueType")); // 肉鸽类型 1-英雄 2-伙伴 3-修炼技能 4-纯加属性%
 		quality = element.getAttribute("quality"); // 肉鸽底板品质 品质  1-白色  2-绿色  3-蓝色  4-紫色  5-金色  6-红色  7-彩色  8-永恒  9-唯一
 		RogueName = element.getAttribute("RogueName"); // 肉鸽名称
 		RogueTips = element.getAttribute("RogueTips"); // 肉鸽描述
@@ -55,7 +55,7 @@ import org.w3c.dom.Element;
 			RogueStar = new int[] {};
 		}
 		HeroSkillGroupId = Integer.parseInt(element.getAttribute("HeroSkillGroupId") == null || element.getAttribute("HeroSkillGroupId").length() == 0 ? "0"
-			: element.getAttribute("HeroSkillGroupId")); // 技能组id  调用HeroSkillGroup#技能组id 用来判定是同组id
+			: element.getAttribute("HeroSkillGroupId")); // 同组id标识
 		SkillGroupMark = Integer.parseInt(element.getAttribute("SkillGroupMark") == null || element.getAttribute("SkillGroupMark").length() == 0 ? "0"
 			: element.getAttribute("SkillGroupMark")); // 技能组id标识  此列用来去Almost_HeroSkill——HeroSkillGroup#技能组——SkillGroup序列中找第几个数组
 		RogueWeight = Integer.parseInt(element.getAttribute("RogueWeight") == null || element.getAttribute("RogueWeight").length() == 0 ? "0"

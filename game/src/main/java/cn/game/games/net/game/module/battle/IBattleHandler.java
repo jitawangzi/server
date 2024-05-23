@@ -13,10 +13,10 @@ public interface IBattleHandler {
 	/**
 	 * @Description
 	 * @param playerId
-	 * @param type
+	 * @param type，战斗类型
 	 *            DungeonTypeEnum的id
-	 * @param dungeonId
-	 * @param id
+	 * @param dungeonId  类型里面对应的id
+	 * @param id  关卡id
 	 * @param lineupId
 	 * @param uid
 	 */

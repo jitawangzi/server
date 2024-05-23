@@ -78,6 +78,40 @@ public class GlobalConst extends ResourceListener {
 	public static int[][] DaoHeartConsume;		
 	/** 【月卡】双月卡奖励 */
 	public static int[][] DoubleBonus;		
+	/** 【战中】格子数 */
+	public static int[][] GridNum;		
+	/** 【战中】共用HP */
+	public static int ShareHp;		
+	/** 【战中】初始银币数量 */
+	public static int[] InitialSilver;		
+	/** 【战中】每波次结束宝箱获得银币数 */
+	public static int[] RandSilver;		
+	/** 【合成】刷新消耗银币 */
+	public static int[] RefreshConsum;		
+	/** 【合成】不配置任何装备点开战按钮 */
+	public static String RefreshError;		
+	/** 【战中】【换一批】肉鸽刷新每日次数 */
+	public static int RougeChange;		
+	/** 【战中】【全都要】肉鸽刷新每日次数 */
+	public static int RougEverything;		
+	/** 【战中】装备合成每级加成 */
+	public static int[] BattleLvMarkup;		
+	/** 【战斗结算】分享双倍每日次数 */
+	public static int ShareTwice;		
+	/** 【主界面】每次扫荡剩余次数 */
+	public static int SweepNum;		
+	/** 【日常】每日剩余挑战次数 */
+	public static int DailyNum;		
+	/** 【每日商店】每日广告刷新商品次数 */
+	public static int DailyStore;		
+	/** 【宝箱】每日免费广告次数 */
+	public static int BoxAdvertNum;		
+	/** 【宝箱】每日免费广告cd时间 */
+	public static int BoxAdvertTime;		
+	/** 【宝箱】调用掉落组id */
+	public static int BoxRandomId;		
+	/** 【宝箱】每次点击花费 */
+	public static int[] BoSpend;		
 
 	static {
 		WatchServiceManager.getInstance().register(instance);
@@ -349,6 +383,104 @@ public class GlobalConst extends ResourceListener {
 			DoubleBonus = DoubleBonusTemp ;			
 		} else {
 			DoubleBonus = new int[][] {};
+		}
+		String GridNumString = element.getAttribute("GridNum"); // 【战中】格子数
+		if (GridNumString != null && GridNumString.length() > 0) {
+			String[] GridNumStrings = GridNumString.split("\\|"); 
+			int[][] GridNumTemp = new int[GridNumStrings.length][] ; 
+			for (int i = 0; i < GridNumStrings.length; i++) {
+				String[] GridNumStrings2 = GridNumStrings[i].split(";"); 
+				int[] array = new int[GridNumStrings2.length];
+				for (int j = 0; j < GridNumStrings2.length; j++) {
+					int temp = Integer.parseInt(GridNumStrings2[j]);	
+					array[j] = temp;
+				}
+				GridNumTemp[i] = array;
+			}
+			GridNum = GridNumTemp ;			
+		} else {
+			GridNum = new int[][] {};
+		}
+		ShareHp = Integer.parseInt(element.getAttribute("ShareHp") == null || element.getAttribute("ShareHp").length() == 0 ? "0"
+			: element.getAttribute("ShareHp")); // 【战中】共用HP
+		String InitialSilverString = element.getAttribute("InitialSilver"); // 【战中】初始银币数量
+		if (InitialSilverString != null && InitialSilverString.length() > 0) {
+			String[] InitialSilverStrings = InitialSilverString.split(";"); 
+			int[] InitialSilverTemp = new int[InitialSilverStrings.length] ; 
+			for (int i = 0; i < InitialSilverStrings.length; i++) {
+				int temp = Integer.parseInt(InitialSilverStrings[i]);	
+				InitialSilverTemp[i] = temp;
+			}
+			InitialSilver = InitialSilverTemp ;			
+		} else {
+			InitialSilver = new int[] {};
+		}
+		String RandSilverString = element.getAttribute("RandSilver"); // 【战中】每波次结束宝箱获得银币数
+		if (RandSilverString != null && RandSilverString.length() > 0) {
+			String[] RandSilverStrings = RandSilverString.split(";"); 
+			int[] RandSilverTemp = new int[RandSilverStrings.length] ; 
+			for (int i = 0; i < RandSilverStrings.length; i++) {
+				int temp = Integer.parseInt(RandSilverStrings[i]);	
+				RandSilverTemp[i] = temp;
+			}
+			RandSilver = RandSilverTemp ;			
+		} else {
+			RandSilver = new int[] {};
+		}
+		String RefreshConsumString = element.getAttribute("RefreshConsum"); // 【合成】刷新消耗银币
+		if (RefreshConsumString != null && RefreshConsumString.length() > 0) {
+			String[] RefreshConsumStrings = RefreshConsumString.split(";"); 
+			int[] RefreshConsumTemp = new int[RefreshConsumStrings.length] ; 
+			for (int i = 0; i < RefreshConsumStrings.length; i++) {
+				int temp = Integer.parseInt(RefreshConsumStrings[i]);	
+				RefreshConsumTemp[i] = temp;
+			}
+			RefreshConsum = RefreshConsumTemp ;			
+		} else {
+			RefreshConsum = new int[] {};
+		}
+		RefreshError = element.getAttribute("RefreshError"); // 【合成】不配置任何装备点开战按钮
+		RougeChange = Integer.parseInt(element.getAttribute("RougeChange") == null || element.getAttribute("RougeChange").length() == 0 ? "0"
+			: element.getAttribute("RougeChange")); // 【战中】【换一批】肉鸽刷新每日次数
+		RougEverything = Integer.parseInt(element.getAttribute("RougEverything") == null || element.getAttribute("RougEverything").length() == 0 ? "0"
+			: element.getAttribute("RougEverything")); // 【战中】【全都要】肉鸽刷新每日次数
+		String BattleLvMarkupString = element.getAttribute("BattleLvMarkup"); // 【战中】装备合成每级加成
+		if (BattleLvMarkupString != null && BattleLvMarkupString.length() > 0) {
+			String[] BattleLvMarkupStrings = BattleLvMarkupString.split(";"); 
+			int[] BattleLvMarkupTemp = new int[BattleLvMarkupStrings.length] ; 
+			for (int i = 0; i < BattleLvMarkupStrings.length; i++) {
+				int temp = Integer.parseInt(BattleLvMarkupStrings[i]);	
+				BattleLvMarkupTemp[i] = temp;
+			}
+			BattleLvMarkup = BattleLvMarkupTemp ;			
+		} else {
+			BattleLvMarkup = new int[] {};
+		}
+		ShareTwice = Integer.parseInt(element.getAttribute("ShareTwice") == null || element.getAttribute("ShareTwice").length() == 0 ? "0"
+			: element.getAttribute("ShareTwice")); // 【战斗结算】分享双倍每日次数
+		SweepNum = Integer.parseInt(element.getAttribute("SweepNum") == null || element.getAttribute("SweepNum").length() == 0 ? "0"
+			: element.getAttribute("SweepNum")); // 【主界面】每次扫荡剩余次数
+		DailyNum = Integer.parseInt(element.getAttribute("DailyNum") == null || element.getAttribute("DailyNum").length() == 0 ? "0"
+			: element.getAttribute("DailyNum")); // 【日常】每日剩余挑战次数
+		DailyStore = Integer.parseInt(element.getAttribute("DailyStore") == null || element.getAttribute("DailyStore").length() == 0 ? "0"
+			: element.getAttribute("DailyStore")); // 【每日商店】每日广告刷新商品次数
+		BoxAdvertNum = Integer.parseInt(element.getAttribute("BoxAdvertNum") == null || element.getAttribute("BoxAdvertNum").length() == 0 ? "0"
+			: element.getAttribute("BoxAdvertNum")); // 【宝箱】每日免费广告次数
+		BoxAdvertTime = Integer.parseInt(element.getAttribute("BoxAdvertTime") == null || element.getAttribute("BoxAdvertTime").length() == 0 ? "0"
+			: element.getAttribute("BoxAdvertTime")); // 【宝箱】每日免费广告cd时间
+		BoxRandomId = Integer.parseInt(element.getAttribute("BoxRandomId") == null || element.getAttribute("BoxRandomId").length() == 0 ? "0"
+			: element.getAttribute("BoxRandomId")); // 【宝箱】调用掉落组id
+		String BoSpendString = element.getAttribute("BoSpend"); // 【宝箱】每次点击花费
+		if (BoSpendString != null && BoSpendString.length() > 0) {
+			String[] BoSpendStrings = BoSpendString.split(";"); 
+			int[] BoSpendTemp = new int[BoSpendStrings.length] ; 
+			for (int i = 0; i < BoSpendStrings.length; i++) {
+				int temp = Integer.parseInt(BoSpendStrings[i]);	
+				BoSpendTemp[i] = temp;
+			}
+			BoSpend = BoSpendTemp ;			
+		} else {
+			BoSpend = new int[] {};
 		}
 	}
 	@Override

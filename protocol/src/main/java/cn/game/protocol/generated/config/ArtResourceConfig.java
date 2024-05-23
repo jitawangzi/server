@@ -48,6 +48,8 @@ import org.w3c.dom.Element;
 	public final String Bubble;		
 	/** 神将上阵缩放 数字除以100 */
 	public final int CardScale;		
+	/** 升级界面缩放 数字除以100 */
+	public final int CardLvUpScale;		
 
 	public ArtResourceConfig (Element element) throws Exception {
 	
@@ -73,6 +75,8 @@ import org.w3c.dom.Element;
 		Bubble = element.getAttribute("Bubble"); // 气泡 配置
 		CardScale = Integer.parseInt(element.getAttribute("CardScale") == null || element.getAttribute("CardScale").length() == 0 ? "0"
 			: element.getAttribute("CardScale")); // 神将上阵缩放 数字除以100
+		CardLvUpScale = Integer.parseInt(element.getAttribute("CardLvUpScale") == null || element.getAttribute("CardLvUpScale").length() == 0 ? "0"
+			: element.getAttribute("CardLvUpScale")); // 升级界面缩放 数字除以100
 	}
 	
 

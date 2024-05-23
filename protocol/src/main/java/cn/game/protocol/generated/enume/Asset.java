@@ -8,9 +8,11 @@ package cn.game.protocol.generated.enume;
 public enum Asset{
 
 	/** 元宝 */
-	diamond(100001,"diamond","元宝",1,6,"游戏中的万用货币","recharge_icon_01"),
+	diamond(100001,"diamond","元宝",1,6,"有钱能使鬼推磨","recharge_icon_01"),
 	/** 金币 */
-	gold(100002,"gold","金币",1,6,"游戏中购买物品的标准货币","recharge_icon_07"),
+	gold(100002,"gold","金币",1,6,"大唐统一货币","recharge_icon_07"),
+	/** 银币 */
+	silver(100003,"silver","银币",1,1,"大唐统一购置装备货币","recharge_icon_08"),
 	/** 经验 */
 	playerExp(100201,"playerExp","经验",2,5,"提升玩家等级之用","com_icon_jingyan"),
 	/** 每日任务活跃度 */
@@ -20,9 +22,15 @@ public enum Asset{
 	/** 7日任务活跃度 */
 	SevenDaysPoint(100204,"SevenDaysPoint","7日任务活跃度",1,5,"获得指定数量后可以领取奖励","sevendaygift_icon_integral"),
 	/** 通行证经验 */
-	FundPass(100205,"FundPass","通行证经验",2,5,"获得指定数量后可以领取奖励",""),
+	FundPass(100205,"FundPass","通行证经验",1,5,"获得指定数量后可以领取奖励",""),
+	/** 灵韵珠 */
+	PotentialLvM(100206,"PotentialLvM","灵韵珠",1,4,"用于潜力升级","icon_hulu_cai"),
+	/** 蕴灵液 */
+	PotentialBreakM(100207,"PotentialBreakM","蕴灵液",1,5,"用于潜力突破","icon_hulu_jin"),
 	/** 体力 */
-	playerEnergy(100301,"playerEnergy","体力",3,5,"用于挑战、扫荡关卡，获取关卡奖励","physicalpower_icon_01"),
+	playerEnergy(100301,"playerEnergy","体力",3,5,"吃了人参果，阎王能打过","physicalpower_icon_01"),
+	/** 日常活动积分 */
+	dailyIntegral(100302,"dailyIntegral","日常活动积分",1,6,"参加日常活动获得积分","icon_hulu_cai"),
     ;
 	/** ID */
 	public final int ID ; 
@@ -32,7 +40,7 @@ public enum Asset{
 	public final String Desc ; 
 	/** 物品类型 1=普通货币 2=经验 3=体力 */
 	public final int Type ; 
-	/** 品质 */
+	/** 品质 1-白色（凡品） 2-绿色（素品） 3-蓝色（上品） 4-紫色（极品） 5-金色（臻品） 6-红色（仙品） 7-彩色（先天） 8-永恒（至宝） 9-唯一（灵宝） */
 	public final int Quality ; 
 	/** 物品tips */
 	public final String Tips ; 

@@ -1,17 +1,18 @@
 package cn.game.protocol.generated.helper;
 
 import cn.game.protocol.generated.manager.HeroBUFFManager;
+import cn.game.protocol.generated.manager.RescueManager;
 import cn.game.protocol.generated.manager.HeroBeamManager;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.PotentialManager;
 import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.RoguelikeTriggerManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.PacksChoiceManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.RechargeStoreManager;
-import cn.game.protocol.generated.manager.RandomBUFFManager;
 import cn.game.protocol.generated.manager.HeroSkillManager;
 import cn.game.protocol.generated.manager.AssetRestoreManager;
 import cn.game.protocol.generated.manager.AttrEffectCoefficientManager;
@@ -72,17 +73,18 @@ public class ManagerHelper {
 
 	public static void init() {
 		HeroBUFFManager.instance().load();
+		RescueManager.instance().load();
 		HeroBeamManager.instance().load();
 		ActivityManager.instance().load();
 		FundPassUpgradeManager.instance().load();
 		ShopItemManager.instance().load();
+		PotentialManager.instance().load();
 		RechargeManager.instance().load();
 		RoguelikeTriggerManager.instance().load();
 		ItemManager.instance().load();
 		PacksChoiceManager.instance().load();
 		UserUpgradeManager.instance().load();
 		RechargeStoreManager.instance().load();
-		RandomBUFFManager.instance().load();
 		HeroSkillManager.instance().load();
 		AssetRestoreManager.instance().load();
 		AttrEffectCoefficientManager.instance().load();

@@ -82,7 +82,7 @@ public class BattleTrainingImpl implements IBattleHandler {
 
 	@Override
 	public int getType() {
-		return DungeonTypeEnum.RoutineTraining.getId();
+		return DungeonTypeEnum.DaoHeart.getId();
 	}
 
 }

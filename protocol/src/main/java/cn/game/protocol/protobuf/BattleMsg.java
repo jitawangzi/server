@@ -13015,6 +13015,1122 @@ public final class BattleMsg {
 
   }
 
+  public interface BattleDaoHeartRequest_13000055OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleDaoHeartRequest_13000055)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * ****************************************道心磨砺********************************************
+   * /&#42;** 查看道心磨砺数据 ***&#47;
+   * </pre>
+   *
+   * Protobuf type {@code Protos.BattleDaoHeartRequest_13000055}
+   */
+  public static final class BattleDaoHeartRequest_13000055 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleDaoHeartRequest_13000055)
+      BattleDaoHeartRequest_13000055OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleDaoHeartRequest_13000055.newBuilder() to construct.
+    private BattleDaoHeartRequest_13000055(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleDaoHeartRequest_13000055() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleDaoHeartRequest_13000055();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleDaoHeartRequest_13000055(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartRequest_13000055_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartRequest_13000055_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * ****************************************道心磨砺********************************************
+     * /&#42;** 查看道心磨砺数据 ***&#47;
+     * </pre>
+     *
+     * Protobuf type {@code Protos.BattleDaoHeartRequest_13000055}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleDaoHeartRequest_13000055)
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartRequest_13000055_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartRequest_13000055_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartRequest_13000055_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleDaoHeartRequest_13000055)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleDaoHeartRequest_13000055)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleDaoHeartRequest_13000055>
+        PARSER = new com.google.protobuf.AbstractParser<BattleDaoHeartRequest_13000055>() {
+      @java.lang.Override
+      public BattleDaoHeartRequest_13000055 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleDaoHeartRequest_13000055(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleDaoHeartRequest_13000055> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleDaoHeartRequest_13000055> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BattleDaoHeartResponse_13000056OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleDaoHeartResponse_13000056)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 当前通关到的最新的战役id （DaoHeart）表id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * 免费剩余扫荡次数。
+     * </pre>
+     *
+     * <code>int32 freeSweepRemaning = 2;</code>
+     * @return The freeSweepRemaning.
+     */
+    int getFreeSweepRemaning();
+
+    /**
+     * <pre>
+     * 收费剩余扫荡次数。
+     * </pre>
+     *
+     * <code>int32 paySweepRemaning = 3;</code>
+     * @return The paySweepRemaning.
+     */
+    int getPaySweepRemaning();
+  }
+  /**
+   * Protobuf type {@code Protos.BattleDaoHeartResponse_13000056}
+   */
+  public static final class BattleDaoHeartResponse_13000056 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleDaoHeartResponse_13000056)
+      BattleDaoHeartResponse_13000056OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleDaoHeartResponse_13000056.newBuilder() to construct.
+    private BattleDaoHeartResponse_13000056(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleDaoHeartResponse_13000056() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleDaoHeartResponse_13000056();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleDaoHeartResponse_13000056(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              freeSweepRemaning_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              paySweepRemaning_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartResponse_13000056_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * 当前通关到的最新的战役id （DaoHeart）表id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int FREESWEEPREMANING_FIELD_NUMBER = 2;
+    private int freeSweepRemaning_;
+    /**
+     * <pre>
+     * 免费剩余扫荡次数。
+     * </pre>
+     *
+     * <code>int32 freeSweepRemaning = 2;</code>
+     * @return The freeSweepRemaning.
+     */
+    @java.lang.Override
+    public int getFreeSweepRemaning() {
+      return freeSweepRemaning_;
+    }
+
+    public static final int PAYSWEEPREMANING_FIELD_NUMBER = 3;
+    private int paySweepRemaning_;
+    /**
+     * <pre>
+     * 收费剩余扫荡次数。
+     * </pre>
+     *
+     * <code>int32 paySweepRemaning = 3;</code>
+     * @return The paySweepRemaning.
+     */
+    @java.lang.Override
+    public int getPaySweepRemaning() {
+      return paySweepRemaning_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
+      if (freeSweepRemaning_ != 0) {
+        output.writeInt32(2, freeSweepRemaning_);
+      }
+      if (paySweepRemaning_ != 0) {
+        output.writeInt32(3, paySweepRemaning_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      if (freeSweepRemaning_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, freeSweepRemaning_);
+      }
+      if (paySweepRemaning_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, paySweepRemaning_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (getFreeSweepRemaning()
+          != other.getFreeSweepRemaning()) return false;
+      if (getPaySweepRemaning()
+          != other.getPaySweepRemaning()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + FREESWEEPREMANING_FIELD_NUMBER;
+      hash = (53 * hash) + getFreeSweepRemaning();
+      hash = (37 * hash) + PAYSWEEPREMANING_FIELD_NUMBER;
+      hash = (53 * hash) + getPaySweepRemaning();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.BattleDaoHeartResponse_13000056}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleDaoHeartResponse_13000056)
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartResponse_13000056_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        freeSweepRemaning_ = 0;
+
+        paySweepRemaning_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056(this);
+        result.id_ = id_;
+        result.freeSweepRemaning_ = freeSweepRemaning_;
+        result.paySweepRemaning_ = paySweepRemaning_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getFreeSweepRemaning() != 0) {
+          setFreeSweepRemaning(other.getFreeSweepRemaning());
+        }
+        if (other.getPaySweepRemaning() != 0) {
+          setPaySweepRemaning(other.getPaySweepRemaning());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       * 当前通关到的最新的战役id （DaoHeart）表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * 当前通关到的最新的战役id （DaoHeart）表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前通关到的最新的战役id （DaoHeart）表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int freeSweepRemaning_ ;
+      /**
+       * <pre>
+       * 免费剩余扫荡次数。
+       * </pre>
+       *
+       * <code>int32 freeSweepRemaning = 2;</code>
+       * @return The freeSweepRemaning.
+       */
+      @java.lang.Override
+      public int getFreeSweepRemaning() {
+        return freeSweepRemaning_;
+      }
+      /**
+       * <pre>
+       * 免费剩余扫荡次数。
+       * </pre>
+       *
+       * <code>int32 freeSweepRemaning = 2;</code>
+       * @param value The freeSweepRemaning to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFreeSweepRemaning(int value) {
+        
+        freeSweepRemaning_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 免费剩余扫荡次数。
+       * </pre>
+       *
+       * <code>int32 freeSweepRemaning = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFreeSweepRemaning() {
+        
+        freeSweepRemaning_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int paySweepRemaning_ ;
+      /**
+       * <pre>
+       * 收费剩余扫荡次数。
+       * </pre>
+       *
+       * <code>int32 paySweepRemaning = 3;</code>
+       * @return The paySweepRemaning.
+       */
+      @java.lang.Override
+      public int getPaySweepRemaning() {
+        return paySweepRemaning_;
+      }
+      /**
+       * <pre>
+       * 收费剩余扫荡次数。
+       * </pre>
+       *
+       * <code>int32 paySweepRemaning = 3;</code>
+       * @param value The paySweepRemaning to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPaySweepRemaning(int value) {
+        
+        paySweepRemaning_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 收费剩余扫荡次数。
+       * </pre>
+       *
+       * <code>int32 paySweepRemaning = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPaySweepRemaning() {
+        
+        paySweepRemaning_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleDaoHeartResponse_13000056)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleDaoHeartResponse_13000056)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleDaoHeartResponse_13000056>
+        PARSER = new com.google.protobuf.AbstractParser<BattleDaoHeartResponse_13000056>() {
+      @java.lang.Override
+      public BattleDaoHeartResponse_13000056 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleDaoHeartResponse_13000056(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleDaoHeartResponse_13000056> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleDaoHeartResponse_13000056> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface BattleDaoHeartSweepRequest_13000060OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.BattleDaoHeartSweepRequest_13000060)
       com.google.protobuf.MessageOrBuilder {
@@ -14417,10 +15533,20 @@ public final class BattleMsg {
      * （DaoHeart）表id
      * </pre>
      *
-     * <code>int32 id = 2;</code>
+     * <code>int32 id = 1;</code>
      * @return The id.
      */
     int getId();
+
+    /**
+     * <pre>
+     * 是否直接使用付费次数。
+     * </pre>
+     *
+     * <code>bool pay = 2;</code>
+     * @return The pay.
+     */
+    boolean getPay();
   }
   /**
    * <pre>
@@ -14471,9 +15597,14 @@ public final class BattleMsg {
             case 0:
               done = true;
               break;
-            case 16: {
+            case 8: {
 
               id_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              pay_ = input.readBool();
               break;
             }
             default: {
@@ -14508,19 +15639,34 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 2;
+    public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
      * <pre>
      * （DaoHeart）表id
      * </pre>
      *
-     * <code>int32 id = 2;</code>
+     * <code>int32 id = 1;</code>
      * @return The id.
      */
     @java.lang.Override
     public int getId() {
       return id_;
+    }
+
+    public static final int PAY_FIELD_NUMBER = 2;
+    private boolean pay_;
+    /**
+     * <pre>
+     * 是否直接使用付费次数。
+     * </pre>
+     *
+     * <code>bool pay = 2;</code>
+     * @return The pay.
+     */
+    @java.lang.Override
+    public boolean getPay() {
+      return pay_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -14538,7 +15684,10 @@ public final class BattleMsg {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (id_ != 0) {
-        output.writeInt32(2, id_);
+        output.writeInt32(1, id_);
+      }
+      if (pay_ != false) {
+        output.writeBool(2, pay_);
       }
       unknownFields.writeTo(output);
     }
@@ -14551,7 +15700,11 @@ public final class BattleMsg {
       size = 0;
       if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, id_);
+          .computeInt32Size(1, id_);
+      }
+      if (pay_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, pay_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -14570,6 +15723,8 @@ public final class BattleMsg {
 
       if (getId()
           != other.getId()) return false;
+      if (getPay()
+          != other.getPay()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -14583,6 +15738,9 @@ public final class BattleMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
+      hash = (37 * hash) + PAY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getPay());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -14722,6 +15880,8 @@ public final class BattleMsg {
         super.clear();
         id_ = 0;
 
+        pay_ = false;
+
         return this;
       }
 
@@ -14749,6 +15909,7 @@ public final class BattleMsg {
       public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062(this);
         result.id_ = id_;
+        result.pay_ = pay_;
         onBuilt();
         return result;
       }
@@ -14800,6 +15961,9 @@ public final class BattleMsg {
         if (other.getId() != 0) {
           setId(other.getId());
         }
+        if (other.getPay() != false) {
+          setPay(other.getPay());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -14835,7 +15999,7 @@ public final class BattleMsg {
        * （DaoHeart）表id
        * </pre>
        *
-       * <code>int32 id = 2;</code>
+       * <code>int32 id = 1;</code>
        * @return The id.
        */
       @java.lang.Override
@@ -14847,7 +16011,7 @@ public final class BattleMsg {
        * （DaoHeart）表id
        * </pre>
        *
-       * <code>int32 id = 2;</code>
+       * <code>int32 id = 1;</code>
        * @param value The id to set.
        * @return This builder for chaining.
        */
@@ -14862,12 +16026,55 @@ public final class BattleMsg {
        * （DaoHeart）表id
        * </pre>
        *
-       * <code>int32 id = 2;</code>
+       * <code>int32 id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
         
         id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean pay_ ;
+      /**
+       * <pre>
+       * 是否直接使用付费次数。
+       * </pre>
+       *
+       * <code>bool pay = 2;</code>
+       * @return The pay.
+       */
+      @java.lang.Override
+      public boolean getPay() {
+        return pay_;
+      }
+      /**
+       * <pre>
+       * 是否直接使用付费次数。
+       * </pre>
+       *
+       * <code>bool pay = 2;</code>
+       * @param value The pay to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPay(boolean value) {
+        
+        pay_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是否直接使用付费次数。
+       * </pre>
+       *
+       * <code>bool pay = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPay() {
+        
+        pay_ = false;
         onChanged();
         return this;
       }
@@ -18388,6 +19595,16 @@ public final class BattleMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_BattleStaminaResponse_13000051_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleDaoHeartRequest_13000055_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleDaoHeartRequest_13000055_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleDaoHeartResponse_13000056_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -18476,20 +19693,23 @@ public final class BattleMsg {
       "ickPatrolCount\030\002 \001(\005\022\025\n\radPatrolCount\030\003 " +
       "\001(\005\"-\n\035BattleStaminaRequest_13000050\022\014\n\004" +
       "time\030\001 \001(\005\" \n\036BattleStaminaResponse_1300" +
-      "0051\"1\n#BattleDaoHeartSweepRequest_13000" +
-      "060\022\n\n\002id\030\002 \001(\005\"K\n$BattleDaoHeartSweepRe" +
-      "sponse_13000061\022#\n\007rewards\030\001 \003(\0132\022.Proto" +
-      "s.RewardInfo\"6\n(BattleDaoHeartSweepBatch" +
-      "Request_13000062\022\n\n\002id\030\002 \001(\005\"P\n)BattleDa" +
-      "oHeartSweepBatchResponse_13000063\022#\n\007rew" +
-      "ards\030\001 \003(\0132\022.Protos.RewardInfo\"%\n#Battle" +
-      "DaoHeartSweepRequest_13000064\"2\n$BattleD" +
-      "aoHeartSweepResponse_13000065\022\n\n\002id\030\002 \003(" +
-      "\005\"1\n#BattleDaoHeartSweepRequest_13000066" +
-      "\022\n\n\002id\030\001 \001(\005\"K\n$BattleDaoHeartSweepRespo" +
-      "nse_13000067\022#\n\007rewards\030\001 \003(\0132\022.Protos.R" +
-      "ewardInfoB\033\n\031cn.game.protocol.protobufb\006" +
-      "proto3"
+      "0051\" \n\036BattleDaoHeartRequest_13000055\"b" +
+      "\n\037BattleDaoHeartResponse_13000056\022\n\n\002id\030" +
+      "\001 \001(\005\022\031\n\021freeSweepRemaning\030\002 \001(\005\022\030\n\020payS" +
+      "weepRemaning\030\003 \001(\005\"1\n#BattleDaoHeartSwee" +
+      "pRequest_13000060\022\n\n\002id\030\002 \001(\005\"K\n$BattleD" +
+      "aoHeartSweepResponse_13000061\022#\n\007rewards" +
+      "\030\001 \003(\0132\022.Protos.RewardInfo\"C\n(BattleDaoH" +
+      "eartSweepBatchRequest_13000062\022\n\n\002id\030\001 \001" +
+      "(\005\022\013\n\003pay\030\002 \001(\010\"P\n)BattleDaoHeartSweepBa" +
+      "tchResponse_13000063\022#\n\007rewards\030\001 \003(\0132\022." +
+      "Protos.RewardInfo\"%\n#BattleDaoHeartSweep" +
+      "Request_13000064\"2\n$BattleDaoHeartSweepR" +
+      "esponse_13000065\022\n\n\002id\030\002 \003(\005\"1\n#BattleDa" +
+      "oHeartSweepRequest_13000066\022\n\n\002id\030\001 \001(\005\"" +
+      "K\n$BattleDaoHeartSweepResponse_13000067\022" +
+      "#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfoB\033\n\031" +
+      "cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -18616,50 +19836,62 @@ public final class BattleMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleStaminaResponse_13000051_descriptor,
         new java.lang.String[] { });
-    internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor =
+    internal_static_Protos_BattleDaoHeartRequest_13000055_descriptor =
       getDescriptor().getMessageTypes().get(16);
+    internal_static_Protos_BattleDaoHeartRequest_13000055_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleDaoHeartRequest_13000055_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor =
+      getDescriptor().getMessageTypes().get(17);
+    internal_static_Protos_BattleDaoHeartResponse_13000056_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor,
+        new java.lang.String[] { "Id", "FreeSweepRemaning", "PaySweepRemaning", });
+    internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor =
+      getDescriptor().getMessageTypes().get(18);
     internal_static_Protos_BattleDaoHeartSweepRequest_13000060_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000061_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000061_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepResponse_13000061_descriptor,
         new java.lang.String[] { "Rewards", });
     internal_static_Protos_BattleDaoHeartSweepBatchRequest_13000062_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_BattleDaoHeartSweepBatchRequest_13000062_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepBatchRequest_13000062_descriptor,
-        new java.lang.String[] { "Id", });
+        new java.lang.String[] { "Id", "Pay", });
     internal_static_Protos_BattleDaoHeartSweepBatchResponse_13000063_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_BattleDaoHeartSweepBatchResponse_13000063_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepBatchResponse_13000063_descriptor,
         new java.lang.String[] { "Rewards", });
     internal_static_Protos_BattleDaoHeartSweepRequest_13000064_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Protos_BattleDaoHeartSweepRequest_13000064_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000064_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000065_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000065_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepResponse_13000065_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_BattleDaoHeartSweepRequest_13000066_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_Protos_BattleDaoHeartSweepRequest_13000066_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000066_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000067_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000067_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepResponse_13000067_descriptor,
