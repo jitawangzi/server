@@ -10,7 +10,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
+import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
@@ -72,7 +72,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 	@Override
 	public RewardInfo toRewardInfo(Item item) {
 		return RewardInfo.newBuilder()
-				.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue())).build();
+				.setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue())).build();
 	}
 
 	@Override

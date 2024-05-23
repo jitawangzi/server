@@ -49,6 +49,7 @@ public enum OpType{
 	CloudBox(115, "小云宝箱"),
 	FirstCharge(116, "首冲"),
 	ChapterGift(117, "章节礼包"),
+	QuestActiveReward(118, "任务活跃积分奖励"),
 
 	FundPass(120, "通行证"),
 	SevenDaysSignin(121, "七日签到活动"),

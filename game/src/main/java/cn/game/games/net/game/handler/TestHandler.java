@@ -23,7 +23,6 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
-import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -55,7 +54,6 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.log.CommonLogger;
 
 @Component
 public class TestHandler extends BaseHandler {
@@ -283,11 +281,13 @@ public class TestHandler extends BaseHandler {
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
-		PlayerManager.getInstance().saveClientCache(playerId);
+//		PlayerManager.getInstance().saveClientCache(playerId);
+		List<RewardInfo> resources = PlayerHelper.addResources(player, 206001, 1);
+		System.out.println(resources);
 		
-		CommonLogger.error("what the fuck by common logger");
-		log.error("what the fuck by log");
-		GameLogger.heart();
+//		CommonLogger.error("what the fuck by common logger");
+//		log.error("what the fuck by log");
+//		GameLogger.heart();
 
 
 //		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
