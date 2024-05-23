@@ -23,6 +23,7 @@ import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.QuestMsg.QuestAcceptRequest_20000026;
 import cn.game.protocol.protobuf.QuestMsg.QuestAcceptResponse_20000027;
@@ -198,7 +199,7 @@ public class QuestHandler extends BaseHandler {
 		List<Integer> activeRewardList = questModule.getActiveRewardList(type);
 		activeRewardList.add(index);
 
-		resp.addAllRewards(PlayerHelper.addResources(player, questPointRewardConfig.Reward[index], null));
+		resp.addAllRewards(PlayerHelper.addResources(player, questPointRewardConfig.Reward[index], OpType.QuestActiveReward));
 
 		client.sendProtocol(resp.build());
 	}

@@ -5,11 +5,13 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ItemMapper;
 import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.currency.Currency;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -71,6 +73,9 @@ public class ItemModule extends AbstractItemModule<Item> {
 
 	@Override
 	public RewardInfo toRewardInfo(Item item) {
+		if (item instanceof Currency) {
+			return RewardInfo.newBuilder().setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue())).build();
+		}
 		return RewardInfo.newBuilder()
 				.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue())).build();
 	}
