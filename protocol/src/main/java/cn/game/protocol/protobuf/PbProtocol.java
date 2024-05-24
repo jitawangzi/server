@@ -51,7 +51,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleDaoHeartRequest_13000055 = 0x13000055;    
 	public final static int BattleDaoHeartResponse_13000056 = 0x13000056;    
 	public final static int BattleDaoHeartSweepRequest_13000060 = 0x13000060;    
-	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    //道心磨砺  
+	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    //查看道心磨砺数据  
 	public final static int BattleDaoHeartSweepBatchRequest_13000062 = 0x13000062;    
 	public final static int BattleDaoHeartSweepBatchResponse_13000063 = 0x13000063;    
 	public final static int BattleDaoHeartSweepRequest_13000064 = 0x13000064;    
