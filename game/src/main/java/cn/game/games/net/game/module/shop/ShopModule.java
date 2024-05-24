@@ -44,6 +44,9 @@ public class ShopModule extends BasePlayerModule {
 	/** 通行证里领完的奖励,key: 通行证id，购买过的 */
 	private Map<Integer, List<Integer>> fundPassRewardsMap = new HashMap<Integer, List<Integer>>();
 	private int heishiRefreshTimes;
+	
+	las
+	
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {

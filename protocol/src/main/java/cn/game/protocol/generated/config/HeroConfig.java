@@ -28,9 +28,9 @@ import org.w3c.dom.Element;
 	public final int GrowthAttributeId;		
 	/** 【突破】 不同品质 增加的的属性 配置：品质id;属性id|...|品质id;属性id  调用AttributeVlalue#属性数值表id */
 	public final int[][] BreakActivationAttribute;		
-	/** 【初始+突破】 不同品质 激活英雄技能ID 调用HeroSkillGroup#技能组ID  需要把每个品质都配 调用HeroSkill-HeroSkillGroup#技能组表id 当前——第1组显示 品质+1——第2组显示-图标+觉醒标 品质+2——第3组显示 */
+	/** 【初始+突破】 不同品质 激活英雄技能ID 调用HeroSkillGroup#技能组ID  需要把每个品质都配  调用HeroSkill-HeroSkillGroup#技能组表id */
 	public final int[][] HeroSkillID;		
-	/** 【突破】 不同品质 激活肉鸽id组 配置：当前品质;激活的肉鸽id1|品质+1;激活肉鸽idn 仅客户端界面显示  肉鸽id调用HeroSkill-HeroSkill表id  卡牌界面不用显示 */
+	/** 【突破】 不同品质 激活肉鸽id组 配置：当前品质;激活的肉鸽id1|品质+1;激活肉鸽idn 仅客户端界面显示  肉鸽id调用HeroSkill-HeroSkill表id */
 	public final int[][] RoguelikeId;		
 	/** 英雄资源id 调用ArtResource表 */
 	public final int ArtResourceID;		
@@ -69,7 +69,7 @@ import org.w3c.dom.Element;
 		} else {
 			BreakActivationAttribute = new int[][] {};
 		}
-		String HeroSkillIDString = element.getAttribute("HeroSkillID"); // 【初始+突破】 不同品质 激活英雄技能ID 调用HeroSkillGroup#技能组ID  需要把每个品质都配 调用HeroSkill-HeroSkillGroup#技能组表id 当前——第1组显示 品质+1——第2组显示-图标+觉醒标 品质+2——第3组显示
+		String HeroSkillIDString = element.getAttribute("HeroSkillID"); // 【初始+突破】 不同品质 激活英雄技能ID 调用HeroSkillGroup#技能组ID  需要把每个品质都配  调用HeroSkill-HeroSkillGroup#技能组表id
 		if (HeroSkillIDString != null && HeroSkillIDString.length() > 0) {
 			String[] HeroSkillIDStrings = HeroSkillIDString.split("\\|"); 
 			int[][] HeroSkillIDTemp = new int[HeroSkillIDStrings.length][] ; 
@@ -86,7 +86,7 @@ import org.w3c.dom.Element;
 		} else {
 			HeroSkillID = new int[][] {};
 		}
-		String RoguelikeIdString = element.getAttribute("RoguelikeId"); // 【突破】 不同品质 激活肉鸽id组 配置：当前品质;激活的肉鸽id1|品质+1;激活肉鸽idn 仅客户端界面显示  肉鸽id调用HeroSkill-HeroSkill表id  卡牌界面不用显示
+		String RoguelikeIdString = element.getAttribute("RoguelikeId"); // 【突破】 不同品质 激活肉鸽id组 配置：当前品质;激活的肉鸽id1|品质+1;激活肉鸽idn 仅客户端界面显示  肉鸽id调用HeroSkill-HeroSkill表id
 		if (RoguelikeIdString != null && RoguelikeIdString.length() > 0) {
 			String[] RoguelikeIdStrings = RoguelikeIdString.split("\\|"); 
 			int[][] RoguelikeIdTemp = new int[RoguelikeIdStrings.length][] ; 

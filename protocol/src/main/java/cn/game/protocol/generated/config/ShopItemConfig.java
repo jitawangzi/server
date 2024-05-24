@@ -12,16 +12,18 @@ import org.w3c.dom.Element;
 
 	/** 商品id */
 	public final int ID;		
-	/** 包含物品 */
+	/** 包含物品 物品id；物品数量 */
 	public final int[] Item;		
 	/** 购买参数 1=货币；货币ID；数量 2=充值；数量(免费无需配置) 3=广告 */
 	public final int[] PurchaseParameter;		
+	/** 商品限购数量 */
+	public final int ShopItemQuota;		
 
 	public ShopItemConfig (Element element) throws Exception {
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 商品id
-		String ItemString = element.getAttribute("Item"); // 包含物品
+		String ItemString = element.getAttribute("Item"); // 包含物品 物品id；物品数量
 		if (ItemString != null && ItemString.length() > 0) {
 			String[] ItemStrings = ItemString.split(";"); 
 			int[] ItemTemp = new int[ItemStrings.length] ; 
@@ -45,6 +47,8 @@ import org.w3c.dom.Element;
 		} else {
 			PurchaseParameter = new int[] {};
 		}
+		ShopItemQuota = Integer.parseInt(element.getAttribute("ShopItemQuota") == null || element.getAttribute("ShopItemQuota").length() == 0 ? "0"
+			: element.getAttribute("ShopItemQuota")); // 商品限购数量
 	}
 	
 

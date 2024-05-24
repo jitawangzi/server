@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 
 	/** 商品id */
 	public final int ID;		
-	/** 包含物品 商品表ID */
+	/** 包含物品 调用ShopItem#商品 */
 	public final int Item;		
 	/** 类型 1=固定位置看广告 2=随机商品 */
 	public final int Type;		
@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 商品id
 		Item = Integer.parseInt(element.getAttribute("Item") == null || element.getAttribute("Item").length() == 0 ? "0"
-			: element.getAttribute("Item")); // 包含物品 商品表ID
+			: element.getAttribute("Item")); // 包含物品 调用ShopItem#商品
 		Type = Integer.parseInt(element.getAttribute("Type") == null || element.getAttribute("Type").length() == 0 ? "0"
 			: element.getAttribute("Type")); // 类型 1=固定位置看广告 2=随机商品
 		Weight = Integer.parseInt(element.getAttribute("Weight") == null || element.getAttribute("Weight").length() == 0 ? "0"

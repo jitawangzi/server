@@ -134,4 +134,19 @@ message FundPassInfo{
   repeated int32 rewardIds = 2;  // FundPassReward表id，已经领取过的奖励id
 }
 
+message ShopGroupItemInfo{
+	uint32 shopId = 1;  // 商店id  Shop表id
+	repeated ShopItemProto items = 2;  // 商品
+}
+
+//==================================开宝箱===============================
+message ShopBoxOpenRequest_15000040{
+  bool watchAds = 1;   // 是看广告开宝箱，还是直接使用钻石开宝箱。
+}
+
+message ShopBoxOpenResponse_15000041{
+  repeated RewardInfo rewards = 2;  // 获得的物品
+}
+
+
 

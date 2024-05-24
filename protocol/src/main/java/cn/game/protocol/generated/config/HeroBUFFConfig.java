@@ -24,13 +24,13 @@ import org.w3c.dom.Element;
 	public final int BuffCategory;		
 	/** buff存在规则 0-霸占，同一个ID的buff，旧buff占着位置，新buff加不上 1-覆盖，同一个ID的buff，新buff将旧buff覆盖 >1-叠加，同一个ID的buff可以叠加，且叠加上限就是填的数字 */
 	public final int BuffCastType;		
-	/** buff目标类型 1目标身上 2位置(目标脚下的地面) */
+	/** buff目标类型 1目标身上 2位置(目标脚下的地面) 3 相邻的装备 */
 	public final int[] BuffTargetType;		
-	/** Buff效果类型 1-属性变化的buff（加属性） 2-状态buff  3-伤害buff 4-治疗 */
+	/** Buff效果类型 1-属性变化的buff（加属性） 2-状态buff  3-伤害buff 4-治疗% 5-每波获得物品 6-立即获得物品 */
 	public final int BuffEffectType;		
-	/** Buff效果的参数 1-给目标加属性id;属性数值|给目标加属性%id;属性数值  2-类型（1冰冻2眩晕） 3-每秒损失N点血（流血麻痹） 4-Calculate_buff_hp=每次治疗量=受治疗目标生命*该buff影响治疗的%/有效次数time */
+	/** Buff效果的参数 1-给目标加属性id;属性数值|给目标加属性%id;属性数值  2-类型（1冰冻2眩晕3收妖-每波次仅触发1次） 3-每秒损失N点血（流血麻痹） 4-受治疗目标生命*该buff影响治疗的%/有效次数time 5-获得物品id；获得物品个数 6-获得物品id；获得物品个数 */
 	public final int[][] BuffParam;		
-	/** 造成技能伤害公式用计算方法名字程序来封装方法实现 伤害buff=Calculate_buff_hurt 治疗buff=Calculate_buff_hp */
+	/** 造成技能伤害公式用计算方法名字程序来封装方法实现 伤害buff=Calculate_buff_hurt 治疗百分比buff=Calculate_buff_hp 获得物品buff=Calculate_buff_item */
 	public final String CalculateFun;		
 	/** 技能伤害参数百分比组  4治疗=总回复hp%/技能持续时间Duration */
 	public final int[] CalculateParam;		
@@ -54,7 +54,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("BuffCategory")); // buff类别 0-中立类buff 1-增益型buff 2-减益型debuff
 		BuffCastType = Integer.parseInt(element.getAttribute("BuffCastType") == null || element.getAttribute("BuffCastType").length() == 0 ? "0"
 			: element.getAttribute("BuffCastType")); // buff存在规则 0-霸占，同一个ID的buff，旧buff占着位置，新buff加不上 1-覆盖，同一个ID的buff，新buff将旧buff覆盖 >1-叠加，同一个ID的buff可以叠加，且叠加上限就是填的数字
-		String BuffTargetTypeString = element.getAttribute("BuffTargetType"); // buff目标类型 1目标身上 2位置(目标脚下的地面)
+		String BuffTargetTypeString = element.getAttribute("BuffTargetType"); // buff目标类型 1目标身上 2位置(目标脚下的地面) 3 相邻的装备
 		if (BuffTargetTypeString != null && BuffTargetTypeString.length() > 0) {
 			String[] BuffTargetTypeStrings = BuffTargetTypeString.split(";"); 
 			int[] BuffTargetTypeTemp = new int[BuffTargetTypeStrings.length] ; 
@@ -67,8 +67,8 @@ import org.w3c.dom.Element;
 			BuffTargetType = new int[] {};
 		}
 		BuffEffectType = Integer.parseInt(element.getAttribute("BuffEffectType") == null || element.getAttribute("BuffEffectType").length() == 0 ? "0"
-			: element.getAttribute("BuffEffectType")); // Buff效果类型 1-属性变化的buff（加属性） 2-状态buff  3-伤害buff 4-治疗
-		String BuffParamString = element.getAttribute("BuffParam"); // Buff效果的参数 1-给目标加属性id;属性数值|给目标加属性%id;属性数值  2-类型（1冰冻2眩晕） 3-每秒损失N点血（流血麻痹） 4-Calculate_buff_hp=每次治疗量=受治疗目标生命*该buff影响治疗的%/有效次数time
+			: element.getAttribute("BuffEffectType")); // Buff效果类型 1-属性变化的buff（加属性） 2-状态buff  3-伤害buff 4-治疗% 5-每波获得物品 6-立即获得物品
+		String BuffParamString = element.getAttribute("BuffParam"); // Buff效果的参数 1-给目标加属性id;属性数值|给目标加属性%id;属性数值  2-类型（1冰冻2眩晕3收妖-每波次仅触发1次） 3-每秒损失N点血（流血麻痹） 4-受治疗目标生命*该buff影响治疗的%/有效次数time 5-获得物品id；获得物品个数 6-获得物品id；获得物品个数
 		if (BuffParamString != null && BuffParamString.length() > 0) {
 			String[] BuffParamStrings = BuffParamString.split("\\|"); 
 			int[][] BuffParamTemp = new int[BuffParamStrings.length][] ; 
@@ -85,7 +85,7 @@ import org.w3c.dom.Element;
 		} else {
 			BuffParam = new int[][] {};
 		}
-		CalculateFun = element.getAttribute("CalculateFun"); // 造成技能伤害公式用计算方法名字程序来封装方法实现 伤害buff=Calculate_buff_hurt 治疗buff=Calculate_buff_hp
+		CalculateFun = element.getAttribute("CalculateFun"); // 造成技能伤害公式用计算方法名字程序来封装方法实现 伤害buff=Calculate_buff_hurt 治疗百分比buff=Calculate_buff_hp 获得物品buff=Calculate_buff_item
 		String CalculateParamString = element.getAttribute("CalculateParam"); // 技能伤害参数百分比组  4治疗=总回复hp%/技能持续时间Duration
 		if (CalculateParamString != null && CalculateParamString.length() > 0) {
 			String[] CalculateParamStrings = CalculateParamString.split(";"); 

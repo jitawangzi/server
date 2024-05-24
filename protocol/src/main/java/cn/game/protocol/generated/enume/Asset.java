@@ -40,7 +40,7 @@ public enum Asset{
 	public final String Desc ; 
 	/** 物品类型 1=普通货币 2=经验 3=体力 */
 	public final int Type ; 
-	/** 品质 1-白色（凡品） 2-绿色（素品） 3-蓝色（上品） 4-紫色（极品） 5-金色（臻品） 6-红色（仙品） 7-彩色（先天） 8-永恒（至宝） 9-唯一（灵宝） */
+	/** 品质 1-白色 2-绿色 3-蓝色 4-紫色 5-金色 6-红色 7-彩色 8-永恒 9-唯一 */
 	public final int Quality ; 
 	/** 物品tips */
 	public final String Tips ; 
