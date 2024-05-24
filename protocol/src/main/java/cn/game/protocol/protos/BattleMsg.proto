@@ -105,10 +105,18 @@ message BattleDaoHeartRequest_13000055{
 }
 
 message BattleDaoHeartResponse_13000056{
-	int32 id = 1;					// 当前通关到的最新的战役id （DaoHeart）表id
+	int32 id = 1;					// 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+	repeated int32 randomBuff = 4;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
 	int32 freeSweepRemaning = 2;      // 免费剩余扫荡次数。
 	int32 paySweepRemaning = 3;      // 收费剩余扫荡次数。
 }
+
+// 当道心磨砺关卡通关时，更新下一关的数据
+message BattleDaoHeartPush_13100056{
+	int32 id = 1;					// 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+	repeated int32 randomBuff = 4;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
+}
+
 
 /*** 扫荡道心磨砺关卡 ***/
 message BattleDaoHeartSweepRequest_13000060{

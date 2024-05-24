@@ -50,9 +50,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleStaminaResponse_13000051 = 0x13000051;    
 	public final static int BattleDaoHeartRequest_13000055 = 0x13000055;    
 	public final static int BattleDaoHeartResponse_13000056 = 0x13000056;    
+	public final static int BattleDaoHeartPush_13100056 = 0x13100056;    
 	public final static int BattleDaoHeartSweepRequest_13000060 = 0x13000060;    
-	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    //道心磨砺  
-	public final static int BattleDaoHeartSweepBatchRequest_13000062 = 0x13000062;    
+	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    
+	public final static int BattleDaoHeartSweepBatchRequest_13000062 = 0x13000062;    //当道心磨砺关卡通关时，更新下一关的数据  
 	public final static int BattleDaoHeartSweepBatchResponse_13000063 = 0x13000063;    
 	public final static int BattleDaoHeartSweepRequest_13000064 = 0x13000064;    
 	public final static int BattleDaoHeartSweepResponse_13000065 = 0x13000065;    
@@ -302,6 +303,8 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleDaoHeartRequest_13000055, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleDaoHeartResponse_13000056, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleDaoHeartPush_13100056, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleDaoHeartSweepRequest_13000060, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060.getDefaultInstance()
 				.getParserForType());
@@ -719,6 +722,7 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleStaminaResponse_13000051", 0x13000051);
 		nameIdMap.put("BattleDaoHeartRequest_13000055", 0x13000055);
 		nameIdMap.put("BattleDaoHeartResponse_13000056", 0x13000056);
+		nameIdMap.put("BattleDaoHeartPush_13100056", 0x13100056);
 		nameIdMap.put("BattleDaoHeartSweepRequest_13000060", 0x13000060);
 		nameIdMap.put("BattleDaoHeartSweepResponse_13000061", 0x13000061);
 		nameIdMap.put("BattleDaoHeartSweepBatchRequest_13000062", 0x13000062);

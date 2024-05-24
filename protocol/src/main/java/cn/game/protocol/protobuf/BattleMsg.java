@@ -13449,13 +13449,42 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 当前通关到的最新的战役id （DaoHeart）表id
+     * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
      * </pre>
      *
      * <code>int32 id = 1;</code>
      * @return The id.
      */
     int getId();
+
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return A list containing the randomBuff.
+     */
+    java.util.List<java.lang.Integer> getRandomBuffList();
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return The count of randomBuff.
+     */
+    int getRandomBuffCount();
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @param index The index of the element to return.
+     * @return The randomBuff at the given index.
+     */
+    int getRandomBuff(int index);
 
     /**
      * <pre>
@@ -13490,6 +13519,7 @@ public final class BattleMsg {
       super(builder);
     }
     private BattleDaoHeartResponse_13000056() {
+      randomBuff_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -13512,6 +13542,7 @@ public final class BattleMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -13537,6 +13568,27 @@ public final class BattleMsg {
               paySweepRemaning_ = input.readInt32();
               break;
             }
+            case 32: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                randomBuff_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              randomBuff_.addInt(input.readInt32());
+              break;
+            }
+            case 34: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                randomBuff_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                randomBuff_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -13552,6 +13604,9 @@ public final class BattleMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          randomBuff_.makeImmutable(); // C
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -13573,7 +13628,7 @@ public final class BattleMsg {
     private int id_;
     /**
      * <pre>
-     * 当前通关到的最新的战役id （DaoHeart）表id
+     * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -13583,6 +13638,46 @@ public final class BattleMsg {
     public int getId() {
       return id_;
     }
+
+    public static final int RANDOMBUFF_FIELD_NUMBER = 4;
+    private com.google.protobuf.Internal.IntList randomBuff_;
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return A list containing the randomBuff.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getRandomBuffList() {
+      return randomBuff_;
+    }
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return The count of randomBuff.
+     */
+    public int getRandomBuffCount() {
+      return randomBuff_.size();
+    }
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @param index The index of the element to return.
+     * @return The randomBuff at the given index.
+     */
+    public int getRandomBuff(int index) {
+      return randomBuff_.getInt(index);
+    }
+    private int randomBuffMemoizedSerializedSize = -1;
 
     public static final int FREESWEEPREMANING_FIELD_NUMBER = 2;
     private int freeSweepRemaning_;
@@ -13628,6 +13723,7 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (id_ != 0) {
         output.writeInt32(1, id_);
       }
@@ -13636,6 +13732,13 @@ public final class BattleMsg {
       }
       if (paySweepRemaning_ != 0) {
         output.writeInt32(3, paySweepRemaning_);
+      }
+      if (getRandomBuffList().size() > 0) {
+        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(randomBuffMemoizedSerializedSize);
+      }
+      for (int i = 0; i < randomBuff_.size(); i++) {
+        output.writeInt32NoTag(randomBuff_.getInt(i));
       }
       unknownFields.writeTo(output);
     }
@@ -13658,6 +13761,20 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, paySweepRemaning_);
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < randomBuff_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(randomBuff_.getInt(i));
+        }
+        size += dataSize;
+        if (!getRandomBuffList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        randomBuffMemoizedSerializedSize = dataSize;
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -13675,6 +13792,8 @@ public final class BattleMsg {
 
       if (getId()
           != other.getId()) return false;
+      if (!getRandomBuffList()
+          .equals(other.getRandomBuffList())) return false;
       if (getFreeSweepRemaning()
           != other.getFreeSweepRemaning()) return false;
       if (getPaySweepRemaning()
@@ -13692,6 +13811,10 @@ public final class BattleMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
+      if (getRandomBuffCount() > 0) {
+        hash = (37 * hash) + RANDOMBUFF_FIELD_NUMBER;
+        hash = (53 * hash) + getRandomBuffList().hashCode();
+      }
       hash = (37 * hash) + FREESWEEPREMANING_FIELD_NUMBER;
       hash = (53 * hash) + getFreeSweepRemaning();
       hash = (37 * hash) + PAYSWEEPREMANING_FIELD_NUMBER;
@@ -13831,6 +13954,8 @@ public final class BattleMsg {
         super.clear();
         id_ = 0;
 
+        randomBuff_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         freeSweepRemaning_ = 0;
 
         paySweepRemaning_ = 0;
@@ -13861,7 +13986,13 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056(this);
+        int from_bitField0_ = bitField0_;
         result.id_ = id_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          randomBuff_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.randomBuff_ = randomBuff_;
         result.freeSweepRemaning_ = freeSweepRemaning_;
         result.paySweepRemaning_ = paySweepRemaning_;
         onBuilt();
@@ -13915,6 +14046,16 @@ public final class BattleMsg {
         if (other.getId() != 0) {
           setId(other.getId());
         }
+        if (!other.randomBuff_.isEmpty()) {
+          if (randomBuff_.isEmpty()) {
+            randomBuff_ = other.randomBuff_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureRandomBuffIsMutable();
+            randomBuff_.addAll(other.randomBuff_);
+          }
+          onChanged();
+        }
         if (other.getFreeSweepRemaning() != 0) {
           setFreeSweepRemaning(other.getFreeSweepRemaning());
         }
@@ -13949,11 +14090,12 @@ public final class BattleMsg {
         }
         return this;
       }
+      private int bitField0_;
 
       private int id_ ;
       /**
        * <pre>
-       * 当前通关到的最新的战役id （DaoHeart）表id
+       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -13965,7 +14107,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 当前通关到的最新的战役id （DaoHeart）表id
+       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -13980,7 +14122,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 当前通关到的最新的战役id （DaoHeart）表id
+       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -13989,6 +14131,113 @@ public final class BattleMsg {
       public Builder clearId() {
         
         id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList randomBuff_ = emptyIntList();
+      private void ensureRandomBuffIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          randomBuff_ = mutableCopy(randomBuff_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return A list containing the randomBuff.
+       */
+      public java.util.List<java.lang.Integer>
+          getRandomBuffList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(randomBuff_) : randomBuff_;
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return The count of randomBuff.
+       */
+      public int getRandomBuffCount() {
+        return randomBuff_.size();
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param index The index of the element to return.
+       * @return The randomBuff at the given index.
+       */
+      public int getRandomBuff(int index) {
+        return randomBuff_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param index The index to set the value at.
+       * @param value The randomBuff to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRandomBuff(
+          int index, int value) {
+        ensureRandomBuffIsMutable();
+        randomBuff_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param value The randomBuff to add.
+       * @return This builder for chaining.
+       */
+      public Builder addRandomBuff(int value) {
+        ensureRandomBuffIsMutable();
+        randomBuff_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param values The randomBuff to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllRandomBuff(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureRandomBuffIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, randomBuff_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRandomBuff() {
+        randomBuff_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
@@ -14126,6 +14375,771 @@ public final class BattleMsg {
 
     @java.lang.Override
     public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BattleDaoHeartPush_13100056OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleDaoHeartPush_13100056)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return A list containing the randomBuff.
+     */
+    java.util.List<java.lang.Integer> getRandomBuffList();
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return The count of randomBuff.
+     */
+    int getRandomBuffCount();
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @param index The index of the element to return.
+     * @return The randomBuff at the given index.
+     */
+    int getRandomBuff(int index);
+  }
+  /**
+   * <pre>
+   * 当道心磨砺关卡通关时，更新下一关的数据
+   * </pre>
+   *
+   * Protobuf type {@code Protos.BattleDaoHeartPush_13100056}
+   */
+  public static final class BattleDaoHeartPush_13100056 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleDaoHeartPush_13100056)
+      BattleDaoHeartPush_13100056OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleDaoHeartPush_13100056.newBuilder() to construct.
+    private BattleDaoHeartPush_13100056(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleDaoHeartPush_13100056() {
+      randomBuff_ = emptyIntList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleDaoHeartPush_13100056();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleDaoHeartPush_13100056(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
+            case 32: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                randomBuff_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              randomBuff_.addInt(input.readInt32());
+              break;
+            }
+            case 34: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                randomBuff_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                randomBuff_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          randomBuff_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartPush_13100056_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartPush_13100056_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int RANDOMBUFF_FIELD_NUMBER = 4;
+    private com.google.protobuf.Internal.IntList randomBuff_;
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return A list containing the randomBuff.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getRandomBuffList() {
+      return randomBuff_;
+    }
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return The count of randomBuff.
+     */
+    public int getRandomBuffCount() {
+      return randomBuff_.size();
+    }
+    /**
+     * <pre>
+     * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @param index The index of the element to return.
+     * @return The randomBuff at the given index.
+     */
+    public int getRandomBuff(int index) {
+      return randomBuff_.getInt(index);
+    }
+    private int randomBuffMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
+      if (getRandomBuffList().size() > 0) {
+        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(randomBuffMemoizedSerializedSize);
+      }
+      for (int i = 0; i < randomBuff_.size(); i++) {
+        output.writeInt32NoTag(randomBuff_.getInt(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < randomBuff_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(randomBuff_.getInt(i));
+        }
+        size += dataSize;
+        if (!getRandomBuffList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        randomBuffMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (!getRandomBuffList()
+          .equals(other.getRandomBuffList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      if (getRandomBuffCount() > 0) {
+        hash = (37 * hash) + RANDOMBUFF_FIELD_NUMBER;
+        hash = (53 * hash) + getRandomBuffList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 当道心磨砺关卡通关时，更新下一关的数据
+     * </pre>
+     *
+     * Protobuf type {@code Protos.BattleDaoHeartPush_13100056}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleDaoHeartPush_13100056)
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartPush_13100056_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartPush_13100056_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        randomBuff_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleDaoHeartPush_13100056_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056(this);
+        int from_bitField0_ = bitField0_;
+        result.id_ = id_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          randomBuff_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.randomBuff_ = randomBuff_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (!other.randomBuff_.isEmpty()) {
+          if (randomBuff_.isEmpty()) {
+            randomBuff_ = other.randomBuff_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureRandomBuffIsMutable();
+            randomBuff_.addAll(other.randomBuff_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int id_ ;
+      /**
+       * <pre>
+       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList randomBuff_ = emptyIntList();
+      private void ensureRandomBuffIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          randomBuff_ = mutableCopy(randomBuff_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return A list containing the randomBuff.
+       */
+      public java.util.List<java.lang.Integer>
+          getRandomBuffList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(randomBuff_) : randomBuff_;
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return The count of randomBuff.
+       */
+      public int getRandomBuffCount() {
+        return randomBuff_.size();
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param index The index of the element to return.
+       * @return The randomBuff at the given index.
+       */
+      public int getRandomBuff(int index) {
+        return randomBuff_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param index The index to set the value at.
+       * @param value The randomBuff to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRandomBuff(
+          int index, int value) {
+        ensureRandomBuffIsMutable();
+        randomBuff_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param value The randomBuff to add.
+       * @return This builder for chaining.
+       */
+      public Builder addRandomBuff(int value) {
+        ensureRandomBuffIsMutable();
+        randomBuff_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param values The randomBuff to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllRandomBuff(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureRandomBuffIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, randomBuff_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每天不同的随机 增益或者减益buff， HeroBUFF表id
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRandomBuff() {
+        randomBuff_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleDaoHeartPush_13100056)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleDaoHeartPush_13100056)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleDaoHeartPush_13100056>
+        PARSER = new com.google.protobuf.AbstractParser<BattleDaoHeartPush_13100056>() {
+      @java.lang.Override
+      public BattleDaoHeartPush_13100056 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleDaoHeartPush_13100056(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleDaoHeartPush_13100056> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleDaoHeartPush_13100056> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartPush_13100056 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -19605,6 +20619,11 @@ public final class BattleMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_BattleDaoHeartResponse_13000056_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleDaoHeartPush_13100056_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleDaoHeartPush_13100056_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -19693,23 +20712,25 @@ public final class BattleMsg {
       "ickPatrolCount\030\002 \001(\005\022\025\n\radPatrolCount\030\003 " +
       "\001(\005\"-\n\035BattleStaminaRequest_13000050\022\014\n\004" +
       "time\030\001 \001(\005\" \n\036BattleStaminaResponse_1300" +
-      "0051\" \n\036BattleDaoHeartRequest_13000055\"b" +
+      "0051\" \n\036BattleDaoHeartRequest_13000055\"v" +
       "\n\037BattleDaoHeartResponse_13000056\022\n\n\002id\030" +
-      "\001 \001(\005\022\031\n\021freeSweepRemaning\030\002 \001(\005\022\030\n\020payS" +
-      "weepRemaning\030\003 \001(\005\"1\n#BattleDaoHeartSwee" +
-      "pRequest_13000060\022\n\n\002id\030\002 \001(\005\"K\n$BattleD" +
-      "aoHeartSweepResponse_13000061\022#\n\007rewards" +
-      "\030\001 \003(\0132\022.Protos.RewardInfo\"C\n(BattleDaoH" +
-      "eartSweepBatchRequest_13000062\022\n\n\002id\030\001 \001" +
-      "(\005\022\013\n\003pay\030\002 \001(\010\"P\n)BattleDaoHeartSweepBa" +
-      "tchResponse_13000063\022#\n\007rewards\030\001 \003(\0132\022." +
-      "Protos.RewardInfo\"%\n#BattleDaoHeartSweep" +
-      "Request_13000064\"2\n$BattleDaoHeartSweepR" +
-      "esponse_13000065\022\n\n\002id\030\002 \003(\005\"1\n#BattleDa" +
-      "oHeartSweepRequest_13000066\022\n\n\002id\030\001 \001(\005\"" +
-      "K\n$BattleDaoHeartSweepResponse_13000067\022" +
-      "#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfoB\033\n\031" +
-      "cn.game.protocol.protobufb\006proto3"
+      "\001 \001(\005\022\022\n\nrandomBuff\030\004 \003(\005\022\031\n\021freeSweepRe" +
+      "maning\030\002 \001(\005\022\030\n\020paySweepRemaning\030\003 \001(\005\"=" +
+      "\n\033BattleDaoHeartPush_13100056\022\n\n\002id\030\001 \001(" +
+      "\005\022\022\n\nrandomBuff\030\004 \003(\005\"1\n#BattleDaoHeartS" +
+      "weepRequest_13000060\022\n\n\002id\030\002 \001(\005\"K\n$Batt" +
+      "leDaoHeartSweepResponse_13000061\022#\n\007rewa" +
+      "rds\030\001 \003(\0132\022.Protos.RewardInfo\"C\n(BattleD" +
+      "aoHeartSweepBatchRequest_13000062\022\n\n\002id\030" +
+      "\001 \001(\005\022\013\n\003pay\030\002 \001(\010\"P\n)BattleDaoHeartSwee" +
+      "pBatchResponse_13000063\022#\n\007rewards\030\001 \003(\013" +
+      "2\022.Protos.RewardInfo\"%\n#BattleDaoHeartSw" +
+      "eepRequest_13000064\"2\n$BattleDaoHeartSwe" +
+      "epResponse_13000065\022\n\n\002id\030\002 \003(\005\"1\n#Battl" +
+      "eDaoHeartSweepRequest_13000066\022\n\n\002id\030\001 \001" +
+      "(\005\"K\n$BattleDaoHeartSweepResponse_130000" +
+      "67\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfoB" +
+      "\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19847,51 +20868,57 @@ public final class BattleMsg {
     internal_static_Protos_BattleDaoHeartResponse_13000056_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor,
-        new java.lang.String[] { "Id", "FreeSweepRemaning", "PaySweepRemaning", });
-    internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor =
+        new java.lang.String[] { "Id", "RandomBuff", "FreeSweepRemaning", "PaySweepRemaning", });
+    internal_static_Protos_BattleDaoHeartPush_13100056_descriptor =
       getDescriptor().getMessageTypes().get(18);
+    internal_static_Protos_BattleDaoHeartPush_13100056_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleDaoHeartPush_13100056_descriptor,
+        new java.lang.String[] { "Id", "RandomBuff", });
+    internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor =
+      getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_BattleDaoHeartSweepRequest_13000060_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000061_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000061_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepResponse_13000061_descriptor,
         new java.lang.String[] { "Rewards", });
     internal_static_Protos_BattleDaoHeartSweepBatchRequest_13000062_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_BattleDaoHeartSweepBatchRequest_13000062_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepBatchRequest_13000062_descriptor,
         new java.lang.String[] { "Id", "Pay", });
     internal_static_Protos_BattleDaoHeartSweepBatchResponse_13000063_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Protos_BattleDaoHeartSweepBatchResponse_13000063_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepBatchResponse_13000063_descriptor,
         new java.lang.String[] { "Rewards", });
     internal_static_Protos_BattleDaoHeartSweepRequest_13000064_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_Protos_BattleDaoHeartSweepRequest_13000064_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000064_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000065_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000065_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepResponse_13000065_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_BattleDaoHeartSweepRequest_13000066_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_Protos_BattleDaoHeartSweepRequest_13000066_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000066_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000067_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000067_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepResponse_13000067_descriptor,
