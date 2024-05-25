@@ -140,8 +140,6 @@ public class HeroHelper {
 		}
 		return false;
 	}
-
-
 	/**
 	 * @Description  设置主角星级
 	 * @param playerId

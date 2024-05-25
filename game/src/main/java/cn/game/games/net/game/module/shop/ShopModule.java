@@ -45,6 +45,10 @@ public class ShopModule extends BasePlayerModule {
 	private Map<Integer, List<Integer>> fundPassRewardsMap = new HashMap<Integer, List<Integer>>();
 	private int heishiRefreshTimes;
 	
+	/** 上次免费看广告开宝箱时间 */
+	private int lastFreeOpenBoxTime;
+	/** 每天免费开取次数 */
+	private int freeOpenBoxCount;
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -164,6 +168,22 @@ public class ShopModule extends BasePlayerModule {
 
 	public void setHeishiRefreshTimes(int heishiRefreshTimes) {
 		this.heishiRefreshTimes = heishiRefreshTimes;
+	}
+
+	public int getLastFreeOpenBoxTime() {
+		return lastFreeOpenBoxTime;
+	}
+
+	public void setLastFreeOpenBoxTime(int lastFreeOpenBoxTime) {
+		this.lastFreeOpenBoxTime = lastFreeOpenBoxTime;
+	}
+
+	public int getFreeOpenBoxCount() {
+		return freeOpenBoxCount;
+	}
+
+	public void setFreeOpenBoxCount(int freeOpenBoxCount) {
+		this.freeOpenBoxCount = freeOpenBoxCount;
 	}
 
 	private void initFundPass() {
@@ -302,6 +322,7 @@ public class ShopModule extends BasePlayerModule {
 		}
 		case NewWeek: {
 			refreshShopNewWeek();
+			freeOpenBoxCount = 0;
 			break;
 
 		}
