@@ -7,6 +7,7 @@ import "BaseMsg.proto" ;
 import "ShopMsg.proto" ;
 import "BattleMsg.proto" ;
 import "QuestMsg.proto";
+import "MergeEquipMsg.proto";
 
 /*** 登陆****/
 message PlayerLoginRequest_01000001{
@@ -234,5 +235,16 @@ message PlayerAllInfo{
    PatrolInfo patrol = 51;//巡逻/挂机
    repeated QuestGroupInfo questGroups = 55 ;  // 任务数据
    repeated QuestGroupPointRewardInfo questGroupPointRewards = 56 ;  // 任务积分奖励领取记录
+
+
+   //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
+   repeated ShopGroupItemInfo shopGroupItems  = 100;        //商店数据
+   int32 nextFreeOpenBoxTime  = 101;        //距离下一次看广告免费开宝箱时间，如果是0表示可以看广告开宝箱
+   int32 mergeSweepTimes  = 102;        //当日已经扫荡次数
+   repeated MergeEquipmentInfo  mergeEquips = 103; //装备数据
+   DayChallengeInfo mergeDayChallenge   = 104; //每日挑战。
+
+
+//︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼合并游戏独有的数据︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
 }
 

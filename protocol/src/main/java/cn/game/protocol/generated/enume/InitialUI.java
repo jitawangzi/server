@@ -34,7 +34,9 @@ public enum InitialUI{
 	/**  */
 	Guild(100113,1001,"Guild",10,0,"帮会",""),
 	/**  */
-	GuildBoss(1001131,100113,"GuildBoss",10,0,"帮会BOSS",""),
+	GuildBossIndividual(1001131,100113,"GuildBossIndividual",10,0,"个人BOSS",""),
+	/**  */
+	GuildBossGuild(1001132,100113,"GuildBossGuild",10,0,"帮会BOSS",""),
 	/**  */
 	CardMain(2001,0,"CardMain",2,0,"神将",""),
 	/**  */

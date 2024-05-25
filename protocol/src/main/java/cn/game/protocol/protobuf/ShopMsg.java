@@ -16480,6 +16480,2423 @@ public final class ShopMsg {
 
   }
 
+  public interface ShopGroupItemInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ShopGroupItemInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 商店id  Shop表id
+     * </pre>
+     *
+     * <code>uint32 shopId = 1;</code>
+     * @return The shopId.
+     */
+    int getShopId();
+
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopItemProto> 
+        getItemsList();
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    cn.game.protocol.protobuf.ShopMsg.ShopItemProto getItems(int index);
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    int getItemsCount();
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder> 
+        getItemsOrBuilderList();
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder getItemsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code Protos.ShopGroupItemInfo}
+   */
+  public static final class ShopGroupItemInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ShopGroupItemInfo)
+      ShopGroupItemInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ShopGroupItemInfo.newBuilder() to construct.
+    private ShopGroupItemInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ShopGroupItemInfo() {
+      items_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ShopGroupItemInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ShopGroupItemInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              shopId_ = input.readUInt32();
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                items_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.ShopItemProto>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              items_.add(
+                  input.readMessage(cn.game.protocol.protobuf.ShopMsg.ShopItemProto.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          items_ = java.util.Collections.unmodifiableList(items_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopGroupItemInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopGroupItemInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.class, cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.Builder.class);
+    }
+
+    public static final int SHOPID_FIELD_NUMBER = 1;
+    private int shopId_;
+    /**
+     * <pre>
+     * 商店id  Shop表id
+     * </pre>
+     *
+     * <code>uint32 shopId = 1;</code>
+     * @return The shopId.
+     */
+    @java.lang.Override
+    public int getShopId() {
+      return shopId_;
+    }
+
+    public static final int ITEMS_FIELD_NUMBER = 2;
+    private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopItemProto> items_;
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopItemProto> getItemsList() {
+      return items_;
+    }
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder> 
+        getItemsOrBuilderList() {
+      return items_;
+    }
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    @java.lang.Override
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopItemProto getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <pre>
+     * 商品
+     * </pre>
+     *
+     * <code>repeated .Protos.ShopItemProto items = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder getItemsOrBuilder(
+        int index) {
+      return items_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (shopId_ != 0) {
+        output.writeUInt32(1, shopId_);
+      }
+      for (int i = 0; i < items_.size(); i++) {
+        output.writeMessage(2, items_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (shopId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, shopId_);
+      }
+      for (int i = 0; i < items_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, items_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo other = (cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo) obj;
+
+      if (getShopId()
+          != other.getShopId()) return false;
+      if (!getItemsList()
+          .equals(other.getItemsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SHOPID_FIELD_NUMBER;
+      hash = (53 * hash) + getShopId();
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.ShopGroupItemInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ShopGroupItemInfo)
+        cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopGroupItemInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopGroupItemInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.class, cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getItemsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        shopId_ = 0;
+
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopGroupItemInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo build() {
+        cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo buildPartial() {
+        cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo result = new cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo(this);
+        int from_bitField0_ = bitField0_;
+        result.shopId_ = shopId_;
+        if (itemsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            items_ = java.util.Collections.unmodifiableList(items_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.items_ = items_;
+        } else {
+          result.items_ = itemsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo other) {
+        if (other == cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.getDefaultInstance()) return this;
+        if (other.getShopId() != 0) {
+          setShopId(other.getShopId());
+        }
+        if (itemsBuilder_ == null) {
+          if (!other.items_.isEmpty()) {
+            if (items_.isEmpty()) {
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureItemsIsMutable();
+              items_.addAll(other.items_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.items_.isEmpty()) {
+            if (itemsBuilder_.isEmpty()) {
+              itemsBuilder_.dispose();
+              itemsBuilder_ = null;
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              itemsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getItemsFieldBuilder() : null;
+            } else {
+              itemsBuilder_.addAllMessages(other.items_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int shopId_ ;
+      /**
+       * <pre>
+       * 商店id  Shop表id
+       * </pre>
+       *
+       * <code>uint32 shopId = 1;</code>
+       * @return The shopId.
+       */
+      @java.lang.Override
+      public int getShopId() {
+        return shopId_;
+      }
+      /**
+       * <pre>
+       * 商店id  Shop表id
+       * </pre>
+       *
+       * <code>uint32 shopId = 1;</code>
+       * @param value The shopId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setShopId(int value) {
+        
+        shopId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 商店id  Shop表id
+       * </pre>
+       *
+       * <code>uint32 shopId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearShopId() {
+        
+        shopId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopItemProto> items_ =
+        java.util.Collections.emptyList();
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          items_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.ShopItemProto>(items_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ShopMsg.ShopItemProto, cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder, cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder> itemsBuilder_;
+
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopItemProto> getItemsList() {
+        if (itemsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(items_);
+        } else {
+          return itemsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public int getItemsCount() {
+        if (itemsBuilder_ == null) {
+          return items_.size();
+        } else {
+          return itemsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.ShopItemProto getItems(int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);
+        } else {
+          return itemsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder setItems(
+          int index, cn.game.protocol.protobuf.ShopMsg.ShopItemProto value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.set(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder setItems(
+          int index, cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder addItems(cn.game.protocol.protobuf.ShopMsg.ShopItemProto value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder addItems(
+          int index, cn.game.protocol.protobuf.ShopMsg.ShopItemProto value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder addItems(
+          cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder addItems(
+          int index, cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.ShopMsg.ShopItemProto> values) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, items_);
+          onChanged();
+        } else {
+          itemsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder clearItems() {
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public Builder removeItems(int index) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.remove(index);
+          onChanged();
+        } else {
+          itemsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder getItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder getItemsOrBuilder(
+          int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);  } else {
+          return itemsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder> 
+           getItemsOrBuilderList() {
+        if (itemsBuilder_ != null) {
+          return itemsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(items_);
+        }
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder addItemsBuilder() {
+        return getItemsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.ShopMsg.ShopItemProto.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder addItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.ShopMsg.ShopItemProto.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 商品
+       * </pre>
+       *
+       * <code>repeated .Protos.ShopItemProto items = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder> 
+           getItemsBuilderList() {
+        return getItemsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ShopMsg.ShopItemProto, cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder, cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder> 
+          getItemsFieldBuilder() {
+        if (itemsBuilder_ == null) {
+          itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.ShopMsg.ShopItemProto, cn.game.protocol.protobuf.ShopMsg.ShopItemProto.Builder, cn.game.protocol.protobuf.ShopMsg.ShopItemProtoOrBuilder>(
+                  items_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          items_ = null;
+        }
+        return itemsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ShopGroupItemInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ShopGroupItemInfo)
+    private static final cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo();
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ShopGroupItemInfo>
+        PARSER = new com.google.protobuf.AbstractParser<ShopGroupItemInfo>() {
+      @java.lang.Override
+      public ShopGroupItemInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ShopGroupItemInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ShopGroupItemInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ShopGroupItemInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ShopBoxOpenRequest_15000040OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ShopBoxOpenRequest_15000040)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 是看广告开宝箱，还是直接使用钻石开宝箱。
+     * </pre>
+     *
+     * <code>bool watchAds = 1;</code>
+     * @return The watchAds.
+     */
+    boolean getWatchAds();
+  }
+  /**
+   * <pre>
+   *==================================开宝箱===============================
+   * </pre>
+   *
+   * Protobuf type {@code Protos.ShopBoxOpenRequest_15000040}
+   */
+  public static final class ShopBoxOpenRequest_15000040 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ShopBoxOpenRequest_15000040)
+      ShopBoxOpenRequest_15000040OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ShopBoxOpenRequest_15000040.newBuilder() to construct.
+    private ShopBoxOpenRequest_15000040(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ShopBoxOpenRequest_15000040() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ShopBoxOpenRequest_15000040();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ShopBoxOpenRequest_15000040(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              watchAds_ = input.readBool();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenRequest_15000040_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenRequest_15000040_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.class, cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.Builder.class);
+    }
+
+    public static final int WATCHADS_FIELD_NUMBER = 1;
+    private boolean watchAds_;
+    /**
+     * <pre>
+     * 是看广告开宝箱，还是直接使用钻石开宝箱。
+     * </pre>
+     *
+     * <code>bool watchAds = 1;</code>
+     * @return The watchAds.
+     */
+    @java.lang.Override
+    public boolean getWatchAds() {
+      return watchAds_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (watchAds_ != false) {
+        output.writeBool(1, watchAds_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (watchAds_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, watchAds_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 other = (cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040) obj;
+
+      if (getWatchAds()
+          != other.getWatchAds()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + WATCHADS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getWatchAds());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *==================================开宝箱===============================
+     * </pre>
+     *
+     * Protobuf type {@code Protos.ShopBoxOpenRequest_15000040}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ShopBoxOpenRequest_15000040)
+        cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenRequest_15000040_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenRequest_15000040_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.class, cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        watchAds_ = false;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenRequest_15000040_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 build() {
+        cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 buildPartial() {
+        cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 result = new cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040(this);
+        result.watchAds_ = watchAds_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040) {
+          return mergeFrom((cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 other) {
+        if (other == cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.getDefaultInstance()) return this;
+        if (other.getWatchAds() != false) {
+          setWatchAds(other.getWatchAds());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private boolean watchAds_ ;
+      /**
+       * <pre>
+       * 是看广告开宝箱，还是直接使用钻石开宝箱。
+       * </pre>
+       *
+       * <code>bool watchAds = 1;</code>
+       * @return The watchAds.
+       */
+      @java.lang.Override
+      public boolean getWatchAds() {
+        return watchAds_;
+      }
+      /**
+       * <pre>
+       * 是看广告开宝箱，还是直接使用钻石开宝箱。
+       * </pre>
+       *
+       * <code>bool watchAds = 1;</code>
+       * @param value The watchAds to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWatchAds(boolean value) {
+        
+        watchAds_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是看广告开宝箱，还是直接使用钻石开宝箱。
+       * </pre>
+       *
+       * <code>bool watchAds = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWatchAds() {
+        
+        watchAds_ = false;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ShopBoxOpenRequest_15000040)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ShopBoxOpenRequest_15000040)
+    private static final cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040();
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ShopBoxOpenRequest_15000040>
+        PARSER = new com.google.protobuf.AbstractParser<ShopBoxOpenRequest_15000040>() {
+      @java.lang.Override
+      public ShopBoxOpenRequest_15000040 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ShopBoxOpenRequest_15000040(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ShopBoxOpenRequest_15000040> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ShopBoxOpenRequest_15000040> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ShopBoxOpenResponse_15000041OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.ShopBoxOpenResponse_15000041)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
+        getRewardsList();
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    int getRewardsCount();
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList();
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code Protos.ShopBoxOpenResponse_15000041}
+   */
+  public static final class ShopBoxOpenResponse_15000041 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.ShopBoxOpenResponse_15000041)
+      ShopBoxOpenResponse_15000041OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ShopBoxOpenResponse_15000041.newBuilder() to construct.
+    private ShopBoxOpenResponse_15000041(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ShopBoxOpenResponse_15000041() {
+      rewards_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ShopBoxOpenResponse_15000041();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ShopBoxOpenResponse_15000041(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              rewards_.add(
+                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          rewards_ = java.util.Collections.unmodifiableList(rewards_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenResponse_15000041_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenResponse_15000041_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041.class, cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041.Builder.class);
+    }
+
+    public static final int REWARDS_FIELD_NUMBER = 2;
+    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public int getRewardsCount() {
+      return rewards_.size();
+    }
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+      return rewards_.get(index);
+    }
+    /**
+     * <pre>
+     * 获得的物品
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index) {
+      return rewards_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < rewards_.size(); i++) {
+        output.writeMessage(2, rewards_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < rewards_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, rewards_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 other = (cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041) obj;
+
+      if (!getRewardsList()
+          .equals(other.getRewardsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getRewardsCount() > 0) {
+        hash = (37 * hash) + REWARDS_FIELD_NUMBER;
+        hash = (53 * hash) + getRewardsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.ShopBoxOpenResponse_15000041}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.ShopBoxOpenResponse_15000041)
+        cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenResponse_15000041_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenResponse_15000041_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041.class, cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getRewardsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          rewardsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.ShopMsg.internal_static_Protos_ShopBoxOpenResponse_15000041_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 build() {
+        cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 buildPartial() {
+        cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 result = new cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041(this);
+        int from_bitField0_ = bitField0_;
+        if (rewardsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            rewards_ = java.util.Collections.unmodifiableList(rewards_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.rewards_ = rewards_;
+        } else {
+          result.rewards_ = rewardsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041) {
+          return mergeFrom((cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 other) {
+        if (other == cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041.getDefaultInstance()) return this;
+        if (rewardsBuilder_ == null) {
+          if (!other.rewards_.isEmpty()) {
+            if (rewards_.isEmpty()) {
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureRewardsIsMutable();
+              rewards_.addAll(other.rewards_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.rewards_.isEmpty()) {
+            if (rewardsBuilder_.isEmpty()) {
+              rewardsBuilder_.dispose();
+              rewardsBuilder_ = null;
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              rewardsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getRewardsFieldBuilder() : null;
+            } else {
+              rewardsBuilder_.addAllMessages(other.rewards_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_ =
+        java.util.Collections.emptyList();
+      private void ensureRewardsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(rewards_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
+
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+        if (rewardsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(rewards_);
+        } else {
+          return rewardsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public int getRewardsCount() {
+        if (rewardsBuilder_ == null) {
+          return rewards_.size();
+        } else {
+          return rewardsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);
+        } else {
+          return rewardsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.set(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addAllRewards(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, rewards_);
+          onChanged();
+        } else {
+          rewardsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder clearRewards() {
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          rewardsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder removeRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.remove(index);
+          onChanged();
+        } else {
+          rewardsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+          int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);  } else {
+          return rewardsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+           getRewardsOrBuilderList() {
+        if (rewardsBuilder_ != null) {
+          return rewardsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(rewards_);
+        }
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder() {
+        return getRewardsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 获得的物品
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
+           getRewardsBuilderList() {
+        return getRewardsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+          getRewardsFieldBuilder() {
+        if (rewardsBuilder_ == null) {
+          rewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
+                  rewards_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          rewards_ = null;
+        }
+        return rewardsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.ShopBoxOpenResponse_15000041)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.ShopBoxOpenResponse_15000041)
+    private static final cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041();
+    }
+
+    public static cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ShopBoxOpenResponse_15000041>
+        PARSER = new com.google.protobuf.AbstractParser<ShopBoxOpenResponse_15000041>() {
+      @java.lang.Override
+      public ShopBoxOpenResponse_15000041 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ShopBoxOpenResponse_15000041(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ShopBoxOpenResponse_15000041> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ShopBoxOpenResponse_15000041> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_ShopItemListRequest_15000001_descriptor;
   private static final 
@@ -16610,6 +19027,21 @@ public final class ShopMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_FundPassInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ShopGroupItemInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ShopGroupItemInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ShopBoxOpenRequest_15000040_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ShopBoxOpenRequest_15000040_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_ShopBoxOpenResponse_15000041_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_ShopBoxOpenResponse_15000041_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -16657,8 +19089,13 @@ public final class ShopMsg {
       "quest_15000032\022\n\n\002id\030\001 \001(\r\"J\n#ShopFundPa" +
       "ssRewardResponse_15000033\022#\n\007rewards\030\002 \003" +
       "(\0132\022.Protos.RewardInfo\"-\n\014FundPassInfo\022\n" +
-      "\n\002id\030\001 \001(\005\022\021\n\trewardIds\030\002 \003(\005B\033\n\031cn.game" +
-      ".protocol.protobufb\006proto3"
+      "\n\002id\030\001 \001(\005\022\021\n\trewardIds\030\002 \003(\005\"I\n\021ShopGro" +
+      "upItemInfo\022\016\n\006shopId\030\001 \001(\r\022$\n\005items\030\002 \003(" +
+      "\0132\025.Protos.ShopItemProto\"/\n\033ShopBoxOpenR" +
+      "equest_15000040\022\020\n\010watchAds\030\001 \001(\010\"C\n\034Sho" +
+      "pBoxOpenResponse_15000041\022#\n\007rewards\030\002 \003" +
+      "(\0132\022.Protos.RewardInfoB\033\n\031cn.game.protoc" +
+      "ol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -16822,6 +19259,24 @@ public final class ShopMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FundPassInfo_descriptor,
         new java.lang.String[] { "Id", "RewardIds", });
+    internal_static_Protos_ShopGroupItemInfo_descriptor =
+      getDescriptor().getMessageTypes().get(26);
+    internal_static_Protos_ShopGroupItemInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ShopGroupItemInfo_descriptor,
+        new java.lang.String[] { "ShopId", "Items", });
+    internal_static_Protos_ShopBoxOpenRequest_15000040_descriptor =
+      getDescriptor().getMessageTypes().get(27);
+    internal_static_Protos_ShopBoxOpenRequest_15000040_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ShopBoxOpenRequest_15000040_descriptor,
+        new java.lang.String[] { "WatchAds", });
+    internal_static_Protos_ShopBoxOpenResponse_15000041_descriptor =
+      getDescriptor().getMessageTypes().get(28);
+    internal_static_Protos_ShopBoxOpenResponse_15000041_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_ShopBoxOpenResponse_15000041_descriptor,
+        new java.lang.String[] { "Rewards", });
     cn.game.protocol.protobuf.BaseMsg.getDescriptor();
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }

@@ -1,417 +1,109 @@
 package cn.game.protocol.generated.config;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
+
 import org.w3c.dom.Element;
-import org.apache.commons.lang.StringUtils;
+
 
 /**
- * 装备
+ * 装备表
  * 
  * 工具生成的，不要手动修改
  */
- public class EquipConfig 
-{
+ public class EquipConfig {
 
-	/** id */
-	private int id;		
-	/** 名称 */
-	private String name;		
-	/** 描述 */
-	private String des;		
-	/** 子类型 */
-	private int subType;		
-	/** 职业 */
-	private int prof;		
-	/** 品质 */
-	private int quarlity;		
-	/** 吞噬经验 */
-	private int asExp;		
-	/** 套装id */
-	private int suit;		
-	/** 初始战斗力 */
-	private int combatPowerInit;		
-	/** 战斗力成长 */
-	private int combatPowerGrow;		
-	/** 初始属性条数 */
-	private List<Entry<Integer,Integer>> atrInitNumb;		
-	/** 单条随机属性组1 */
-	private List<Entry<Integer,Integer>> atrGroup1;		
-	/** 单条随机属性组2 */
-	private List<Entry<Integer,Integer>> atrGroup2;		
-	/** 单条随机属性组3 */
-	private List<Entry<Integer,Integer>> atrGroup3;		
-	/** 不定条数随机属性组 */
-	private List<Entry<Integer,Integer>> atrExtraGroup;		
-	/** 强化上限 */
-	private int maxLv;		
-	/** 阶段成长等级 */
-	private List<Integer> phaseLv;		
-	/** 最大属性条数 */
-	private int atrLimit;		
-	/** 阶段成长新属性概率 */
-	private int atrNewOdd;		
-	/** 阶段成长属性强化 */
-	private List<Entry<Integer,Integer>> atrStrength;		
+	/** 装备ID  物品5打头6位 51—装备 52—特殊空格 */
+	public final int ID;		
+	/** 总类型 1-货币 2-物品 3-装备 4-铁哥们 5-好友 6-宠物 */
+	public final int TotalType;		
+	/** 物品类型 1-武器 2-防具 3-战中特殊空格 4-乾坤袋 */
+	public final int ItemType;		
+	/** 品质 1-白色 2-绿色 3-蓝色 4-紫色 5-金色 6-红色 7-彩色 8-永恒 9-唯一 */
+	public final int Quality;		
+	/** 装备同组  id一致代表是一种装备的不同等级 */
+	public final int EquipGroup;		
+	/** 装备等级 */
+	public final int EquipLv;		
+	/** 章节解锁  章节数字 ≥该章节，就可以解锁该装备 */
+	public final int ChapterUnlock;		
+	/** 装备类型  二进制 9宫格，有填1，无填0 */
+	public final String EquipType;		
+	/** 升级  升级所需碎片id；升级所需碎片数量|升级所需金币物品id；所需金币数量 */
+	public final int[][] EquipUpgrade;		
+	/** 【纯界面显示】 目标  1-最近目标 2-随机目标 3-自身 */
+	public final int CTarget;		
+	/** 增加HP上限  属性id；属性数值 */
+	public final int[] CHp;		
+	/** 基础伤害  属性id；属性数值 */
+	public final int[] CDamage;		
+	/** 是否需要看广告才能用 */
+	public final int EquipAdvertisement;		
+	/** 战中合成 每次刷新的权重  1、【当前装备库】先检索目前已上阵的装备 2、【当前波次装备刷新总个数】再按照Battle#战役中每波次合成时取随机数，生成该波次的刷新装备数 3、【每装备的刷新权重】 */
+	public final int EquipRefreshWeight;		
 
-	public EquipConfig (Element element)
-	{
+	public EquipConfig (Element element) throws Exception {
 	
-		this.id = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("id")) ? "0"
-			: element.getAttribute("id")); // id
-		this.name = element.getAttribute("name"); // 名称
-		this.des = element.getAttribute("des"); // 描述
-		this.subType = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("subType")) ? "0"
-			: element.getAttribute("subType")); // 子类型
-		this.prof = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("prof")) ? "0"
-			: element.getAttribute("prof")); // 职业
-		this.quarlity = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("quarlity")) ? "0"
-			: element.getAttribute("quarlity")); // 品质
-		this.asExp = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("asExp")) ? "0"
-			: element.getAttribute("asExp")); // 吞噬经验
-		this.suit = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("suit")) ? "0"
-			: element.getAttribute("suit")); // 套装id
-		this.combatPowerInit = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("combatPowerInit")) ? "0"
-			: element.getAttribute("combatPowerInit")); // 初始战斗力
-		this.combatPowerGrow = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("combatPowerGrow")) ? "0"
-			: element.getAttribute("combatPowerGrow")); // 战斗力成长
-		String atrInitNumb = element.getAttribute("atrInitNumb"); // 初始属性条数
-		if (atrInitNumb != null && atrInitNumb.length() > 0)
-		{
-			String[] atrInitNumbStrings = atrInitNumb.split(";"); 
-			this.atrInitNumb = new ArrayList<Entry<Integer,Integer>>(atrInitNumbStrings.length) ; 
-			for (String string : atrInitNumbStrings)
-			{
-			    final String[] split = string.split(",");
-			    if (split.length != 2) {
-					throw new IllegalArgumentException(" 表： " + this.getClass().getSimpleName() + " id  : " + this.id + " 字段: "
-							+ "atrInitNumb" + "需为key-value格式，用逗号分隔");
-				} 
-				this.atrInitNumb.add(new Entry<Integer,Integer>()
-				{
-					@Override
-					public Integer setValue(Integer value)
-					{
-						return null;
-					}
-					@Override
-					public Integer getValue()
-					{
-						return Integer.valueOf(split[1]);
-					}
-					@Override
-					public Integer getKey()
-					{
-						return Integer.valueOf(split[0]);
-					}
-				}) ; 
+		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
+			: element.getAttribute("ID")); // 装备ID  物品5打头6位 51—装备 52—特殊空格
+		TotalType = Integer.parseInt(element.getAttribute("TotalType") == null || element.getAttribute("TotalType").length() == 0 ? "0"
+			: element.getAttribute("TotalType")); // 总类型 1-货币 2-物品 3-装备 4-铁哥们 5-好友 6-宠物
+		ItemType = Integer.parseInt(element.getAttribute("ItemType") == null || element.getAttribute("ItemType").length() == 0 ? "0"
+			: element.getAttribute("ItemType")); // 物品类型 1-武器 2-防具 3-战中特殊空格 4-乾坤袋
+		Quality = Integer.parseInt(element.getAttribute("Quality") == null || element.getAttribute("Quality").length() == 0 ? "0"
+			: element.getAttribute("Quality")); // 品质 1-白色 2-绿色 3-蓝色 4-紫色 5-金色 6-红色 7-彩色 8-永恒 9-唯一
+		EquipGroup = Integer.parseInt(element.getAttribute("EquipGroup") == null || element.getAttribute("EquipGroup").length() == 0 ? "0"
+			: element.getAttribute("EquipGroup")); // 装备同组  id一致代表是一种装备的不同等级
+		EquipLv = Integer.parseInt(element.getAttribute("EquipLv") == null || element.getAttribute("EquipLv").length() == 0 ? "0"
+			: element.getAttribute("EquipLv")); // 装备等级
+		ChapterUnlock = Integer.parseInt(element.getAttribute("ChapterUnlock") == null || element.getAttribute("ChapterUnlock").length() == 0 ? "0"
+			: element.getAttribute("ChapterUnlock")); // 章节解锁  章节数字 ≥该章节，就可以解锁该装备
+		EquipType = element.getAttribute("EquipType"); // 装备类型  二进制 9宫格，有填1，无填0
+		String EquipUpgradeString = element.getAttribute("EquipUpgrade"); // 升级  升级所需碎片id；升级所需碎片数量|升级所需金币物品id；所需金币数量
+		if (EquipUpgradeString != null && EquipUpgradeString.length() > 0) {
+			String[] EquipUpgradeStrings = EquipUpgradeString.split("\\|"); 
+			int[][] EquipUpgradeTemp = new int[EquipUpgradeStrings.length][] ; 
+			for (int i = 0; i < EquipUpgradeStrings.length; i++) {
+				String[] EquipUpgradeStrings2 = EquipUpgradeStrings[i].split(";"); 
+				int[] array = new int[EquipUpgradeStrings2.length];
+				for (int j = 0; j < EquipUpgradeStrings2.length; j++) {
+					int temp = Integer.parseInt(EquipUpgradeStrings2[j]);	
+					array[j] = temp;
+				}
+				EquipUpgradeTemp[i] = array;
 			}
+			EquipUpgrade = EquipUpgradeTemp ;			
+		} else {
+			EquipUpgrade = new int[][] {};
 		}
-		else 
-		{
-			this.atrInitNumb = new ArrayList<Entry<Integer,Integer>>(0);
-		}
-		String atrGroup1 = element.getAttribute("atrGroup1"); // 单条随机属性组1
-		if (atrGroup1 != null && atrGroup1.length() > 0)
-		{
-			String[] atrGroup1Strings = atrGroup1.split(";"); 
-			this.atrGroup1 = new ArrayList<Entry<Integer,Integer>>(atrGroup1Strings.length) ; 
-			for (String string : atrGroup1Strings)
-			{
-			    String[] split = string.split(",");
-			    if (split.length != 2) {
-					throw new IllegalArgumentException(" 表： " + this.getClass().getSimpleName() + " id  : " + this.id + " 字段: "
-							+ "atrGroup1" + "需为key-value格式，用逗号分隔");
-				} 
-				this.atrGroup1.add(new Entry<Integer,Integer>()
-				{
-					@Override
-					public Integer setValue(Integer value)
-					{
-						return null;
-					}
-					@Override
-					public Integer getValue()
-					{
-						return Integer.valueOf(split[1]);
-					}
-					@Override
-					public Integer getKey()
-					{
-						return Integer.valueOf(split[0]);
-					}
-				}) ; 
+		CTarget = Integer.parseInt(element.getAttribute("CTarget") == null || element.getAttribute("CTarget").length() == 0 ? "0"
+			: element.getAttribute("CTarget")); // 【纯界面显示】 目标  1-最近目标 2-随机目标 3-自身
+		String CHpString = element.getAttribute("CHp"); // 增加HP上限  属性id；属性数值
+		if (CHpString != null && CHpString.length() > 0) {
+			String[] CHpStrings = CHpString.split(";"); 
+			int[] CHpTemp = new int[CHpStrings.length] ; 
+			for (int i = 0; i < CHpStrings.length; i++) {
+				int temp = Integer.parseInt(CHpStrings[i]);	
+				CHpTemp[i] = temp;
 			}
+			CHp = CHpTemp ;			
+		} else {
+			CHp = new int[] {};
 		}
-		else 
-		{
-			this.atrGroup1 = new ArrayList<Entry<Integer,Integer>>(0);
-		}
-		String atrGroup2 = element.getAttribute("atrGroup2"); // 单条随机属性组2
-		if (atrGroup2 != null && atrGroup2.length() > 0)
-		{
-			String[] atrGroup2Strings = atrGroup2.split(";"); 
-			this.atrGroup2 = new ArrayList<Entry<Integer,Integer>>(atrGroup2Strings.length) ; 
-			for (String string : atrGroup2Strings)
-			{
-			    String[] split = string.split(",");
-			    if (split.length != 2) {
-					throw new IllegalArgumentException(" 表： " + this.getClass().getSimpleName() + " id  : " + this.id + " 字段: "
-							+ "atrGroup2" + "需为key-value格式，用逗号分隔");
-				} 
-				this.atrGroup2.add(new Entry<Integer,Integer>()
-				{
-					@Override
-					public Integer setValue(Integer value)
-					{
-						return null;
-					}
-					@Override
-					public Integer getValue()
-					{
-						return Integer.valueOf(split[1]);
-					}
-					@Override
-					public Integer getKey()
-					{
-						return Integer.valueOf(split[0]);
-					}
-				}) ; 
+		String CDamageString = element.getAttribute("CDamage"); // 基础伤害  属性id；属性数值
+		if (CDamageString != null && CDamageString.length() > 0) {
+			String[] CDamageStrings = CDamageString.split(";"); 
+			int[] CDamageTemp = new int[CDamageStrings.length] ; 
+			for (int i = 0; i < CDamageStrings.length; i++) {
+				int temp = Integer.parseInt(CDamageStrings[i]);	
+				CDamageTemp[i] = temp;
 			}
+			CDamage = CDamageTemp ;			
+		} else {
+			CDamage = new int[] {};
 		}
-		else 
-		{
-			this.atrGroup2 = new ArrayList<Entry<Integer,Integer>>(0);
-		}
-		String atrGroup3 = element.getAttribute("atrGroup3"); // 单条随机属性组3
-		if (atrGroup3 != null && atrGroup3.length() > 0)
-		{
-			String[] atrGroup3Strings = atrGroup3.split(";"); 
-			this.atrGroup3 = new ArrayList<Entry<Integer,Integer>>(atrGroup3Strings.length) ; 
-			for (String string : atrGroup3Strings)
-			{
-			    String[] split = string.split(",");
-			    if (split.length != 2) {
-					throw new IllegalArgumentException(" 表： " + this.getClass().getSimpleName() + " id  : " + this.id + " 字段: "
-							+ "atrGroup3" + "需为key-value格式，用逗号分隔");
-				} 
-				this.atrGroup3.add(new Entry<Integer,Integer>()
-				{
-					@Override
-					public Integer setValue(Integer value)
-					{
-						return null;
-					}
-					@Override
-					public Integer getValue()
-					{
-						return Integer.valueOf(split[1]);
-					}
-					@Override
-					public Integer getKey()
-					{
-						return Integer.valueOf(split[0]);
-					}
-				}) ; 
-			}
-		}
-		else 
-		{
-			this.atrGroup3 = new ArrayList<Entry<Integer,Integer>>(0);
-		}
-		String atrExtraGroup = element.getAttribute("atrExtraGroup"); // 不定条数随机属性组
-		if (atrExtraGroup != null && atrExtraGroup.length() > 0)
-		{
-			String[] atrExtraGroupStrings = atrExtraGroup.split(";"); 
-			this.atrExtraGroup = new ArrayList<Entry<Integer,Integer>>(atrExtraGroupStrings.length) ; 
-			for (String string : atrExtraGroupStrings)
-			{
-			    String[] split = string.split(",");
-			    if (split.length != 2) {
-					throw new IllegalArgumentException(" 表： " + this.getClass().getSimpleName() + " id  : " + this.id + " 字段: "
-							+ "atrExtraGroup" + "需为key-value格式，用逗号分隔");
-				} 
-				this.atrExtraGroup.add(new Entry<Integer,Integer>()
-				{
-					@Override
-					public Integer setValue(Integer value)
-					{
-						return null;
-					}
-					@Override
-					public Integer getValue()
-					{
-						return Integer.valueOf(split[1]);
-					}
-					@Override
-					public Integer getKey()
-					{
-						return Integer.valueOf(split[0]);
-					}
-				}) ; 
-			}
-		}
-		else 
-		{
-			this.atrExtraGroup = new ArrayList<Entry<Integer,Integer>>(0);
-		}
-		this.maxLv = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("maxLv")) ? "0"
-			: element.getAttribute("maxLv")); // 强化上限
-		String phaseLv = element.getAttribute("phaseLv"); // 阶段成长等级
-		if (phaseLv != null && phaseLv.length() > 0)
-		{
-			String[] phaseLvStrings = phaseLv.split(";"); 
-			this.phaseLv = new ArrayList<Integer>(phaseLvStrings.length) ; 
-			for (int i = 0; i < phaseLvStrings.length; i++) 
-			{
-				Integer temp = Integer.valueOf(phaseLvStrings[i]);
-				this.phaseLv.add(temp);
-			}
-		}
-		else 
-		{
-			this.phaseLv = new ArrayList<Integer>(0);
-		}
-		this.atrLimit = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("atrLimit")) ? "0"
-			: element.getAttribute("atrLimit")); // 最大属性条数
-		this.atrNewOdd = Integer.parseInt(StringUtils.isEmpty(element.getAttribute("atrNewOdd")) ? "0"
-			: element.getAttribute("atrNewOdd")); // 阶段成长新属性概率
-		String atrStrength = element.getAttribute("atrStrength"); // 阶段成长属性强化
-		if (atrStrength != null && atrStrength.length() > 0)
-		{
-			String[] atrStrengthStrings = atrStrength.split(";"); 
-			this.atrStrength = new ArrayList<Entry<Integer,Integer>>(atrStrengthStrings.length) ; 
-			for (String string : atrStrengthStrings)
-			{
-			    String[] split = string.split(",");
-			    if (split.length != 2) {
-					throw new IllegalArgumentException(" 表： " + this.getClass().getSimpleName() + " id  : " + this.id + " 字段: "
-							+ "atrStrength" + "需为key-value格式，用逗号分隔");
-				} 
-				this.atrStrength.add(new Entry<Integer,Integer>()
-				{
-					@Override
-					public Integer setValue(Integer value)
-					{
-						return null;
-					}
-					@Override
-					public Integer getValue()
-					{
-						return Integer.valueOf(split[1]);
-					}
-					@Override
-					public Integer getKey()
-					{
-						return Integer.valueOf(split[0]);
-					}
-				}) ; 
-			}
-		}
-		else 
-		{
-			this.atrStrength = new ArrayList<Entry<Integer,Integer>>(0);
-		}
+		EquipAdvertisement = Integer.parseInt(element.getAttribute("EquipAdvertisement") == null || element.getAttribute("EquipAdvertisement").length() == 0 ? "0"
+			: element.getAttribute("EquipAdvertisement")); // 是否需要看广告才能用
+		EquipRefreshWeight = Integer.parseInt(element.getAttribute("EquipRefreshWeight") == null || element.getAttribute("EquipRefreshWeight").length() == 0 ? "0"
+			: element.getAttribute("EquipRefreshWeight")); // 战中合成 每次刷新的权重  1、【当前装备库】先检索目前已上阵的装备 2、【当前波次装备刷新总个数】再按照Battle#战役中每波次合成时取随机数，生成该波次的刷新装备数 3、【每装备的刷新权重】
 	}
 	
-	public int getId()
-	{
-		return this.id;
-	}
-	
-	public String getName()
-	{
-		return this.name;
-	}
-	
-	public String getDes()
-	{
-		return this.des;
-	}
-	
-	public int getSubType()
-	{
-		return this.subType;
-	}
-	
-	public int getProf()
-	{
-		return this.prof;
-	}
-	
-	public int getQuarlity()
-	{
-		return this.quarlity;
-	}
-	
-	public int getAsExp()
-	{
-		return this.asExp;
-	}
-	
-	public int getSuit()
-	{
-		return this.suit;
-	}
-	
-	public int getCombatPowerInit()
-	{
-		return this.combatPowerInit;
-	}
-	
-	public int getCombatPowerGrow()
-	{
-		return this.combatPowerGrow;
-	}
-	
-	public List<Entry<Integer,Integer>> getAtrInitNumb()
-	{
-		return this.atrInitNumb;
-	}
-	
-	public List<Entry<Integer,Integer>> getAtrGroup1()
-	{
-		return this.atrGroup1;
-	}
-	
-	public List<Entry<Integer,Integer>> getAtrGroup2()
-	{
-		return this.atrGroup2;
-	}
-	
-	public List<Entry<Integer,Integer>> getAtrGroup3()
-	{
-		return this.atrGroup3;
-	}
-	
-	public List<Entry<Integer,Integer>> getAtrExtraGroup()
-	{
-		return this.atrExtraGroup;
-	}
-	
-	public int getMaxLv()
-	{
-		return this.maxLv;
-	}
-	
-	public List<Integer> getPhaseLv()
-	{
-		return this.phaseLv;
-	}
-	
-	public int getAtrLimit()
-	{
-		return this.atrLimit;
-	}
-	
-	public int getAtrNewOdd()
-	{
-		return this.atrNewOdd;
-	}
-	
-	public List<Entry<Integer,Integer>> getAtrStrength()
-	{
-		return this.atrStrength;
-	}
-	
+
 }

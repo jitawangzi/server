@@ -21,6 +21,8 @@ public enum QuestTypeEnum{
 	MainLine(55,"MainLine","主线任务"),
 	/** 支线任务 */
 	BranchLine(66,"BranchLine","支线任务"),
+	/** 每日挑战积分 */
+	DailyChallengePoint(70,"DailyChallengePoint","每日挑战积分"),
     ;
 	/** id */
 	public final int ID ; 

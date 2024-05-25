@@ -44,20 +44,24 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleRougeRefreshResponse_13000006 = 0x13000006;    
 	public final static int BattleRewardRequest_13000022 = 0x13000022;    
 	public final static int BattleRewardResponse_13000023 = 0x13000023;    
-	public final static int BattlePatrolRewardRequest_13000044 = 0x13000044;    //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。  
+	public final static int BattleSweepRequest_13000024 = 0x13000024;    
+	public final static int BattleSweepResponse_13000025 = 0x13000025;    
+	public final static int BattlePatrolRewardRequest_13000044 = 0x13000044;    
 	public final static int BattlePatrolRewardResponse_13000045 = 0x13000045;    
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    
 	public final static int BattleStaminaResponse_13000051 = 0x13000051;    
 	public final static int BattleDaoHeartRequest_13000055 = 0x13000055;    
 	public final static int BattleDaoHeartResponse_13000056 = 0x13000056;    
 	public final static int BattleDaoHeartSweepRequest_13000060 = 0x13000060;    
-	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    //查看道心磨砺数据  
+	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    //道心磨砺  
 	public final static int BattleDaoHeartSweepBatchRequest_13000062 = 0x13000062;    
 	public final static int BattleDaoHeartSweepBatchResponse_13000063 = 0x13000063;    
 	public final static int BattleDaoHeartSweepRequest_13000064 = 0x13000064;    
 	public final static int BattleDaoHeartSweepResponse_13000065 = 0x13000065;    
 	public final static int BattleDaoHeartSweepRequest_13000066 = 0x13000066;    
 	public final static int BattleDaoHeartSweepResponse_13000067 = 0x13000067;    
+	public final static int BattleDayChallengeReceiveActivePointRequest_13000070 = 0x13000070;    //查看道心磨砺通关奖励领取情况  
+	public final static int BattleDayChallengeReceiveActivePointResponse_13000071 = 0x13000071;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    
 	public final static int DragonUnlockResponse_17000002 = 0x17000002;    //龙解锁  
 	public final static int DragonStarUpRequest_17000003 = 0x17000003;    
@@ -124,6 +128,12 @@ public class PbProtocol implements ProtocolParser {
 	public final static int MailReceiveResponse_12000006 = 0x12000006;    
 	public final static int MailDeleteRequest_12000007 = 0x12000007;    
 	public final static int MailDeleteResponse_12000008 = 0x12000008;    
+	public final static int MergeEquipmentWearRequest_23000001 = 0x23000001;    //import "BaseMsg.proto" ;  
+	public final static int MergeEquipmentWearResponse_23000002 = 0x23000002;    
+	public final static int MergeEquipmentTeardownRequest_23000003 = 0x23000003;    
+	public final static int MergeEquipmentTeardownResponse_23000004 = 0x23000004;    
+	public final static int MergeEquipmentPartStrengthRequest_23000007 = 0x23000007;    
+	public final static int MergeEquipmentPartStrengthResponse_23000008 = 0x23000008;    //装备升级  
 	public final static int PlayerLoginRequest_01000001 = 0x01000001;    
 	public final static int PlayerLoginResponse_01000002 = 0x01000002;    //string deviceId = 25;   设备唯一标识：MAC或者UUID或者IMEI，这里小游戏变为账号id ，即微信的openid  
 	public final static int PlayerLogoutPush_01100030 = 0x01100030;    
@@ -229,6 +239,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int ShopFundPassBuyResponse_15000031 = 0x15000031;    
 	public final static int ShopFundPassRewardRequest_15000032 = 0x15000032;    
 	public final static int ShopFundPassRewardResponse_15000033 = 0x15000033;    
+	public final static int ShopBoxOpenRequest_15000040 = 0x15000040;    //领取通行证奖励  
+	public final static int ShopBoxOpenResponse_15000041 = 0x15000041;    
 	public final static int StoryStartRequest_14000001 = 0x14000001;    
 	public final static int StoryStartResponse_14000002 = 0x14000002;    
 	public final static int StoryFinishRequest_14000003 = 0x14000003;    
@@ -291,6 +303,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(BattleRewardResponse_13000023, cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(BattleSweepRequest_13000024, cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSweepResponse_13000025, cn.game.protocol.protobuf.BattleMsg.BattleSweepResponse_13000025.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(BattlePatrolRewardRequest_13000044, cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattlePatrolRewardResponse_13000045, cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045.getDefaultInstance()
@@ -318,6 +334,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleDaoHeartSweepRequest_13000066, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleDaoHeartSweepResponse_13000067, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000067.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleDayChallengeReceiveActivePointRequest_13000070, cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleDayChallengeReceiveActivePointResponse_13000071, cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointResponse_13000071.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DragonUnlockRequest_17000001, cn.game.protocol.protobuf.DragonMsg.DragonUnlockRequest_17000001.getDefaultInstance()
 				.getParserForType());
@@ -450,6 +470,18 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(MailDeleteRequest_12000007, cn.game.protocol.protobuf.MailMsg.MailDeleteRequest_12000007.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(MailDeleteResponse_12000008, cn.game.protocol.protobuf.MailMsg.MailDeleteResponse_12000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(MergeEquipmentWearRequest_23000001, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentWearRequest_23000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(MergeEquipmentWearResponse_23000002, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentWearResponse_23000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(MergeEquipmentTeardownRequest_23000003, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentTeardownRequest_23000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(MergeEquipmentTeardownResponse_23000004, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentTeardownResponse_23000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(MergeEquipmentPartStrengthRequest_23000007, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentPartStrengthRequest_23000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(MergeEquipmentPartStrengthResponse_23000008, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentPartStrengthResponse_23000008.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerLoginRequest_01000001, cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001.getDefaultInstance()
 				.getParserForType());
@@ -661,6 +693,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(ShopFundPassRewardResponse_15000033, cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(ShopBoxOpenRequest_15000040, cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ShopBoxOpenResponse_15000041, cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(StoryStartRequest_14000001, cn.game.protocol.protobuf.StoryMsg.StoryStartRequest_14000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(StoryStartResponse_14000002, cn.game.protocol.protobuf.StoryMsg.StoryStartResponse_14000002.getDefaultInstance()
@@ -713,6 +749,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleRougeRefreshResponse_13000006", 0x13000006);
 		nameIdMap.put("BattleRewardRequest_13000022", 0x13000022);
 		nameIdMap.put("BattleRewardResponse_13000023", 0x13000023);
+		nameIdMap.put("BattleSweepRequest_13000024", 0x13000024);
+		nameIdMap.put("BattleSweepResponse_13000025", 0x13000025);
 		nameIdMap.put("BattlePatrolRewardRequest_13000044", 0x13000044);
 		nameIdMap.put("BattlePatrolRewardResponse_13000045", 0x13000045);
 		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);
@@ -727,6 +765,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleDaoHeartSweepResponse_13000065", 0x13000065);
 		nameIdMap.put("BattleDaoHeartSweepRequest_13000066", 0x13000066);
 		nameIdMap.put("BattleDaoHeartSweepResponse_13000067", 0x13000067);
+		nameIdMap.put("BattleDayChallengeReceiveActivePointRequest_13000070", 0x13000070);
+		nameIdMap.put("BattleDayChallengeReceiveActivePointResponse_13000071", 0x13000071);
 		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
 		nameIdMap.put("DragonUnlockResponse_17000002", 0x17000002);
 		nameIdMap.put("DragonStarUpRequest_17000003", 0x17000003);
@@ -793,6 +833,12 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("MailReceiveResponse_12000006", 0x12000006);
 		nameIdMap.put("MailDeleteRequest_12000007", 0x12000007);
 		nameIdMap.put("MailDeleteResponse_12000008", 0x12000008);
+		nameIdMap.put("MergeEquipmentWearRequest_23000001", 0x23000001);
+		nameIdMap.put("MergeEquipmentWearResponse_23000002", 0x23000002);
+		nameIdMap.put("MergeEquipmentTeardownRequest_23000003", 0x23000003);
+		nameIdMap.put("MergeEquipmentTeardownResponse_23000004", 0x23000004);
+		nameIdMap.put("MergeEquipmentPartStrengthRequest_23000007", 0x23000007);
+		nameIdMap.put("MergeEquipmentPartStrengthResponse_23000008", 0x23000008);
 		nameIdMap.put("PlayerLoginRequest_01000001", 0x01000001);
 		nameIdMap.put("PlayerLoginResponse_01000002", 0x01000002);
 		nameIdMap.put("PlayerLogoutPush_01100030", 0x01100030);
@@ -898,6 +944,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("ShopFundPassBuyResponse_15000031", 0x15000031);
 		nameIdMap.put("ShopFundPassRewardRequest_15000032", 0x15000032);
 		nameIdMap.put("ShopFundPassRewardResponse_15000033", 0x15000033);
+		nameIdMap.put("ShopBoxOpenRequest_15000040", 0x15000040);
+		nameIdMap.put("ShopBoxOpenResponse_15000041", 0x15000041);
 		nameIdMap.put("StoryStartRequest_14000001", 0x14000001);
 		nameIdMap.put("StoryStartResponse_14000002", 0x14000002);
 		nameIdMap.put("StoryFinishRequest_14000003", 0x14000003);

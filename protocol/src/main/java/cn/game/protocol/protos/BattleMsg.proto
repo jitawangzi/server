@@ -62,6 +62,14 @@ message BattleRewardResponse_13000023{
    repeated RewardInfo reward = 1;
 }
 
+//关卡扫荡
+message BattleSweepRequest_13000024{
+   uint32 id = 1; 			// Battle表的id
+}
+message BattleSweepResponse_13000025{
+   repeated RewardInfo reward = 1;
+}
+
 
 /*** 领取巡逻奖励 ***/
 message BattlePatrolRewardRequest_13000044{
@@ -81,7 +89,7 @@ message BattleInfo{
 	uint32 hpPercent = 2;	// 打完剩余血量百分比，如剩余40%血量，则为40,可能用不到了
 	repeated int32 rewardIndex = 3; // 0、1、2  。领过的章节宝箱
 	bool finish = 4; // 这个战役是否通关了。
-	uint32 battleTime = 5;	        // 战斗时长（秒）
+	uint32 battleTime = 5;	        // 战斗时长（秒），或者说是波数
 }
 
 // 巡逻/挂机  数据
@@ -142,6 +150,26 @@ message BattleDaoHeartSweepRequest_13000066{
 }
 message BattleDaoHeartSweepResponse_13000067{
 	repeated RewardInfo rewards = 1;//
+}
+
+// ****************************************每日挑战********************************************
+
+// 领取每日挑战活跃积分奖励
+message BattleDayChallengeReceiveActivePointRequest_13000070
+{
+	int32 index = 1 ;  // 0-3，一共4个奖励，领哪个
+}
+
+message BattleDayChallengeReceiveActivePointResponse_13000071
+{
+	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
+}
+
+message DayChallengeInfo{
+   int32 battleTimes   = 1; //每日挑战，挑战过的次数。
+   int32 battleId   = 2; //每日挑战，每天不同的Battle 表id。
+   repeated int32 randomBuff = 3;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
+   repeated int32 rewardIndex = 4;			// 已经领取过奖励箱子的索引， 如果4个箱子就是0 - 3 。
 }
 
 

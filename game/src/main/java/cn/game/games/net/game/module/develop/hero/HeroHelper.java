@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.protocol.generated.config.EquipAttributeConfig;
-import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ParameterConsumeConfig;
@@ -142,9 +141,6 @@ public class HeroHelper {
 		return false;
 	}
 
-	public static boolean isWeapon(EquipConfig equipConfig) {
-		return equipConfig.getSubType() == 9;
-	}
 
 	/**
 	 * @Description  设置主角星级
