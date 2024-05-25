@@ -34,6 +34,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
 import cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050;
 import cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051;
+import cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024;
+import cn.game.protocol.protobuf.BattleMsg.BattleSweepResponse_13000025;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -57,6 +59,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleRougeRefreshRequest_13000005, (client, message) -> rougeRefresh(client, message));
 		putInvoker(PbProtocol.BattlePatrolRewardRequest_13000044, this::patrolReward);
 		putInvoker(PbProtocol.BattleStaminaRequest_13000050, this::stamina);
+		putInvoker(PbProtocol.BattleSweepRequest_13000024, this::sweep);
 
 	}
 
@@ -69,6 +72,37 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
+		client.sendProtocol(resp);
+	}
+
+	protected void sweep(NetClient client, Object message) {
+		BattleSweepRequest_13000024 req = (BattleSweepRequest_13000024) message;
+		BattleSweepResponse_13000025.Builder resp = BattleSweepResponse_13000025.newBuilder();
+		int id = req.getId();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		BattleConfig battleConfig = BattleManager.instance().get(id);
+		if (battleConfig == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		if (!chapterModule.isBattlePass(id)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		if (chapterModule.getDaySweepCount() >= GlobalConst.SweepNum) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		boolean delResources = PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
+		if (!delResources) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		chapterModule.setDaySweepCount(chapterModule.getDaySweepCount() + 1);
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleSweep);
+		resp.addAllReward(reward);
 		client.sendProtocol(resp);
 	}
 

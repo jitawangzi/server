@@ -110,6 +110,9 @@ public class ChapterModule extends BasePlayerModule  {
 	/** 储存的体力 （具体产生体力时的时间） */
 	private List<Integer> storeStaminas = new ArrayList<>();
 
+	/** 每日扫荡次数 */
+	private int daySweepCount;
+
 	public void addChapter(int battleId) {
 		Chapter chapter = chapters.get(battleId);
 		if (chapter == null) {
@@ -642,6 +645,14 @@ public class ChapterModule extends BasePlayerModule  {
 		return storeStaminas;
 	}
 
+	public int getDaySweepCount() {
+		return daySweepCount;
+	}
+
+	public void setDaySweepCount(int daySweepCount) {
+		this.daySweepCount = daySweepCount;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		// TODO Auto-generated method stub
@@ -652,6 +663,7 @@ public class ChapterModule extends BasePlayerModule  {
 		this.freeRougeTimes = 0;
 		this.quickPatrolCount = 0;
 		this.adPatrolCount = 0;
+		this.daySweepCount = 0;
 	}
 	@Override
 	public void handleEvent(GameEvent event) {

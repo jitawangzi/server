@@ -16,9 +16,11 @@ import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.ChapterPacksConfig;
 import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.FundPassRewardsConfig;
@@ -28,6 +30,7 @@ import cn.game.protocol.generated.config.RechargeConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.ChapterPacksManager;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.FundPassRewardsManager;
@@ -46,6 +49,8 @@ import cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardRequest_15000014;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDayRewardResponse_15000015;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusResponse_15000017;
+import cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040;
+import cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenResponse_15000041;
 import cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020;
 import cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyResponse_15000021;
 import cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030;
@@ -60,6 +65,7 @@ import cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemListResponse_15000002;
 import cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022;
 import cn.game.protocol.protobuf.ShopMsg.ShopRechargeResponse_15000023;
+import cn.game.util.DateUtil;
 import io.vertx.core.Future;
 
 @Component
@@ -84,9 +90,55 @@ public class ShopHandler extends BaseHandler {
 		putInvoker(PbProtocol.ShopFundPassBuyRequest_15000030, this::fundPassBuy);
 		putInvoker(PbProtocol.ShopFundPassRewardRequest_15000032, this::fundPassReward);
 		putInvoker(PbProtocol.ShopHeishiRefreshRequest_15000005, this::heishiRefresh);
+		putInvoker(PbProtocol.ShopBoxOpenRequest_15000040, this::openBox);
 //		putInvoker(PbProtocol.AdvertiseWatchFinishRequest_15000030, this::advertise);
 	}
 
+	private void openBox(NetClient client, Object message) {
+		ShopBoxOpenRequest_15000040 req = (ShopBoxOpenRequest_15000040) message;
+		ShopBoxOpenResponse_15000041.Builder resp = ShopBoxOpenResponse_15000041.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ShopModule shopModule = player.getShopModule();
+		boolean watchAds = req.getWatchAds();
+		if (watchAds) {
+			if (shopModule.getFreeOpenBoxCount() >= GlobalConst.BoxAdvertNum) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
+				return;
+			}
+			if (DateUtil.currentTimeSeconds() - shopModule.getLastFreeOpenBoxTime() < GlobalConst.BoxAdvertTime * 60 * 60) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.cd_time_error.getId());
+				return;
+			}
+			shopModule.setLastFreeOpenBoxTime(DateUtil.currentTimeSeconds());
+			shopModule.setFreeOpenBoxCount(shopModule.getFreeOpenBoxCount() + 1);
+			player.handleEvent(EventTypeEnum.WatchAds);
+		} else {
+			boolean delResources = PlayerHelper.delResources(player, GlobalConst.BoSpend, OpType.BoxOpen);
+			if (!delResources) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+				return;
+			}
+		}
+		int[][] boxRandomId = GlobalConst.BoxRandomId;
+		int idIndex = 0;
+		ChapterModule chapterModule = player.getChapterModule();
+		int mainBattleHighest = chapterModule.getMainBattleHighest();
+		if (mainBattleHighest != 0) {
+			BattleConfig battleConfig = BattleManager.instance().get(mainBattleHighest);
+			int chapter = battleConfig.Chapter;
+			for (int i = 0; i < boxRandomId.length; i++) {
+				if (chapter > boxRandomId[i][0]) {
+					idIndex = i + 1;
+				}
+			}
+			if (idIndex >= boxRandomId.length - 1) {
+				idIndex = boxRandomId.length - 1;
+			}
+		}
+		List<RewardInfo> reward = PlayerHelper.addReward(player, boxRandomId[idIndex][1], OpType.BoxOpen);
+		resp.addAllRewards(reward);
+		client.sendProtocol(resp.build());
+	}
 	private void heishiRefresh(NetClient client, Object message) {
 		ShopHeishiRefreshRequest_15000005 req = (ShopHeishiRefreshRequest_15000005) message;
 		ShopHeishiRefreshResponse_15000006.Builder resp = ShopHeishiRefreshResponse_15000006.newBuilder();
