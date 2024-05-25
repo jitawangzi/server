@@ -147,7 +147,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 	 * 选择当前连接的数据源，设置key，获取数据源时用到。 
 	 */
 	private void determineDataSourceKey() {
-		int index = serverId.hashCode() % targetDataSourcesList.size();
+		int index = Math.abs(serverId.hashCode()) % targetDataSourcesList.size();
 		this.currentDataSourceKey = targetDataSourcesList.get(index);
 	}
 	@Override
