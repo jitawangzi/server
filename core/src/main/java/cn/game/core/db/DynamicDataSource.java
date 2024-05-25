@@ -89,7 +89,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 		try {
 			init();
 		} catch (Exception e) {
-			throw new RuntimeException(" DynamicDataSource init failed !");
+			throw new RuntimeException(" DynamicDataSource init failed !", e);
 		}
 		super.afterPropertiesSet();
 	}
