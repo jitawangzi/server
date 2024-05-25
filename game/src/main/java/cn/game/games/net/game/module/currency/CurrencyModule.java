@@ -145,7 +145,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 
 		ExpConfig expConfig = getExpConfig(id, (int) levelsMap.getValue(id));
 		ExpConfig nextExpConfig = getExpConfig(id, (int) (levelsMap.getValue(id) + 1));
-		while (curExp >= expConfig.experience && nextExpConfig != null) {
+		while (expConfig != null && curExp >= expConfig.experience && nextExpConfig != null) {
 			curExp -= expConfig.experience;
 			levelsMap.add(id, 1);
 
@@ -160,7 +160,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 				GameLogger.levelUp(player);
 			}
 		}
-		if (curExp > expConfig.experience) {
+		if (expConfig != null && curExp > expConfig.experience) {
 			curExp = expConfig.experience;
 		}
 		currencyMap.setValue(id, curExp);

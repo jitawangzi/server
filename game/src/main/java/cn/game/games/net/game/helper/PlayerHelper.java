@@ -376,6 +376,26 @@ public class PlayerHelper {
 		return false;
 	}
 
+	public static boolean delResources(Player player, int[] list, OpType consumeType) {
+
+		if (list == null || list.length == 0) {
+			return true;
+		}
+		if (isEnough(player, list)) {
+			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
+			for (int j = 0; j < list.length; j += 2) {
+				if (list[j + 1] <= 0) {
+					continue;
+				}
+				delResources(player, list[j], list[j + 1], consumeType, false);
+				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[j], list[j + 1]));
+			}
+			player.getGameClient().sendProtocol(spendPush.build());
+			return true;
+		}
+		return false;
+	}
+
 	/** 
 	 * 二维数组用或的关系扣东西
 	 * @param playerId
