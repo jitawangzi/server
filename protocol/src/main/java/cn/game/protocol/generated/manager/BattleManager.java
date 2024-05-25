@@ -3,6 +3,8 @@ package cn.game.protocol.generated.manager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -25,6 +27,8 @@ public class BattleManager extends ResourceListener {
 	
 	/** 总数据，按id取值 */
 	private Map<Integer, BattleConfig> battles = new HashMap<>();
+	/** 普通索引 */
+	private Map<Integer,List<BattleConfig>> BattleTypes = new HashMap<>();
 
 	public static BattleManager instance() {
 		return instance;
@@ -55,6 +59,12 @@ public class BattleManager extends ResourceListener {
 		return this.battles.get(id);
 	}
 
+	public List<BattleConfig> getBattleTypeList(int BattleType) {
+		return this.BattleTypes.get(BattleType);
+	}
+	public Map<Integer,List<BattleConfig>> getBattleTypes() {
+		return this.BattleTypes;
+	}
 	/**
 	 * 获取所有数据
 	 * @return
@@ -70,14 +80,22 @@ public class BattleManager extends ResourceListener {
 			Element[] list = XmlUtils.getChildrenByName(document.getDocumentElement(), xmlFileName);
 			
 			Map<Integer, BattleConfig> battles = new HashMap<>();
+			Map<Integer, List<BattleConfig>> BattleTypes = new HashMap<>();
 			for (Element e : list) {
 				BattleConfig battle = new BattleConfig(e);
+				List<BattleConfig> BattleTypeList = BattleTypes.get(battle.BattleType); 
+				if (BattleTypeList == null){
+					BattleTypeList = new ArrayList<BattleConfig>(2) ; 
+					BattleTypes.put(battle.BattleType ,BattleTypeList) ; 
+				}
+				BattleTypeList.add(battle) ;
 				BattleConfig old = battles.put(battle.ID, battle);
 				if (old != null) {
 					throw new IllegalArgumentException("[BattleConfig]表存在重复的数据id： " + old.ID);
 				}
 			}			
 
+			this.BattleTypes = com.google.common.collect.ImmutableMap.copyOf(BattleTypes);			
 			this.battles = com.google.common.collect.ImmutableMap.copyOf(battles);
 
 			log.info("load BattleConfig size[{}]", battles.size());

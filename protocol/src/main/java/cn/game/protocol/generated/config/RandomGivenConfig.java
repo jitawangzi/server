@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 	/** 掉落ID */
 	public final int ID;		
-	/** 必掉物品组 物品id;个数 以下方便策划看： 100001 元宝 100002 金币 100201 玩家经验 100301 体力 202001 串串（神将升级道具） 203001 黄金请神符 */
+	/** 必掉物品组 物品id;个数 */
 	public final int[][] MustGiven;		
 	/** 随机次数  表示最后能掉出多少个物品 数量min;数量max */
 	public final int[] RandomNumber;		
@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 	
 		ID = Integer.parseInt(element.getAttribute("ID") == null || element.getAttribute("ID").length() == 0 ? "0"
 			: element.getAttribute("ID")); // 掉落ID
-		String MustGivenString = element.getAttribute("MustGiven"); // 必掉物品组 物品id;个数 以下方便策划看： 100001 元宝 100002 金币 100201 玩家经验 100301 体力 202001 串串（神将升级道具） 203001 黄金请神符
+		String MustGivenString = element.getAttribute("MustGiven"); // 必掉物品组 物品id;个数
 		if (MustGivenString != null && MustGivenString.length() > 0) {
 			String[] MustGivenStrings = MustGivenString.split("\\|"); 
 			int[][] MustGivenTemp = new int[MustGivenStrings.length][] ; 

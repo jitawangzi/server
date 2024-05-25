@@ -109,7 +109,7 @@ public class GlobalConst extends ResourceListener {
 	/** 【宝箱】每日免费广告cd时间 */
 	public static int BoxAdvertTime;		
 	/** 【宝箱】调用掉落组id */
-	public static int BoxRandomId;		
+	public static int[][] BoxRandomId;		
 	/** 【宝箱】每次点击花费 */
 	public static int[] BoSpend;		
 
@@ -468,8 +468,23 @@ public class GlobalConst extends ResourceListener {
 			: element.getAttribute("BoxAdvertNum")); // 【宝箱】每日免费广告次数
 		BoxAdvertTime = Integer.parseInt(element.getAttribute("BoxAdvertTime") == null || element.getAttribute("BoxAdvertTime").length() == 0 ? "0"
 			: element.getAttribute("BoxAdvertTime")); // 【宝箱】每日免费广告cd时间
-		BoxRandomId = Integer.parseInt(element.getAttribute("BoxRandomId") == null || element.getAttribute("BoxRandomId").length() == 0 ? "0"
-			: element.getAttribute("BoxRandomId")); // 【宝箱】调用掉落组id
+		String BoxRandomIdString = element.getAttribute("BoxRandomId"); // 【宝箱】调用掉落组id
+		if (BoxRandomIdString != null && BoxRandomIdString.length() > 0) {
+			String[] BoxRandomIdStrings = BoxRandomIdString.split("\\|"); 
+			int[][] BoxRandomIdTemp = new int[BoxRandomIdStrings.length][] ; 
+			for (int i = 0; i < BoxRandomIdStrings.length; i++) {
+				String[] BoxRandomIdStrings2 = BoxRandomIdStrings[i].split(";"); 
+				int[] array = new int[BoxRandomIdStrings2.length];
+				for (int j = 0; j < BoxRandomIdStrings2.length; j++) {
+					int temp = Integer.parseInt(BoxRandomIdStrings2[j]);	
+					array[j] = temp;
+				}
+				BoxRandomIdTemp[i] = array;
+			}
+			BoxRandomId = BoxRandomIdTemp ;			
+		} else {
+			BoxRandomId = new int[][] {};
+		}
 		String BoSpendString = element.getAttribute("BoSpend"); // 【宝箱】每次点击花费
 		if (BoSpendString != null && BoSpendString.length() > 0) {
 			String[] BoSpendStrings = BoSpendString.split(";"); 

@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 	public final int BuffCategory;		
 	/** buff存在规则 0-霸占，同一个ID的buff，旧buff占着位置，新buff加不上 1-覆盖，同一个ID的buff，新buff将旧buff覆盖 >1-叠加，同一个ID的buff可以叠加，且叠加上限就是填的数字 */
 	public final int BuffCastType;		
-	/** buff目标类型 1目标身上 2位置(目标脚下的地面) 3 相邻的装备 */
+	/** buff目标类型 1目标身上 2位置(目标脚下的地面) 3 相邻的装备 4 所有装备 5 所有敌人 */
 	public final int[] BuffTargetType;		
 	/** Buff效果类型 1-属性变化的buff（加属性） 2-状态buff  3-伤害buff 4-治疗% 5-每波获得物品 6-立即获得物品 */
 	public final int BuffEffectType;		
@@ -54,7 +54,7 @@ import org.w3c.dom.Element;
 			: element.getAttribute("BuffCategory")); // buff类别 0-中立类buff 1-增益型buff 2-减益型debuff
 		BuffCastType = Integer.parseInt(element.getAttribute("BuffCastType") == null || element.getAttribute("BuffCastType").length() == 0 ? "0"
 			: element.getAttribute("BuffCastType")); // buff存在规则 0-霸占，同一个ID的buff，旧buff占着位置，新buff加不上 1-覆盖，同一个ID的buff，新buff将旧buff覆盖 >1-叠加，同一个ID的buff可以叠加，且叠加上限就是填的数字
-		String BuffTargetTypeString = element.getAttribute("BuffTargetType"); // buff目标类型 1目标身上 2位置(目标脚下的地面) 3 相邻的装备
+		String BuffTargetTypeString = element.getAttribute("BuffTargetType"); // buff目标类型 1目标身上 2位置(目标脚下的地面) 3 相邻的装备 4 所有装备 5 所有敌人
 		if (BuffTargetTypeString != null && BuffTargetTypeString.length() > 0) {
 			String[] BuffTargetTypeStrings = BuffTargetTypeString.split(";"); 
 			int[] BuffTargetTypeTemp = new int[BuffTargetTypeStrings.length] ; 
