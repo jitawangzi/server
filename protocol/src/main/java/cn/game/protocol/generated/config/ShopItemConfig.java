@@ -16,6 +16,8 @@ import org.w3c.dom.Element;
 	public final int[] Item;		
 	/** 购买参数 1=货币；货币ID；数量 2=充值；数量(免费无需配置) 3=广告 */
 	public final int[] PurchaseParameter;		
+	/** 商品限购数量  空-不限购 */
+	public final int ShopItemQuota;		
 
 	public ShopItemConfig (Element element) throws Exception {
 	
@@ -45,6 +47,8 @@ import org.w3c.dom.Element;
 		} else {
 			PurchaseParameter = new int[] {};
 		}
+		ShopItemQuota = Integer.parseInt(element.getAttribute("ShopItemQuota") == null || element.getAttribute("ShopItemQuota").length() == 0 ? "0"
+			: element.getAttribute("ShopItemQuota")); // 商品限购数量  空-不限购
 	}
 	
 

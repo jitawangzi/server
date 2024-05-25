@@ -32,6 +32,10 @@ public enum InitialUI{
 	/**  */
 	Build(100112,1001,"Build",30,0,"建造","Texture/common/main_icon_build"),
 	/**  */
+	Guild(100113,1001,"Guild",10,0,"帮会",""),
+	/**  */
+	GuildBoss(1001131,100113,"GuildBoss",10,0,"帮会BOSS",""),
+	/**  */
 	CardMain(2001,0,"CardMain",2,0,"神将",""),
 	/**  */
 	CardLv(200101,2001,"CardLv",2,0,"神将升级",""),
@@ -65,6 +69,8 @@ public enum InitialUI{
 	YaoWangBiePao(400106,4001,"YaoWangBiePao",30,0,"妖王别跑",""),
 	/**  */
 	ShiLuoZhenJing(400107,4001,"ShiLuoZhenJing",30,0,"失落真经",""),
+	/**  */
+	WorldBoss(400108,4001,"WorldBoss",30,0,"世界BOSS",""),
 	/**  */
 	Welfare(5001,0,"Welfare",10,0,"福利",""),
 	/**  */

@@ -10,3 +10,4 @@
 /.project
 /src/main/resources/xml
 /velocity.log
+/src/main/java/cn/game/protocol/generated/**
