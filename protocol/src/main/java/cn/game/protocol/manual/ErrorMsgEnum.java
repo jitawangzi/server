@@ -57,6 +57,7 @@ public enum ErrorMsgEnum {
 	resource_not_enough(60, "资源不足"),
 	/** 次数不足 */
 	times_limit(61, "次数不足"),
+	cd_time_error(62, "未到冷却时间"),
 
 	// 100+ 业务错误。
 

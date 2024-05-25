@@ -240,7 +240,7 @@ message PlayerAllInfo{
    //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
    repeated ShopGroupItemInfo shopGroupItems  = 100;        //商店数据
    int32 nextFreeOpenBoxTime  = 101;        //距离下一次看广告免费开宝箱时间，如果是0表示可以看广告开宝箱
-   int32 mergeSweepTimes  = 102;        //当日扫荡次数
+   int32 mergeSweepTimes  = 102;        //当日已经扫荡次数
    repeated MergeEquipmentInfo  mergeEquips = 103; //装备数据
    DayChallengeInfo mergeDayChallenge   = 104; //每日挑战。
 

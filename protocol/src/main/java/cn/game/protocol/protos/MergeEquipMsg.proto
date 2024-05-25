@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 package Protos;
-import "BaseMsg.proto" ;
+//import "BaseMsg.proto" ;
 
 //装备/替换
 message MergeEquipmentWearRequest_23000001 {
@@ -9,25 +9,25 @@ message MergeEquipmentWearRequest_23000001 {
   int32 replaceId = 2 ; // 替换的装备id，如果是0表示直接上
 }
 
-message MergeEquipmentWearResponse_23000001 {
+message MergeEquipmentWearResponse_23000002 {
 
 }
 
 //装备卸下
-message MergeEquipmentTeardownRequest_09000003 {
+message MergeEquipmentTeardownRequest_23000003 {
   int32 id = 1; //注意是Equip表的EquipGroup 值，而不是Equip表的id。
 }
 
-message MergeEquipmentTeardownResponse_09000004 {
+message MergeEquipmentTeardownResponse_23000004 {
 
 }
 
 //装备升级
-message MergeEquipmentPartStrengthRequest_09000007 {
+message MergeEquipmentPartStrengthRequest_23000007 {
   int32 id = 1; //注意是Equip表的EquipGroup 值，而不是Equip表的id。
 }
 
-message MergeEquipmentPartStrengthResponse_09000008 {
+message MergeEquipmentPartStrengthResponse_23000008 {
 }
 
 message MergeEquipmentInfo{

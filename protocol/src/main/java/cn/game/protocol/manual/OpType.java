@@ -58,6 +58,10 @@ public enum OpType{
 	FreeHeroDayRent(131, "免费英雄日租卡"),
 	StoreStamina(132, "储存的体力"),
 
+	BattleSweep(135, "关卡扫荡"),
+
+	BoxOpen(140, "合并开宝箱"),
+
 	BattleStart(200, "战役开始"),
 
 	None(999, "未定义"),
