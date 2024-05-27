@@ -30,9 +30,4 @@ message MergeEquipmentPartStrengthRequest_23000007 {
 message MergeEquipmentPartStrengthResponse_23000008 {
 }
 
-message MergeEquipmentInfo{
-	int32 id = 1; //注意是Equip表的EquipGroup 值，而不是Equip表的id。
-	int32 level = 2;
-}
-
 

@@ -44,6 +44,11 @@ message HeroSwordInfo{
 	uint32 configId = 2;//HeroSword配置表 ID
 	uint32 star = 3 ;// 星级
 }
+//合并的英雄装备
+message MergeEquipmentInfo{
+  uint32 id  = 1; //Equip配置表id
+  uint32 level = 2;  // 等级
+}
 //英雄装备
 message EquipInfo{
   string uid	   = 1; //唯一id

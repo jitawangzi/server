@@ -18,6 +18,7 @@ message RewardInfo{
     DragonInfo dragon = 10;  //龙奖励
     DragonSkillInfo dragonSkill = 11;  //龙技能奖励
     HeroSwordInfo sword = 12;  //武器
+    MergeEquipmentInfo mergeEquip = 20;  //合并游戏里面的装备
 }
 
 //奖励推送,客户端收到这个协议之后，将奖励增加到本地。

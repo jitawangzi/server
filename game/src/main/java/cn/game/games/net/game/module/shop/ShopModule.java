@@ -31,6 +31,8 @@ import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
+import cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo;
+import cn.game.util.DateUtil;
 import cn.game.util.Rnd;
 
 public class ShopModule extends BasePlayerModule {
@@ -293,6 +295,23 @@ public class ShopModule extends BasePlayerModule {
 			builder.addFundPass(fb.build());
 		});
 		builder.setHeishiFreshTimes(heishiRefreshTimes);
+		int remaining = lastFreeOpenBoxTime + GlobalConst.BoxAdvertTime * 60 * 60 - DateUtil.currentTimeSeconds();
+		if (remaining < 0) {
+			remaining = 0;
+		}
+		builder.setNextFreeOpenBoxTime(remaining);
+		// 合并游戏使用。
+		Collection<ShopConfig> list = ShopManager.instance().list();
+		for (ShopConfig shopConfig : list) {
+			cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.Builder groupBuilder = ShopGroupItemInfo.newBuilder(); 
+			groupBuilder.setShopId(shopConfig.ID) ; 
+			Collection<ShopItem> shopItems = getShopItems(shopConfig.ID);
+			for (ShopItem shopItem : shopItems) {
+				groupBuilder.addItems(shopItem.toProto());
+			}
+		}
+		
+
 	}
 
 	@Override

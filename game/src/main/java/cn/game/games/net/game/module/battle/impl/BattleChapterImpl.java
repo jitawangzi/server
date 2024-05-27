@@ -63,6 +63,7 @@ public class BattleChapterImpl implements IBattleHandler {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 1) {
 				chapterModule.setMainBattleHighest(chapter.getBattleId());
+				player.handleEvent(EventTypeEnum.ChapterFirstWin, battleConfig.ID);
 			}
 		}
 		// 发送奖励

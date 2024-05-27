@@ -24660,7 +24660,7 @@ public final class PlayerMsg {
 
     /**
      * <pre>
-     *距离下一次看广告免费开宝箱时间，如果是0表示可以看广告开宝箱
+     *距离下一次看广告免费开宝箱时间(秒)，如果是0表示可以看广告开宝箱
      * </pre>
      *
      * <code>int32 nextFreeOpenBoxTime = 101;</code>
@@ -24685,7 +24685,7 @@ public final class PlayerMsg {
      *
      * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
      */
-    java.util.List<cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo> 
+    java.util.List<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo> 
         getMergeEquipsList();
     /**
      * <pre>
@@ -24694,7 +24694,7 @@ public final class PlayerMsg {
      *
      * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
      */
-    cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo getMergeEquips(int index);
+    cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getMergeEquips(int index);
     /**
      * <pre>
      *装备数据
@@ -24710,7 +24710,7 @@ public final class PlayerMsg {
      *
      * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
      */
-    java.util.List<? extends cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder> 
+    java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder> 
         getMergeEquipsOrBuilderList();
     /**
      * <pre>
@@ -24719,15 +24719,44 @@ public final class PlayerMsg {
      *
      * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
      */
-    cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder getMergeEquipsOrBuilder(
+    cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder getMergeEquipsOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     *安装的装备id
+     * </pre>
+     *
+     * <code>repeated int32 mergeEquipIds = 104;</code>
+     * @return A list containing the mergeEquipIds.
+     */
+    java.util.List<java.lang.Integer> getMergeEquipIdsList();
+    /**
+     * <pre>
+     *安装的装备id
+     * </pre>
+     *
+     * <code>repeated int32 mergeEquipIds = 104;</code>
+     * @return The count of mergeEquipIds.
+     */
+    int getMergeEquipIdsCount();
+    /**
+     * <pre>
+     *安装的装备id
+     * </pre>
+     *
+     * <code>repeated int32 mergeEquipIds = 104;</code>
+     * @param index The index of the element to return.
+     * @return The mergeEquipIds at the given index.
+     */
+    int getMergeEquipIds(int index);
 
     /**
      * <pre>
      *每日挑战。
      * </pre>
      *
-     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
      * @return Whether the mergeDayChallenge field is set.
      */
     boolean hasMergeDayChallenge();
@@ -24736,7 +24765,7 @@ public final class PlayerMsg {
      *每日挑战。
      * </pre>
      *
-     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
      * @return The mergeDayChallenge.
      */
     cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo getMergeDayChallenge();
@@ -24745,7 +24774,7 @@ public final class PlayerMsg {
      *每日挑战。
      * </pre>
      *
-     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
      */
     cn.game.protocol.protobuf.BattleMsg.DayChallengeInfoOrBuilder getMergeDayChallengeOrBuilder();
   }
@@ -24784,6 +24813,7 @@ public final class PlayerMsg {
       questGroupPointRewards_ = java.util.Collections.emptyList();
       shopGroupItems_ = java.util.Collections.emptyList();
       mergeEquips_ = java.util.Collections.emptyList();
+      mergeEquipIds_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -25135,14 +25165,35 @@ public final class PlayerMsg {
             }
             case 826: {
               if (!((mutable_bitField0_ & 0x00400000) != 0)) {
-                mergeEquips_ = new java.util.ArrayList<cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo>();
+                mergeEquips_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo>();
                 mutable_bitField0_ |= 0x00400000;
               }
               mergeEquips_.add(
-                  input.readMessage(cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.parser(), extensionRegistry));
+                  input.readMessage(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 832: {
+              if (!((mutable_bitField0_ & 0x00800000) != 0)) {
+                mergeEquipIds_ = newIntList();
+                mutable_bitField0_ |= 0x00800000;
+              }
+              mergeEquipIds_.addInt(input.readInt32());
               break;
             }
             case 834: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00800000) != 0) && input.getBytesUntilLimit() > 0) {
+                mergeEquipIds_ = newIntList();
+                mutable_bitField0_ |= 0x00800000;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                mergeEquipIds_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 842: {
               cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo.Builder subBuilder = null;
               if (mergeDayChallenge_ != null) {
                 subBuilder = mergeDayChallenge_.toBuilder();
@@ -25220,6 +25271,9 @@ public final class PlayerMsg {
         }
         if (((mutable_bitField0_ & 0x00400000) != 0)) {
           mergeEquips_ = java.util.Collections.unmodifiableList(mergeEquips_);
+        }
+        if (((mutable_bitField0_ & 0x00800000) != 0)) {
+          mergeEquipIds_.makeImmutable(); // C
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -26962,7 +27016,7 @@ public final class PlayerMsg {
     private int nextFreeOpenBoxTime_;
     /**
      * <pre>
-     *距离下一次看广告免费开宝箱时间，如果是0表示可以看广告开宝箱
+     *距离下一次看广告免费开宝箱时间(秒)，如果是0表示可以看广告开宝箱
      * </pre>
      *
      * <code>int32 nextFreeOpenBoxTime = 101;</code>
@@ -26989,7 +27043,7 @@ public final class PlayerMsg {
     }
 
     public static final int MERGEEQUIPS_FIELD_NUMBER = 103;
-    private java.util.List<cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo> mergeEquips_;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo> mergeEquips_;
     /**
      * <pre>
      *装备数据
@@ -26998,7 +27052,7 @@ public final class PlayerMsg {
      * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
      */
     @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo> getMergeEquipsList() {
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo> getMergeEquipsList() {
       return mergeEquips_;
     }
     /**
@@ -27009,7 +27063,7 @@ public final class PlayerMsg {
      * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder> 
+    public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder> 
         getMergeEquipsOrBuilderList() {
       return mergeEquips_;
     }
@@ -27032,7 +27086,7 @@ public final class PlayerMsg {
      * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo getMergeEquips(int index) {
+    public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getMergeEquips(int index) {
       return mergeEquips_.get(index);
     }
     /**
@@ -27043,19 +27097,59 @@ public final class PlayerMsg {
      * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder getMergeEquipsOrBuilder(
+    public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder getMergeEquipsOrBuilder(
         int index) {
       return mergeEquips_.get(index);
     }
 
-    public static final int MERGEDAYCHALLENGE_FIELD_NUMBER = 104;
+    public static final int MERGEEQUIPIDS_FIELD_NUMBER = 104;
+    private com.google.protobuf.Internal.IntList mergeEquipIds_;
+    /**
+     * <pre>
+     *安装的装备id
+     * </pre>
+     *
+     * <code>repeated int32 mergeEquipIds = 104;</code>
+     * @return A list containing the mergeEquipIds.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getMergeEquipIdsList() {
+      return mergeEquipIds_;
+    }
+    /**
+     * <pre>
+     *安装的装备id
+     * </pre>
+     *
+     * <code>repeated int32 mergeEquipIds = 104;</code>
+     * @return The count of mergeEquipIds.
+     */
+    public int getMergeEquipIdsCount() {
+      return mergeEquipIds_.size();
+    }
+    /**
+     * <pre>
+     *安装的装备id
+     * </pre>
+     *
+     * <code>repeated int32 mergeEquipIds = 104;</code>
+     * @param index The index of the element to return.
+     * @return The mergeEquipIds at the given index.
+     */
+    public int getMergeEquipIds(int index) {
+      return mergeEquipIds_.getInt(index);
+    }
+    private int mergeEquipIdsMemoizedSerializedSize = -1;
+
+    public static final int MERGEDAYCHALLENGE_FIELD_NUMBER = 105;
     private cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo mergeDayChallenge_;
     /**
      * <pre>
      *每日挑战。
      * </pre>
      *
-     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
      * @return Whether the mergeDayChallenge field is set.
      */
     @java.lang.Override
@@ -27067,7 +27161,7 @@ public final class PlayerMsg {
      *每日挑战。
      * </pre>
      *
-     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
      * @return The mergeDayChallenge.
      */
     @java.lang.Override
@@ -27079,7 +27173,7 @@ public final class PlayerMsg {
      *每日挑战。
      * </pre>
      *
-     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+     * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
      */
     @java.lang.Override
     public cn.game.protocol.protobuf.BattleMsg.DayChallengeInfoOrBuilder getMergeDayChallengeOrBuilder() {
@@ -27223,8 +27317,15 @@ public final class PlayerMsg {
       for (int i = 0; i < mergeEquips_.size(); i++) {
         output.writeMessage(103, mergeEquips_.get(i));
       }
+      if (getMergeEquipIdsList().size() > 0) {
+        output.writeUInt32NoTag(834);
+        output.writeUInt32NoTag(mergeEquipIdsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < mergeEquipIds_.size(); i++) {
+        output.writeInt32NoTag(mergeEquipIds_.getInt(i));
+      }
       if (mergeDayChallenge_ != null) {
-        output.writeMessage(104, getMergeDayChallenge());
+        output.writeMessage(105, getMergeDayChallenge());
       }
       unknownFields.writeTo(output);
     }
@@ -27422,9 +27523,23 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(103, mergeEquips_.get(i));
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < mergeEquipIds_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(mergeEquipIds_.getInt(i));
+        }
+        size += dataSize;
+        if (!getMergeEquipIdsList().isEmpty()) {
+          size += 2;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        mergeEquipIdsMemoizedSerializedSize = dataSize;
+      }
       if (mergeDayChallenge_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(104, getMergeDayChallenge());
+          .computeMessageSize(105, getMergeDayChallenge());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -27514,6 +27629,8 @@ public final class PlayerMsg {
           != other.getMergeSweepTimes()) return false;
       if (!getMergeEquipsList()
           .equals(other.getMergeEquipsList())) return false;
+      if (!getMergeEquipIdsList()
+          .equals(other.getMergeEquipIdsList())) return false;
       if (hasMergeDayChallenge() != other.hasMergeDayChallenge()) return false;
       if (hasMergeDayChallenge()) {
         if (!getMergeDayChallenge()
@@ -27646,6 +27763,10 @@ public final class PlayerMsg {
       if (getMergeEquipsCount() > 0) {
         hash = (37 * hash) + MERGEEQUIPS_FIELD_NUMBER;
         hash = (53 * hash) + getMergeEquipsList().hashCode();
+      }
+      if (getMergeEquipIdsCount() > 0) {
+        hash = (37 * hash) + MERGEEQUIPIDS_FIELD_NUMBER;
+        hash = (53 * hash) + getMergeEquipIdsList().hashCode();
       }
       if (hasMergeDayChallenge()) {
         hash = (37 * hash) + MERGEDAYCHALLENGE_FIELD_NUMBER;
@@ -27970,6 +28091,8 @@ public final class PlayerMsg {
         } else {
           mergeEquipsBuilder_.clear();
         }
+        mergeEquipIds_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00800000);
         if (mergeDayChallengeBuilder_ == null) {
           mergeDayChallenge_ = null;
         } else {
@@ -28177,6 +28300,11 @@ public final class PlayerMsg {
         } else {
           result.mergeEquips_ = mergeEquipsBuilder_.build();
         }
+        if (((bitField0_ & 0x00800000) != 0)) {
+          mergeEquipIds_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00800000);
+        }
+        result.mergeEquipIds_ = mergeEquipIds_;
         if (mergeDayChallengeBuilder_ == null) {
           result.mergeDayChallenge_ = mergeDayChallenge_;
         } else {
@@ -28663,6 +28791,16 @@ public final class PlayerMsg {
               mergeEquipsBuilder_.addAllMessages(other.mergeEquips_);
             }
           }
+        }
+        if (!other.mergeEquipIds_.isEmpty()) {
+          if (mergeEquipIds_.isEmpty()) {
+            mergeEquipIds_ = other.mergeEquipIds_;
+            bitField0_ = (bitField0_ & ~0x00800000);
+          } else {
+            ensureMergeEquipIdsIsMutable();
+            mergeEquipIds_.addAll(other.mergeEquipIds_);
+          }
+          onChanged();
         }
         if (other.hasMergeDayChallenge()) {
           mergeMergeDayChallenge(other.getMergeDayChallenge());
@@ -34742,7 +34880,7 @@ public final class PlayerMsg {
       private int nextFreeOpenBoxTime_ ;
       /**
        * <pre>
-       *距离下一次看广告免费开宝箱时间，如果是0表示可以看广告开宝箱
+       *距离下一次看广告免费开宝箱时间(秒)，如果是0表示可以看广告开宝箱
        * </pre>
        *
        * <code>int32 nextFreeOpenBoxTime = 101;</code>
@@ -34754,7 +34892,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *距离下一次看广告免费开宝箱时间，如果是0表示可以看广告开宝箱
+       *距离下一次看广告免费开宝箱时间(秒)，如果是0表示可以看广告开宝箱
        * </pre>
        *
        * <code>int32 nextFreeOpenBoxTime = 101;</code>
@@ -34769,7 +34907,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       *距离下一次看广告免费开宝箱时间，如果是0表示可以看广告开宝箱
+       *距离下一次看广告免费开宝箱时间(秒)，如果是0表示可以看广告开宝箱
        * </pre>
        *
        * <code>int32 nextFreeOpenBoxTime = 101;</code>
@@ -34825,17 +34963,17 @@ public final class PlayerMsg {
         return this;
       }
 
-      private java.util.List<cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo> mergeEquips_ =
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo> mergeEquips_ =
         java.util.Collections.emptyList();
       private void ensureMergeEquipsIsMutable() {
         if (!((bitField0_ & 0x00400000) != 0)) {
-          mergeEquips_ = new java.util.ArrayList<cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo>(mergeEquips_);
+          mergeEquips_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo>(mergeEquips_);
           bitField0_ |= 0x00400000;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder> mergeEquipsBuilder_;
+          cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder> mergeEquipsBuilder_;
 
       /**
        * <pre>
@@ -34844,7 +34982,7 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public java.util.List<cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo> getMergeEquipsList() {
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo> getMergeEquipsList() {
         if (mergeEquipsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(mergeEquips_);
         } else {
@@ -34872,7 +35010,7 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo getMergeEquips(int index) {
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getMergeEquips(int index) {
         if (mergeEquipsBuilder_ == null) {
           return mergeEquips_.get(index);
         } else {
@@ -34887,7 +35025,7 @@ public final class PlayerMsg {
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
       public Builder setMergeEquips(
-          int index, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo value) {
+          int index, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo value) {
         if (mergeEquipsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -34908,7 +35046,7 @@ public final class PlayerMsg {
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
       public Builder setMergeEquips(
-          int index, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder builderForValue) {
+          int index, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder builderForValue) {
         if (mergeEquipsBuilder_ == null) {
           ensureMergeEquipsIsMutable();
           mergeEquips_.set(index, builderForValue.build());
@@ -34925,7 +35063,7 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public Builder addMergeEquips(cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo value) {
+      public Builder addMergeEquips(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo value) {
         if (mergeEquipsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -34946,7 +35084,7 @@ public final class PlayerMsg {
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
       public Builder addMergeEquips(
-          int index, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo value) {
+          int index, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo value) {
         if (mergeEquipsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -34967,7 +35105,7 @@ public final class PlayerMsg {
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
       public Builder addMergeEquips(
-          cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder builderForValue) {
+          cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder builderForValue) {
         if (mergeEquipsBuilder_ == null) {
           ensureMergeEquipsIsMutable();
           mergeEquips_.add(builderForValue.build());
@@ -34985,7 +35123,7 @@ public final class PlayerMsg {
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
       public Builder addMergeEquips(
-          int index, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder builderForValue) {
+          int index, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder builderForValue) {
         if (mergeEquipsBuilder_ == null) {
           ensureMergeEquipsIsMutable();
           mergeEquips_.add(index, builderForValue.build());
@@ -35003,7 +35141,7 @@ public final class PlayerMsg {
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
       public Builder addAllMergeEquips(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo> values) {
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo> values) {
         if (mergeEquipsBuilder_ == null) {
           ensureMergeEquipsIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -35055,7 +35193,7 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder getMergeEquipsBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder getMergeEquipsBuilder(
           int index) {
         return getMergeEquipsFieldBuilder().getBuilder(index);
       }
@@ -35066,7 +35204,7 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder getMergeEquipsOrBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder getMergeEquipsOrBuilder(
           int index) {
         if (mergeEquipsBuilder_ == null) {
           return mergeEquips_.get(index);  } else {
@@ -35080,7 +35218,7 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public java.util.List<? extends cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder> 
+      public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder> 
            getMergeEquipsOrBuilderList() {
         if (mergeEquipsBuilder_ != null) {
           return mergeEquipsBuilder_.getMessageOrBuilderList();
@@ -35095,9 +35233,9 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder addMergeEquipsBuilder() {
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder addMergeEquipsBuilder() {
         return getMergeEquipsFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.getDefaultInstance());
+            cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.getDefaultInstance());
       }
       /**
        * <pre>
@@ -35106,10 +35244,10 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder addMergeEquipsBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder addMergeEquipsBuilder(
           int index) {
         return getMergeEquipsFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.getDefaultInstance());
+            index, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.getDefaultInstance());
       }
       /**
        * <pre>
@@ -35118,16 +35256,16 @@ public final class PlayerMsg {
        *
        * <code>repeated .Protos.MergeEquipmentInfo mergeEquips = 103;</code>
        */
-      public java.util.List<cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder> 
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder> 
            getMergeEquipsBuilderList() {
         return getMergeEquipsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder> 
+          cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder> 
           getMergeEquipsFieldBuilder() {
         if (mergeEquipsBuilder_ == null) {
           mergeEquipsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentInfoOrBuilder>(
+              cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder>(
                   mergeEquips_,
                   ((bitField0_ & 0x00400000) != 0),
                   getParentForChildren(),
@@ -35135,6 +35273,113 @@ public final class PlayerMsg {
           mergeEquips_ = null;
         }
         return mergeEquipsBuilder_;
+      }
+
+      private com.google.protobuf.Internal.IntList mergeEquipIds_ = emptyIntList();
+      private void ensureMergeEquipIdsIsMutable() {
+        if (!((bitField0_ & 0x00800000) != 0)) {
+          mergeEquipIds_ = mutableCopy(mergeEquipIds_);
+          bitField0_ |= 0x00800000;
+         }
+      }
+      /**
+       * <pre>
+       *安装的装备id
+       * </pre>
+       *
+       * <code>repeated int32 mergeEquipIds = 104;</code>
+       * @return A list containing the mergeEquipIds.
+       */
+      public java.util.List<java.lang.Integer>
+          getMergeEquipIdsList() {
+        return ((bitField0_ & 0x00800000) != 0) ?
+                 java.util.Collections.unmodifiableList(mergeEquipIds_) : mergeEquipIds_;
+      }
+      /**
+       * <pre>
+       *安装的装备id
+       * </pre>
+       *
+       * <code>repeated int32 mergeEquipIds = 104;</code>
+       * @return The count of mergeEquipIds.
+       */
+      public int getMergeEquipIdsCount() {
+        return mergeEquipIds_.size();
+      }
+      /**
+       * <pre>
+       *安装的装备id
+       * </pre>
+       *
+       * <code>repeated int32 mergeEquipIds = 104;</code>
+       * @param index The index of the element to return.
+       * @return The mergeEquipIds at the given index.
+       */
+      public int getMergeEquipIds(int index) {
+        return mergeEquipIds_.getInt(index);
+      }
+      /**
+       * <pre>
+       *安装的装备id
+       * </pre>
+       *
+       * <code>repeated int32 mergeEquipIds = 104;</code>
+       * @param index The index to set the value at.
+       * @param value The mergeEquipIds to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMergeEquipIds(
+          int index, int value) {
+        ensureMergeEquipIdsIsMutable();
+        mergeEquipIds_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *安装的装备id
+       * </pre>
+       *
+       * <code>repeated int32 mergeEquipIds = 104;</code>
+       * @param value The mergeEquipIds to add.
+       * @return This builder for chaining.
+       */
+      public Builder addMergeEquipIds(int value) {
+        ensureMergeEquipIdsIsMutable();
+        mergeEquipIds_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *安装的装备id
+       * </pre>
+       *
+       * <code>repeated int32 mergeEquipIds = 104;</code>
+       * @param values The mergeEquipIds to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllMergeEquipIds(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureMergeEquipIdsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, mergeEquipIds_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *安装的装备id
+       * </pre>
+       *
+       * <code>repeated int32 mergeEquipIds = 104;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMergeEquipIds() {
+        mergeEquipIds_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00800000);
+        onChanged();
+        return this;
       }
 
       private cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo mergeDayChallenge_;
@@ -35145,7 +35390,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        * @return Whether the mergeDayChallenge field is set.
        */
       public boolean hasMergeDayChallenge() {
@@ -35156,7 +35401,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        * @return The mergeDayChallenge.
        */
       public cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo getMergeDayChallenge() {
@@ -35171,7 +35416,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        */
       public Builder setMergeDayChallenge(cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo value) {
         if (mergeDayChallengeBuilder_ == null) {
@@ -35191,7 +35436,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        */
       public Builder setMergeDayChallenge(
           cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo.Builder builderForValue) {
@@ -35209,7 +35454,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        */
       public Builder mergeMergeDayChallenge(cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo value) {
         if (mergeDayChallengeBuilder_ == null) {
@@ -35231,7 +35476,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        */
       public Builder clearMergeDayChallenge() {
         if (mergeDayChallengeBuilder_ == null) {
@@ -35249,7 +35494,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        */
       public cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo.Builder getMergeDayChallengeBuilder() {
         
@@ -35261,7 +35506,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        */
       public cn.game.protocol.protobuf.BattleMsg.DayChallengeInfoOrBuilder getMergeDayChallengeOrBuilder() {
         if (mergeDayChallengeBuilder_ != null) {
@@ -35276,7 +35521,7 @@ public final class PlayerMsg {
        *每日挑战。
        * </pre>
        *
-       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 104;</code>
+       * <code>.Protos.DayChallengeInfo mergeDayChallenge = 105;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo, cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo.Builder, cn.game.protocol.protobuf.BattleMsg.DayChallengeInfoOrBuilder> 
@@ -35565,102 +35810,102 @@ public final class PlayerMsg {
     java.lang.String[] descriptorData = {
       "\n\017PlayerMsg.proto\022\006Protos\032\017RewardMsg.pro" +
       "to\032\rBaseMsg.proto\032\rShopMsg.proto\032\017Battle" +
-      "Msg.proto\032\016QuestMsg.proto\032\023MergeEquipMsg" +
-      ".proto\"\265\001\n\033PlayerLoginRequest_01000001\022\021" +
-      "\n\tsessionId\030\001 \001(\t\022\021\n\treconnect\030\002 \001(\010\022\020\n\010" +
-      "verstion\030\003 \001(\t\022\020\n\010platform\030\024 \001(\005\022\021\n\tadCh" +
-      "annel\030\036 \001(\t\022\025\n\rsdkPayChannel\030\037 \001(\t\022\022\n\nsd" +
-      "kVersion\030( \001(\t\022\016\n\006system\030) \001(\t\"d\n\034Player" +
-      "LoginResponse_01000002\022#\n\004info\030\001 \001(\0132\025.P" +
-      "rotos.PlayerAllInfo\022\021\n\treconnect\030\002 \001(\010\022\014" +
-      "\n\004time\030\003 \001(\t\"\033\n\031PlayerLogoutPush_0110003" +
-      "0\"*\n\032PlayerNameRequest_01000011\022\014\n\004name\030" +
-      "\001 \001(\t\"\035\n\033PlayerNameResponse_01000012\"*\n\032" +
-      "PlayerHeadRequest_01000013\022\014\n\004head\030\001 \001(\005" +
-      "\"\035\n\033PlayerHeadResponse_01000014\"4\n\037Playe" +
-      "rHeadFrameRequest_01000015\022\021\n\theadFrame\030" +
-      "\001 \001(\005\"\"\n PlayerHeadFrameResponse_0100001" +
-      "6\"-\n\034PlayerGenderRequest_01000017\022\r\n\005isM" +
-      "an\030\001 \001(\010\"\037\n\035PlayerGenderResponse_0100001" +
-      "8\"E\n\036PlayerReconnecRequest_01000065\022\021\n\ts" +
-      "essionId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\r\"Z\n\037Play" +
-      "erReconnecResponse_01000066\022)\n\nplayerInf" +
-      "o\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\014\n\004time\030\002" +
-      " \001(\t\"!\n\037PlayerHeartbeatRequest_01000005\"" +
-      "0\n PlayerHeartbeatResponse_01000006\022\014\n\004t" +
-      "ime\030\001 \001(\t\"4\n\037PlayerBriefInfoRequest_0100" +
-      "0007\022\021\n\tplayerIds\030\001 \003(\t\"M\n PlayerBriefIn" +
-      "foResponse_01000008\022)\n\007players\030\001 \003(\0132\030.P" +
-      "rotos.SimplePlayerInfo\"L\n$PlayerBriefInf" +
-      "oOtherRequest_01000009\022\021\n\tplayerIds\030\001 \003(" +
-      "\t\022\021\n\tserverIds\030\002 \003(\t\"R\n%PlayerBriefInfoO" +
-      "therResponse_0100000a\022)\n\007players\030\001 \003(\0132\030" +
-      ".Protos.SimplePlayerInfo\"@\n\032PlayerShowRe" +
-      "quest_01000039\022\020\n\010playerId\030\001 \001(\t\022\020\n\010serv" +
-      "erId\030\002 \001(\t\"E\n\033PlayerShowResponse_0100003" +
-      "a\022&\n\006player\030\001 \001(\0132\026.Protos.PlayerShowInf" +
-      "o\"1\n\035PlayerAlchemyRequest_01000040\022\020\n\010co" +
-      "nfigId\030\001 \001(\r\" \n\036PlayerAlchemyResponse_01" +
-      "000041\"(\n\030PlayerResetPush_01100016\022\014\n\004ty" +
-      "pe\030\001 \001(\005\")\n\030PlayerErrorPush_01000099\022\r\n\005" +
-      "error\030\001 \001(\t\"4\n\027ItemUseRequest_01000050\022\n" +
-      "\n\002id\030\001 \001(\r\022\r\n\005param\030\002 \001(\r\">\n\030ItemUseResp" +
-      "onse_01000051\022\"\n\006reward\030\001 \003(\0132\022.Protos.R" +
-      "ewardInfo\".\n\013AlchemyInfo\022\020\n\010configId\030\001 \001" +
-      "(\r\022\r\n\005level\030\002 \001(\r\"E\n\033PlayerCloudBoxPush_" +
-      "01100040\022&\n\010cloudBox\030\001 \001(\0132\024.Protos.Clou" +
-      "dBoxInfo\" \n\036PlayerCloudBoxRequest_010000" +
-      "42\"F\n\037PlayerCloudBoxResponse_01000043\022#\n" +
-      "\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"0\n\014Cl" +
-      "oudBoxInfo\022 \n\005items\030\005 \003(\0132\021.Protos.Goods" +
-      "Info\"6\n\014ExpLevelInfo\022\n\n\002id\030\001 \001(\r\022\013\n\003exp\030" +
-      "\002 \001(\r\022\r\n\005level\030\003 \001(\r\"E\n\033PlayerExpLevelPu" +
-      "sh_01100050\022&\n\010expLevel\030\001 \001(\0132\024.Protos.E" +
-      "xpLevelInfo\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n" +
-      "\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r" +
-      "\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t" +
-      "\"\336\014\n\rPlayerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Pro" +
-      "tos.PlayerInfo\0221\n\006assets\030\002 \003(\0132!.Protos." +
-      "PlayerAllInfo.AssetsEntry\022=\n\014assetRecove" +
-      "r\030\003 \003(\0132\'.Protos.PlayerAllInfo.AssetReco" +
-      "verEntry\0221\n\006levels\030\004 \003(\0132!.Protos.Player" +
-      "AllInfo.LevelsEntry\022\037\n\005items\030\005 \003(\0132\020.Pro" +
-      "tos.ItemInfo\022)\n\010fashions\030\006 \003(\0132\027.Protos." +
-      "HeroFashionInfo\022\037\n\005heros\030\007 \003(\0132\020.Protos." +
-      "HeroInfo\022%\n\006swords\030\010 \003(\0132\025.Protos.HeroSw" +
-      "ordInfo\022\024\n\014heroSwordUid\030\t \001(\t\022\035\n\004gems\030\n " +
-      "\003(\0132\017.Protos.GemInfo\022!\n\006equips\030\013 \003(\0132\021.P" +
-      "rotos.EquipInfo\022)\n\nequipParts\030\014 \003(\0132\025.Pr" +
-      "otos.EquipPartInfo\0225\n\010alchemys\030\016 \003(\0132#.P" +
-      "rotos.PlayerAllInfo.AlchemysEntry\0223\n\007dra" +
-      "gons\030\020 \003(\0132\".Protos.PlayerAllInfo.Dragon" +
-      "sEntry\022=\n\014dragonSkills\030\021 \003(\0132\'.Protos.Pl" +
-      "ayerAllInfo.DragonSkillsEntry\022#\n\007battles" +
-      "\030\036 \003(\0132\022.Protos.BattleInfo\022\026\n\016freeRougeT" +
-      "imes\030\037 \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos." +
-      "MonthCardProto\022\034\n\024monthCardDoubleBonus\030*" +
-      " \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&\n\010fundPass\030," +
-      " \003(\0132\024.Protos.FundPassInfo\022\030\n\020heishiFres" +
-      "hTimes\030. \001(\005\022\030\n\020freeDayRentHeros\030/ \003(\t\022\025" +
-      "\n\rstoreStaminas\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132" +
-      "\024.Protos.CloudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022." +
-      "Protos.PatrolInfo\022+\n\013questGroups\0307 \003(\0132\026" +
-      ".Protos.QuestGroupInfo\022A\n\026questGroupPoin" +
-      "tRewards\0308 \003(\0132!.Protos.QuestGroupPointR" +
-      "ewardInfo\0221\n\016shopGroupItems\030d \003(\0132\031.Prot" +
-      "os.ShopGroupItemInfo\022\033\n\023nextFreeOpenBoxT" +
-      "ime\030e \001(\005\022\027\n\017mergeSweepTimes\030f \001(\005\022/\n\013me" +
-      "rgeEquips\030g \003(\0132\032.Protos.MergeEquipmentI" +
-      "nfo\0223\n\021mergeDayChallenge\030h \001(\0132\030.Protos." +
-      "DayChallengeInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001" +
-      " \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverE" +
-      "ntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013" +
-      "LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:" +
-      "\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005val" +
-      "ue\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(" +
-      "\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntr" +
-      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn." +
-      "game.protocol.protobufb\006proto3"
+      "Msg.proto\032\016QuestMsg.proto\"\265\001\n\033PlayerLogi" +
+      "nRequest_01000001\022\021\n\tsessionId\030\001 \001(\t\022\021\n\t" +
+      "reconnect\030\002 \001(\010\022\020\n\010verstion\030\003 \001(\t\022\020\n\010pla" +
+      "tform\030\024 \001(\005\022\021\n\tadChannel\030\036 \001(\t\022\025\n\rsdkPay" +
+      "Channel\030\037 \001(\t\022\022\n\nsdkVersion\030( \001(\t\022\016\n\006sys" +
+      "tem\030) \001(\t\"d\n\034PlayerLoginResponse_0100000" +
+      "2\022#\n\004info\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\021" +
+      "\n\treconnect\030\002 \001(\010\022\014\n\004time\030\003 \001(\t\"\033\n\031Playe" +
+      "rLogoutPush_01100030\"*\n\032PlayerNameReques" +
+      "t_01000011\022\014\n\004name\030\001 \001(\t\"\035\n\033PlayerNameRe" +
+      "sponse_01000012\"*\n\032PlayerHeadRequest_010" +
+      "00013\022\014\n\004head\030\001 \001(\005\"\035\n\033PlayerHeadRespons" +
+      "e_01000014\"4\n\037PlayerHeadFrameRequest_010" +
+      "00015\022\021\n\theadFrame\030\001 \001(\005\"\"\n PlayerHeadFr" +
+      "ameResponse_01000016\"-\n\034PlayerGenderRequ" +
+      "est_01000017\022\r\n\005isMan\030\001 \001(\010\"\037\n\035PlayerGen" +
+      "derResponse_01000018\"E\n\036PlayerReconnecRe" +
+      "quest_01000065\022\021\n\tsessionId\030\001 \001(\t\022\020\n\010pla" +
+      "yerId\030\002 \001(\r\"Z\n\037PlayerReconnecResponse_01" +
+      "000066\022)\n\nplayerInfo\030\001 \001(\0132\025.Protos.Play" +
+      "erAllInfo\022\014\n\004time\030\002 \001(\t\"!\n\037PlayerHeartbe" +
+      "atRequest_01000005\"0\n PlayerHeartbeatRes" +
+      "ponse_01000006\022\014\n\004time\030\001 \001(\t\"4\n\037PlayerBr" +
+      "iefInfoRequest_01000007\022\021\n\tplayerIds\030\001 \003" +
+      "(\t\"M\n PlayerBriefInfoResponse_01000008\022)" +
+      "\n\007players\030\001 \003(\0132\030.Protos.SimplePlayerInf" +
+      "o\"L\n$PlayerBriefInfoOtherRequest_0100000" +
+      "9\022\021\n\tplayerIds\030\001 \003(\t\022\021\n\tserverIds\030\002 \003(\t\"" +
+      "R\n%PlayerBriefInfoOtherResponse_0100000a" +
+      "\022)\n\007players\030\001 \003(\0132\030.Protos.SimplePlayerI" +
+      "nfo\"@\n\032PlayerShowRequest_01000039\022\020\n\010pla" +
+      "yerId\030\001 \001(\t\022\020\n\010serverId\030\002 \001(\t\"E\n\033PlayerS" +
+      "howResponse_0100003a\022&\n\006player\030\001 \001(\0132\026.P" +
+      "rotos.PlayerShowInfo\"1\n\035PlayerAlchemyReq" +
+      "uest_01000040\022\020\n\010configId\030\001 \001(\r\" \n\036Playe" +
+      "rAlchemyResponse_01000041\"(\n\030PlayerReset" +
+      "Push_01100016\022\014\n\004type\030\001 \001(\005\")\n\030PlayerErr" +
+      "orPush_01000099\022\r\n\005error\030\001 \001(\t\"4\n\027ItemUs" +
+      "eRequest_01000050\022\n\n\002id\030\001 \001(\r\022\r\n\005param\030\002" +
+      " \001(\r\">\n\030ItemUseResponse_01000051\022\"\n\006rewa" +
+      "rd\030\001 \003(\0132\022.Protos.RewardInfo\".\n\013AlchemyI" +
+      "nfo\022\020\n\010configId\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"E\n\033" +
+      "PlayerCloudBoxPush_01100040\022&\n\010cloudBox\030" +
+      "\001 \001(\0132\024.Protos.CloudBoxInfo\" \n\036PlayerClo" +
+      "udBoxRequest_01000042\"F\n\037PlayerCloudBoxR" +
+      "esponse_01000043\022#\n\007rewards\030\001 \003(\0132\022.Prot" +
+      "os.RewardInfo\"0\n\014CloudBoxInfo\022 \n\005items\030\005" +
+      " \003(\0132\021.Protos.GoodsInfo\"6\n\014ExpLevelInfo\022" +
+      "\n\n\002id\030\001 \001(\r\022\013\n\003exp\030\002 \001(\r\022\r\n\005level\030\003 \001(\r\"" +
+      "E\n\033PlayerExpLevelPush_01100050\022&\n\010expLev" +
+      "el\030\001 \001(\0132\024.Protos.ExpLevelInfo\"k\n\nPlayer" +
+      "Info\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030" +
+      "\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023" +
+      "\n\013offlineTime\030\026 \001(\t\"\365\014\n\rPlayerAllInfo\022\"\n" +
+      "\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006ass" +
+      "ets\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsE" +
+      "ntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Play" +
+      "erAllInfo.AssetRecoverEntry\0221\n\006levels\030\004 " +
+      "\003(\0132!.Protos.PlayerAllInfo.LevelsEntry\022\037" +
+      "\n\005items\030\005 \003(\0132\020.Protos.ItemInfo\022)\n\010fashi" +
+      "ons\030\006 \003(\0132\027.Protos.HeroFashionInfo\022\037\n\005he" +
+      "ros\030\007 \003(\0132\020.Protos.HeroInfo\022%\n\006swords\030\010 " +
+      "\003(\0132\025.Protos.HeroSwordInfo\022\024\n\014heroSwordU" +
+      "id\030\t \001(\t\022\035\n\004gems\030\n \003(\0132\017.Protos.GemInfo\022" +
+      "!\n\006equips\030\013 \003(\0132\021.Protos.EquipInfo\022)\n\neq" +
+      "uipParts\030\014 \003(\0132\025.Protos.EquipPartInfo\0225\n" +
+      "\010alchemys\030\016 \003(\0132#.Protos.PlayerAllInfo.A" +
+      "lchemysEntry\0223\n\007dragons\030\020 \003(\0132\".Protos.P" +
+      "layerAllInfo.DragonsEntry\022=\n\014dragonSkill" +
+      "s\030\021 \003(\0132\'.Protos.PlayerAllInfo.DragonSki" +
+      "llsEntry\022#\n\007battles\030\036 \003(\0132\022.Protos.Battl" +
+      "eInfo\022\026\n\016freeRougeTimes\030\037 \001(\005\022*\n\nmonthCa" +
+      "rds\030( \003(\0132\026.Protos.MonthCardProto\022\034\n\024mon" +
+      "thCardDoubleBonus\030* \001(\010\022\024\n\014chapterPacks\030" +
+      ") \003(\r\022&\n\010fundPass\030, \003(\0132\024.Protos.FundPas" +
+      "sInfo\022\030\n\020heishiFreshTimes\030. \001(\005\022\030\n\020freeD" +
+      "ayRentHeros\030/ \003(\t\022\025\n\rstoreStaminas\0300 \003(\005" +
+      "\022&\n\010cloudBox\0302 \001(\0132\024.Protos.CloudBoxInfo" +
+      "\022\"\n\006patrol\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013" +
+      "questGroups\0307 \003(\0132\026.Protos.QuestGroupInf" +
+      "o\022A\n\026questGroupPointRewards\0308 \003(\0132!.Prot" +
+      "os.QuestGroupPointRewardInfo\0221\n\016shopGrou" +
+      "pItems\030d \003(\0132\031.Protos.ShopGroupItemInfo\022" +
+      "\033\n\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017mergeSwe" +
+      "epTimes\030f \001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Pro" +
+      "tos.MergeEquipmentInfo\022\025\n\rmergeEquipIds\030" +
+      "h \003(\005\0223\n\021mergeDayChallenge\030i \001(\0132\030.Proto" +
+      "s.DayChallengeInfo\032-\n\013AssetsEntry\022\013\n\003key" +
+      "\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecove" +
+      "rEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-" +
+      "\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
+      "\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
+      "alue\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 " +
+      "\001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEn" +
+      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031c" +
+      "n.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -35670,7 +35915,6 @@ public final class PlayerMsg {
           cn.game.protocol.protobuf.ShopMsg.getDescriptor(),
           cn.game.protocol.protobuf.BattleMsg.getDescriptor(),
           cn.game.protocol.protobuf.QuestMsg.getDescriptor(),
-          cn.game.protocol.protobuf.MergeEquipMsg.getDescriptor(),
         });
     internal_static_Protos_PlayerLoginRequest_01000001_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -35887,7 +36131,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeDayChallenge", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
@@ -35929,7 +36173,6 @@ public final class PlayerMsg {
     cn.game.protocol.protobuf.ShopMsg.getDescriptor();
     cn.game.protocol.protobuf.BattleMsg.getDescriptor();
     cn.game.protocol.protobuf.QuestMsg.getDescriptor();
-    cn.game.protocol.protobuf.MergeEquipMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

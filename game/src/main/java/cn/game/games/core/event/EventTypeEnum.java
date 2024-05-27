@@ -39,8 +39,8 @@ public enum EventTypeEnum {
 	Level(3, "通关关卡"), // 参数： 关卡id，回合数，剩余人数
 	/** 章节胜利  参数: 章节id*/
 	ChapterWin(4, "章节胜利"),
-	/** 主角升星 */
-	StarUp(5, "主角升星"),
+	/** 主线章节第一次通关 ，参数： 章节id */
+	ChapterFirstWin(5, "主线章节第一次通关"),
 	/** 英雄升级 参数：英雄*/
 	HeroLevelUp(6, "英雄升级"),
 	/** 英雄突破 */

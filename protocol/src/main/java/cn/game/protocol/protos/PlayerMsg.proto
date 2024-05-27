@@ -7,7 +7,6 @@ import "BaseMsg.proto" ;
 import "ShopMsg.proto" ;
 import "BattleMsg.proto" ;
 import "QuestMsg.proto";
-import "MergeEquipMsg.proto";
 
 /*** 登陆****/
 message PlayerLoginRequest_01000001{
@@ -239,10 +238,11 @@ message PlayerAllInfo{
 
    //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
    repeated ShopGroupItemInfo shopGroupItems  = 100;        //商店数据
-   int32 nextFreeOpenBoxTime  = 101;        //距离下一次看广告免费开宝箱时间，如果是0表示可以看广告开宝箱
+   int32 nextFreeOpenBoxTime  = 101;        //距离下一次看广告免费开宝箱时间(秒)，如果是0表示可以看广告开宝箱
    int32 mergeSweepTimes  = 102;        //当日已经扫荡次数
    repeated MergeEquipmentInfo  mergeEquips = 103; //装备数据
-   DayChallengeInfo mergeDayChallenge   = 104; //每日挑战。
+   repeated int32  mergeEquipIds = 104; //安装的装备id
+   DayChallengeInfo mergeDayChallenge   = 105; //每日挑战。
 
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼合并游戏独有的数据︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼

@@ -61,6 +61,7 @@ public enum OpType{
 	BattleSweep(135, "关卡扫荡"),
 
 	BoxOpen(140, "合并开宝箱"),
+	MergeEquipLvUp(141, "合并装备升级"),
 
 	BattleStart(200, "战役开始"),
 

@@ -281,10 +281,7 @@ public class TestHandler extends BaseHandler {
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
-//		PlayerManager.getInstance().saveClientCache(playerId);
-		int[] r = new int[] {202001,2,206001,1} ; 
-		List<RewardInfo> resources = PlayerHelper.addResources(player, r, OpType.None);
-		System.out.println(resources);
+		PlayerManager.getInstance().saveClientCache(playerId);
 		
 //		CommonLogger.error("what the fuck by common logger");
 //		log.error("what the fuck by log");

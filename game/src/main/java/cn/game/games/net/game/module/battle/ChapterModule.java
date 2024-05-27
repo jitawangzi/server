@@ -717,6 +717,7 @@ public class ChapterModule extends BasePlayerModule  {
 				PatrolInfo.newBuilder().setAdPatrolCount(adPatrolCount).setQuickPatrolCount(quickPatrolCount).setRewardTime(lastPatrolRewardTime).build());
 
 		builder.addAllStoreStaminas(storeStaminas);
+		builder.setMergeSweepTimes(daySweepCount);
 	}
 
 }

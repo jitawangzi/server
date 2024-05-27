@@ -4613,6 +4613,612 @@ public final class BaseMsg {
 
   }
 
+  public interface MergeEquipmentInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.MergeEquipmentInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *Equip配置表id
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * 等级
+     * </pre>
+     *
+     * <code>uint32 level = 2;</code>
+     * @return The level.
+     */
+    int getLevel();
+  }
+  /**
+   * <pre>
+   *合并的英雄装备
+   * </pre>
+   *
+   * Protobuf type {@code Protos.MergeEquipmentInfo}
+   */
+  public static final class MergeEquipmentInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.MergeEquipmentInfo)
+      MergeEquipmentInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use MergeEquipmentInfo.newBuilder() to construct.
+    private MergeEquipmentInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private MergeEquipmentInfo() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new MergeEquipmentInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private MergeEquipmentInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+
+              level_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_MergeEquipmentInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_MergeEquipmentInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.class, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     *Equip配置表id
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int LEVEL_FIELD_NUMBER = 2;
+    private int level_;
+    /**
+     * <pre>
+     * 等级
+     * </pre>
+     *
+     * <code>uint32 level = 2;</code>
+     * @return The level.
+     */
+    @java.lang.Override
+    public int getLevel() {
+      return level_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      if (level_ != 0) {
+        output.writeUInt32(2, level_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      if (level_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, level_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo other = (cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (getLevel()
+          != other.getLevel()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getLevel();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *合并的英雄装备
+     * </pre>
+     *
+     * Protobuf type {@code Protos.MergeEquipmentInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.MergeEquipmentInfo)
+        cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_MergeEquipmentInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_MergeEquipmentInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.class, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        level_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_MergeEquipmentInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo build() {
+        cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo buildPartial() {
+        cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo result = new cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo(this);
+        result.id_ = id_;
+        result.level_ = level_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo other) {
+        if (other == cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getLevel() != 0) {
+          setLevel(other.getLevel());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       *Equip配置表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *Equip配置表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *Equip配置表id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int level_ ;
+      /**
+       * <pre>
+       * 等级
+       * </pre>
+       *
+       * <code>uint32 level = 2;</code>
+       * @return The level.
+       */
+      @java.lang.Override
+      public int getLevel() {
+        return level_;
+      }
+      /**
+       * <pre>
+       * 等级
+       * </pre>
+       *
+       * <code>uint32 level = 2;</code>
+       * @param value The level to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLevel(int value) {
+        
+        level_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 等级
+       * </pre>
+       *
+       * <code>uint32 level = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLevel() {
+        
+        level_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.MergeEquipmentInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.MergeEquipmentInfo)
+    private static final cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo();
+    }
+
+    public static cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MergeEquipmentInfo>
+        PARSER = new com.google.protobuf.AbstractParser<MergeEquipmentInfo>() {
+      @java.lang.Override
+      public MergeEquipmentInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new MergeEquipmentInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<MergeEquipmentInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MergeEquipmentInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface EquipInfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.EquipInfo)
       com.google.protobuf.MessageOrBuilder {
@@ -15238,6 +15844,11 @@ public final class BaseMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_HeroSwordInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_MergeEquipmentInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_MergeEquipmentInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_EquipInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -15325,34 +15936,35 @@ public final class BaseMsg {
       "\030\003 \001(\r\022\014\n\004star\030\004 \001(\r\022\020\n\010isBattle\030\005 \001(\010\022\022" +
       "\n\nfashionUid\030\006 \001(\t\022\017\n\007quality\030\007 \001(\r\"<\n\rH" +
       "eroSwordInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 " +
-      "\001(\r\022\014\n\004star\030\003 \001(\r\"\205\001\n\tEquipInfo\022\013\n\003uid\030\001" +
-      " \001(\t\022\020\n\010configId\030\002 \001(\r\022+\n\005attrs\030\006 \003(\0132\034." +
-      "Protos.EquipInfo.AttrsEntry\032,\n\nAttrsEntr" +
-      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\"h\n\rEqu" +
-      "ipPartInfo\022\014\n\004type\030\001 \001(\r\022\020\n\010strength\030\002 \001" +
-      "(\r\022\024\n\014breakthrough\030\003 \001(\r\022\020\n\010equipUid\030\004 \001" +
-      "(\t\022\017\n\007gemUids\030\005 \003(\t\">\n\017HeroFashionInfo\022\013" +
-      "\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022\014\n\004star\030\003 " +
-      "\001(\r\")\n\014HeroAttrInfo\022\n\n\002id\030\001 \001(\r\022\r\n\005value" +
-      "\030\002 \001(\r\".\n\021HeroAttrPointInfo\022\n\n\002id\030\001 \001(\r\022" +
-      "\r\n\005value\030\002 \001(\r\"\221\001\n\007GemInfo\022\013\n\003uid\030\001 \001(\t\022" +
-      "\020\n\010configId\030\002 \001(\r\022)\n\005attrs\030\003 \003(\0132\032.Proto" +
-      "s.GemInfo.AttrsEntry\022\016\n\006isLock\030\004 \001(\010\032,\n\n" +
+      "\001(\r\022\014\n\004star\030\003 \001(\r\"/\n\022MergeEquipmentInfo\022" +
+      "\n\n\002id\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"\205\001\n\tEquipInfo" +
+      "\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022+\n\005attrs" +
+      "\030\006 \003(\0132\034.Protos.EquipInfo.AttrsEntry\032,\n\n" +
       "AttrsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
-      "8\001\"&\n\nDragonInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004star\030\002 \001" +
-      "(\r\",\n\017DragonSkillInfo\022\n\n\002id\030\001 \001(\r\022\r\n\005lev" +
-      "el\030\002 \001(\r\".\n\tSkillInfo\022\n\n\002id\030\001 \001(\r\022\025\n\rstr" +
-      "engthenIds\030\002 \003(\r\"\260\001\n\020SimplePlayerInfo\022\n\n" +
-      "\002id\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\r\n\005level\030\003 \001(\r\022\033" +
-      "\n\023combatEffectiveness\030\004 \001(\r\022\014\n\004head\030\006 \001(" +
-      "\r\022\021\n\theadFrame\030\007 \001(\r\022\016\n\006online\030\010 \001(\010\022\023\n\013" +
-      "offlineTime\030\t \001(\r\022\020\n\010serverId\030\n \001(\t\"E\n\016P" +
-      "layerShowInfo\022\r\n\005guild\030\002 \001(\t\022\016\n\006combat\030\003" +
-      " \001(\r\022\024\n\014praisedCount\030\004 \001(\r\"H\n\021PaymentOrd" +
-      "erProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006paySig\030\002 \001(" +
-      "\t\022\021\n\tsignature\030\003 \001(\t*-\n\nUpdateType\022\n\n\006UP" +
-      "DATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031cn.game.p" +
-      "rotocol.protobufb\006proto3"
+      "8\001\"h\n\rEquipPartInfo\022\014\n\004type\030\001 \001(\r\022\020\n\010str" +
+      "ength\030\002 \001(\r\022\024\n\014breakthrough\030\003 \001(\r\022\020\n\010equ" +
+      "ipUid\030\004 \001(\t\022\017\n\007gemUids\030\005 \003(\t\">\n\017HeroFash" +
+      "ionInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022\014" +
+      "\n\004star\030\003 \001(\r\")\n\014HeroAttrInfo\022\n\n\002id\030\001 \001(\r" +
+      "\022\r\n\005value\030\002 \001(\r\".\n\021HeroAttrPointInfo\022\n\n\002" +
+      "id\030\001 \001(\r\022\r\n\005value\030\002 \001(\r\"\221\001\n\007GemInfo\022\013\n\003u" +
+      "id\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022)\n\005attrs\030\003 \003(" +
+      "\0132\032.Protos.GemInfo.AttrsEntry\022\016\n\006isLock\030" +
+      "\004 \001(\010\032,\n\nAttrsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
+      "e\030\002 \001(\r:\0028\001\"&\n\nDragonInfo\022\n\n\002id\030\001 \001(\r\022\014\n" +
+      "\004star\030\002 \001(\r\",\n\017DragonSkillInfo\022\n\n\002id\030\001 \001" +
+      "(\r\022\r\n\005level\030\002 \001(\r\".\n\tSkillInfo\022\n\n\002id\030\001 \001" +
+      "(\r\022\025\n\rstrengthenIds\030\002 \003(\r\"\260\001\n\020SimplePlay" +
+      "erInfo\022\n\n\002id\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\r\n\005leve" +
+      "l\030\003 \001(\r\022\033\n\023combatEffectiveness\030\004 \001(\r\022\014\n\004" +
+      "head\030\006 \001(\r\022\021\n\theadFrame\030\007 \001(\r\022\016\n\006online\030" +
+      "\010 \001(\010\022\023\n\013offlineTime\030\t \001(\r\022\020\n\010serverId\030\n" +
+      " \001(\t\"E\n\016PlayerShowInfo\022\r\n\005guild\030\002 \001(\t\022\016\n" +
+      "\006combat\030\003 \001(\r\022\024\n\014praisedCount\030\004 \001(\r\"H\n\021P" +
+      "aymentOrderProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006pa" +
+      "ySig\030\002 \001(\t\022\021\n\tsignature\030\003 \001(\t*-\n\nUpdateT" +
+      "ype\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031" +
+      "cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -15394,8 +16006,14 @@ public final class BaseMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroSwordInfo_descriptor,
         new java.lang.String[] { "Uid", "ConfigId", "Star", });
-    internal_static_Protos_EquipInfo_descriptor =
+    internal_static_Protos_MergeEquipmentInfo_descriptor =
       getDescriptor().getMessageTypes().get(6);
+    internal_static_Protos_MergeEquipmentInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_MergeEquipmentInfo_descriptor,
+        new java.lang.String[] { "Id", "Level", });
+    internal_static_Protos_EquipInfo_descriptor =
+      getDescriptor().getMessageTypes().get(7);
     internal_static_Protos_EquipInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_EquipInfo_descriptor,
@@ -15407,31 +16025,31 @@ public final class BaseMsg {
         internal_static_Protos_EquipInfo_AttrsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_EquipPartInfo_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_Protos_EquipPartInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_EquipPartInfo_descriptor,
         new java.lang.String[] { "Type", "Strength", "Breakthrough", "EquipUid", "GemUids", });
     internal_static_Protos_HeroFashionInfo_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_HeroFashionInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroFashionInfo_descriptor,
         new java.lang.String[] { "Uid", "ConfigId", "Star", });
     internal_static_Protos_HeroAttrInfo_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_Protos_HeroAttrInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroAttrInfo_descriptor,
         new java.lang.String[] { "Id", "Value", });
     internal_static_Protos_HeroAttrPointInfo_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_Protos_HeroAttrPointInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroAttrPointInfo_descriptor,
         new java.lang.String[] { "Id", "Value", });
     internal_static_Protos_GemInfo_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_Protos_GemInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_GemInfo_descriptor,
@@ -15443,37 +16061,37 @@ public final class BaseMsg {
         internal_static_Protos_GemInfo_AttrsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_DragonInfo_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_Protos_DragonInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DragonInfo_descriptor,
         new java.lang.String[] { "Id", "Star", });
     internal_static_Protos_DragonSkillInfo_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_DragonSkillInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DragonSkillInfo_descriptor,
         new java.lang.String[] { "Id", "Level", });
     internal_static_Protos_SkillInfo_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_SkillInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_SkillInfo_descriptor,
         new java.lang.String[] { "Id", "StrengthenIds", });
     internal_static_Protos_SimplePlayerInfo_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_Protos_SimplePlayerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_SimplePlayerInfo_descriptor,
         new java.lang.String[] { "Id", "Name", "Level", "CombatEffectiveness", "Head", "HeadFrame", "Online", "OfflineTime", "ServerId", });
     internal_static_Protos_PlayerShowInfo_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_Protos_PlayerShowInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerShowInfo_descriptor,
         new java.lang.String[] { "Guild", "Combat", "PraisedCount", });
     internal_static_Protos_PaymentOrderProto_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_Protos_PaymentOrderProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PaymentOrderProto_descriptor,

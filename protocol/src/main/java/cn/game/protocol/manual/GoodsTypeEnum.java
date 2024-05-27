@@ -28,6 +28,9 @@ public enum GoodsTypeEnum{
 
 	/** 角色 */
 	Role(44, "角色"),
+
+	/** 合并装备 */
+	Merge_Equip(51, "合并装备"),
 	/** 皮肤 */
 	Skin(88, "皮肤"),
     ;

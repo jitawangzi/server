@@ -260,6 +260,33 @@ public final class RewardMsg {
      * <code>.Protos.HeroSwordInfo sword = 12;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.HeroSwordInfoOrBuilder getSwordOrBuilder();
+
+    /**
+     * <pre>
+     *合并游戏里面的装备
+     * </pre>
+     *
+     * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+     * @return Whether the mergeEquip field is set.
+     */
+    boolean hasMergeEquip();
+    /**
+     * <pre>
+     *合并游戏里面的装备
+     * </pre>
+     *
+     * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+     * @return The mergeEquip.
+     */
+    cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getMergeEquip();
+    /**
+     * <pre>
+     *合并游戏里面的装备
+     * </pre>
+     *
+     * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder getMergeEquipOrBuilder();
   }
   /**
    * <pre>
@@ -425,6 +452,19 @@ public final class RewardMsg {
               if (subBuilder != null) {
                 subBuilder.mergeFrom(sword_);
                 sword_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 162: {
+              cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder subBuilder = null;
+              if (mergeEquip_ != null) {
+                subBuilder = mergeEquip_.toBuilder();
+              }
+              mergeEquip_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(mergeEquip_);
+                mergeEquip_ = subBuilder.buildPartial();
               }
 
               break;
@@ -803,6 +843,44 @@ public final class RewardMsg {
       return getSword();
     }
 
+    public static final int MERGEEQUIP_FIELD_NUMBER = 20;
+    private cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo mergeEquip_;
+    /**
+     * <pre>
+     *合并游戏里面的装备
+     * </pre>
+     *
+     * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+     * @return Whether the mergeEquip field is set.
+     */
+    @java.lang.Override
+    public boolean hasMergeEquip() {
+      return mergeEquip_ != null;
+    }
+    /**
+     * <pre>
+     *合并游戏里面的装备
+     * </pre>
+     *
+     * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+     * @return The mergeEquip.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getMergeEquip() {
+      return mergeEquip_ == null ? cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.getDefaultInstance() : mergeEquip_;
+    }
+    /**
+     * <pre>
+     *合并游戏里面的装备
+     * </pre>
+     *
+     * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder getMergeEquipOrBuilder() {
+      return getMergeEquip();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -843,6 +921,9 @@ public final class RewardMsg {
       }
       if (sword_ != null) {
         output.writeMessage(12, getSword());
+      }
+      if (mergeEquip_ != null) {
+        output.writeMessage(20, getMergeEquip());
       }
       unknownFields.writeTo(output);
     }
@@ -888,6 +969,10 @@ public final class RewardMsg {
       if (sword_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, getSword());
+      }
+      if (mergeEquip_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(20, getMergeEquip());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -949,6 +1034,11 @@ public final class RewardMsg {
         if (!getSword()
             .equals(other.getSword())) return false;
       }
+      if (hasMergeEquip() != other.hasMergeEquip()) return false;
+      if (hasMergeEquip()) {
+        if (!getMergeEquip()
+            .equals(other.getMergeEquip())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -995,6 +1085,10 @@ public final class RewardMsg {
       if (hasSword()) {
         hash = (37 * hash) + SWORD_FIELD_NUMBER;
         hash = (53 * hash) + getSword().hashCode();
+      }
+      if (hasMergeEquip()) {
+        hash = (37 * hash) + MERGEEQUIP_FIELD_NUMBER;
+        hash = (53 * hash) + getMergeEquip().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1189,6 +1283,12 @@ public final class RewardMsg {
           sword_ = null;
           swordBuilder_ = null;
         }
+        if (mergeEquipBuilder_ == null) {
+          mergeEquip_ = null;
+        } else {
+          mergeEquip_ = null;
+          mergeEquipBuilder_ = null;
+        }
         return this;
       }
 
@@ -1259,6 +1359,11 @@ public final class RewardMsg {
           result.sword_ = sword_;
         } else {
           result.sword_ = swordBuilder_.build();
+        }
+        if (mergeEquipBuilder_ == null) {
+          result.mergeEquip_ = mergeEquip_;
+        } else {
+          result.mergeEquip_ = mergeEquipBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1334,6 +1439,9 @@ public final class RewardMsg {
         }
         if (other.hasSword()) {
           mergeSword(other.getSword());
+        }
+        if (other.hasMergeEquip()) {
+          mergeMergeEquip(other.getMergeEquip());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2757,6 +2865,161 @@ public final class RewardMsg {
           sword_ = null;
         }
         return swordBuilder_;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo mergeEquip_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder> mergeEquipBuilder_;
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       * @return Whether the mergeEquip field is set.
+       */
+      public boolean hasMergeEquip() {
+        return mergeEquipBuilder_ != null || mergeEquip_ != null;
+      }
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       * @return The mergeEquip.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo getMergeEquip() {
+        if (mergeEquipBuilder_ == null) {
+          return mergeEquip_ == null ? cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.getDefaultInstance() : mergeEquip_;
+        } else {
+          return mergeEquipBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       */
+      public Builder setMergeEquip(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo value) {
+        if (mergeEquipBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          mergeEquip_ = value;
+          onChanged();
+        } else {
+          mergeEquipBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       */
+      public Builder setMergeEquip(
+          cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder builderForValue) {
+        if (mergeEquipBuilder_ == null) {
+          mergeEquip_ = builderForValue.build();
+          onChanged();
+        } else {
+          mergeEquipBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       */
+      public Builder mergeMergeEquip(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo value) {
+        if (mergeEquipBuilder_ == null) {
+          if (mergeEquip_ != null) {
+            mergeEquip_ =
+              cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.newBuilder(mergeEquip_).mergeFrom(value).buildPartial();
+          } else {
+            mergeEquip_ = value;
+          }
+          onChanged();
+        } else {
+          mergeEquipBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       */
+      public Builder clearMergeEquip() {
+        if (mergeEquipBuilder_ == null) {
+          mergeEquip_ = null;
+          onChanged();
+        } else {
+          mergeEquip_ = null;
+          mergeEquipBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder getMergeEquipBuilder() {
+        
+        onChanged();
+        return getMergeEquipFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder getMergeEquipOrBuilder() {
+        if (mergeEquipBuilder_ != null) {
+          return mergeEquipBuilder_.getMessageOrBuilder();
+        } else {
+          return mergeEquip_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.getDefaultInstance() : mergeEquip_;
+        }
+      }
+      /**
+       * <pre>
+       *合并游戏里面的装备
+       * </pre>
+       *
+       * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder> 
+          getMergeEquipFieldBuilder() {
+        if (mergeEquipBuilder_ == null) {
+          mergeEquipBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder>(
+                  getMergeEquip(),
+                  getParentForChildren(),
+                  isClean());
+          mergeEquip_ = null;
+        }
+        return mergeEquipBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -5582,7 +5845,7 @@ public final class RewardMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017RewardMsg.proto\022\006Protos\032\rBaseMsg.proto" +
-      "\"\320\002\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
+      "\"\200\003\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
       "AssetInfo\022\036\n\004item\030\002 \001(\0132\020.Protos.ItemInf" +
       "o\022\036\n\004role\030\003 \001(\0132\020.Protos.HeroInfo\022 \n\005equ" +
       "ip\030\007 \001(\0132\021.Protos.EquipInfo\022(\n\007fashion\030\010" +
@@ -5590,12 +5853,14 @@ public final class RewardMsg {
       "(\0132\017.Protos.GemInfo\022\"\n\006dragon\030\n \001(\0132\022.Pr" +
       "otos.DragonInfo\022,\n\013dragonSkill\030\013 \001(\0132\027.P" +
       "rotos.DragonSkillInfo\022$\n\005sword\030\014 \001(\0132\025.P" +
-      "rotos.HeroSwordInfo\":\n\023RewardPush_550005" +
-      "01\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"" +
-      "6\n\022SpendPush_55001501\022 \n\005spend\030\001 \003(\0132\021.P" +
-      "rotos.GoodsInfo\">\n\027RewardShowPush_550025" +
-      "01\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfoB" +
-      "\033\n\031cn.game.protocol.protobufb\006proto3"
+      "rotos.HeroSwordInfo\022.\n\nmergeEquip\030\024 \001(\0132" +
+      "\032.Protos.MergeEquipmentInfo\":\n\023RewardPus" +
+      "h_55000501\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rew" +
+      "ardInfo\"6\n\022SpendPush_55001501\022 \n\005spend\030\001" +
+      " \003(\0132\021.Protos.GoodsInfo\">\n\027RewardShowPus" +
+      "h_55002501\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rew" +
+      "ardInfoB\033\n\031cn.game.protocol.protobufb\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5607,7 +5872,7 @@ public final class RewardMsg {
     internal_static_Protos_RewardInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_RewardInfo_descriptor,
-        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", "DragonSkill", "Sword", });
+        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", "DragonSkill", "Sword", "MergeEquip", });
     internal_static_Protos_RewardPush_55000501_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_RewardPush_55000501_fieldAccessorTable = new
