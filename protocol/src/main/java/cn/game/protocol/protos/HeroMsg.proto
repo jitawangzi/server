@@ -69,7 +69,6 @@ message HeroQualityResetRequest_16000011{
 }
 
 message HeroQualityResetResponse_16000012{
-	repeated HeroInfo heros = 1;	// 返还的本体英雄卡牌，需要uid
 	repeated ItemInfo items = 2;	// 返还的万能突破道具。
 }
 

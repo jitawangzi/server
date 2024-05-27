@@ -117,7 +117,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HeroQualityResetRequest_16000011 = 0x16000011;    
 	public final static int HeroQualityResetResponse_16000012 = 0x16000012;    
 	public final static int HeroFreeDayRentRequest_16000030 = 0x16000030;    
-	public final static int HeroFreeDayRentResponse_16000031 = 0x16000031;    
+	public final static int HeroFreeDayRentResponse_16000031 = 0x16000031;    //英雄品质重置  
 	public final static int ItemUseRequest_0b000003 = 0x0b000003;    
 	public final static int ItemUseResponse_0b000004 = 0x0b000004;    
 	public final static int MailListRequest_12000001 = 0x12000001;    
