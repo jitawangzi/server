@@ -14327,11 +14327,21 @@ public final class BattleMsg {
   public interface BattleDaoHeartRequest_13000055OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.BattleDaoHeartRequest_13000055)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 2 道心 3 心魔
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    int getType();
   }
   /**
    * <pre>
-   * ****************************************道心磨砺********************************************
-   * /&#42;** 查看道心磨砺数据 ***&#47;
+   * ****************************************道心磨砺/心魔试炼********************************************
+   * /&#42;** 查看道心磨砺/心魔试炼数据 ***&#47;
    * </pre>
    *
    * Protobuf type {@code Protos.BattleDaoHeartRequest_13000055}
@@ -14378,6 +14388,11 @@ public final class BattleMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              type_ = input.readInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -14410,6 +14425,21 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.Builder.class);
     }
 
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <pre>
+     * 2 道心 3 心魔
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public int getType() {
+      return type_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -14424,6 +14454,9 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (type_ != 0) {
+        output.writeInt32(1, type_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -14433,6 +14466,10 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, type_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -14448,6 +14485,8 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055) obj;
 
+      if (getType()
+          != other.getType()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -14459,6 +14498,8 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -14556,8 +14597,8 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     * ****************************************道心磨砺********************************************
-     * /&#42;** 查看道心磨砺数据 ***&#47;
+     * ****************************************道心磨砺/心魔试炼********************************************
+     * /&#42;** 查看道心磨砺/心魔试炼数据 ***&#47;
      * </pre>
      *
      * Protobuf type {@code Protos.BattleDaoHeartRequest_13000055}
@@ -14597,6 +14638,8 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        type_ = 0;
+
         return this;
       }
 
@@ -14623,6 +14666,7 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055(this);
+        result.type_ = type_;
         onBuilt();
         return result;
       }
@@ -14671,6 +14715,9 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.getDefaultInstance()) return this;
+        if (other.getType() != 0) {
+          setType(other.getType());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -14697,6 +14744,49 @@ public final class BattleMsg {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+
+      private int type_ ;
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
         return this;
       }
       @java.lang.Override
@@ -14758,7 +14848,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+     * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -14937,7 +15027,7 @@ public final class BattleMsg {
     private int id_;
     /**
      * <pre>
-     * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+     * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -15404,7 +15494,7 @@ public final class BattleMsg {
       private int id_ ;
       /**
        * <pre>
-       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+       * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -15416,7 +15506,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+       * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -15431,7 +15521,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+       * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -15695,7 +15785,17 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * （DaoHeart）表id
+     * 2 道心 3 心魔
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    int getType();
+
+    /**
+     * <pre>
+     * （Battle）表id
      * </pre>
      *
      * <code>int32 id = 2;</code>
@@ -15705,7 +15805,7 @@ public final class BattleMsg {
   }
   /**
    * <pre>
-   *** 扫荡道心磨砺关卡 **
+   *** 扫荡道心磨砺/心魔试炼关卡 **
    * </pre>
    *
    * Protobuf type {@code Protos.BattleDaoHeartSweepRequest_13000060}
@@ -15752,6 +15852,11 @@ public final class BattleMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              type_ = input.readInt32();
+              break;
+            }
             case 16: {
 
               id_ = input.readInt32();
@@ -15789,11 +15894,26 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060.Builder.class);
     }
 
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <pre>
+     * 2 道心 3 心魔
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public int getType() {
+      return type_;
+    }
+
     public static final int ID_FIELD_NUMBER = 2;
     private int id_;
     /**
      * <pre>
-     * （DaoHeart）表id
+     * （Battle）表id
      * </pre>
      *
      * <code>int32 id = 2;</code>
@@ -15818,6 +15938,9 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (type_ != 0) {
+        output.writeInt32(1, type_);
+      }
       if (id_ != 0) {
         output.writeInt32(2, id_);
       }
@@ -15830,6 +15953,10 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, type_);
+      }
       if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, id_);
@@ -15849,6 +15976,8 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060) obj;
 
+      if (getType()
+          != other.getType()) return false;
       if (getId()
           != other.getId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -15862,6 +15991,8 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -15961,7 +16092,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *** 扫荡道心磨砺关卡 **
+     *** 扫荡道心磨砺/心魔试炼关卡 **
      * </pre>
      *
      * Protobuf type {@code Protos.BattleDaoHeartSweepRequest_13000060}
@@ -16001,6 +16132,8 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        type_ = 0;
+
         id_ = 0;
 
         return this;
@@ -16029,6 +16162,7 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060(this);
+        result.type_ = type_;
         result.id_ = id_;
         onBuilt();
         return result;
@@ -16078,6 +16212,9 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060.getDefaultInstance()) return this;
+        if (other.getType() != 0) {
+          setType(other.getType());
+        }
         if (other.getId() != 0) {
           setId(other.getId());
         }
@@ -16110,10 +16247,53 @@ public final class BattleMsg {
         return this;
       }
 
+      private int type_ ;
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
       private int id_ ;
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
        * <code>int32 id = 2;</code>
@@ -16125,7 +16305,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
        * <code>int32 id = 2;</code>
@@ -16140,7 +16320,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
        * <code>int32 id = 2;</code>
@@ -17088,10 +17268,20 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * （DaoHeart）表id
+     * 2 道心 3 心魔
      * </pre>
      *
-     * <code>int32 id = 1;</code>
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    int getType();
+
+    /**
+     * <pre>
+     * （Battle）表id
+     * </pre>
+     *
+     * <code>int32 id = 2;</code>
      * @return The id.
      */
     int getId();
@@ -17101,14 +17291,14 @@ public final class BattleMsg {
      * 是否直接使用付费次数。
      * </pre>
      *
-     * <code>bool pay = 2;</code>
+     * <code>bool pay = 3;</code>
      * @return The pay.
      */
     boolean getPay();
   }
   /**
    * <pre>
-   *** 一键扫荡道心磨砺关卡 **
+   *** 一键扫荡道心磨砺/心魔试炼关卡 **
    * </pre>
    *
    * Protobuf type {@code Protos.BattleDaoHeartSweepBatchRequest_13000062}
@@ -17157,10 +17347,15 @@ public final class BattleMsg {
               break;
             case 8: {
 
-              id_ = input.readInt32();
+              type_ = input.readInt32();
               break;
             }
             case 16: {
+
+              id_ = input.readInt32();
+              break;
+            }
+            case 24: {
 
               pay_ = input.readBool();
               break;
@@ -17197,14 +17392,29 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 1;
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <pre>
+     * 2 道心 3 心魔
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public int getType() {
+      return type_;
+    }
+
+    public static final int ID_FIELD_NUMBER = 2;
     private int id_;
     /**
      * <pre>
-     * （DaoHeart）表id
+     * （Battle）表id
      * </pre>
      *
-     * <code>int32 id = 1;</code>
+     * <code>int32 id = 2;</code>
      * @return The id.
      */
     @java.lang.Override
@@ -17212,14 +17422,14 @@ public final class BattleMsg {
       return id_;
     }
 
-    public static final int PAY_FIELD_NUMBER = 2;
+    public static final int PAY_FIELD_NUMBER = 3;
     private boolean pay_;
     /**
      * <pre>
      * 是否直接使用付费次数。
      * </pre>
      *
-     * <code>bool pay = 2;</code>
+     * <code>bool pay = 3;</code>
      * @return The pay.
      */
     @java.lang.Override
@@ -17241,11 +17451,14 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (type_ != 0) {
+        output.writeInt32(1, type_);
+      }
       if (id_ != 0) {
-        output.writeInt32(1, id_);
+        output.writeInt32(2, id_);
       }
       if (pay_ != false) {
-        output.writeBool(2, pay_);
+        output.writeBool(3, pay_);
       }
       unknownFields.writeTo(output);
     }
@@ -17256,13 +17469,17 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, type_);
+      }
       if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+          .computeInt32Size(2, id_);
       }
       if (pay_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, pay_);
+          .computeBoolSize(3, pay_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -17279,6 +17496,8 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062) obj;
 
+      if (getType()
+          != other.getType()) return false;
       if (getId()
           != other.getId()) return false;
       if (getPay()
@@ -17294,6 +17513,8 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
       hash = (37 * hash) + PAY_FIELD_NUMBER;
@@ -17396,7 +17617,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *** 一键扫荡道心磨砺关卡 **
+     *** 一键扫荡道心磨砺/心魔试炼关卡 **
      * </pre>
      *
      * Protobuf type {@code Protos.BattleDaoHeartSweepBatchRequest_13000062}
@@ -17436,6 +17657,8 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        type_ = 0;
+
         id_ = 0;
 
         pay_ = false;
@@ -17466,6 +17689,7 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062(this);
+        result.type_ = type_;
         result.id_ = id_;
         result.pay_ = pay_;
         onBuilt();
@@ -17516,6 +17740,9 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.getDefaultInstance()) return this;
+        if (other.getType() != 0) {
+          setType(other.getType());
+        }
         if (other.getId() != 0) {
           setId(other.getId());
         }
@@ -17551,13 +17778,56 @@ public final class BattleMsg {
         return this;
       }
 
+      private int type_ ;
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
       private int id_ ;
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
+       * <code>int32 id = 2;</code>
        * @return The id.
        */
       @java.lang.Override
@@ -17566,10 +17836,10 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
+       * <code>int32 id = 2;</code>
        * @param value The id to set.
        * @return This builder for chaining.
        */
@@ -17581,10 +17851,10 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
+       * <code>int32 id = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
@@ -17600,7 +17870,7 @@ public final class BattleMsg {
        * 是否直接使用付费次数。
        * </pre>
        *
-       * <code>bool pay = 2;</code>
+       * <code>bool pay = 3;</code>
        * @return The pay.
        */
       @java.lang.Override
@@ -17612,7 +17882,7 @@ public final class BattleMsg {
        * 是否直接使用付费次数。
        * </pre>
        *
-       * <code>bool pay = 2;</code>
+       * <code>bool pay = 3;</code>
        * @param value The pay to set.
        * @return This builder for chaining.
        */
@@ -17627,7 +17897,7 @@ public final class BattleMsg {
        * 是否直接使用付费次数。
        * </pre>
        *
-       * <code>bool pay = 2;</code>
+       * <code>bool pay = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearPay() {
@@ -18569,10 +18839,20 @@ public final class BattleMsg {
   public interface BattleDaoHeartSweepRequest_13000064OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.BattleDaoHeartSweepRequest_13000064)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 2 道心 3 心魔
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    int getType();
   }
   /**
    * <pre>
-   *** 查看道心磨砺通关奖励领取情况 **
+   *** 查看道心磨砺/心魔试炼通关奖励领取情况 **
    * </pre>
    *
    * Protobuf type {@code Protos.BattleDaoHeartSweepRequest_13000064}
@@ -18619,6 +18899,11 @@ public final class BattleMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              type_ = input.readInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -18651,6 +18936,21 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.Builder.class);
     }
 
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <pre>
+     * 2 道心 3 心魔
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public int getType() {
+      return type_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -18665,6 +18965,9 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (type_ != 0) {
+        output.writeInt32(1, type_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -18674,6 +18977,10 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, type_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -18689,6 +18996,8 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064) obj;
 
+      if (getType()
+          != other.getType()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -18700,6 +19009,8 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -18797,7 +19108,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *** 查看道心磨砺通关奖励领取情况 **
+     *** 查看道心磨砺/心魔试炼通关奖励领取情况 **
      * </pre>
      *
      * Protobuf type {@code Protos.BattleDaoHeartSweepRequest_13000064}
@@ -18837,6 +19148,8 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        type_ = 0;
+
         return this;
       }
 
@@ -18863,6 +19176,7 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064(this);
+        result.type_ = type_;
         onBuilt();
         return result;
       }
@@ -18911,6 +19225,9 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.getDefaultInstance()) return this;
+        if (other.getType() != 0) {
+          setType(other.getType());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -18937,6 +19254,49 @@ public final class BattleMsg {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+
+      private int type_ ;
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
         return this;
       }
       @java.lang.Override
@@ -18998,7 +19358,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+     * 已经领取过通关奖励的关卡id， （Battle）表id
      * </pre>
      *
      * <code>repeated int32 id = 2;</code>
@@ -19007,7 +19367,7 @@ public final class BattleMsg {
     java.util.List<java.lang.Integer> getIdList();
     /**
      * <pre>
-     * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+     * 已经领取过通关奖励的关卡id， （Battle）表id
      * </pre>
      *
      * <code>repeated int32 id = 2;</code>
@@ -19016,7 +19376,7 @@ public final class BattleMsg {
     int getIdCount();
     /**
      * <pre>
-     * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+     * 已经领取过通关奖励的关卡id， （Battle）表id
      * </pre>
      *
      * <code>repeated int32 id = 2;</code>
@@ -19132,7 +19492,7 @@ public final class BattleMsg {
     private com.google.protobuf.Internal.IntList id_;
     /**
      * <pre>
-     * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+     * 已经领取过通关奖励的关卡id， （Battle）表id
      * </pre>
      *
      * <code>repeated int32 id = 2;</code>
@@ -19145,7 +19505,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+     * 已经领取过通关奖励的关卡id， （Battle）表id
      * </pre>
      *
      * <code>repeated int32 id = 2;</code>
@@ -19156,7 +19516,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+     * 已经领取过通关奖励的关卡id， （Battle）表id
      * </pre>
      *
      * <code>repeated int32 id = 2;</code>
@@ -19509,7 +19869,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+       * 已经领取过通关奖励的关卡id， （Battle）表id
        * </pre>
        *
        * <code>repeated int32 id = 2;</code>
@@ -19522,7 +19882,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+       * 已经领取过通关奖励的关卡id， （Battle）表id
        * </pre>
        *
        * <code>repeated int32 id = 2;</code>
@@ -19533,7 +19893,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+       * 已经领取过通关奖励的关卡id， （Battle）表id
        * </pre>
        *
        * <code>repeated int32 id = 2;</code>
@@ -19545,7 +19905,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+       * 已经领取过通关奖励的关卡id， （Battle）表id
        * </pre>
        *
        * <code>repeated int32 id = 2;</code>
@@ -19562,7 +19922,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+       * 已经领取过通关奖励的关卡id， （Battle）表id
        * </pre>
        *
        * <code>repeated int32 id = 2;</code>
@@ -19577,7 +19937,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+       * 已经领取过通关奖励的关卡id， （Battle）表id
        * </pre>
        *
        * <code>repeated int32 id = 2;</code>
@@ -19594,7 +19954,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 已经领取过通关奖励的关卡id， （DaoHeart）表id
+       * 已经领取过通关奖励的关卡id， （Battle）表id
        * </pre>
        *
        * <code>repeated int32 id = 2;</code>
@@ -19665,17 +20025,27 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * （DaoHeart）表id
+     * 2 道心 3 心魔
      * </pre>
      *
-     * <code>int32 id = 1;</code>
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    int getType();
+
+    /**
+     * <pre>
+     * （Battle）表id
+     * </pre>
+     *
+     * <code>int32 id = 2;</code>
      * @return The id.
      */
     int getId();
   }
   /**
    * <pre>
-   *** 领取道心磨砺关卡通关奖励 **
+   *** 领取道心磨砺/心魔试炼关卡通关奖励 **
    * </pre>
    *
    * Protobuf type {@code Protos.BattleDaoHeartSweepRequest_13000066}
@@ -19724,6 +20094,11 @@ public final class BattleMsg {
               break;
             case 8: {
 
+              type_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
               id_ = input.readInt32();
               break;
             }
@@ -19759,14 +20134,29 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 1;
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <pre>
+     * 2 道心 3 心魔
+     * </pre>
+     *
+     * <code>int32 type = 1;</code>
+     * @return The type.
+     */
+    @java.lang.Override
+    public int getType() {
+      return type_;
+    }
+
+    public static final int ID_FIELD_NUMBER = 2;
     private int id_;
     /**
      * <pre>
-     * （DaoHeart）表id
+     * （Battle）表id
      * </pre>
      *
-     * <code>int32 id = 1;</code>
+     * <code>int32 id = 2;</code>
      * @return The id.
      */
     @java.lang.Override
@@ -19788,8 +20178,11 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (type_ != 0) {
+        output.writeInt32(1, type_);
+      }
       if (id_ != 0) {
-        output.writeInt32(1, id_);
+        output.writeInt32(2, id_);
       }
       unknownFields.writeTo(output);
     }
@@ -19800,9 +20193,13 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, type_);
+      }
       if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+          .computeInt32Size(2, id_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -19819,6 +20216,8 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066) obj;
 
+      if (getType()
+          != other.getType()) return false;
       if (getId()
           != other.getId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -19832,6 +20231,8 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getType();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -19931,7 +20332,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *** 领取道心磨砺关卡通关奖励 **
+     *** 领取道心磨砺/心魔试炼关卡通关奖励 **
      * </pre>
      *
      * Protobuf type {@code Protos.BattleDaoHeartSweepRequest_13000066}
@@ -19971,6 +20372,8 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        type_ = 0;
+
         id_ = 0;
 
         return this;
@@ -19999,6 +20402,7 @@ public final class BattleMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066(this);
+        result.type_ = type_;
         result.id_ = id_;
         onBuilt();
         return result;
@@ -20048,6 +20452,9 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066.getDefaultInstance()) return this;
+        if (other.getType() != 0) {
+          setType(other.getType());
+        }
         if (other.getId() != 0) {
           setId(other.getId());
         }
@@ -20080,13 +20487,56 @@ public final class BattleMsg {
         return this;
       }
 
+      private int type_ ;
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return The type.
+       */
+      @java.lang.Override
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @param value The type to set.
+       * @return This builder for chaining.
+       */
+      public Builder setType(int value) {
+        
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 2 道心 3 心魔
+       * </pre>
+       *
+       * <code>int32 type = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearType() {
+        
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
       private int id_ ;
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
+       * <code>int32 id = 2;</code>
        * @return The id.
        */
       @java.lang.Override
@@ -20095,10 +20545,10 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
+       * <code>int32 id = 2;</code>
        * @param value The id to set.
        * @return This builder for chaining.
        */
@@ -20110,10 +20560,10 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * （DaoHeart）表id
+       * （Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
+       * <code>int32 id = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
@@ -23791,31 +24241,33 @@ public final class BattleMsg {
       "lInfo\022\022\n\nrewardTime\030\001 \001(\005\022\030\n\020quickPatrol" +
       "Count\030\002 \001(\005\022\025\n\radPatrolCount\030\003 \001(\005\"-\n\035Ba" +
       "ttleStaminaRequest_13000050\022\014\n\004time\030\001 \001(" +
-      "\005\" \n\036BattleStaminaResponse_13000051\" \n\036B" +
-      "attleDaoHeartRequest_13000055\"v\n\037BattleD" +
-      "aoHeartResponse_13000056\022\n\n\002id\030\001 \001(\005\022\022\n\n" +
-      "randomBuff\030\004 \003(\005\022\031\n\021freeSweepRemaning\030\002 " +
-      "\001(\005\022\030\n\020paySweepRemaning\030\003 \001(\005\"1\n#BattleD" +
-      "aoHeartSweepRequest_13000060\022\n\n\002id\030\002 \001(\005" +
-      "\"K\n$BattleDaoHeartSweepResponse_13000061" +
-      "\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"C\n" +
-      "(BattleDaoHeartSweepBatchRequest_1300006" +
-      "2\022\n\n\002id\030\001 \001(\005\022\013\n\003pay\030\002 \001(\010\"P\n)BattleDaoH" +
-      "eartSweepBatchResponse_13000063\022#\n\007rewar" +
-      "ds\030\001 \003(\0132\022.Protos.RewardInfo\"%\n#BattleDa" +
-      "oHeartSweepRequest_13000064\"2\n$BattleDao" +
-      "HeartSweepResponse_13000065\022\n\n\002id\030\002 \003(\005\"" +
-      "1\n#BattleDaoHeartSweepRequest_13000066\022\n" +
-      "\n\002id\030\001 \001(\005\"K\n$BattleDaoHeartSweepRespons" +
-      "e_13000067\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rew" +
-      "ardInfo\"E\n4BattleDayChallengeReceiveActi" +
-      "vePointRequest_13000070\022\r\n\005index\030\001 \001(\005\"\\" +
-      "\n5BattleDayChallengeReceiveActivePointRe" +
-      "sponse_13000071\022#\n\007rewards\030\001 \003(\0132\022.Proto" +
-      "s.RewardInfo\"b\n\020DayChallengeInfo\022\023\n\013batt" +
-      "leTimes\030\001 \001(\005\022\020\n\010battleId\030\002 \001(\005\022\022\n\nrando" +
-      "mBuff\030\003 \003(\005\022\023\n\013rewardIndex\030\004 \003(\005B\033\n\031cn.g" +
-      "ame.protocol.protobufb\006proto3"
+      "\005\" \n\036BattleStaminaResponse_13000051\".\n\036B" +
+      "attleDaoHeartRequest_13000055\022\014\n\004type\030\001 " +
+      "\001(\005\"v\n\037BattleDaoHeartResponse_13000056\022\n" +
+      "\n\002id\030\001 \001(\005\022\022\n\nrandomBuff\030\004 \003(\005\022\031\n\021freeSw" +
+      "eepRemaning\030\002 \001(\005\022\030\n\020paySweepRemaning\030\003 " +
+      "\001(\005\"?\n#BattleDaoHeartSweepRequest_130000" +
+      "60\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDa" +
+      "oHeartSweepResponse_13000061\022#\n\007rewards\030" +
+      "\001 \003(\0132\022.Protos.RewardInfo\"Q\n(BattleDaoHe" +
+      "artSweepBatchRequest_13000062\022\014\n\004type\030\001 " +
+      "\001(\005\022\n\n\002id\030\002 \001(\005\022\013\n\003pay\030\003 \001(\010\"P\n)BattleDa" +
+      "oHeartSweepBatchResponse_13000063\022#\n\007rew" +
+      "ards\030\001 \003(\0132\022.Protos.RewardInfo\"3\n#Battle" +
+      "DaoHeartSweepRequest_13000064\022\014\n\004type\030\001 " +
+      "\001(\005\"2\n$BattleDaoHeartSweepResponse_13000" +
+      "065\022\n\n\002id\030\002 \003(\005\"?\n#BattleDaoHeartSweepRe" +
+      "quest_13000066\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005" +
+      "\"K\n$BattleDaoHeartSweepResponse_13000067" +
+      "\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"E\n" +
+      "4BattleDayChallengeReceiveActivePointReq" +
+      "uest_13000070\022\r\n\005index\030\001 \001(\005\"\\\n5BattleDa" +
+      "yChallengeReceiveActivePointResponse_130" +
+      "00071\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardIn" +
+      "fo\"b\n\020DayChallengeInfo\022\023\n\013battleTimes\030\001 " +
+      "\001(\005\022\020\n\010battleId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(" +
+      "\005\022\023\n\013rewardIndex\030\004 \003(\005B\033\n\031cn.game.protoc" +
+      "ol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -23959,7 +24411,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleDaoHeartRequest_13000055_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartRequest_13000055_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Type", });
     internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor =
       getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_BattleDaoHeartResponse_13000056_fieldAccessorTable = new
@@ -23971,7 +24423,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleDaoHeartSweepRequest_13000060_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor,
-        new java.lang.String[] { "Id", });
+        new java.lang.String[] { "Type", "Id", });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000061_descriptor =
       getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000061_fieldAccessorTable = new
@@ -23983,7 +24435,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleDaoHeartSweepBatchRequest_13000062_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepBatchRequest_13000062_descriptor,
-        new java.lang.String[] { "Id", "Pay", });
+        new java.lang.String[] { "Type", "Id", "Pay", });
     internal_static_Protos_BattleDaoHeartSweepBatchResponse_13000063_descriptor =
       getDescriptor().getMessageTypes().get(23);
     internal_static_Protos_BattleDaoHeartSweepBatchResponse_13000063_fieldAccessorTable = new
@@ -23995,7 +24447,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleDaoHeartSweepRequest_13000064_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000064_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Type", });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000065_descriptor =
       getDescriptor().getMessageTypes().get(25);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000065_fieldAccessorTable = new
@@ -24007,7 +24459,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleDaoHeartSweepRequest_13000066_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartSweepRequest_13000066_descriptor,
-        new java.lang.String[] { "Id", });
+        new java.lang.String[] { "Type", "Id", });
     internal_static_Protos_BattleDaoHeartSweepResponse_13000067_descriptor =
       getDescriptor().getMessageTypes().get(27);
     internal_static_Protos_BattleDaoHeartSweepResponse_13000067_fieldAccessorTable = new
