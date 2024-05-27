@@ -53,14 +53,14 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleDaoHeartRequest_13000055 = 0x13000055;    
 	public final static int BattleDaoHeartResponse_13000056 = 0x13000056;    
 	public final static int BattleDaoHeartSweepRequest_13000060 = 0x13000060;    
-	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    //道心磨砺  
+	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    
 	public final static int BattleDaoHeartSweepBatchRequest_13000062 = 0x13000062;    
 	public final static int BattleDaoHeartSweepBatchResponse_13000063 = 0x13000063;    
 	public final static int BattleDaoHeartSweepRequest_13000064 = 0x13000064;    
 	public final static int BattleDaoHeartSweepResponse_13000065 = 0x13000065;    
 	public final static int BattleDaoHeartSweepRequest_13000066 = 0x13000066;    
 	public final static int BattleDaoHeartSweepResponse_13000067 = 0x13000067;    
-	public final static int BattleDayChallengeReceiveActivePointRequest_13000070 = 0x13000070;    //查看道心磨砺通关奖励领取情况  
+	public final static int BattleDayChallengeReceiveActivePointRequest_13000070 = 0x13000070;    
 	public final static int BattleDayChallengeReceiveActivePointResponse_13000071 = 0x13000071;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    
 	public final static int DragonUnlockResponse_17000002 = 0x17000002;    //龙解锁  

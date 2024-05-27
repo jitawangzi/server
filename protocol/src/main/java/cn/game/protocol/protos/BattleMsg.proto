@@ -107,46 +107,51 @@ message BattleStaminaRequest_13000050{
 message BattleStaminaResponse_13000051{
 }
 
-// ****************************************道心磨砺********************************************
-///*** 查看道心磨砺数据 ***/
+// ****************************************道心磨砺/心魔试炼********************************************
+///*** 查看道心磨砺/心魔试炼数据 ***/
 message BattleDaoHeartRequest_13000055{
+	int32 type = 1;					// 2 道心 3 心魔
 }
 
 message BattleDaoHeartResponse_13000056{
-	int32 id = 1;					// 当前可以打，并且尚未通关的 （DaoHeart）表id，例如没有打过，则发第一关id
+	int32 id = 1;					// 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
 	repeated int32 randomBuff = 4;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
 	int32 freeSweepRemaning = 2;      // 免费剩余扫荡次数。
 	int32 paySweepRemaning = 3;      // 收费剩余扫荡次数。
 }
 
-/*** 扫荡道心磨砺关卡 ***/
+/*** 扫荡道心磨砺/心魔试炼关卡 ***/
 message BattleDaoHeartSweepRequest_13000060{
-	int32 id = 2;					// （DaoHeart）表id
+	int32 type = 1;					// 2 道心 3 心魔
+	int32 id = 2;					// （Battle）表id
 }
 message BattleDaoHeartSweepResponse_13000061{
 	repeated RewardInfo rewards = 1;//
 }
 
-/*** 一键扫荡道心磨砺关卡 ***/
+/*** 一键扫荡道心磨砺/心魔试炼关卡 ***/
 message BattleDaoHeartSweepBatchRequest_13000062{
-	int32 id = 1;					// （DaoHeart）表id
-	bool pay = 2;				// 是否直接使用付费次数。
+	int32 type = 1;					// 2 道心 3 心魔
+	int32 id = 2;					// （Battle）表id
+	bool pay = 3;				// 是否直接使用付费次数。
 }
 message BattleDaoHeartSweepBatchResponse_13000063{
 	repeated RewardInfo rewards = 1;//
 }
 
 
-/*** 查看道心磨砺通关奖励领取情况 ***/
+/*** 查看道心磨砺/心魔试炼通关奖励领取情况 ***/
 message BattleDaoHeartSweepRequest_13000064{
+	int32 type = 1;					// 2 道心 3 心魔
 }
 message BattleDaoHeartSweepResponse_13000065{
-	repeated int32 id = 2;					// 已经领取过通关奖励的关卡id， （DaoHeart）表id
+	repeated int32 id = 2;					// 已经领取过通关奖励的关卡id， （Battle）表id
 }
 
-/*** 领取道心磨砺关卡通关奖励 ***/
+/*** 领取道心磨砺/心魔试炼关卡通关奖励 ***/
 message BattleDaoHeartSweepRequest_13000066{
-	int32 id = 1;					// （DaoHeart）表id
+	int32 type = 1;					// 2 道心 3 心魔
+	int32 id = 2;					// （Battle）表id
 }
 message BattleDaoHeartSweepResponse_13000067{
 	repeated RewardInfo rewards = 1;//
