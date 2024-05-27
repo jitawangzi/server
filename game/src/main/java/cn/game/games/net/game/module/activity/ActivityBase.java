@@ -111,6 +111,9 @@ public abstract class ActivityBase implements EventHandler {
 		long endTime = 0 ; 
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
 		if (activityConfig.durationType > 0) {
+			if (startTime == 0) {
+				return endTime;
+			}
 			if (activityConfig.durationType == 1) {
 				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.duration);
 			} else if (activityConfig.durationType == 2) {

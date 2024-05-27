@@ -61,6 +61,10 @@ public enum ConditionTypeEnum{
 	BattleHeroLv(30,"BattleHeroLv","上阵英雄"),
 	/** 等级条件 */
 	LvCondition(31,"LvCondition","等级条件"),
+	/** 升级普通基因 */
+	UpgradeCommonGene(32,"UpgradeCommonGene","升级普通基因"),
+	/** 升级普通基因 */
+	UpgradeKeyGene(33,"UpgradeKeyGene","升级普通基因"),
     ;
 	/** id */
 	public final int ID ; 

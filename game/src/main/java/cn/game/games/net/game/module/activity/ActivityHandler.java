@@ -13,6 +13,8 @@ import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
 import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivity;
+import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000011;
@@ -81,6 +83,11 @@ public class ActivityHandler extends BaseHandler {
 		ActivitySevenDaysCarnivalRequest_11000020 req = (ActivitySevenDaysCarnivalRequest_11000020) message;
 		ActivitySevenDaysCarnivalResponse_11000021.Builder resp = ActivitySevenDaysCarnivalResponse_11000021.newBuilder();
 		int id = req.getId();
+		ActivityConfig activityConfig = ActivityManager.instance().getNullable(id);
+		if (activityConfig == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+			return;
+		}
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		SevenDayCarnivalActivity activityBase = (SevenDayCarnivalActivity) player.getActivityModule().get(id);
 		if (activityBase == null) {

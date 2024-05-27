@@ -250,6 +250,10 @@ public class ActivityModule extends BasePlayerModule {
 			initNewActivity();
 			break;
 		}
+		case NewDay: {
+			newDay();
+			break;
+		}
 		case LevelUp: {
 			int type = event.getIntParameter(0);
 			int level = event.getIntParameter(1);

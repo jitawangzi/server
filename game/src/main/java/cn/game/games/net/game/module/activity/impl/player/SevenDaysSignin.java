@@ -20,8 +20,8 @@ import cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
-@ActivityType(type = ActivityTypeEnum.SevenDaysCarnival)
-public class SevenDayCarnivalActivity extends PlayerActivityBase {
+@ActivityType(type = ActivityTypeEnum.SevenDaysSignin)
+public class SevenDaysSignin extends PlayerActivityBase {
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 	/** 已经初始过任务的天  1 - 7 */
 	private List<Integer> initDays = new ArrayList<>();

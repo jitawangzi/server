@@ -16,8 +16,8 @@ import org.w3c.dom.Element;
 	public final int experience;		
 	/** 奖励货币或卡牌或物品1id;奖励1数量|...|货币或卡牌或物品Nid;奖励N数量 */
 	public final int[][] LvReward;		
-	/** 提升战力 填最终值 */
-	public final int Combatpower;		
+	/** 提升属性 填最终值 */
+	public final int[][] Attribute;		
 
 	public UserUpgradeConfig (Element element) throws Exception {
 	
@@ -43,8 +43,23 @@ import org.w3c.dom.Element;
 		} else {
 			LvReward = new int[][] {};
 		}
-		Combatpower = Integer.parseInt(element.getAttribute("Combatpower") == null || element.getAttribute("Combatpower").length() == 0 ? "0"
-			: element.getAttribute("Combatpower")); // 提升战力 填最终值
+		String AttributeString = element.getAttribute("Attribute"); // 提升属性 填最终值
+		if (AttributeString != null && AttributeString.length() > 0) {
+			String[] AttributeStrings = AttributeString.split("\\|"); 
+			int[][] AttributeTemp = new int[AttributeStrings.length][] ; 
+			for (int i = 0; i < AttributeStrings.length; i++) {
+				String[] AttributeStrings2 = AttributeStrings[i].split(";"); 
+				int[] array = new int[AttributeStrings2.length];
+				for (int j = 0; j < AttributeStrings2.length; j++) {
+					int temp = Integer.parseInt(AttributeStrings2[j]);	
+					array[j] = temp;
+				}
+				AttributeTemp[i] = array;
+			}
+			Attribute = AttributeTemp ;			
+		} else {
+			Attribute = new int[][] {};
+		}
 	}
 	
 

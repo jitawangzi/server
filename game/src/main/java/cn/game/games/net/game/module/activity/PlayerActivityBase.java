@@ -18,7 +18,6 @@ public abstract class PlayerActivityBase extends ActivityBase {
 
 	@Override
 	public void syncActivityInfo() {
-
 		player.getGameClient().sendProtocol(ActivityStatePush_11100006.newBuilder().setActivity(buildActivityInfo()).build());
 	}
 
