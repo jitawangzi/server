@@ -17,6 +17,8 @@ public enum DungeonTypeEnum{
 	ExploreBattle(4,"ExploreBattle","探索战斗"),
 	/** 主线战斗 */
 	MainlineBattle(5,"MainlineBattle","主线战斗"),
+
+	DayChallenge(12, "DayChallenge", "每日挑战"),
     ;
 	/** id */
 	private int id ; 

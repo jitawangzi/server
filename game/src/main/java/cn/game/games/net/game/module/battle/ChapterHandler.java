@@ -8,10 +8,13 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.AttrModule;
+import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
+import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.PatrolConfig;
@@ -22,6 +25,8 @@ import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070;
+import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointResponse_13000071;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
@@ -60,6 +65,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattlePatrolRewardRequest_13000044, this::patrolReward);
 		putInvoker(PbProtocol.BattleStaminaRequest_13000050, this::stamina);
 		putInvoker(PbProtocol.BattleSweepRequest_13000024, this::sweep);
+		putInvoker(PbProtocol.BattleDayChallengeReceiveActivePointRequest_13000070, this::dayChallengePointReward);
 
 	}
 
@@ -72,6 +78,23 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
+		client.sendProtocol(resp);
+	}
+
+	protected void dayChallengePointReward(NetClient client, Object message) {
+		BattleDayChallengeReceiveActivePointRequest_13000070 req = (BattleDayChallengeReceiveActivePointRequest_13000070) message;
+		BattleDayChallengeReceiveActivePointResponse_13000071.Builder resp = BattleDayChallengeReceiveActivePointResponse_13000071.newBuilder();
+		int index = req.getIndex(); 
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		PointRewardModule pointRewardModule = player.getPointRewardModule();
+		ResultObject reward = pointRewardModule.addReward(PointRewardType.DAY_CHALLENGE, chapterModule.getDayChallenge().getBattleId(), index);
+		if (!reward.isOK()) {
+			client.sendProtocol(resp, reward.getErrorCode());
+			return;
+		}
+		resp.addAllRewards((Iterable<? extends RewardInfo>) reward.getValue());
 		client.sendProtocol(resp);
 	}
 

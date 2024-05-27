@@ -39,6 +39,7 @@ import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarModule;
+import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
@@ -209,6 +210,11 @@ public class Player  {
 	public ChapterModule getChapterModule() {
 		return getModule(ChapterModule.class);
 	}
+
+	public PointRewardModule getPointRewardModule() {
+		return getModule(PointRewardModule.class);
+	}
+
 	public Player() {
 	}
 

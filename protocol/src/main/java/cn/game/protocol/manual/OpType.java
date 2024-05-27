@@ -50,6 +50,7 @@ public enum OpType{
 	FirstCharge(116, "首冲"),
 	ChapterGift(117, "章节礼包"),
 	QuestActiveReward(118, "任务活跃积分奖励"),
+	DayChallengeReward(119, "每日挑战活跃积分奖励"),
 
 	FundPass(120, "通行证"),
 	SevenDaysSignin(121, "七日签到活动"),

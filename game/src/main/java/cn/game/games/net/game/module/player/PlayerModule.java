@@ -39,7 +39,7 @@ import cn.game.util.Rnd;
 import io.vertx.core.Promise;
 
 /**    
- * 零散、简单的一些数据，都可以放这里
+ * 零散、简单、通用的一些数据，都可以放这里,
  * 2024年3月19日 下午6:38:13
  * @author SYQ
  */

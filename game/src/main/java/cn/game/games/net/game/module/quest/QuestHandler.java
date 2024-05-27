@@ -11,19 +11,18 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerExt;
 import cn.game.games.cache.entity.Quest;
 import cn.game.games.cache.entity.QuestChallenge;
-import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
+import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
-import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
-import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.QuestMsg.QuestAcceptRequest_20000026;
 import cn.game.protocol.protobuf.QuestMsg.QuestAcceptResponse_20000027;
@@ -188,19 +187,14 @@ public class QuestHandler extends BaseHandler {
 		QuestTypeEnum type = QuestTypeEnum.get(req.getType());
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		QuestModule questModule = player.getModule(QuestModule.class);
-		int error = questModule.checkActiveReceive(type, index);
-		if (error > 0) {
-			client.sendProtocol(resp.build(), error);
+//		QuestModule questModule = player.getModule(QuestModule.class);
+		PointRewardModule pointRewardModule = player.getPointRewardModule(); 
+		ResultObject resultObject = pointRewardModule.addReward(PointRewardType.QUEST, type.ID, index);
+		if (!resultObject.isOK()) {
+			client.sendProtocol(resp, resultObject.getErrorCode());
 			return;
 		}
-		QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(type.ID);
-
-		List<Integer> activeRewardList = questModule.getActiveRewardList(type);
-		activeRewardList.add(index);
-
-		resp.addAllRewards(PlayerHelper.addResources(player, questPointRewardConfig.Reward[index], OpType.QuestActiveReward));
-
+		resp.addAllRewards((Iterable<? extends RewardInfo>) resultObject.getValue());
 		client.sendProtocol(resp.build());
 	}
 

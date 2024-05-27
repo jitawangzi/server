@@ -1,10 +1,15 @@
 package cn.game.games.net.game.helper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.EventTriggerConfig;
+import cn.game.protocol.generated.config.GamePlayRandomBuffConfig;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.EventTriggerManager;
+import cn.game.protocol.generated.manager.GamePlayRandomBuffManager;
 import cn.game.util.Rnd;
 
 public class BattleHelper {
@@ -98,6 +103,24 @@ public class BattleHelper {
 	public static int calcCoin(int level, int ap) {
 		// 		金币，roundup(lv/10,0)*lv*500*体力消耗
 		return roundUpLevel(level) * level * 500 * ap;
+	}
+
+	/** 
+	 * 随机一个战役的buff
+	 * @param battleId
+	 * @return
+	 */
+	public static List<Integer> randomBuffs(int battleId) {
+		List<Integer> ret = new ArrayList<>();
+		BattleConfig battleConfig = BattleManager.instance().get(battleId);
+		for (int[] buffs : battleConfig.Cnt) {
+			for (int i = 0; i < buffs[1]; i++) {
+				List<GamePlayRandomBuffConfig> gamePlayMarkBuffCategoryList = GamePlayRandomBuffManager.instance().getGamePlayMarkBuffCategoryList(1, buffs[0]);
+				GamePlayRandomBuffConfig randomWeighableElement = Rnd.randomWeighableElement(gamePlayMarkBuffCategoryList);
+				ret.add(randomWeighableElement.GamePlayBuffId);
+			}
+		}
+		return ret;
 	}
 
 }

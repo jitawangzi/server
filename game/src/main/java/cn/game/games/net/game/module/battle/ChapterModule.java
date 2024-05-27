@@ -41,7 +41,6 @@ import cn.game.protocol.generated.config.EventRankIntervalConfig;
 import cn.game.protocol.generated.config.EventTriggerConfig;
 import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.config.PatrolConfig;
-import cn.game.protocol.generated.config.RoutineTrainingConfig;
 import cn.game.protocol.generated.manager.BattleChapterManager;
 import cn.game.protocol.generated.manager.BattleEventManager;
 import cn.game.protocol.generated.manager.BattleLevelManager;
@@ -49,6 +48,7 @@ import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.EventRankIntervalManager;
 import cn.game.protocol.generated.manager.EventTriggerManager;
 import cn.game.protocol.generated.manager.PatrolManager;
+import cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo;
 import cn.game.protocol.protobuf.BattleMsg.PatrolInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.ByteHelp;
@@ -62,7 +62,7 @@ import cn.game.util.Rnd;
  * @author SYQ
  */
 public class ChapterModule extends BasePlayerModule  {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay, EventTypeEnum.LoginFinish };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish };
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
 	/** 主线战役 */
@@ -112,6 +112,10 @@ public class ChapterModule extends BasePlayerModule  {
 
 	/** 每日扫荡次数 */
 	private int daySweepCount;
+
+	/** 每日挑战数据 */
+	private BattleDayChallenge dayChallenge = new BattleDayChallenge();
+
 
 	public void addChapter(int battleId) {
 		Chapter chapter = chapters.get(battleId);
@@ -312,6 +316,14 @@ public class ChapterModule extends BasePlayerModule  {
 		return ret;
 	}
 
+	public BattleDayChallenge getDayChallenge() {
+		return dayChallenge;
+	}
+
+	public void setDayChallenge(BattleDayChallenge dayChallenge) {
+		this.dayChallenge = dayChallenge;
+	}
+
 	public int getAttackingId() {
 		return this.id;
 	}
@@ -361,17 +373,6 @@ public class ChapterModule extends BasePlayerModule  {
 
 	public boolean checkProfession(long playerId, int profession, int lineupId, int type) {
 
-		return true;
-	}
-
-	public boolean checkPreTraining(RoutineTrainingConfig config) {
-
-		List<Integer> battle = config.getBattle();
-		for (Integer e : battle) {
-			if (!this.levels.containsKey(e)) {
-				return false;
-			}
-		}
 		return true;
 	}
 
@@ -655,8 +656,7 @@ public class ChapterModule extends BasePlayerModule  {
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return events;
 	}
 
 	private void newDay() {
@@ -664,11 +664,12 @@ public class ChapterModule extends BasePlayerModule  {
 		this.quickPatrolCount = 0;
 		this.adPatrolCount = 0;
 		this.daySweepCount = 0;
+
+		dayChallenge.reset();
 	}
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
-
 		case NewDay: {
 			newDay();
 			break;
@@ -677,6 +678,12 @@ public class ChapterModule extends BasePlayerModule  {
 			updateStoreStaminas();
 			break;
 		}
+		case PLAYER_CREATE: {
+			newDay();
+			break;
+		}
+		default:
+			break;
 		}
 	}
 
@@ -718,6 +725,12 @@ public class ChapterModule extends BasePlayerModule  {
 
 		builder.addAllStoreStaminas(storeStaminas);
 		builder.setMergeSweepTimes(daySweepCount);
-	}
 
+		DayChallengeInfo.Builder dayBuilder = DayChallengeInfo.newBuilder();
+		dayBuilder.setBattleId(dayChallenge.getBattleId());
+		dayBuilder.setBattleTimes(dayChallenge.getBattleTimes());
+		dayBuilder.addAllRandomBuff(dayChallenge.getRandomBuff());
+		dayBuilder.addAllRewardIndex(dayChallenge.getRewardIndex());
+		builder.setMergeDayChallenge(dayBuilder.build());
+	}
 }

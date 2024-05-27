@@ -1,17 +1,12 @@
 package cn.game.games.net.game.module.battle.impl;
 
-import java.util.List;
-
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.protocol.generated.config.BattleLevelConfig;
-import cn.game.protocol.generated.config.RoutineTrainingConfig;
 import cn.game.protocol.generated.manager.BattleLevelManager;
-import cn.game.protocol.generated.manager.RoutineTrainingManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.util.DateUtil;
@@ -24,35 +19,15 @@ public class DaoHeartImpl implements IBattleHandler {
 
 		ChapterModule chapterOp = player.getModule(ChapterModule.class);
 
-		RoutineTrainingConfig routineTrainingConfig = RoutineTrainingManager.getInstance().getRoutineTrainingConfig(dungeonId);
-		if (routineTrainingConfig == null) {
-			return ErrorMsgEnum.config_data_not_found.getId();
-		}
 		//等级限制
 //		if (routineTrainingConfig.getLevel() > player.getData().getLevel()) {
 //			return ErrorMsgEnum.unlock.getId();
 //		}
 
-		int profession = routineTrainingConfig.getProfession();
-
-		//检查职业
-		boolean checkPro = chapterOp.checkProfession(playerId, profession, lineupId, type);
-		if (!checkPro) {
-//			return ErrorMsgEnum.routinetranin_profession_not_match.getId();
-		}
 		//检查开启时间
-		List<Integer> openTime = routineTrainingConfig.getOpenTime();
 		int dayOfWeek = DateUtil.getDayOfWeek();
 //		if (!openTime.contains(dayOfWeek)) {
 //			return ErrorMsgEnum.unlock.getId();
-//		}
-		//检查前进阶训练关卡
-		RoutineTrainingConfig config = RoutineTrainingManager.getInstance().getRoutineTrainingConfigNullable(dungeonId - 1);
-		if (config != null && config.getProfession() == routineTrainingConfig.getProfession()) {
-			if (!chapterOp.checkPreTraining(config)) {
-				return ErrorMsgEnum.BattleLevel_pre.getId();
-			}
-		}
 		return 0;
 	}
 

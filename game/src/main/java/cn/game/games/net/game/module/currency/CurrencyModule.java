@@ -24,15 +24,28 @@ import cn.game.util.MapWrapper;
 
 public class CurrencyModule extends GoodsModule<Currency, Currency> {
 //	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
 	/** 货币,key:  {@link Money}*/
 	private MapWrapper currencyMap = new MapWrapper();
 	@Override
 	public EventTypeEnum[] getEventTypes() {
-		return null;
+		return events;
 	}
 
 	@Override
 	public void handleEvent(GameEvent event) {
+
+		player.getCurrencyModule().setCount(Asset.dailyIntegral.ID, 0);
+
+		switch (event.getType()) {
+
+		case NewDay: {
+			player.getCurrencyModule().setCount(Asset.dailyIntegral.ID, 0);
+			player.getCurrencyModule().setCount(Asset.DailyPoint.ID, 0);
+			break;
+		}
+		}
+
 	}
 
 	@Override
