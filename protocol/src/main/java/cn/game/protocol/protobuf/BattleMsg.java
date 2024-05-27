@@ -20,7 +20,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺
+     * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺   12 每日挑战
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -30,7 +30,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id; 2则是DaoHeart表id
+     * 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，目前都是Battle表id;
      * </pre>
      *
      * <code>uint32 typeId = 2;</code>
@@ -149,7 +149,7 @@ public final class BattleMsg {
     private int type_;
     /**
      * <pre>
-     * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺
+     * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺   12 每日挑战
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -164,7 +164,7 @@ public final class BattleMsg {
     private int typeId_;
     /**
      * <pre>
-     * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id; 2则是DaoHeart表id
+     * 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，目前都是Battle表id;
      * </pre>
      *
      * <code>uint32 typeId = 2;</code>
@@ -534,7 +534,7 @@ public final class BattleMsg {
       private int type_ ;
       /**
        * <pre>
-       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺
+       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺   12 每日挑战
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -546,7 +546,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺
+       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺   12 每日挑战
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -561,7 +561,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺
+       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺   12 每日挑战
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -577,7 +577,7 @@ public final class BattleMsg {
       private int typeId_ ;
       /**
        * <pre>
-       * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id; 2则是DaoHeart表id
+       * 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，目前都是Battle表id;
        * </pre>
        *
        * <code>uint32 typeId = 2;</code>
@@ -589,7 +589,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id; 2则是DaoHeart表id
+       * 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，目前都是Battle表id;
        * </pre>
        *
        * <code>uint32 typeId = 2;</code>
@@ -604,7 +604,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型对应的配置表id。 如果上面的type是1，则是Battle表id; 2则是DaoHeart表id
+       * 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，目前都是Battle表id;
        * </pre>
        *
        * <code>uint32 typeId = 2;</code>

@@ -61,6 +61,7 @@ public class ServerContext {
 		if (mode != null) {
 			this.runMode = RunMode.valueOf(mode.toUpperCase());
 		}
+
 	}
 
 	public void checkServerId(String serverId) {

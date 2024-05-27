@@ -30,7 +30,6 @@ import cn.game.protocol.generated.manager.HeroLvManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006;
@@ -276,11 +275,11 @@ public class HeroHandler extends BaseHandler {
 			int itemCount = breakConfig.CareerConsumeNum ; 
 			itemsMap.compute(omniItemID, (k, v) -> v == null ? itemCount : v + itemCount);
 		}
-		List<HeroInfo> heroInfos = new ArrayList<>();
-		List<RewardInfo> resources = PlayerHelper.addResources(player, heroConfig.ID, sameIdHeros, OpType.HeroQualityReset);
-		for (RewardInfo rewardInfo : resources) {
-			heroInfos.add(rewardInfo.getRole());
-		}
+//		List<HeroInfo> heroInfos = new ArrayList<>();
+//		List<RewardInfo> resources = PlayerHelper.addResources(player, heroConfig.ID, sameIdHeros, OpType.HeroQualityReset);
+//		for (RewardInfo rewardInfo : resources) {
+//			heroInfos.add(rewardInfo.getRole());
+//		}
 		List<ItemInfo> itemInfos = new ArrayList<>();
 		for (Entry<Integer, Integer> entry : itemsMap.entrySet()) {
 			List<RewardInfo> resources2 = PlayerHelper.addResources(player, entry.getKey(), entry.getValue(), OpType.HeroQualityReset);
@@ -289,7 +288,7 @@ public class HeroHandler extends BaseHandler {
 			}
 		}
 		hero.setStar(1);
-		resp.addAllHeros(heroInfos);
+//		resp.addAllHeros(heroInfos);
 		resp.addAllItems(itemInfos);
 
 		client.sendProtocol(resp.build());

@@ -32,24 +32,8 @@ public class PbProtocolGenerator {
 	private static VelocityEngine velocityEngine = new VelocityEngine();
 	private static Properties initialProp;
 	private static Properties velocityProp;
-
-	static {
-		try {
-			initialProp = new Properties();
-			InputStream inpurtStream = PbProtocolGenerator.class.getClassLoader().getResourceAsStream("proto_gen.properties"); 
-			initialProp.load(inpurtStream);
-			
-			velocityProp = new Properties() ; 
-			inpurtStream = PbProtocolGenerator.class.getClassLoader().getResourceAsStream("velocity.properties");
-//			inpurtStream.
-			velocityProp.load(inpurtStream);
-//			velocityEngine.init("./config/velocity.properties");
-			velocityEngine.init(velocityProp);
-		} catch (Exception e) {
-			System.err.println("miss config file: ./config/velocity.properties");
-			e.printStackTrace();
-		}
-	}
+	private static String workspace;
+	private static String metafolder;
 
 	public static void readProtos(String protoPath, String inputTemplate, String outputFile, String chareset)
 			throws Exception {
@@ -159,7 +143,7 @@ public class PbProtocolGenerator {
 			messageObject.setId(idInt.toString());
 		}
 
-		String jsPath = initialProp.getProperty("client.js.dir");
+		String jsPath = metafolder + initialProp.getProperty("client.js.dir");
 		generateClient(messages, "protocol_js_id.vm", jsPath + File.separator + "ProtosMessageID.ts", chareset);
 		generateClient(messages, "protocol_js_name.vm", jsPath + File.separator + "ProtosMessageName.ts", chareset);
 		
@@ -418,13 +402,33 @@ public class PbProtocolGenerator {
 
 	public static void main(String[] args) throws Exception {
 
+		// 可以加vm参数改变workspace 和 metafolder 路径。
+		workspace = System.getProperty("workspace", System.getenv("workspace"));
+		metafolder = System.getProperty("metafolder", System.getenv("metafolder"));
+		if (workspace == null) {
+			throw new IllegalArgumentException("需要设置 workspace");
+		}
+		if (metafolder == null) {
+			throw new IllegalArgumentException("需要设置 metafolder");
+		}
+		initialProp = new Properties();
+		InputStream inpurtStream = PbProtocolGenerator.class.getClassLoader().getResourceAsStream("proto_gen.properties");
+		initialProp.load(inpurtStream);
+
+		velocityProp = new Properties();
+		inpurtStream = PbProtocolGenerator.class.getClassLoader().getResourceAsStream("velocity.properties");
+//			inpurtStream.
+		velocityProp.load(inpurtStream);
+//			velocityEngine.init("./config/velocity.properties");
+		velocityEngine.init(velocityProp);
+
 		String inputTemplate = "protocol_pb_impl.vm";
 
-		String protoPath = initialProp.getProperty("protos.dir");
-		String javaSrc = initialProp.getProperty("java.src.dir");
-		String output = initialProp.getProperty("PbProtocol.dir");
-		String charset = initialProp.getProperty("charset");
-		String toJava = initialProp.getProperty("proto.to.java"); 
+		String protoPath = workspace + initialProp.getProperty("protos.dir");
+		String javaSrc = workspace + initialProp.getProperty("java.src.dir");
+		String output = workspace + initialProp.getProperty("PbProtocol.dir");
+		String charset = workspace + initialProp.getProperty("charset");
+		String toJava = workspace + initialProp.getProperty("proto.to.java");
 		boolean protoToJava = Boolean.parseBoolean(toJava) ; 
 
 //		List<MessageObject> messages = readMessageObject(protoPath, inputTemplate, output + "/PbProtocol.java", charset);

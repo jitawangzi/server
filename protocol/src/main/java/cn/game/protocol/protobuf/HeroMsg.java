@@ -7770,50 +7770,6 @@ public final class HeroMsg {
 
     /**
      * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> 
-        getHerosList();
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index);
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    int getHerosCount();
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
-        getHerosOrBuilderList();
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
-        int index);
-
-    /**
-     * <pre>
      * 返还的万能突破道具。
      * </pre>
      *
@@ -7869,7 +7825,6 @@ public final class HeroMsg {
       super(builder);
     }
     private HeroQualityResetResponse_16000012() {
-      heros_ = java.util.Collections.emptyList();
       items_ = java.util.Collections.emptyList();
     }
 
@@ -7904,19 +7859,10 @@ public final class HeroMsg {
             case 0:
               done = true;
               break;
-            case 10: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HeroInfo>();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              heros_.add(
-                  input.readMessage(cn.game.protocol.protobuf.BaseMsg.HeroInfo.parser(), extensionRegistry));
-              break;
-            }
             case 18: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 items_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.ItemInfo>();
-                mutable_bitField0_ |= 0x00000002;
+                mutable_bitField0_ |= 0x00000001;
               }
               items_.add(
                   input.readMessage(cn.game.protocol.protobuf.BaseMsg.ItemInfo.parser(), extensionRegistry));
@@ -7938,9 +7884,6 @@ public final class HeroMsg {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          heros_ = java.util.Collections.unmodifiableList(heros_);
-        }
-        if (((mutable_bitField0_ & 0x00000002) != 0)) {
           items_ = java.util.Collections.unmodifiableList(items_);
         }
         this.unknownFields = unknownFields.build();
@@ -7958,66 +7901,6 @@ public final class HeroMsg {
       return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroQualityResetResponse_16000012_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012.class, cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012.Builder.class);
-    }
-
-    public static final int HEROS_FIELD_NUMBER = 1;
-    private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_;
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> getHerosList() {
-      return heros_;
-    }
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
-        getHerosOrBuilderList() {
-      return heros_;
-    }
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    @java.lang.Override
-    public int getHerosCount() {
-      return heros_.size();
-    }
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index) {
-      return heros_.get(index);
-    }
-    /**
-     * <pre>
-     * 返还的本体英雄卡牌，需要uid
-     * </pre>
-     *
-     * <code>repeated .Protos.HeroInfo heros = 1;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
-        int index) {
-      return heros_.get(index);
     }
 
     public static final int ITEMS_FIELD_NUMBER = 2;
@@ -8094,9 +7977,6 @@ public final class HeroMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < heros_.size(); i++) {
-        output.writeMessage(1, heros_.get(i));
-      }
       for (int i = 0; i < items_.size(); i++) {
         output.writeMessage(2, items_.get(i));
       }
@@ -8109,10 +7989,6 @@ public final class HeroMsg {
       if (size != -1) return size;
 
       size = 0;
-      for (int i = 0; i < heros_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, heros_.get(i));
-      }
       for (int i = 0; i < items_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, items_.get(i));
@@ -8132,8 +8008,6 @@ public final class HeroMsg {
       }
       cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012 other = (cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012) obj;
 
-      if (!getHerosList()
-          .equals(other.getHerosList())) return false;
       if (!getItemsList()
           .equals(other.getItemsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -8147,10 +8021,6 @@ public final class HeroMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getHerosCount() > 0) {
-        hash = (37 * hash) + HEROS_FIELD_NUMBER;
-        hash = (53 * hash) + getHerosList().hashCode();
-      }
       if (getItemsCount() > 0) {
         hash = (37 * hash) + ITEMS_FIELD_NUMBER;
         hash = (53 * hash) + getItemsList().hashCode();
@@ -8283,22 +8153,15 @@ public final class HeroMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getHerosFieldBuilder();
           getItemsFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (herosBuilder_ == null) {
-          heros_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          herosBuilder_.clear();
-        }
         if (itemsBuilder_ == null) {
           items_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           itemsBuilder_.clear();
         }
@@ -8329,19 +8192,10 @@ public final class HeroMsg {
       public cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012 buildPartial() {
         cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012 result = new cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012(this);
         int from_bitField0_ = bitField0_;
-        if (herosBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            heros_ = java.util.Collections.unmodifiableList(heros_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.heros_ = heros_;
-        } else {
-          result.heros_ = herosBuilder_.build();
-        }
         if (itemsBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0)) {
+          if (((bitField0_ & 0x00000001) != 0)) {
             items_ = java.util.Collections.unmodifiableList(items_);
-            bitField0_ = (bitField0_ & ~0x00000002);
+            bitField0_ = (bitField0_ & ~0x00000001);
           }
           result.items_ = items_;
         } else {
@@ -8395,37 +8249,11 @@ public final class HeroMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012 other) {
         if (other == cn.game.protocol.protobuf.HeroMsg.HeroQualityResetResponse_16000012.getDefaultInstance()) return this;
-        if (herosBuilder_ == null) {
-          if (!other.heros_.isEmpty()) {
-            if (heros_.isEmpty()) {
-              heros_ = other.heros_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureHerosIsMutable();
-              heros_.addAll(other.heros_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.heros_.isEmpty()) {
-            if (herosBuilder_.isEmpty()) {
-              herosBuilder_.dispose();
-              herosBuilder_ = null;
-              heros_ = other.heros_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              herosBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getHerosFieldBuilder() : null;
-            } else {
-              herosBuilder_.addAllMessages(other.heros_);
-            }
-          }
-        }
         if (itemsBuilder_ == null) {
           if (!other.items_.isEmpty()) {
             if (items_.isEmpty()) {
               items_ = other.items_;
-              bitField0_ = (bitField0_ & ~0x00000002);
+              bitField0_ = (bitField0_ & ~0x00000001);
             } else {
               ensureItemsIsMutable();
               items_.addAll(other.items_);
@@ -8438,7 +8266,7 @@ public final class HeroMsg {
               itemsBuilder_.dispose();
               itemsBuilder_ = null;
               items_ = other.items_;
-              bitField0_ = (bitField0_ & ~0x00000002);
+              bitField0_ = (bitField0_ & ~0x00000001);
               itemsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getItemsFieldBuilder() : null;
@@ -8477,324 +8305,12 @@ public final class HeroMsg {
       }
       private int bitField0_;
 
-      private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_ =
-        java.util.Collections.emptyList();
-      private void ensureHerosIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HeroInfo>(heros_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> herosBuilder_;
-
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> getHerosList() {
-        if (herosBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(heros_);
-        } else {
-          return herosBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public int getHerosCount() {
-        if (herosBuilder_ == null) {
-          return heros_.size();
-        } else {
-          return herosBuilder_.getCount();
-        }
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index) {
-        if (herosBuilder_ == null) {
-          return heros_.get(index);
-        } else {
-          return herosBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder setHeros(
-          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
-        if (herosBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureHerosIsMutable();
-          heros_.set(index, value);
-          onChanged();
-        } else {
-          herosBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder setHeros(
-          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
-        if (herosBuilder_ == null) {
-          ensureHerosIsMutable();
-          heros_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          herosBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder addHeros(cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
-        if (herosBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureHerosIsMutable();
-          heros_.add(value);
-          onChanged();
-        } else {
-          herosBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder addHeros(
-          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
-        if (herosBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureHerosIsMutable();
-          heros_.add(index, value);
-          onChanged();
-        } else {
-          herosBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder addHeros(
-          cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
-        if (herosBuilder_ == null) {
-          ensureHerosIsMutable();
-          heros_.add(builderForValue.build());
-          onChanged();
-        } else {
-          herosBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder addHeros(
-          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
-        if (herosBuilder_ == null) {
-          ensureHerosIsMutable();
-          heros_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          herosBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder addAllHeros(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfo> values) {
-        if (herosBuilder_ == null) {
-          ensureHerosIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, heros_);
-          onChanged();
-        } else {
-          herosBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder clearHeros() {
-        if (herosBuilder_ == null) {
-          heros_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          herosBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public Builder removeHeros(int index) {
-        if (herosBuilder_ == null) {
-          ensureHerosIsMutable();
-          heros_.remove(index);
-          onChanged();
-        } else {
-          herosBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder getHerosBuilder(
-          int index) {
-        return getHerosFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
-          int index) {
-        if (herosBuilder_ == null) {
-          return heros_.get(index);  } else {
-          return herosBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
-           getHerosOrBuilderList() {
-        if (herosBuilder_ != null) {
-          return herosBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(heros_);
-        }
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder addHerosBuilder() {
-        return getHerosFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder addHerosBuilder(
-          int index) {
-        return getHerosFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * 返还的本体英雄卡牌，需要uid
-       * </pre>
-       *
-       * <code>repeated .Protos.HeroInfo heros = 1;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder> 
-           getHerosBuilderList() {
-        return getHerosFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
-          getHerosFieldBuilder() {
-        if (herosBuilder_ == null) {
-          herosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder>(
-                  heros_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          heros_ = null;
-        }
-        return herosBuilder_;
-      }
-
       private java.util.List<cn.game.protocol.protobuf.BaseMsg.ItemInfo> items_ =
         java.util.Collections.emptyList();
       private void ensureItemsIsMutable() {
-        if (!((bitField0_ & 0x00000002) != 0)) {
+        if (!((bitField0_ & 0x00000001) != 0)) {
           items_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.ItemInfo>(items_);
-          bitField0_ |= 0x00000002;
+          bitField0_ |= 0x00000001;
          }
       }
 
@@ -8988,7 +8504,7 @@ public final class HeroMsg {
       public Builder clearItems() {
         if (itemsBuilder_ == null) {
           items_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
           itemsBuilder_.clear();
@@ -9093,7 +8609,7 @@ public final class HeroMsg {
           itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder>(
                   items_,
-                  ((bitField0_ & 0x00000002) != 0),
+                  ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
           items_ = null;
@@ -10589,13 +10105,12 @@ public final class HeroMsg {
       "06\"-\n\036HeroLevelResetRequest_16000007\022\013\n\003" +
       "uid\030\001 \001(\t\"!\n\037HeroLevelResetResponse_1600" +
       "0008\"/\n HeroQualityResetRequest_16000011" +
-      "\022\013\n\003uid\030\001 \001(\t\"e\n!HeroQualityResetRespons" +
-      "e_16000012\022\037\n\005heros\030\001 \003(\0132\020.Protos.HeroI" +
-      "nfo\022\037\n\005items\030\002 \003(\0132\020.Protos.ItemInfo\"!\n\037" +
-      "HeroFreeDayRentRequest_16000030\"C\n HeroF" +
-      "reeDayRentResponse_16000031\022\037\n\005heros\030\001 \003" +
-      "(\0132\020.Protos.HeroInfoB\033\n\031cn.game.protocol" +
-      ".protobufb\006proto3"
+      "\022\013\n\003uid\030\001 \001(\t\"D\n!HeroQualityResetRespons" +
+      "e_16000012\022\037\n\005items\030\002 \003(\0132\020.Protos.ItemI" +
+      "nfo\"!\n\037HeroFreeDayRentRequest_16000030\"C" +
+      "\n HeroFreeDayRentResponse_16000031\022\037\n\005he" +
+      "ros\030\001 \003(\0132\020.Protos.HeroInfoB\033\n\031cn.game.p" +
+      "rotocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10685,7 +10200,7 @@ public final class HeroMsg {
     internal_static_Protos_HeroQualityResetResponse_16000012_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroQualityResetResponse_16000012_descriptor,
-        new java.lang.String[] { "Heros", "Items", });
+        new java.lang.String[] { "Items", });
     internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor =
       getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_HeroFreeDayRentRequest_16000030_fieldAccessorTable = new
