@@ -24,13 +24,17 @@ public class PlayerLevelCondition extends AbstractCondition {
 	}
 
 	@Override
+	public long getFinishCount() {
+		return player.getLevel();
+	}
+
+	@Override
 	public boolean checkEventParam(GameEvent event) {
 
 		int type = event.getIntParameter(0);
 		int level = event.getIntParameter(1);
 		if (type == Asset.playerExp.ID) {
 			if (level >= getRequireCount()) {
-				setAchieve();
 				return true;
 			}
 		}
