@@ -126,10 +126,8 @@ public class PbProtocolGenerator {
 		generate(messages, outClass, packages, prefixs, inputTemplate, outputFile, chareset);
 
 		// 生成客户端测试类
-		String op = initialProp.getProperty("client.test.dir");
-
 		for (MessageObject m : messages) {
-			generate(m, op, chareset);
+			generate(m, chareset);
 		}
 		// 生成前端用的json文件
 
@@ -357,7 +355,8 @@ public class PbProtocolGenerator {
 		writer.close();
 	}
 
-	public static void generate(MessageObject message, String outPath, String charset) throws Exception {
+	public static void generate(MessageObject message, String charset) throws Exception {
+		String outPath = workspace + "/.." + initialProp.getProperty("client.test.dir");
 
 		String inputTemplate = "client_test.vm";
 
@@ -427,10 +426,10 @@ public class PbProtocolGenerator {
 		String protoPath = workspace + initialProp.getProperty("protos.dir");
 		String javaSrc = workspace + initialProp.getProperty("java.src.dir");
 		String output = workspace + initialProp.getProperty("PbProtocol.dir");
-		String charset = workspace + initialProp.getProperty("charset");
 		String toJava = workspace + initialProp.getProperty("proto.to.java");
 		boolean protoToJava = Boolean.parseBoolean(toJava) ; 
 
+		String charset = initialProp.getProperty("charset");
 //		List<MessageObject> messages = readMessageObject(protoPath, inputTemplate, output + "/PbProtocol.java", charset);
 //		
 //		String jsPath = initialProp.getProperty("client.js.dir");

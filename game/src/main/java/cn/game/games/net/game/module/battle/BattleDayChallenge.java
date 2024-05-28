@@ -30,9 +30,11 @@ public class BattleDayChallenge {
 		this.rewardIndex.clear();
 
 		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(12);
-		BattleConfig battleConfig = Rnd.randomOne(battleTypeList);
-		this.battleId = battleConfig.ID;
-		randomBuff.addAll(BattleHelper.randomBuffs(battleConfig.ID));
+		if (battleTypeList != null) {
+			BattleConfig battleConfig = Rnd.randomOne(battleTypeList);
+			this.battleId = battleConfig.ID;
+			randomBuff.addAll(BattleHelper.randomBuffs(battleConfig.ID));
+		}
 	}
 	public int getBattleTimes() {
 		return battleTimes;
