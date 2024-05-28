@@ -4,6 +4,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 /**
@@ -24,10 +25,14 @@ public class PlayerLevelCondition extends AbstractCondition {
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-		int level = event.getIntParameter(0);
-		if (level >= getRequireCount()) {
-			setAchieve();
-			return true;
+
+		int type = event.getIntParameter(0);
+		int level = event.getIntParameter(1);
+		if (type == Asset.playerExp.ID) {
+			if (level >= getRequireCount()) {
+				setAchieve();
+				return true;
+			}
 		}
 		return false;
 	}
