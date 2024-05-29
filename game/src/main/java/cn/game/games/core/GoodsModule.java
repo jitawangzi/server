@@ -10,6 +10,7 @@ import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.games.net.game.module.currency.Currency;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -62,11 +63,15 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 			if (object instanceof ItemNoStack) {
 				list.add(toRewardInfo((E) object));
 			} else {
-				long newCount = getCount(configId);
-				Item itemAdd = new Item();
-				itemAdd.setConfigId(configId);
-				itemAdd.setCount(newCount - oldCount);
-				list.add(toRewardInfo((E) itemAdd));
+				if (object instanceof Currency) {
+					list.add(toRewardInfo((E) object));
+				} else {
+					long newCount = getCount(configId);
+					Item itemAdd = new Item();
+					itemAdd.setConfigId(configId);
+					itemAdd.setCount(newCount - oldCount);
+					list.add(toRewardInfo((E) itemAdd));
+				}
 
 			}
 		} else if (object instanceof List) {
