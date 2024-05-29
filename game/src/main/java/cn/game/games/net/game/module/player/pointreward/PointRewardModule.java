@@ -28,7 +28,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 public class PointRewardModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.ResourceRemove, EventTypeEnum.NewDay };
 
-	/** 任务积分宝箱活跃奖励领取情况 */
+	/** 任务积分宝箱活跃奖励领取情况 type: subId : 领过的奖励index */
 	private Map<PointRewardType, Map<Integer, List<Integer>>> activeRewardMap = new HashMap<PointRewardType, Map<Integer, List<Integer>>>();
 
 	public Map<Integer, List<Integer>> getActiveRewardTypeMap(PointRewardType type) {
