@@ -198,32 +198,33 @@ public class ShopHandler extends BaseHandler {
 	private void fundPassReward(NetClient client, Object message) {
 		ShopFundPassRewardRequest_15000032 req = (ShopFundPassRewardRequest_15000032) message;
 		ShopFundPassRewardResponse_15000033.Builder resp = ShopFundPassRewardResponse_15000033.newBuilder();
-		int id = req.getId();
+		List<Integer> idList = req.getIdList();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		if (!player.isFuncOpen(InitialUI.Passport)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
 			return;
 		}
-		FundPassRewardsConfig fundPassRewardsConfig = FundPassRewardsManager.instance().get(id);
-
 		ShopModule shopModule = player.getShopModule();
 		Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
-		if (!fundPassRewardsMap.containsKey(fundPassRewardsConfig.Index)) {
-			client.sendProtocol(resp, ErrorMsgEnum.fundpass_not_buy.getId());
-			return;
+		for (int id : idList) {
+			FundPassRewardsConfig fundPassRewardsConfig = FundPassRewardsManager.instance().get(id);
+			if (!fundPassRewardsMap.containsKey(fundPassRewardsConfig.Index)) {
+				client.sendProtocol(resp, ErrorMsgEnum.fundpass_not_buy.getId());
+				return;
+			}
+			List<Integer> list = fundPassRewardsMap.get(fundPassRewardsConfig.Index);
+			if (list.contains(id)) {
+				client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+				return;
+			}
+			boolean checkCondition = PlayerHelper.checkCondition(player, fundPassRewardsConfig.Condition);
+			if (!checkCondition) {
+				client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+				return;
+			}
+			list.add(id);
+			resp.addAllRewards(PlayerHelper.addResources(player, fundPassRewardsConfig.Reward, OpType.FundPass));
 		}
-		List<Integer> list = fundPassRewardsMap.get(fundPassRewardsConfig.Index);
-		if (list.contains(id)) {
-			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-			return;
-		}
-		boolean checkCondition = PlayerHelper.checkCondition(player, fundPassRewardsConfig.Condition);
-		if (!checkCondition) {
-			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
-			return;
-		}
-		list.add(id);
-		resp.addAllRewards(PlayerHelper.addResources(player, fundPassRewardsConfig.Reward, OpType.FundPass));
 		client.sendProtocol(resp.build());
 	}
 

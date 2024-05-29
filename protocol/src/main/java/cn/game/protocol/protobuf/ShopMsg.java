@@ -14303,10 +14303,29 @@ public final class ShopMsg {
      * FundPassRewards表id
      * </pre>
      *
-     * <code>uint32 id = 1;</code>
-     * @return The id.
+     * <code>repeated uint32 id = 1;</code>
+     * @return A list containing the id.
      */
-    int getId();
+    java.util.List<java.lang.Integer> getIdList();
+    /**
+     * <pre>
+     * FundPassRewards表id
+     * </pre>
+     *
+     * <code>repeated uint32 id = 1;</code>
+     * @return The count of id.
+     */
+    int getIdCount();
+    /**
+     * <pre>
+     * FundPassRewards表id
+     * </pre>
+     *
+     * <code>repeated uint32 id = 1;</code>
+     * @param index The index of the element to return.
+     * @return The id at the given index.
+     */
+    int getId(int index);
   }
   /**
    * <pre>
@@ -14325,6 +14344,7 @@ public final class ShopMsg {
       super(builder);
     }
     private ShopFundPassRewardRequest_15000032() {
+      id_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -14347,6 +14367,7 @@ public final class ShopMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -14358,8 +14379,24 @@ public final class ShopMsg {
               done = true;
               break;
             case 8: {
-
-              id_ = input.readUInt32();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                id_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              id_.addInt(input.readUInt32());
+              break;
+            }
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                id_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                id_.addInt(input.readUInt32());
+              }
+              input.popLimit(limit);
               break;
             }
             default: {
@@ -14377,6 +14414,9 @@ public final class ShopMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          id_.makeImmutable(); // C
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -14395,19 +14435,44 @@ public final class ShopMsg {
     }
 
     public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    private com.google.protobuf.Internal.IntList id_;
     /**
      * <pre>
      * FundPassRewards表id
      * </pre>
      *
-     * <code>uint32 id = 1;</code>
-     * @return The id.
+     * <code>repeated uint32 id = 1;</code>
+     * @return A list containing the id.
      */
     @java.lang.Override
-    public int getId() {
+    public java.util.List<java.lang.Integer>
+        getIdList() {
       return id_;
     }
+    /**
+     * <pre>
+     * FundPassRewards表id
+     * </pre>
+     *
+     * <code>repeated uint32 id = 1;</code>
+     * @return The count of id.
+     */
+    public int getIdCount() {
+      return id_.size();
+    }
+    /**
+     * <pre>
+     * FundPassRewards表id
+     * </pre>
+     *
+     * <code>repeated uint32 id = 1;</code>
+     * @param index The index of the element to return.
+     * @return The id at the given index.
+     */
+    public int getId(int index) {
+      return id_.getInt(index);
+    }
+    private int idMemoizedSerializedSize = -1;
 
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
@@ -14423,8 +14488,13 @@ public final class ShopMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeUInt32(1, id_);
+      getSerializedSize();
+      if (getIdList().size() > 0) {
+        output.writeUInt32NoTag(10);
+        output.writeUInt32NoTag(idMemoizedSerializedSize);
+      }
+      for (int i = 0; i < id_.size(); i++) {
+        output.writeUInt32NoTag(id_.getInt(i));
       }
       unknownFields.writeTo(output);
     }
@@ -14435,9 +14505,19 @@ public final class ShopMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(1, id_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < id_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeUInt32SizeNoTag(id_.getInt(i));
+        }
+        size += dataSize;
+        if (!getIdList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        idMemoizedSerializedSize = dataSize;
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -14454,8 +14534,8 @@ public final class ShopMsg {
       }
       cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 other = (cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032) obj;
 
-      if (getId()
-          != other.getId()) return false;
+      if (!getIdList()
+          .equals(other.getIdList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -14467,8 +14547,10 @@ public final class ShopMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      if (getIdCount() > 0) {
+        hash = (37 * hash) + ID_FIELD_NUMBER;
+        hash = (53 * hash) + getIdList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -14606,8 +14688,8 @@ public final class ShopMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
-
+        id_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -14634,6 +14716,11 @@ public final class ShopMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 buildPartial() {
         cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 result = new cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          id_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
         result.id_ = id_;
         onBuilt();
         return result;
@@ -14683,8 +14770,15 @@ public final class ShopMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032 other) {
         if (other == cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (!other.id_.isEmpty()) {
+          if (id_.isEmpty()) {
+            id_ = other.id_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureIdIsMutable();
+            id_.addAll(other.id_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -14714,32 +14808,65 @@ public final class ShopMsg {
         }
         return this;
       }
+      private int bitField0_;
 
-      private int id_ ;
-      /**
-       * <pre>
-       * FundPassRewards表id
-       * </pre>
-       *
-       * <code>uint32 id = 1;</code>
-       * @return The id.
-       */
-      @java.lang.Override
-      public int getId() {
-        return id_;
+      private com.google.protobuf.Internal.IntList id_ = emptyIntList();
+      private void ensureIdIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          id_ = mutableCopy(id_);
+          bitField0_ |= 0x00000001;
+         }
       }
       /**
        * <pre>
        * FundPassRewards表id
        * </pre>
        *
-       * <code>uint32 id = 1;</code>
+       * <code>repeated uint32 id = 1;</code>
+       * @return A list containing the id.
+       */
+      public java.util.List<java.lang.Integer>
+          getIdList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(id_) : id_;
+      }
+      /**
+       * <pre>
+       * FundPassRewards表id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
+       * @return The count of id.
+       */
+      public int getIdCount() {
+        return id_.size();
+      }
+      /**
+       * <pre>
+       * FundPassRewards表id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
+       * @param index The index of the element to return.
+       * @return The id at the given index.
+       */
+      public int getId(int index) {
+        return id_.getInt(index);
+      }
+      /**
+       * <pre>
+       * FundPassRewards表id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
+       * @param index The index to set the value at.
        * @param value The id to set.
        * @return This builder for chaining.
        */
-      public Builder setId(int value) {
-        
-        id_ = value;
+      public Builder setId(
+          int index, int value) {
+        ensureIdIsMutable();
+        id_.setInt(index, value);
         onChanged();
         return this;
       }
@@ -14748,12 +14875,44 @@ public final class ShopMsg {
        * FundPassRewards表id
        * </pre>
        *
-       * <code>uint32 id = 1;</code>
+       * <code>repeated uint32 id = 1;</code>
+       * @param value The id to add.
+       * @return This builder for chaining.
+       */
+      public Builder addId(int value) {
+        ensureIdIsMutable();
+        id_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * FundPassRewards表id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
+       * @param values The id to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllId(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureIdIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, id_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * FundPassRewards表id
+       * </pre>
+       *
+       * <code>repeated uint32 id = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
-        
-        id_ = 0;
+        id_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
@@ -19086,7 +19245,7 @@ public final class ShopMsg {
       "entOrderProto\"-\n\037ShopFundPassBuyRequest_" +
       "15000030\022\n\n\002id\030\001 \001(\r\"\"\n ShopFundPassBuyR" +
       "esponse_15000031\"0\n\"ShopFundPassRewardRe" +
-      "quest_15000032\022\n\n\002id\030\001 \001(\r\"J\n#ShopFundPa" +
+      "quest_15000032\022\n\n\002id\030\001 \003(\r\"J\n#ShopFundPa" +
       "ssRewardResponse_15000033\022#\n\007rewards\030\002 \003" +
       "(\0132\022.Protos.RewardInfo\"-\n\014FundPassInfo\022\n" +
       "\n\002id\030\001 \001(\005\022\021\n\trewardIds\030\002 \003(\005\"I\n\021ShopGro" +

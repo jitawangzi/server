@@ -121,7 +121,7 @@ message ShopFundPassBuyResponse_15000031{
 
 //领取通行证奖励
 message ShopFundPassRewardRequest_15000032{
-  uint32 id = 1; // FundPassRewards表id
+  repeated uint32 id = 1; // FundPassRewards表id
 }
 
 message ShopFundPassRewardResponse_15000033{

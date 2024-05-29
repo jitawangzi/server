@@ -426,7 +426,8 @@ public class PbProtocolGenerator {
 		String protoPath = workspace + initialProp.getProperty("protos.dir");
 		String javaSrc = workspace + initialProp.getProperty("java.src.dir");
 		String output = workspace + initialProp.getProperty("PbProtocol.dir");
-		String toJava = workspace + initialProp.getProperty("proto.to.java");
+
+		String toJava = initialProp.getProperty("proto.to.java");
 		boolean protoToJava = Boolean.parseBoolean(toJava) ; 
 
 		String charset = initialProp.getProperty("charset");

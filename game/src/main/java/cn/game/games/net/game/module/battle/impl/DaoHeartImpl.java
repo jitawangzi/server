@@ -17,7 +17,7 @@ public class DaoHeartImpl extends HCBattleHandler {
 	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		ChapterModule chapterOp = player.getModule(ChapterModule.class);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
 		//等级限制
 //		if (routineTrainingConfig.getLevel() > player.getData().getLevel()) {
