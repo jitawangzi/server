@@ -2,34 +2,29 @@ package cn.game.protocol.manual;
 
 /**
  * 副本枚举
- * 
- * 工具生成的，不要手动修改
  */
 public enum DungeonTypeEnum{
 
-	/** 列传 */
-	BattleChapter(1,"BattleChapter","列传"),
+	/** 主线章节 */
+	BattleChapter(1, "主线章节"),
 	/** 道心磨砺战斗 */
-	DaoHeart(2, "DaoHeart", "道心磨砺战斗"),
+	DaoHeart(2, "道心磨砺战斗"),
 	/** 突发事件 */
-	BattleEvent(3,"BattleEvent","突发事件"),
+	BattleEvent(3, "突发事件"),
 	/** 探索战斗 */
-	ExploreBattle(4,"ExploreBattle","探索战斗"),
-	/** 主线战斗 */
-	MainlineBattle(5,"MainlineBattle","主线战斗"),
+	ExploreBattle(4, "探索战斗"),
 
-	DayChallenge(12, "DayChallenge", "每日挑战"),
+	// 合成游戏的战斗
+	HCBattleChapter(11, "合成游戏主线章节"),
+	DayChallenge(12, "合成每日挑战"),
     ;
 	/** id */
 	private int id ; 
 	/** 名称 */
-	private String name ; 
-	/** 名称 */
 	private String desc ; 
 
-	private DungeonTypeEnum(int id, String name, String desc) {
+	private DungeonTypeEnum(int id, String desc) {
 		this.id = id; 
-		this.name = name; 
 		this.desc = desc; 
 	}
 	
@@ -55,9 +50,6 @@ public enum DungeonTypeEnum{
 
 	public int getId(){
 		return this.id;
-	}
-	public String getName(){
-		return this.name;
 	}
 	public String getDesc(){
 		return this.desc;

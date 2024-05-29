@@ -40,7 +40,7 @@ public enum EventTypeEnum {
 	/** 章节胜利  参数: 章节id*/
 	ChapterWin(4, "章节胜利"),
 	/** 主线章节第一次通关 ，参数： 章节id */
-	ChapterFirstWin(5, "主线章节第一次通关"),
+	HCChapterFirstWin(5, "主线章节第一次通关"),
 	/** 英雄升级 参数：英雄*/
 	HeroLevelUp(6, "英雄升级"),
 	/** 英雄突破 */
@@ -123,8 +123,10 @@ public enum EventTypeEnum {
 	Ignore(50, "忽略"),
 
 	//成就相关
-	/** 开启战斗 : 战役id，关卡id*/
+	/** 开启战斗 :  Battle战役id，关卡id*/
 	BattleStart(54, "开启战斗"),
+	/** 开启战斗 : HCBattle id，关卡id*/
+	HCBattleStart(54, "开启战斗"),
 	/** 角色更换技能 */
 	SwitchSkills(61, "角色更换技能"),
 	/** 探索后获得资源 */

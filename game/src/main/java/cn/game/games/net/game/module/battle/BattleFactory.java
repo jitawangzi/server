@@ -5,8 +5,8 @@ import java.util.Map;
 
 import cn.game.games.net.game.module.battle.impl.BattleChapterImpl;
 import cn.game.games.net.game.module.battle.impl.BattleEventImpl;
-import cn.game.games.net.game.module.battle.impl.BattleMainlineImpl;
 import cn.game.games.net.game.module.battle.impl.DaoHeartImpl;
+import cn.game.games.net.game.module.battle.impl.HCBattleChapterImpl;
 
 public class BattleFactory {
 
@@ -16,7 +16,7 @@ public class BattleFactory {
 		register(new BattleChapterImpl());
 		register(new BattleEventImpl());
 		register(new DaoHeartImpl());
-		register(new BattleMainlineImpl());
+		register(new HCBattleChapterImpl());
 	}
 
 	public static void register(IBattleHandler battleHandler) {

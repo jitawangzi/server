@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.battle;
 
+import cn.game.games.cache.entity.Player;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 
@@ -25,4 +26,6 @@ public interface IBattleHandler {
 	int battleEnd(long playerId, BattleFieldEndRequest_13000003 request, BattleFieldEndResponse_13000004.Builder resp);
 
 	int getType();
+
+	int check(Player player, int type, int dungeonId);
 }
