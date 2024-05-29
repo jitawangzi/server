@@ -149,7 +149,7 @@ public class ShopHandler extends BaseHandler {
 		if (heishiRefreshTimes == 0) {
 			player.handleEvent(EventTypeEnum.WatchAds);
 		}else {
-			if (heishiRefreshTimes > GlobalConst.HeishiPayfrseh.length + 1) {
+			if (heishiRefreshTimes > GlobalConst.HeishiPayfrseh.length) {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
 				return;
 			}
