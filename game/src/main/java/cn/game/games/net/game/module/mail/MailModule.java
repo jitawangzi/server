@@ -19,6 +19,7 @@ import cn.game.games.net.data.mapper.MailMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.util.DAO;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -172,6 +173,10 @@ public class MailModule extends BasePlayerModule  {
 				iterator.remove(); 
 			}
 		}
+		if (this.mails.size() > GlobalConst.MailMax) {
+
+		}
+		
 	};
 
 	@Override
