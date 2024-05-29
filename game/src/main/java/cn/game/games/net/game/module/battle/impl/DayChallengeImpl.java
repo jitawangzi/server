@@ -7,7 +7,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleDayChallenge;
 import cn.game.games.net.game.module.battle.ChapterModule;
-import cn.game.games.net.game.module.battle.IBattleHandler;
+import cn.game.games.net.game.module.battle.HCBattleHandler;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.manager.BattleManager;
@@ -18,7 +18,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
-public class DayChallengeImpl implements IBattleHandler {
+public class DayChallengeImpl extends HCBattleHandler {
 
 	@Override
 	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {
@@ -55,7 +55,8 @@ public class DayChallengeImpl implements IBattleHandler {
 		if (battleTime >= failRandomTrigger[failRandomTrigger.length - 1]) {
 			index = failRandomTrigger.length - 1;
 		}
-		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FailRandom[index], OpType.BattleEnd);
+//		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FailRandom[index], OpType.BattleEnd);
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FailRandom, OpType.BattleEnd);
 		resp.addAllRewards(reward);
 		BattleDayChallenge dayChallenge = chapterModule.getDayChallenge();
 		dayChallenge.setBattleTimes(dayChallenge.getBattleTimes() + 1);

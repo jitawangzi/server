@@ -3,7 +3,7 @@ package cn.game.games.net.game.module.battle.impl;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
-import cn.game.games.net.game.module.battle.IBattleHandler;
+import cn.game.games.net.game.module.battle.HCBattleHandler;
 import cn.game.protocol.generated.config.BattleLevelConfig;
 import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
@@ -11,7 +11,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.util.DateUtil;
 
-public class DaoHeartImpl implements IBattleHandler {
+public class DaoHeartImpl extends HCBattleHandler {
 
 	@Override
 	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {

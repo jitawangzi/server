@@ -7,7 +7,7 @@ import cn.game.games.cache.entity.BattleRandomEvent;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
-import cn.game.games.net.game.module.battle.IBattleHandler;
+import cn.game.games.net.game.module.battle.HCBattleHandler;
 import cn.game.protocol.generated.config.BattleEventConfig;
 import cn.game.protocol.generated.manager.BattleEventManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
@@ -20,7 +20,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
  * @date 2021年1月15日 上午10:30:16
  * @author SYQ
  */
-public class BattleEventImpl implements IBattleHandler {
+public class BattleEventImpl extends HCBattleHandler {
 
 	@Override
 	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {

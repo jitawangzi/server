@@ -633,7 +633,7 @@ public class PlayerHelper {
 	}
 
 	/** 
-	 * 一次性增加多个奖励，增加完奖励后推送给客户端一次。 
+	 * 一次性增加多个奖励
 	 * @param playerId
 	 * @param rewards
 	 * @return
@@ -646,7 +646,7 @@ public class PlayerHelper {
 				List<RewardInfo> rewardItem = addResources(player, entry.getKey(), entry.getValue(), opType, false);
 				rewardItems.addAll(rewardItem);
 			}
-			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+//			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 		}
 		return rewardItems;
 	}

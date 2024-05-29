@@ -405,48 +405,28 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		
-		BattleConfig battleConfig = BattleManager.instance().get(dungeonId);
-//		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);
-		/*		if (battleConfig.BattleFieldID != id) {
-					client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
-					return;
-				}*/
-
-		/*		int[] openDay = battleConfig.openDay;
-				if (openDay.length > 0) {
-					int dayOfWeek = DateUtil.getDayOfWeek();
-					if (!GameUtil.contains(openDay, dayOfWeek)) {
-						client.sendProtocol(resp, ErrorMsgEnum.not_open.getId());
-						return;
-					}
-				}*/
-		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(battleConfig.preBattle)) {
-			client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
-			return;
-		}
-		if (!chapterModule.checkChapterTimes(dungeonId)) {
-			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
-			return;
-		}
-
-//		if (!PlayerHelper.checkCondition(playerId, battleConfig.enterCondtion)) {
-//			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
-//			return;
-//		}
-
-		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart)) {
-			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
 //		long randomSeed = System.currentTimeMillis() ; 
 		IBattleHandler battleHandler = BattleFactory.getBattleHandler(type);
-		int errorCode = battleHandler.battleStart(playerId, type, dungeonId, id, 0, 0);
+		int errorCode = battleHandler.check(player, type, dungeonId);
+		if (errorCode > 0) {
+			client.sendProtocol(resp, errorCode);
+			return;
+		}
+		errorCode = battleHandler.battleStart(playerId, type, dungeonId, id, 0, 0);
 		if (errorCode == 0) {
 			// 设置当前在打的关卡数据
 			chapterModule.setAttackingData(0, type, dungeonId, id, 0, 0);
-			// 触发事件
-			player.handleEvent(EventTypeEnum.BattleStart, battleConfig.ID, 0);
+			if (battleHandler instanceof HCBattleHandler) {
+				// 触发事件
+				player.handleEvent(EventTypeEnum.BattleStart, dungeonId, 0);
+			} else if (battleHandler instanceof XiYouBattleHandler) {
+				// 触发事件
+				player.handleEvent(EventTypeEnum.HCBattleStart, dungeonId, 0);
+			}
+
+			AttrModule module = player.getModule(AttrModule.class);
+			module.calcAllAttr();
+			resp.setAttrs(module.buildBattleAttrs());
 		}
 		//添加怪物图鉴
 //		List<Integer> monsterSequence = levelConfig.getMonsterSequence();
@@ -467,9 +447,6 @@ public class ChapterHandler extends BaseHandler {
 //		}
 
 //		resp.setRandomSeed(randomSeed + "");
-		AttrModule module = player.getModule(AttrModule.class); 
-		module.calcAllAttr();
-		resp.setAttrs(module.buildBattleAttrs());
 		client.sendProtocol(resp, errorCode);
 	}
 

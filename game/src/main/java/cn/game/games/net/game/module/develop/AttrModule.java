@@ -125,12 +125,12 @@ public class AttrModule extends BasePlayerModule {
 				});
 			}
 			// 突破属性
-			for (int[] attrArray : heroConfig.BreakActivationAttribute) {
-				if (attrArray[0] == hero.getQuality()) {
-					attributeVlalueConfig = AttributeVlalueManager.instance().get(attrArray[1]);
-					heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
-				}
-			}
+//			for (int[] attrArray : heroConfig.BreakActivationAttribute) {
+//				if (attrArray[0] == hero.getQuality()) {
+//					attributeVlalueConfig = AttributeVlalueManager.instance().get(attrArray[1]);
+//					heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
+//				}
+//			}
 			HeroBreakConfig uiInitialQualityStar = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
 			attributeVlalueConfig = AttributeVlalueManager.instance().get(uiInitialQualityStar.BreakOneTime);
 			heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
