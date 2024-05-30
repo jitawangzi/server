@@ -334,6 +334,9 @@ public class Player  {
 	 * @return
 	 */
 	public Future<Boolean> pay(int[] cost) {
+		if (cost == null || cost.length == 0) {
+			return Future.succeededFuture(true);
+		}
 		int costType = cost[0] ; 
 		Promise<Boolean> promise = Promise.promise(); 
 		

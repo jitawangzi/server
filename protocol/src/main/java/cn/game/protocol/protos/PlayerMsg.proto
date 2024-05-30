@@ -228,6 +228,8 @@ message PlayerAllInfo{
    repeated FundPassInfo fundPass  = 44;        //领过的通行证奖励
    int32 heishiFreshTimes = 46;        //黑市手动刷新次数
    repeated string freeDayRentHeros = 47;  //免费日租卡的英雄id
+   string freeDayRentHeroUid = 49; // 当前选择使用的日租卡英雄唯一id。
+
    repeated int32 storeStaminas = 48;  //储存的体力时间，秒时间戳
 
    CloudBoxInfo cloudBox = 50;  // 小云宝箱

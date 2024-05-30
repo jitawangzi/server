@@ -54,6 +54,7 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
 import cn.game.util.SpringContextLoader;
+import io.vertx.core.Future;
 
 @Component
 public class TestHandler extends BaseHandler {
@@ -283,6 +284,15 @@ public class TestHandler extends BaseHandler {
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
 		PlayerManager.getInstance().saveClientCache(playerId);
 		
+		Future<Boolean> pay = player.pay(new int[] {});
+		pay.onComplete(t -> {
+			if (t.result()) {
+				System.out.println(true);
+			} else {
+				System.out.println(false);
+			}
+		});
+
 //		CommonLogger.error("what the fuck by common logger");
 //		log.error("what the fuck by log");
 //		GameLogger.heart();

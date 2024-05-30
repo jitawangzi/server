@@ -35,6 +35,8 @@ import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateResponse_16000004;
+import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032;
+import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000033;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031;
 import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetRequest_16000007;
@@ -69,6 +71,7 @@ public class HeroHandler extends BaseHandler {
 		putInvoker(PbProtocol.HeroLevelResetRequest_16000007, this::levelReset);
 		putInvoker(PbProtocol.HeroQualityResetRequest_16000011, this::qualityReset);
 		putInvoker(PbProtocol.HeroFreeDayRentRequest_16000030, this::freeDayRent);
+		putInvoker(PbProtocol.HeroFreeDayRentChooseRequest_16000032, this::freeDayRentChoose);
 	}
 
 	private void empty(NetClient client, Object message) {
@@ -82,6 +85,27 @@ public class HeroHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		client.sendProtocol(resp.build());
+	}
+
+	private void freeDayRentChoose(NetClient client, Object message) {
+		HeroFreeDayRentChooseRequest_16000032 req = (HeroFreeDayRentChooseRequest_16000032) message;
+		HeroFreeDayRentChooseResponse_16000033.Builder resp = HeroFreeDayRentChooseResponse_16000033.newBuilder();
+		long uid = Long.parseLong(req.getUid());
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		Hero hero = heroModule.get(uid);
+		if (hero == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		boolean contains = heroModule.getFreeDayHeros().contains(uid);
+		if (!contains) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		heroModule.setFreeDayHeroUid(uid);
+
 		client.sendProtocol(resp.build());
 	}
 

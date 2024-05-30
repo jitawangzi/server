@@ -24445,6 +24445,26 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 当前选择使用的日租卡英雄唯一id。
+     * </pre>
+     *
+     * <code>string freeDayRentHeroUid = 49;</code>
+     * @return The freeDayRentHeroUid.
+     */
+    java.lang.String getFreeDayRentHeroUid();
+    /**
+     * <pre>
+     * 当前选择使用的日租卡英雄唯一id。
+     * </pre>
+     *
+     * <code>string freeDayRentHeroUid = 49;</code>
+     * @return The bytes for freeDayRentHeroUid.
+     */
+    com.google.protobuf.ByteString
+        getFreeDayRentHeroUidBytes();
+
+    /**
+     * <pre>
      *储存的体力时间，秒时间戳
      * </pre>
      *
@@ -24808,6 +24828,7 @@ public final class PlayerMsg {
       chapterPacks_ = emptyIntList();
       fundPass_ = java.util.Collections.emptyList();
       freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      freeDayRentHeroUid_ = "";
       storeStaminas_ = emptyIntList();
       questGroups_ = java.util.Collections.emptyList();
       questGroupPointRewards_ = java.util.Collections.emptyList();
@@ -25098,6 +25119,12 @@ public final class PlayerMsg {
                 storeStaminas_.addInt(input.readInt32());
               }
               input.popLimit(limit);
+              break;
+            }
+            case 394: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              freeDayRentHeroUid_ = s;
               break;
             }
             case 402: {
@@ -26716,6 +26743,52 @@ public final class PlayerMsg {
       return freeDayRentHeros_.getByteString(index);
     }
 
+    public static final int FREEDAYRENTHEROUID_FIELD_NUMBER = 49;
+    private volatile java.lang.Object freeDayRentHeroUid_;
+    /**
+     * <pre>
+     * 当前选择使用的日租卡英雄唯一id。
+     * </pre>
+     *
+     * <code>string freeDayRentHeroUid = 49;</code>
+     * @return The freeDayRentHeroUid.
+     */
+    @java.lang.Override
+    public java.lang.String getFreeDayRentHeroUid() {
+      java.lang.Object ref = freeDayRentHeroUid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        freeDayRentHeroUid_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 当前选择使用的日租卡英雄唯一id。
+     * </pre>
+     *
+     * <code>string freeDayRentHeroUid = 49;</code>
+     * @return The bytes for freeDayRentHeroUid.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getFreeDayRentHeroUidBytes() {
+      java.lang.Object ref = freeDayRentHeroUid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        freeDayRentHeroUid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int STORESTAMINAS_FIELD_NUMBER = 48;
     private com.google.protobuf.Internal.IntList storeStaminas_;
     /**
@@ -27293,6 +27366,9 @@ public final class PlayerMsg {
       for (int i = 0; i < storeStaminas_.size(); i++) {
         output.writeInt32NoTag(storeStaminas_.getInt(i));
       }
+      if (!getFreeDayRentHeroUidBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 49, freeDayRentHeroUid_);
+      }
       if (cloudBox_ != null) {
         output.writeMessage(50, getCloudBox());
       }
@@ -27491,6 +27567,9 @@ public final class PlayerMsg {
         }
         storeStaminasMemoizedSerializedSize = dataSize;
       }
+      if (!getFreeDayRentHeroUidBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(49, freeDayRentHeroUid_);
+      }
       if (cloudBox_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(50, getCloudBox());
@@ -27605,6 +27684,8 @@ public final class PlayerMsg {
           != other.getHeishiFreshTimes()) return false;
       if (!getFreeDayRentHerosList()
           .equals(other.getFreeDayRentHerosList())) return false;
+      if (!getFreeDayRentHeroUid()
+          .equals(other.getFreeDayRentHeroUid())) return false;
       if (!getStoreStaminasList()
           .equals(other.getStoreStaminasList())) return false;
       if (hasCloudBox() != other.hasCloudBox()) return false;
@@ -27732,6 +27813,8 @@ public final class PlayerMsg {
         hash = (37 * hash) + FREEDAYRENTHEROS_FIELD_NUMBER;
         hash = (53 * hash) + getFreeDayRentHerosList().hashCode();
       }
+      hash = (37 * hash) + FREEDAYRENTHEROUID_FIELD_NUMBER;
+      hash = (53 * hash) + getFreeDayRentHeroUid().hashCode();
       if (getStoreStaminasCount() > 0) {
         hash = (37 * hash) + STORESTAMINAS_FIELD_NUMBER;
         hash = (53 * hash) + getStoreStaminasList().hashCode();
@@ -28049,6 +28132,8 @@ public final class PlayerMsg {
 
         freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00020000);
+        freeDayRentHeroUid_ = "";
+
         storeStaminas_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00040000);
         if (cloudBoxBuilder_ == null) {
@@ -28247,6 +28332,7 @@ public final class PlayerMsg {
           bitField0_ = (bitField0_ & ~0x00020000);
         }
         result.freeDayRentHeros_ = freeDayRentHeros_;
+        result.freeDayRentHeroUid_ = freeDayRentHeroUid_;
         if (((bitField0_ & 0x00040000) != 0)) {
           storeStaminas_.makeImmutable();
           bitField0_ = (bitField0_ & ~0x00040000);
@@ -28664,6 +28750,10 @@ public final class PlayerMsg {
             ensureFreeDayRentHerosIsMutable();
             freeDayRentHeros_.addAll(other.freeDayRentHeros_);
           }
+          onChanged();
+        }
+        if (!other.getFreeDayRentHeroUid().isEmpty()) {
+          freeDayRentHeroUid_ = other.freeDayRentHeroUid_;
           onChanged();
         }
         if (!other.storeStaminas_.isEmpty()) {
@@ -33524,6 +33614,102 @@ public final class PlayerMsg {
         return this;
       }
 
+      private java.lang.Object freeDayRentHeroUid_ = "";
+      /**
+       * <pre>
+       * 当前选择使用的日租卡英雄唯一id。
+       * </pre>
+       *
+       * <code>string freeDayRentHeroUid = 49;</code>
+       * @return The freeDayRentHeroUid.
+       */
+      public java.lang.String getFreeDayRentHeroUid() {
+        java.lang.Object ref = freeDayRentHeroUid_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          freeDayRentHeroUid_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 当前选择使用的日租卡英雄唯一id。
+       * </pre>
+       *
+       * <code>string freeDayRentHeroUid = 49;</code>
+       * @return The bytes for freeDayRentHeroUid.
+       */
+      public com.google.protobuf.ByteString
+          getFreeDayRentHeroUidBytes() {
+        java.lang.Object ref = freeDayRentHeroUid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          freeDayRentHeroUid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 当前选择使用的日租卡英雄唯一id。
+       * </pre>
+       *
+       * <code>string freeDayRentHeroUid = 49;</code>
+       * @param value The freeDayRentHeroUid to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFreeDayRentHeroUid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        freeDayRentHeroUid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前选择使用的日租卡英雄唯一id。
+       * </pre>
+       *
+       * <code>string freeDayRentHeroUid = 49;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFreeDayRentHeroUid() {
+        
+        freeDayRentHeroUid_ = getDefaultInstance().getFreeDayRentHeroUid();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 当前选择使用的日租卡英雄唯一id。
+       * </pre>
+       *
+       * <code>string freeDayRentHeroUid = 49;</code>
+       * @param value The bytes for freeDayRentHeroUid to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFreeDayRentHeroUidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        freeDayRentHeroUid_ = value;
+        onChanged();
+        return this;
+      }
+
       private com.google.protobuf.Internal.IntList storeStaminas_ = emptyIntList();
       private void ensureStoreStaminasIsMutable() {
         if (!((bitField0_ & 0x00040000) != 0)) {
@@ -35863,7 +36049,7 @@ public final class PlayerMsg {
       "el\030\001 \001(\0132\024.Protos.ExpLevelInfo\"k\n\nPlayer" +
       "Info\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030" +
       "\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023" +
-      "\n\013offlineTime\030\026 \001(\t\"\365\014\n\rPlayerAllInfo\022\"\n" +
+      "\n\013offlineTime\030\026 \001(\t\"\221\r\n\rPlayerAllInfo\022\"\n" +
       "\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006ass" +
       "ets\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsE" +
       "ntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Play" +
@@ -35886,26 +36072,27 @@ public final class PlayerMsg {
       "thCardDoubleBonus\030* \001(\010\022\024\n\014chapterPacks\030" +
       ") \003(\r\022&\n\010fundPass\030, \003(\0132\024.Protos.FundPas" +
       "sInfo\022\030\n\020heishiFreshTimes\030. \001(\005\022\030\n\020freeD" +
-      "ayRentHeros\030/ \003(\t\022\025\n\rstoreStaminas\0300 \003(\005" +
-      "\022&\n\010cloudBox\0302 \001(\0132\024.Protos.CloudBoxInfo" +
-      "\022\"\n\006patrol\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013" +
-      "questGroups\0307 \003(\0132\026.Protos.QuestGroupInf" +
-      "o\022A\n\026questGroupPointRewards\0308 \003(\0132!.Prot" +
-      "os.QuestGroupPointRewardInfo\0221\n\016shopGrou" +
-      "pItems\030d \003(\0132\031.Protos.ShopGroupItemInfo\022" +
-      "\033\n\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017mergeSwe" +
-      "epTimes\030f \001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Pro" +
-      "tos.MergeEquipmentInfo\022\025\n\rmergeEquipIds\030" +
-      "h \003(\005\0223\n\021mergeDayChallenge\030i \001(\0132\030.Proto" +
-      "s.DayChallengeInfo\032-\n\013AssetsEntry\022\013\n\003key" +
-      "\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecove" +
-      "rEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-" +
-      "\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
-      "\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
-      "alue\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 " +
-      "\001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEn" +
-      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031c" +
-      "n.game.protocol.protobufb\006proto3"
+      "ayRentHeros\030/ \003(\t\022\032\n\022freeDayRentHeroUid\030" +
+      "1 \001(\t\022\025\n\rstoreStaminas\0300 \003(\005\022&\n\010cloudBox" +
+      "\0302 \001(\0132\024.Protos.CloudBoxInfo\022\"\n\006patrol\0303" +
+      " \001(\0132\022.Protos.PatrolInfo\022+\n\013questGroups\030" +
+      "7 \003(\0132\026.Protos.QuestGroupInfo\022A\n\026questGr" +
+      "oupPointRewards\0308 \003(\0132!.Protos.QuestGrou" +
+      "pPointRewardInfo\0221\n\016shopGroupItems\030d \003(\013" +
+      "2\031.Protos.ShopGroupItemInfo\022\033\n\023nextFreeO" +
+      "penBoxTime\030e \001(\005\022\027\n\017mergeSweepTimes\030f \001(" +
+      "\005\022/\n\013mergeEquips\030g \003(\0132\032.Protos.MergeEqu" +
+      "ipmentInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021mer" +
+      "geDayChallenge\030i \001(\0132\030.Protos.DayChallen" +
+      "geInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
+      "lue\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003ke" +
+      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntr" +
+      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlc" +
+      "hemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
+      "8\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
+      "\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003key\030\001" +
+      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.proto" +
+      "col.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -36131,7 +36318,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

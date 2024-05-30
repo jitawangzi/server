@@ -4902,11 +4902,10 @@ public final class MailMsg {
 
     /**
      * <pre>
-     * 邮件类型，1: 系统自动发的邮件，多语言的，不直接发文本内容，发文本id  
-     * 2 : 邮件类型， 手动发的，一般为英文版，直接发内容
+     * 邮件类型，1: 公告邮件 2 : 系统邮件
      * </pre>
      *
-     * <code>uint32 type = 10;</code>
+     * <code>uint32 type = 1;</code>
      * @return The type.
      */
     int getType();
@@ -4916,7 +4915,7 @@ public final class MailMsg {
      *邮件唯一id
      * </pre>
      *
-     * <code>string uid = 1;</code>
+     * <code>string uid = 2;</code>
      * @return The uid.
      */
     java.lang.String getUid();
@@ -4925,7 +4924,7 @@ public final class MailMsg {
      *邮件唯一id
      * </pre>
      *
-     * <code>string uid = 1;</code>
+     * <code>string uid = 2;</code>
      * @return The bytes for uid.
      */
     com.google.protobuf.ByteString
@@ -4933,19 +4932,29 @@ public final class MailMsg {
 
     /**
      * <pre>
-     *发件人,  根据邮件类型来，可能是id
+     *Mail表id
      * </pre>
      *
-     * <code>string sender = 2;</code>
+     * <code>uint32 id = 3;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     *发件人,暂时不用。
+     * </pre>
+     *
+     * <code>string sender = 4;</code>
      * @return The sender.
      */
     java.lang.String getSender();
     /**
      * <pre>
-     *发件人,  根据邮件类型来，可能是id
+     *发件人,暂时不用。
      * </pre>
      *
-     * <code>string sender = 2;</code>
+     * <code>string sender = 4;</code>
      * @return The bytes for sender.
      */
     com.google.protobuf.ByteString
@@ -4953,19 +4962,19 @@ public final class MailMsg {
 
     /**
      * <pre>
-     *标题,  根据邮件类型来，可能是id
+     *标题，如果有值用这个值，如果没有从Mail表里面取内容
      * </pre>
      *
-     * <code>string title = 3;</code>
+     * <code>string title = 5;</code>
      * @return The title.
      */
     java.lang.String getTitle();
     /**
      * <pre>
-     *标题,  根据邮件类型来，可能是id
+     *标题，如果有值用这个值，如果没有从Mail表里面取内容
      * </pre>
      *
-     * <code>string title = 3;</code>
+     * <code>string title = 5;</code>
      * @return The bytes for title.
      */
     com.google.protobuf.ByteString
@@ -4973,19 +4982,19 @@ public final class MailMsg {
 
     /**
      * <pre>
-     *内容,  根据邮件类型来，可能是id
+     *内容，如果有值用这个值，如果没有从Mail表里面取内容
      * </pre>
      *
-     * <code>string content = 4;</code>
+     * <code>string content = 8;</code>
      * @return The content.
      */
     java.lang.String getContent();
     /**
      * <pre>
-     *内容,  根据邮件类型来，可能是id
+     *内容，如果有值用这个值，如果没有从Mail表里面取内容
      * </pre>
      *
-     * <code>string content = 4;</code>
+     * <code>string content = 8;</code>
      * @return The bytes for content.
      */
     com.google.protobuf.ByteString
@@ -4993,10 +5002,10 @@ public final class MailMsg {
 
     /**
      * <pre>
-     *发送时间（时间戳，秒）
+     *发送时间（时间戳，秒）或者说是收到的时间
      * </pre>
      *
-     * <code>uint32 time = 5;</code>
+     * <code>uint32 time = 9;</code>
      * @return The time.
      */
     int getTime();
@@ -5006,7 +5015,7 @@ public final class MailMsg {
      *过期时间（时间戳，秒）
      * </pre>
      *
-     * <code>uint32 expireTime = 6;</code>
+     * <code>uint32 expireTime = 10;</code>
      * @return The expireTime.
      */
     int getExpireTime();
@@ -5016,7 +5025,7 @@ public final class MailMsg {
      *是否查看过
      * </pre>
      *
-     * <code>bool see = 7;</code>
+     * <code>bool see = 11;</code>
      * @return The see.
      */
     boolean getSee();
@@ -5026,7 +5035,7 @@ public final class MailMsg {
      *是否领取过附件奖励
      * </pre>
      *
-     * <code>bool receive = 8;</code>
+     * <code>bool receive = 12;</code>
      * @return The receive.
      */
     boolean getReceive();
@@ -5036,7 +5045,7 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> 
         getAttachmentsList();
@@ -5045,7 +5054,7 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.GoodsInfo getAttachments(int index);
     /**
@@ -5053,7 +5062,7 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     int getAttachmentsCount();
     /**
@@ -5061,7 +5070,7 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> 
         getAttachmentsOrBuilderList();
@@ -5070,35 +5079,10 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getAttachmentsOrBuilder(
         int index);
-
-    /**
-     * <code>repeated string params = 11;</code>
-     * @return A list containing the params.
-     */
-    java.util.List<java.lang.String>
-        getParamsList();
-    /**
-     * <code>repeated string params = 11;</code>
-     * @return The count of params.
-     */
-    int getParamsCount();
-    /**
-     * <code>repeated string params = 11;</code>
-     * @param index The index of the element to return.
-     * @return The params at the given index.
-     */
-    java.lang.String getParams(int index);
-    /**
-     * <code>repeated string params = 11;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the params at the given index.
-     */
-    com.google.protobuf.ByteString
-        getParamsBytes(int index);
   }
   /**
    * <pre>
@@ -5122,7 +5106,6 @@ public final class MailMsg {
       title_ = "";
       content_ = "";
       attachments_ = java.util.Collections.emptyList();
-      params_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
@@ -5156,71 +5139,67 @@ public final class MailMsg {
             case 0:
               done = true;
               break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 8: {
 
-              uid_ = s;
+              type_ = input.readUInt32();
               break;
             }
             case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              sender_ = s;
+              uid_ = s;
               break;
             }
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 24: {
 
-              title_ = s;
+              id_ = input.readUInt32();
               break;
             }
             case 34: {
               java.lang.String s = input.readStringRequireUtf8();
 
+              sender_ = s;
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              title_ = s;
+              break;
+            }
+            case 66: {
+              java.lang.String s = input.readStringRequireUtf8();
+
               content_ = s;
               break;
             }
-            case 40: {
+            case 72: {
 
               time_ = input.readUInt32();
               break;
             }
-            case 48: {
+            case 80: {
 
               expireTime_ = input.readUInt32();
               break;
             }
-            case 56: {
+            case 88: {
 
               see_ = input.readBool();
               break;
             }
-            case 64: {
+            case 96: {
 
               receive_ = input.readBool();
               break;
             }
-            case 74: {
+            case 106: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 attachments_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.GoodsInfo>();
                 mutable_bitField0_ |= 0x00000001;
               }
               attachments_.add(
                   input.readMessage(cn.game.protocol.protobuf.BaseMsg.GoodsInfo.parser(), extensionRegistry));
-              break;
-            }
-            case 80: {
-
-              type_ = input.readUInt32();
-              break;
-            }
-            case 90: {
-              java.lang.String s = input.readStringRequireUtf8();
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                params_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              params_.add(s);
               break;
             }
             default: {
@@ -5241,9 +5220,6 @@ public final class MailMsg {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           attachments_ = java.util.Collections.unmodifiableList(attachments_);
         }
-        if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          params_ = params_.getUnmodifiableView();
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -5261,15 +5237,14 @@ public final class MailMsg {
               cn.game.protocol.protobuf.MailMsg.MailInfo.class, cn.game.protocol.protobuf.MailMsg.MailInfo.Builder.class);
     }
 
-    public static final int TYPE_FIELD_NUMBER = 10;
+    public static final int TYPE_FIELD_NUMBER = 1;
     private int type_;
     /**
      * <pre>
-     * 邮件类型，1: 系统自动发的邮件，多语言的，不直接发文本内容，发文本id  
-     * 2 : 邮件类型， 手动发的，一般为英文版，直接发内容
+     * 邮件类型，1: 公告邮件 2 : 系统邮件
      * </pre>
      *
-     * <code>uint32 type = 10;</code>
+     * <code>uint32 type = 1;</code>
      * @return The type.
      */
     @java.lang.Override
@@ -5277,14 +5252,14 @@ public final class MailMsg {
       return type_;
     }
 
-    public static final int UID_FIELD_NUMBER = 1;
+    public static final int UID_FIELD_NUMBER = 2;
     private volatile java.lang.Object uid_;
     /**
      * <pre>
      *邮件唯一id
      * </pre>
      *
-     * <code>string uid = 1;</code>
+     * <code>string uid = 2;</code>
      * @return The uid.
      */
     @java.lang.Override
@@ -5305,7 +5280,7 @@ public final class MailMsg {
      *邮件唯一id
      * </pre>
      *
-     * <code>string uid = 1;</code>
+     * <code>string uid = 2;</code>
      * @return The bytes for uid.
      */
     @java.lang.Override
@@ -5323,14 +5298,29 @@ public final class MailMsg {
       }
     }
 
-    public static final int SENDER_FIELD_NUMBER = 2;
+    public static final int ID_FIELD_NUMBER = 3;
+    private int id_;
+    /**
+     * <pre>
+     *Mail表id
+     * </pre>
+     *
+     * <code>uint32 id = 3;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 4;
     private volatile java.lang.Object sender_;
     /**
      * <pre>
-     *发件人,  根据邮件类型来，可能是id
+     *发件人,暂时不用。
      * </pre>
      *
-     * <code>string sender = 2;</code>
+     * <code>string sender = 4;</code>
      * @return The sender.
      */
     @java.lang.Override
@@ -5348,10 +5338,10 @@ public final class MailMsg {
     }
     /**
      * <pre>
-     *发件人,  根据邮件类型来，可能是id
+     *发件人,暂时不用。
      * </pre>
      *
-     * <code>string sender = 2;</code>
+     * <code>string sender = 4;</code>
      * @return The bytes for sender.
      */
     @java.lang.Override
@@ -5369,14 +5359,14 @@ public final class MailMsg {
       }
     }
 
-    public static final int TITLE_FIELD_NUMBER = 3;
+    public static final int TITLE_FIELD_NUMBER = 5;
     private volatile java.lang.Object title_;
     /**
      * <pre>
-     *标题,  根据邮件类型来，可能是id
+     *标题，如果有值用这个值，如果没有从Mail表里面取内容
      * </pre>
      *
-     * <code>string title = 3;</code>
+     * <code>string title = 5;</code>
      * @return The title.
      */
     @java.lang.Override
@@ -5394,10 +5384,10 @@ public final class MailMsg {
     }
     /**
      * <pre>
-     *标题,  根据邮件类型来，可能是id
+     *标题，如果有值用这个值，如果没有从Mail表里面取内容
      * </pre>
      *
-     * <code>string title = 3;</code>
+     * <code>string title = 5;</code>
      * @return The bytes for title.
      */
     @java.lang.Override
@@ -5415,14 +5405,14 @@ public final class MailMsg {
       }
     }
 
-    public static final int CONTENT_FIELD_NUMBER = 4;
+    public static final int CONTENT_FIELD_NUMBER = 8;
     private volatile java.lang.Object content_;
     /**
      * <pre>
-     *内容,  根据邮件类型来，可能是id
+     *内容，如果有值用这个值，如果没有从Mail表里面取内容
      * </pre>
      *
-     * <code>string content = 4;</code>
+     * <code>string content = 8;</code>
      * @return The content.
      */
     @java.lang.Override
@@ -5440,10 +5430,10 @@ public final class MailMsg {
     }
     /**
      * <pre>
-     *内容,  根据邮件类型来，可能是id
+     *内容，如果有值用这个值，如果没有从Mail表里面取内容
      * </pre>
      *
-     * <code>string content = 4;</code>
+     * <code>string content = 8;</code>
      * @return The bytes for content.
      */
     @java.lang.Override
@@ -5461,14 +5451,14 @@ public final class MailMsg {
       }
     }
 
-    public static final int TIME_FIELD_NUMBER = 5;
+    public static final int TIME_FIELD_NUMBER = 9;
     private int time_;
     /**
      * <pre>
-     *发送时间（时间戳，秒）
+     *发送时间（时间戳，秒）或者说是收到的时间
      * </pre>
      *
-     * <code>uint32 time = 5;</code>
+     * <code>uint32 time = 9;</code>
      * @return The time.
      */
     @java.lang.Override
@@ -5476,14 +5466,14 @@ public final class MailMsg {
       return time_;
     }
 
-    public static final int EXPIRETIME_FIELD_NUMBER = 6;
+    public static final int EXPIRETIME_FIELD_NUMBER = 10;
     private int expireTime_;
     /**
      * <pre>
      *过期时间（时间戳，秒）
      * </pre>
      *
-     * <code>uint32 expireTime = 6;</code>
+     * <code>uint32 expireTime = 10;</code>
      * @return The expireTime.
      */
     @java.lang.Override
@@ -5491,14 +5481,14 @@ public final class MailMsg {
       return expireTime_;
     }
 
-    public static final int SEE_FIELD_NUMBER = 7;
+    public static final int SEE_FIELD_NUMBER = 11;
     private boolean see_;
     /**
      * <pre>
      *是否查看过
      * </pre>
      *
-     * <code>bool see = 7;</code>
+     * <code>bool see = 11;</code>
      * @return The see.
      */
     @java.lang.Override
@@ -5506,14 +5496,14 @@ public final class MailMsg {
       return see_;
     }
 
-    public static final int RECEIVE_FIELD_NUMBER = 8;
+    public static final int RECEIVE_FIELD_NUMBER = 12;
     private boolean receive_;
     /**
      * <pre>
      *是否领取过附件奖励
      * </pre>
      *
-     * <code>bool receive = 8;</code>
+     * <code>bool receive = 12;</code>
      * @return The receive.
      */
     @java.lang.Override
@@ -5521,14 +5511,14 @@ public final class MailMsg {
       return receive_;
     }
 
-    public static final int ATTACHMENTS_FIELD_NUMBER = 9;
+    public static final int ATTACHMENTS_FIELD_NUMBER = 13;
     private java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> attachments_;
     /**
      * <pre>
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     @java.lang.Override
     public java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> getAttachmentsList() {
@@ -5539,7 +5529,7 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     @java.lang.Override
     public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> 
@@ -5551,7 +5541,7 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     @java.lang.Override
     public int getAttachmentsCount() {
@@ -5562,7 +5552,7 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     @java.lang.Override
     public cn.game.protocol.protobuf.BaseMsg.GoodsInfo getAttachments(int index) {
@@ -5573,47 +5563,12 @@ public final class MailMsg {
      *附件奖励
      * </pre>
      *
-     * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+     * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
      */
     @java.lang.Override
     public cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getAttachmentsOrBuilder(
         int index) {
       return attachments_.get(index);
-    }
-
-    public static final int PARAMS_FIELD_NUMBER = 11;
-    private com.google.protobuf.LazyStringList params_;
-    /**
-     * <code>repeated string params = 11;</code>
-     * @return A list containing the params.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getParamsList() {
-      return params_;
-    }
-    /**
-     * <code>repeated string params = 11;</code>
-     * @return The count of params.
-     */
-    public int getParamsCount() {
-      return params_.size();
-    }
-    /**
-     * <code>repeated string params = 11;</code>
-     * @param index The index of the element to return.
-     * @return The params at the given index.
-     */
-    public java.lang.String getParams(int index) {
-      return params_.get(index);
-    }
-    /**
-     * <code>repeated string params = 11;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the params at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getParamsBytes(int index) {
-      return params_.getByteString(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -5630,38 +5585,38 @@ public final class MailMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (type_ != 0) {
+        output.writeUInt32(1, type_);
+      }
       if (!getUidBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uid_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, uid_);
+      }
+      if (id_ != 0) {
+        output.writeUInt32(3, id_);
       }
       if (!getSenderBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, sender_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, sender_);
       }
       if (!getTitleBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, title_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, title_);
       }
       if (!getContentBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, content_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, content_);
       }
       if (time_ != 0) {
-        output.writeUInt32(5, time_);
+        output.writeUInt32(9, time_);
       }
       if (expireTime_ != 0) {
-        output.writeUInt32(6, expireTime_);
+        output.writeUInt32(10, expireTime_);
       }
       if (see_ != false) {
-        output.writeBool(7, see_);
+        output.writeBool(11, see_);
       }
       if (receive_ != false) {
-        output.writeBool(8, receive_);
+        output.writeBool(12, receive_);
       }
       for (int i = 0; i < attachments_.size(); i++) {
-        output.writeMessage(9, attachments_.get(i));
-      }
-      if (type_ != 0) {
-        output.writeUInt32(10, type_);
-      }
-      for (int i = 0; i < params_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, params_.getRaw(i));
+        output.writeMessage(13, attachments_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -5672,49 +5627,45 @@ public final class MailMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (type_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, type_);
+      }
       if (!getUidBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uid_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, uid_);
+      }
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, id_);
       }
       if (!getSenderBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, sender_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, sender_);
       }
       if (!getTitleBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, title_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, title_);
       }
       if (!getContentBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, content_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, content_);
       }
       if (time_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(5, time_);
+          .computeUInt32Size(9, time_);
       }
       if (expireTime_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(6, expireTime_);
+          .computeUInt32Size(10, expireTime_);
       }
       if (see_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, see_);
+          .computeBoolSize(11, see_);
       }
       if (receive_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(8, receive_);
+          .computeBoolSize(12, receive_);
       }
       for (int i = 0; i < attachments_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, attachments_.get(i));
-      }
-      if (type_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(10, type_);
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < params_.size(); i++) {
-          dataSize += computeStringSizeNoTag(params_.getRaw(i));
-        }
-        size += dataSize;
-        size += 1 * getParamsList().size();
+          .computeMessageSize(13, attachments_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5735,6 +5686,8 @@ public final class MailMsg {
           != other.getType()) return false;
       if (!getUid()
           .equals(other.getUid())) return false;
+      if (getId()
+          != other.getId()) return false;
       if (!getSender()
           .equals(other.getSender())) return false;
       if (!getTitle()
@@ -5751,8 +5704,6 @@ public final class MailMsg {
           != other.getReceive()) return false;
       if (!getAttachmentsList()
           .equals(other.getAttachmentsList())) return false;
-      if (!getParamsList()
-          .equals(other.getParamsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -5768,6 +5719,8 @@ public final class MailMsg {
       hash = (53 * hash) + getType();
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + getUid().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
       hash = (37 * hash) + SENDER_FIELD_NUMBER;
       hash = (53 * hash) + getSender().hashCode();
       hash = (37 * hash) + TITLE_FIELD_NUMBER;
@@ -5787,10 +5740,6 @@ public final class MailMsg {
       if (getAttachmentsCount() > 0) {
         hash = (37 * hash) + ATTACHMENTS_FIELD_NUMBER;
         hash = (53 * hash) + getAttachmentsList().hashCode();
-      }
-      if (getParamsCount() > 0) {
-        hash = (37 * hash) + PARAMS_FIELD_NUMBER;
-        hash = (53 * hash) + getParamsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -5934,6 +5883,8 @@ public final class MailMsg {
 
         uid_ = "";
 
+        id_ = 0;
+
         sender_ = "";
 
         title_ = "";
@@ -5954,8 +5905,6 @@ public final class MailMsg {
         } else {
           attachmentsBuilder_.clear();
         }
-        params_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -5985,6 +5934,7 @@ public final class MailMsg {
         int from_bitField0_ = bitField0_;
         result.type_ = type_;
         result.uid_ = uid_;
+        result.id_ = id_;
         result.sender_ = sender_;
         result.title_ = title_;
         result.content_ = content_;
@@ -6001,11 +5951,6 @@ public final class MailMsg {
         } else {
           result.attachments_ = attachmentsBuilder_.build();
         }
-        if (((bitField0_ & 0x00000002) != 0)) {
-          params_ = params_.getUnmodifiableView();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.params_ = params_;
         onBuilt();
         return result;
       }
@@ -6061,6 +6006,9 @@ public final class MailMsg {
           uid_ = other.uid_;
           onChanged();
         }
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
         if (!other.getSender().isEmpty()) {
           sender_ = other.sender_;
           onChanged();
@@ -6111,16 +6059,6 @@ public final class MailMsg {
             }
           }
         }
-        if (!other.params_.isEmpty()) {
-          if (params_.isEmpty()) {
-            params_ = other.params_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureParamsIsMutable();
-            params_.addAll(other.params_);
-          }
-          onChanged();
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -6154,11 +6092,10 @@ public final class MailMsg {
       private int type_ ;
       /**
        * <pre>
-       * 邮件类型，1: 系统自动发的邮件，多语言的，不直接发文本内容，发文本id  
-       * 2 : 邮件类型， 手动发的，一般为英文版，直接发内容
+       * 邮件类型，1: 公告邮件 2 : 系统邮件
        * </pre>
        *
-       * <code>uint32 type = 10;</code>
+       * <code>uint32 type = 1;</code>
        * @return The type.
        */
       @java.lang.Override
@@ -6167,11 +6104,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       * 邮件类型，1: 系统自动发的邮件，多语言的，不直接发文本内容，发文本id  
-       * 2 : 邮件类型， 手动发的，一般为英文版，直接发内容
+       * 邮件类型，1: 公告邮件 2 : 系统邮件
        * </pre>
        *
-       * <code>uint32 type = 10;</code>
+       * <code>uint32 type = 1;</code>
        * @param value The type to set.
        * @return This builder for chaining.
        */
@@ -6183,11 +6119,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       * 邮件类型，1: 系统自动发的邮件，多语言的，不直接发文本内容，发文本id  
-       * 2 : 邮件类型， 手动发的，一般为英文版，直接发内容
+       * 邮件类型，1: 公告邮件 2 : 系统邮件
        * </pre>
        *
-       * <code>uint32 type = 10;</code>
+       * <code>uint32 type = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearType() {
@@ -6203,7 +6138,7 @@ public final class MailMsg {
        *邮件唯一id
        * </pre>
        *
-       * <code>string uid = 1;</code>
+       * <code>string uid = 2;</code>
        * @return The uid.
        */
       public java.lang.String getUid() {
@@ -6223,7 +6158,7 @@ public final class MailMsg {
        *邮件唯一id
        * </pre>
        *
-       * <code>string uid = 1;</code>
+       * <code>string uid = 2;</code>
        * @return The bytes for uid.
        */
       public com.google.protobuf.ByteString
@@ -6244,7 +6179,7 @@ public final class MailMsg {
        *邮件唯一id
        * </pre>
        *
-       * <code>string uid = 1;</code>
+       * <code>string uid = 2;</code>
        * @param value The uid to set.
        * @return This builder for chaining.
        */
@@ -6263,7 +6198,7 @@ public final class MailMsg {
        *邮件唯一id
        * </pre>
        *
-       * <code>string uid = 1;</code>
+       * <code>string uid = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearUid() {
@@ -6277,7 +6212,7 @@ public final class MailMsg {
        *邮件唯一id
        * </pre>
        *
-       * <code>string uid = 1;</code>
+       * <code>string uid = 2;</code>
        * @param value The bytes for uid to set.
        * @return This builder for chaining.
        */
@@ -6293,13 +6228,56 @@ public final class MailMsg {
         return this;
       }
 
+      private int id_ ;
+      /**
+       * <pre>
+       *Mail表id
+       * </pre>
+       *
+       * <code>uint32 id = 3;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *Mail表id
+       * </pre>
+       *
+       * <code>uint32 id = 3;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *Mail表id
+       * </pre>
+       *
+       * <code>uint32 id = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object sender_ = "";
       /**
        * <pre>
-       *发件人,  根据邮件类型来，可能是id
+       *发件人,暂时不用。
        * </pre>
        *
-       * <code>string sender = 2;</code>
+       * <code>string sender = 4;</code>
        * @return The sender.
        */
       public java.lang.String getSender() {
@@ -6316,10 +6294,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发件人,  根据邮件类型来，可能是id
+       *发件人,暂时不用。
        * </pre>
        *
-       * <code>string sender = 2;</code>
+       * <code>string sender = 4;</code>
        * @return The bytes for sender.
        */
       public com.google.protobuf.ByteString
@@ -6337,10 +6315,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发件人,  根据邮件类型来，可能是id
+       *发件人,暂时不用。
        * </pre>
        *
-       * <code>string sender = 2;</code>
+       * <code>string sender = 4;</code>
        * @param value The sender to set.
        * @return This builder for chaining.
        */
@@ -6356,10 +6334,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发件人,  根据邮件类型来，可能是id
+       *发件人,暂时不用。
        * </pre>
        *
-       * <code>string sender = 2;</code>
+       * <code>string sender = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearSender() {
@@ -6370,10 +6348,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发件人,  根据邮件类型来，可能是id
+       *发件人,暂时不用。
        * </pre>
        *
-       * <code>string sender = 2;</code>
+       * <code>string sender = 4;</code>
        * @param value The bytes for sender to set.
        * @return This builder for chaining.
        */
@@ -6392,10 +6370,10 @@ public final class MailMsg {
       private java.lang.Object title_ = "";
       /**
        * <pre>
-       *标题,  根据邮件类型来，可能是id
+       *标题，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string title = 3;</code>
+       * <code>string title = 5;</code>
        * @return The title.
        */
       public java.lang.String getTitle() {
@@ -6412,10 +6390,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *标题,  根据邮件类型来，可能是id
+       *标题，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string title = 3;</code>
+       * <code>string title = 5;</code>
        * @return The bytes for title.
        */
       public com.google.protobuf.ByteString
@@ -6433,10 +6411,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *标题,  根据邮件类型来，可能是id
+       *标题，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string title = 3;</code>
+       * <code>string title = 5;</code>
        * @param value The title to set.
        * @return This builder for chaining.
        */
@@ -6452,10 +6430,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *标题,  根据邮件类型来，可能是id
+       *标题，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string title = 3;</code>
+       * <code>string title = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearTitle() {
@@ -6466,10 +6444,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *标题,  根据邮件类型来，可能是id
+       *标题，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string title = 3;</code>
+       * <code>string title = 5;</code>
        * @param value The bytes for title to set.
        * @return This builder for chaining.
        */
@@ -6488,10 +6466,10 @@ public final class MailMsg {
       private java.lang.Object content_ = "";
       /**
        * <pre>
-       *内容,  根据邮件类型来，可能是id
+       *内容，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string content = 4;</code>
+       * <code>string content = 8;</code>
        * @return The content.
        */
       public java.lang.String getContent() {
@@ -6508,10 +6486,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *内容,  根据邮件类型来，可能是id
+       *内容，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string content = 4;</code>
+       * <code>string content = 8;</code>
        * @return The bytes for content.
        */
       public com.google.protobuf.ByteString
@@ -6529,10 +6507,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *内容,  根据邮件类型来，可能是id
+       *内容，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string content = 4;</code>
+       * <code>string content = 8;</code>
        * @param value The content to set.
        * @return This builder for chaining.
        */
@@ -6548,10 +6526,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *内容,  根据邮件类型来，可能是id
+       *内容，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string content = 4;</code>
+       * <code>string content = 8;</code>
        * @return This builder for chaining.
        */
       public Builder clearContent() {
@@ -6562,10 +6540,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *内容,  根据邮件类型来，可能是id
+       *内容，如果有值用这个值，如果没有从Mail表里面取内容
        * </pre>
        *
-       * <code>string content = 4;</code>
+       * <code>string content = 8;</code>
        * @param value The bytes for content to set.
        * @return This builder for chaining.
        */
@@ -6584,10 +6562,10 @@ public final class MailMsg {
       private int time_ ;
       /**
        * <pre>
-       *发送时间（时间戳，秒）
+       *发送时间（时间戳，秒）或者说是收到的时间
        * </pre>
        *
-       * <code>uint32 time = 5;</code>
+       * <code>uint32 time = 9;</code>
        * @return The time.
        */
       @java.lang.Override
@@ -6596,10 +6574,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发送时间（时间戳，秒）
+       *发送时间（时间戳，秒）或者说是收到的时间
        * </pre>
        *
-       * <code>uint32 time = 5;</code>
+       * <code>uint32 time = 9;</code>
        * @param value The time to set.
        * @return This builder for chaining.
        */
@@ -6611,10 +6589,10 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *发送时间（时间戳，秒）
+       *发送时间（时间戳，秒）或者说是收到的时间
        * </pre>
        *
-       * <code>uint32 time = 5;</code>
+       * <code>uint32 time = 9;</code>
        * @return This builder for chaining.
        */
       public Builder clearTime() {
@@ -6630,7 +6608,7 @@ public final class MailMsg {
        *过期时间（时间戳，秒）
        * </pre>
        *
-       * <code>uint32 expireTime = 6;</code>
+       * <code>uint32 expireTime = 10;</code>
        * @return The expireTime.
        */
       @java.lang.Override
@@ -6642,7 +6620,7 @@ public final class MailMsg {
        *过期时间（时间戳，秒）
        * </pre>
        *
-       * <code>uint32 expireTime = 6;</code>
+       * <code>uint32 expireTime = 10;</code>
        * @param value The expireTime to set.
        * @return This builder for chaining.
        */
@@ -6657,7 +6635,7 @@ public final class MailMsg {
        *过期时间（时间戳，秒）
        * </pre>
        *
-       * <code>uint32 expireTime = 6;</code>
+       * <code>uint32 expireTime = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearExpireTime() {
@@ -6673,7 +6651,7 @@ public final class MailMsg {
        *是否查看过
        * </pre>
        *
-       * <code>bool see = 7;</code>
+       * <code>bool see = 11;</code>
        * @return The see.
        */
       @java.lang.Override
@@ -6685,7 +6663,7 @@ public final class MailMsg {
        *是否查看过
        * </pre>
        *
-       * <code>bool see = 7;</code>
+       * <code>bool see = 11;</code>
        * @param value The see to set.
        * @return This builder for chaining.
        */
@@ -6700,7 +6678,7 @@ public final class MailMsg {
        *是否查看过
        * </pre>
        *
-       * <code>bool see = 7;</code>
+       * <code>bool see = 11;</code>
        * @return This builder for chaining.
        */
       public Builder clearSee() {
@@ -6716,7 +6694,7 @@ public final class MailMsg {
        *是否领取过附件奖励
        * </pre>
        *
-       * <code>bool receive = 8;</code>
+       * <code>bool receive = 12;</code>
        * @return The receive.
        */
       @java.lang.Override
@@ -6728,7 +6706,7 @@ public final class MailMsg {
        *是否领取过附件奖励
        * </pre>
        *
-       * <code>bool receive = 8;</code>
+       * <code>bool receive = 12;</code>
        * @param value The receive to set.
        * @return This builder for chaining.
        */
@@ -6743,7 +6721,7 @@ public final class MailMsg {
        *是否领取过附件奖励
        * </pre>
        *
-       * <code>bool receive = 8;</code>
+       * <code>bool receive = 12;</code>
        * @return This builder for chaining.
        */
       public Builder clearReceive() {
@@ -6770,7 +6748,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo> getAttachmentsList() {
         if (attachmentsBuilder_ == null) {
@@ -6784,7 +6762,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public int getAttachmentsCount() {
         if (attachmentsBuilder_ == null) {
@@ -6798,7 +6776,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.GoodsInfo getAttachments(int index) {
         if (attachmentsBuilder_ == null) {
@@ -6812,7 +6790,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder setAttachments(
           int index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo value) {
@@ -6833,7 +6811,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder setAttachments(
           int index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder builderForValue) {
@@ -6851,7 +6829,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder addAttachments(cn.game.protocol.protobuf.BaseMsg.GoodsInfo value) {
         if (attachmentsBuilder_ == null) {
@@ -6871,7 +6849,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder addAttachments(
           int index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo value) {
@@ -6892,7 +6870,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder addAttachments(
           cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder builderForValue) {
@@ -6910,7 +6888,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder addAttachments(
           int index, cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder builderForValue) {
@@ -6928,7 +6906,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder addAllAttachments(
           java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.GoodsInfo> values) {
@@ -6947,7 +6925,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder clearAttachments() {
         if (attachmentsBuilder_ == null) {
@@ -6964,7 +6942,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public Builder removeAttachments(int index) {
         if (attachmentsBuilder_ == null) {
@@ -6981,7 +6959,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder getAttachmentsBuilder(
           int index) {
@@ -6992,7 +6970,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder getAttachmentsOrBuilder(
           int index) {
@@ -7006,7 +6984,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.GoodsInfoOrBuilder> 
            getAttachmentsOrBuilderList() {
@@ -7021,7 +6999,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder addAttachmentsBuilder() {
         return getAttachmentsFieldBuilder().addBuilder(
@@ -7032,7 +7010,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder addAttachmentsBuilder(
           int index) {
@@ -7044,7 +7022,7 @@ public final class MailMsg {
        *附件奖励
        * </pre>
        *
-       * <code>repeated .Protos.GoodsInfo attachments = 9;</code>
+       * <code>repeated .Protos.GoodsInfo attachments = 13;</code>
        */
       public java.util.List<cn.game.protocol.protobuf.BaseMsg.GoodsInfo.Builder> 
            getAttachmentsBuilderList() {
@@ -7063,116 +7041,6 @@ public final class MailMsg {
           attachments_ = null;
         }
         return attachmentsBuilder_;
-      }
-
-      private com.google.protobuf.LazyStringList params_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureParamsIsMutable() {
-        if (!((bitField0_ & 0x00000002) != 0)) {
-          params_ = new com.google.protobuf.LazyStringArrayList(params_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @return A list containing the params.
-       */
-      public com.google.protobuf.ProtocolStringList
-          getParamsList() {
-        return params_.getUnmodifiableView();
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @return The count of params.
-       */
-      public int getParamsCount() {
-        return params_.size();
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @param index The index of the element to return.
-       * @return The params at the given index.
-       */
-      public java.lang.String getParams(int index) {
-        return params_.get(index);
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @param index The index of the value to return.
-       * @return The bytes of the params at the given index.
-       */
-      public com.google.protobuf.ByteString
-          getParamsBytes(int index) {
-        return params_.getByteString(index);
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @param index The index to set the value at.
-       * @param value The params to set.
-       * @return This builder for chaining.
-       */
-      public Builder setParams(
-          int index, java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureParamsIsMutable();
-        params_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @param value The params to add.
-       * @return This builder for chaining.
-       */
-      public Builder addParams(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureParamsIsMutable();
-        params_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @param values The params to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllParams(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureParamsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, params_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearParams() {
-        params_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string params = 11;</code>
-       * @param value The bytes of the params to add.
-       * @return This builder for chaining.
-       */
-      public Builder addParamsBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        ensureParamsIsMutable();
-        params_.add(value);
-        onChanged();
-        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -7291,13 +7159,13 @@ public final class MailMsg {
       "_12000006\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rewa" +
       "rdInfo\")\n\032MailDeleteRequest_12000007\022\013\n\003" +
       "uid\030\001 \001(\t\"\035\n\033MailDeleteResponse_12000008" +
-      "\"\315\001\n\010MailInfo\022\014\n\004type\030\n \001(\r\022\013\n\003uid\030\001 \001(\t" +
-      "\022\016\n\006sender\030\002 \001(\t\022\r\n\005title\030\003 \001(\t\022\017\n\007conte" +
-      "nt\030\004 \001(\t\022\014\n\004time\030\005 \001(\r\022\022\n\nexpireTime\030\006 \001" +
-      "(\r\022\013\n\003see\030\007 \001(\010\022\017\n\007receive\030\010 \001(\010\022&\n\013atta" +
-      "chments\030\t \003(\0132\021.Protos.GoodsInfo\022\016\n\006para" +
-      "ms\030\013 \003(\tB\033\n\031cn.game.protocol.protobufb\006p" +
-      "roto3"
+      "\"\311\001\n\010MailInfo\022\014\n\004type\030\001 \001(\r\022\013\n\003uid\030\002 \001(\t" +
+      "\022\n\n\002id\030\003 \001(\r\022\016\n\006sender\030\004 \001(\t\022\r\n\005title\030\005 " +
+      "\001(\t\022\017\n\007content\030\010 \001(\t\022\014\n\004time\030\t \001(\r\022\022\n\nex" +
+      "pireTime\030\n \001(\r\022\013\n\003see\030\013 \001(\010\022\017\n\007receive\030\014" +
+      " \001(\010\022&\n\013attachments\030\r \003(\0132\021.Protos.Goods" +
+      "InfoB\033\n\031cn.game.protocol.protobufb\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7358,7 +7226,7 @@ public final class MailMsg {
     internal_static_Protos_MailInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_MailInfo_descriptor,
-        new java.lang.String[] { "Type", "Uid", "Sender", "Title", "Content", "Time", "ExpireTime", "See", "Receive", "Attachments", "Params", });
+        new java.lang.String[] { "Type", "Uid", "Id", "Sender", "Title", "Content", "Time", "ExpireTime", "See", "Receive", "Attachments", });
     cn.game.protocol.protobuf.BaseMsg.getDescriptor();
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }

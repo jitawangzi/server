@@ -37,6 +37,9 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	/** 免费日租卡英雄id */
 	private List<Long> freeDayHeros = new ArrayList<>();
 
+	/** 当前选择使用的英雄uid */
+	private long freeDayHeroUid;
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -62,6 +65,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 				}
 				freeDayHeros.clear();
 				refreshFreeDayHero();
+				freeDayHeroUid = 0;
 			}
 			break;
 		}
@@ -143,6 +147,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		for (Long uid : freeDayHeros) {
 			builder.addFreeDayRentHeros(uid.toString());
 		}
+		builder.setFreeDayRentHeroUid(freeDayHeroUid + "");
 	}
 
 	public long getHeroId() {
@@ -167,6 +172,14 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	public List<Long> getFreeDayHeros() {
 		return freeDayHeros;
+	}
+
+	public long getFreeDayHeroUid() {
+		return freeDayHeroUid;
+	}
+
+	public void setFreeDayHeroUid(long freeDayHeroUid) {
+		this.freeDayHeroUid = freeDayHeroUid;
 	}
 
 }

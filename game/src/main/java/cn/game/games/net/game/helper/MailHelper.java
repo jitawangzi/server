@@ -12,6 +12,8 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.mail.MailModule;
+import cn.game.protocol.generated.config.MailConfig;
+import cn.game.protocol.generated.manager.MailManager;
 
 /**
  * @Description 邮件帮助类
@@ -65,5 +67,15 @@ public class MailHelper {
 	public static void sendMailMultiLanguage(long receiverId, int senderId, int titleId, int contentId, byte type,
 			List<Entry<Integer, Integer>> rewards) {
 		sendMail2(receiverId, senderId + "", titleId + "", contentId + "", type, rewards);
+	}
+
+	/** 
+	 * 
+	 * 获取公告邮件id，最大的id，表示最新的公告。 
+	 * @return
+	 */
+	public static int getNoticeMailId() {
+		List<MailConfig> typeList = MailManager.instance().getTypeList(1);
+		return typeList.get(typeList.size() - 1).ID;
 	}
 }

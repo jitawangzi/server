@@ -30,6 +30,10 @@ public class MailModule extends BasePlayerModule  {
 	@JsonIgnore
 	private Map<Long, Mail>	mails = new HashMap<>();
 
+	/** 公告邮件比较特殊，保存一个不删除。设置删除标记位，为了服务器一次更新只发一次公告邮件  */
+	@JsonIgnore
+	private Mail notice;
+
 	public void sendOnline(Mail mail) {
 
 		mails.put(mail.getId(), mail) ; 

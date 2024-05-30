@@ -81,5 +81,14 @@ message HeroFreeDayRentResponse_16000031{
 	repeated HeroInfo heros = 1;	// 免费日租英雄
 }
 
+//选择某个英雄日租卡。
+message HeroFreeDayRentChooseRequest_16000032{
+	string uid = 1; // 日租卡英雄uid。
+}
+
+message HeroFreeDayRentChooseResponse_16000033{
+}
+
+
 
 

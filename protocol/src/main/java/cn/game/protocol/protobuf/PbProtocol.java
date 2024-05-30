@@ -118,6 +118,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HeroQualityResetResponse_16000012 = 0x16000012;    
 	public final static int HeroFreeDayRentRequest_16000030 = 0x16000030;    
 	public final static int HeroFreeDayRentResponse_16000031 = 0x16000031;    //英雄品质重置  
+	public final static int HeroFreeDayRentChooseRequest_16000032 = 0x16000032;    
+	public final static int HeroFreeDayRentChooseResponse_16000033 = 0x16000033;    
 	public final static int ItemUseRequest_0b000003 = 0x0b000003;    
 	public final static int ItemUseResponse_0b000004 = 0x0b000004;    
 	public final static int MailListRequest_12000001 = 0x12000001;    
@@ -450,6 +452,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(HeroFreeDayRentRequest_16000030, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroFreeDayRentResponse_16000031, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroFreeDayRentChooseRequest_16000032, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroFreeDayRentChooseResponse_16000033, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000033.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ItemUseRequest_0b000003, cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.getDefaultInstance()
 				.getParserForType());
@@ -823,6 +829,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("HeroQualityResetResponse_16000012", 0x16000012);
 		nameIdMap.put("HeroFreeDayRentRequest_16000030", 0x16000030);
 		nameIdMap.put("HeroFreeDayRentResponse_16000031", 0x16000031);
+		nameIdMap.put("HeroFreeDayRentChooseRequest_16000032", 0x16000032);
+		nameIdMap.put("HeroFreeDayRentChooseResponse_16000033", 0x16000033);
 		nameIdMap.put("ItemUseRequest_0b000003", 0x0b000003);
 		nameIdMap.put("ItemUseResponse_0b000004", 0x0b000004);
 		nameIdMap.put("MailListRequest_12000001", 0x12000001);
