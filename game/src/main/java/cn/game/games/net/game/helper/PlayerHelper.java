@@ -1012,16 +1012,18 @@ public class PlayerHelper {
 	 */
 	public static boolean reconnect(GameClient oldGameClient, GameClient newGameClient, boolean reconnect) {
 		if (oldGameClient != null && oldGameClient.getPlayerId() > 0) { // 可能不同设备登录同一账号,应该退出老的GameClient
-			if (reconnect) {
-				newGameClient.copy(oldGameClient);
-			} else {
-				newGameClient.copyClintLoign(oldGameClient);
-			}
-			oldGameClient.sendProtocol(PlayerLogoutPush_01100030.getDefaultInstance());
-			GameClientManager.getInstance().removeGameClientConnection(oldGameClient);
+			if (oldGameClient != newGameClient) {
+				if (reconnect) {
+					newGameClient.copy(oldGameClient);
+				} else {
+					newGameClient.copyClintLoign(oldGameClient);
+				}
+				oldGameClient.sendProtocol(PlayerLogoutPush_01100030.getDefaultInstance());
+				GameClientManager.getInstance().removeGameClientConnection(oldGameClient);
 
-			GameClientManager.getInstance().addGameClientSession(newGameClient);
-			GameClientManager.getInstance().addGameClientPlayer(newGameClient);
+				GameClientManager.getInstance().addGameClientSession(newGameClient);
+				GameClientManager.getInstance().addGameClientPlayer(newGameClient);
+			}
 
 			Player player = PlayerManager.getInstance().getPlayer(oldGameClient.getPlayerId());
 			if (player == null) {

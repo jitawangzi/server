@@ -22,11 +22,13 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeishiConfig;
 import cn.game.protocol.generated.config.RechargeStoreConfig;
 import cn.game.protocol.generated.config.ShopConfig;
+import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.HeishiManager;
 import cn.game.protocol.generated.manager.RechargeStoreManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -222,6 +224,8 @@ public class ShopModule extends BasePlayerModule {
 		for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
 			shopItemsMap.put(rechargeStoreConfig.Type, new ShopItem(rechargeStoreConfig.Item));
 		}
+		// 体力购买商店
+		refreshStaminaItems();
 	}
 
 	public void refreshHeishiItems() {
@@ -238,6 +242,23 @@ public class ShopModule extends BasePlayerModule {
 		for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
 			shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
 		}
+	}
+
+	public void refreshStaminaItems() {
+		// 刷新体力商店
+		int shop = 5;
+		shopItemsMap.removeAll(shop);
+
+		// 刷新体力购买，写死id 5、6
+		ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(5);
+		if (shopItemConfig != null) {
+			shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
+		}
+		shopItemConfig = ShopItemManager.instance().getNullable(6);
+		if (shopItemConfig != null) {
+			shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
+		}
+
 	}
 
 	private void refreshShopNewWeek() {

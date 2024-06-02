@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.battle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -25,6 +26,15 @@ import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchResponse_13000063;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000060;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000061;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000065;
 import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070;
 import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointResponse_13000071;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
@@ -66,7 +76,11 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleStaminaRequest_13000050, this::stamina);
 		putInvoker(PbProtocol.BattleSweepRequest_13000024, this::sweep);
 		putInvoker(PbProtocol.BattleDayChallengeReceiveActivePointRequest_13000070, this::dayChallengePointReward);
-
+		putInvoker(PbProtocol.BattleDaoHeartRequest_13000055, this::daoHeart);
+		putInvoker(PbProtocol.BattleDaoHeartSweepRequest_13000060, this::daoHeartSweep);
+		putInvoker(PbProtocol.BattleDaoHeartSweepBatchRequest_13000062, this::daoHeartSweepBatch);
+		putInvoker(PbProtocol.BattleDaoHeartSweepRequest_13000066, this::daoHeartReward);
+		putInvoker(PbProtocol.BattleDaoHeartSweepRequest_13000064, this::daoHeartRewardInfo);
 	}
 
 	protected void empty(NetClient client, Object message) {
@@ -78,6 +92,197 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
+		client.sendProtocol(resp);
+	}
+
+	protected void daoHeartRewardInfo(NetClient client, Object message) {
+		BattleDaoHeartSweepRequest_13000064 req = (BattleDaoHeartSweepRequest_13000064) message;
+		BattleDaoHeartSweepResponse_13000065.Builder resp = BattleDaoHeartSweepResponse_13000065.newBuilder();
+		int type = req.getType();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		resp.addAllId(daoHeartBattle.getRewardBattleIds());
+
+		client.sendProtocol(resp);
+	}
+
+	protected void daoHeartReward(NetClient client, Object message) {
+		BattleDaoHeartSweepRequest_13000066 req = (BattleDaoHeartSweepRequest_13000066) message;
+		BattleDaoHeartSweepResponse_13000061.Builder resp = BattleDaoHeartSweepResponse_13000061.newBuilder();
+		int id = req.getId();
+		int type = req.getType();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		List<Integer> rewardBattleIds = daoHeartBattle.getRewardBattleIds();
+		if (rewardBattleIds.contains(id)) {
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		int completeBattleId = daoHeartBattle.getCompleteBattleId();
+		if (completeBattleId == 0) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		BattleConfig battleConfig = BattleManager.instance().get(id);
+		if (id != completeBattleId) {
+			boolean isComplete = false;
+			BattleConfig preConfig = battleConfig;
+			while ((preConfig = BattleManager.instance().getNullable(preConfig.preBattle)) != null) {
+				if (preConfig.ID == id) {
+					isComplete = true;
+					break;
+				}
+			}
+			if (!isComplete) {
+				client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+				return;
+			}
+		}
+		rewardBattleIds.add(id); 
+		OpType opType = type == 2 ? OpType.DaoXinComplete : OpType.XinMoComplete;
+
+		resp.addAllRewards(PlayerHelper.addReward(player, battleConfig.ClearGameReward, opType));
+
+		client.sendProtocol(resp);
+	}
+
+	protected void daoHeartSweepBatch(NetClient client, Object message) {
+		BattleDaoHeartSweepBatchRequest_13000062 req = (BattleDaoHeartSweepBatchRequest_13000062) message;
+		BattleDaoHeartSweepBatchResponse_13000063.Builder resp = BattleDaoHeartSweepBatchResponse_13000063.newBuilder();
+		int id = req.getId();
+		int type = req.getType();
+		boolean pay = req.getPay();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		if (daoHeartBattle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		if (daoHeartBattle.getCompleteBattleId() != id) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		OpType opType = type == 2 ? OpType.DaoXinSweep : OpType.XinMoSweep;
+
+		int freeRemaning = daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep();
+		if (freeRemaning > 0) {
+			daoHeartBattle.setFreeSweep(daoHeartBattle.getFreeSweep() + freeRemaning);
+		}
+		int paySweep = daoHeartBattle.getPaySweep();
+		int payRemaning = daoHeartBattle.getMaxPaySweepCount() - paySweep;
+		if (payRemaning > 0) {
+			daoHeartBattle.setPaySweep(paySweep + payRemaning);
+		}
+		int allCount = freeRemaning + payRemaning;
+		if (allCount == 0) {
+			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		List<Integer> payList = new ArrayList<>();
+		int[][] paySweepCostAll = daoHeartBattle.getPaySweepCostAll();
+		for (int i = daoHeartBattle.getPaySweep(); i < paySweepCostAll.length; i++) {
+			payList.add(paySweepCostAll[i][0], paySweepCostAll[i][1]);
+		}
+		int[] payArray = new int[payList.size()];
+		for (int i : payArray) {
+			payArray[i] = payList.get(i);
+		}
+		if (!PlayerHelper.delResources(player, payArray, opType)) {
+			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+
+		BattleConfig battleConfig = BattleManager.instance().get(id);
+
+		for (int i = 0; i < allCount; i++) {
+			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
+			resp.addAllRewards(reward);
+		}
+		client.sendProtocol(resp);
+	}
+	protected void daoHeartSweep(NetClient client, Object message) {
+		BattleDaoHeartSweepRequest_13000060 req = (BattleDaoHeartSweepRequest_13000060) message;
+		BattleDaoHeartSweepResponse_13000061.Builder resp = BattleDaoHeartSweepResponse_13000061.newBuilder();
+		int id = req.getId();
+		int type = req.getType();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		if (daoHeartBattle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		if (daoHeartBattle.getCompleteBattleId() != id) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		OpType opType = type == 2 ? OpType.DaoXinSweep : OpType.XinMoSweep;
+
+		int freeRemaning = daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep();
+		if (freeRemaning > 0) {
+			daoHeartBattle.setFreeSweep(daoHeartBattle.getFreeSweep() + 1);
+		} else {
+			int payRemaning = daoHeartBattle.getMaxPaySweepCount() - daoHeartBattle.getPaySweep();
+			if (payRemaning <= 0) {
+				client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+				return;
+			}
+			if (!PlayerHelper.delResources(player, daoHeartBattle.getPaySweepCost(), opType)) {
+				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+				return;
+			}
+			daoHeartBattle.setPaySweep(daoHeartBattle.getPaySweep() + 1);
+		}
+		
+		BattleConfig battleConfig = BattleManager.instance().get(id);
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
+		resp.addAllRewards(reward);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void daoHeart(NetClient client, Object message) {
+		BattleDaoHeartRequest_13000055 req = (BattleDaoHeartRequest_13000055) message;
+		BattleDaoHeartResponse_13000056.Builder resp = BattleDaoHeartResponse_13000056.newBuilder();
+		int type = req.getType(); 
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (type == 2) {
+			if (!player.isFuncOpen(InitialUI.DaoXinLLiLian)) {
+				client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+				return;
+			}
+		} else if (type == 3) {
+			if (!player.isFuncOpen(InitialUI.XinMoShiLian)) {
+				client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+				return;
+			}
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		if (daoHeartBattle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		resp.setId(daoHeartBattle.getNextBattleId());
+		resp.addAllRandomBuff(daoHeartBattle.getRandomBuff());
+		if (type == 2) {
+			resp.setFreeSweepRemaning(daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep());
+			resp.setPaySweepRemaning(daoHeartBattle.getMaxPaySweepCount() - daoHeartBattle.getPaySweep());
+		} else if (type == 3) {
+			resp.setFreeSweepRemaning(daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep());
+			resp.setPaySweepRemaning(daoHeartBattle.getMaxPaySweepCount() - daoHeartBattle.getPaySweep());
+		}
 		client.sendProtocol(resp);
 	}
 
@@ -418,10 +623,10 @@ public class ChapterHandler extends BaseHandler {
 			chapterModule.setAttackingData(0, type, dungeonId, id, 0, 0);
 			if (battleHandler instanceof HCBattleHandler) {
 				// 触发事件
-				player.handleEvent(EventTypeEnum.BattleStart, dungeonId, 0);
+				player.handleEvent(EventTypeEnum.HCBattleStart, dungeonId, 0);
 			} else if (battleHandler instanceof XiYouBattleHandler) {
 				// 触发事件
-				player.handleEvent(EventTypeEnum.HCBattleStart, dungeonId, 0);
+				player.handleEvent(EventTypeEnum.BattleStart, dungeonId, 0);
 			}
 
 			AttrModule module = player.getModule(AttrModule.class);

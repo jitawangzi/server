@@ -41,6 +41,7 @@ import cn.game.protocol.generated.config.EventRankIntervalConfig;
 import cn.game.protocol.generated.config.EventTriggerConfig;
 import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.config.PatrolConfig;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleChapterManager;
 import cn.game.protocol.generated.manager.BattleEventManager;
 import cn.game.protocol.generated.manager.BattleLevelManager;
@@ -62,7 +63,8 @@ import cn.game.util.Rnd;
  * @author SYQ
  */
 public class ChapterModule extends BasePlayerModule  {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
+			EventTypeEnum.FuncOpen };
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
 	/** 主线战役 */
@@ -116,6 +118,7 @@ public class ChapterModule extends BasePlayerModule  {
 	/** 每日挑战数据 */
 	private BattleDayChallenge dayChallenge = new BattleDayChallenge();
 
+	private Map<Integer, DaoHeartBattle> daoBattleMap = new HashMap<Integer, DaoHeartBattle>();
 
 	public void addChapter(int battleId) {
 		Chapter chapter = chapters.get(battleId);
@@ -682,9 +685,27 @@ public class ChapterModule extends BasePlayerModule  {
 			newDay();
 			break;
 		}
+		case FuncOpen: {
+			InitialUI func = event.getParameter(0);
+			if (func == InitialUI.DaoXinLLiLian) {
+				initDaoXin(2);
+			}
+			if (func == InitialUI.XinMoShiLian) {
+				initDaoXin(3);
+			}
+			break;
+		}
 		default:
 			break;
 		}
+	}
+
+	private void initDaoXin(int type) {
+		daoBattleMap.put(type, new DaoHeartBattle(type));
+	}
+
+	public DaoHeartBattle getDaoHeartBattle(int type) {
+		return daoBattleMap.get(type);
 	}
 
 	@Override

@@ -61,10 +61,23 @@ public enum OpType{
 
 	BattleSweep(135, "关卡扫荡"),
 
+	DaoXinFirstFinish(140, "道心试炼首通奖励"),
+	
+	XinMoFirstFinish(141, "心魔试炼首通奖励"),
+	
+	DaoXinSweep(142, "道心试炼扫荡奖励"),
+
+	XinMoSweep(143, "心魔试炼扫荡奖励"),
+
+	DaoXinComplete(144, "道心试炼通关奖励"),
+
+	XinMoComplete(145, "心魔试炼通关奖励"),
+
 	BoxOpen(140, "合并开宝箱"),
 	MergeEquipLvUp(141, "合并装备升级"),
 
 	BattleStart(200, "战役开始"),
+
 
 	None(999, "未定义"),
 
