@@ -46,9 +46,11 @@ message HeroConflateResponse_16000004{
 //英雄上阵
 message HeroBattleRequest_16000005{
   string uid = 1; // 英雄唯一id
+  int32 pos = 2;   // 1- 5;
 }
 
 message HeroBattleResponse_16000006{
+
 }
 
 

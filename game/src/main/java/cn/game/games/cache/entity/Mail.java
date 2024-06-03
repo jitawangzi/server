@@ -19,6 +19,11 @@ public class Mail implements Serializable, DbEntity {
 	 */
 	private Long id;
 	/**
+	 * 邮件配置表id
+	 * @mbg.generated
+	 */
+	private Integer mailId;
+	/**
 	 * 角色id
 	 * @mbg.generated
 	 */
@@ -72,6 +77,11 @@ public class Mail implements Serializable, DbEntity {
 	 */
 	private Integer createTime;
 	/**
+	 * 邮件是否被删除。
+	 * @mbg.generated
+	 */
+	private Boolean isDeleted;
+	/**
 	 * @mbg.generated
 	 */
 	private static final long serialVersionUID = 1L;
@@ -88,6 +98,20 @@ public class Mail implements Serializable, DbEntity {
 	 */
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public Integer getMailId() {
+		return mailId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setMailId(Integer mailId) {
+		this.mailId = mailId;
 	}
 
 	/**
@@ -242,6 +266,20 @@ public class Mail implements Serializable, DbEntity {
 	 */
 	public void setCreateTime(Integer createTime) {
 		this.createTime = createTime;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	/**

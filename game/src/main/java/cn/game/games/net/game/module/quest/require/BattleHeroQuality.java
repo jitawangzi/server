@@ -1,6 +1,6 @@
 package cn.game.games.net.game.module.quest.require;
 
-import java.util.Set;
+import java.util.Map;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
@@ -27,8 +27,8 @@ public class BattleHeroQuality extends AbstractCondition {
 	@Override
 	public long getFinishCount() {
 		int count = 0;
-		Set<Long> battleHeros = player.getHeroModule().getBattleHeros();
-		for (Long id : battleHeros) {
+		Map<Long, Integer> battleHeros = player.getHeroModule().getBattleHeros();
+		for (Long id : battleHeros.keySet()) {
 			Hero hero = player.getHeroModule().get(id);
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			if (heroConfig.InitialQuality >= getParam(0)) {

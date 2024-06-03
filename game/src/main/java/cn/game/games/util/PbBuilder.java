@@ -38,7 +38,9 @@ import cn.game.games.net.game.module.award.RewardItem;
 import cn.game.games.net.game.module.chat.GroupAllInfo;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.store.StoreGoods;
+import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
+import cn.game.protocol.generated.manager.MailManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
@@ -490,14 +492,15 @@ public class PbBuilder {
 
 	public static Collection<MailInfo> buildAllMailInfo(Collection<Mail> mails) {
 
-		return mails.stream().map(PbBuilder::buildMailInfo).collect(toList());
+		return mails.stream().filter(mail -> !mail.getIsDeleted()).map(PbBuilder::buildMailInfo).collect(toList());
 	}
 
 	public static MailInfo buildMailInfo(Mail mail) {
 		MailInfo.Builder builder = MailInfo.newBuilder();
 		builder.setUid(mail.getId() + "");
 		builder.setContent(mail.getContent()) ; 
-		builder.setExpireTime((int) (mail.getCreateTime() + DateUtil.DAY_SECONDS * 30));
+		MailConfig mailConfig = MailManager.instance().get(mail.getMailId());
+		builder.setExpireTime((int) (mail.getCreateTime() + mailConfig.Expiration));
 		builder.setReceive(mail.getReceive());
 		builder.setSee(mail.getSee());
 		builder.setSender(mail.getSender());

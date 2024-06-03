@@ -2628,17 +2628,7 @@ public final class BaseMsg {
 
     /**
      * <pre>
-     * 是否上阵了
-     * </pre>
-     *
-     * <code>bool isBattle = 5;</code>
-     * @return The isBattle.
-     */
-    boolean getIsBattle();
-
-    /**
-     * <pre>
-     * 穿戴的时装唯一id
+     *	bool isBattle = 5; // 是否上阵了
      * </pre>
      *
      * <code>string fashionUid = 6;</code>
@@ -2647,7 +2637,7 @@ public final class BaseMsg {
     java.lang.String getFashionUid();
     /**
      * <pre>
-     * 穿戴的时装唯一id
+     *	bool isBattle = 5; // 是否上阵了
      * </pre>
      *
      * <code>string fashionUid = 6;</code>
@@ -2665,6 +2655,16 @@ public final class BaseMsg {
      * @return The quality.
      */
     int getQuality();
+
+    /**
+     * <pre>
+     * 上阵位置 1-5 ，0未上阵
+     * </pre>
+     *
+     * <code>uint32 battlePos = 8;</code>
+     * @return The battlePos.
+     */
+    int getBattlePos();
   }
   /**
    * <pre>
@@ -2738,11 +2738,6 @@ public final class BaseMsg {
               star_ = input.readUInt32();
               break;
             }
-            case 40: {
-
-              isBattle_ = input.readBool();
-              break;
-            }
             case 50: {
               java.lang.String s = input.readStringRequireUtf8();
 
@@ -2752,6 +2747,11 @@ public final class BaseMsg {
             case 56: {
 
               quality_ = input.readUInt32();
+              break;
+            }
+            case 64: {
+
+              battlePos_ = input.readUInt32();
               break;
             }
             default: {
@@ -2877,26 +2877,11 @@ public final class BaseMsg {
       return star_;
     }
 
-    public static final int ISBATTLE_FIELD_NUMBER = 5;
-    private boolean isBattle_;
-    /**
-     * <pre>
-     * 是否上阵了
-     * </pre>
-     *
-     * <code>bool isBattle = 5;</code>
-     * @return The isBattle.
-     */
-    @java.lang.Override
-    public boolean getIsBattle() {
-      return isBattle_;
-    }
-
     public static final int FASHIONUID_FIELD_NUMBER = 6;
     private volatile java.lang.Object fashionUid_;
     /**
      * <pre>
-     * 穿戴的时装唯一id
+     *	bool isBattle = 5; // 是否上阵了
      * </pre>
      *
      * <code>string fashionUid = 6;</code>
@@ -2917,7 +2902,7 @@ public final class BaseMsg {
     }
     /**
      * <pre>
-     * 穿戴的时装唯一id
+     *	bool isBattle = 5; // 是否上阵了
      * </pre>
      *
      * <code>string fashionUid = 6;</code>
@@ -2953,6 +2938,21 @@ public final class BaseMsg {
       return quality_;
     }
 
+    public static final int BATTLEPOS_FIELD_NUMBER = 8;
+    private int battlePos_;
+    /**
+     * <pre>
+     * 上阵位置 1-5 ，0未上阵
+     * </pre>
+     *
+     * <code>uint32 battlePos = 8;</code>
+     * @return The battlePos.
+     */
+    @java.lang.Override
+    public int getBattlePos() {
+      return battlePos_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2979,14 +2979,14 @@ public final class BaseMsg {
       if (star_ != 0) {
         output.writeUInt32(4, star_);
       }
-      if (isBattle_ != false) {
-        output.writeBool(5, isBattle_);
-      }
       if (!getFashionUidBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 6, fashionUid_);
       }
       if (quality_ != 0) {
         output.writeUInt32(7, quality_);
+      }
+      if (battlePos_ != 0) {
+        output.writeUInt32(8, battlePos_);
       }
       unknownFields.writeTo(output);
     }
@@ -3012,16 +3012,16 @@ public final class BaseMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(4, star_);
       }
-      if (isBattle_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, isBattle_);
-      }
       if (!getFashionUidBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, fashionUid_);
       }
       if (quality_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(7, quality_);
+      }
+      if (battlePos_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(8, battlePos_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3046,12 +3046,12 @@ public final class BaseMsg {
           != other.getLevel()) return false;
       if (getStar()
           != other.getStar()) return false;
-      if (getIsBattle()
-          != other.getIsBattle()) return false;
       if (!getFashionUid()
           .equals(other.getFashionUid())) return false;
       if (getQuality()
           != other.getQuality()) return false;
+      if (getBattlePos()
+          != other.getBattlePos()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3071,13 +3071,12 @@ public final class BaseMsg {
       hash = (53 * hash) + getLevel();
       hash = (37 * hash) + STAR_FIELD_NUMBER;
       hash = (53 * hash) + getStar();
-      hash = (37 * hash) + ISBATTLE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsBattle());
       hash = (37 * hash) + FASHIONUID_FIELD_NUMBER;
       hash = (53 * hash) + getFashionUid().hashCode();
       hash = (37 * hash) + QUALITY_FIELD_NUMBER;
       hash = (53 * hash) + getQuality();
+      hash = (37 * hash) + BATTLEPOS_FIELD_NUMBER;
+      hash = (53 * hash) + getBattlePos();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3223,11 +3222,11 @@ public final class BaseMsg {
 
         star_ = 0;
 
-        isBattle_ = false;
-
         fashionUid_ = "";
 
         quality_ = 0;
+
+        battlePos_ = 0;
 
         return this;
       }
@@ -3259,9 +3258,9 @@ public final class BaseMsg {
         result.configId_ = configId_;
         result.level_ = level_;
         result.star_ = star_;
-        result.isBattle_ = isBattle_;
         result.fashionUid_ = fashionUid_;
         result.quality_ = quality_;
+        result.battlePos_ = battlePos_;
         onBuilt();
         return result;
       }
@@ -3323,15 +3322,15 @@ public final class BaseMsg {
         if (other.getStar() != 0) {
           setStar(other.getStar());
         }
-        if (other.getIsBattle() != false) {
-          setIsBattle(other.getIsBattle());
-        }
         if (!other.getFashionUid().isEmpty()) {
           fashionUid_ = other.fashionUid_;
           onChanged();
         }
         if (other.getQuality() != 0) {
           setQuality(other.getQuality());
+        }
+        if (other.getBattlePos() != 0) {
+          setBattlePos(other.getBattlePos());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3587,53 +3586,10 @@ public final class BaseMsg {
         return this;
       }
 
-      private boolean isBattle_ ;
-      /**
-       * <pre>
-       * 是否上阵了
-       * </pre>
-       *
-       * <code>bool isBattle = 5;</code>
-       * @return The isBattle.
-       */
-      @java.lang.Override
-      public boolean getIsBattle() {
-        return isBattle_;
-      }
-      /**
-       * <pre>
-       * 是否上阵了
-       * </pre>
-       *
-       * <code>bool isBattle = 5;</code>
-       * @param value The isBattle to set.
-       * @return This builder for chaining.
-       */
-      public Builder setIsBattle(boolean value) {
-        
-        isBattle_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 是否上阵了
-       * </pre>
-       *
-       * <code>bool isBattle = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearIsBattle() {
-        
-        isBattle_ = false;
-        onChanged();
-        return this;
-      }
-
       private java.lang.Object fashionUid_ = "";
       /**
        * <pre>
-       * 穿戴的时装唯一id
+       *	bool isBattle = 5; // 是否上阵了
        * </pre>
        *
        * <code>string fashionUid = 6;</code>
@@ -3653,7 +3609,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 穿戴的时装唯一id
+       *	bool isBattle = 5; // 是否上阵了
        * </pre>
        *
        * <code>string fashionUid = 6;</code>
@@ -3674,7 +3630,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 穿戴的时装唯一id
+       *	bool isBattle = 5; // 是否上阵了
        * </pre>
        *
        * <code>string fashionUid = 6;</code>
@@ -3693,7 +3649,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 穿戴的时装唯一id
+       *	bool isBattle = 5; // 是否上阵了
        * </pre>
        *
        * <code>string fashionUid = 6;</code>
@@ -3707,7 +3663,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 穿戴的时装唯一id
+       *	bool isBattle = 5; // 是否上阵了
        * </pre>
        *
        * <code>string fashionUid = 6;</code>
@@ -3765,6 +3721,49 @@ public final class BaseMsg {
       public Builder clearQuality() {
         
         quality_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int battlePos_ ;
+      /**
+       * <pre>
+       * 上阵位置 1-5 ，0未上阵
+       * </pre>
+       *
+       * <code>uint32 battlePos = 8;</code>
+       * @return The battlePos.
+       */
+      @java.lang.Override
+      public int getBattlePos() {
+        return battlePos_;
+      }
+      /**
+       * <pre>
+       * 上阵位置 1-5 ，0未上阵
+       * </pre>
+       *
+       * <code>uint32 battlePos = 8;</code>
+       * @param value The battlePos to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattlePos(int value) {
+        
+        battlePos_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 上阵位置 1-5 ，0未上阵
+       * </pre>
+       *
+       * <code>uint32 battlePos = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattlePos() {
+        
+        battlePos_ = 0;
         onChanged();
         return this;
       }
@@ -15931,40 +15930,40 @@ public final class BaseMsg {
       "d\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\"&\n\tAssetInfo\022\n\n\002i" +
       "d\030\001 \001(\r\022\r\n\005count\030\002 \001(\004\"&\n\tGoodsInfo\022\n\n\002i" +
       "d\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\",\n\020MoneyRecoverIn" +
-      "fo\022\n\n\002id\030\001 \001(\r\022\014\n\004time\030\002 \001(\r\"}\n\010HeroInfo" +
+      "fo\022\n\n\002id\030\001 \001(\r\022\014\n\004time\030\002 \001(\r\"~\n\010HeroInfo" +
       "\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022\r\n\005level" +
-      "\030\003 \001(\r\022\014\n\004star\030\004 \001(\r\022\020\n\010isBattle\030\005 \001(\010\022\022" +
-      "\n\nfashionUid\030\006 \001(\t\022\017\n\007quality\030\007 \001(\r\"<\n\rH" +
-      "eroSwordInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 " +
-      "\001(\r\022\014\n\004star\030\003 \001(\r\"/\n\022MergeEquipmentInfo\022" +
-      "\n\n\002id\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"\205\001\n\tEquipInfo" +
-      "\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022+\n\005attrs" +
-      "\030\006 \003(\0132\034.Protos.EquipInfo.AttrsEntry\032,\n\n" +
-      "AttrsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
-      "8\001\"h\n\rEquipPartInfo\022\014\n\004type\030\001 \001(\r\022\020\n\010str" +
-      "ength\030\002 \001(\r\022\024\n\014breakthrough\030\003 \001(\r\022\020\n\010equ" +
-      "ipUid\030\004 \001(\t\022\017\n\007gemUids\030\005 \003(\t\">\n\017HeroFash" +
-      "ionInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022\014" +
-      "\n\004star\030\003 \001(\r\")\n\014HeroAttrInfo\022\n\n\002id\030\001 \001(\r" +
-      "\022\r\n\005value\030\002 \001(\r\".\n\021HeroAttrPointInfo\022\n\n\002" +
-      "id\030\001 \001(\r\022\r\n\005value\030\002 \001(\r\"\221\001\n\007GemInfo\022\013\n\003u" +
-      "id\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022)\n\005attrs\030\003 \003(" +
-      "\0132\032.Protos.GemInfo.AttrsEntry\022\016\n\006isLock\030" +
-      "\004 \001(\010\032,\n\nAttrsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
-      "e\030\002 \001(\r:\0028\001\"&\n\nDragonInfo\022\n\n\002id\030\001 \001(\r\022\014\n" +
-      "\004star\030\002 \001(\r\",\n\017DragonSkillInfo\022\n\n\002id\030\001 \001" +
-      "(\r\022\r\n\005level\030\002 \001(\r\".\n\tSkillInfo\022\n\n\002id\030\001 \001" +
-      "(\r\022\025\n\rstrengthenIds\030\002 \003(\r\"\260\001\n\020SimplePlay" +
-      "erInfo\022\n\n\002id\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\r\n\005leve" +
-      "l\030\003 \001(\r\022\033\n\023combatEffectiveness\030\004 \001(\r\022\014\n\004" +
-      "head\030\006 \001(\r\022\021\n\theadFrame\030\007 \001(\r\022\016\n\006online\030" +
-      "\010 \001(\010\022\023\n\013offlineTime\030\t \001(\r\022\020\n\010serverId\030\n" +
-      " \001(\t\"E\n\016PlayerShowInfo\022\r\n\005guild\030\002 \001(\t\022\016\n" +
-      "\006combat\030\003 \001(\r\022\024\n\014praisedCount\030\004 \001(\r\"H\n\021P" +
-      "aymentOrderProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006pa" +
-      "ySig\030\002 \001(\t\022\021\n\tsignature\030\003 \001(\t*-\n\nUpdateT" +
-      "ype\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031" +
-      "cn.game.protocol.protobufb\006proto3"
+      "\030\003 \001(\r\022\014\n\004star\030\004 \001(\r\022\022\n\nfashionUid\030\006 \001(\t" +
+      "\022\017\n\007quality\030\007 \001(\r\022\021\n\tbattlePos\030\010 \001(\r\"<\n\r" +
+      "HeroSwordInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002" +
+      " \001(\r\022\014\n\004star\030\003 \001(\r\"/\n\022MergeEquipmentInfo" +
+      "\022\n\n\002id\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"\205\001\n\tEquipInf" +
+      "o\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022+\n\005attr" +
+      "s\030\006 \003(\0132\034.Protos.EquipInfo.AttrsEntry\032,\n" +
+      "\nAttrsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:" +
+      "\0028\001\"h\n\rEquipPartInfo\022\014\n\004type\030\001 \001(\r\022\020\n\010st" +
+      "rength\030\002 \001(\r\022\024\n\014breakthrough\030\003 \001(\r\022\020\n\010eq" +
+      "uipUid\030\004 \001(\t\022\017\n\007gemUids\030\005 \003(\t\">\n\017HeroFas" +
+      "hionInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022" +
+      "\014\n\004star\030\003 \001(\r\")\n\014HeroAttrInfo\022\n\n\002id\030\001 \001(" +
+      "\r\022\r\n\005value\030\002 \001(\r\".\n\021HeroAttrPointInfo\022\n\n" +
+      "\002id\030\001 \001(\r\022\r\n\005value\030\002 \001(\r\"\221\001\n\007GemInfo\022\013\n\003" +
+      "uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022)\n\005attrs\030\003 \003" +
+      "(\0132\032.Protos.GemInfo.AttrsEntry\022\016\n\006isLock" +
+      "\030\004 \001(\010\032,\n\nAttrsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005val" +
+      "ue\030\002 \001(\r:\0028\001\"&\n\nDragonInfo\022\n\n\002id\030\001 \001(\r\022\014" +
+      "\n\004star\030\002 \001(\r\",\n\017DragonSkillInfo\022\n\n\002id\030\001 " +
+      "\001(\r\022\r\n\005level\030\002 \001(\r\".\n\tSkillInfo\022\n\n\002id\030\001 " +
+      "\001(\r\022\025\n\rstrengthenIds\030\002 \003(\r\"\260\001\n\020SimplePla" +
+      "yerInfo\022\n\n\002id\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\r\n\005lev" +
+      "el\030\003 \001(\r\022\033\n\023combatEffectiveness\030\004 \001(\r\022\014\n" +
+      "\004head\030\006 \001(\r\022\021\n\theadFrame\030\007 \001(\r\022\016\n\006online" +
+      "\030\010 \001(\010\022\023\n\013offlineTime\030\t \001(\r\022\020\n\010serverId\030" +
+      "\n \001(\t\"E\n\016PlayerShowInfo\022\r\n\005guild\030\002 \001(\t\022\016" +
+      "\n\006combat\030\003 \001(\r\022\024\n\014praisedCount\030\004 \001(\r\"H\n\021" +
+      "PaymentOrderProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006p" +
+      "aySig\030\002 \001(\t\022\021\n\tsignature\030\003 \001(\t*-\n\nUpdate" +
+      "Type\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n" +
+      "\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -15999,7 +15998,7 @@ public final class BaseMsg {
     internal_static_Protos_HeroInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroInfo_descriptor,
-        new java.lang.String[] { "Uid", "ConfigId", "Level", "Star", "IsBattle", "FashionUid", "Quality", });
+        new java.lang.String[] { "Uid", "ConfigId", "Level", "Star", "FashionUid", "Quality", "BattlePos", });
     internal_static_Protos_HeroSwordInfo_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_Protos_HeroSwordInfo_fieldAccessorTable = new

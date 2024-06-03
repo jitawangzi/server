@@ -322,6 +322,7 @@ public class HeroHandler extends BaseHandler {
 		HeroBattleRequest_16000005 req = (HeroBattleRequest_16000005) message;
 		HeroBattleResponse_16000006.Builder resp = HeroBattleResponse_16000006.newBuilder();
 		long uid = Long.parseLong(req.getUid());
+		int pos = req.getPos();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HeroModule heroModule = player.getHeroModule();
 		Hero hero = heroModule.get(uid);
@@ -329,15 +330,19 @@ public class HeroHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
 			return;
 		}
-		Set<Long> battleHeros = heroModule.getBattleHeros();
-		if (battleHeros.contains(uid)) {
+		if (pos < 1 || pos > 5) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		Map<Long, Integer> battleHeros = heroModule.getBattleHeros();
+		if (battleHeros.containsKey(uid)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
 		// 日租卡检查。
 		List<Long> freeDayHeros = heroModule.getFreeDayHeros();
 		if (freeDayHeros.contains(uid)) {
-			for (Long bid : battleHeros) {
+			for (Long bid : battleHeros.keySet()) {
 				if (freeDayHeros.contains(bid)) {
 					client.sendProtocol(resp.build(), ErrorMsgEnum.hero_day_rent_max.getId());
 					return;
@@ -346,20 +351,25 @@ public class HeroHandler extends BaseHandler {
 		}
 
 		// 有没有同职业的在阵上
-		int career = HeroHelper.getCareer(hero.getConfigId());
-		Hero replaceHero = null;
-		for (Long id : battleHeros) {
-			Hero tmp = heroModule.get(id);
-			if (career == HeroHelper.getCareer(tmp.getConfigId())) {
-				replaceHero = tmp;
-				break;
+//		int career = HeroHelper.getCareer(hero.getConfigId());
+//		Hero replaceHero = null;
+//		for (Long id : battleHeros) {
+//			Hero tmp = heroModule.get(id);
+//			if (career == HeroHelper.getCareer(tmp.getConfigId())) {
+//				replaceHero = tmp;
+//				break;
+//			}
+//		}
+//		if (replaceHero != null) {
+//			battleHeros.remove(replaceHero.getId());
+//		}
+		battleHeros.forEach((k, v) -> {
+			if (v == pos) {
+				battleHeros.remove(k);
 			}
-		}
-		if (replaceHero != null) {
-			battleHeros.remove(replaceHero.getId());
-		}
+		});
+		battleHeros.put(uid, pos);
 		player.handleEvent(EventTypeEnum.HeroBattle, hero);
-		battleHeros.add(uid);
 		client.sendProtocol(resp.build());
 	}
 	private void conflate(NetClient client, Object message) {

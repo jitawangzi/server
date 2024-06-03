@@ -1,7 +1,5 @@
 package cn.game.games.net.game.module.quest.require;
 
-import java.util.Set;
-
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -26,13 +24,6 @@ public class DemonKingFinish extends AbstractCondition {
 	public long getFinishCount() {
 		int count = 0;
 		int level = getParam(0);
-		Set<Long> battleHeros = player.getHeroModule().getBattleHeros();
-		for (Long id : battleHeros) {
-			Hero hero = player.getHeroModule().get(id);
-			if (hero.getLevel() >= level) {
-				count++;
-			}
-		}
 		return count;
 	}
 

@@ -5107,6 +5107,16 @@ public final class HeroMsg {
      */
     com.google.protobuf.ByteString
         getUidBytes();
+
+    /**
+     * <pre>
+     * 1- 5;
+     * </pre>
+     *
+     * <code>int32 pos = 2;</code>
+     * @return The pos.
+     */
+    int getPos();
   }
   /**
    * <pre>
@@ -5162,6 +5172,11 @@ public final class HeroMsg {
               java.lang.String s = input.readStringRequireUtf8();
 
               uid_ = s;
+              break;
+            }
+            case 16: {
+
+              pos_ = input.readInt32();
               break;
             }
             default: {
@@ -5242,6 +5257,21 @@ public final class HeroMsg {
       }
     }
 
+    public static final int POS_FIELD_NUMBER = 2;
+    private int pos_;
+    /**
+     * <pre>
+     * 1- 5;
+     * </pre>
+     *
+     * <code>int32 pos = 2;</code>
+     * @return The pos.
+     */
+    @java.lang.Override
+    public int getPos() {
+      return pos_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5259,6 +5289,9 @@ public final class HeroMsg {
       if (!getUidBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uid_);
       }
+      if (pos_ != 0) {
+        output.writeInt32(2, pos_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -5270,6 +5303,10 @@ public final class HeroMsg {
       size = 0;
       if (!getUidBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uid_);
+      }
+      if (pos_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, pos_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5288,6 +5325,8 @@ public final class HeroMsg {
 
       if (!getUid()
           .equals(other.getUid())) return false;
+      if (getPos()
+          != other.getPos()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -5301,6 +5340,8 @@ public final class HeroMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + getUid().hashCode();
+      hash = (37 * hash) + POS_FIELD_NUMBER;
+      hash = (53 * hash) + getPos();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -5440,6 +5481,8 @@ public final class HeroMsg {
         super.clear();
         uid_ = "";
 
+        pos_ = 0;
+
         return this;
       }
 
@@ -5467,6 +5510,7 @@ public final class HeroMsg {
       public cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005 buildPartial() {
         cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005 result = new cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005(this);
         result.uid_ = uid_;
+        result.pos_ = pos_;
         onBuilt();
         return result;
       }
@@ -5518,6 +5562,9 @@ public final class HeroMsg {
         if (!other.getUid().isEmpty()) {
           uid_ = other.uid_;
           onChanged();
+        }
+        if (other.getPos() != 0) {
+          setPos(other.getPos());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5640,6 +5687,49 @@ public final class HeroMsg {
   checkByteStringIsUtf8(value);
         
         uid_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int pos_ ;
+      /**
+       * <pre>
+       * 1- 5;
+       * </pre>
+       *
+       * <code>int32 pos = 2;</code>
+       * @return The pos.
+       */
+      @java.lang.Override
+      public int getPos() {
+        return pos_;
+      }
+      /**
+       * <pre>
+       * 1- 5;
+       * </pre>
+       *
+       * <code>int32 pos = 2;</code>
+       * @param value The pos to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPos(int value) {
+        
+        pos_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 1- 5;
+       * </pre>
+       *
+       * <code>int32 pos = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPos() {
+        
+        pos_ = 0;
         onChanged();
         return this;
       }
@@ -11140,19 +11230,20 @@ public final class HeroMsg {
       "\034HeroConflateRequest_16000003\022\013\n\003uid\030\001 \001" +
       "(\t\022\023\n\013consumedUid\030\002 \003(\t\"?\n\035HeroConflateR" +
       "esponse_16000004\022\036\n\004hero\030\001 \001(\0132\020.Protos." +
-      "HeroInfo\")\n\032HeroBattleRequest_16000005\022\013" +
-      "\n\003uid\030\001 \001(\t\"\035\n\033HeroBattleResponse_160000" +
-      "06\"-\n\036HeroLevelResetRequest_16000007\022\013\n\003" +
-      "uid\030\001 \001(\t\"!\n\037HeroLevelResetResponse_1600" +
-      "0008\"/\n HeroQualityResetRequest_16000011" +
-      "\022\013\n\003uid\030\001 \001(\t\"D\n!HeroQualityResetRespons" +
-      "e_16000012\022\037\n\005items\030\002 \003(\0132\020.Protos.ItemI" +
-      "nfo\"!\n\037HeroFreeDayRentRequest_16000030\"C" +
-      "\n HeroFreeDayRentResponse_16000031\022\037\n\005he" +
-      "ros\030\001 \003(\0132\020.Protos.HeroInfo\"4\n%HeroFreeD" +
-      "ayRentChooseRequest_16000032\022\013\n\003uid\030\001 \001(" +
-      "\t\"(\n&HeroFreeDayRentChooseResponse_16000" +
-      "033B\033\n\031cn.game.protocol.protobufb\006proto3"
+      "HeroInfo\"6\n\032HeroBattleRequest_16000005\022\013" +
+      "\n\003uid\030\001 \001(\t\022\013\n\003pos\030\002 \001(\005\"\035\n\033HeroBattleRe" +
+      "sponse_16000006\"-\n\036HeroLevelResetRequest" +
+      "_16000007\022\013\n\003uid\030\001 \001(\t\"!\n\037HeroLevelReset" +
+      "Response_16000008\"/\n HeroQualityResetReq" +
+      "uest_16000011\022\013\n\003uid\030\001 \001(\t\"D\n!HeroQualit" +
+      "yResetResponse_16000012\022\037\n\005items\030\002 \003(\0132\020" +
+      ".Protos.ItemInfo\"!\n\037HeroFreeDayRentReque" +
+      "st_16000030\"C\n HeroFreeDayRentResponse_1" +
+      "6000031\022\037\n\005heros\030\001 \003(\0132\020.Protos.HeroInfo" +
+      "\"4\n%HeroFreeDayRentChooseRequest_1600003" +
+      "2\022\013\n\003uid\030\001 \001(\t\"(\n&HeroFreeDayRentChooseR" +
+      "esponse_16000033B\033\n\031cn.game.protocol.pro" +
+      "tobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -11212,7 +11303,7 @@ public final class HeroMsg {
     internal_static_Protos_HeroBattleRequest_16000005_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroBattleRequest_16000005_descriptor,
-        new java.lang.String[] { "Uid", });
+        new java.lang.String[] { "Uid", "Pos", });
     internal_static_Protos_HeroBattleResponse_16000006_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_HeroBattleResponse_16000006_fieldAccessorTable = new

@@ -34,9 +34,10 @@ message HeroInfo{
 	uint32 configId = 2;//Hero配置表 ID
 	uint32 level = 3;//等级
 	uint32 star = 4 ;// 星级
-	bool isBattle = 5; // 是否上阵了
+//	bool isBattle = 5; // 是否上阵了
 	string fashionUid = 6 ;// 穿戴的时装唯一id
 	uint32 quality = 7 ;  // 品质。
+	uint32 battlePos = 8 ;  // 上阵位置 1-5 ，0未上阵
 }
 // 英雄武器
 message HeroSwordInfo{

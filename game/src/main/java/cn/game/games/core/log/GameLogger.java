@@ -570,7 +570,7 @@ public class GameLogger extends Logger {
 			if (result) {
 				re = "1";
 			}
-			Set<Long> battleHeros = player.getHeroModule().getBattleHeros();
+			Set<Long> battleHeros = player.getHeroModule().getBattleHeroIds();
 			List<Long> heroList = new ArrayList<>(battleHeros);
 
 			Object[] array = new Object[] {

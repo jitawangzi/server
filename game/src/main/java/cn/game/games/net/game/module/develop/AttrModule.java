@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.BasePlayerModule;
@@ -109,8 +108,8 @@ public class AttrModule extends BasePlayerModule {
 //		if (hero == null) {
 //			return;
 //		}
-		Set<Long> battleHeros = player.getHeroModule().getBattleHeros();
-		for (Long uid : battleHeros) {
+		Map<Long, Integer> battleHeros = player.getHeroModule().getBattleHeros();
+		for (Long uid : battleHeros.keySet()) {
 			Hero hero = player.getHeroModule().get(uid);
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			// 初始属性

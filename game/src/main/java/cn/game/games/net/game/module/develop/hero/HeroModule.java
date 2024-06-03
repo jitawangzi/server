@@ -2,8 +2,9 @@ package cn.game.games.net.game.module.develop.hero;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
@@ -32,7 +33,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	/** 当前使用的英雄id */
 	private long heroUid;
 	/** 上阵的英雄列表 */
-	private Set<Long> battleHeros = new HashSet<Long>();
+	private Map<Long, Integer> battleHeros = new HashMap<Long, Integer>();
 
 	/** 免费日租卡英雄id */
 	private List<Long> freeDayHeros = new ArrayList<>();
@@ -52,9 +53,11 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		case PLAYER_CREATE: {
 			Collection<Hero> list = list();
 			// 初始英雄全上阵
+			int pos = 1;
 			for (Hero hero : list) {
 //				hero.setBattle(true);
-				battleHeros.add(hero.getId());
+//				battleHeros.add(hero.getId());
+				battleHeros.put(hero.getId(), pos++);
 			}
 			break;
 		}
@@ -162,12 +165,18 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		return get(heroUid);
 	}
 
-	public boolean isInBattle(long uid) {
-		return battleHeros.contains(uid);
+
+	public Map<Long, Integer> getBattleHeros() {
+		return battleHeros;
 	}
 
-	public Set<Long> getBattleHeros() {
-		return battleHeros;
+	public Set<Long> getBattleHeroIds() {
+		return battleHeros.keySet();
+	}
+
+	public int getBattleHeroPos(long id) {
+		Integer pos = battleHeros.get(id);
+		return pos == null ? 0 : pos;
 	}
 
 	public List<Long> getFreeDayHeros() {

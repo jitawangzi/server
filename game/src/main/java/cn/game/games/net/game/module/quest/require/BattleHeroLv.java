@@ -26,7 +26,7 @@ public class BattleHeroLv extends AbstractCondition {
 	public long getFinishCount() {
 		int count = 0;
 		int level = getParam(0);
-		Set<Long> battleHeros = player.getHeroModule().getBattleHeros();
+		Set<Long> battleHeros = player.getHeroModule().getBattleHeroIds();
 		for (Long id : battleHeros) {
 			Hero hero = player.getHeroModule().get(id);
 			if (hero.getLevel() >= level) {
