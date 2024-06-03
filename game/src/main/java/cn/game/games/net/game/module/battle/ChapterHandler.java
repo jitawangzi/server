@@ -35,6 +35,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000061;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000065;
+import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000067;
 import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070;
 import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointResponse_13000071;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
@@ -110,7 +111,7 @@ public class ChapterHandler extends BaseHandler {
 
 	protected void daoHeartReward(NetClient client, Object message) {
 		BattleDaoHeartSweepRequest_13000066 req = (BattleDaoHeartSweepRequest_13000066) message;
-		BattleDaoHeartSweepResponse_13000061.Builder resp = BattleDaoHeartSweepResponse_13000061.newBuilder();
+		BattleDaoHeartSweepResponse_13000067.Builder resp = BattleDaoHeartSweepResponse_13000067.newBuilder();
 		int id = req.getId();
 		int type = req.getType();
 
@@ -144,7 +145,7 @@ public class ChapterHandler extends BaseHandler {
 			}
 		}
 		rewardBattleIds.add(id); 
-		OpType opType = type == 2 ? OpType.DaoXinComplete : OpType.XinMoComplete;
+		OpType opType = type == 2 ? OpType.DaoXinComplete : type == 3 ? OpType.XinMoComplete : OpType.YaoWangComplete;
 
 		resp.addAllRewards(PlayerHelper.addReward(player, battleConfig.ClearGameReward, opType));
 
@@ -226,7 +227,7 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 			return;
 		}
-		OpType opType = type == 2 ? OpType.DaoXinSweep : OpType.XinMoSweep;
+		OpType opType = type == 2 ? OpType.DaoXinSweep : type == 3 ? OpType.XinMoSweep : OpType.YaoWangSweep;
 
 		int freeRemaning = daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep();
 		if (freeRemaning > 0) {
@@ -267,6 +268,11 @@ public class ChapterHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
 				return;
 			}
+		} else if (type == 4) {
+			if (!player.isFuncOpen(InitialUI.YaoWangBiePao)) {
+				client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+				return;
+			}
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
@@ -276,13 +282,8 @@ public class ChapterHandler extends BaseHandler {
 		}
 		resp.setId(daoHeartBattle.getNextBattleId());
 		resp.addAllRandomBuff(daoHeartBattle.getRandomBuff());
-		if (type == 2) {
-			resp.setFreeSweepRemaning(daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep());
-			resp.setPaySweepRemaning(daoHeartBattle.getMaxPaySweepCount() - daoHeartBattle.getPaySweep());
-		} else if (type == 3) {
-			resp.setFreeSweepRemaning(daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep());
-			resp.setPaySweepRemaning(daoHeartBattle.getMaxPaySweepCount() - daoHeartBattle.getPaySweep());
-		}
+		resp.setFreeSweepRemaning(daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep());
+		resp.setPaySweepRemaning(daoHeartBattle.getMaxPaySweepCount() - daoHeartBattle.getPaySweep());
 		client.sendProtocol(resp);
 	}
 

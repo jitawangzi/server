@@ -7,6 +7,8 @@ import cn.game.games.net.game.module.battle.impl.BattleChapterImpl;
 import cn.game.games.net.game.module.battle.impl.BattleEventImpl;
 import cn.game.games.net.game.module.battle.impl.DaoHeartImpl;
 import cn.game.games.net.game.module.battle.impl.HCBattleChapterImpl;
+import cn.game.games.net.game.module.battle.impl.XinMoImpl;
+import cn.game.games.net.game.module.battle.impl.YaoWangImpl;
 
 public class BattleFactory {
 
@@ -16,6 +18,8 @@ public class BattleFactory {
 		register(new BattleChapterImpl());
 		register(new BattleEventImpl());
 		register(new DaoHeartImpl());
+		register(new XinMoImpl());
+		register(new YaoWangImpl());
 		register(new HCBattleChapterImpl());
 	}
 

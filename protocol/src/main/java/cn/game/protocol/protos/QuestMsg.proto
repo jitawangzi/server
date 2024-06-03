@@ -6,6 +6,7 @@ package Protos;
 import "RewardMsg.proto" ;
 import "BaseMsg.proto" ;
 
+
 // 查看某类任务数据,一般在任务功能开启时，客户端请求一下。
 message QuestListRequest_20000001
 {
@@ -76,6 +77,19 @@ message QuestGroupPointRewardInfo
 	int32 group = 1;   	// QuestTypeEnum 的id，日常，周常等。
 	repeated int32 index = 2 ;  // 已经领取过的奖励索引(一般是5个奖励，0 - 4 )
 }
+
+
+// 请求所有任务数据，一般在任务功能开启的时候请求一下。
+message QuestListAllRequest_20000051
+{
+}
+
+// 任务数据
+message QuestListAllResponse_20000052
+{
+   repeated QuestGroupInfo questGroups = 1 ;  // 任务数据
+}
+
 
 //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻这些暂时不会用到︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 

@@ -8505,6 +8505,1345 @@ public final class QuestMsg {
 
   }
 
+  public interface QuestListAllRequest_20000051OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QuestListAllRequest_20000051)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * 请求所有任务数据，一般在任务功能开启的时候请求一下。
+   * </pre>
+   *
+   * Protobuf type {@code Protos.QuestListAllRequest_20000051}
+   */
+  public static final class QuestListAllRequest_20000051 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QuestListAllRequest_20000051)
+      QuestListAllRequest_20000051OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QuestListAllRequest_20000051.newBuilder() to construct.
+    private QuestListAllRequest_20000051(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QuestListAllRequest_20000051() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QuestListAllRequest_20000051();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QuestListAllRequest_20000051(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllRequest_20000051_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllRequest_20000051_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.class, cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 other = (cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 请求所有任务数据，一般在任务功能开启的时候请求一下。
+     * </pre>
+     *
+     * Protobuf type {@code Protos.QuestListAllRequest_20000051}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QuestListAllRequest_20000051)
+        cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllRequest_20000051_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllRequest_20000051_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.class, cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllRequest_20000051_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 build() {
+        cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 buildPartial() {
+        cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 result = new cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051) {
+          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 other) {
+        if (other == cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QuestListAllRequest_20000051)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QuestListAllRequest_20000051)
+    private static final cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051();
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QuestListAllRequest_20000051>
+        PARSER = new com.google.protobuf.AbstractParser<QuestListAllRequest_20000051>() {
+      @java.lang.Override
+      public QuestListAllRequest_20000051 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QuestListAllRequest_20000051(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QuestListAllRequest_20000051> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QuestListAllRequest_20000051> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QuestListAllResponse_20000052OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QuestListAllResponse_20000052)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> 
+        getQuestGroupsList();
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo getQuestGroups(int index);
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    int getQuestGroupsCount();
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> 
+        getQuestGroupsOrBuilderList();
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder getQuestGroupsOrBuilder(
+        int index);
+  }
+  /**
+   * <pre>
+   * 任务数据
+   * </pre>
+   *
+   * Protobuf type {@code Protos.QuestListAllResponse_20000052}
+   */
+  public static final class QuestListAllResponse_20000052 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QuestListAllResponse_20000052)
+      QuestListAllResponse_20000052OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QuestListAllResponse_20000052.newBuilder() to construct.
+    private QuestListAllResponse_20000052(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QuestListAllResponse_20000052() {
+      questGroups_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QuestListAllResponse_20000052();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QuestListAllResponse_20000052(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              questGroups_.add(
+                  input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllResponse_20000052_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllResponse_20000052_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052.class, cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052.Builder.class);
+    }
+
+    public static final int QUESTGROUPS_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> questGroups_;
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> getQuestGroupsList() {
+      return questGroups_;
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> 
+        getQuestGroupsOrBuilderList() {
+      return questGroups_;
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    @java.lang.Override
+    public int getQuestGroupsCount() {
+      return questGroups_.size();
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo getQuestGroups(int index) {
+      return questGroups_.get(index);
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder getQuestGroupsOrBuilder(
+        int index) {
+      return questGroups_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < questGroups_.size(); i++) {
+        output.writeMessage(1, questGroups_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < questGroups_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, questGroups_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 other = (cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052) obj;
+
+      if (!getQuestGroupsList()
+          .equals(other.getQuestGroupsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getQuestGroupsCount() > 0) {
+        hash = (37 * hash) + QUESTGROUPS_FIELD_NUMBER;
+        hash = (53 * hash) + getQuestGroupsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 任务数据
+     * </pre>
+     *
+     * Protobuf type {@code Protos.QuestListAllResponse_20000052}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QuestListAllResponse_20000052)
+        cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllResponse_20000052_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllResponse_20000052_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052.class, cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getQuestGroupsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (questGroupsBuilder_ == null) {
+          questGroups_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          questGroupsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.QuestMsg.internal_static_Protos_QuestListAllResponse_20000052_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 build() {
+        cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 buildPartial() {
+        cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 result = new cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052(this);
+        int from_bitField0_ = bitField0_;
+        if (questGroupsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.questGroups_ = questGroups_;
+        } else {
+          result.questGroups_ = questGroupsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052) {
+          return mergeFrom((cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 other) {
+        if (other == cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052.getDefaultInstance()) return this;
+        if (questGroupsBuilder_ == null) {
+          if (!other.questGroups_.isEmpty()) {
+            if (questGroups_.isEmpty()) {
+              questGroups_ = other.questGroups_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureQuestGroupsIsMutable();
+              questGroups_.addAll(other.questGroups_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.questGroups_.isEmpty()) {
+            if (questGroupsBuilder_.isEmpty()) {
+              questGroupsBuilder_.dispose();
+              questGroupsBuilder_ = null;
+              questGroups_ = other.questGroups_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              questGroupsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getQuestGroupsFieldBuilder() : null;
+            } else {
+              questGroupsBuilder_.addAllMessages(other.questGroups_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> questGroups_ =
+        java.util.Collections.emptyList();
+      private void ensureQuestGroupsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>(questGroups_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> questGroupsBuilder_;
+
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> getQuestGroupsList() {
+        if (questGroupsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(questGroups_);
+        } else {
+          return questGroupsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public int getQuestGroupsCount() {
+        if (questGroupsBuilder_ == null) {
+          return questGroups_.size();
+        } else {
+          return questGroupsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo getQuestGroups(int index) {
+        if (questGroupsBuilder_ == null) {
+          return questGroups_.get(index);
+        } else {
+          return questGroupsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder setQuestGroups(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo value) {
+        if (questGroupsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupsIsMutable();
+          questGroups_.set(index, value);
+          onChanged();
+        } else {
+          questGroupsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder setQuestGroups(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder builderForValue) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          questGroups_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          questGroupsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder addQuestGroups(cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo value) {
+        if (questGroupsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupsIsMutable();
+          questGroups_.add(value);
+          onChanged();
+        } else {
+          questGroupsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder addQuestGroups(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo value) {
+        if (questGroupsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQuestGroupsIsMutable();
+          questGroups_.add(index, value);
+          onChanged();
+        } else {
+          questGroupsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder addQuestGroups(
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder builderForValue) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          questGroups_.add(builderForValue.build());
+          onChanged();
+        } else {
+          questGroupsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder addQuestGroups(
+          int index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder builderForValue) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          questGroups_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          questGroupsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder addAllQuestGroups(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> values) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, questGroups_);
+          onChanged();
+        } else {
+          questGroupsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder clearQuestGroups() {
+        if (questGroupsBuilder_ == null) {
+          questGroups_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          questGroupsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public Builder removeQuestGroups(int index) {
+        if (questGroupsBuilder_ == null) {
+          ensureQuestGroupsIsMutable();
+          questGroups_.remove(index);
+          onChanged();
+        } else {
+          questGroupsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder getQuestGroupsBuilder(
+          int index) {
+        return getQuestGroupsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder getQuestGroupsOrBuilder(
+          int index) {
+        if (questGroupsBuilder_ == null) {
+          return questGroups_.get(index);  } else {
+          return questGroupsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> 
+           getQuestGroupsOrBuilderList() {
+        if (questGroupsBuilder_ != null) {
+          return questGroupsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(questGroups_);
+        }
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder addQuestGroupsBuilder() {
+        return getQuestGroupsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder addQuestGroupsBuilder(
+          int index) {
+        return getQuestGroupsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 任务数据
+       * </pre>
+       *
+       * <code>repeated .Protos.QuestGroupInfo questGroups = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder> 
+           getQuestGroupsBuilderList() {
+        return getQuestGroupsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder> 
+          getQuestGroupsFieldBuilder() {
+        if (questGroupsBuilder_ == null) {
+          questGroupsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder>(
+                  questGroups_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          questGroups_ = null;
+        }
+        return questGroupsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QuestListAllResponse_20000052)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QuestListAllResponse_20000052)
+    private static final cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052();
+    }
+
+    public static cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QuestListAllResponse_20000052>
+        PARSER = new com.google.protobuf.AbstractParser<QuestListAllResponse_20000052>() {
+      @java.lang.Override
+      public QuestListAllResponse_20000052 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QuestListAllResponse_20000052(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QuestListAllResponse_20000052> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QuestListAllResponse_20000052> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface QuestChallengeGroupRequest_20000020OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.QuestChallengeGroupRequest_20000020)
       com.google.protobuf.MessageOrBuilder {
@@ -18981,6 +20320,16 @@ public final class QuestMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_QuestGroupPointRewardInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QuestListAllRequest_20000051_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QuestListAllRequest_20000051_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QuestListAllResponse_20000052_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QuestListAllResponse_20000052_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -19087,33 +20436,36 @@ public final class QuestMsg {
       "\001(\005\022\023\n\013finishCount\030\003 \003(\005\"B\n\016QuestGroupIn" +
       "fo\022\r\n\005group\030\001 \001(\005\022!\n\006quests\030\002 \003(\0132\021.Prot" +
       "os.QuestInfo\"9\n\031QuestGroupPointRewardInf" +
-      "o\022\r\n\005group\030\001 \001(\005\022\r\n\005index\030\002 \003(\005\"3\n#Quest" +
-      "ChallengeGroupRequest_20000020\022\014\n\004type\030\001" +
-      " \001(\005\"W\n$QuestChallengeGroupResponse_2000" +
-      "0021\022/\n\006groups\030\001 \003(\0132\037.Protos.QuestChall" +
-      "engeGroupInfo\"7\n)QuestChallengeGroupDeta" +
-      "ilRequest_20000022\022\n\n\002id\030\001 \001(\005\"O\n*QuestC" +
-      "hallengeGroupDetailResponse_20000023\022!\n\006" +
-      "quests\030\001 \003(\0132\021.Protos.QuestInfo\"@\n#Quest" +
-      "ConditionCompletePush_20500001\022\n\n\002id\030\001 \001" +
-      "(\005\022\r\n\005index\030\002 \001(\005\"K\n\030QuestRewardPush_206" +
-      "00008\022\n\n\002id\030\001 \001(\005\022#\n\007rewards\030\002 \003(\0132\022.Pro" +
-      "tos.RewardInfo\")\n\033QuestAcceptRequest_200" +
-      "00026\022\n\n\002id\030\001 \001(\005\"@\n\034QuestAcceptResponse" +
-      "_20000027\022 \n\005quest\030\001 \001(\0132\021.Protos.QuestI" +
-      "nfo\"4\n#QuestBranchPriorityRequest_200000" +
-      "28\022\r\n\005group\030\001 \001(\005\"&\n$QuestBranchPriority" +
-      "Response_20000029\"1\n QuestBranchPriority" +
-      "Push_20300000\022\r\n\005group\030\001 \001(\005\"D\n\027QuestCha" +
-      "llengeGroupInfo\022\n\n\002id\030\001 \001(\005\022\r\n\005score\030\002 \001" +
-      "(\005\022\016\n\006reward\030\003 \001(\010\"G\n\033QuestUpdateRequest" +
-      "_20000030\022\n\n\002id\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\022\r\n\005" +
-      "count\030\003 \001(\005\"\036\n\034QuestUpdateResponse_20000" +
-      "031\">\n!QuestChooseRewardRequest_20000033" +
-      "\022\n\n\002id\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\"I\n\"QuestChoo" +
-      "seRewardResponse_20000034\022#\n\007rewards\030\001 \003" +
-      "(\0132\022.Protos.RewardInfoB\033\n\031cn.game.protoc" +
-      "ol.protobufb\006proto3"
+      "o\022\r\n\005group\030\001 \001(\005\022\r\n\005index\030\002 \003(\005\"\036\n\034Quest" +
+      "ListAllRequest_20000051\"L\n\035QuestListAllR" +
+      "esponse_20000052\022+\n\013questGroups\030\001 \003(\0132\026." +
+      "Protos.QuestGroupInfo\"3\n#QuestChallengeG" +
+      "roupRequest_20000020\022\014\n\004type\030\001 \001(\005\"W\n$Qu" +
+      "estChallengeGroupResponse_20000021\022/\n\006gr" +
+      "oups\030\001 \003(\0132\037.Protos.QuestChallengeGroupI" +
+      "nfo\"7\n)QuestChallengeGroupDetailRequest_" +
+      "20000022\022\n\n\002id\030\001 \001(\005\"O\n*QuestChallengeGr" +
+      "oupDetailResponse_20000023\022!\n\006quests\030\001 \003" +
+      "(\0132\021.Protos.QuestInfo\"@\n#QuestConditionC" +
+      "ompletePush_20500001\022\n\n\002id\030\001 \001(\005\022\r\n\005inde" +
+      "x\030\002 \001(\005\"K\n\030QuestRewardPush_20600008\022\n\n\002i" +
+      "d\030\001 \001(\005\022#\n\007rewards\030\002 \003(\0132\022.Protos.Reward" +
+      "Info\")\n\033QuestAcceptRequest_20000026\022\n\n\002i" +
+      "d\030\001 \001(\005\"@\n\034QuestAcceptResponse_20000027\022" +
+      " \n\005quest\030\001 \001(\0132\021.Protos.QuestInfo\"4\n#Que" +
+      "stBranchPriorityRequest_20000028\022\r\n\005grou" +
+      "p\030\001 \001(\005\"&\n$QuestBranchPriorityResponse_2" +
+      "0000029\"1\n QuestBranchPriorityPush_20300" +
+      "000\022\r\n\005group\030\001 \001(\005\"D\n\027QuestChallengeGrou" +
+      "pInfo\022\n\n\002id\030\001 \001(\005\022\r\n\005score\030\002 \001(\005\022\016\n\006rewa" +
+      "rd\030\003 \001(\010\"G\n\033QuestUpdateRequest_20000030\022" +
+      "\n\n\002id\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\022\r\n\005count\030\003 \001(" +
+      "\005\"\036\n\034QuestUpdateResponse_20000031\">\n!Que" +
+      "stChooseRewardRequest_20000033\022\n\n\002id\030\001 \001" +
+      "(\005\022\r\n\005index\030\002 \001(\005\"I\n\"QuestChooseRewardRe" +
+      "sponse_20000034\022#\n\007rewards\030\001 \003(\0132\022.Proto" +
+      "s.RewardInfoB\033\n\031cn.game.protocol.protobu" +
+      "fb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19187,98 +20539,110 @@ public final class QuestMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestGroupPointRewardInfo_descriptor,
         new java.lang.String[] { "Group", "Index", });
-    internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor =
+    internal_static_Protos_QuestListAllRequest_20000051_descriptor =
       getDescriptor().getMessageTypes().get(11);
+    internal_static_Protos_QuestListAllRequest_20000051_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QuestListAllRequest_20000051_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_QuestListAllResponse_20000052_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_Protos_QuestListAllResponse_20000052_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QuestListAllResponse_20000052_descriptor,
+        new java.lang.String[] { "QuestGroups", });
+    internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor =
+      getDescriptor().getMessageTypes().get(13);
     internal_static_Protos_QuestChallengeGroupRequest_20000020_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChallengeGroupRequest_20000020_descriptor,
         new java.lang.String[] { "Type", });
     internal_static_Protos_QuestChallengeGroupResponse_20000021_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_QuestChallengeGroupResponse_20000021_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChallengeGroupResponse_20000021_descriptor,
         new java.lang.String[] { "Groups", });
     internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChallengeGroupDetailRequest_20000022_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChallengeGroupDetailResponse_20000023_descriptor,
         new java.lang.String[] { "Quests", });
     internal_static_Protos_QuestConditionCompletePush_20500001_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_Protos_QuestConditionCompletePush_20500001_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestConditionCompletePush_20500001_descriptor,
         new java.lang.String[] { "Id", "Index", });
     internal_static_Protos_QuestRewardPush_20600008_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_Protos_QuestRewardPush_20600008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestRewardPush_20600008_descriptor,
         new java.lang.String[] { "Id", "Rewards", });
     internal_static_Protos_QuestAcceptRequest_20000026_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_QuestAcceptRequest_20000026_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestAcceptRequest_20000026_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_QuestAcceptResponse_20000027_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_QuestAcceptResponse_20000027_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestAcceptResponse_20000027_descriptor,
         new java.lang.String[] { "Quest", });
     internal_static_Protos_QuestBranchPriorityRequest_20000028_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_QuestBranchPriorityRequest_20000028_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestBranchPriorityRequest_20000028_descriptor,
         new java.lang.String[] { "Group", });
     internal_static_Protos_QuestBranchPriorityResponse_20000029_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Protos_QuestBranchPriorityResponse_20000029_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestBranchPriorityResponse_20000029_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_QuestBranchPriorityPush_20300000_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_Protos_QuestBranchPriorityPush_20300000_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestBranchPriorityPush_20300000_descriptor,
         new java.lang.String[] { "Group", });
     internal_static_Protos_QuestChallengeGroupInfo_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_Protos_QuestChallengeGroupInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChallengeGroupInfo_descriptor,
         new java.lang.String[] { "Id", "Score", "Reward", });
     internal_static_Protos_QuestUpdateRequest_20000030_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_Protos_QuestUpdateRequest_20000030_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestUpdateRequest_20000030_descriptor,
         new java.lang.String[] { "Id", "Index", "Count", });
     internal_static_Protos_QuestUpdateResponse_20000031_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_Protos_QuestUpdateResponse_20000031_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestUpdateResponse_20000031_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_QuestChooseRewardRequest_20000033_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_Protos_QuestChooseRewardRequest_20000033_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChooseRewardRequest_20000033_descriptor,
         new java.lang.String[] { "Id", "Index", });
     internal_static_Protos_QuestChooseRewardResponse_20000034_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_Protos_QuestChooseRewardResponse_20000034_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QuestChooseRewardResponse_20000034_descriptor,

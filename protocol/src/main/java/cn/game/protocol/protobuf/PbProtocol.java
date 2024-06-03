@@ -175,18 +175,20 @@ public class PbProtocol implements ProtocolParser {
 	public final static int QuestReceiveActivePointResponse_20000009 = 0x20000009;    
 	public final static int QuestGroupPush_20100008 = 0x20100008;    
 	public final static int QuestPush_20200008 = 0x20200008;    
+	public final static int QuestListAllRequest_20000051 = 0x20000051;    
+	public final static int QuestListAllResponse_20000052 = 0x20000052;    //带积分奖励的任务，奖励领取情况  
 	public final static int QuestChallengeGroupRequest_20000020 = 0x20000020;    
 	public final static int QuestChallengeGroupResponse_20000021 = 0x20000021;    
 	public final static int QuestChallengeGroupDetailRequest_20000022 = 0x20000022;    
-	public final static int QuestChallengeGroupDetailResponse_20000023 = 0x20000023;    
+	public final static int QuestChallengeGroupDetailResponse_20000023 = 0x20000023;    //查看某类型挑战组任务----暂时用不到  
 	public final static int QuestConditionCompletePush_20500001 = 0x20500001;    
 	public final static int QuestRewardPush_20600008 = 0x20600008;    
 	public final static int QuestAcceptRequest_20000026 = 0x20000026;    
-	public final static int QuestAcceptResponse_20000027 = 0x20000027;    
-	public final static int QuestBranchPriorityRequest_20000028 = 0x20000028;    //对于自动交付（领奖）的任务，服务端领奖之后会推送此协议，也代表此任务完成，客户端根据此协议判断是否删除任务  ----暂时用不到  
+	public final static int QuestAcceptResponse_20000027 = 0x20000027;    //一个任务条件完成的时候，推送此协议 ----暂时用不到  
+	public final static int QuestBranchPriorityRequest_20000028 = 0x20000028;    
 	public final static int QuestBranchPriorityResponse_20000029 = 0x20000029;    
-	public final static int QuestBranchPriorityPush_20300000 = 0x20300000;    //接取任务请求，一般是和npc，或者特殊的交互物触发   ----暂时用不到  
-	public final static int QuestUpdateRequest_20000030 = 0x20000030;    
+	public final static int QuestBranchPriorityPush_20300000 = 0x20300000;    
+	public final static int QuestUpdateRequest_20000030 = 0x20000030;    //设置优先显示的支线组  ----暂时用不到  
 	public final static int QuestUpdateResponse_20000031 = 0x20000031;    
 	public final static int QuestChooseRewardRequest_20000033 = 0x20000033;    
 	public final static int QuestChooseRewardResponse_20000034 = 0x20000034;    
@@ -567,6 +569,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(QuestPush_20200008, cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(QuestListAllRequest_20000051, cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QuestListAllResponse_20000052, cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(QuestChallengeGroupRequest_20000020, cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupRequest_20000020.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(QuestChallengeGroupResponse_20000021, cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupResponse_20000021.getDefaultInstance()
@@ -886,6 +892,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("QuestReceiveActivePointResponse_20000009", 0x20000009);
 		nameIdMap.put("QuestGroupPush_20100008", 0x20100008);
 		nameIdMap.put("QuestPush_20200008", 0x20200008);
+		nameIdMap.put("QuestListAllRequest_20000051", 0x20000051);
+		nameIdMap.put("QuestListAllResponse_20000052", 0x20000052);
 		nameIdMap.put("QuestChallengeGroupRequest_20000020", 0x20000020);
 		nameIdMap.put("QuestChallengeGroupResponse_20000021", 0x20000021);
 		nameIdMap.put("QuestChallengeGroupDetailRequest_20000022", 0x20000022);

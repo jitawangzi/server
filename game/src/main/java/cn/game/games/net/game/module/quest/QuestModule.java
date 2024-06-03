@@ -782,8 +782,9 @@ public class QuestModule extends BasePlayerModule {
 //		}
 	}
 
-	@Override
-	public void buildPlayerAllInfo(Builder builder) {
+	public List<QuestGroupInfo> buildAllGroup() {
+		List<QuestGroupInfo> list = new ArrayList<>();
+
 		quests.forEach((k, v) -> {
 			QuestGroupInfo.Builder groupInfo = QuestGroupInfo.newBuilder();
 			groupInfo.setGroup(k);
@@ -791,9 +792,17 @@ public class QuestModule extends BasePlayerModule {
 				groupInfo.addQuests(vv.toQuestInfo());
 			});
 			if (groupInfo.getQuestsCount() > 0) {
-				builder.addQuestGroups(groupInfo.build());
+				list.add(groupInfo.build());
 			}
 		});
+		return list;
+
+	}
+	@Override
+	public void buildPlayerAllInfo(Builder builder) {
+
+		builder.addAllQuestGroups(buildAllGroup());
+
 		Map<Integer, List<Integer>> activeRewardTypeMap = player.getPointRewardModule().getActiveRewardTypeMap(PointRewardType.QUEST);
 
 		activeRewardTypeMap.forEach((k, v) -> {

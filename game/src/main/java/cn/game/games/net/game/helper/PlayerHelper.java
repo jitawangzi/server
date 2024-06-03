@@ -864,7 +864,7 @@ public class PlayerHelper {
 			case PlayerLevel: {
 				return player.getLevel() >= count;
 			}
-			case LvCondition: {
+			case FundPassLvCondition: {
 				return player.getPlayerModule().getExpLevelMap().getValue(id) >= count;
 			}
 			case ChapterFinish: {

@@ -82,6 +82,9 @@ public class DaoHeartBattle {
 		} else if (type == 3) {
 			return GlobalConst.InnerDemonsFreeCnt;
 		}
+		else if (type == 4) {
+			return 0;
+		}
 		throw new IllegalArgumentException("没有实现的战役类型： " + type);
 	}
 
@@ -90,6 +93,8 @@ public class DaoHeartBattle {
 			return GlobalConst.DaoHeartPayCnt;
 		}else if (type == 3) {
 			return GlobalConst.InnerDemonsPayCnt;
+		} else if (type == 4) {
+			return GlobalConst.DemonKingCnt;
 		}
 		throw new IllegalArgumentException("没有实现的战役类型： " + type);
 	}
@@ -103,6 +108,8 @@ public class DaoHeartBattle {
 			return GlobalConst.DaoHeartConsume;
 		} else if (type == 3) {
 			return GlobalConst.InnerDemonsConsume;
+		} else if (type == 4) {
+			return GlobalConst.DemonKingConsume;
 		}
 		throw new IllegalArgumentException("没有实现的战役类型： " + type);
 	}

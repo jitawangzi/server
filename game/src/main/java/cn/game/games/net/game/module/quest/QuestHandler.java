@@ -34,6 +34,7 @@ import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupRequest_20000020;
 import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupResponse_20000021;
 import cn.game.protocol.protobuf.QuestMsg.QuestChooseRewardRequest_20000033;
 import cn.game.protocol.protobuf.QuestMsg.QuestChooseRewardResponse_20000034;
+import cn.game.protocol.protobuf.QuestMsg.QuestListAllResponse_20000052;
 import cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001;
 import cn.game.protocol.protobuf.QuestMsg.QuestListResponse_20000002;
 import cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008;
@@ -56,6 +57,7 @@ public class QuestHandler extends BaseHandler {
 	protected void inititialize() {
 
 		putInvoker(PbProtocol.QuestListRequest_20000001, this::list);
+		putInvoker(PbProtocol.QuestListAllRequest_20000051, this::listAll);
 		putInvoker(PbProtocol.QuestReceiveRequest_20000004, this::receive);
 		putInvoker(PbProtocol.QuestChooseRewardRequest_20000033, this::chooseReward);
 		putInvoker(PbProtocol.QuestReceiveActivePointRequest_20000008, this::activeReceive);
@@ -198,6 +200,13 @@ public class QuestHandler extends BaseHandler {
 		client.sendProtocol(resp.build());
 	}
 
+	protected void listAll(NetClient client, Object message) {
+		QuestListAllResponse_20000052.Builder resp = QuestListAllResponse_20000052.newBuilder();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		resp.addAllQuestGroups(player.getQuestModule().buildAllGroup());
+		client.sendProtocol(resp);
+	}
 	protected void list(NetClient client, Object message) {
 		QuestListRequest_20000001 req = (QuestListRequest_20000001) message;
 		QuestListResponse_20000002.Builder resp = QuestListResponse_20000002.newBuilder();

@@ -73,6 +73,10 @@ public enum OpType{
 
 	XinMoComplete(145, "心魔试炼通关奖励"),
 
+	YaoWangSweep(146, "妖王快跑扫荡奖励"),
+
+	YaoWangComplete(147, "妖王快跑通关奖励"),
+
 	BoxOpen(140, "合并开宝箱"),
 	MergeEquipLvUp(141, "合并装备升级"),
 

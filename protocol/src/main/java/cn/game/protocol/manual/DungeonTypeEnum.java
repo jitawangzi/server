@@ -9,10 +9,16 @@ public enum DungeonTypeEnum{
 	BattleChapter(1, "主线章节"),
 	/** 道心磨砺战斗 */
 	DaoHeart(2, "道心磨砺战斗"),
+
+	/** 心魔试炼战斗 */
+	XinMo(3, "心魔试炼战斗"),
+
+	/** 妖王别跑战斗 */
+	YaoWang(4, "妖王别跑战斗"),
 	/** 突发事件 */
-	BattleEvent(3, "突发事件"),
+	BattleEvent(33, "突发事件"),
 	/** 探索战斗 */
-	ExploreBattle(4, "探索战斗"),
+	ExploreBattle(44, "探索战斗"),
 
 	// 合成游戏的战斗
 	HCBattleChapter(11, "合成游戏主线章节"),

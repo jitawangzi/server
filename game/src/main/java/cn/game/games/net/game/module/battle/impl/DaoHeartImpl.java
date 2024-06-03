@@ -60,6 +60,16 @@ public class DaoHeartImpl extends XiYouBattleHandler {
 	}
 
 	@Override
+	public int check(Player player, int type, int dungeonId) {
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleConfig battleConfig = BattleManager.instance().get(dungeonId);
+		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart)) {
+			return ErrorMsgEnum.resource_not_enough.getId();
+		}
+		return 0;
+	}
+
+	@Override
 	public int getType() {
 		return DungeonTypeEnum.DaoHeart.getId();
 	}
