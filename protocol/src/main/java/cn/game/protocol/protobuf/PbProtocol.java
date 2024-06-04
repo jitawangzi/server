@@ -130,6 +130,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int MailReceiveResponse_12000006 = 0x12000006;    
 	public final static int MailDeleteRequest_12000007 = 0x12000007;    
 	public final static int MailDeleteResponse_12000008 = 0x12000008;    
+	public final static int MailNewPush_12010001 = 0x12010001;    //删除邮件  
 	public final static int MergeEquipmentWearRequest_23000001 = 0x23000001;    //import "BaseMsg.proto" ;  
 	public final static int MergeEquipmentWearResponse_23000002 = 0x23000002;    
 	public final static int MergeEquipmentTeardownRequest_23000003 = 0x23000003;    
@@ -478,6 +479,8 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(MailDeleteRequest_12000007, cn.game.protocol.protobuf.MailMsg.MailDeleteRequest_12000007.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(MailDeleteResponse_12000008, cn.game.protocol.protobuf.MailMsg.MailDeleteResponse_12000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(MailNewPush_12010001, cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(MergeEquipmentWearRequest_23000001, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentWearRequest_23000001.getDefaultInstance()
 				.getParserForType());
@@ -847,6 +850,7 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("MailReceiveResponse_12000006", 0x12000006);
 		nameIdMap.put("MailDeleteRequest_12000007", 0x12000007);
 		nameIdMap.put("MailDeleteResponse_12000008", 0x12000008);
+		nameIdMap.put("MailNewPush_12010001", 0x12010001);
 		nameIdMap.put("MergeEquipmentWearRequest_23000001", 0x23000001);
 		nameIdMap.put("MergeEquipmentWearResponse_23000002", 0x23000002);
 		nameIdMap.put("MergeEquipmentTeardownRequest_23000003", 0x23000003);

@@ -4896,6 +4896,695 @@ public final class MailMsg {
 
   }
 
+  public interface MailNewPush_12010001OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.MailNewPush_12010001)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 邮件内容
+     * </pre>
+     *
+     * <code>.Protos.MailInfo mail = 1;</code>
+     * @return Whether the mail field is set.
+     */
+    boolean hasMail();
+    /**
+     * <pre>
+     * 邮件内容
+     * </pre>
+     *
+     * <code>.Protos.MailInfo mail = 1;</code>
+     * @return The mail.
+     */
+    cn.game.protocol.protobuf.MailMsg.MailInfo getMail();
+    /**
+     * <pre>
+     * 邮件内容
+     * </pre>
+     *
+     * <code>.Protos.MailInfo mail = 1;</code>
+     */
+    cn.game.protocol.protobuf.MailMsg.MailInfoOrBuilder getMailOrBuilder();
+  }
+  /**
+   * <pre>
+   *新邮件推送
+   * </pre>
+   *
+   * Protobuf type {@code Protos.MailNewPush_12010001}
+   */
+  public static final class MailNewPush_12010001 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.MailNewPush_12010001)
+      MailNewPush_12010001OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use MailNewPush_12010001.newBuilder() to construct.
+    private MailNewPush_12010001(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private MailNewPush_12010001() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new MailNewPush_12010001();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private MailNewPush_12010001(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              cn.game.protocol.protobuf.MailMsg.MailInfo.Builder subBuilder = null;
+              if (mail_ != null) {
+                subBuilder = mail_.toBuilder();
+              }
+              mail_ = input.readMessage(cn.game.protocol.protobuf.MailMsg.MailInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(mail_);
+                mail_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.MailMsg.internal_static_Protos_MailNewPush_12010001_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.MailMsg.internal_static_Protos_MailNewPush_12010001_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001.class, cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001.Builder.class);
+    }
+
+    public static final int MAIL_FIELD_NUMBER = 1;
+    private cn.game.protocol.protobuf.MailMsg.MailInfo mail_;
+    /**
+     * <pre>
+     * 邮件内容
+     * </pre>
+     *
+     * <code>.Protos.MailInfo mail = 1;</code>
+     * @return Whether the mail field is set.
+     */
+    @java.lang.Override
+    public boolean hasMail() {
+      return mail_ != null;
+    }
+    /**
+     * <pre>
+     * 邮件内容
+     * </pre>
+     *
+     * <code>.Protos.MailInfo mail = 1;</code>
+     * @return The mail.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.MailMsg.MailInfo getMail() {
+      return mail_ == null ? cn.game.protocol.protobuf.MailMsg.MailInfo.getDefaultInstance() : mail_;
+    }
+    /**
+     * <pre>
+     * 邮件内容
+     * </pre>
+     *
+     * <code>.Protos.MailInfo mail = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.MailMsg.MailInfoOrBuilder getMailOrBuilder() {
+      return getMail();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (mail_ != null) {
+        output.writeMessage(1, getMail());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (mail_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getMail());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 other = (cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001) obj;
+
+      if (hasMail() != other.hasMail()) return false;
+      if (hasMail()) {
+        if (!getMail()
+            .equals(other.getMail())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasMail()) {
+        hash = (37 * hash) + MAIL_FIELD_NUMBER;
+        hash = (53 * hash) + getMail().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *新邮件推送
+     * </pre>
+     *
+     * Protobuf type {@code Protos.MailNewPush_12010001}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.MailNewPush_12010001)
+        cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.MailMsg.internal_static_Protos_MailNewPush_12010001_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.MailMsg.internal_static_Protos_MailNewPush_12010001_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001.class, cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (mailBuilder_ == null) {
+          mail_ = null;
+        } else {
+          mail_ = null;
+          mailBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.MailMsg.internal_static_Protos_MailNewPush_12010001_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 build() {
+        cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 buildPartial() {
+        cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 result = new cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001(this);
+        if (mailBuilder_ == null) {
+          result.mail_ = mail_;
+        } else {
+          result.mail_ = mailBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001) {
+          return mergeFrom((cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 other) {
+        if (other == cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001.getDefaultInstance()) return this;
+        if (other.hasMail()) {
+          mergeMail(other.getMail());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private cn.game.protocol.protobuf.MailMsg.MailInfo mail_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.MailMsg.MailInfo, cn.game.protocol.protobuf.MailMsg.MailInfo.Builder, cn.game.protocol.protobuf.MailMsg.MailInfoOrBuilder> mailBuilder_;
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       * @return Whether the mail field is set.
+       */
+      public boolean hasMail() {
+        return mailBuilder_ != null || mail_ != null;
+      }
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       * @return The mail.
+       */
+      public cn.game.protocol.protobuf.MailMsg.MailInfo getMail() {
+        if (mailBuilder_ == null) {
+          return mail_ == null ? cn.game.protocol.protobuf.MailMsg.MailInfo.getDefaultInstance() : mail_;
+        } else {
+          return mailBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       */
+      public Builder setMail(cn.game.protocol.protobuf.MailMsg.MailInfo value) {
+        if (mailBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          mail_ = value;
+          onChanged();
+        } else {
+          mailBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       */
+      public Builder setMail(
+          cn.game.protocol.protobuf.MailMsg.MailInfo.Builder builderForValue) {
+        if (mailBuilder_ == null) {
+          mail_ = builderForValue.build();
+          onChanged();
+        } else {
+          mailBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       */
+      public Builder mergeMail(cn.game.protocol.protobuf.MailMsg.MailInfo value) {
+        if (mailBuilder_ == null) {
+          if (mail_ != null) {
+            mail_ =
+              cn.game.protocol.protobuf.MailMsg.MailInfo.newBuilder(mail_).mergeFrom(value).buildPartial();
+          } else {
+            mail_ = value;
+          }
+          onChanged();
+        } else {
+          mailBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       */
+      public Builder clearMail() {
+        if (mailBuilder_ == null) {
+          mail_ = null;
+          onChanged();
+        } else {
+          mail_ = null;
+          mailBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       */
+      public cn.game.protocol.protobuf.MailMsg.MailInfo.Builder getMailBuilder() {
+        
+        onChanged();
+        return getMailFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       */
+      public cn.game.protocol.protobuf.MailMsg.MailInfoOrBuilder getMailOrBuilder() {
+        if (mailBuilder_ != null) {
+          return mailBuilder_.getMessageOrBuilder();
+        } else {
+          return mail_ == null ?
+              cn.game.protocol.protobuf.MailMsg.MailInfo.getDefaultInstance() : mail_;
+        }
+      }
+      /**
+       * <pre>
+       * 邮件内容
+       * </pre>
+       *
+       * <code>.Protos.MailInfo mail = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.MailMsg.MailInfo, cn.game.protocol.protobuf.MailMsg.MailInfo.Builder, cn.game.protocol.protobuf.MailMsg.MailInfoOrBuilder> 
+          getMailFieldBuilder() {
+        if (mailBuilder_ == null) {
+          mailBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.MailMsg.MailInfo, cn.game.protocol.protobuf.MailMsg.MailInfo.Builder, cn.game.protocol.protobuf.MailMsg.MailInfoOrBuilder>(
+                  getMail(),
+                  getParentForChildren(),
+                  isClean());
+          mail_ = null;
+        }
+        return mailBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.MailNewPush_12010001)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.MailNewPush_12010001)
+    private static final cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001();
+    }
+
+    public static cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MailNewPush_12010001>
+        PARSER = new com.google.protobuf.AbstractParser<MailNewPush_12010001>() {
+      @java.lang.Override
+      public MailNewPush_12010001 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new MailNewPush_12010001(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<MailNewPush_12010001> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MailNewPush_12010001> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface MailInfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.MailInfo)
       com.google.protobuf.MessageOrBuilder {
@@ -5012,7 +5701,7 @@ public final class MailMsg {
 
     /**
      * <pre>
-     *过期时间（时间戳，秒）
+     *过期时间（时间戳，秒）,如果为0表示不过期。
      * </pre>
      *
      * <code>uint32 expireTime = 10;</code>
@@ -5470,7 +6159,7 @@ public final class MailMsg {
     private int expireTime_;
     /**
      * <pre>
-     *过期时间（时间戳，秒）
+     *过期时间（时间戳，秒）,如果为0表示不过期。
      * </pre>
      *
      * <code>uint32 expireTime = 10;</code>
@@ -6605,7 +7294,7 @@ public final class MailMsg {
       private int expireTime_ ;
       /**
        * <pre>
-       *过期时间（时间戳，秒）
+       *过期时间（时间戳，秒）,如果为0表示不过期。
        * </pre>
        *
        * <code>uint32 expireTime = 10;</code>
@@ -6617,7 +7306,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *过期时间（时间戳，秒）
+       *过期时间（时间戳，秒）,如果为0表示不过期。
        * </pre>
        *
        * <code>uint32 expireTime = 10;</code>
@@ -6632,7 +7321,7 @@ public final class MailMsg {
       }
       /**
        * <pre>
-       *过期时间（时间戳，秒）
+       *过期时间（时间戳，秒）,如果为0表示不过期。
        * </pre>
        *
        * <code>uint32 expireTime = 10;</code>
@@ -7136,6 +7825,11 @@ public final class MailMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_MailDeleteResponse_12000008_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_MailNewPush_12010001_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_MailNewPush_12010001_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_MailInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -7159,13 +7853,14 @@ public final class MailMsg {
       "_12000006\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rewa" +
       "rdInfo\")\n\032MailDeleteRequest_12000007\022\013\n\003" +
       "uid\030\001 \001(\t\"\035\n\033MailDeleteResponse_12000008" +
-      "\"\311\001\n\010MailInfo\022\014\n\004type\030\001 \001(\r\022\013\n\003uid\030\002 \001(\t" +
-      "\022\n\n\002id\030\003 \001(\r\022\016\n\006sender\030\004 \001(\t\022\r\n\005title\030\005 " +
-      "\001(\t\022\017\n\007content\030\010 \001(\t\022\014\n\004time\030\t \001(\r\022\022\n\nex" +
-      "pireTime\030\n \001(\r\022\013\n\003see\030\013 \001(\010\022\017\n\007receive\030\014" +
-      " \001(\010\022&\n\013attachments\030\r \003(\0132\021.Protos.Goods" +
-      "InfoB\033\n\031cn.game.protocol.protobufb\006proto" +
-      "3"
+      "\"6\n\024MailNewPush_12010001\022\036\n\004mail\030\001 \001(\0132\020" +
+      ".Protos.MailInfo\"\311\001\n\010MailInfo\022\014\n\004type\030\001 " +
+      "\001(\r\022\013\n\003uid\030\002 \001(\t\022\n\n\002id\030\003 \001(\r\022\016\n\006sender\030\004" +
+      " \001(\t\022\r\n\005title\030\005 \001(\t\022\017\n\007content\030\010 \001(\t\022\014\n\004" +
+      "time\030\t \001(\r\022\022\n\nexpireTime\030\n \001(\r\022\013\n\003see\030\013 " +
+      "\001(\010\022\017\n\007receive\030\014 \001(\010\022&\n\013attachments\030\r \003(" +
+      "\0132\021.Protos.GoodsInfoB\033\n\031cn.game.protocol" +
+      ".protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7221,8 +7916,14 @@ public final class MailMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_MailDeleteResponse_12000008_descriptor,
         new java.lang.String[] { });
-    internal_static_Protos_MailInfo_descriptor =
+    internal_static_Protos_MailNewPush_12010001_descriptor =
       getDescriptor().getMessageTypes().get(8);
+    internal_static_Protos_MailNewPush_12010001_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_MailNewPush_12010001_descriptor,
+        new java.lang.String[] { "Mail", });
+    internal_static_Protos_MailInfo_descriptor =
+      getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_MailInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_MailInfo_descriptor,

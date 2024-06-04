@@ -21,10 +21,13 @@ import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.util.DAO;
+import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.manager.MailManager;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.MailMsg.MailInfo;
+import cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -53,6 +56,8 @@ public class MailModule extends BasePlayerModule  {
 		mails.put(mail.getId(), mail) ; 
 		DAO.insert(mail);
 //		mail.insert() ; 
+		MailInfo mailInfo = PbBuilder.buildMailInfo(mail);
+		player.getGameClient().sendProtocol(MailNewPush_12010001.newBuilder().setMail(mailInfo).build());
 	}
 
 	public Mail get(long id) {
@@ -115,12 +120,12 @@ public class MailModule extends BasePlayerModule  {
 	}
 
 	public List<RewardInfo> receive(long id) {
-		List<RewardInfo> list = new ArrayList<RewardInfo>();
+		List<RewardInfo> list = null;
 
 		Mail mail = get(id);
 		if (mail != null && !mail.getReceive()) {
 			List<Goods> attachmentList = mail.getAttachmentList();
-			if (attachmentList != null) {
+			if (attachmentList != null && !attachmentList.isEmpty() || mail.getMailId() > 0) {
 
 				mail.setReceive(true);
 				mail.setReceiveTime(DateUtil.currentTimeSeconds());
@@ -129,18 +134,24 @@ public class MailModule extends BasePlayerModule  {
 					mail.setSee(true);
 					mail.setSeeTime(DateUtil.currentTimeSeconds());
 				}
-//				mail.update() ; 
-				DAO.update(mail);
+
 				/*for (Goods goods : attachmentList) {
 					List<RewardItem> addResources = PlayerHelper.addResources(player, goods.getId(), goods.getCount(), false);
 					list.addAll(addResources);
 				}*/
-				List<AbstractMap.Entry<Integer,Integer>> rewards = new ArrayList<AbstractMap.Entry<Integer,Integer>>(attachmentList.size()) ;
-				for (Goods goods : attachmentList) {
-					rewards.add(new AbstractMap.SimpleEntry(goods.getId(),goods.getCount())); 
+				if (attachmentList != null && !attachmentList.isEmpty()) {
+
+					List<AbstractMap.Entry<Integer, Integer>> rewards = new ArrayList<AbstractMap.Entry<Integer, Integer>>(attachmentList.size());
+					for (Goods goods : attachmentList) {
+						rewards.add(new AbstractMap.SimpleEntry(goods.getId(), goods.getCount()));
+					}
+					list = PlayerHelper.addResources(player, rewards, OpType.Mail);
+				} else {
+					MailConfig mailConfig = MailManager.instance().get(mail.getMailId());
+					list = PlayerHelper.addResources(player, mailConfig.Reward, OpType.Mail);
 				}
-				//合并奖励
-				list = PlayerHelper.addResources(player, rewards, OpType.Mail);
+//				mail.update() ; 
+				DAO.update(mail);
 			}
 		}
 		return list;
@@ -157,6 +168,7 @@ public class MailModule extends BasePlayerModule  {
 				list.addAll(receive);
 			}
 		}
+		PlayerHelper.mergeRewards(list);
 		return list;
 	}
 

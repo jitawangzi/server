@@ -335,10 +335,10 @@ public class HeroHandler extends BaseHandler {
 			return;
 		}
 		Map<Long, Integer> battleHeros = heroModule.getBattleHeros();
-		if (battleHeros.containsKey(uid)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
-			return;
-		}
+//		if (battleHeros.containsKey(uid)) {
+//			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
+//			return;
+//		}
 		// 日租卡检查。
 		List<Long> freeDayHeros = heroModule.getFreeDayHeros();
 		if (freeDayHeros.contains(uid)) {

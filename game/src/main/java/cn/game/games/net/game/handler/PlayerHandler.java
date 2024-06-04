@@ -739,6 +739,7 @@ public class PlayerHandler extends BaseHandler {
 					failHandler.handle(ErrorMsgEnum.redis_fail.getId());
 					return;
 				}
+				// 在其他服务器
 				if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
 					Future<Message<Object>> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
 							GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(uid.get()).build());
@@ -751,6 +752,7 @@ public class PlayerHandler extends BaseHandler {
 						PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer, account);
 					});
 				} else {
+					// 玩家没在其他服务器，在本服务器加载数据
 					Account account = new Account(req);
 					// load from db
 					PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer, account);

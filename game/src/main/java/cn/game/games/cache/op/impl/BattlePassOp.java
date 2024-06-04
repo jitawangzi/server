@@ -353,7 +353,7 @@ public class BattlePassOp extends BasePlayerModule implements IBattlePassOp {
                 BattlePassPrizeConfig config = BattlePassPrizeManager.getInstance().getBattlePassPrizeConfigNullable(prizeid);
                 if (config != null) {
                     List<Map.Entry<Integer, Integer>> goldMedal = config.getGoldMedal();
-					MailHelper.sendMailMultiLanguage(playerId, 0, 208011, 208009, 208010, MailHelper.SYSTEM, goldMedal);
+					MailHelper.sendMailMultiLanguage(playerId, 208011, 208009, 208010, MailHelper.SYSTEM, goldMedal);
                 }
             }
             if (!this.silverRewardIndex.get(i)) {
@@ -361,7 +361,7 @@ public class BattlePassOp extends BasePlayerModule implements IBattlePassOp {
                 BattlePassPrizeConfig config = BattlePassPrizeManager.getInstance().getBattlePassPrizeConfigNullable(prizeid);
                 if (config != null) {
                     List<Map.Entry<Integer, Integer>> silverMedal = config.getSilverMedal();
-					MailHelper.sendMailMultiLanguage(playerId, 0, 208011, 208009, 208010, MailHelper.SYSTEM, silverMedal);
+					MailHelper.sendMailMultiLanguage(playerId, 208011, 208009, 208010, MailHelper.SYSTEM, silverMedal);
                 }
             }
         }

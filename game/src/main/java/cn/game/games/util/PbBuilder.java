@@ -280,126 +280,6 @@ public class PbBuilder {
 		return itemInfo.build();
 
 	}
-	/*
-	public static BaseMsg.RoleInfo buildRoleInfo(Role role) {
-		EquipOp equipOp = PlayerCacheFactory.getCache(role.getPlayerId(), EquipOp.class);
-		BaseMsg.RoleInfo.Builder builder = BaseMsg.RoleInfo.newBuilder();
-		builder.setId(role.getDictId());
-//		builder.setLevel(role.getLevel());
-//		builder.setExp(role.getExp());
-		builder.setStar(role.getStar());
-		builder.setFriendly(role.getIntimacy());
-		builder.setFriendlyLevel(role.getIntimacyLevel());
-		builder.setOath(role.getPromise());
-		builder.setGetTime((int) (role.getGetTime() / 1000));
-		builder.setSkin(role.getSkin());
-
-		Map<Integer, Integer> originMap = role.getOriginMap();
-		for (Entry<Integer, Integer> entry : originMap.entrySet()) {
-			builder.addOccupationNode(OccupationNodeInfo.newBuilder().setId(entry.getKey()).setLevel(entry.getValue()).build());
-		}
-		for (Integer treeId : role.getTreeList().keySet()) {
-			builder.addOccupationTrees(treeId);
-		}
-		builder.setMechaLevel(role.getMechalevel());
-		
-		builder.addAllSkills(role.getSkillsMap().keySet());
-		builder.setSkillPoint(role.getSkillPoint());
-		builder.addAllAttrPoints(buidRoleAttrInfo(role.getAttrPointAddMap()));
-		builder.addAllSkillsUsed(role.getSkillsUsedSet());
-		builder.setSoulWeaponLevel(role.getSoulweaponLevel());
-		
-//		builder.setHp(role.getHp());
-//		builder.setEp(role.getEp());
-//		builder.setSan(role.getSan());
-		builder.setState(role.getState());
-		builder.setLock(role.getIsLock());
-		builder.setNameId(role.getNameId());
-		builder.addAllTagIds(role.getTagList());
-		builder.addAllUnlockGiftIds(buildUnlockGiftIds(role));
-		builder.setExploreTime((int)(role.getExploreTime() / 1000));
-		builder.setPromotionLevel(role.getPromotionLevel());
-		builder.setPromotionPoint(role.getPromotionPoint());
-		builder.addAllEquips(equipOp.bulidEquipList(role.getDictId()));
-		//		builder.addAllGiftIds(role.getGiftList());
-
-
-//		SkillOp skillOp = PlayerCacheFactory.getCache(hero.getPlayerId(), SkillOp.class);
-//
-//		List<Skill> skillList = skillOp.list(hero.getDictId());
-//		for (Skill skill : skillList) {
-//			int id = PlayerHelper.makeId(skill.getId(), skill.getLevel());
-//			builder.addSkillId(id);
-//		}
-		return builder.build();
-
-
-
-	}
-
-	private static List<Integer> buildUnlockGiftIds(Role role) {
-		RoleOp roleOp = PlayerCacheFactory.getCache(role.getPlayerId(), RoleOp.class);
-		return roleOp.getUnlockGiftCard(role.getDictId());
-	}
-
-
-	private static List<SkillInfo> buildAllSkillInfo(Map<Integer, List<Integer>> skillsMap) {
-		List<SkillInfo> list = new ArrayList<>(3);
-		for (Integer skillId : skillsMap.keySet()) {
-			SkillInfo.Builder builder = SkillInfo.newBuilder();
-			builder.setId(skillId);
-			List<Integer> strengthenIds = skillsMap.get(skillId);
-			for (Integer strengthenId : strengthenIds) {
-				builder.addStrengthenIds(strengthenId);
-			}
-			list.add(builder.build());
-		}
-		return list;
-	}
-
-	
-		public static BaseMsg.ChipInfo buildChipInfo(Chip chip) {
-	
-			BaseMsg.ChipInfo.Builder builder = BaseMsg.ChipInfo.newBuilder();
-			builder.setUid(String.valueOf(chip.getId()));
-			builder.setId(chip.getDictId());
-			builder.setRoleId(chip.getRoleId());
-			builder.setGrade(chip.getGrade());
-			builder.setPosition(chip.getPosition());
-	
-	//		chip.getCommonAttrList().forEach(e -> {
-	//			BaseMsg.ChipCommonAttrInfo.Builder attrinfo = BaseMsg.ChipCommonAttrInfo.newBuilder();
-	//			attrinfo.setAttr(e.first);
-	//			attrinfo.setInitvalue(e.second);
-	//			attrinfo.setGrowthvalue(e.third);
-	//			builder.addCommonAttrs(attrinfo);
-	//		});
-	
-	//		builder.addAllAffixAttrs(buildAffixInfo(chip.getAffixAttrList(), BaseMsg.AttrType.OLDATTR));
-	
-	//		builder.addAllAffixAttrs(buildAffixInfo(chip.getNewaffixAttrList(), BaseMsg.AttrType.NEWATTR));
-			builder.setLock(chip.getChecklock() == null || chip.getChecklock() == 0 ? false : true);
-			builder.setGetTime((int) (chip.getGetTime() / 1000));
-	
-			return builder.build();
-		}
-	
-	
-		public static List<BaseMsg.ChipAffixAttrInfo> buildAffixInfo(List<FourTuple<Integer,Integer,Integer,Integer>> affixAttr, BaseMsg.AttrType type) {
-			List<BaseMsg.ChipAffixAttrInfo> builders = new ArrayList<>();
-	
-			affixAttr.forEach(e -> {
-				BaseMsg.ChipAffixAttrInfo.Builder info = BaseMsg.ChipAffixAttrInfo.newBuilder();
-				info.setType(type);
-				info.setAttr(e.first);
-				info.setValue(e.second);
-				info.setMinValue(e.third);
-				info.setMaxValue(e.fourth);
-				builders.add(info.build());
-			});
-			return builders;
-		}*/
-
 	public static List<RewardInfo> buildRewardInfo(List<RewardItem> list) {
 
 		if (list == null || list.isEmpty()) {
@@ -496,11 +376,15 @@ public class PbBuilder {
 	}
 
 	public static MailInfo buildMailInfo(Mail mail) {
+		MailConfig mailConfig = null;
+		int mailId = mail.getMailId();
+		if (mailId > 0) {
+			mailConfig = MailManager.instance().get(mailId);
+		}
 		MailInfo.Builder builder = MailInfo.newBuilder();
 		builder.setUid(mail.getId() + "");
 		builder.setContent(mail.getContent()) ; 
-		MailConfig mailConfig = MailManager.instance().get(mail.getMailId());
-		builder.setExpireTime((int) (mail.getCreateTime() + mailConfig.Expiration));
+		builder.setExpireTime(mailConfig != null ? (int) (mail.getCreateTime() + mailConfig.Expiration) : 0);
 		builder.setReceive(mail.getReceive());
 		builder.setSee(mail.getSee());
 		builder.setSender(mail.getSender());

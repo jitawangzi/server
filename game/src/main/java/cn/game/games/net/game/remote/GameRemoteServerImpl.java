@@ -131,7 +131,7 @@ public class GameRemoteServerImpl implements GameRemoteServerInterface {
 		
 		rewards.add(entry);
 		
-		MailHelper.sendMailMultiLanguage(playerId, 0, 0, titleId, contentId, (byte) typeId, rewards);
+		MailHelper.sendMailMultiLanguage(playerId, 0, titleId, contentId, (byte) typeId, rewards);
 		return true;
 	}
 

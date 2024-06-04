@@ -318,6 +318,7 @@ public class Mail implements Serializable, DbEntity {
 			List<Goods> attachmentList) {
 
 		Mail mail = new Mail();
+		mail.setMailId(0);
 		mail.setAttachmentList(attachmentList);
 		mail.setContent(content == null ? "" : content);
 		mail.setCreateTime((int) (System.currentTimeMillis() / 1000));
@@ -330,6 +331,7 @@ public class Mail implements Serializable, DbEntity {
 		mail.setSender(sender == null ? "" : sender);
 		mail.setTitle(title == null ? "" : title);
 		mail.setType(type);
+		mail.setIsDeleted(false);
 		return mail;
 
 	}
@@ -339,12 +341,12 @@ public class Mail implements Serializable, DbEntity {
 		MailConfig mailConfig = MailManager.instance().get(mailId);
 
 		List<Goods> goods = new ArrayList<>();
-		for (int[] re : mailConfig.Reward) {
-			Goods g = new Goods();
-			g.setId(re[0]);
-			g.setCount(re[1]);
-			goods.add(g);
-		}
+//		for (int[] re : mailConfig.Reward) {
+//			Goods g = new Goods();
+//			g.setId(re[0]);
+//			g.setCount(re[1]);
+//			goods.add(g);
+//		}
 		Mail mail = new Mail();
 		mail.setPlayerId(receiverId);
 		mail.setMailId(mailId);
