@@ -379,6 +379,8 @@ public class ShopHandler extends BaseHandler {
 			if (t.result()) {
 				MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
 				resp.setMonthCard(newMonthCard.toProto());
+				List<RewardInfo> resources = PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
+				resp.addAllRewards(resources);
 				client.sendProtocol(resp.build());
 			}else {
 				client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());

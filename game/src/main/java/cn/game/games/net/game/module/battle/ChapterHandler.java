@@ -280,7 +280,8 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 			return;
 		}
-		resp.setId(daoHeartBattle.getNextBattleId());
+		resp.setCompletedId(daoHeartBattle.getCompleteBattleId());
+		resp.setNextId(daoHeartBattle.getNextBattleId());
 		resp.addAllRandomBuff(daoHeartBattle.getRandomBuff());
 		resp.setFreeSweepRemaning(daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep());
 		resp.setPaySweepRemaning(daoHeartBattle.getMaxPaySweepCount() - daoHeartBattle.getPaySweep());

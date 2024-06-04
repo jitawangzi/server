@@ -1,6 +1,7 @@
 package cn.game.games.cache.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -9,9 +10,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.game.core.util.IdUtil;
-import cn.game.games.net.game.module.award.Goods;
-import java.util.Date;
 import cn.game.games.cache.base.DbEntity;
+import cn.game.games.net.game.module.award.Goods;
+import cn.game.protocol.generated.config.MailConfig;
+import cn.game.protocol.generated.manager.MailManager;
 
 public class Mail implements Serializable, DbEntity {
     /**
@@ -328,6 +330,42 @@ public class Mail implements Serializable, DbEntity {
 		mail.setSender(sender == null ? "" : sender);
 		mail.setTitle(title == null ? "" : title);
 		mail.setType(type);
+		return mail;
+
+	}
+
+	public static Mail valueOfMailId(long receiverId, int mailId) {
+
+		MailConfig mailConfig = MailManager.instance().get(mailId);
+
+		List<Goods> goods = new ArrayList<>();
+		for (int[] re : mailConfig.Reward) {
+			Goods g = new Goods();
+			g.setId(re[0]);
+			g.setCount(re[1]);
+			goods.add(g);
+		}
+		Mail mail = new Mail();
+		mail.setPlayerId(receiverId);
+		mail.setMailId(mailId);
+		mail.setAttachmentList(goods);
+//		mail.setContent(content == null ? "" : content);
+		mail.setContent("");
+		mail.setCreateTime((int) (System.currentTimeMillis() / 1000));
+		mail.setId(IdUtil.getId());
+		mail.setReceive(false);
+		mail.setReceiveTime(0);
+		mail.setSee(false);
+		mail.setSeeTime(0);
+//		mail.setSender(sender == null ? "" : sender);
+//		mail.setTitle(title == null ? "" : title);
+//		mail.setType(type);
+
+		mail.setSender("");
+		mail.setTitle("");
+		mail.setType((byte) mailConfig.Type);
+		mail.setIsDeleted(false);
+
 		return mail;
 
 	}

@@ -29,7 +29,7 @@ public class MailHelper {
 	/** 邮件类型， 手动发的，一般为英文版，直接发内容 */
 	public static final byte GM = 2;
 
-	public static void sendMail(long receiverId, String sender, String title, String content, byte type, List<Goods> attachmentList) {
+	public static void sendMail(long receiverId, int mailId, String sender, String title, String content, byte type, List<Goods> attachmentList) {
 
 		Mail mail = Mail.valueOf(receiverId, sender, title, content, type, attachmentList);
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
@@ -40,7 +40,8 @@ public class MailHelper {
 			mail.insert() ; 
 		}
 	}
-	public static void sendMail2(long receiverId, String sender, String title, String content, byte type,
+
+	public static void sendMail2(long receiverId, int mailId, String sender, String title, String content, byte type,
 			List<Entry<Integer, Integer>> rewards) {
 		List<Goods> attachmentList = new ArrayList<Goods>();
 		for (Entry<Integer, Integer> entry : rewards) {
@@ -49,7 +50,7 @@ public class MailHelper {
 			goods.setCount(entry.getValue());
 			attachmentList.add(goods);
 		}
-		sendMail(receiverId, sender, title, content, type, attachmentList);
+		sendMail(receiverId, mailId, sender, title, content, type, attachmentList);
 	}
 	/**
 	 * @Description 发送多语言版的邮件
@@ -64,9 +65,9 @@ public class MailHelper {
 	 *            1，多语言版，2 普通版
 	 * @param rewards
 	 */
-	public static void sendMailMultiLanguage(long receiverId, int senderId, int titleId, int contentId, byte type,
+	public static void sendMailMultiLanguage(long receiverId, int mailId, int senderId, int titleId, int contentId, byte type,
 			List<Entry<Integer, Integer>> rewards) {
-		sendMail2(receiverId, senderId + "", titleId + "", contentId + "", type, rewards);
+		sendMail2(receiverId, mailId, senderId + "", titleId + "", contentId + "", type, rewards);
 	}
 
 	/** 
@@ -78,4 +79,10 @@ public class MailHelper {
 		List<MailConfig> typeList = MailManager.instance().getTypeList(1);
 		return typeList.get(typeList.size() - 1).ID;
 	}
+
+	public static boolean isNoticeMail(Mail mail) {
+		MailConfig mailConfig = MailManager.instance().getNullable(mail.getMailId());
+		return mailConfig != null && mailConfig.Type == 1;
+	}
+	
 }

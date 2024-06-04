@@ -1,5 +1,6 @@
 package cn.game.games.net.game.handler;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,10 +36,12 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
+import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
+import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -54,7 +57,6 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
 import cn.game.util.SpringContextLoader;
-import io.vertx.core.Future;
 
 @Component
 public class TestHandler extends BaseHandler {
@@ -282,16 +284,38 @@ public class TestHandler extends BaseHandler {
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
-		PlayerManager.getInstance().saveClientCache(playerId);
 		
-		Future<Boolean> pay = player.pay(new int[] {});
-		pay.onComplete(t -> {
-			if (t.result()) {
-				System.out.println(true);
-			} else {
-				System.out.println(false);
+		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(300001);
+		int r4 = 0, r5 = 0, r6 = 0;
+		int lp = 50;
+		int count = 100;
+
+		for (int j = 0; j < lp; j++) {
+
+			for (int i = 0; i < count; i++) {
+
+				List<RewardInfo> reward = PlayerHelper.addReward(player, 300001, OpType.None);
+				HeroConfig heroConfig = HeroManager.instance().get(reward.get(0).getRole().getConfigId());
+				if (heroConfig.InitialQuality == 4) {
+					r4++;
+				} else if (heroConfig.InitialQuality == 5) {
+
+					r5++;
+				} else if (heroConfig.InitialQuality == 6) {
+
+					r6++;
+				}
+//				if (i % 10 == 0) {
+//					System.out.println(MessageFormat.format("第{0}次十连抽结果,紫:{1} 金:{2} 红:{3}", i / 10, r4, r5, r6));
+//				}
 			}
-		});
+		}
+
+		System.err.println(MessageFormat.format("循环{0}次，每次{1}连抽结果,紫:{2} 金:{3} 红:{4}", lp, count, r4, r5, r6));
+//		System.out.println(" 紫 : " + r4);
+//		System.out.println(" 金 : " + r5);
+//		System.out.println(" 红 : " + r6);
+
 
 //		CommonLogger.error("what the fuck by common logger");
 //		log.error("what the fuck by log");

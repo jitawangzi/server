@@ -115,10 +115,11 @@ message BattleDaoHeartRequest_13000055{
 }
 
 message BattleDaoHeartResponse_13000056{
-	int32 id = 1;					// 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
-	repeated int32 randomBuff = 4;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
-	int32 freeSweepRemaning = 2;      // 免费剩余扫荡次数。
-	int32 paySweepRemaning = 3;      // 收费剩余扫荡次数。
+	int32 completedId = 1;			//最新通关过的（Battle）表id
+	int32 nextId = 2;				// 最新通关的下一关，尚未通关的 （Battle）表id
+	repeated int32 randomBuff = 3;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
+	int32 freeSweepRemaning = 4;      // 免费剩余扫荡次数。
+	int32 paySweepRemaning = 5;      // 收费剩余扫荡次数。
 }
 
 /*** 扫荡道心磨砺/心魔试炼关卡 ***/

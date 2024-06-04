@@ -30,7 +30,6 @@ import cn.game.games.cache.op.impl.BuffOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.ItemMapper;
@@ -535,7 +534,8 @@ public class PlayerHelper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.LoginFinish));
+		player.handleEvent(EventTypeEnum.LoginFinish);
+
 		GameLogger.login(player);
 		GameLogger.rolelogin(player);
 	}
@@ -553,7 +553,7 @@ public class PlayerHelper {
 		long playerId = player.getData().getPlayerId();
 		log.info("new day refresh player:" + playerId);
 		// 各个模块各自刷新
-		EventHelper.handleEvent(player.getData().getPlayerId(), new GameEvent(EventTypeEnum.NewDay));
+		player.handleEvent(EventTypeEnum.NewDay);
 
 		player.getData().setRefreshDay(nowDay);
 
@@ -571,7 +571,7 @@ public class PlayerHelper {
 		long playerId = player.getData().getPlayerId();
 		log.info("new week refresh player:" + playerId);
 
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.NewWeek));
+		player.handleEvent(EventTypeEnum.NewWeek);
 
 		player.getData().setRefreshWeek(nowWeek);
 
@@ -591,7 +591,8 @@ public class PlayerHelper {
 		}
 		long playerId = player.getData().getPlayerId();
 		log.info("new month refresh player:" + playerId);
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.NewMonth));
+		player.handleEvent(EventTypeEnum.NewMonth);
+
 		player.getData().setRefreshMonth(nowMonth);
 		log.info("new month refresh player:" + playerId + " succ");
 
@@ -625,7 +626,7 @@ public class PlayerHelper {
 				return;
 			}
 		}
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.NewDay5));
+		player.handleEvent(EventTypeEnum.NewDay5);
 		
 		player.getData().setRefreshFiveDay(refTime);
 

@@ -228,7 +228,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int ShopHeishiRefreshResponse_15000006 = 0x15000006;    
 	public final static int MonthCardBuyRequest_15000010 = 0x15000010;    
 	public final static int MonthCardBuyResponse_15000011 = 0x15000011;    
-	public final static int MonthCardBuyRewardRequest_15000012 = 0x15000012;    //购买月卡  
+	public final static int MonthCardBuyRewardRequest_15000012 = 0x15000012;    
 	public final static int MonthCardBuyRewardResponse_15000013 = 0x15000013;    
 	public final static int MonthCardDayRewardRequest_15000014 = 0x15000014;    
 	public final static int MonthCardDayRewardResponse_15000015 = 0x15000015;    

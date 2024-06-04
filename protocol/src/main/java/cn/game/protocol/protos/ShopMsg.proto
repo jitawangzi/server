@@ -48,6 +48,8 @@ message MonthCardBuyRequest_15000010{
 
 message MonthCardBuyResponse_15000011{
 	MonthCardProto monthCard = 1;
+	repeated RewardInfo rewards = 2;  // 月卡购买奖励
+
 }
 
 //领取月卡购买奖励，每个月卡只能领取一次

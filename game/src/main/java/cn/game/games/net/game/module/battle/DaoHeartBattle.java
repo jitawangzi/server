@@ -83,7 +83,7 @@ public class DaoHeartBattle {
 			return GlobalConst.InnerDemonsFreeCnt;
 		}
 		else if (type == 4) {
-			return 0;
+			return GlobalConst.DemonKingFreeCnt;
 		}
 		throw new IllegalArgumentException("没有实现的战役类型： " + type);
 	}
@@ -133,10 +133,6 @@ public class DaoHeartBattle {
 
 	public int getCompleteBattleId() {
 		return completeBattleId;
-	}
-
-	public void setCompleteBattleId(int completeBattleId) {
-		this.completeBattleId = completeBattleId;
 	}
 
 	public List<Integer> getRewardBattleIds() {

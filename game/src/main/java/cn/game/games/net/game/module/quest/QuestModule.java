@@ -22,7 +22,6 @@ import cn.game.games.net.data.mapper.ConditionCountMapper;
 import cn.game.games.net.data.mapper.QuestChallengeMapper;
 import cn.game.games.net.data.mapper.QuestMapper;
 import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.net.game.helper.EventHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
@@ -296,28 +295,8 @@ public class QuestModule extends BasePlayerModule {
 			open(questConfig.OpenQuests, true);
 		}
 
-		// 成就类型的任务，可能需要完成一个在开启一个。
-		/*	boolean lastBranch = questConfig.getOpenTaskId().isEmpty();
-			// 分支的最后一个任务保留不删除
-			if (questConfig.getRefreshType() || lastBranch || questConfig.getType() == MissionTypeEnum.Achievement) {
-				quest.close();
-				update(quest);
-			} else {
-				remove(id);
-			}
-			if (!questConfig.getOpenTaskId().isEmpty()) {
-				open(questConfig.getOpenTaskId());
-			}
-			if (lastBranch) { // 当前分支完成，如果是设置的优先分支，需要修改默认的优先分支
-				PlayerExt playerExt = player.getExt();
-				int branchGroup = playerExt.getBranchGroup();
-				if (questConfig.getGroupId() == branchGroup) {
-					setDefaultBranchShow();
-				}
-			}*/
-
 		// 发起完成任务事件
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.QuestFinish, quest.getId()));
+		player.handleEvent(EventTypeEnum.QuestFinish, quest.getId());
 
 		/*		if (QuestHelper.autoRewardUseMail(id)) {
 					MailHelper.sendMailMultiLanguage(playerId, 208011, 208009, 208010, MailHelper.SYSTEM, reward);

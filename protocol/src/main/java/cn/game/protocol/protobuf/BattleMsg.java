@@ -14848,20 +14848,30 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
+     *最新通关过的（Battle）表id
      * </pre>
      *
-     * <code>int32 id = 1;</code>
-     * @return The id.
+     * <code>int32 completedId = 1;</code>
+     * @return The completedId.
      */
-    int getId();
+    int getCompletedId();
+
+    /**
+     * <pre>
+     * 最新通关的下一关，尚未通关的 （Battle）表id
+     * </pre>
+     *
+     * <code>int32 nextId = 2;</code>
+     * @return The nextId.
+     */
+    int getNextId();
 
     /**
      * <pre>
      * 每天不同的随机 增益或者减益buff， HeroBUFF表id
      * </pre>
      *
-     * <code>repeated int32 randomBuff = 4;</code>
+     * <code>repeated int32 randomBuff = 3;</code>
      * @return A list containing the randomBuff.
      */
     java.util.List<java.lang.Integer> getRandomBuffList();
@@ -14870,7 +14880,7 @@ public final class BattleMsg {
      * 每天不同的随机 增益或者减益buff， HeroBUFF表id
      * </pre>
      *
-     * <code>repeated int32 randomBuff = 4;</code>
+     * <code>repeated int32 randomBuff = 3;</code>
      * @return The count of randomBuff.
      */
     int getRandomBuffCount();
@@ -14879,7 +14889,7 @@ public final class BattleMsg {
      * 每天不同的随机 增益或者减益buff， HeroBUFF表id
      * </pre>
      *
-     * <code>repeated int32 randomBuff = 4;</code>
+     * <code>repeated int32 randomBuff = 3;</code>
      * @param index The index of the element to return.
      * @return The randomBuff at the given index.
      */
@@ -14890,7 +14900,7 @@ public final class BattleMsg {
      * 免费剩余扫荡次数。
      * </pre>
      *
-     * <code>int32 freeSweepRemaning = 2;</code>
+     * <code>int32 freeSweepRemaning = 4;</code>
      * @return The freeSweepRemaning.
      */
     int getFreeSweepRemaning();
@@ -14900,7 +14910,7 @@ public final class BattleMsg {
      * 收费剩余扫荡次数。
      * </pre>
      *
-     * <code>int32 paySweepRemaning = 3;</code>
+     * <code>int32 paySweepRemaning = 5;</code>
      * @return The paySweepRemaning.
      */
     int getPaySweepRemaning();
@@ -14954,20 +14964,15 @@ public final class BattleMsg {
               break;
             case 8: {
 
-              id_ = input.readInt32();
+              completedId_ = input.readInt32();
               break;
             }
             case 16: {
 
-              freeSweepRemaning_ = input.readInt32();
+              nextId_ = input.readInt32();
               break;
             }
             case 24: {
-
-              paySweepRemaning_ = input.readInt32();
-              break;
-            }
-            case 32: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 randomBuff_ = newIntList();
                 mutable_bitField0_ |= 0x00000001;
@@ -14975,7 +14980,7 @@ public final class BattleMsg {
               randomBuff_.addInt(input.readInt32());
               break;
             }
-            case 34: {
+            case 26: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
@@ -14986,6 +14991,16 @@ public final class BattleMsg {
                 randomBuff_.addInt(input.readInt32());
               }
               input.popLimit(limit);
+              break;
+            }
+            case 32: {
+
+              freeSweepRemaning_ = input.readInt32();
+              break;
+            }
+            case 40: {
+
+              paySweepRemaning_ = input.readInt32();
               break;
             }
             default: {
@@ -15023,29 +15038,44 @@ public final class BattleMsg {
               cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.class, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
+    public static final int COMPLETEDID_FIELD_NUMBER = 1;
+    private int completedId_;
     /**
      * <pre>
-     * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
+     *最新通关过的（Battle）表id
      * </pre>
      *
-     * <code>int32 id = 1;</code>
-     * @return The id.
+     * <code>int32 completedId = 1;</code>
+     * @return The completedId.
      */
     @java.lang.Override
-    public int getId() {
-      return id_;
+    public int getCompletedId() {
+      return completedId_;
     }
 
-    public static final int RANDOMBUFF_FIELD_NUMBER = 4;
+    public static final int NEXTID_FIELD_NUMBER = 2;
+    private int nextId_;
+    /**
+     * <pre>
+     * 最新通关的下一关，尚未通关的 （Battle）表id
+     * </pre>
+     *
+     * <code>int32 nextId = 2;</code>
+     * @return The nextId.
+     */
+    @java.lang.Override
+    public int getNextId() {
+      return nextId_;
+    }
+
+    public static final int RANDOMBUFF_FIELD_NUMBER = 3;
     private com.google.protobuf.Internal.IntList randomBuff_;
     /**
      * <pre>
      * 每天不同的随机 增益或者减益buff， HeroBUFF表id
      * </pre>
      *
-     * <code>repeated int32 randomBuff = 4;</code>
+     * <code>repeated int32 randomBuff = 3;</code>
      * @return A list containing the randomBuff.
      */
     @java.lang.Override
@@ -15058,7 +15088,7 @@ public final class BattleMsg {
      * 每天不同的随机 增益或者减益buff， HeroBUFF表id
      * </pre>
      *
-     * <code>repeated int32 randomBuff = 4;</code>
+     * <code>repeated int32 randomBuff = 3;</code>
      * @return The count of randomBuff.
      */
     public int getRandomBuffCount() {
@@ -15069,7 +15099,7 @@ public final class BattleMsg {
      * 每天不同的随机 增益或者减益buff， HeroBUFF表id
      * </pre>
      *
-     * <code>repeated int32 randomBuff = 4;</code>
+     * <code>repeated int32 randomBuff = 3;</code>
      * @param index The index of the element to return.
      * @return The randomBuff at the given index.
      */
@@ -15078,14 +15108,14 @@ public final class BattleMsg {
     }
     private int randomBuffMemoizedSerializedSize = -1;
 
-    public static final int FREESWEEPREMANING_FIELD_NUMBER = 2;
+    public static final int FREESWEEPREMANING_FIELD_NUMBER = 4;
     private int freeSweepRemaning_;
     /**
      * <pre>
      * 免费剩余扫荡次数。
      * </pre>
      *
-     * <code>int32 freeSweepRemaning = 2;</code>
+     * <code>int32 freeSweepRemaning = 4;</code>
      * @return The freeSweepRemaning.
      */
     @java.lang.Override
@@ -15093,14 +15123,14 @@ public final class BattleMsg {
       return freeSweepRemaning_;
     }
 
-    public static final int PAYSWEEPREMANING_FIELD_NUMBER = 3;
+    public static final int PAYSWEEPREMANING_FIELD_NUMBER = 5;
     private int paySweepRemaning_;
     /**
      * <pre>
      * 收费剩余扫荡次数。
      * </pre>
      *
-     * <code>int32 paySweepRemaning = 3;</code>
+     * <code>int32 paySweepRemaning = 5;</code>
      * @return The paySweepRemaning.
      */
     @java.lang.Override
@@ -15123,21 +15153,24 @@ public final class BattleMsg {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
+      if (completedId_ != 0) {
+        output.writeInt32(1, completedId_);
       }
-      if (freeSweepRemaning_ != 0) {
-        output.writeInt32(2, freeSweepRemaning_);
-      }
-      if (paySweepRemaning_ != 0) {
-        output.writeInt32(3, paySweepRemaning_);
+      if (nextId_ != 0) {
+        output.writeInt32(2, nextId_);
       }
       if (getRandomBuffList().size() > 0) {
-        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(26);
         output.writeUInt32NoTag(randomBuffMemoizedSerializedSize);
       }
       for (int i = 0; i < randomBuff_.size(); i++) {
         output.writeInt32NoTag(randomBuff_.getInt(i));
+      }
+      if (freeSweepRemaning_ != 0) {
+        output.writeInt32(4, freeSweepRemaning_);
+      }
+      if (paySweepRemaning_ != 0) {
+        output.writeInt32(5, paySweepRemaning_);
       }
       unknownFields.writeTo(output);
     }
@@ -15148,17 +15181,13 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
+      if (completedId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
+          .computeInt32Size(1, completedId_);
       }
-      if (freeSweepRemaning_ != 0) {
+      if (nextId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, freeSweepRemaning_);
-      }
-      if (paySweepRemaning_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, paySweepRemaning_);
+          .computeInt32Size(2, nextId_);
       }
       {
         int dataSize = 0;
@@ -15173,6 +15202,14 @@ public final class BattleMsg {
               .computeInt32SizeNoTag(dataSize);
         }
         randomBuffMemoizedSerializedSize = dataSize;
+      }
+      if (freeSweepRemaning_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, freeSweepRemaning_);
+      }
+      if (paySweepRemaning_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, paySweepRemaning_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -15189,8 +15226,10 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 other = (cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056) obj;
 
-      if (getId()
-          != other.getId()) return false;
+      if (getCompletedId()
+          != other.getCompletedId()) return false;
+      if (getNextId()
+          != other.getNextId()) return false;
       if (!getRandomBuffList()
           .equals(other.getRandomBuffList())) return false;
       if (getFreeSweepRemaning()
@@ -15208,8 +15247,10 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
+      hash = (37 * hash) + COMPLETEDID_FIELD_NUMBER;
+      hash = (53 * hash) + getCompletedId();
+      hash = (37 * hash) + NEXTID_FIELD_NUMBER;
+      hash = (53 * hash) + getNextId();
       if (getRandomBuffCount() > 0) {
         hash = (37 * hash) + RANDOMBUFF_FIELD_NUMBER;
         hash = (53 * hash) + getRandomBuffList().hashCode();
@@ -15351,7 +15392,9 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
+        completedId_ = 0;
+
+        nextId_ = 0;
 
         randomBuff_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -15386,7 +15429,8 @@ public final class BattleMsg {
       public cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 result = new cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056(this);
         int from_bitField0_ = bitField0_;
-        result.id_ = id_;
+        result.completedId_ = completedId_;
+        result.nextId_ = nextId_;
         if (((bitField0_ & 0x00000001) != 0)) {
           randomBuff_.makeImmutable();
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -15442,8 +15486,11 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
+        if (other.getCompletedId() != 0) {
+          setCompletedId(other.getCompletedId());
+        }
+        if (other.getNextId() != 0) {
+          setNextId(other.getNextId());
         }
         if (!other.randomBuff_.isEmpty()) {
           if (randomBuff_.isEmpty()) {
@@ -15491,45 +15538,88 @@ public final class BattleMsg {
       }
       private int bitField0_;
 
-      private int id_ ;
+      private int completedId_ ;
       /**
        * <pre>
-       * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
+       *最新通关过的（Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
-       * @return The id.
+       * <code>int32 completedId = 1;</code>
+       * @return The completedId.
        */
       @java.lang.Override
-      public int getId() {
-        return id_;
+      public int getCompletedId() {
+        return completedId_;
       }
       /**
        * <pre>
-       * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
+       *最新通关过的（Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
-       * @param value The id to set.
+       * <code>int32 completedId = 1;</code>
+       * @param value The completedId to set.
        * @return This builder for chaining.
        */
-      public Builder setId(int value) {
+      public Builder setCompletedId(int value) {
         
-        id_ = value;
+        completedId_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 当前可以打，并且尚未通关的 （Battle）表id，例如没有打过，则发第一关id
+       *最新通关过的（Battle）表id
        * </pre>
        *
-       * <code>int32 id = 1;</code>
+       * <code>int32 completedId = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearId() {
+      public Builder clearCompletedId() {
         
-        id_ = 0;
+        completedId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int nextId_ ;
+      /**
+       * <pre>
+       * 最新通关的下一关，尚未通关的 （Battle）表id
+       * </pre>
+       *
+       * <code>int32 nextId = 2;</code>
+       * @return The nextId.
+       */
+      @java.lang.Override
+      public int getNextId() {
+        return nextId_;
+      }
+      /**
+       * <pre>
+       * 最新通关的下一关，尚未通关的 （Battle）表id
+       * </pre>
+       *
+       * <code>int32 nextId = 2;</code>
+       * @param value The nextId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNextId(int value) {
+        
+        nextId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 最新通关的下一关，尚未通关的 （Battle）表id
+       * </pre>
+       *
+       * <code>int32 nextId = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNextId() {
+        
+        nextId_ = 0;
         onChanged();
         return this;
       }
@@ -15546,7 +15636,7 @@ public final class BattleMsg {
        * 每天不同的随机 增益或者减益buff， HeroBUFF表id
        * </pre>
        *
-       * <code>repeated int32 randomBuff = 4;</code>
+       * <code>repeated int32 randomBuff = 3;</code>
        * @return A list containing the randomBuff.
        */
       public java.util.List<java.lang.Integer>
@@ -15559,7 +15649,7 @@ public final class BattleMsg {
        * 每天不同的随机 增益或者减益buff， HeroBUFF表id
        * </pre>
        *
-       * <code>repeated int32 randomBuff = 4;</code>
+       * <code>repeated int32 randomBuff = 3;</code>
        * @return The count of randomBuff.
        */
       public int getRandomBuffCount() {
@@ -15570,7 +15660,7 @@ public final class BattleMsg {
        * 每天不同的随机 增益或者减益buff， HeroBUFF表id
        * </pre>
        *
-       * <code>repeated int32 randomBuff = 4;</code>
+       * <code>repeated int32 randomBuff = 3;</code>
        * @param index The index of the element to return.
        * @return The randomBuff at the given index.
        */
@@ -15582,7 +15672,7 @@ public final class BattleMsg {
        * 每天不同的随机 增益或者减益buff， HeroBUFF表id
        * </pre>
        *
-       * <code>repeated int32 randomBuff = 4;</code>
+       * <code>repeated int32 randomBuff = 3;</code>
        * @param index The index to set the value at.
        * @param value The randomBuff to set.
        * @return This builder for chaining.
@@ -15599,7 +15689,7 @@ public final class BattleMsg {
        * 每天不同的随机 增益或者减益buff， HeroBUFF表id
        * </pre>
        *
-       * <code>repeated int32 randomBuff = 4;</code>
+       * <code>repeated int32 randomBuff = 3;</code>
        * @param value The randomBuff to add.
        * @return This builder for chaining.
        */
@@ -15614,7 +15704,7 @@ public final class BattleMsg {
        * 每天不同的随机 增益或者减益buff， HeroBUFF表id
        * </pre>
        *
-       * <code>repeated int32 randomBuff = 4;</code>
+       * <code>repeated int32 randomBuff = 3;</code>
        * @param values The randomBuff to add.
        * @return This builder for chaining.
        */
@@ -15631,7 +15721,7 @@ public final class BattleMsg {
        * 每天不同的随机 增益或者减益buff， HeroBUFF表id
        * </pre>
        *
-       * <code>repeated int32 randomBuff = 4;</code>
+       * <code>repeated int32 randomBuff = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearRandomBuff() {
@@ -15647,7 +15737,7 @@ public final class BattleMsg {
        * 免费剩余扫荡次数。
        * </pre>
        *
-       * <code>int32 freeSweepRemaning = 2;</code>
+       * <code>int32 freeSweepRemaning = 4;</code>
        * @return The freeSweepRemaning.
        */
       @java.lang.Override
@@ -15659,7 +15749,7 @@ public final class BattleMsg {
        * 免费剩余扫荡次数。
        * </pre>
        *
-       * <code>int32 freeSweepRemaning = 2;</code>
+       * <code>int32 freeSweepRemaning = 4;</code>
        * @param value The freeSweepRemaning to set.
        * @return This builder for chaining.
        */
@@ -15674,7 +15764,7 @@ public final class BattleMsg {
        * 免费剩余扫荡次数。
        * </pre>
        *
-       * <code>int32 freeSweepRemaning = 2;</code>
+       * <code>int32 freeSweepRemaning = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearFreeSweepRemaning() {
@@ -15690,7 +15780,7 @@ public final class BattleMsg {
        * 收费剩余扫荡次数。
        * </pre>
        *
-       * <code>int32 paySweepRemaning = 3;</code>
+       * <code>int32 paySweepRemaning = 5;</code>
        * @return The paySweepRemaning.
        */
       @java.lang.Override
@@ -15702,7 +15792,7 @@ public final class BattleMsg {
        * 收费剩余扫荡次数。
        * </pre>
        *
-       * <code>int32 paySweepRemaning = 3;</code>
+       * <code>int32 paySweepRemaning = 5;</code>
        * @param value The paySweepRemaning to set.
        * @return This builder for chaining.
        */
@@ -15717,7 +15807,7 @@ public final class BattleMsg {
        * 收费剩余扫荡次数。
        * </pre>
        *
-       * <code>int32 paySweepRemaning = 3;</code>
+       * <code>int32 paySweepRemaning = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearPaySweepRemaning() {
@@ -24243,31 +24333,32 @@ public final class BattleMsg {
       "ttleStaminaRequest_13000050\022\014\n\004time\030\001 \001(" +
       "\005\" \n\036BattleStaminaResponse_13000051\".\n\036B" +
       "attleDaoHeartRequest_13000055\022\014\n\004type\030\001 " +
-      "\001(\005\"v\n\037BattleDaoHeartResponse_13000056\022\n" +
-      "\n\002id\030\001 \001(\005\022\022\n\nrandomBuff\030\004 \003(\005\022\031\n\021freeSw" +
-      "eepRemaning\030\002 \001(\005\022\030\n\020paySweepRemaning\030\003 " +
-      "\001(\005\"?\n#BattleDaoHeartSweepRequest_130000" +
-      "60\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDa" +
-      "oHeartSweepResponse_13000061\022#\n\007rewards\030" +
-      "\001 \003(\0132\022.Protos.RewardInfo\"Q\n(BattleDaoHe" +
-      "artSweepBatchRequest_13000062\022\014\n\004type\030\001 " +
-      "\001(\005\022\n\n\002id\030\002 \001(\005\022\013\n\003pay\030\003 \001(\010\"P\n)BattleDa" +
-      "oHeartSweepBatchResponse_13000063\022#\n\007rew" +
-      "ards\030\001 \003(\0132\022.Protos.RewardInfo\"3\n#Battle" +
-      "DaoHeartSweepRequest_13000064\022\014\n\004type\030\001 " +
-      "\001(\005\"2\n$BattleDaoHeartSweepResponse_13000" +
-      "065\022\n\n\002id\030\002 \003(\005\"?\n#BattleDaoHeartSweepRe" +
-      "quest_13000066\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005" +
-      "\"K\n$BattleDaoHeartSweepResponse_13000067" +
-      "\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"E\n" +
-      "4BattleDayChallengeReceiveActivePointReq" +
-      "uest_13000070\022\r\n\005index\030\001 \001(\005\"\\\n5BattleDa" +
-      "yChallengeReceiveActivePointResponse_130" +
-      "00071\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardIn" +
-      "fo\"b\n\020DayChallengeInfo\022\023\n\013battleTimes\030\001 " +
-      "\001(\005\022\020\n\010battleId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(" +
-      "\005\022\023\n\013rewardIndex\030\004 \003(\005B\033\n\031cn.game.protoc" +
-      "ol.protobufb\006proto3"
+      "\001(\005\"\217\001\n\037BattleDaoHeartResponse_13000056\022" +
+      "\023\n\013completedId\030\001 \001(\005\022\016\n\006nextId\030\002 \001(\005\022\022\n\n" +
+      "randomBuff\030\003 \003(\005\022\031\n\021freeSweepRemaning\030\004 " +
+      "\001(\005\022\030\n\020paySweepRemaning\030\005 \001(\005\"?\n#BattleD" +
+      "aoHeartSweepRequest_13000060\022\014\n\004type\030\001 \001" +
+      "(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDaoHeartSweepRes" +
+      "ponse_13000061\022#\n\007rewards\030\001 \003(\0132\022.Protos" +
+      ".RewardInfo\"Q\n(BattleDaoHeartSweepBatchR" +
+      "equest_13000062\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(" +
+      "\005\022\013\n\003pay\030\003 \001(\010\"P\n)BattleDaoHeartSweepBat" +
+      "chResponse_13000063\022#\n\007rewards\030\001 \003(\0132\022.P" +
+      "rotos.RewardInfo\"3\n#BattleDaoHeartSweepR" +
+      "equest_13000064\022\014\n\004type\030\001 \001(\005\"2\n$BattleD" +
+      "aoHeartSweepResponse_13000065\022\n\n\002id\030\002 \003(" +
+      "\005\"?\n#BattleDaoHeartSweepRequest_13000066" +
+      "\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDaoH" +
+      "eartSweepResponse_13000067\022#\n\007rewards\030\001 " +
+      "\003(\0132\022.Protos.RewardInfo\"E\n4BattleDayChal" +
+      "lengeReceiveActivePointRequest_13000070\022" +
+      "\r\n\005index\030\001 \001(\005\"\\\n5BattleDayChallengeRece" +
+      "iveActivePointResponse_13000071\022#\n\007rewar" +
+      "ds\030\001 \003(\0132\022.Protos.RewardInfo\"b\n\020DayChall" +
+      "engeInfo\022\023\n\013battleTimes\030\001 \001(\005\022\020\n\010battleI" +
+      "d\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(\005\022\023\n\013rewardInd" +
+      "ex\030\004 \003(\005B\033\n\031cn.game.protocol.protobufb\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -24417,7 +24508,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleDaoHeartResponse_13000056_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleDaoHeartResponse_13000056_descriptor,
-        new java.lang.String[] { "Id", "RandomBuff", "FreeSweepRemaning", "PaySweepRemaning", });
+        new java.lang.String[] { "CompletedId", "NextId", "RandomBuff", "FreeSweepRemaning", "PaySweepRemaning", });
     internal_static_Protos_BattleDaoHeartSweepRequest_13000060_descriptor =
       getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_BattleDaoHeartSweepRequest_13000060_fieldAccessorTable = new

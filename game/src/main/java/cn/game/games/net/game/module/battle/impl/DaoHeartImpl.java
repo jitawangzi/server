@@ -32,6 +32,10 @@ public class DaoHeartImpl extends XiYouBattleHandler {
 			if (!player.isFuncOpen(InitialUI.XinMoShiLian)) {
 				return ErrorMsgEnum.func_not_open.getId();
 			}
+		} else if (type == 4) {
+			if (!player.isFuncOpen(InitialUI.YaoWangBiePao)) {
+				return ErrorMsgEnum.func_not_open.getId();
+			}
 		} else {
 			return ErrorMsgEnum.player_check_error.getId();
 		}
@@ -52,7 +56,7 @@ public class DaoHeartImpl extends XiYouBattleHandler {
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
 		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(attackingType);
 		daoHeartBattle.battleCompleted();
-		OpType opType = attackingType == 2 ? OpType.DaoXinFirstFinish : OpType.XinMoFirstFinish;
+		OpType opType = attackingType == 2 ? OpType.DaoXinFirstFinish : attackingType == 3 ? OpType.XinMoFirstFinish : OpType.YaoWangComplete;
 
 		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
 		resp.addAllRewards(reward);

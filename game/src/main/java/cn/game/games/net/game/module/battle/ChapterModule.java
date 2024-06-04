@@ -693,6 +693,9 @@ public class ChapterModule extends BasePlayerModule  {
 			if (func == InitialUI.XinMoShiLian) {
 				initDaoXin(3);
 			}
+			if (func == InitialUI.YaoWangBiePao) {
+				initDaoXin(4);
+			}
 			break;
 		}
 		default:

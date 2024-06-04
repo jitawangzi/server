@@ -5305,6 +5305,50 @@ public final class ShopMsg {
      * <code>.Protos.MonthCardProto monthCard = 1;</code>
      */
     cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder getMonthCardOrBuilder();
+
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
+        getRewardsList();
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    int getRewardsCount();
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList();
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code Protos.MonthCardBuyResponse_15000011}
@@ -5319,6 +5363,7 @@ public final class ShopMsg {
       super(builder);
     }
     private MonthCardBuyResponse_15000011() {
+      rewards_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -5341,6 +5386,7 @@ public final class ShopMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -5364,6 +5410,15 @@ public final class ShopMsg {
 
               break;
             }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              rewards_.add(
+                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -5379,6 +5434,9 @@ public final class ShopMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          rewards_ = java.util.Collections.unmodifiableList(rewards_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -5422,6 +5480,66 @@ public final class ShopMsg {
       return getMonthCard();
     }
 
+    public static final int REWARDS_FIELD_NUMBER = 2;
+    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+        getRewardsOrBuilderList() {
+      return rewards_;
+    }
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public int getRewardsCount() {
+      return rewards_.size();
+    }
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+      return rewards_.get(index);
+    }
+    /**
+     * <pre>
+     * 月卡购买奖励
+     * </pre>
+     *
+     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+        int index) {
+      return rewards_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5439,6 +5557,9 @@ public final class ShopMsg {
       if (monthCard_ != null) {
         output.writeMessage(1, getMonthCard());
       }
+      for (int i = 0; i < rewards_.size(); i++) {
+        output.writeMessage(2, rewards_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -5451,6 +5572,10 @@ public final class ShopMsg {
       if (monthCard_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getMonthCard());
+      }
+      for (int i = 0; i < rewards_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, rewards_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5472,6 +5597,8 @@ public final class ShopMsg {
         if (!getMonthCard()
             .equals(other.getMonthCard())) return false;
       }
+      if (!getRewardsList()
+          .equals(other.getRewardsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -5486,6 +5613,10 @@ public final class ShopMsg {
       if (hasMonthCard()) {
         hash = (37 * hash) + MONTHCARD_FIELD_NUMBER;
         hash = (53 * hash) + getMonthCard().hashCode();
+      }
+      if (getRewardsCount() > 0) {
+        hash = (37 * hash) + REWARDS_FIELD_NUMBER;
+        hash = (53 * hash) + getRewardsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -5615,6 +5746,7 @@ public final class ShopMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getRewardsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -5625,6 +5757,12 @@ public final class ShopMsg {
         } else {
           monthCard_ = null;
           monthCardBuilder_ = null;
+        }
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          rewardsBuilder_.clear();
         }
         return this;
       }
@@ -5652,10 +5790,20 @@ public final class ShopMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.ShopMsg.MonthCardBuyResponse_15000011 buildPartial() {
         cn.game.protocol.protobuf.ShopMsg.MonthCardBuyResponse_15000011 result = new cn.game.protocol.protobuf.ShopMsg.MonthCardBuyResponse_15000011(this);
+        int from_bitField0_ = bitField0_;
         if (monthCardBuilder_ == null) {
           result.monthCard_ = monthCard_;
         } else {
           result.monthCard_ = monthCardBuilder_.build();
+        }
+        if (rewardsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            rewards_ = java.util.Collections.unmodifiableList(rewards_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.rewards_ = rewards_;
+        } else {
+          result.rewards_ = rewardsBuilder_.build();
         }
         onBuilt();
         return result;
@@ -5708,6 +5856,32 @@ public final class ShopMsg {
         if (other.hasMonthCard()) {
           mergeMonthCard(other.getMonthCard());
         }
+        if (rewardsBuilder_ == null) {
+          if (!other.rewards_.isEmpty()) {
+            if (rewards_.isEmpty()) {
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureRewardsIsMutable();
+              rewards_.addAll(other.rewards_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.rewards_.isEmpty()) {
+            if (rewardsBuilder_.isEmpty()) {
+              rewardsBuilder_.dispose();
+              rewardsBuilder_ = null;
+              rewards_ = other.rewards_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              rewardsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getRewardsFieldBuilder() : null;
+            } else {
+              rewardsBuilder_.addAllMessages(other.rewards_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -5736,6 +5910,7 @@ public final class ShopMsg {
         }
         return this;
       }
+      private int bitField0_;
 
       private cn.game.protocol.protobuf.ShopMsg.MonthCardProto monthCard_;
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -5854,6 +6029,318 @@ public final class ShopMsg {
           monthCard_ = null;
         }
         return monthCardBuilder_;
+      }
+
+      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_ =
+        java.util.Collections.emptyList();
+      private void ensureRewardsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(rewards_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
+
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
+        if (rewardsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(rewards_);
+        } else {
+          return rewardsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public int getRewardsCount() {
+        if (rewardsBuilder_ == null) {
+          return rewards_.size();
+        } else {
+          return rewardsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);
+        } else {
+          return rewardsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.set(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRewardsIsMutable();
+          rewards_.add(index, value);
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addRewards(
+          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          rewardsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder addAllRewards(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, rewards_);
+          onChanged();
+        } else {
+          rewardsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder clearRewards() {
+        if (rewardsBuilder_ == null) {
+          rewards_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          rewardsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder removeRewards(int index) {
+        if (rewardsBuilder_ == null) {
+          ensureRewardsIsMutable();
+          rewards_.remove(index);
+          onChanged();
+        } else {
+          rewardsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
+          int index) {
+        if (rewardsBuilder_ == null) {
+          return rewards_.get(index);  } else {
+          return rewardsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+           getRewardsOrBuilderList() {
+        if (rewardsBuilder_ != null) {
+          return rewardsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(rewards_);
+        }
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder() {
+        return getRewardsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder(
+          int index) {
+        return getRewardsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 月卡购买奖励
+       * </pre>
+       *
+       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
+           getRewardsBuilderList() {
+        return getRewardsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
+          getRewardsFieldBuilder() {
+        if (rewardsBuilder_ == null) {
+          rewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
+                  rewards_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          rewards_ = null;
+        }
+        return rewardsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -19222,39 +19709,40 @@ public final class ShopMsg {
       "!ShopHeishiRefreshRequest_15000005\"J\n\"Sh" +
       "opHeishiRefreshResponse_15000006\022$\n\005item" +
       "s\030\001 \003(\0132\025.Protos.ShopItemProto\"*\n\034MonthC" +
-      "ardBuyRequest_15000010\022\n\n\002id\030\001 \001(\r\"J\n\035Mo" +
+      "ardBuyRequest_15000010\022\n\n\002id\030\001 \001(\r\"o\n\035Mo" +
       "nthCardBuyResponse_15000011\022)\n\tmonthCard" +
-      "\030\001 \001(\0132\026.Protos.MonthCardProto\"0\n\"MonthC" +
-      "ardBuyRewardRequest_15000012\022\n\n\002id\030\001 \001(\r" +
-      "\"%\n#MonthCardBuyRewardResponse_15000013\"" +
-      "0\n\"MonthCardDayRewardRequest_15000014\022\n\n" +
-      "\002id\030\001 \001(\r\"%\n#MonthCardDayRewardResponse_" +
-      "15000015\"&\n$MonthCardDoubleBonusRequest_" +
-      "15000016\"L\n%MonthCardDoubleBonusResponse" +
-      "_15000017\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rewa" +
-      "rdInfo\"\\\n\016MonthCardProto\022\n\n\002id\030\001 \001(\r\022\022\n\n" +
-      "expireTime\030\002 \001(\r\022\024\n\014isBuyRewards\030\003 \001(\010\022\024" +
-      "\n\014isDayRewards\030\004 \001(\010\"1\n#ShopChapterPacks" +
-      "BuyRequest_15000020\022\n\n\002id\030\001 \001(\r\"K\n$ShopC" +
-      "hapterPacksBuyResponse_15000021\022#\n\007rewar" +
-      "ds\030\002 \003(\0132\022.Protos.RewardInfo\"*\n\034ShopRech" +
-      "argeRequest_15000022\022\n\n\002id\030\001 \001(\r\"D\n\035Shop" +
-      "RechargeResponse_15000023\022#\n\007rewards\030\002 \003" +
-      "(\0132\022.Protos.RewardInfo\"E\n\031PaymentOrderPu" +
-      "sh_15010020\022(\n\005order\030\001 \001(\0132\031.Protos.Paym" +
-      "entOrderProto\"-\n\037ShopFundPassBuyRequest_" +
-      "15000030\022\n\n\002id\030\001 \001(\r\"\"\n ShopFundPassBuyR" +
-      "esponse_15000031\"0\n\"ShopFundPassRewardRe" +
-      "quest_15000032\022\n\n\002id\030\001 \003(\r\"J\n#ShopFundPa" +
-      "ssRewardResponse_15000033\022#\n\007rewards\030\002 \003" +
-      "(\0132\022.Protos.RewardInfo\"-\n\014FundPassInfo\022\n" +
-      "\n\002id\030\001 \001(\005\022\021\n\trewardIds\030\002 \003(\005\"I\n\021ShopGro" +
-      "upItemInfo\022\016\n\006shopId\030\001 \001(\r\022$\n\005items\030\002 \003(" +
-      "\0132\025.Protos.ShopItemProto\"/\n\033ShopBoxOpenR" +
-      "equest_15000040\022\020\n\010watchAds\030\001 \001(\010\"C\n\034Sho" +
-      "pBoxOpenResponse_15000041\022#\n\007rewards\030\002 \003" +
-      "(\0132\022.Protos.RewardInfoB\033\n\031cn.game.protoc" +
-      "ol.protobufb\006proto3"
+      "\030\001 \001(\0132\026.Protos.MonthCardProto\022#\n\007reward" +
+      "s\030\002 \003(\0132\022.Protos.RewardInfo\"0\n\"MonthCard" +
+      "BuyRewardRequest_15000012\022\n\n\002id\030\001 \001(\r\"%\n" +
+      "#MonthCardBuyRewardResponse_15000013\"0\n\"" +
+      "MonthCardDayRewardRequest_15000014\022\n\n\002id" +
+      "\030\001 \001(\r\"%\n#MonthCardDayRewardResponse_150" +
+      "00015\"&\n$MonthCardDoubleBonusRequest_150" +
+      "00016\"L\n%MonthCardDoubleBonusResponse_15" +
+      "000017\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
+      "nfo\"\\\n\016MonthCardProto\022\n\n\002id\030\001 \001(\r\022\022\n\nexp" +
+      "ireTime\030\002 \001(\r\022\024\n\014isBuyRewards\030\003 \001(\010\022\024\n\014i" +
+      "sDayRewards\030\004 \001(\010\"1\n#ShopChapterPacksBuy" +
+      "Request_15000020\022\n\n\002id\030\001 \001(\r\"K\n$ShopChap" +
+      "terPacksBuyResponse_15000021\022#\n\007rewards\030" +
+      "\002 \003(\0132\022.Protos.RewardInfo\"*\n\034ShopRecharg" +
+      "eRequest_15000022\022\n\n\002id\030\001 \001(\r\"D\n\035ShopRec" +
+      "hargeResponse_15000023\022#\n\007rewards\030\002 \003(\0132" +
+      "\022.Protos.RewardInfo\"E\n\031PaymentOrderPush_" +
+      "15010020\022(\n\005order\030\001 \001(\0132\031.Protos.Payment" +
+      "OrderProto\"-\n\037ShopFundPassBuyRequest_150" +
+      "00030\022\n\n\002id\030\001 \001(\r\"\"\n ShopFundPassBuyResp" +
+      "onse_15000031\"0\n\"ShopFundPassRewardReque" +
+      "st_15000032\022\n\n\002id\030\001 \003(\r\"J\n#ShopFundPassR" +
+      "ewardResponse_15000033\022#\n\007rewards\030\002 \003(\0132" +
+      "\022.Protos.RewardInfo\"-\n\014FundPassInfo\022\n\n\002i" +
+      "d\030\001 \001(\005\022\021\n\trewardIds\030\002 \003(\005\"I\n\021ShopGroupI" +
+      "temInfo\022\016\n\006shopId\030\001 \001(\r\022$\n\005items\030\002 \003(\0132\025" +
+      ".Protos.ShopItemProto\"/\n\033ShopBoxOpenRequ" +
+      "est_15000040\022\020\n\010watchAds\030\001 \001(\010\"C\n\034ShopBo" +
+      "xOpenResponse_15000041\022#\n\007rewards\030\002 \003(\0132" +
+      "\022.Protos.RewardInfoB\033\n\031cn.game.protocol." +
+      "protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19315,7 +19803,7 @@ public final class ShopMsg {
     internal_static_Protos_MonthCardBuyResponse_15000011_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_MonthCardBuyResponse_15000011_descriptor,
-        new java.lang.String[] { "MonthCard", });
+        new java.lang.String[] { "MonthCard", "Rewards", });
     internal_static_Protos_MonthCardBuyRewardRequest_15000012_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_MonthCardBuyRewardRequest_15000012_fieldAccessorTable = new

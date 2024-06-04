@@ -3,8 +3,9 @@ package cn.game.games.net.game.module.mail;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -16,16 +17,20 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.MailMapper;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.MailConfig;
+import cn.game.protocol.generated.manager.MailManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
 public class MailModule extends BasePlayerModule  {
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginFinish };
 
 	@JsonIgnore
 	private Map<Long, Mail>	mails = new HashMap<>();
@@ -35,6 +40,15 @@ public class MailModule extends BasePlayerModule  {
 	private Mail notice;
 
 	public void sendOnline(Mail mail) {
+
+		if (MailHelper.isNoticeMail(mail)) {
+			if (notice != null) {
+				delete(notice.getId());
+				notice = mail;
+			} else {
+				notice = mail;
+			}
+		}
 
 		mails.put(mail.getId(), mail) ; 
 		DAO.insert(mail);
@@ -46,12 +60,17 @@ public class MailModule extends BasePlayerModule  {
 		return this.mails.get(id);
 	}
 
-	public void delete(long id) {
+	public boolean delete(long id) {
 		Mail remove = this.mails.remove(id); 
 		if (remove!= null) {
-			remove.delete() ; 
-			DAO.delete(remove);
+			if (remove == notice) {
+				remove.setIsDeleted(true);
+			} else {
+				remove.delete();
+				DAO.delete(remove);
+			}
 		}
+		return false;
 	}
 
 	public Collection<Mail> list() {
@@ -143,11 +162,19 @@ public class MailModule extends BasePlayerModule  {
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
-		return null;
+		return events;
 	}
 
 	@Override
 	public void handleEvent(GameEvent event) {
+
+		switch (event.getType()) {
+
+		case LoginFinish: {
+			checkNoticeMail();
+			break;
+		}
+		}
 
 	}
 
@@ -167,20 +194,55 @@ public class MailModule extends BasePlayerModule  {
 	@Override
 	public void initFromDbAfter() {
 		// 检查过期的
-		int expiredStartTime = (int) (DateUtil.currentTimeSeconds() - DateUtil.DAY_MILLIS * 10);
-		Iterator<Mail> iterator = this.mails.values().iterator();
-		while (iterator.hasNext()) {
-			Mail mail = (Mail) iterator.next();
-			if (mail.getCreateTime() < expiredStartTime) {
-//				mail.delete() ; 
-				DAO.delete(mail);
-				iterator.remove(); 
+		int nowTimeSeconds = DateUtil.currentTimeSeconds();
+		List<Long> deleteIds = new ArrayList<>();
+		for (Mail mail : this.mails.values()) {
+			MailConfig mailConfig = MailManager.instance().getNullable(mail.getMailId());
+			if (mailConfig != null) {
+				if (mailConfig.Expiration > 0 && nowTimeSeconds - mail.getCreateTime() > mailConfig.Expiration) {
+					deleteIds.add(mail.getId());
+				}
+				if (mailConfig.Type == 1) {
+					notice = mail;
+				}
 			}
 		}
-		if (this.mails.size() > GlobalConst.MailMax) {
-
+		for (Long id : deleteIds) {
+			delete(id);
 		}
-		
+		if (mails.size() > GlobalConst.MailMax) {
+			int delCount = mails.size() - GlobalConst.MailMax;
+			List<Mail> list = new ArrayList<>(mails.values());
+			Collections.sort(list, new Comparator<Mail>() {
+				@Override
+				public int compare(Mail o1, Mail o2) {
+					return o1.getCreateTime() - o2.getCreateTime();
+				}
+			});
+
+			for (int i = 0; i < delCount; i++) {
+				delete(list.get(i).getId());
+			}
+		}
+	}
+
+	private void checkNoticeMail() {
+		int noticeMailId = MailHelper.getNoticeMailId();
+		if (noticeMailId > 0) {
+//			MailConfig mailConfig = MailManager.instance().get(noticeMailId); 
+			if (notice == null) {
+				Mail mail = Mail.valueOfMailId(playerId, noticeMailId);
+				sendOnline(mail);
+			} else {
+				// 更新公告邮件
+				if (notice.getMailId() != null && notice.getMailId() != noticeMailId) {
+					Mail mail = Mail.valueOfMailId(playerId, noticeMailId);
+					this.mails.remove(notice.getId());
+					notice = null;
+					sendOnline(mail);
+				}
+			}
+		}
 	};
 
 	@Override
