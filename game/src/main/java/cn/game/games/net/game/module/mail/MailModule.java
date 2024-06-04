@@ -44,6 +44,13 @@ public class MailModule extends BasePlayerModule  {
 
 	public void sendOnline(Mail mail) {
 
+		addMail(mail);
+		MailInfo mailInfo = PbBuilder.buildMailInfo(mail);
+		player.getGameClient().sendProtocol(MailNewPush_12010001.newBuilder().setMail(mailInfo).build());
+	}
+
+	private void addMail(Mail mail) {
+
 		if (MailHelper.isNoticeMail(mail)) {
 			if (notice != null) {
 				delete(notice.getId());
@@ -52,12 +59,9 @@ public class MailModule extends BasePlayerModule  {
 				notice = mail;
 			}
 		}
-
-		mails.put(mail.getId(), mail) ; 
+		mails.put(mail.getId(), mail);
 		DAO.insert(mail);
 //		mail.insert() ; 
-		MailInfo mailInfo = PbBuilder.buildMailInfo(mail);
-		player.getGameClient().sendProtocol(MailNewPush_12010001.newBuilder().setMail(mailInfo).build());
 	}
 
 	public Mail get(long id) {
@@ -244,14 +248,14 @@ public class MailModule extends BasePlayerModule  {
 //			MailConfig mailConfig = MailManager.instance().get(noticeMailId); 
 			if (notice == null) {
 				Mail mail = Mail.valueOfMailId(playerId, noticeMailId);
-				sendOnline(mail);
+				addMail(mail);
 			} else {
 				// 更新公告邮件
 				if (notice.getMailId() != null && notice.getMailId() != noticeMailId) {
 					Mail mail = Mail.valueOfMailId(playerId, noticeMailId);
 					this.mails.remove(notice.getId());
 					notice = null;
-					sendOnline(mail);
+					addMail(mail);
 				}
 			}
 		}

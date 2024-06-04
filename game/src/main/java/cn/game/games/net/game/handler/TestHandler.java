@@ -312,9 +312,6 @@ public class TestHandler extends BaseHandler {
 		}
 
 		System.err.println(MessageFormat.format("循环{0}次，每次{1}连抽结果,紫:{2} 金:{3} 红:{4}", lp, count, r4, r5, r6));
-//		System.out.println(" 紫 : " + r4);
-//		System.out.println(" 金 : " + r5);
-//		System.out.println(" 红 : " + r6);
 
 
 //		CommonLogger.error("what the fuck by common logger");

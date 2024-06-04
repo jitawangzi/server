@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -363,11 +364,13 @@ public class HeroHandler extends BaseHandler {
 //		if (replaceHero != null) {
 //			battleHeros.remove(replaceHero.getId());
 //		}
-		battleHeros.forEach((k, v) -> {
-			if (v == pos) {
-				battleHeros.remove(k);
+		Iterator<Entry<Long, Integer>> iterator = battleHeros.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<java.lang.Long, java.lang.Integer> entry = (Map.Entry<java.lang.Long, java.lang.Integer>) iterator.next();
+			if (entry.getValue() == pos) {
+				iterator.remove();
 			}
-		});
+		}
 		battleHeros.put(uid, pos);
 		player.handleEvent(EventTypeEnum.HeroBattle, hero);
 		client.sendProtocol(resp.build());
