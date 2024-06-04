@@ -167,8 +167,8 @@ public class HeroHandler extends BaseHandler {
 				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
 					break loop;
 				}
-				heroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
-				if (heroLvConfig == null) {
+				HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
+				if (nextHeroLvConfig == null) {
 					continue;
 				}
 				itemCount += heroLvConfig.LvConsumeItem;
@@ -221,12 +221,12 @@ public class HeroHandler extends BaseHandler {
 			if (maxLevel >= heroMaxLevel) {
 				break;
 			}
-			HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
+			HeroLvConfig heroLvConfig = HeroLvManager.instance().get(level);
 			if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
 				break;
 			}
-			heroLvConfig = HeroLvManager.instance().getNullable(level + 1);
-			if (heroLvConfig == null) {
+			HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(level + 1);
+			if (nextHeroLvConfig == null) {
 				break;
 			}
 			itemCount += heroLvConfig.LvConsumeItem;

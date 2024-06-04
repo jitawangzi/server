@@ -2,6 +2,15 @@
 
 cd /D %metafolder%
 git pull
+
+if %errorlevel% neq 0 (
+  echo.
+  echo git pull失败，手动处理后重试
+  echo.
+  pause
+  goto :eof
+)
+
 :: svn revert -R .
 :: svn cleanup .
 :: svn update .

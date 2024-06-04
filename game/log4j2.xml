@@ -104,7 +104,7 @@
             <AppenderRef ref="Combat"/>
         </AsyncLogger>
 
-        <AsyncLogger name="NetCheck" level="info" includeLocation="false" additivity="true">
+        <AsyncLogger name="NetCheck" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="NetCheck"/>
         </AsyncLogger>
 
@@ -246,13 +246,15 @@
         </Console>
 
 <RollingRandomAccessFile name="Stdout"
-						 fileName="${path_system}/${file_stdout}${extension}"
+                         fileName="${path_system}/${file_stdout}${extension}"
                          immediateFlush="true"
-                         filePattern="${path_system}/${file_stdout}.%d{yyyy-MM-dd}${extension}">
+                         filePattern="${path_system}/${file_stdout}.%d{yyyy-MM-dd}-%i${extension}">
     <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%m%n"/>
     <Policies>
-        <TimeBasedTriggeringPolicy/>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="100MB"/>
     </Policies>
+    <DefaultRolloverStrategy fileIndex="min" max="30"/>
 </RollingRandomAccessFile>
         
         
