@@ -190,11 +190,19 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		int periodPass = getPeriodPass(id);
 		for (int i = 0; i < activityConfig.startTime.size(); i++) {
 			Date startDate = activityConfig.startTime.get(i);
-			Date endDate = activityConfig.endTime.get(i);
-			Date destoryDate = activityConfig.destroyTime.get(i);
+
+			Date endDate = null; 
+			Date destoryDate = null;
+			if (i < activityConfig.endTime.size()) {
+				endDate = activityConfig.endTime.get(i);
+			}
+			if (i < activityConfig.destroyTime.size()) {
+				destoryDate = activityConfig.destroyTime.get(i);
+			}
 			startDate = changeDateByPeriod(startDate, period, periodPass);
 			endDate = changeDateByPeriod(endDate, period, periodPass);
 			destoryDate = changeDateByPeriod(destoryDate, period, periodPass);
+			
 			if (destoryDate != null && nowDate.after(destoryDate)) {
 				continue;
 			}
@@ -206,7 +214,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 			if (nowDate.after(startDate)) {
 				state = ActivityState.START;
 			}
-			if (nowDate.after(endDate)) {
+			if (endDate != null && nowDate.after(endDate)) {
 				state = ActivityState.CLOSE;
 			}
 			if (state == ActivityState.START || state == ActivityState.CLOSE) { 
@@ -277,6 +285,9 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	public Date changeDateByPeriod(Date date, int period, int periodPass) {
 		if (periodPass == 0) {
 			return date ; 
+		}
+		if (date == null) {
+			return null;
 		}
 		date = new Date(date.getTime() + period * periodPass * 1000);
 		return date;
