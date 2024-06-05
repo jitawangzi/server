@@ -233,6 +233,7 @@ public class PlayerModule extends BasePlayerModule {
 			break;
 		}
 		case PLAYER_CREATE: {
+			initLevel();
 			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
 			break;
 		}

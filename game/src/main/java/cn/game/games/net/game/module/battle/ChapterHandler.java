@@ -681,6 +681,8 @@ public class ChapterHandler extends BaseHandler {
 		}
 
 //		List<BattleReportItemInfo> report = req.getReport().getItemsList();
+		player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, killMonsterCount, killMonsterBossCount);
+
 		IBattleHandler battleHandler = BattleFactory.getBattleHandler(attackingType);
 		int errorCode = battleHandler.battleEnd(playerId, req, resp);
 		if (errorCode > 0) {
@@ -745,7 +747,6 @@ public class ChapterHandler extends BaseHandler {
 ////		List<RewardInfo> rewardItems = PlayerHelper.addResources(client.getPlayerId(), rewards);
 ////		resp.addAllRandomRewards(rewardItems);
 
-		player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, killMonsterCount, killMonsterBossCount);
 		chapterModule.setAttackingData(0, 0, 0, 0, 0, 0);
 		
 		client.sendProtocol(resp);

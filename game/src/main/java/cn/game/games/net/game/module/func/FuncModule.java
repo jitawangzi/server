@@ -51,7 +51,7 @@ public class FuncModule extends BasePlayerModule {
 
 	}
 
-	private void refreshFuncOpen(int level) {
+	public void refreshFuncOpen(int level) {
 		InitialUI[] values = InitialUI.values();
 		for (InitialUI initialUI : values) {
 			if (initialUI.DisplayLevel == level) {
