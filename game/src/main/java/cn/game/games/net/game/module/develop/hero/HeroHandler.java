@@ -232,11 +232,14 @@ public class HeroHandler extends BaseHandler {
 			itemCount += heroLvConfig.LvConsumeItem;
 			moneyCount += heroLvConfig.LvConsumeMoney;
 			maxLevel = level + 1;
-			player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
 
 		}
 		if (maxLevel != curLevel) {
-			hero.setLevel(maxLevel);
+			for (int i = curLevel + 1; i <= maxLevel; i++) {
+				hero.setLevel(i);
+				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+			}
+//			hero.setLevel(maxLevel);
 			List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
 			deleteItems.add(new AbstractMap.SimpleEntry(moneyId,moneyCount)) ; 
 			deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));

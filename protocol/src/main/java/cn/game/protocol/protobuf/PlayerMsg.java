@@ -24636,6 +24636,16 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 是否是每天第一次登陆
+     * </pre>
+     *
+     * <code>bool firstLogin = 57;</code>
+     * @return The firstLogin.
+     */
+    boolean getFirstLogin();
+
+    /**
+     * <pre>
      *︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
      * </pre>
      *
@@ -25169,6 +25179,11 @@ public final class PlayerMsg {
               }
               questGroupPointRewards_.add(
                   input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 456: {
+
+              firstLogin_ = input.readBool();
               break;
             }
             case 802: {
@@ -27025,6 +27040,21 @@ public final class PlayerMsg {
       return questGroupPointRewards_.get(index);
     }
 
+    public static final int FIRSTLOGIN_FIELD_NUMBER = 57;
+    private boolean firstLogin_;
+    /**
+     * <pre>
+     * 是否是每天第一次登陆
+     * </pre>
+     *
+     * <code>bool firstLogin = 57;</code>
+     * @return The firstLogin.
+     */
+    @java.lang.Override
+    public boolean getFirstLogin() {
+      return firstLogin_;
+    }
+
     public static final int SHOPGROUPITEMS_FIELD_NUMBER = 100;
     private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo> shopGroupItems_;
     /**
@@ -27381,6 +27411,9 @@ public final class PlayerMsg {
       for (int i = 0; i < questGroupPointRewards_.size(); i++) {
         output.writeMessage(56, questGroupPointRewards_.get(i));
       }
+      if (firstLogin_ != false) {
+        output.writeBool(57, firstLogin_);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         output.writeMessage(100, shopGroupItems_.get(i));
       }
@@ -27586,6 +27619,10 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(56, questGroupPointRewards_.get(i));
       }
+      if (firstLogin_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(57, firstLogin_);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(100, shopGroupItems_.get(i));
@@ -27702,6 +27739,8 @@ public final class PlayerMsg {
           .equals(other.getQuestGroupsList())) return false;
       if (!getQuestGroupPointRewardsList()
           .equals(other.getQuestGroupPointRewardsList())) return false;
+      if (getFirstLogin()
+          != other.getFirstLogin()) return false;
       if (!getShopGroupItemsList()
           .equals(other.getShopGroupItemsList())) return false;
       if (getNextFreeOpenBoxTime()
@@ -27835,6 +27874,9 @@ public final class PlayerMsg {
         hash = (37 * hash) + QUESTGROUPPOINTREWARDS_FIELD_NUMBER;
         hash = (53 * hash) + getQuestGroupPointRewardsList().hashCode();
       }
+      hash = (37 * hash) + FIRSTLOGIN_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getFirstLogin());
       if (getShopGroupItemsCount() > 0) {
         hash = (37 * hash) + SHOPGROUPITEMS_FIELD_NUMBER;
         hash = (53 * hash) + getShopGroupItemsList().hashCode();
@@ -28160,6 +28202,8 @@ public final class PlayerMsg {
         } else {
           questGroupPointRewardsBuilder_.clear();
         }
+        firstLogin_ = false;
+
         if (shopGroupItemsBuilder_ == null) {
           shopGroupItems_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00200000);
@@ -28366,6 +28410,7 @@ public final class PlayerMsg {
         } else {
           result.questGroupPointRewards_ = questGroupPointRewardsBuilder_.build();
         }
+        result.firstLogin_ = firstLogin_;
         if (shopGroupItemsBuilder_ == null) {
           if (((bitField0_ & 0x00200000) != 0)) {
             shopGroupItems_ = java.util.Collections.unmodifiableList(shopGroupItems_);
@@ -28823,6 +28868,9 @@ public final class PlayerMsg {
               questGroupPointRewardsBuilder_.addAllMessages(other.questGroupPointRewards_);
             }
           }
+        }
+        if (other.getFirstLogin() != false) {
+          setFirstLogin(other.getFirstLogin());
         }
         if (shopGroupItemsBuilder_ == null) {
           if (!other.shopGroupItems_.isEmpty()) {
@@ -34751,6 +34799,49 @@ public final class PlayerMsg {
         return questGroupPointRewardsBuilder_;
       }
 
+      private boolean firstLogin_ ;
+      /**
+       * <pre>
+       * 是否是每天第一次登陆
+       * </pre>
+       *
+       * <code>bool firstLogin = 57;</code>
+       * @return The firstLogin.
+       */
+      @java.lang.Override
+      public boolean getFirstLogin() {
+        return firstLogin_;
+      }
+      /**
+       * <pre>
+       * 是否是每天第一次登陆
+       * </pre>
+       *
+       * <code>bool firstLogin = 57;</code>
+       * @param value The firstLogin to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFirstLogin(boolean value) {
+        
+        firstLogin_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是否是每天第一次登陆
+       * </pre>
+       *
+       * <code>bool firstLogin = 57;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFirstLogin() {
+        
+        firstLogin_ = false;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo> shopGroupItems_ =
         java.util.Collections.emptyList();
       private void ensureShopGroupItemsIsMutable() {
@@ -36049,7 +36140,7 @@ public final class PlayerMsg {
       "el\030\001 \001(\0132\024.Protos.ExpLevelInfo\"k\n\nPlayer" +
       "Info\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030" +
       "\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023" +
-      "\n\013offlineTime\030\026 \001(\t\"\221\r\n\rPlayerAllInfo\022\"\n" +
+      "\n\013offlineTime\030\026 \001(\t\"\245\r\n\rPlayerAllInfo\022\"\n" +
       "\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006ass" +
       "ets\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsE" +
       "ntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Play" +
@@ -36078,21 +36169,21 @@ public final class PlayerMsg {
       " \001(\0132\022.Protos.PatrolInfo\022+\n\013questGroups\030" +
       "7 \003(\0132\026.Protos.QuestGroupInfo\022A\n\026questGr" +
       "oupPointRewards\0308 \003(\0132!.Protos.QuestGrou" +
-      "pPointRewardInfo\0221\n\016shopGroupItems\030d \003(\013" +
-      "2\031.Protos.ShopGroupItemInfo\022\033\n\023nextFreeO" +
-      "penBoxTime\030e \001(\005\022\027\n\017mergeSweepTimes\030f \001(" +
-      "\005\022/\n\013mergeEquips\030g \003(\0132\032.Protos.MergeEqu" +
-      "ipmentInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021mer" +
-      "geDayChallenge\030i \001(\0132\030.Protos.DayChallen" +
-      "geInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
-      "lue\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003ke" +
-      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntr" +
-      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlc" +
-      "hemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
-      "8\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
-      "\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003key\030\001" +
-      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.proto" +
-      "col.protobufb\006proto3"
+      "pPointRewardInfo\022\022\n\nfirstLogin\0309 \001(\010\0221\n\016" +
+      "shopGroupItems\030d \003(\0132\031.Protos.ShopGroupI" +
+      "temInfo\022\033\n\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017" +
+      "mergeSweepTimes\030f \001(\005\022/\n\013mergeEquips\030g \003" +
+      "(\0132\032.Protos.MergeEquipmentInfo\022\025\n\rmergeE" +
+      "quipIds\030h \003(\005\0223\n\021mergeDayChallenge\030i \001(\013" +
+      "2\030.Protos.DayChallengeInfo\032-\n\013AssetsEntr" +
+      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021Ass" +
+      "etRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001" +
+      "(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
+      "lue\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 " +
+      "\001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013" +
+      "\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021Dragon" +
+      "SkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:" +
+      "\0028\001B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -36318,7 +36409,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

@@ -22,6 +22,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketVerticle.class);
 	private int port;
+	private static int count = 0;
 
 	public WebSocketVerticle(int port) {
 		this.port = port;
@@ -35,41 +36,50 @@ public class WebSocketVerticle extends AbstractVerticle {
 //			System.out.println("client connected: " + ws.binaryHandlerID());
 			ws.binaryMessageHandler(r -> {
 
-				ContextInternal context = (ContextInternal) VxHolder.vertx.getOrCreateContext();
+				try {
+					ContextInternal context = (ContextInternal) VxHolder.vertx.getOrCreateContext();
 
-				ByteBuf byteBuf = r.getByteBuf();
-				int length = byteBuf.readInt();
-				int seq = byteBuf.readInt();
-				int msgID = byteBuf.readInt();
+					ByteBuf byteBuf = r.getByteBuf();
+					int length = byteBuf.readInt();
+					int seq = byteBuf.readInt();
+					int msgID = byteBuf.readInt();
 
-				byte[] data = new byte[byteBuf.readableBytes()];
-				byteBuf.readBytes(data);
-				Message message = PbProtocol.getInstance().parseFrom(msgID, data);
+					byte[] data = new byte[byteBuf.readableBytes()];
+					byteBuf.readBytes(data);
+					Message message = PbProtocol.getInstance().parseFrom(msgID, data);
 
-				GameClient client = GameClientManager.getInstance().getGameClientByConnection(ws.binaryHandlerID());
-				if (client == null) {
-					client = new GameClient(ws);
-					if (msgID == PbProtocol.PlayerLoginRequest_01000001) {
+					GameClient client = GameClientManager.getInstance().getGameClientByConnection(ws.binaryHandlerID());
+					if (client == null) {
+						client = new GameClient(ws);
+						if (msgID == PbProtocol.PlayerLoginRequest_01000001) {
 //						log.debug("客户端创建新session，id ：{}", client.getSessionId());
-						GameClientManager.getInstance().addGameClientConnection(ws.binaryHandlerID(), client);
+							GameClientManager.getInstance().addGameClientConnection(ws.binaryHandlerID(), client);
 
-					} else {
-						client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.need_login.getId());
-						log.warn("session[{}]新连接，但是没有先发登录请求，msgID[{}]", ws, msgID);
-						return;
+						} else {
+							client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.need_login.getId());
+							log.warn("session[{}]新连接，但是没有先发登录请求，msgID[{}]", ws, msgID);
+							return;
+						}
+						client.setContext(context);
+						client.setIp(ws.remoteAddress().host());
 					}
-					client.setContext(context);
-					client.setIp(ws.remoteAddress().host());
-				}
 
-				ProtobufProtocol protocol = new ProtobufProtocol(msgID, message, seq);
-				client.setLastRecvPacketTime(System.currentTimeMillis());
-				processor.process(client, protocol);
+					ProtobufProtocol protocol = new ProtobufProtocol(msgID, message, seq);
+					client.setLastRecvPacketTime(System.currentTimeMillis());
+					processor.process(client, protocol);
+				} catch (Exception e) {
+					log.warn("{} message parse failed ", ws.binaryHandlerID());
+					ws.close();
+				}
 //				handlerState.addTotalPacketReceived();
 
 			}).textMessageHandler(r -> {
 				log.error("not support ws text message " + r);
-			}).closeHandler(v -> GameClientManager.getInstance().removeGameClientConnection(ws.binaryHandlerID()));
+			}).closeHandler(v -> GameClientManager.getInstance().removeGameClientConnection(ws.binaryHandlerID()))
+					.exceptionHandler(r -> {
+						r.printStackTrace();
+						ws.close();
+					});
 		}).connectionHandler(r -> {
 			if (log.isDebugEnabled()) {
 				log.debug("websocket connection create success , remoteAddress[{}] ", r.remoteAddress());

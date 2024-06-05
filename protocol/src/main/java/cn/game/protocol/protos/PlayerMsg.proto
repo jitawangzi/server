@@ -236,6 +236,7 @@ message PlayerAllInfo{
    PatrolInfo patrol = 51;//巡逻/挂机
    repeated QuestGroupInfo questGroups = 55 ;  // 任务数据
    repeated QuestGroupPointRewardInfo questGroupPointRewards = 56 ;  // 任务积分奖励领取记录
+   bool firstLogin = 57;		// 是否是每天第一次登陆
 
 
    //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻

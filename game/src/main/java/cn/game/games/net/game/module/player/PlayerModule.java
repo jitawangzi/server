@@ -44,7 +44,7 @@ import io.vertx.core.Promise;
  * @author SYQ
  */
 public class PlayerModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE,
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
 			EventTypeEnum.LoginFinish, EventTypeEnum.Reconnect, EventTypeEnum.LevelUp, EventTypeEnum.ResourceRemove, EventTypeEnum.FuncOpen };
 
 	/** 玩家拥有的各种id集合，通常是只增加新id，并且id不能重复。 key1:type ,key2:configId*/
@@ -63,7 +63,7 @@ public class PlayerModule extends BasePlayerModule {
 	/** 随机宝箱，小云宝箱 */
 	private List<Goods> cloudBox;
 	private int lastCloudBoxRewardTime;
-	
+	private boolean isFirstLoign = false;
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -218,6 +218,8 @@ public class PlayerModule extends BasePlayerModule {
 			List<GoodsInfo> collect = cloudBox.stream().map(Goods::toGoodsInfo).collect(Collectors.toList());
 			builder.setCloudBox(CloudBoxInfo.newBuilder().addAllItems(collect));
 		}
+		builder.setFirstLogin(isFirstLoign);
+		isFirstLoign = false;
 	}
 	@Override
 	public void handleEvent(GameEvent event) {
@@ -259,6 +261,10 @@ public class PlayerModule extends BasePlayerModule {
 			if (func == InitialUI.RandomBox) {
 				startCloudBoxTask();
 			}
+			break;
+		}
+		case NewDay: {
+			isFirstLoign = true;
 			break;
 		}
 		}
