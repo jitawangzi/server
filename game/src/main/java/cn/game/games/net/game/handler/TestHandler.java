@@ -285,6 +285,9 @@ public class TestHandler extends BaseHandler {
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
 		
+		int calcPatrolGold = player.getChapterModule().calcPatrolGold(1);
+		System.out.println(calcPatrolGold);
+
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(300001);
 		int r4 = 0, r5 = 0, r6 = 0;
 		int lp = 50;

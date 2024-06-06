@@ -1009,11 +1009,11 @@ public class PlayerHandler extends BaseHandler {
 		boolean isMan = Rnd.nextBoolean();
 		if (isMan) {
 			name1 = Rnd.randomOne(list).MenName1;
-			name2 = Rnd.randomOne(list).MenName2;
+//			name2 = Rnd.randomOne(list).MenName2;
 		} else {
 			name1 = Rnd.randomOne(list).WomenName1;
-			name2 = Rnd.randomOne(list).WomenName2;
+//			name2 = Rnd.randomOne(list).WomenName2;
 		}
-		return xing + name1 + name2;
+		return xing + name1;
 	}
 }

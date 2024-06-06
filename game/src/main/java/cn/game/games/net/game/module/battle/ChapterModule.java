@@ -214,15 +214,20 @@ public class ChapterModule extends BasePlayerModule  {
 	}
 
 	/** 
-	 * 计算巡逻n小时金币
+	 * 计算巡逻n小时金币,当前在哪一关，也就是已经通关的下一关。 
 	 * @param hours
 	 * @return
 	 */
 	public int calcPatrolGold(int hours) {
-		if (mainBattleHighest == 0) {
-			return 0;
+		int battleId = 0;
+		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(1);
+		for (BattleConfig battleConfig : battleTypeList) {
+			if (battleConfig.preBattle == mainBattleHighest) {
+				battleId = battleConfig.ID;
+				break;
+			}
 		}
-		PatrolConfig patrolConfig = PatrolManager.instance().get(mainBattleHighest);
+		PatrolConfig patrolConfig = PatrolManager.instance().get(battleId);
 		return patrolConfig.IncomeGold * 60 * hours;
 	}
 

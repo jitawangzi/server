@@ -233,7 +233,6 @@ public class PlayerModule extends BasePlayerModule {
 			break;
 		}
 		case PLAYER_CREATE: {
-			initLevel();
 			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
 			break;
 		}
@@ -271,7 +270,10 @@ public class PlayerModule extends BasePlayerModule {
 		}
 	}
 
-	private void initLevel() {
+	/** 
+	 * 初始化经验的等级
+	 */
+	public void initLevel() {
 		for (Asset asset : Asset.values()) {
 			if (asset.Type == 2) {
 				if (!expLevelMap.hasValue(asset.ID)) {
