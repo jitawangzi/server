@@ -98,7 +98,7 @@ message HeroFreeDayRentChooseResponse_16000033{
 message HeroIllustrationsListRequest_16000040{
 }
 
-message HeroFreeDayRentChooseResponse_16000041{
+message HeroIllustrationsListResponse_16000041{
 	repeated int32 heroId = 1;	// Hero表id
 }
 
@@ -108,7 +108,7 @@ message HeroIllustrationsRewardRequest_16000042{
 	int32 heroId = 1 ;	// Hero表id
 }
 
-message HeroFreeDayRentChooseResponse_16000043{
+message HeroIllustrationsRewardResponse_16000043{
 	repeated RewardInfo reward = 2;	// 获得的奖励
 }
 

@@ -41,6 +41,9 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	/** 当前选择使用的英雄uid */
 	private long freeDayHeroUid;
 
+	/** 领取过图鉴奖励的英雄id */
+	private List<Integer> illustrationsIds = new ArrayList<>();
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -189,6 +192,10 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	public void setFreeDayHeroUid(long freeDayHeroUid) {
 		this.freeDayHeroUid = freeDayHeroUid;
+	}
+
+	public List<Integer> getIllustrationsIds() {
+		return illustrationsIds;
 	}
 
 }

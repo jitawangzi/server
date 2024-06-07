@@ -123,9 +123,9 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HeroFreeDayRentChooseRequest_16000032 = 0x16000032;    
 	public final static int HeroFreeDayRentChooseResponse_16000033 = 0x16000033;    
 	public final static int HeroIllustrationsListRequest_16000040 = 0x16000040;    
-	public final static int HeroFreeDayRentChooseResponse_16000041 = 0x16000041;    
+	public final static int HeroIllustrationsListResponse_16000041 = 0x16000041;    
 	public final static int HeroIllustrationsRewardRequest_16000042 = 0x16000042;    
-	public final static int HeroFreeDayRentChooseResponse_16000043 = 0x16000043;    
+	public final static int HeroIllustrationsRewardResponse_16000043 = 0x16000043;    
 	public final static int ItemUseRequest_0b000003 = 0x0b000003;    
 	public final static int ItemUseResponse_0b000004 = 0x0b000004;    
 	public final static int MailListRequest_12000001 = 0x12000001;    
@@ -472,11 +472,11 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(HeroIllustrationsListRequest_16000040, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(HeroFreeDayRentChooseResponse_16000041, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000041.getDefaultInstance()
+		parsersMap.put(HeroIllustrationsListResponse_16000041, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroIllustrationsRewardRequest_16000042, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(HeroFreeDayRentChooseResponse_16000043, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000043.getDefaultInstance()
+		parsersMap.put(HeroIllustrationsRewardResponse_16000043, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardResponse_16000043.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ItemUseRequest_0b000003, cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.getDefaultInstance()
 				.getParserForType());
@@ -861,9 +861,9 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("HeroFreeDayRentChooseRequest_16000032", 0x16000032);
 		nameIdMap.put("HeroFreeDayRentChooseResponse_16000033", 0x16000033);
 		nameIdMap.put("HeroIllustrationsListRequest_16000040", 0x16000040);
-		nameIdMap.put("HeroFreeDayRentChooseResponse_16000041", 0x16000041);
+		nameIdMap.put("HeroIllustrationsListResponse_16000041", 0x16000041);
 		nameIdMap.put("HeroIllustrationsRewardRequest_16000042", 0x16000042);
-		nameIdMap.put("HeroFreeDayRentChooseResponse_16000043", 0x16000043);
+		nameIdMap.put("HeroIllustrationsRewardResponse_16000043", 0x16000043);
 		nameIdMap.put("ItemUseRequest_0b000003", 0x0b000003);
 		nameIdMap.put("ItemUseResponse_0b000004", 0x0b000004);
 		nameIdMap.put("MailListRequest_12000001", 0x12000001);

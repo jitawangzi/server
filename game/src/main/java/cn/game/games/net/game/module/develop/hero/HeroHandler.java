@@ -40,6 +40,9 @@ import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000033;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031;
+import cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041;
+import cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042;
+import cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardResponse_16000043;
 import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetRequest_16000007;
 import cn.game.protocol.protobuf.HeroMsg.HeroLevelResetResponse_16000008;
 import cn.game.protocol.protobuf.HeroMsg.HeroQualityResetRequest_16000011;
@@ -73,6 +76,8 @@ public class HeroHandler extends BaseHandler {
 		putInvoker(PbProtocol.HeroQualityResetRequest_16000011, this::qualityReset);
 		putInvoker(PbProtocol.HeroFreeDayRentRequest_16000030, this::freeDayRent);
 		putInvoker(PbProtocol.HeroFreeDayRentChooseRequest_16000032, this::freeDayRentChoose);
+		putInvoker(PbProtocol.HeroIllustrationsListRequest_16000040, this::illustrationsList);
+		putInvoker(PbProtocol.HeroIllustrationsRewardRequest_16000042, this::illustrationsReward);
 	}
 
 	private void empty(NetClient client, Object message) {
@@ -86,6 +91,36 @@ public class HeroHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		client.sendProtocol(resp.build());
+	}
+
+	private void illustrationsReward(NetClient client, Object message) {
+		HeroIllustrationsRewardRequest_16000042 req = (HeroIllustrationsRewardRequest_16000042) message;
+		HeroIllustrationsRewardResponse_16000043.Builder resp = HeroIllustrationsRewardResponse_16000043.newBuilder();
+		int heroId = req.getHeroId();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		List<Integer> illustrationsIds = heroModule.getIllustrationsIds();
+		if (illustrationsIds.contains(heroId)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		Collection<Hero> heros = heroModule.getByConfigId(heroId);
+		if (heros.isEmpty()) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		illustrationsIds.add(heroId);
+
+		// 给奖励
+		client.sendProtocol(resp.build());
+	}
+
+	private void illustrationsList(NetClient client, Object message) {
+		HeroIllustrationsListResponse_16000041.Builder resp = HeroIllustrationsListResponse_16000041.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		resp.addAllHeroId(heroModule.getIllustrationsIds());
 		client.sendProtocol(resp.build());
 	}
 
