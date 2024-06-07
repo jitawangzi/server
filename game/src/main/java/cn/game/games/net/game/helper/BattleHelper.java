@@ -148,14 +148,5 @@ public class BattleHelper {
 		return battleConfig.FailRandom[index];
 	}
 
-	public static BattleConfig getBattleConfig(int id) {
-
-		BattleConfig battleConfig = BattleManager.instance().getNullable(id);
-		if (battleConfig != null) {
-			return battleConfig;
-		}
-		return HCBattleManager.instance().get(id);
-
-	}
 
 }
