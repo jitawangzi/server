@@ -3,6 +3,7 @@ option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
 import "BaseMsg.proto" ;
+import "RewardMsg.proto" ;
 // 英雄相关协议
 
 //英雄升级
@@ -89,6 +90,26 @@ message HeroFreeDayRentChooseRequest_16000032{
 }
 
 message HeroFreeDayRentChooseResponse_16000033{
+}
+
+
+
+//查看图鉴里面已经领取了奖励的英雄id
+message HeroIllustrationsListRequest_16000040{
+}
+
+message HeroFreeDayRentChooseResponse_16000041{
+	repeated int32 heroId = 1;	// Hero表id
+}
+
+
+//领取某个英雄的图鉴奖励
+message HeroIllustrationsRewardRequest_16000042{
+	int32 heroId = 1 ;	// Hero表id
+}
+
+message HeroFreeDayRentChooseResponse_16000043{
+	repeated RewardInfo reward = 2;	// 获得的奖励
 }
 
 

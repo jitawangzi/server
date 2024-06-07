@@ -43,14 +43,16 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleRougeRefreshRequest_13000005 = 0x13000005;    
 	public final static int BattleRougeRefreshResponse_13000006 = 0x13000006;    
 	public final static int BattleRewardRequest_13000022 = 0x13000022;    
-	public final static int BattleRewardResponse_13000023 = 0x13000023;    
+	public final static int BattleRewardResponse_13000023 = 0x13000023;    //肉鸽刷新  
+	public final static int HCBattleRewardRequest_13000027 = 0x13000027;    
+	public final static int HCBattleRewardResponse_13000028 = 0x13000028;    
 	public final static int BattleSweepRequest_13000024 = 0x13000024;    
 	public final static int BattleSweepResponse_13000025 = 0x13000025;    
 	public final static int BattlePatrolRewardRequest_13000044 = 0x13000044;    
 	public final static int BattlePatrolRewardResponse_13000045 = 0x13000045;    
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    
 	public final static int BattleStaminaResponse_13000051 = 0x13000051;    
-	public final static int BattleDaoHeartRequest_13000055 = 0x13000055;    
+	public final static int BattleDaoHeartRequest_13000055 = 0x13000055;    //巡逻 挂机  数据  
 	public final static int BattleDaoHeartResponse_13000056 = 0x13000056;    
 	public final static int BattleDaoHeartSweepRequest_13000060 = 0x13000060;    
 	public final static int BattleDaoHeartSweepResponse_13000061 = 0x13000061;    
@@ -120,6 +122,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HeroFreeDayRentResponse_16000031 = 0x16000031;    //英雄品质重置  
 	public final static int HeroFreeDayRentChooseRequest_16000032 = 0x16000032;    
 	public final static int HeroFreeDayRentChooseResponse_16000033 = 0x16000033;    
+	public final static int HeroIllustrationsListRequest_16000040 = 0x16000040;    
+	public final static int HeroFreeDayRentChooseResponse_16000041 = 0x16000041;    
+	public final static int HeroIllustrationsRewardRequest_16000042 = 0x16000042;    
+	public final static int HeroFreeDayRentChooseResponse_16000043 = 0x16000043;    
 	public final static int ItemUseRequest_0b000003 = 0x0b000003;    
 	public final static int ItemUseResponse_0b000004 = 0x0b000004;    
 	public final static int MailListRequest_12000001 = 0x12000001;    
@@ -308,6 +314,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(BattleRewardResponse_13000023, cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(HCBattleRewardRequest_13000027, cn.game.protocol.protobuf.BattleMsg.HCBattleRewardRequest_13000027.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCBattleRewardResponse_13000028, cn.game.protocol.protobuf.BattleMsg.HCBattleRewardResponse_13000028.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(BattleSweepRequest_13000024, cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleSweepResponse_13000025, cn.game.protocol.protobuf.BattleMsg.BattleSweepResponse_13000025.getDefaultInstance()
@@ -459,6 +469,14 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(HeroFreeDayRentChooseRequest_16000032, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroFreeDayRentChooseResponse_16000033, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000033.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroIllustrationsListRequest_16000040, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroFreeDayRentChooseResponse_16000041, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000041.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroIllustrationsRewardRequest_16000042, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroFreeDayRentChooseResponse_16000043, cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000043.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(ItemUseRequest_0b000003, cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.getDefaultInstance()
 				.getParserForType());
@@ -764,6 +782,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleRougeRefreshResponse_13000006", 0x13000006);
 		nameIdMap.put("BattleRewardRequest_13000022", 0x13000022);
 		nameIdMap.put("BattleRewardResponse_13000023", 0x13000023);
+		nameIdMap.put("HCBattleRewardRequest_13000027", 0x13000027);
+		nameIdMap.put("HCBattleRewardResponse_13000028", 0x13000028);
 		nameIdMap.put("BattleSweepRequest_13000024", 0x13000024);
 		nameIdMap.put("BattleSweepResponse_13000025", 0x13000025);
 		nameIdMap.put("BattlePatrolRewardRequest_13000044", 0x13000044);
@@ -840,6 +860,10 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("HeroFreeDayRentResponse_16000031", 0x16000031);
 		nameIdMap.put("HeroFreeDayRentChooseRequest_16000032", 0x16000032);
 		nameIdMap.put("HeroFreeDayRentChooseResponse_16000033", 0x16000033);
+		nameIdMap.put("HeroIllustrationsListRequest_16000040", 0x16000040);
+		nameIdMap.put("HeroFreeDayRentChooseResponse_16000041", 0x16000041);
+		nameIdMap.put("HeroIllustrationsRewardRequest_16000042", 0x16000042);
+		nameIdMap.put("HeroFreeDayRentChooseResponse_16000043", 0x16000043);
 		nameIdMap.put("ItemUseRequest_0b000003", 0x0b000003);
 		nameIdMap.put("ItemUseResponse_0b000004", 0x0b000004);
 		nameIdMap.put("MailListRequest_12000001", 0x12000001);
