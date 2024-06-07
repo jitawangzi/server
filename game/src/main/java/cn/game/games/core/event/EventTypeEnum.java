@@ -62,22 +62,24 @@ public enum EventTypeEnum {
 	/** 一场战斗结束，参数战役id，关卡id，输赢，杀怪数量 ,boss数量*/
 	BattleEnd(16, "一场战斗结束"),
 
-	ReceiveStamina(18, "领取体力"), Draw(19, "抽卡"),
-	/** 巡逻、挂机  参数：是否是快速巡逻 */
-	Patrol(20, "巡逻、挂机"),
-
 	// 任务相关
-	/** 完成探索关卡可能和完成关卡合并 */
-//	ExploreLevel(16, "完成探索关卡"),
 	/** 完成意识空间 */
-//	AwarenessSpace(17, "完成意识空间"),
-	CardUpGrade(18, "升级卡牌行为，不是真正升级"),
 	// 参数，id，value
 	GetItem(19, "获取资源"),
 	/** 消耗资源： 参数 id，数量 */
 	CostItem(20, "消耗资源"),
 
-	QuestFinish(21, "完成任务"), WeeklyScore(22, "获取周积分"),
+	QuestFinish(21, "完成任务"),
+
+	ReceiveStamina(22, "领取体力"),
+
+	Draw(23, "抽卡"),
+	/** 巡逻、挂机  参数：是否是快速巡逻 */
+	Patrol(24, "巡逻、挂机"),
+
+	/** 合成章节胜利  参数: 章节id*/
+	HCChapterWin(25, "合成章节胜利"),
+
 	// 参数 : 商店id，商品id，数量
 	BuyItems(28, "商店购买商品"),
 

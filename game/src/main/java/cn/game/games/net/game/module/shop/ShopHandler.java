@@ -16,6 +16,7 @@ import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
@@ -23,6 +24,7 @@ import cn.game.protocol.generated.config.ChapterPacksConfig;
 import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.FundPassRewardsConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.RechargeConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
@@ -31,6 +33,7 @@ import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.ChapterPacksManager;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.FundPassRewardsManager;
+import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
@@ -116,24 +119,30 @@ public class ShopHandler extends BaseHandler {
 				return;
 			}
 		}
-//		int[][] boxRandomId = GlobalConst.BoxRandomId;
-//		int idIndex = 0;
-//		ChapterModule chapterModule = player.getChapterModule();
-//		int mainBattleHighest = chapterModule.getMainBattleHighest();
-//		if (mainBattleHighest != 0) {
-//			BattleConfig battleConfig = BattleManager.instance().get(mainBattleHighest);
-//			int chapter = battleConfig.Chapter;
-//			for (int i = 0; i < boxRandomId.length; i++) {
-//				if (chapter > boxRandomId[i][0]) {
-//					idIndex = i + 1;
-//				}
-//			}
-//			if (idIndex >= boxRandomId.length - 1) {
-//				idIndex = boxRandomId.length - 1;
-//			}
-//		}
-//		List<RewardInfo> reward = PlayerHelper.addReward(player, boxRandomId[idIndex][1], OpType.BoxOpen);
-//		resp.addAllRewards(reward);
+		int[][] boxRandomId = GlobalConst.BoxRandomId;
+		int idIndex = 0;
+
+		ChapterModule chapterModule = player.getChapterModule();
+		int mainBattleHighest = chapterModule.getMainBattleHighest();
+
+		int chapter = 0;
+		List<HCBattleConfig> battleTypeList = HCBattleManager.instance().getBattleTypeList(11);
+		for (HCBattleConfig battleConfig : battleTypeList) {
+			if (battleConfig.preBattle == mainBattleHighest) {
+				chapter = battleConfig.Chapter;
+				break;
+			}
+		}
+		for (int i = 0; i < boxRandomId.length; i++) {
+			if (chapter > boxRandomId[i][0]) {
+				idIndex = i + 1;
+			}
+		}
+		if (idIndex >= boxRandomId.length - 1) {
+			idIndex = boxRandomId.length - 1;
+		}
+		List<RewardInfo> reward = PlayerHelper.addReward(player, boxRandomId[idIndex][1], OpType.BoxOpen);
+		resp.addAllRewards(reward);
 		client.sendProtocol(resp.build());
 	}
 	private void heishiRefresh(NetClient client, Object message) {

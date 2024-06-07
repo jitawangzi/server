@@ -6,12 +6,13 @@ import java.util.List;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.HCBattleHandler;
-import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.config.HCBattleConfig;
+import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
@@ -46,12 +47,14 @@ public class HCBattleChapterImpl extends HCBattleHandler {
 		boolean win = request.getWin();
 		int killMonsterCount = request.getKillMonsterCount();
 		int hpPercent = request.getHpPercent();
+		int battleTime = request.getBattleTime();
 
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		Chapter chapter = chapterModule.getChapter(chapterModule.getAttackingDungeonId());
-		BattleConfig battleConfig = BattleManager.instance().get(chapter.getBattleId());
+		Integer battleId = chapter.getBattleId();
+		HCBattleConfig battleConfig = HCBattleManager.instance().get(battleId);
 
 		if (hpPercent > chapter.getHpPercent()) {
 			chapter.setHpPercent(hpPercent);
@@ -62,16 +65,20 @@ public class HCBattleChapterImpl extends HCBattleHandler {
 		if (!chapter.getPass() && win) {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 1) {
-				chapterModule.setMainBattleHighest(chapter.getBattleId());
+				chapterModule.setMainBattleHighest(battleId);
 				player.handleEvent(EventTypeEnum.HCChapterFirstWin, battleConfig.ID);
 			}
 		}
 		// 发送奖励
 		List<RewardInfo> allRewards = new ArrayList<RewardInfo>();
 		if (win) {
-			player.handleEvent(EventTypeEnum.ChapterWin, battleConfig.ID);
+			player.handleEvent(EventTypeEnum.HCChapterWin, battleConfig.ID);
 			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleEnd);
 			allRewards.addAll(reward);
+		} else {
+			int hcFailRewardId = BattleHelper.hcFailRewardId(battleId, battleTime);
+			List<RewardInfo> reward = PlayerHelper.addReward(player, hcFailRewardId, OpType.BattleEnd);
+			resp.addAllRewards(reward);
 		}
 		chapter.setFinishTimes(chapter.getFinishTimes() + 1);
 //		GameLogger.pvefight(player, battleConfig.ID, 1, win, request.getBattleTime(), chapter.getFinishTimes());
@@ -81,7 +88,7 @@ public class HCBattleChapterImpl extends HCBattleHandler {
 		}
 
 		// 增加次数。
-		chapterModule.addChapterTimes(battleConfig.ID);
+//		chapterModule.addChapterTimes(battleConfig.ID);
 
 		resp.addAllRewards(allRewards);
 		return 0;

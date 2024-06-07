@@ -17,7 +17,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 public class MergeEquipModule extends AbstractItemModule<MergeEquip> {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HCChapterFirstWin };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HCChapterFirstWin, EventTypeEnum.PLAYER_CREATE };
 
 	/** 上阵的装备id */
 	private List<Integer> equipList = new ArrayList<>();
@@ -65,7 +65,14 @@ public class MergeEquipModule extends AbstractItemModule<MergeEquip> {
 			}
 			break; 
 		} 
-			
+		case PLAYER_CREATE: {
+			Collection<MergeEquip> list = list();
+			// 初始装备全上阵
+			for (MergeEquip item : list) {
+				equipList.add(item.getConfigId());
+			}
+			break;
+		}
 		}
 	}
 

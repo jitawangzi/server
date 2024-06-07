@@ -7,9 +7,11 @@ import java.util.List;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.EventTriggerConfig;
 import cn.game.protocol.generated.config.GamePlayRandomBuffConfig;
+import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.EventTriggerManager;
 import cn.game.protocol.generated.manager.GamePlayRandomBuffManager;
+import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.util.Rnd;
 
 public class BattleHelper {
@@ -121,6 +123,39 @@ public class BattleHelper {
 			}
 		}
 		return ret;
+	}
+
+	public static int hcFailRewardId(int hcBattleId, int battleTime) {
+
+		HCBattleConfig battleConfig = HCBattleManager.instance().get(hcBattleId);
+
+//		3;5;8
+//		≤3——第1个
+//		3＜x≤5——第2个
+//		5＜x≤8——第3个,> 8 第三个。 
+
+//		int battleTime = request.getBattleTime();
+		int[] failRandomTrigger = battleConfig.FailRandomTrigger;
+		int index = 0;
+		for (int i = 0; i < failRandomTrigger.length; i++) {
+			if (battleTime <= failRandomTrigger[i]) {
+				index = i;
+			}
+		}
+		if (battleTime >= failRandomTrigger[failRandomTrigger.length - 1]) {
+			index = failRandomTrigger.length - 1;
+		}
+		return battleConfig.FailRandom[index];
+	}
+
+	public static BattleConfig getBattleConfig(int id) {
+
+		BattleConfig battleConfig = BattleManager.instance().getNullable(id);
+		if (battleConfig != null) {
+			return battleConfig;
+		}
+		return HCBattleManager.instance().get(id);
+
 	}
 
 }

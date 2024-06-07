@@ -21,9 +21,9 @@ public abstract class HCBattleHandler implements IBattleHandler {
 		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(battleConfig.preBattle)) {
 			return ErrorMsgEnum.BattleLevel_pre.getId();
 		}
-		if (!chapterModule.checkChapterTimes(dungeonId)) {
-			return ErrorMsgEnum.times_limit.getId();
-		}
+//		if (!chapterModule.checkChapterTimes(dungeonId)) {
+//			return ErrorMsgEnum.times_limit.getId();
+//		}
 
 		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart)) {
 			return ErrorMsgEnum.resource_not_enough.getId();

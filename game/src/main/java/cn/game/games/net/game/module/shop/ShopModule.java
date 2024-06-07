@@ -234,11 +234,13 @@ public class ShopModule extends BasePlayerModule {
 		shopItemsMap.removeAll(shop);
 
 		List<HeishiConfig> typeList = HeishiManager.instance().getTypeList(1);
-		HeishiConfig heishiConfig = typeList.get(0);
-		shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
+		int fixCount = typeList.size();
+		for (HeishiConfig heishiConfig : typeList) {
+			shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
+		}
 
 		typeList = HeishiManager.instance().getTypeList(2);
-		List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd.randomWeighableElementsNonRepeating(typeList, GlobalConst.HeishiShelvesCnt - 1);
+		List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd.randomWeighableElementsNonRepeating(typeList, GlobalConst.HeishiShelvesCnt - fixCount);
 		for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
 			shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
 		}

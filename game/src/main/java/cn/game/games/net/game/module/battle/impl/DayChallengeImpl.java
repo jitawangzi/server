@@ -3,14 +3,13 @@ package cn.game.games.net.game.module.battle.impl;
 import java.util.List;
 
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleDayChallenge;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.HCBattleHandler;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.HCBattleConfig;
-import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -37,25 +36,10 @@ public class DayChallengeImpl extends HCBattleHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		int battleId = chapterModule.getAttackingDungeonId();
-		HCBattleConfig battleConfig = HCBattleManager.instance().get(battleId);
-
-//		3;5;8
-//		≤3——第1个
-//		3＜x≤5——第2个
-//		5＜x≤8——第3个,> 8 第三个。 
 
 		int battleTime = request.getBattleTime(); 
-		int[] failRandomTrigger = battleConfig.FailRandomTrigger;
-		int index = 0;
-		for (int i = 0; i < failRandomTrigger.length; i++) {
-			if (battleTime <= failRandomTrigger[i]) {
-				index = i;
-			}
-		}
-		if (battleTime >= failRandomTrigger[failRandomTrigger.length - 1]) {
-			index = failRandomTrigger.length - 1;
-		}
-		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FailRandom[index], OpType.BattleEnd);
+		int hcFailRewardId = BattleHelper.hcFailRewardId(battleId, battleTime);
+		List<RewardInfo> reward = PlayerHelper.addReward(player, hcFailRewardId, OpType.BattleEnd);
 		resp.addAllRewards(reward);
 		BattleDayChallenge dayChallenge = chapterModule.getDayChallenge();
 		dayChallenge.setBattleTimes(dayChallenge.getBattleTimes() + 1);

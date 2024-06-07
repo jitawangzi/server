@@ -11,6 +11,7 @@ import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.AttrModule;
@@ -72,6 +73,7 @@ public class ChapterHandler extends BaseHandler {
 //		putInvoker(PbProtocol.BattleChapterRewardRequest_13000022, (client, message) -> reward(client, message));
 //		putInvoker(PbProtocol.ExploreActRewardRequest_13000020, (client, message) -> exploreActReward(client, message));
 		putInvoker(PbProtocol.BattleRewardRequest_13000022, (client, message) -> chapterReward(client, message));
+//		putInvoker(PbProtocol.HCBattleRewardrequ, (client, message) -> chapterReward(client, message));
 		putInvoker(PbProtocol.BattleRougeRefreshRequest_13000005, (client, message) -> rougeRefresh(client, message));
 		putInvoker(PbProtocol.BattlePatrolRewardRequest_13000044, this::patrolReward);
 		putInvoker(PbProtocol.BattleStaminaRequest_13000050, this::stamina);
@@ -524,8 +526,8 @@ public class ChapterHandler extends BaseHandler {
 				return;
 			}
 			int minute = chapter.getBattleTime() / 60;
-			BattleConfig battleConfig = BattleManager.instance().get(id);
-
+//			BattleConfig battleConfig = BattleManager.instance().get(id);
+			BattleConfig battleConfig = BattleHelper.getBattleConfig(id);
 			if (index == 0 && minute < battleConfig.BattleBoxTrigger[0]) {
 				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 				return;
@@ -543,7 +545,8 @@ public class ChapterHandler extends BaseHandler {
 		for (int i = 0; i < indexList.size(); i++) {
 			int index = indexList.get(i);
 			int id = idList.get(i);
-			BattleConfig battleConfig = BattleManager.instance().get(id);
+//			BattleConfig battleConfig = BattleManager.instance().get(id);
+			BattleConfig battleConfig = BattleHelper.getBattleConfig(id);
 
 			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index], OpType.BattleEnd);
 
