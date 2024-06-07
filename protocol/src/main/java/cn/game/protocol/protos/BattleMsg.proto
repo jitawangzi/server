@@ -58,10 +58,22 @@ message BattleRougeRefreshResponse_13000006{
 message BattleRewardRequest_13000022{
    repeated uint32 id = 1; 			// Battle表的id
    repeated uint32 index = 2; 			// 0、1、2   代表首次，半血、无损奖励
+
 }
 message BattleRewardResponse_13000023{
    repeated RewardInfo reward = 1;
 }
+
+//合成领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。
+message HCBattleRewardRequest_13000027{
+   repeated uint32 id = 1; 			// Battle表的id
+   repeated uint32 index = 2; 			// 0、1、2   代表首次，半血、无损奖励
+
+}
+message HCBattleRewardResponse_13000028{
+   repeated RewardInfo reward = 1;
+}
+
 
 //关卡扫荡
 message BattleSweepRequest_13000024{
