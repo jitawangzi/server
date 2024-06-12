@@ -44,13 +44,16 @@ public class LoggerManager {
     public static void init() throws Exception {
 //        ServerEventManager.registerEventHandler(INSTANCE);
 
-        String logPath = "..";
+		String logPath = System.getProperty("SEVER_PATH", System.getenv("SEVER_PATH"));
+		if (logPath == null) {
+			logPath = "..";
+		}
 //        if (Configuration.startupMode == Configuration.StartupMode.docker) {
 //            logPath = "";
 //        }
-        System.setProperty("SEVER_PATH", logPath);
+		System.setProperty("SEVER_PATH", logPath);
 
-        String cylog = System.getenv("CYLOG_PATH");
+		String cylog = System.getProperty("CYLOG_PATH", System.getenv("CYLOG_PATH"));
         if (cylog != null) {
             //畅游环境，直接用运维配置的地址
         } else {
