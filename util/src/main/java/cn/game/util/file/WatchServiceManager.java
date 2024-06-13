@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import cn.game.util.MailUtil;
 
 /**
- * @Description
+ * 只监听xml文件修改
  * @date 2018年11月10日 下午1:54:30
  * @author SYQ
  */
@@ -99,6 +99,9 @@ public class WatchServiceManager implements Runnable {
 							final WatchEvent<Path> watchEventPath = (WatchEvent<Path>) watchEvent;
 							final Path filename = watchEventPath.context();
 							if (filename.startsWith(".")) { // 隐藏文件
+								continue;
+							}
+							if (!filename.endsWith(".xml")) { // 只监听xml文件
 								continue;
 							}
 							log.info(kind + " -> " + filename);

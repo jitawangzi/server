@@ -155,14 +155,15 @@ public class ShopHandler extends BaseHandler {
 		}
 		ShopModule shopModule = player.getShopModule();
 		int heishiRefreshTimes = shopModule.getHeishiRefreshTimes();
-		if (heishiRefreshTimes == 0) {
+		int heishiPayTimes = heishiRefreshTimes - GlobalConst.HeishiFreeRefresh;
+		if (heishiRefreshTimes < GlobalConst.HeishiFreeRefresh) {
 			player.handleEvent(EventTypeEnum.WatchAds);
 		}else {
-			if (heishiRefreshTimes > GlobalConst.HeishiPayfrseh.length) {
+			if (heishiPayTimes >= GlobalConst.HeishiPayfrseh.length) {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
 				return;
 			}
-			boolean delResources = PlayerHelper.delResources(player, Asset.diamond.ID, GlobalConst.HeishiPayfrseh[heishiRefreshTimes - 1], OpType.HeishiFresh);
+			boolean delResources = PlayerHelper.delResources(player, Asset.diamond.ID, GlobalConst.HeishiPayfrseh[heishiPayTimes], OpType.HeishiFresh);
 			if (!delResources) {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 				return;
