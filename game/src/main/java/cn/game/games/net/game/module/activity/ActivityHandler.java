@@ -15,7 +15,9 @@ import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
 import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivity;
 import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.protocol.generated.manager.FirstChargeManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000011;
@@ -33,6 +35,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninRequest_1100
 import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninResponse_11000027;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import io.vertx.core.Future;
 
 /**
  * 活动处理器
@@ -174,11 +177,21 @@ public class ActivityHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
-		if (!activityBase.buy(chargeId)) {
+		if (!activityBase.check(chargeId)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
-		client.sendProtocol(resp);
+		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(chargeId);
+
+		Future<Boolean> pay = player.pay(firstChargeConfig.Price);
+		pay.onComplete(t -> {
+			if (t.result()) {
+				activityBase.buy(chargeId);
+				client.sendProtocol(resp.build());
+			} else {
+				client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+			}
+		});
 	}
 
 	private void singleChargeReward(NetClient client, Object message) {

@@ -40,6 +40,7 @@ import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseResponse_16000033;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentRequest_16000030;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentResponse_16000031;
+import cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo;
 import cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041;
 import cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042;
 import cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardResponse_16000043;
@@ -97,21 +98,24 @@ public class HeroHandler extends BaseHandler {
 	private void illustrationsReward(NetClient client, Object message) {
 		HeroIllustrationsRewardRequest_16000042 req = (HeroIllustrationsRewardRequest_16000042) message;
 		HeroIllustrationsRewardResponse_16000043.Builder resp = HeroIllustrationsRewardResponse_16000043.newBuilder();
-		int heroId = req.getHeroId();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HeroModule heroModule = player.getHeroModule();
-		List<Integer> illustrationsIds = heroModule.getIllustrationsIds();
-		if (illustrationsIds.contains(heroId)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
-			return;
-		}
-		Collection<Hero> heros = heroModule.getByConfigId(heroId);
-		if (heros.isEmpty()) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
-			return;
-		}
-		illustrationsIds.add(heroId);
+		Map<Integer, Integer> illustrationsIds = heroModule.getIllustrationsHeroQualitys();
+		Collection<Hero> list = heroModule.list();
+		
+		List<RewardInfo> rewardsInfos = new ArrayList<>();
+		for (Hero hero : list) {
+			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+			Integer qualityReceive = illustrationsIds.get(hero.getConfigId());
 
+			int quality = qualityReceive != null ? qualityReceive : heroConfig.InitialQuality;
+			for (; quality <= hero.getQuality(); quality++) {
+				illustrationsIds.put(heroConfig.ID, quality);
+				List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.llustrationsReward);
+				rewardsInfos.addAll(resources);
+			}
+		}
+		resp.addAllReward(rewardsInfos);
 		// 给奖励
 		client.sendProtocol(resp.build());
 	}
@@ -120,7 +124,27 @@ public class HeroHandler extends BaseHandler {
 		HeroIllustrationsListResponse_16000041.Builder resp = HeroIllustrationsListResponse_16000041.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HeroModule heroModule = player.getHeroModule();
-		resp.addAllHeroId(heroModule.getIllustrationsIds());
+		Map<Integer, Integer> illustrationsIds = heroModule.getIllustrationsHeroQualitys();
+		resp.addAllHeroIds(heroModule.getOwnedHeroIds());
+		Collection<Hero> list = heroModule.list();
+		for (Hero hero : list) {
+			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+			HeroIllustrationsInfo.Builder builder = HeroIllustrationsInfo.newBuilder();
+			builder.setHeroId(heroConfig.ID);
+			if (illustrationsIds.containsKey(heroConfig.ID)) {
+				int quality = illustrationsIds.get(hero.getConfigId());
+				for (int i = quality + 1; i <= hero.getQuality(); i++) {
+					builder.addQuality(i);
+				}
+			} else {
+				for (int i = heroConfig.InitialQuality; i <= hero.getQuality(); i++) {
+					builder.addQuality(i);
+				}
+			}
+			if (builder.getQualityCount() > 0) {
+				resp.addHeros(builder.build());
+			}
+		}
 		client.sendProtocol(resp.build());
 	}
 

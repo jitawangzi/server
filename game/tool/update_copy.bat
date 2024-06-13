@@ -1,7 +1,6 @@
 :: 更新
 
-cd /D %metafolder%
-git pull
+git -C %metafolder% pull
 
 if %errorlevel% neq 0 (
   echo.
@@ -17,15 +16,6 @@ if %errorlevel% neq 0 (
 
 
 :: pull 一下，防止冲突
-
-:: cd /D %workspace%\util
-:: git pull
-
-:: cd /D %workspace%\protocol
-:: git pull
-
-:: cd /D %workspace%\core
-:: git pull
 
 :: cd /D %workspace%\game
 :: git pull

@@ -1,6 +1,7 @@
 ::打包命令，一般不会单独使用 
 
-cd /D %workspace%\login
-mvn clean package
+set project=login
 
-:: pause
+set "file=%workspace%\%project%\pom.xml"
+mvn -f %file% clean package
+

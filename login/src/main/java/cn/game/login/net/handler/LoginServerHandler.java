@@ -57,16 +57,16 @@ public class LoginServerHandler extends BaseHandler {
 		
 		JSONObject signData = new JSONObject(); 
 		// game? 
-		signData.put("mode", "item") ; 
+		signData.put("mode", "goods");
 		signData.put("offerId", Config.wechat_midas_offerId) ; 
 		signData.put("buyQuantity", 1) ; 
 		signData.put("env", Config.wechat_midas_env) ; 
 		signData.put("currencyType", "CNY") ;
-		// ? 
-		signData.put("productId", 1) ; 
+		signData.put("productId", request.getItemId());
+		signData.put("zoneId", "1");
 		signData.put("goodsPrice", request.getGoodsPrice()) ; 
-		long outTradeNo = IdUtil.genOrderId(playerId); 
-		signData.put("outTradeNo", outTradeNo) ; 
+		long outTradeNo = IdUtil.genOrderId(playerId);
+		signData.put("outTradeNo", outTradeNo + "");
 		
 		User user = UserHelper.getUserBySessionId(sessionId); 
 		// 创建一个订单
@@ -98,7 +98,7 @@ public class LoginServerHandler extends BaseHandler {
 			newBuilder.setSignature(signature); 
 			resp.setOrderId(outTradeNo); 
 			
-			client.sendProtocol(resp.setOrder(newBuilder).build());
+			client.sendProtocol(resp.setOrder(newBuilder.build()));
 		}).onFailure(e -> {
 			resp.setOrderId(outTradeNo); 
 			client.sendProtocol(resp.build());

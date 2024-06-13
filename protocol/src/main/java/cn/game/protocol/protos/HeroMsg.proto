@@ -94,24 +94,29 @@ message HeroFreeDayRentChooseResponse_16000033{
 
 
 
-//查看图鉴里面已经领取了奖励的英雄id
+//查看图鉴数据
 message HeroIllustrationsListRequest_16000040{
 }
 
 message HeroIllustrationsListResponse_16000041{
-	repeated int32 heroId = 1;	// Hero表id
+	repeated int32 heroIds = 1; 	// 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
+	repeated HeroIllustrationsInfo heros  = 2;  // 图鉴领奖
 }
 
+// 可以领取图鉴奖励的英雄
+message HeroIllustrationsInfo{
+	int32 heroId = 1;			// Hero表id
+	repeated int32 quality  = 2; // 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+	// 如果大于初始品质，则是突破到该品质的奖励
+}
 
-//领取某个英雄的图鉴奖励
+//一键领取英雄的图鉴奖励
 message HeroIllustrationsRewardRequest_16000042{
-	int32 heroId = 1 ;	// Hero表id
 }
 
 message HeroIllustrationsRewardResponse_16000043{
 	repeated RewardInfo reward = 2;	// 获得的奖励
 }
-
 
 
 

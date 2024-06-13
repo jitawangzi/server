@@ -8856,6 +8856,26 @@ public final class ServerMsg {
      * @return The goodsPrice.
      */
     int getGoodsPrice();
+
+    /**
+     * <pre>
+     * 道具id
+     * </pre>
+     *
+     * <code>string itemId = 5;</code>
+     * @return The itemId.
+     */
+    java.lang.String getItemId();
+    /**
+     * <pre>
+     * 道具id
+     * </pre>
+     *
+     * <code>string itemId = 5;</code>
+     * @return The bytes for itemId.
+     */
+    com.google.protobuf.ByteString
+        getItemIdBytes();
   }
   /**
    * <pre>
@@ -8875,6 +8895,7 @@ public final class ServerMsg {
     }
     private PaymentOrderCreateRequest_7d000020() {
       sessionId_ = "";
+      itemId_ = "";
     }
 
     @java.lang.Override
@@ -8921,6 +8942,12 @@ public final class ServerMsg {
             case 32: {
 
               goodsPrice_ = input.readUInt32();
+              break;
+            }
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              itemId_ = s;
               break;
             }
             default: {
@@ -9029,6 +9056,52 @@ public final class ServerMsg {
       return goodsPrice_;
     }
 
+    public static final int ITEMID_FIELD_NUMBER = 5;
+    private volatile java.lang.Object itemId_;
+    /**
+     * <pre>
+     * 道具id
+     * </pre>
+     *
+     * <code>string itemId = 5;</code>
+     * @return The itemId.
+     */
+    @java.lang.Override
+    public java.lang.String getItemId() {
+      java.lang.Object ref = itemId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        itemId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 道具id
+     * </pre>
+     *
+     * <code>string itemId = 5;</code>
+     * @return The bytes for itemId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getItemIdBytes() {
+      java.lang.Object ref = itemId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        itemId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -9052,6 +9125,9 @@ public final class ServerMsg {
       if (goodsPrice_ != 0) {
         output.writeUInt32(4, goodsPrice_);
       }
+      if (!getItemIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, itemId_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -9071,6 +9147,9 @@ public final class ServerMsg {
       if (goodsPrice_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(4, goodsPrice_);
+      }
+      if (!getItemIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, itemId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -9093,6 +9172,8 @@ public final class ServerMsg {
           .equals(other.getSessionId())) return false;
       if (getGoodsPrice()
           != other.getGoodsPrice()) return false;
+      if (!getItemId()
+          .equals(other.getItemId())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -9111,6 +9192,8 @@ public final class ServerMsg {
       hash = (53 * hash) + getSessionId().hashCode();
       hash = (37 * hash) + GOODSPRICE_FIELD_NUMBER;
       hash = (53 * hash) + getGoodsPrice();
+      hash = (37 * hash) + ITEMID_FIELD_NUMBER;
+      hash = (53 * hash) + getItemId().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -9254,6 +9337,8 @@ public final class ServerMsg {
 
         goodsPrice_ = 0;
 
+        itemId_ = "";
+
         return this;
       }
 
@@ -9283,6 +9368,7 @@ public final class ServerMsg {
         result.playerId_ = playerId_;
         result.sessionId_ = sessionId_;
         result.goodsPrice_ = goodsPrice_;
+        result.itemId_ = itemId_;
         onBuilt();
         return result;
       }
@@ -9340,6 +9426,10 @@ public final class ServerMsg {
         }
         if (other.getGoodsPrice() != 0) {
           setGoodsPrice(other.getGoodsPrice());
+        }
+        if (!other.getItemId().isEmpty()) {
+          itemId_ = other.itemId_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -9543,6 +9633,102 @@ public final class ServerMsg {
       public Builder clearGoodsPrice() {
         
         goodsPrice_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object itemId_ = "";
+      /**
+       * <pre>
+       * 道具id
+       * </pre>
+       *
+       * <code>string itemId = 5;</code>
+       * @return The itemId.
+       */
+      public java.lang.String getItemId() {
+        java.lang.Object ref = itemId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          itemId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 道具id
+       * </pre>
+       *
+       * <code>string itemId = 5;</code>
+       * @return The bytes for itemId.
+       */
+      public com.google.protobuf.ByteString
+          getItemIdBytes() {
+        java.lang.Object ref = itemId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          itemId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 道具id
+       * </pre>
+       *
+       * <code>string itemId = 5;</code>
+       * @param value The itemId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setItemId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        itemId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 道具id
+       * </pre>
+       *
+       * <code>string itemId = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearItemId() {
+        
+        itemId_ = getDefaultInstance().getItemId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 道具id
+       * </pre>
+       *
+       * <code>string itemId = 5;</code>
+       * @param value The bytes for itemId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setItemIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        itemId_ = value;
         onChanged();
         return this;
       }
@@ -18629,32 +18815,32 @@ public final class ServerMsg {
       "dRequest_7d000018\022\031\n\021passportSessionId\030\001" +
       " \001(\t\"S\n\037LoginPlayerUidResponse_7d000019\022" +
       "\013\n\003uid\030\001 \001(\003\022\021\n\taccountId\030\002 \001(\t\022\020\n\010devic" +
-      "eId\030\003 \001(\t\"]\n\"PaymentOrderCreateRequest_7" +
+      "eId\030\003 \001(\t\"m\n\"PaymentOrderCreateRequest_7" +
       "d000020\022\020\n\010playerId\030\001 \001(\004\022\021\n\tsessionId\030\002" +
-      " \001(\t\022\022\n\ngoodsPrice\030\004 \001(\r\"`\n#PaymentOrder" +
-      "CreateResponse_7d000021\022(\n\005order\030\001 \001(\0132\031" +
-      ".Protos.PaymentOrderProto\022\017\n\007orderId\030\003 \001" +
-      "(\004\"A\n PaymentOrderShipRequest_7d000022\022\020" +
-      "\n\010playerId\030\001 \001(\004\022\013\n\003uid\030\003 \001(\004\"4\n!Payment" +
-      "OrderShipResponse_7d000023\022\017\n\007success\030\001 " +
-      "\001(\010\"p\n\035GameCrossForwardPush_7d000002\022\020\n\010" +
-      "serverId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\004\022\n\n\002id\030\003" +
-      " \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\terrorCode\030\005 \001(\r\"^\n" +
-      "\035CrossGameForwardPush_7d000003\022\020\n\010player" +
+      " \001(\t\022\022\n\ngoodsPrice\030\004 \001(\r\022\016\n\006itemId\030\005 \001(\t" +
+      "\"`\n#PaymentOrderCreateResponse_7d000021\022" +
+      "(\n\005order\030\001 \001(\0132\031.Protos.PaymentOrderProt" +
+      "o\022\017\n\007orderId\030\003 \001(\004\"A\n PaymentOrderShipRe" +
+      "quest_7d000022\022\020\n\010playerId\030\001 \001(\004\022\013\n\003uid\030" +
+      "\003 \001(\004\"4\n!PaymentOrderShipResponse_7d0000" +
+      "23\022\017\n\007success\030\001 \001(\010\"p\n\035GameCrossForwardP" +
+      "ush_7d000002\022\020\n\010serverId\030\001 \001(\t\022\020\n\010player" +
       "Id\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\ter" +
-      "rorCode\030\005 \001(\r\"t\n!GameCrossPlayerBroadcas" +
-      "t_7d000005\022\020\n\010serverId\030\001 \003(\t\022\020\n\010playerId" +
-      "\030\002 \003(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\022\021\n\terro" +
-      "rCode\030\005 \001(\r\"I\n\033GameCrossBroadcast_7d0000" +
-      "08\022\020\n\010serverId\030\001 \003(\t\022\n\n\002id\030\002 \001(\r\022\014\n\004data" +
-      "\030\003 \001(\014\"I\n\025GameDataPush_7d00000a\022\023\n\013mappe" +
-      "rClass\030\001 \001(\t\022\016\n\006method\030\002 \001(\t\022\013\n\003arg\030\003 \001(" +
-      "\014\"?\n\013DbTaskProto\022\023\n\013mapperClass\030\001 \001(\t\022\016\n" +
-      "\006method\030\002 \001(\t\022\013\n\003arg\030\003 \001(\014\"B\n\032GameDataPu" +
-      "shBatch_7d00000b\022$\n\007dbTasks\030\001 \003(\0132\023.Prot" +
-      "os.DbTaskProto\"*\n\033GameDataPushBatch2_7d0" +
-      "0000c\022\013\n\003arg\030\001 \001(\014B\033\n\031cn.game.protocol.p" +
-      "rotobufb\006proto3"
+      "rorCode\030\005 \001(\r\"^\n\035CrossGameForwardPush_7d" +
+      "000003\022\020\n\010playerId\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004" +
+      "data\030\004 \001(\014\022\021\n\terrorCode\030\005 \001(\r\"t\n!GameCro" +
+      "ssPlayerBroadcast_7d000005\022\020\n\010serverId\030\001" +
+      " \003(\t\022\020\n\010playerId\030\002 \003(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004da" +
+      "ta\030\004 \001(\014\022\021\n\terrorCode\030\005 \001(\r\"I\n\033GameCross" +
+      "Broadcast_7d000008\022\020\n\010serverId\030\001 \003(\t\022\n\n\002" +
+      "id\030\002 \001(\r\022\014\n\004data\030\003 \001(\014\"I\n\025GameDataPush_7" +
+      "d00000a\022\023\n\013mapperClass\030\001 \001(\t\022\016\n\006method\030\002" +
+      " \001(\t\022\013\n\003arg\030\003 \001(\014\"?\n\013DbTaskProto\022\023\n\013mapp" +
+      "erClass\030\001 \001(\t\022\016\n\006method\030\002 \001(\t\022\013\n\003arg\030\003 \001" +
+      "(\014\"B\n\032GameDataPushBatch_7d00000b\022$\n\007dbTa" +
+      "sks\030\001 \003(\0132\023.Protos.DbTaskProto\"*\n\033GameDa" +
+      "taPushBatch2_7d00000c\022\013\n\003arg\030\001 \001(\014B\033\n\031cn" +
+      ".game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -18750,7 +18936,7 @@ public final class ServerMsg {
     internal_static_Protos_PaymentOrderCreateRequest_7d000020_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PaymentOrderCreateRequest_7d000020_descriptor,
-        new java.lang.String[] { "PlayerId", "SessionId", "GoodsPrice", });
+        new java.lang.String[] { "PlayerId", "SessionId", "GoodsPrice", "ItemId", });
     internal_static_Protos_PaymentOrderCreateResponse_7d000021_descriptor =
       getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_PaymentOrderCreateResponse_7d000021_fieldAccessorTable = new

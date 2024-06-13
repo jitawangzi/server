@@ -63,13 +63,13 @@ public enum EventTypeEnum {
 	BattleEnd(16, "一场战斗结束"),
 
 	// 任务相关
-	/** 完成意识空间 */
+	CardUpGrade(18, "升级卡牌行为，不是真正升级"),
 	// 参数，id，value
 	GetItem(19, "获取资源"),
 	/** 消耗资源： 参数 id，数量 */
 	CostItem(20, "消耗资源"),
-
-	QuestFinish(21, "完成任务"),
+	/** 消耗带有uid的物品： 参数 uid，configId */
+	CostUidItem(21, "消耗带有uid的物品"),
 
 	ReceiveStamina(22, "领取体力"),
 
@@ -79,6 +79,7 @@ public enum EventTypeEnum {
 
 	/** 合成章节胜利  参数: 章节id*/
 	HCChapterWin(25, "合成章节胜利"),
+	QuestFinish(26, "完成任务"),
 
 	// 参数 : 商店id，商品id，数量
 	BuyItems(28, "商店购买商品"),
@@ -137,8 +138,6 @@ public enum EventTypeEnum {
 	ItemUse(68, "使用道具"),
 	/** 收集图鉴 */
 	CollectAtlas(70, "收集图鉴"),
-	/** 固定装备升级 */
-	FixedEquipmentLevel(71, "固定装备升级"),
 	/** buff改变 */
 	BuffChange(75, "buff改变"),
 

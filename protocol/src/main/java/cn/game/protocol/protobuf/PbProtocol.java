@@ -219,7 +219,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PaymentOrderCreateRequest_7d000020 = 0x7d000020;    
 	public final static int PaymentOrderCreateResponse_7d000021 = 0x7d000021;    
 	public final static int PaymentOrderShipRequest_7d000022 = 0x7d000022;    
-	public final static int PaymentOrderShipResponse_7d000023 = 0x7d000023;    //请求创建支付订单  
+	public final static int PaymentOrderShipResponse_7d000023 = 0x7d000023;    
 	public final static int GameCrossForwardPush_7d000002 = 0x7d000002;    
 	public final static int CrossGameForwardPush_7d000003 = 0x7d000003;    
 	public final static int GameCrossPlayerBroadcast_7d000005 = 0x7d000005;    

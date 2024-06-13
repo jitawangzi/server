@@ -11126,7 +11126,7 @@ public final class HeroMsg {
   }
   /**
    * <pre>
-   *查看图鉴里面已经领取了奖励的英雄id
+   *查看图鉴数据
    * </pre>
    *
    * Protobuf type {@code Protos.HeroIllustrationsListRequest_16000040}
@@ -11351,7 +11351,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     *查看图鉴里面已经领取了奖励的英雄id
+     *查看图鉴数据
      * </pre>
      *
      * Protobuf type {@code Protos.HeroIllustrationsListRequest_16000040}
@@ -11552,32 +11552,76 @@ public final class HeroMsg {
 
     /**
      * <pre>
-     * Hero表id
+     * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
      * </pre>
      *
-     * <code>repeated int32 heroId = 1;</code>
-     * @return A list containing the heroId.
+     * <code>repeated int32 heroIds = 1;</code>
+     * @return A list containing the heroIds.
      */
-    java.util.List<java.lang.Integer> getHeroIdList();
+    java.util.List<java.lang.Integer> getHeroIdsList();
     /**
      * <pre>
-     * Hero表id
+     * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
      * </pre>
      *
-     * <code>repeated int32 heroId = 1;</code>
-     * @return The count of heroId.
+     * <code>repeated int32 heroIds = 1;</code>
+     * @return The count of heroIds.
      */
-    int getHeroIdCount();
+    int getHeroIdsCount();
     /**
      * <pre>
-     * Hero表id
+     * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
      * </pre>
      *
-     * <code>repeated int32 heroId = 1;</code>
+     * <code>repeated int32 heroIds = 1;</code>
      * @param index The index of the element to return.
-     * @return The heroId at the given index.
+     * @return The heroIds at the given index.
      */
-    int getHeroId(int index);
+    int getHeroIds(int index);
+
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo> 
+        getHerosList();
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo getHeros(int index);
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    int getHerosCount();
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder> 
+        getHerosOrBuilderList();
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder getHerosOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code Protos.HeroIllustrationsListResponse_16000041}
@@ -11592,7 +11636,8 @@ public final class HeroMsg {
       super(builder);
     }
     private HeroIllustrationsListResponse_16000041() {
-      heroId_ = emptyIntList();
+      heroIds_ = emptyIntList();
+      heros_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -11628,23 +11673,32 @@ public final class HeroMsg {
               break;
             case 8: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                heroId_ = newIntList();
+                heroIds_ = newIntList();
                 mutable_bitField0_ |= 0x00000001;
               }
-              heroId_.addInt(input.readInt32());
+              heroIds_.addInt(input.readInt32());
               break;
             }
             case 10: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                heroId_ = newIntList();
+                heroIds_ = newIntList();
                 mutable_bitField0_ |= 0x00000001;
               }
               while (input.getBytesUntilLimit() > 0) {
-                heroId_.addInt(input.readInt32());
+                heroIds_.addInt(input.readInt32());
               }
               input.popLimit(limit);
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              heros_.add(
+                  input.readMessage(cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -11663,7 +11717,10 @@ public final class HeroMsg {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          heroId_.makeImmutable(); // C
+          heroIds_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          heros_ = java.util.Collections.unmodifiableList(heros_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -11682,45 +11739,105 @@ public final class HeroMsg {
               cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041.class, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041.Builder.class);
     }
 
-    public static final int HEROID_FIELD_NUMBER = 1;
-    private com.google.protobuf.Internal.IntList heroId_;
+    public static final int HEROIDS_FIELD_NUMBER = 1;
+    private com.google.protobuf.Internal.IntList heroIds_;
     /**
      * <pre>
-     * Hero表id
+     * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
      * </pre>
      *
-     * <code>repeated int32 heroId = 1;</code>
-     * @return A list containing the heroId.
+     * <code>repeated int32 heroIds = 1;</code>
+     * @return A list containing the heroIds.
      */
     @java.lang.Override
     public java.util.List<java.lang.Integer>
-        getHeroIdList() {
-      return heroId_;
+        getHeroIdsList() {
+      return heroIds_;
     }
     /**
      * <pre>
-     * Hero表id
+     * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
      * </pre>
      *
-     * <code>repeated int32 heroId = 1;</code>
-     * @return The count of heroId.
+     * <code>repeated int32 heroIds = 1;</code>
+     * @return The count of heroIds.
      */
-    public int getHeroIdCount() {
-      return heroId_.size();
+    public int getHeroIdsCount() {
+      return heroIds_.size();
     }
     /**
      * <pre>
-     * Hero表id
+     * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
      * </pre>
      *
-     * <code>repeated int32 heroId = 1;</code>
+     * <code>repeated int32 heroIds = 1;</code>
      * @param index The index of the element to return.
-     * @return The heroId at the given index.
+     * @return The heroIds at the given index.
      */
-    public int getHeroId(int index) {
-      return heroId_.getInt(index);
+    public int getHeroIds(int index) {
+      return heroIds_.getInt(index);
     }
-    private int heroIdMemoizedSerializedSize = -1;
+    private int heroIdsMemoizedSerializedSize = -1;
+
+    public static final int HEROS_FIELD_NUMBER = 2;
+    private java.util.List<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo> heros_;
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo> getHerosList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder> 
+        getHerosOrBuilderList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    @java.lang.Override
+    public int getHerosCount() {
+      return heros_.size();
+    }
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo getHeros(int index) {
+      return heros_.get(index);
+    }
+    /**
+     * <pre>
+     * 图鉴领奖
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder getHerosOrBuilder(
+        int index) {
+      return heros_.get(index);
+    }
 
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
@@ -11737,12 +11854,15 @@ public final class HeroMsg {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (getHeroIdList().size() > 0) {
+      if (getHeroIdsList().size() > 0) {
         output.writeUInt32NoTag(10);
-        output.writeUInt32NoTag(heroIdMemoizedSerializedSize);
+        output.writeUInt32NoTag(heroIdsMemoizedSerializedSize);
       }
-      for (int i = 0; i < heroId_.size(); i++) {
-        output.writeInt32NoTag(heroId_.getInt(i));
+      for (int i = 0; i < heroIds_.size(); i++) {
+        output.writeInt32NoTag(heroIds_.getInt(i));
+      }
+      for (int i = 0; i < heros_.size(); i++) {
+        output.writeMessage(2, heros_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -11755,17 +11875,21 @@ public final class HeroMsg {
       size = 0;
       {
         int dataSize = 0;
-        for (int i = 0; i < heroId_.size(); i++) {
+        for (int i = 0; i < heroIds_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(heroId_.getInt(i));
+            .computeInt32SizeNoTag(heroIds_.getInt(i));
         }
         size += dataSize;
-        if (!getHeroIdList().isEmpty()) {
+        if (!getHeroIdsList().isEmpty()) {
           size += 1;
           size += com.google.protobuf.CodedOutputStream
               .computeInt32SizeNoTag(dataSize);
         }
-        heroIdMemoizedSerializedSize = dataSize;
+        heroIdsMemoizedSerializedSize = dataSize;
+      }
+      for (int i = 0; i < heros_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, heros_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -11782,8 +11906,10 @@ public final class HeroMsg {
       }
       cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041 other = (cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041) obj;
 
-      if (!getHeroIdList()
-          .equals(other.getHeroIdList())) return false;
+      if (!getHeroIdsList()
+          .equals(other.getHeroIdsList())) return false;
+      if (!getHerosList()
+          .equals(other.getHerosList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -11795,9 +11921,13 @@ public final class HeroMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getHeroIdCount() > 0) {
-        hash = (37 * hash) + HEROID_FIELD_NUMBER;
-        hash = (53 * hash) + getHeroIdList().hashCode();
+      if (getHeroIdsCount() > 0) {
+        hash = (37 * hash) + HEROIDS_FIELD_NUMBER;
+        hash = (53 * hash) + getHeroIdsList().hashCode();
+      }
+      if (getHerosCount() > 0) {
+        hash = (37 * hash) + HEROS_FIELD_NUMBER;
+        hash = (53 * hash) + getHerosList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -11927,13 +12057,20 @@ public final class HeroMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getHerosFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        heroId_ = emptyIntList();
+        heroIds_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000001);
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          herosBuilder_.clear();
+        }
         return this;
       }
 
@@ -11962,10 +12099,19 @@ public final class HeroMsg {
         cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041 result = new cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041(this);
         int from_bitField0_ = bitField0_;
         if (((bitField0_ & 0x00000001) != 0)) {
-          heroId_.makeImmutable();
+          heroIds_.makeImmutable();
           bitField0_ = (bitField0_ & ~0x00000001);
         }
-        result.heroId_ = heroId_;
+        result.heroIds_ = heroIds_;
+        if (herosBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0)) {
+            heros_ = java.util.Collections.unmodifiableList(heros_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.heros_ = heros_;
+        } else {
+          result.heros_ = herosBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -12014,15 +12160,41 @@ public final class HeroMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041 other) {
         if (other == cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListResponse_16000041.getDefaultInstance()) return this;
-        if (!other.heroId_.isEmpty()) {
-          if (heroId_.isEmpty()) {
-            heroId_ = other.heroId_;
+        if (!other.heroIds_.isEmpty()) {
+          if (heroIds_.isEmpty()) {
+            heroIds_ = other.heroIds_;
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            ensureHeroIdIsMutable();
-            heroId_.addAll(other.heroId_);
+            ensureHeroIdsIsMutable();
+            heroIds_.addAll(other.heroIds_);
           }
           onChanged();
+        }
+        if (herosBuilder_ == null) {
+          if (!other.heros_.isEmpty()) {
+            if (heros_.isEmpty()) {
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureHerosIsMutable();
+              heros_.addAll(other.heros_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.heros_.isEmpty()) {
+            if (herosBuilder_.isEmpty()) {
+              herosBuilder_.dispose();
+              herosBuilder_ = null;
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              herosBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getHerosFieldBuilder() : null;
+            } else {
+              herosBuilder_.addAllMessages(other.heros_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -12054,111 +12226,423 @@ public final class HeroMsg {
       }
       private int bitField0_;
 
-      private com.google.protobuf.Internal.IntList heroId_ = emptyIntList();
-      private void ensureHeroIdIsMutable() {
+      private com.google.protobuf.Internal.IntList heroIds_ = emptyIntList();
+      private void ensureHeroIdsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          heroId_ = mutableCopy(heroId_);
+          heroIds_ = mutableCopy(heroIds_);
           bitField0_ |= 0x00000001;
          }
       }
       /**
        * <pre>
-       * Hero表id
+       * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
        * </pre>
        *
-       * <code>repeated int32 heroId = 1;</code>
-       * @return A list containing the heroId.
+       * <code>repeated int32 heroIds = 1;</code>
+       * @return A list containing the heroIds.
        */
       public java.util.List<java.lang.Integer>
-          getHeroIdList() {
+          getHeroIdsList() {
         return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(heroId_) : heroId_;
+                 java.util.Collections.unmodifiableList(heroIds_) : heroIds_;
       }
       /**
        * <pre>
-       * Hero表id
+       * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
        * </pre>
        *
-       * <code>repeated int32 heroId = 1;</code>
-       * @return The count of heroId.
+       * <code>repeated int32 heroIds = 1;</code>
+       * @return The count of heroIds.
        */
-      public int getHeroIdCount() {
-        return heroId_.size();
+      public int getHeroIdsCount() {
+        return heroIds_.size();
       }
       /**
        * <pre>
-       * Hero表id
+       * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
        * </pre>
        *
-       * <code>repeated int32 heroId = 1;</code>
+       * <code>repeated int32 heroIds = 1;</code>
        * @param index The index of the element to return.
-       * @return The heroId at the given index.
+       * @return The heroIds at the given index.
        */
-      public int getHeroId(int index) {
-        return heroId_.getInt(index);
+      public int getHeroIds(int index) {
+        return heroIds_.getInt(index);
       }
       /**
        * <pre>
-       * Hero表id
+       * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
        * </pre>
        *
-       * <code>repeated int32 heroId = 1;</code>
+       * <code>repeated int32 heroIds = 1;</code>
        * @param index The index to set the value at.
-       * @param value The heroId to set.
+       * @param value The heroIds to set.
        * @return This builder for chaining.
        */
-      public Builder setHeroId(
+      public Builder setHeroIds(
           int index, int value) {
-        ensureHeroIdIsMutable();
-        heroId_.setInt(index, value);
+        ensureHeroIdsIsMutable();
+        heroIds_.setInt(index, value);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * Hero表id
+       * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
        * </pre>
        *
-       * <code>repeated int32 heroId = 1;</code>
-       * @param value The heroId to add.
+       * <code>repeated int32 heroIds = 1;</code>
+       * @param value The heroIds to add.
        * @return This builder for chaining.
        */
-      public Builder addHeroId(int value) {
-        ensureHeroIdIsMutable();
-        heroId_.addInt(value);
+      public Builder addHeroIds(int value) {
+        ensureHeroIdsIsMutable();
+        heroIds_.addInt(value);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * Hero表id
+       * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
        * </pre>
        *
-       * <code>repeated int32 heroId = 1;</code>
-       * @param values The heroId to add.
+       * <code>repeated int32 heroIds = 1;</code>
+       * @param values The heroIds to add.
        * @return This builder for chaining.
        */
-      public Builder addAllHeroId(
+      public Builder addAllHeroIds(
           java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureHeroIdIsMutable();
+        ensureHeroIdsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, heroId_);
+            values, heroIds_);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * Hero表id
+       * 曾经拥有过，但是现在已经不在了的英雄id  Hero表id
        * </pre>
        *
-       * <code>repeated int32 heroId = 1;</code>
+       * <code>repeated int32 heroIds = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearHeroId() {
-        heroId_ = emptyIntList();
+      public Builder clearHeroIds() {
+        heroIds_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
+      }
+
+      private java.util.List<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo> heros_ =
+        java.util.Collections.emptyList();
+      private void ensureHerosIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo>(heros_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder> herosBuilder_;
+
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo> getHerosList() {
+        if (herosBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(heros_);
+        } else {
+          return herosBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public int getHerosCount() {
+        if (herosBuilder_ == null) {
+          return heros_.size();
+        } else {
+          return herosBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo getHeros(int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);
+        } else {
+          return herosBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.set(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder addHeros(cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder addHeros(
+          cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder addAllHeros(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo> values) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, heros_);
+          onChanged();
+        } else {
+          herosBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder clearHeros() {
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          herosBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public Builder removeHeros(int index) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.remove(index);
+          onChanged();
+        } else {
+          herosBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder getHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder getHerosOrBuilder(
+          int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);  } else {
+          return herosBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder> 
+           getHerosOrBuilderList() {
+        if (herosBuilder_ != null) {
+          return herosBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(heros_);
+        }
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder addHerosBuilder() {
+        return getHerosFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder addHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 图鉴领奖
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroIllustrationsInfo heros = 2;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder> 
+           getHerosBuilderList() {
+        return getHerosFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder> 
+          getHerosFieldBuilder() {
+        if (herosBuilder_ == null) {
+          herosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder>(
+                  heros_,
+                  ((bitField0_ & 0x00000002) != 0),
+                  getParentForChildren(),
+                  isClean());
+          heros_ = null;
+        }
+        return herosBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -12213,8 +12697,8 @@ public final class HeroMsg {
 
   }
 
-  public interface HeroIllustrationsRewardRequest_16000042OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.HeroIllustrationsRewardRequest_16000042)
+  public interface HeroIllustrationsInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.HeroIllustrationsInfo)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -12226,10 +12710,765 @@ public final class HeroMsg {
      * @return The heroId.
      */
     int getHeroId();
+
+    /**
+     * <pre>
+     * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+     * </pre>
+     *
+     * <code>repeated int32 quality = 2;</code>
+     * @return A list containing the quality.
+     */
+    java.util.List<java.lang.Integer> getQualityList();
+    /**
+     * <pre>
+     * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+     * </pre>
+     *
+     * <code>repeated int32 quality = 2;</code>
+     * @return The count of quality.
+     */
+    int getQualityCount();
+    /**
+     * <pre>
+     * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+     * </pre>
+     *
+     * <code>repeated int32 quality = 2;</code>
+     * @param index The index of the element to return.
+     * @return The quality at the given index.
+     */
+    int getQuality(int index);
   }
   /**
    * <pre>
-   *领取某个英雄的图鉴奖励
+   * 可以领取图鉴奖励的英雄
+   * </pre>
+   *
+   * Protobuf type {@code Protos.HeroIllustrationsInfo}
+   */
+  public static final class HeroIllustrationsInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.HeroIllustrationsInfo)
+      HeroIllustrationsInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use HeroIllustrationsInfo.newBuilder() to construct.
+    private HeroIllustrationsInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private HeroIllustrationsInfo() {
+      quality_ = emptyIntList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new HeroIllustrationsInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private HeroIllustrationsInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              heroId_ = input.readInt32();
+              break;
+            }
+            case 16: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                quality_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              quality_.addInt(input.readInt32());
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                quality_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                quality_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          quality_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroIllustrationsInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroIllustrationsInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.class, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder.class);
+    }
+
+    public static final int HEROID_FIELD_NUMBER = 1;
+    private int heroId_;
+    /**
+     * <pre>
+     * Hero表id
+     * </pre>
+     *
+     * <code>int32 heroId = 1;</code>
+     * @return The heroId.
+     */
+    @java.lang.Override
+    public int getHeroId() {
+      return heroId_;
+    }
+
+    public static final int QUALITY_FIELD_NUMBER = 2;
+    private com.google.protobuf.Internal.IntList quality_;
+    /**
+     * <pre>
+     * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+     * </pre>
+     *
+     * <code>repeated int32 quality = 2;</code>
+     * @return A list containing the quality.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getQualityList() {
+      return quality_;
+    }
+    /**
+     * <pre>
+     * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+     * </pre>
+     *
+     * <code>repeated int32 quality = 2;</code>
+     * @return The count of quality.
+     */
+    public int getQualityCount() {
+      return quality_.size();
+    }
+    /**
+     * <pre>
+     * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+     * </pre>
+     *
+     * <code>repeated int32 quality = 2;</code>
+     * @param index The index of the element to return.
+     * @return The quality at the given index.
+     */
+    public int getQuality(int index) {
+      return quality_.getInt(index);
+    }
+    private int qualityMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (heroId_ != 0) {
+        output.writeInt32(1, heroId_);
+      }
+      if (getQualityList().size() > 0) {
+        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(qualityMemoizedSerializedSize);
+      }
+      for (int i = 0; i < quality_.size(); i++) {
+        output.writeInt32NoTag(quality_.getInt(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (heroId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, heroId_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < quality_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(quality_.getInt(i));
+        }
+        size += dataSize;
+        if (!getQualityList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        qualityMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo other = (cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo) obj;
+
+      if (getHeroId()
+          != other.getHeroId()) return false;
+      if (!getQualityList()
+          .equals(other.getQualityList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + HEROID_FIELD_NUMBER;
+      hash = (53 * hash) + getHeroId();
+      if (getQualityCount() > 0) {
+        hash = (37 * hash) + QUALITY_FIELD_NUMBER;
+        hash = (53 * hash) + getQualityList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 可以领取图鉴奖励的英雄
+     * </pre>
+     *
+     * Protobuf type {@code Protos.HeroIllustrationsInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.HeroIllustrationsInfo)
+        cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroIllustrationsInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroIllustrationsInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.class, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        heroId_ = 0;
+
+        quality_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroIllustrationsInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo build() {
+        cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo buildPartial() {
+        cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo result = new cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo(this);
+        int from_bitField0_ = bitField0_;
+        result.heroId_ = heroId_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          quality_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.quality_ = quality_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo other) {
+        if (other == cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo.getDefaultInstance()) return this;
+        if (other.getHeroId() != 0) {
+          setHeroId(other.getHeroId());
+        }
+        if (!other.quality_.isEmpty()) {
+          if (quality_.isEmpty()) {
+            quality_ = other.quality_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureQualityIsMutable();
+            quality_.addAll(other.quality_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int heroId_ ;
+      /**
+       * <pre>
+       * Hero表id
+       * </pre>
+       *
+       * <code>int32 heroId = 1;</code>
+       * @return The heroId.
+       */
+      @java.lang.Override
+      public int getHeroId() {
+        return heroId_;
+      }
+      /**
+       * <pre>
+       * Hero表id
+       * </pre>
+       *
+       * <code>int32 heroId = 1;</code>
+       * @param value The heroId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHeroId(int value) {
+        
+        heroId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Hero表id
+       * </pre>
+       *
+       * <code>int32 heroId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHeroId() {
+        
+        heroId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList quality_ = emptyIntList();
+      private void ensureQualityIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          quality_ = mutableCopy(quality_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+       * </pre>
+       *
+       * <code>repeated int32 quality = 2;</code>
+       * @return A list containing the quality.
+       */
+      public java.util.List<java.lang.Integer>
+          getQualityList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(quality_) : quality_;
+      }
+      /**
+       * <pre>
+       * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+       * </pre>
+       *
+       * <code>repeated int32 quality = 2;</code>
+       * @return The count of quality.
+       */
+      public int getQualityCount() {
+        return quality_.size();
+      }
+      /**
+       * <pre>
+       * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+       * </pre>
+       *
+       * <code>repeated int32 quality = 2;</code>
+       * @param index The index of the element to return.
+       * @return The quality at the given index.
+       */
+      public int getQuality(int index) {
+        return quality_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+       * </pre>
+       *
+       * <code>repeated int32 quality = 2;</code>
+       * @param index The index to set the value at.
+       * @param value The quality to set.
+       * @return This builder for chaining.
+       */
+      public Builder setQuality(
+          int index, int value) {
+        ensureQualityIsMutable();
+        quality_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+       * </pre>
+       *
+       * <code>repeated int32 quality = 2;</code>
+       * @param value The quality to add.
+       * @return This builder for chaining.
+       */
+      public Builder addQuality(int value) {
+        ensureQualityIsMutable();
+        quality_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+       * </pre>
+       *
+       * <code>repeated int32 quality = 2;</code>
+       * @param values The quality to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllQuality(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureQualityIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, quality_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 品质对应的奖励，如果品质等于英雄的初始品质，则表示获得奖励，
+       * </pre>
+       *
+       * <code>repeated int32 quality = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearQuality() {
+        quality_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.HeroIllustrationsInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.HeroIllustrationsInfo)
+    private static final cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo();
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<HeroIllustrationsInfo>
+        PARSER = new com.google.protobuf.AbstractParser<HeroIllustrationsInfo>() {
+      @java.lang.Override
+      public HeroIllustrationsInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new HeroIllustrationsInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<HeroIllustrationsInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<HeroIllustrationsInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface HeroIllustrationsRewardRequest_16000042OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.HeroIllustrationsRewardRequest_16000042)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   *一键领取英雄的图鉴奖励
    * </pre>
    *
    * Protobuf type {@code Protos.HeroIllustrationsRewardRequest_16000042}
@@ -12276,11 +13515,6 @@ public final class HeroMsg {
             case 0:
               done = true;
               break;
-            case 8: {
-
-              heroId_ = input.readInt32();
-              break;
-            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -12313,21 +13547,6 @@ public final class HeroMsg {
               cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.class, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.Builder.class);
     }
 
-    public static final int HEROID_FIELD_NUMBER = 1;
-    private int heroId_;
-    /**
-     * <pre>
-     * Hero表id
-     * </pre>
-     *
-     * <code>int32 heroId = 1;</code>
-     * @return The heroId.
-     */
-    @java.lang.Override
-    public int getHeroId() {
-      return heroId_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -12342,9 +13561,6 @@ public final class HeroMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (heroId_ != 0) {
-        output.writeInt32(1, heroId_);
-      }
       unknownFields.writeTo(output);
     }
 
@@ -12354,10 +13570,6 @@ public final class HeroMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (heroId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, heroId_);
-      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -12373,8 +13585,6 @@ public final class HeroMsg {
       }
       cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042 other = (cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042) obj;
 
-      if (getHeroId()
-          != other.getHeroId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -12386,8 +13596,6 @@ public final class HeroMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + HEROID_FIELD_NUMBER;
-      hash = (53 * hash) + getHeroId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -12485,7 +13693,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     *领取某个英雄的图鉴奖励
+     *一键领取英雄的图鉴奖励
      * </pre>
      *
      * Protobuf type {@code Protos.HeroIllustrationsRewardRequest_16000042}
@@ -12525,8 +13733,6 @@ public final class HeroMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        heroId_ = 0;
-
         return this;
       }
 
@@ -12553,7 +13759,6 @@ public final class HeroMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042 buildPartial() {
         cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042 result = new cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042(this);
-        result.heroId_ = heroId_;
         onBuilt();
         return result;
       }
@@ -12602,9 +13807,6 @@ public final class HeroMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042 other) {
         if (other == cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.getDefaultInstance()) return this;
-        if (other.getHeroId() != 0) {
-          setHeroId(other.getHeroId());
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -12631,49 +13833,6 @@ public final class HeroMsg {
             mergeFrom(parsedMessage);
           }
         }
-        return this;
-      }
-
-      private int heroId_ ;
-      /**
-       * <pre>
-       * Hero表id
-       * </pre>
-       *
-       * <code>int32 heroId = 1;</code>
-       * @return The heroId.
-       */
-      @java.lang.Override
-      public int getHeroId() {
-        return heroId_;
-      }
-      /**
-       * <pre>
-       * Hero表id
-       * </pre>
-       *
-       * <code>int32 heroId = 1;</code>
-       * @param value The heroId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setHeroId(int value) {
-        
-        heroId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * Hero表id
-       * </pre>
-       *
-       * <code>int32 heroId = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearHeroId() {
-        
-        heroId_ = 0;
-        onChanged();
         return this;
       }
       @java.lang.Override
@@ -13735,6 +14894,11 @@ public final class HeroMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_HeroIllustrationsListResponse_16000041_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_HeroIllustrationsInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_HeroIllustrationsInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_HeroIllustrationsRewardRequest_16000042_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -13777,13 +14941,15 @@ public final class HeroMsg {
       "\020.Protos.HeroInfo\"4\n%HeroFreeDayRentChoo" +
       "seRequest_16000032\022\013\n\003uid\030\001 \001(\t\"(\n&HeroF" +
       "reeDayRentChooseResponse_16000033\"\'\n%Her" +
-      "oIllustrationsListRequest_16000040\"8\n&He" +
-      "roIllustrationsListResponse_16000041\022\016\n\006" +
-      "heroId\030\001 \003(\005\"9\n\'HeroIllustrationsRewardR" +
-      "equest_16000042\022\016\n\006heroId\030\001 \001(\005\"N\n(HeroI" +
-      "llustrationsRewardResponse_16000043\022\"\n\006r" +
-      "eward\030\002 \003(\0132\022.Protos.RewardInfoB\033\n\031cn.ga" +
-      "me.protocol.protobufb\006proto3"
+      "oIllustrationsListRequest_16000040\"g\n&He" +
+      "roIllustrationsListResponse_16000041\022\017\n\007" +
+      "heroIds\030\001 \003(\005\022,\n\005heros\030\002 \003(\0132\035.Protos.He" +
+      "roIllustrationsInfo\"8\n\025HeroIllustrations" +
+      "Info\022\016\n\006heroId\030\001 \001(\005\022\017\n\007quality\030\002 \003(\005\")\n" +
+      "\'HeroIllustrationsRewardRequest_16000042" +
+      "\"N\n(HeroIllustrationsRewardResponse_1600" +
+      "0043\022\"\n\006reward\030\002 \003(\0132\022.Protos.RewardInfo" +
+      "B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -13910,15 +15076,21 @@ public final class HeroMsg {
     internal_static_Protos_HeroIllustrationsListResponse_16000041_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroIllustrationsListResponse_16000041_descriptor,
-        new java.lang.String[] { "HeroId", });
-    internal_static_Protos_HeroIllustrationsRewardRequest_16000042_descriptor =
+        new java.lang.String[] { "HeroIds", "Heros", });
+    internal_static_Protos_HeroIllustrationsInfo_descriptor =
       getDescriptor().getMessageTypes().get(20);
+    internal_static_Protos_HeroIllustrationsInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_HeroIllustrationsInfo_descriptor,
+        new java.lang.String[] { "HeroId", "Quality", });
+    internal_static_Protos_HeroIllustrationsRewardRequest_16000042_descriptor =
+      getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_HeroIllustrationsRewardRequest_16000042_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroIllustrationsRewardRequest_16000042_descriptor,
-        new java.lang.String[] { "HeroId", });
+        new java.lang.String[] { });
     internal_static_Protos_HeroIllustrationsRewardResponse_16000043_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Protos_HeroIllustrationsRewardResponse_16000043_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroIllustrationsRewardResponse_16000043_descriptor,

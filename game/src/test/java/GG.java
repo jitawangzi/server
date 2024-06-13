@@ -9,6 +9,7 @@ public class GG {
 	public static long firstTime = System.currentTimeMillis();
 
 	public static void main(String[] args) throws Exception {
+		System.out.println(Integer.MAX_VALUE);
 		List<Integer> list = new ArrayList<>();
 
 		for (int i = 1; i < 10; i++) {

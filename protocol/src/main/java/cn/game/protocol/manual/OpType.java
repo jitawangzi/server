@@ -77,10 +77,12 @@ public enum OpType{
 
 	YaoWangComplete(147, "妖王快跑通关奖励"),
 
-	BoxOpen(140, "合并开宝箱"),
-	MergeEquipLvUp(141, "合并装备升级"),
+	llustrationsReward(148, "英雄图鉴奖励"),
+	BattleStart(160, "战役开始"),
 
-	BattleStart(200, "战役开始"),
+	BoxOpen(200, "合并开宝箱"),
+	MergeEquipLvUp(201, "合并装备升级"),
+
 
 
 	None(999, "未定义"),

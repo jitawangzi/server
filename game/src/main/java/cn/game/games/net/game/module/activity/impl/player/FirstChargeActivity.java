@@ -74,7 +74,7 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		return status;
 	}
 
-	public boolean buy(int cid) {
+	public boolean check(int cid) {
 		
 //		FirstChargeActivityConfig singleChargeActivityConfig = SingleChargeActivityManager.instance().get(cid);
 		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(cid);
@@ -91,10 +91,15 @@ public class FirstChargeActivity extends PlayerActivityBase {
 			return false;
 
 		}
+		return true;
+	}
+
+	public void buy(int cid) {
+
+		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(cid);
 		SingleCharge charge = new SingleCharge();
 		charge.setDay(DateUtil.getDay());
 		chargeMap.put(firstChargeConfig.ActivityiD, charge);
-		return true;
 	}
 
 	public List<RewardInfo> reward(int cid) {

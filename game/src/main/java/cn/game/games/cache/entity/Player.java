@@ -350,7 +350,8 @@ public class Player  {
 			}
 		} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
 			
-			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId()).setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1]).build();
+			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId())
+					.setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1] * 100).setItemId("yuanbao001").build();
 			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
 			requestRemoteServer.onSuccess(r -> {
 				PaymentOrderPush_15010020 paymentOrderPush_15010020 = PaymentOrderPush_15010020.newBuilder().setOrder(r.body().getOrder()).build(); 
