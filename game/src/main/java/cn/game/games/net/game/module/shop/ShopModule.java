@@ -360,11 +360,11 @@ public class ShopModule extends BasePlayerModule {
 		}
 		case NewDay: {
 			refreshShopNewDay();
+			freeOpenBoxCount = 0;
 			break;
 		}
 		case NewWeek: {
 			refreshShopNewWeek();
-			freeOpenBoxCount = 0;
 			break;
 
 		}

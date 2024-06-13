@@ -64,7 +64,7 @@ public class HCBattleChapterImpl extends HCBattleHandler {
 		}
 		if (!chapter.getPass() && win) {
 			chapter.setPass(true);
-			if (battleConfig.BattleType == 1) {
+			if (battleConfig.BattleType == 11) {
 				chapterModule.setMainBattleHighest(battleId);
 				player.handleEvent(EventTypeEnum.HCChapterFirstWin, battleConfig.ID);
 			}

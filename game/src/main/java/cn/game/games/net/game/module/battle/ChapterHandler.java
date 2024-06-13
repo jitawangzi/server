@@ -589,7 +589,7 @@ public class ChapterHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 				return;
 			}
-			int minute = chapter.getBattleTime() / 60;
+			int minute = chapter.getBattleTime();
 //			BattleConfig battleConfig = BattleManager.instance().get(id);
 			HCBattleConfig battleConfig = HCBattleManager.instance().get(id);
 			if (index == 0 && minute < battleConfig.BattleBoxTrigger[0]) {
