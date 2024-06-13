@@ -97,20 +97,21 @@ public class WatchServiceManager implements Runnable {
 						if (kind == StandardWatchEventKinds.ENTRY_CREATE || kind == StandardWatchEventKinds.ENTRY_MODIFY) {
 							// get the filename for the event
 							final WatchEvent<Path> watchEventPath = (WatchEvent<Path>) watchEvent;
-							final Path filename = watchEventPath.context();
-							if (filename.startsWith(".")) { // 隐藏文件
+							final Path path = watchEventPath.context();
+							String fileName = path.getFileName().toString();
+							if (fileName.startsWith(".")) { // 隐藏文件
 								continue;
 							}
-							if (!filename.endsWith(".xml")) { // 只监听xml文件
+							if (!fileName.endsWith(".xml")) { // 只监听xml文件
 								continue;
 							}
-							log.info(kind + " -> " + filename);
-							int index = filename.toString().lastIndexOf(".");
-							ResourceListener resourceListener = this.resources.get(filename.toString().substring(0, index));
+							log.info(kind + " -> " + fileName);
+							int index = fileName.lastIndexOf(".");
+							ResourceListener resourceListener = this.resources.get(fileName.substring(0, index));
 							if (resourceListener != null) {
 								resourceListener.load();
 							} else {
-								log.warn("配置文件[{}]没有对应的解析器", filename);
+								log.warn("配置文件[{}]没有对应的解析器", fileName);
 							}
 
 						}
