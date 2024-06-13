@@ -21,6 +21,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.Quest;
@@ -284,37 +285,15 @@ public class TestHandler extends BaseHandler {
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
-		
-		int calcPatrolGold = player.getChapterModule().calcPatrolGold(1);
-		System.out.println(calcPatrolGold);
-
-		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(300001);
-		int r4 = 0, r5 = 0, r6 = 0;
-		int lp = 50;
-		int count = 100;
-
-		for (int j = 0; j < lp; j++) {
-
-			for (int i = 0; i < count; i++) {
-
-				List<RewardInfo> reward = PlayerHelper.addReward(player, 300001, OpType.None);
-				HeroConfig heroConfig = HeroManager.instance().get(reward.get(0).getRole().getConfigId());
-				if (heroConfig.InitialQuality == 4) {
-					r4++;
-				} else if (heroConfig.InitialQuality == 5) {
-
-					r5++;
-				} else if (heroConfig.InitialQuality == 6) {
-
-					r6++;
-				}
-//				if (i % 10 == 0) {
-//					System.out.println(MessageFormat.format("第{0}次十连抽结果,紫:{1} 金:{2} 红:{3}", i / 10, r4, r5, r6));
-//				}
-			}
+		Collection<Hero> list = player.getHeroModule().list();
+		long uid = 0;
+		for (Hero hero : list) {
+			uid = hero.getId();
+			break;
 		}
+		player.getHeroModule().del(uid, OpType.None);
 
-		System.err.println(MessageFormat.format("循环{0}次，每次{1}连抽结果,紫:{2} 金:{3} 红:{4}", lp, count, r4, r5, r6));
+//		drawTest(player);
 
 
 //		CommonLogger.error("what the fuck by common logger");
@@ -405,12 +384,35 @@ public class TestHandler extends BaseHandler {
 //			});
 	}
 
-	private void unlockOccupationTalentNode(NetClient client, Object message) {
+	private void drawTest(Player player) {
+		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(300001);
 
-		/*		Collection<OccupationTalentNodeConfig> list = OccupationTalentNodeManager.getInstance().list();
-				for (OccupationTalentNodeConfig config : list) {
-					roleOp.occupationTalentUnlock(config.getId());
-				}*/
+		int r4 = 0, r5 = 0, r6 = 0;
+		int lp = 50;
+		int count = 100;
+
+		for (int j = 0; j < lp; j++) {
+
+			for (int i = 0; i < count; i++) {
+
+				List<RewardInfo> reward = PlayerHelper.addReward(player, 300001, OpType.None);
+				HeroConfig heroConfig = HeroManager.instance().get(reward.get(0).getRole().getConfigId());
+				if (heroConfig.InitialQuality == 4) {
+					r4++;
+				} else if (heroConfig.InitialQuality == 5) {
+
+					r5++;
+				} else if (heroConfig.InitialQuality == 6) {
+
+					r6++;
+				}
+//				if (i % 10 == 0) {
+//					System.out.println(MessageFormat.format("第{0}次十连抽结果,紫:{1} 金:{2} 红:{3}", i / 10, r4, r5, r6));
+//				}
+			}
+		}
+
+		System.err.println(MessageFormat.format("循环{0}次，每次{1}连抽结果,紫:{2} 金:{3} 红:{4}", lp, count, r4, r5, r6));
 	}
 
 	/*

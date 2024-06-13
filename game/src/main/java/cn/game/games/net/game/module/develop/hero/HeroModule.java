@@ -45,6 +45,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	/** 领取过图鉴奖励的英雄id,领取到什么品质了 */
 	private Map<Integer, Integer> illustrationsHeroQualitys = new HashMap<Integer, Integer>();
 
+	/** 曾经拥有过的英雄id */
 	private List<Integer> ownedHeroIds = new ArrayList<>();
 
 	@Override
