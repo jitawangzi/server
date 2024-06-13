@@ -45,6 +45,27 @@ public class WechatShipPush implements Handler<RoutingContext> {
 		HttpServerResponse response = context.response().putHeader("content-type", "text/json");
 		JSONObject responseObject = new JSONObject();
 
+		String signature = request.getParam("signature");
+		String timestamp = request.getParam("timestamp");
+		String nonce = request.getParam("nonce");
+		String echostr = request.getParam("echostr");
+		boolean checkRequest = WechatHelper.checkRequest(signature, timestamp, nonce);
+		if (!StringUtils.isEmpty(echostr)) {
+			if (checkRequest) {
+				response.end(echostr);
+			} else {
+				response.end("error");
+				log.error("微信测试失败");
+			}
+			return;
+		}
+
+		if (!checkRequest) {
+			responseObject.put("ErrCode", 99998);
+			responseObject.put("ErrMsg", "not from wechat");
+			response.end(Buffer.buffer(responseObject.toJSONString()));
+			return;
+		}
 		String bodyAsString = context.getBodyAsString();
 		WechatPushBean wechatPushBean = WechatHelper.parseWechatPushBean(bodyAsString);
 

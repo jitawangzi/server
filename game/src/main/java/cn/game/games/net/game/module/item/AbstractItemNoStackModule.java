@@ -13,6 +13,7 @@ import com.google.common.collect.Multimap;
 
 import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.core.GoodsModule;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.manual.OpType;
 
@@ -95,6 +96,7 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 			return false;
 		removeCache(item);
 		item.delete();
+		player.handleEvent(EventTypeEnum.CostUidItem, uid, item.getConfigId());
 		return true;
 	}
 

@@ -86,6 +86,7 @@ message PaymentOrderCreateRequest_7d000020{
 	uint64 playerId = 1; // 玩家id
 	string sessionId = 2; //
 	uint32 goodsPrice = 4; // 单价（分）
+	string itemId = 5; // 道具id
 }
 message PaymentOrderCreateResponse_7d000021{
 	// 订单参数

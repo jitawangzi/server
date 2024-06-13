@@ -67,17 +67,16 @@ public enum EventTypeEnum {
 	Patrol(20, "巡逻、挂机"),
 
 	// 任务相关
-	/** 完成探索关卡可能和完成关卡合并 */
-//	ExploreLevel(16, "完成探索关卡"),
-	/** 完成意识空间 */
-//	AwarenessSpace(17, "完成意识空间"),
 	CardUpGrade(18, "升级卡牌行为，不是真正升级"),
 	// 参数，id，value
 	GetItem(19, "获取资源"),
 	/** 消耗资源： 参数 id，数量 */
 	CostItem(20, "消耗资源"),
+	/** 消耗带有uid的物品： 参数 uid，configId */
+	CostUidItem(21, "消耗带有uid的物品"),
 
-	QuestFinish(21, "完成任务"), WeeklyScore(22, "获取周积分"),
+	QuestFinish(23, "完成任务"),
+
 	// 参数 : 商店id，商品id，数量
 	BuyItems(28, "商店购买商品"),
 
@@ -135,8 +134,6 @@ public enum EventTypeEnum {
 	ItemUse(68, "使用道具"),
 	/** 收集图鉴 */
 	CollectAtlas(70, "收集图鉴"),
-	/** 固定装备升级 */
-	FixedEquipmentLevel(71, "固定装备升级"),
 	/** buff改变 */
 	BuffChange(75, "buff改变"),
 

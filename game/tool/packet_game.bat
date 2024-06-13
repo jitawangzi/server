@@ -1,8 +1,9 @@
 :: 只简单打包game
 
-cd /D %workspace%\game
+set project=game
 
+set "file=%workspace%\%project%\pom.xml"
 :: 指定assembly插件的描述文件xml 和服务器名
-mvn package %game.assembly.descriptor% %game.server%
+mvn -f %file% package %game.assembly.descriptor% %game.server%
 
 ::pause

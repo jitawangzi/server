@@ -1,5 +1,11 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -57,16 +63,54 @@ public class WechatHelper {
         }
     }
 
+	public static boolean checkRequest(String signature, String timestamp, String nonce) {
+		List<String> list = new ArrayList<>();
+		list.add(timestamp);
+		list.add(nonce);
+		list.add(Config.wechat_push_token);
+		Collections.sort(list);
+		StringBuilder builder = new StringBuilder();
+		for (String string : list) {
+			builder.append(string);
+		}
+		String combinedString = builder.toString();
+		String signature2 = null;
+		// 对拼接后的字符串进行 SHA-1 加密
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			byte[] digest = md.digest(combinedString.getBytes());
+			signature2 = bytesToHex(digest);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return signature.equals(signature2);
+	}
+
+	// 将字节数组转换为十六进制字符串
+	private static String bytesToHex(byte[] bytes) {
+		StringBuilder sb = new StringBuilder();
+		for (byte b : bytes) {
+			sb.append(String.format("%02x", b));
+		}
+		return sb.toString();
+	}
+
     public static void main(String[] args) {
         String uri = "/wxa/game/getbalance";
         String appkey = "12345";
         String postBody = "{\"offer_id\": \"12345678\", \"openid\": \"oUrsfxxxxxxxxxx\", \"ts\": 1668136271, \"zone_id\": \"1\", \"env\": 0}";
         String sessionKey = "9hAb/NEYUlkaMBEsmFgzig==";
 
-        String paySig = calcPaySig(uri, postBody, appkey);
-        System.out.println("pay_sig: " + paySig);
+		String rawData = "{ \"kv_list\":[{\"key\":\"score\",\"value\":\"100\"},{\"key\":\"gold\",\"value\":\"3000\"}] }";
 
-        String signature = calcSignature(postBody, sessionKey);
-        System.out.println("signature: " + signature);
+		String signData = "{\"mode\":\"goods\",\"offerId\":\"123\",\"buyQuantity\":1,\"env\":0,\"currencyType\":\"CNY\",\"platform\":\"android\",\"zoneId\":\"1\",\"productId\":\"testproductId\",\"goodsPrice\":10,\"outTradeNo\":\"xxxxxx\",\"attach\":\"testdata\"}";
+
+//        String paySig = calcPaySig(uri, postBody, appkey);
+//        System.out.println("pay_sig: " + paySig);
+
+//        String signature = calcSignature(postBody, sessionKey);
+//        System.out.println("signature: " + signature);
+//		System.out.println(calcPaymentGameItemPaySig(signData));
+		System.out.println(calcSignature(rawData, sessionKey));
     }
 }

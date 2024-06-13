@@ -28,7 +28,8 @@ import cn.game.util.ObjUtil;
 import cn.game.util.Rnd;
 
 public class HeroModule extends AbstractItemNoStackModule<Hero> {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.CostUidItem,
+			EventTypeEnum.Hero };
 
 	/** 当前使用的英雄id */
 	private long heroUid;
@@ -41,8 +42,10 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	/** 当前选择使用的英雄uid */
 	private long freeDayHeroUid;
 
-	/** 领取过图鉴奖励的英雄id */
-	private List<Integer> illustrationsIds = new ArrayList<>();
+	/** 领取过图鉴奖励的英雄id,领取到什么品质了 */
+	private Map<Integer, Integer> illustrationsHeroQualitys = new HashMap<Integer, Integer>();
+
+	private List<Integer> ownedHeroIds = new ArrayList<>();
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -72,6 +75,23 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 				freeDayHeros.clear();
 				refreshFreeDayHero();
 				freeDayHeroUid = 0;
+			}
+			break;
+		}
+		case CostUidItem: {
+			int configId = event.getIntParameter(1);
+			Collection<Hero> heros = getByConfigId(configId); 
+			if (heros.isEmpty()) {
+				if (!ownedHeroIds.contains(configId)) {
+					ownedHeroIds.add(configId);
+				}
+			}
+			break;
+		}
+		case Hero: {
+			int configId = event.getIntParameter(0);
+			if (ownedHeroIds.contains(configId)) {
+				ownedHeroIds.remove(Integer.valueOf(configId));
 			}
 			break;
 		}
@@ -194,8 +214,12 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		this.freeDayHeroUid = freeDayHeroUid;
 	}
 
-	public List<Integer> getIllustrationsIds() {
-		return illustrationsIds;
+	public Map<Integer, Integer> getIllustrationsHeroQualitys() {
+		return illustrationsHeroQualitys;
+	}
+
+	public List<Integer> getOwnedHeroIds() {
+		return ownedHeroIds;
 	}
 
 }

@@ -1,16 +1,13 @@
-
-cd /D %workspace%\gm
-
 call %workspace%\game\tool\packet_gm.bat
 
 @echo upload 
-pscp -pw Fe32#@ ./target/gm.war root@192.168.1.67:/server/game/gmserver
+pscp -pw root %workspace%\..\gm\target\gm.war root@test:/server/game/gm
 
 @echo restart
-plink -pw Fe32#@ root@192.168.1.67 cd /server/game/gmserver; /server/game/gmserver/run.sh stop
+plink -pw root root@test cd /server/game/gm; /server/game/gm/run.sh stop
 ping -n 3 127.1>nul
 
-plink -pw Fe32#@ root@192.168.1.67 cd /server/game/gmserver; /server/game/gmserver/run.sh start
+plink -pw root root@test cd /server/game/gm; /server/game/gm/run.sh start
 
 
 pause
