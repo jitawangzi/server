@@ -361,8 +361,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		if (chapterModule.getDaySweepCount() >= GlobalConst.SweepNum) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
-			return;
+			player.handleEvent(EventTypeEnum.WatchAds);
 		}
 		boolean delResources = PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
 		if (!delResources) {
