@@ -1,5 +1,6 @@
 package cn.game.games.net.game.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -10,15 +11,21 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.ForbidAccount;
+import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.util.PbBuilder;
+import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 import cn.game.protocol.protobuf.GmMsg.GmForbidAccountListResponse_77000004;
 import cn.game.protocol.protobuf.GmMsg.GmForbidAccountRequest_77000005;
 import cn.game.protocol.protobuf.GmMsg.GmForbidAccountResponse_77000006;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogoutRequest_77000009;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogouttResponse_7700000a;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerMailRequest_77000010;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerMailResponse_77000011;
 import cn.game.protocol.protobuf.GmMsg.GmUnblockAccountRequest_77000007;
 import cn.game.protocol.protobuf.GmMsg.GmUnblockAccountResponse_77000008;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -42,9 +49,25 @@ public class GmHandler extends BaseHandler {
 		putInvoker(PbProtocol.GmForbidAccountRequest_77000005, this::forbidAccount);
 		putInvoker(PbProtocol.GmUnblockAccountRequest_77000007, this::unblockAccount);
 		putInvoker(PbProtocol.GmPlayerLogoutRequest_77000009, this::playerLogout);
+		putInvoker(PbProtocol.GmPlayerMailRequest_77000010, this::mail);
+
 	}
 
-
+	protected void mail(NetClient client, Object message) {
+		GmPlayerMailRequest_77000010 request = (GmPlayerMailRequest_77000010) message;
+		long playerId = request.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		int id = request.getId();
+		String title = request.getTitle();
+		String content = request.getContent();
+		List<GoodsInfo> attachmentsList = request.getAttachmentsList();
+		List<Goods> list = new ArrayList<>();
+		for (GoodsInfo goods : attachmentsList) {
+			list.add(new Goods(goods.getId(), goods.getCount()));
+		}
+		MailHelper.sendMail(playerId, id, "", title, content, MailHelper.GM, list);
+		client.sendProtocol(GmPlayerMailResponse_77000011.getDefaultInstance());
+	}
 	private void shutdown(NetClient client, Object message) {
 		CompletableFuture.runAsync(()->
 		{

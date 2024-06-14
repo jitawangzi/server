@@ -56,6 +56,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024;
 import cn.game.protocol.protobuf.BattleMsg.BattleSweepResponse_13000025;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleRewardRequest_13000027;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleRewardResponse_13000028;
+import cn.game.protocol.protobuf.BattleMsg.HCBattleSweepRequest_13000040;
+import cn.game.protocol.protobuf.BattleMsg.HCBattleSweepResponse_13000041;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -81,6 +83,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattlePatrolRewardRequest_13000044, this::patrolReward);
 		putInvoker(PbProtocol.BattleStaminaRequest_13000050, this::stamina);
 		putInvoker(PbProtocol.BattleSweepRequest_13000024, this::sweep);
+		putInvoker(PbProtocol.HCBattleSweepRequest_13000040, this::hcsweep);
 		putInvoker(PbProtocol.BattleDayChallengeReceiveActivePointRequest_13000070, this::dayChallengePointReward);
 		putInvoker(PbProtocol.BattleDaoHeartRequest_13000055, this::daoHeart);
 		putInvoker(PbProtocol.BattleDaoHeartSweepRequest_13000060, this::daoHeartSweep);
@@ -317,6 +320,37 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		BattleConfig battleConfig = BattleManager.instance().get(id);
+		if (battleConfig == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		if (!chapterModule.isBattlePass(id)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		if (chapterModule.getDaySweepCount() >= GlobalConst.SweepNum) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		boolean delResources = PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
+		if (!delResources) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		chapterModule.setDaySweepCount(chapterModule.getDaySweepCount() + 1);
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleSweep);
+		resp.addAllReward(reward);
+		client.sendProtocol(resp);
+	}
+
+	protected void hcsweep(NetClient client, Object message) {
+		HCBattleSweepRequest_13000040 req = (HCBattleSweepRequest_13000040) message;
+		HCBattleSweepResponse_13000041.Builder resp = HCBattleSweepResponse_13000041.newBuilder();
+		int id = req.getId();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		HCBattleConfig battleConfig = HCBattleManager.instance().get(id);
 		if (battleConfig == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
 			return;

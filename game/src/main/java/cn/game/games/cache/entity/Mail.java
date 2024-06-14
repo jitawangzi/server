@@ -314,11 +314,11 @@ public class Mail implements Serializable, DbEntity {
 		this.attachment = JSON.toJSONString(this.attachmentList);
 	}
 
-	public static Mail valueOf(long receiverId, String sender, String title, String content, byte type,
+	public static Mail valueOf(long receiverId, int mailId, String sender, String title, String content, byte type,
 			List<Goods> attachmentList) {
 
 		Mail mail = new Mail();
-		mail.setMailId(0);
+		mail.setMailId(mailId);
 		mail.setAttachmentList(attachmentList);
 		mail.setContent(content == null ? "" : content);
 		mail.setCreateTime((int) (System.currentTimeMillis() / 1000));
@@ -337,10 +337,14 @@ public class Mail implements Serializable, DbEntity {
 	}
 
 	public static Mail valueOfMailId(long receiverId, int mailId) {
+		return valueOfMailId(receiverId, mailId, "", "", null);
+	}
+
+	public static Mail valueOfMailId(long receiverId, int mailId, String content, String title, List<Goods> goods) {
 
 		MailConfig mailConfig = MailManager.instance().get(mailId);
 
-		List<Goods> goods = new ArrayList<>();
+//		List<Goods> goods = new ArrayList<>();
 //		for (int[] re : mailConfig.Reward) {
 //			Goods g = new Goods();
 //			g.setId(re[0]);
@@ -350,9 +354,9 @@ public class Mail implements Serializable, DbEntity {
 		Mail mail = new Mail();
 		mail.setPlayerId(receiverId);
 		mail.setMailId(mailId);
-		mail.setAttachmentList(goods);
+		mail.setAttachmentList(goods == null ? new ArrayList<Goods>() : goods);
 //		mail.setContent(content == null ? "" : content);
-		mail.setContent("");
+		mail.setContent(content == null ? "" : content);
 		mail.setCreateTime((int) (System.currentTimeMillis() / 1000));
 		mail.setId(IdUtil.getId());
 		mail.setReceive(false);
@@ -364,7 +368,7 @@ public class Mail implements Serializable, DbEntity {
 //		mail.setType(type);
 
 		mail.setSender("");
-		mail.setTitle("");
+		mail.setTitle(title == null ? "" : title);
 		mail.setType((byte) mailConfig.Type);
 		mail.setIsDeleted(false);
 

@@ -2,6 +2,7 @@ syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
+import "BaseMsg.proto" ;
 // Gm协议
 
 // 关闭服务器
@@ -62,5 +63,18 @@ message GmPlayerLogoutRequest_77000009{
 }
 // 响应踢下线
 message GmPlayerLogouttResponse_7700000a{
+	uint32 errorCode = 1;
+}
+
+// gm给指定玩家发邮件
+message GmPlayerMailRequest_77000010{
+	int64 playerId = 1;
+	uint32 id = 3 ;			//Mail表id
+	string title = 5;  			//标题，如果有值用这个值，如果没有从Mail表里面取内容
+	string content = 8;  		//内容，如果有值用这个值，如果没有从Mail表里面取内容
+	repeated GoodsInfo attachments = 13;	//附件奖励
+
+}
+message GmPlayerMailResponse_77000011{
 	uint32 errorCode = 1;
 }

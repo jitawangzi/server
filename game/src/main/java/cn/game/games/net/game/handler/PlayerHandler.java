@@ -71,6 +71,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderResponse_01000018;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerGuideResponse_01000061;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameResponse_01000016;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013;
@@ -136,9 +138,19 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerGenderRequest_01000017, this::gender);
 		putInvoker(PbProtocol.ItemUseRequest_01000050, this::useItem);
 		putInvoker(PbProtocol.PlayerCloudBoxRequest_01000042, this::cloudBox);
+		putInvoker(PbProtocol.PlayerGuideRequest_01000060, this::guide);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
 	}
 
+	private void guide(NetClient client, Object message) {
+		PlayerGuideRequest_01000060 request = (PlayerGuideRequest_01000060) message;
+		PlayerGuideResponse_01000061.Builder resp = PlayerGuideResponse_01000061.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		PlayerModule playerModule = player.getPlayerModule();
+		Map<Integer, Integer> guideMap = playerModule.getGuideMap();
+		guideMap.put(request.getType(), request.getStep());
+		client.sendProtocol(resp);
+	}
 	private void cloudBox(NetClient client, Object message) {
 		PlayerCloudBoxRequest_01000042 request = (PlayerCloudBoxRequest_01000042) message;
 		PlayerCloudBoxResponse_01000043.Builder resp = PlayerCloudBoxResponse_01000043.newBuilder();

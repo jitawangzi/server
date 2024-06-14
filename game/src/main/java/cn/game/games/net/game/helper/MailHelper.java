@@ -12,6 +12,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.mail.MailModule;
+import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.manager.MailManager;
 
@@ -24,20 +25,23 @@ public class MailHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(MailHelper.class);
 
-	/** 邮件类型，系统自动发的邮件，多语言的，不直接发文本内容，发文本id */
-	public static final byte SYSTEM = 1;
-	/** 邮件类型， 手动发的，一般为英文版，直接发内容 */
-	public static final byte GM = 2;
+	/** 邮件类型， 公告邮件*/
+	public static final byte NOTICE = 1;
+	/** 邮件类型，系统自动发的邮件 */
+	public static final byte SYSTEM = 2;
+	/** 邮件类型，gm手动发的邮件 */
+	public static final byte GM = 5;
 
-	public static void sendMail(long receiverId, String sender, String title, String content, byte type, List<Goods> attachmentList) {
+	public static void sendMail(long receiverId, int mailId, String sender, String title, String content, byte type, List<Goods> attachmentList) {
 
-		Mail mail = Mail.valueOf(receiverId, sender, title, content, type, attachmentList);
+		Mail mail = Mail.valueOf(receiverId, mailId, sender, title, content, type, attachmentList);
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
 			Player player = PlayerManager.getInstance().getPlayer(receiverId); 
 			MailModule mailModule = player.getMailModule() ;
 			mailModule.sendOnline(mail);
 		} else {
-			mail.insert() ; 
+//			mail.insert() ; 
+			DAO.insert(mail);
 		}
 	}
 
@@ -50,7 +54,7 @@ public class MailHelper {
 			goods.setCount(entry.getValue());
 			attachmentList.add(goods);
 		}
-		sendMail(receiverId, sender, title, content, type, attachmentList);
+		sendMail(receiverId, 0, sender, title, content, type, attachmentList);
 	}
 	/**
 	 * @Description 发送多语言版的邮件

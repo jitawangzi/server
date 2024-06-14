@@ -65,6 +65,8 @@ public class PlayerModule extends BasePlayerModule {
 	private int lastCloudBoxRewardTime;
 	private boolean isFirstLoign = false;
 
+	private Map<Integer, Integer> guideMap = new HashMap<Integer, Integer>();
+
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
 		return new Class[] { PlayerIdsMapper.class };
@@ -179,6 +181,10 @@ public class PlayerModule extends BasePlayerModule {
 		return this.payRmbs.get(uid);
 	}
 	
+	public Map<Integer, Integer> getGuideMap() {
+		return guideMap;
+	}
+
 	public void execPayCallback(long uid) {
 		Promise<Boolean> callback = this.payCallback.remove(uid); 
 		callback.complete(true);; 
@@ -220,6 +226,8 @@ public class PlayerModule extends BasePlayerModule {
 		}
 		builder.setFirstLogin(isFirstLoign);
 		isFirstLoign = false;
+		builder.putAllGuide(guideMap);
+
 	}
 	@Override
 	public void handleEvent(GameEvent event) {

@@ -84,6 +84,17 @@ message BattleSweepResponse_13000025{
 }
 
 
+// 合成关卡扫荡
+message HCBattleSweepRequest_13000040{
+   uint32 id = 1; 			// HCBattle表的id
+}
+message HCBattleSweepResponse_13000041{
+   repeated RewardInfo reward = 1;
+}
+
+
+
+
 /*** 领取巡逻奖励 ***/
 message BattlePatrolRewardRequest_13000044{
 	bool isFast = 1; // true ：快速巡逻，直接领取固定时长收益。 false： 根据时长领取收益
