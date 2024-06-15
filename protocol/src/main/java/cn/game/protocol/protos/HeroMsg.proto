@@ -55,6 +55,16 @@ message HeroBattleResponse_16000006{
 }
 
 
+//英雄下阵
+message HeroBattleDismissRequest_16000009{
+  string uid = 1; // 英雄唯一id
+}
+
+message HeroBattleDismissResponse_1600000a{
+
+}
+
+
 //英雄等级重置,返还升级材料
 message HeroLevelResetRequest_16000007{
   string uid = 1; // 英雄唯一id

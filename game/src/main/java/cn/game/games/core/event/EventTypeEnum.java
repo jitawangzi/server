@@ -57,10 +57,11 @@ public enum EventTypeEnum {
 	EquipUp(12, "装备强化"),
 	/** 英雄上阵 参数，hero */
 	HeroBattle(14, "英雄上阵"),
+	HeroBattleDismiss(15, "英雄下阵"),
 	/** 获得英雄 */
-	Hero(15, "获得英雄"),
+	Hero(16, "获得英雄"),
 	/** 一场战斗结束，参数战役id，关卡id，输赢，杀怪数量 ,boss数量*/
-	BattleEnd(16, "一场战斗结束"),
+	BattleEnd(17, "一场战斗结束"),
 
 	// 任务相关
 	CardUpGrade(18, "升级卡牌行为，不是真正升级"),
