@@ -35,7 +35,6 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.util.AddressUtil;
@@ -43,16 +42,12 @@ import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.EventOptionConfig;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.OldBuffConfig;
 import cn.game.protocol.generated.config.RandomNameConfig;
 import cn.game.protocol.generated.enume.EffectEnum;
 import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.HeadBoxManager;
 import cn.game.protocol.generated.manager.HeadPortraitManager;
-import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.OldBuffManager;
 import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -60,8 +55,6 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BuffMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
-import cn.game.protocol.protobuf.PlayerMsg.ItemUseRequest_01000050;
-import cn.game.protocol.protobuf.PlayerMsg.ItemUseResponse_01000051;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherResponse_0100000a;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
@@ -136,7 +129,7 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerReconnecRequest_01000065, this::reconnect);
 		putInvoker(PbProtocol.PlayerNameRequest_01000011, this::rename);
 		putInvoker(PbProtocol.PlayerGenderRequest_01000017, this::gender);
-		putInvoker(PbProtocol.ItemUseRequest_01000050, this::useItem);
+//		putInvoker(PbProtocol.ItemUseRequest_01000050, this::useItem);
 		putInvoker(PbProtocol.PlayerCloudBoxRequest_01000042, this::cloudBox);
 		putInvoker(PbProtocol.PlayerGuideRequest_01000060, this::guide);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
@@ -167,43 +160,42 @@ public class PlayerHandler extends BaseHandler {
 		playerModule.setCloudBox(null);
 	}
 
-	private void useItem(NetClient client, Object message) {
-		ItemUseRequest_01000050 request = (ItemUseRequest_01000050) message;
-		ItemUseResponse_01000051.Builder resp = ItemUseResponse_01000051.newBuilder();
-		int id = request.getId();
-		int param = request.getParam();
-
-		ItemConfig item = ItemManager.instance().get(id);
-		if (item == null) {
-			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
-			return;
-		}
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		ItemModule itemModule = player.getItemModule();
-		if (!itemModule.isEnough(id)) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		List<RewardInfo> ret = new ArrayList<>();
-		if (item.ItemType == 4) {
-			HeroConfig heroConfig = HeroManager.instance().get(param);
-			if (heroConfig.InitialQuality != item.Para) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-				return;
-			}
-//			List<RewardInfo> reward = player.getHeroModule().addReward(param, 1, OpType.None);
-//			ret.addAll(reward);
-		} else {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-
-		itemModule.del(id, 1);
-
-
-		resp.addAllReward(ret);
-		client.sendProtocol(resp);
-	}
+//	private void useItem(NetClient client, Object message) {
+//		ItemUseRequest_01000050 request = (ItemUseRequest_01000050) message;
+//		ItemUseResponse_01000051.Builder resp = ItemUseResponse_01000051.newBuilder();
+//		int id = request.getId();
+//		int param = request.getParam();
+//
+//		ItemConfig item = ItemManager.instance().get(id);
+//		if (item == null) {
+//			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
+//			return;
+//		}
+//		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+//		ItemModule itemModule = player.getItemModule();
+//		if (!itemModule.isEnough(id)) {
+//			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+//			return;
+//		}
+//		List<RewardInfo> ret = new ArrayList<>();
+//		if (item.ItemType == 4) {
+//			HeroConfig heroConfig = HeroManager.instance().get(param);
+//			if (heroConfig.InitialQuality != item.Para) {
+//				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+//				return;
+//			}
+////			List<RewardInfo> reward = player.getHeroModule().addReward(param, 1, OpType.None);
+////			ret.addAll(reward);
+//		} else {
+//			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+//			return;
+//		}
+//
+//		itemModule.del(id, 1);
+//
+//		resp.addAllReward(ret);
+//		client.sendProtocol(resp);
+//	}
 
 //	private void delete(NetClient client, Object message) {
 //		PlayerDeleteRequest_01000070 req = (PlayerDeleteRequest_01000070) message;

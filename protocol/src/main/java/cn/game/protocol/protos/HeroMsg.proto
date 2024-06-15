@@ -4,8 +4,7 @@ option java_package = "cn.game.protocol.protobuf";
 package Protos;
 import "BaseMsg.proto" ;
 import "RewardMsg.proto" ;
-// 英雄相关协议
-
+//@File 英雄相关协议
 //英雄升级
 message HeroUpLevelRequest_16000001{
   string uid = 1; // 英雄唯一id

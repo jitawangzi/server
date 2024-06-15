@@ -40,6 +40,7 @@ public final class HeroMsg {
   }
   /**
    * <pre>
+   *&#64;File 英雄相关协议
    *英雄升级
    * </pre>
    *
@@ -328,6 +329,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
+     *&#64;File 英雄相关协议
      *英雄升级
      * </pre>
      *

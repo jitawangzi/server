@@ -95,7 +95,7 @@ public final class Config {
 
 	public static String redisPwd;
 
-	public static boolean isTest;
+//	public static boolean isTest;
 
 	public static int[] modulesDisabled;
 	
@@ -153,7 +153,7 @@ public final class Config {
 			redisPwd = initialProp.getProperty("redisPwd", "");
 
 			remoteCallTimeOut = Integer.parseInt(initialProp.getProperty("remoteCallTimeOut", "5"));
-			isTest = initialProp.getBooleanProperty("isTest", false);
+//			isTest = initialProp.getBooleanProperty("isTest", false);
 			String[] modules = initialProp.getArrayProperty("modulesDisabled", ",", new String[] {});
 			
 			wechat_push_token = initialProp.getProperty("wechat_push_token", "");

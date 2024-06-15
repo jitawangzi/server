@@ -91,6 +91,7 @@ message QuestListAllResponse_20000052
 }
 
 
+//@NotUseStart
 //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻这些暂时不会用到︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 
 // 查看某类型挑战组任务----暂时用不到
@@ -188,3 +189,4 @@ message QuestChooseRewardResponse_20000034
 }
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼这些暂时不会用到︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+//@NotUseEnd

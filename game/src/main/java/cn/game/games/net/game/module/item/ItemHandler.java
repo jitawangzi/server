@@ -57,6 +57,7 @@ public class ItemHandler extends BaseHandler {
 		ItemUse itemUse = ItemUse.valueOf(item.ItemType);
 		List<RewardInfo> rewards = itemUse.use(player, id, count, param);
 		resp.addAllReward(rewards);
+		itemModule.del(id, count);
 		client.sendProtocol(resp);
 	}
 }

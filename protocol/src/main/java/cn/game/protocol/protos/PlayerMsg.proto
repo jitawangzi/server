@@ -93,64 +93,10 @@ message PlayerHeartbeatResponse_01000006{
 	string time = 1;			// 服务器当前时间
 }
 
-/*** 获取一组玩家简略信息 本服 ***/
-message PlayerBriefInfoRequest_01000007{
-	repeated string playerIds = 1;
-}
-
-message PlayerBriefInfoResponse_01000008{
-	repeated SimplePlayerInfo players = 1;
-}
-
-/*** 获取一组玩家简略信息 查询本服和跨服 ***/
-message PlayerBriefInfoOtherRequest_01000009{
-	repeated string playerIds = 1;
-	repeated string serverIds = 2; // 服id
-}
-
-message PlayerBriefInfoOtherResponse_0100000a{
-	repeated SimplePlayerInfo players = 1;
-}
-
-
-/*** 获取一个玩家的名片 ***/
-message PlayerShowRequest_01000039{
-	string playerId = 1;
-	string serverId = 2; // 服id
-}
-
-message PlayerShowResponse_0100003a{
-	PlayerShowInfo player = 1;
-}
-
-/*** 炼金请求 ***/
-message PlayerAlchemyRequest_01000040{
-  uint32 configId  = 1; //Alchemy配置表id
-}
-
-message PlayerAlchemyResponse_01000041{
-}
-
-/*** 通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新 ****/
-message PlayerResetPush_01100016{
-	int32 type = 1 ; 	// 1 表示12点的刷新，  2表示5点的刷新
-}
-
 
 /*** 对于客户端的请求，如果服务器处理过程中出现未知异常，导致没有返回对应的响应包时，返回此错误消息 ****/
 message PlayerErrorPush_01000099{
   string error = 1;    //服务端的异常堆栈 
-}
-
-//使用道具
-message ItemUseRequest_01000050{
-     uint32 id = 1;				//道具ID
-     uint32 param = 2;			//使用道具的相关参数，比如道具类型是4时，表示任选英雄，此时设置值为Hero表id
-}
-
-// 使用道具后给的资源，道具等。
-message ItemUseResponse_01000051{
-	 repeated RewardInfo reward  = 1; // 获取的东西
 }
 
 // 炼金数据
@@ -187,16 +133,6 @@ message ExpLevelInfo{
 message PlayerExpLevelPush_01100050{
    ExpLevelInfo expLevel = 1;   //
 }
-
-/*** 保存新手引导步骤 ***/
-message PlayerGuideRequest_01000060{
-	uint32 type = 1;  	//类型
-    uint32 step = 2;	//该类型下进行到哪一步了
-}
-
-message PlayerGuideResponse_01000061{
-}
-
 
 
 //用户基本信息
@@ -262,3 +198,61 @@ message PlayerAllInfo{
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼合并游戏独有的数据︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
 }
 
+
+
+//@NotUseStart
+
+/*** 保存新手引导步骤 ***/
+message PlayerGuideRequest_01000060{
+	uint32 type = 1;  	//类型
+    uint32 step = 2;	//该类型下进行到哪一步了
+}
+
+message PlayerGuideResponse_01000061{
+}
+
+
+
+/*** 获取一组玩家简略信息 本服 ***/
+message PlayerBriefInfoRequest_01000007{
+	repeated string playerIds = 1;
+}
+
+message PlayerBriefInfoResponse_01000008{
+	repeated SimplePlayerInfo players = 1;
+}
+
+/*** 获取一组玩家简略信息 查询本服和跨服 ***/
+message PlayerBriefInfoOtherRequest_01000009{
+	repeated string playerIds = 1;
+	repeated string serverIds = 2; // 服id
+}
+
+message PlayerBriefInfoOtherResponse_0100000a{
+	repeated SimplePlayerInfo players = 1;
+}
+
+
+/*** 获取一个玩家的名片 ***/
+message PlayerShowRequest_01000039{
+	string playerId = 1;
+	string serverId = 2; // 服id
+}
+
+message PlayerShowResponse_0100003a{
+	PlayerShowInfo player = 1;
+}
+
+/*** 炼金请求 ***/
+message PlayerAlchemyRequest_01000040{
+  uint32 configId  = 1; //Alchemy配置表id
+}
+
+message PlayerAlchemyResponse_01000041{
+}
+
+/*** 通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新 ****/
+message PlayerResetPush_01100016{
+	int32 type = 1 ; 	// 1 表示12点的刷新，  2表示5点的刷新
+}
+//@NotUseEnd

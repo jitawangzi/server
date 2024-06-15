@@ -1,7 +1,3 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import cn.game.util.Rnd;
 
 public class GG {
@@ -9,17 +5,19 @@ public class GG {
 	public static long firstTime = System.currentTimeMillis();
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(Integer.MAX_VALUE);
-		List<Integer> list = new ArrayList<>();
-
-		for (int i = 1; i < 10; i++) {
-			list.add(i);
-		}
-
-		Collections.sort(list);
-		for (Integer integer : list) {
-			System.out.println(integer);
-		}
+//		System.out.println(Integer.MAX_VALUE);
+//		List<Integer> list = new ArrayList<>();
+//
+//		for (int i = 1; i < 10; i++) {
+//			list.add(i);
+//		}
+//
+//		Collections.sort(list);
+//		for (Integer integer : list) {
+//			System.out.println(integer);
+//		}
+		String string = "HCBattleRewardRequest_13000027";
+		System.out.println(string.startsWith("Hc"));
 	}
 
 	private static void test() {

@@ -3,6 +3,7 @@ package cn.game.protocol.tool;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -21,6 +23,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 import cn.game.protocol.tool.MessageObject.MessageField;
+import cn.game.util.ExcelUtil;
 
 /**
  * @Description proto文件修改后执行
@@ -34,6 +37,10 @@ public class PbProtocolGenerator {
 	private static Properties velocityProp;
 	private static String workspace;
 	private static String metafolder;
+	/** 一般是开发中的，或者是其他游戏的proto */
+	private static Set<String> notParseProtos = new HashSet<String>();
+	private static Set<String> notGenRequestMessages = new HashSet<String>();
+	private static String notParseRequestPrefix;
 
 	public static void readProtos(String protoPath, String inputTemplate, String outputFile, String chareset)
 			throws Exception {
@@ -69,6 +76,7 @@ public class PbProtocolGenerator {
 			int index = 0;
 
 			String str = null;
+			boolean notUesd = false;
 			while ((str = reader.readLine()) != null) {
 				String clientStr = str.trim();
 
@@ -78,10 +86,15 @@ public class PbProtocolGenerator {
 						&& !clientStr.startsWith("import")) {
 					clientProtoLines.add(clientStr);
 				}
+				if (str.trim().startsWith("//") && str.trim().toLowerCase().contains("@notuseend")) {
+					notUesd = false;
+				}
+
 				lines.add(str);
 				// System.out.println(str);
-				if (str.trim().startsWith("//")) {
-					continue;
+				if (str.trim().startsWith("//") && str.trim().toLowerCase().contains("@notusestart")) {
+					notUesd = true;
+//					continue;
 				} else if (str.indexOf("java_package") > -1) {
 					int begin = str.indexOf("\"");
 					int end = str.lastIndexOf("\"");
@@ -114,9 +127,15 @@ public class PbProtocolGenerator {
 					}
 
 					messages.add(message);
+					if (notParseProtos.contains(out) || notUesd) {
+						notGenRequestMessages.add(message.getShortName());
+					}
 				}
 				index++;
 
+			}
+			if (notUesd) {
+				throw new IllegalArgumentException(f.getName() + " 应该是设置了 @NotUseStart但是没有设置@NotUseEnd");
 			}
 			reader.close();
 		}
@@ -127,9 +146,15 @@ public class PbProtocolGenerator {
 
 		// 生成客户端测试类
 		for (MessageObject m : messages) {
-			generate(m, chareset);
+
+			generateRequestTest(m, chareset);
 		}
+
+
 		// 生成前端用的json文件
+
+		// 生成协议列表，压测使用。
+		genMessageDesc(messages);
 
 		// 注意把MessageObject 的值修改了
 		for (MessageObject messageObject : messages) {
@@ -140,6 +165,7 @@ public class PbProtocolGenerator {
 			Integer idInt = Integer.valueOf(id, 16);
 			messageObject.setId(idInt.toString());
 		}
+
 
 		String jsPath = metafolder + initialProp.getProperty("client.js.dir");
 		generateClient(messages, "protocol_js_id.vm", jsPath + File.separator + "ProtosMessageID.ts", chareset);
@@ -165,6 +191,27 @@ public class PbProtocolGenerator {
 		}
 		writer.close();
 
+	}
+
+	private static void genMessageDesc(List<MessageObject> messages) throws FileNotFoundException {
+		String filePath = System.getProperty("user.dir") + "/message" + ".xlsx";
+		List<List<Object>> messagesList = new ArrayList<>();
+		int i = 1;
+		for (MessageObject obj : messages) {
+			if (isNotRequestMessage(obj) || obj.getShortName().startsWith("Test")) {
+				continue;
+			}
+			List<Object> list = new ArrayList<>();
+			list.add(i++);
+			list.add("模块");
+			list.add(obj.getShortName());
+			list.add(obj.getId());
+			list.add(1);
+			list.add(obj.getComment());
+			messagesList.add(list);
+		}
+
+		ExcelUtil.writeDataAutoWidth(filePath, messagesList);
 	}
 
 	/** 
@@ -355,12 +402,12 @@ public class PbProtocolGenerator {
 		writer.close();
 	}
 
-	public static void generate(MessageObject message, String charset) throws Exception {
+	public static void generateRequestTest(MessageObject message, String charset) throws Exception {
 		String outPath = workspace + "/.." + initialProp.getProperty("client.test.dir");
 
 		String inputTemplate = "client_test.vm";
 
-		if (!message.isRequest()) {
+		if (isNotRequestMessage(message)) {
 			return;
 		}
 
@@ -431,6 +478,16 @@ public class PbProtocolGenerator {
 		boolean protoToJava = Boolean.parseBoolean(toJava) ; 
 
 		String charset = initialProp.getProperty("charset");
+
+		String notParse = initialProp.getProperty("not.parse.protos");
+		if (!StringUtils.isEmpty(notParse)) {
+			String[] split = notParse.split(",");
+			for (String string : split) {
+				notParseProtos.add(string);
+			}
+		}
+		notParseRequestPrefix = initialProp.getProperty("not.parse.request.prefix");
+
 //		List<MessageObject> messages = readMessageObject(protoPath, inputTemplate, output + "/PbProtocol.java", charset);
 //		
 //		String jsPath = initialProp.getProperty("client.js.dir");
@@ -446,7 +503,14 @@ public class PbProtocolGenerator {
 		if (protoToJava) {
 			Proto2Java.main(new String[] { protoPath, javaSrc });
 		}
+
+
 		// 手写枚举，生成excel，给客户端用。
 		EnumToExcel.main(args);
+	}
+
+	public static boolean isNotRequestMessage(MessageObject message) {
+		return !message.isRequest() || (notParseRequestPrefix != null && message.getShortName().startsWith(notParseRequestPrefix))
+				|| notGenRequestMessages.contains(message.getShortName());
 	}
 }
