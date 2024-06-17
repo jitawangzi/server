@@ -16,8 +16,10 @@ public class GG {
 //		for (Integer integer : list) {
 //			System.out.println(integer);
 //		}
-		String string = "HCBattleRewardRequest_13000027";
-		System.out.println(string.startsWith("Hc"));
+//		String string = "HCBattleRewardRequest_13000027";
+//		System.out.println(string.startsWith("Hc"));
+		System.out.println(System.currentTimeMillis());
+		System.out.println(System.nanoTime());
 	}
 
 	private static void test() {

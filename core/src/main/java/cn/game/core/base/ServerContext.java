@@ -10,7 +10,7 @@ import cn.game.util.ServerType;
 public class ServerContext {
 	private static final ServerContext instance = new ServerContext();
 	private static final String serverKey = "server.run.mode";
-	private RunMode runMode = RunMode.PRO;
+	private RunMode runMode = RunMode.Production;
 
 	private ServerContext() {
 	};

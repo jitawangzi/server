@@ -29,12 +29,12 @@ public class ExcelUtil {
 
 	}
 
-	public static void writeDataAutoWidth(String fileName, List<List<Object>> data) {
+	public static void writeDataAutoWidth(String fileName, String sheetName, List<List<Object>> data) {
 
 		ExcelWriterBuilder writerBuilder = EasyExcel.write(fileName, null);
 		writerBuilder.registerWriteHandler(new AutoWidthHandler());
 
-		writerBuilder.sheet("Sheet1").doWrite(data);
+		writerBuilder.sheet(sheetName).doWrite(data);
 		
 	}
 

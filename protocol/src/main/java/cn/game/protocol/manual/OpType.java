@@ -85,6 +85,7 @@ public enum OpType{
 
 
 
+	PressureTest(888, "压力测试"),
 	None(999, "未定义"),
 
     ;

@@ -59,7 +59,7 @@ public abstract class AbstractCondition implements Condition {
 	@Override
 	public int getRequireId() {
 		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
-		return conditionConfig.numParam;
+		return conditionConfig.idParam;
 	}
 
 	@Override
