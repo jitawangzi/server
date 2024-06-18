@@ -701,6 +701,9 @@ public class ChapterModule extends BasePlayerModule  {
 			if (func == InitialUI.YaoWangBiePao) {
 				initDaoXin(4);
 			}
+			if (func == InitialUI.HangingUpp) {
+				setPatrolRewardTime();
+			}
 			break;
 		}
 		default:
