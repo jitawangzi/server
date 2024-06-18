@@ -130,7 +130,11 @@ public class HeroHandler extends BaseHandler {
 		Map<Integer, Integer> illustrationsIds = heroModule.getIllustrationsHeroQualitys();
 		resp.addAllHeroIds(heroModule.getOwnedHeroIds());
 		Collection<Hero> list = heroModule.list();
+		Set<Integer> addIdSet = new HashSet<Integer>();
 		for (Hero hero : list) {
+			if (addIdSet.contains(hero.getConfigId())) {
+				continue;
+			}
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			HeroIllustrationsInfo.Builder builder = HeroIllustrationsInfo.newBuilder();
 			builder.setHeroId(heroConfig.ID);
@@ -145,6 +149,7 @@ public class HeroHandler extends BaseHandler {
 				}
 			}
 			if (builder.getQualityCount() > 0) {
+				addIdSet.add(builder.getHeroId());
 				resp.addHeros(builder.build());
 			}
 		}

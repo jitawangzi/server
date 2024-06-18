@@ -12,6 +12,7 @@ import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
+import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.generated.config.DayCardConfig;
@@ -81,10 +82,13 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		}
 		case CostUidItem: {
 			int configId = event.getIntParameter(1);
-			Collection<Hero> heros = getByConfigId(configId); 
-			if (heros.isEmpty()) {
-				if (!ownedHeroIds.contains(configId)) {
-					ownedHeroIds.add(configId);
+			int goodsType = ItemHelper.getGoodsType(configId);
+			if (goodsType == GoodsTypeEnum.Hero.getId()) {
+				Collection<Hero> heros = getByConfigId(configId);
+				if (heros.isEmpty()) {
+					if (!ownedHeroIds.contains(configId)) {
+						ownedHeroIds.add(configId);
+					}
 				}
 			}
 			break;
