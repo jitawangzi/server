@@ -34,9 +34,7 @@ public class PlayerLevelCondition extends AbstractCondition {
 		int type = event.getIntParameter(0);
 		int level = event.getIntParameter(1);
 		if (type == Asset.playerExp.ID) {
-			if (level >= getRequireCount()) {
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}

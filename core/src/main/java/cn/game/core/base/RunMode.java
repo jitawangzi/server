@@ -14,5 +14,8 @@ public enum RunMode {
 	public boolean isPressure() {
 		return this.equals(PRESSURE);
 	}
+	public boolean isProduction() {
+		return this.equals(Production);
+	}
 
 }
