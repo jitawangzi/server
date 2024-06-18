@@ -109,13 +109,19 @@ public class HeroHandler extends BaseHandler {
 		List<RewardInfo> rewardsInfos = new ArrayList<>();
 		for (Hero hero : list) {
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-			Integer qualityReceive = illustrationsIds.get(hero.getConfigId());
-
-			int quality = qualityReceive != null ? qualityReceive : heroConfig.InitialQuality;
-			for (; quality <= hero.getQuality(); quality++) {
-				illustrationsIds.put(heroConfig.ID, quality);
-				List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.llustrationsReward);
-				rewardsInfos.addAll(resources);
+			if (illustrationsIds.containsKey(heroConfig.ID)) {
+				int quality = illustrationsIds.get(hero.getConfigId());
+				for (int i = quality + 1; i <= hero.getQuality(); i++) {
+					illustrationsIds.put(heroConfig.ID, i);
+					List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.llustrationsReward);
+					rewardsInfos.addAll(resources);
+				}
+			} else {
+				for (int i = heroConfig.InitialQuality; i <= hero.getQuality(); i++) {
+					illustrationsIds.put(heroConfig.ID, i);
+					List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.llustrationsReward);
+					rewardsInfos.addAll(resources);
+				}
 			}
 		}
 		resp.addAllReward(rewardsInfos);
