@@ -24414,40 +24414,20 @@ public final class PlayerMsg {
      *已经使用过的每日免费看广告升级英雄次数
      * </pre>
      *
-     * <code>string freeHcHeroUpTimes = 109;</code>
+     * <code>int32 freeHcHeroUpTimes = 109;</code>
      * @return The freeHcHeroUpTimes.
      */
-    java.lang.String getFreeHcHeroUpTimes();
-    /**
-     * <pre>
-     *已经使用过的每日免费看广告升级英雄次数
-     * </pre>
-     *
-     * <code>string freeHcHeroUpTimes = 109;</code>
-     * @return The bytes for freeHcHeroUpTimes.
-     */
-    com.google.protobuf.ByteString
-        getFreeHcHeroUpTimesBytes();
+    int getFreeHcHeroUpTimes();
 
     /**
      * <pre>
      *已经使用过的每日免费看广告获得英雄升级道具次数
      * </pre>
      *
-     * <code>string freeHcHeroItemTimes = 110;</code>
+     * <code>int32 freeHcHeroItemTimes = 110;</code>
      * @return The freeHcHeroItemTimes.
      */
-    java.lang.String getFreeHcHeroItemTimes();
-    /**
-     * <pre>
-     *已经使用过的每日免费看广告获得英雄升级道具次数
-     * </pre>
-     *
-     * <code>string freeHcHeroItemTimes = 110;</code>
-     * @return The bytes for freeHcHeroItemTimes.
-     */
-    com.google.protobuf.ByteString
-        getFreeHcHeroItemTimesBytes();
+    int getFreeHcHeroItemTimes();
   }
   /**
    * <pre>
@@ -24487,8 +24467,6 @@ public final class PlayerMsg {
       mergeEquips_ = java.util.Collections.emptyList();
       mergeEquipIds_ = emptyIntList();
       curHcHeroUid_ = "";
-      freeHcHeroUpTimes_ = "";
-      freeHcHeroItemTimes_ = "";
     }
 
     @java.lang.Override
@@ -24924,16 +24902,14 @@ public final class PlayerMsg {
               curHcHeroUid_ = s;
               break;
             }
-            case 874: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 872: {
 
-              freeHcHeroUpTimes_ = s;
+              freeHcHeroUpTimes_ = input.readInt32();
               break;
             }
-            case 882: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 880: {
 
-              freeHcHeroItemTimes_ = s;
+              freeHcHeroItemTimes_ = input.readInt32();
               break;
             }
             default: {
@@ -27151,95 +27127,33 @@ public final class PlayerMsg {
     }
 
     public static final int FREEHCHEROUPTIMES_FIELD_NUMBER = 109;
-    private volatile java.lang.Object freeHcHeroUpTimes_;
+    private int freeHcHeroUpTimes_;
     /**
      * <pre>
      *已经使用过的每日免费看广告升级英雄次数
      * </pre>
      *
-     * <code>string freeHcHeroUpTimes = 109;</code>
+     * <code>int32 freeHcHeroUpTimes = 109;</code>
      * @return The freeHcHeroUpTimes.
      */
     @java.lang.Override
-    public java.lang.String getFreeHcHeroUpTimes() {
-      java.lang.Object ref = freeHcHeroUpTimes_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        freeHcHeroUpTimes_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     *已经使用过的每日免费看广告升级英雄次数
-     * </pre>
-     *
-     * <code>string freeHcHeroUpTimes = 109;</code>
-     * @return The bytes for freeHcHeroUpTimes.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFreeHcHeroUpTimesBytes() {
-      java.lang.Object ref = freeHcHeroUpTimes_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        freeHcHeroUpTimes_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getFreeHcHeroUpTimes() {
+      return freeHcHeroUpTimes_;
     }
 
     public static final int FREEHCHEROITEMTIMES_FIELD_NUMBER = 110;
-    private volatile java.lang.Object freeHcHeroItemTimes_;
+    private int freeHcHeroItemTimes_;
     /**
      * <pre>
      *已经使用过的每日免费看广告获得英雄升级道具次数
      * </pre>
      *
-     * <code>string freeHcHeroItemTimes = 110;</code>
+     * <code>int32 freeHcHeroItemTimes = 110;</code>
      * @return The freeHcHeroItemTimes.
      */
     @java.lang.Override
-    public java.lang.String getFreeHcHeroItemTimes() {
-      java.lang.Object ref = freeHcHeroItemTimes_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        freeHcHeroItemTimes_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     *已经使用过的每日免费看广告获得英雄升级道具次数
-     * </pre>
-     *
-     * <code>string freeHcHeroItemTimes = 110;</code>
-     * @return The bytes for freeHcHeroItemTimes.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFreeHcHeroItemTimesBytes() {
-      java.lang.Object ref = freeHcHeroItemTimes_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        freeHcHeroItemTimes_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getFreeHcHeroItemTimes() {
+      return freeHcHeroItemTimes_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -27407,11 +27321,11 @@ public final class PlayerMsg {
       if (!getCurHcHeroUidBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 108, curHcHeroUid_);
       }
-      if (!getFreeHcHeroUpTimesBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 109, freeHcHeroUpTimes_);
+      if (freeHcHeroUpTimes_ != 0) {
+        output.writeInt32(109, freeHcHeroUpTimes_);
       }
-      if (!getFreeHcHeroItemTimesBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 110, freeHcHeroItemTimes_);
+      if (freeHcHeroItemTimes_ != 0) {
+        output.writeInt32(110, freeHcHeroItemTimes_);
       }
       unknownFields.writeTo(output);
     }
@@ -27651,11 +27565,13 @@ public final class PlayerMsg {
       if (!getCurHcHeroUidBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(108, curHcHeroUid_);
       }
-      if (!getFreeHcHeroUpTimesBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(109, freeHcHeroUpTimes_);
+      if (freeHcHeroUpTimes_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(109, freeHcHeroUpTimes_);
       }
-      if (!getFreeHcHeroItemTimesBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(110, freeHcHeroItemTimes_);
+      if (freeHcHeroItemTimes_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(110, freeHcHeroItemTimes_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -27765,10 +27681,10 @@ public final class PlayerMsg {
       }
       if (!getCurHcHeroUid()
           .equals(other.getCurHcHeroUid())) return false;
-      if (!getFreeHcHeroUpTimes()
-          .equals(other.getFreeHcHeroUpTimes())) return false;
-      if (!getFreeHcHeroItemTimes()
-          .equals(other.getFreeHcHeroItemTimes())) return false;
+      if (getFreeHcHeroUpTimes()
+          != other.getFreeHcHeroUpTimes()) return false;
+      if (getFreeHcHeroItemTimes()
+          != other.getFreeHcHeroItemTimes()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -27921,9 +27837,9 @@ public final class PlayerMsg {
       hash = (37 * hash) + CURHCHEROUID_FIELD_NUMBER;
       hash = (53 * hash) + getCurHcHeroUid().hashCode();
       hash = (37 * hash) + FREEHCHEROUPTIMES_FIELD_NUMBER;
-      hash = (53 * hash) + getFreeHcHeroUpTimes().hashCode();
+      hash = (53 * hash) + getFreeHcHeroUpTimes();
       hash = (37 * hash) + FREEHCHEROITEMTIMES_FIELD_NUMBER;
-      hash = (53 * hash) + getFreeHcHeroItemTimes().hashCode();
+      hash = (53 * hash) + getFreeHcHeroItemTimes();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -28268,9 +28184,9 @@ public final class PlayerMsg {
         }
         curHcHeroUid_ = "";
 
-        freeHcHeroUpTimes_ = "";
+        freeHcHeroUpTimes_ = 0;
 
-        freeHcHeroItemTimes_ = "";
+        freeHcHeroItemTimes_ = 0;
 
         return this;
       }
@@ -29006,13 +28922,11 @@ public final class PlayerMsg {
           curHcHeroUid_ = other.curHcHeroUid_;
           onChanged();
         }
-        if (!other.getFreeHcHeroUpTimes().isEmpty()) {
-          freeHcHeroUpTimes_ = other.freeHcHeroUpTimes_;
-          onChanged();
+        if (other.getFreeHcHeroUpTimes() != 0) {
+          setFreeHcHeroUpTimes(other.getFreeHcHeroUpTimes());
         }
-        if (!other.getFreeHcHeroItemTimes().isEmpty()) {
-          freeHcHeroItemTimes_ = other.freeHcHeroItemTimes_;
-          onChanged();
+        if (other.getFreeHcHeroItemTimes() != 0) {
+          setFreeHcHeroItemTimes(other.getFreeHcHeroItemTimes());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -36285,63 +36199,30 @@ public final class PlayerMsg {
         return this;
       }
 
-      private java.lang.Object freeHcHeroUpTimes_ = "";
+      private int freeHcHeroUpTimes_ ;
       /**
        * <pre>
        *已经使用过的每日免费看广告升级英雄次数
        * </pre>
        *
-       * <code>string freeHcHeroUpTimes = 109;</code>
+       * <code>int32 freeHcHeroUpTimes = 109;</code>
        * @return The freeHcHeroUpTimes.
        */
-      public java.lang.String getFreeHcHeroUpTimes() {
-        java.lang.Object ref = freeHcHeroUpTimes_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          freeHcHeroUpTimes_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      @java.lang.Override
+      public int getFreeHcHeroUpTimes() {
+        return freeHcHeroUpTimes_;
       }
       /**
        * <pre>
        *已经使用过的每日免费看广告升级英雄次数
        * </pre>
        *
-       * <code>string freeHcHeroUpTimes = 109;</code>
-       * @return The bytes for freeHcHeroUpTimes.
-       */
-      public com.google.protobuf.ByteString
-          getFreeHcHeroUpTimesBytes() {
-        java.lang.Object ref = freeHcHeroUpTimes_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          freeHcHeroUpTimes_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *已经使用过的每日免费看广告升级英雄次数
-       * </pre>
-       *
-       * <code>string freeHcHeroUpTimes = 109;</code>
+       * <code>int32 freeHcHeroUpTimes = 109;</code>
        * @param value The freeHcHeroUpTimes to set.
        * @return This builder for chaining.
        */
-      public Builder setFreeHcHeroUpTimes(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      public Builder setFreeHcHeroUpTimes(int value) {
+        
         freeHcHeroUpTimes_ = value;
         onChanged();
         return this;
@@ -36351,93 +36232,40 @@ public final class PlayerMsg {
        *已经使用过的每日免费看广告升级英雄次数
        * </pre>
        *
-       * <code>string freeHcHeroUpTimes = 109;</code>
+       * <code>int32 freeHcHeroUpTimes = 109;</code>
        * @return This builder for chaining.
        */
       public Builder clearFreeHcHeroUpTimes() {
         
-        freeHcHeroUpTimes_ = getDefaultInstance().getFreeHcHeroUpTimes();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *已经使用过的每日免费看广告升级英雄次数
-       * </pre>
-       *
-       * <code>string freeHcHeroUpTimes = 109;</code>
-       * @param value The bytes for freeHcHeroUpTimes to set.
-       * @return This builder for chaining.
-       */
-      public Builder setFreeHcHeroUpTimesBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        freeHcHeroUpTimes_ = value;
+        freeHcHeroUpTimes_ = 0;
         onChanged();
         return this;
       }
 
-      private java.lang.Object freeHcHeroItemTimes_ = "";
+      private int freeHcHeroItemTimes_ ;
       /**
        * <pre>
        *已经使用过的每日免费看广告获得英雄升级道具次数
        * </pre>
        *
-       * <code>string freeHcHeroItemTimes = 110;</code>
+       * <code>int32 freeHcHeroItemTimes = 110;</code>
        * @return The freeHcHeroItemTimes.
        */
-      public java.lang.String getFreeHcHeroItemTimes() {
-        java.lang.Object ref = freeHcHeroItemTimes_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          freeHcHeroItemTimes_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      @java.lang.Override
+      public int getFreeHcHeroItemTimes() {
+        return freeHcHeroItemTimes_;
       }
       /**
        * <pre>
        *已经使用过的每日免费看广告获得英雄升级道具次数
        * </pre>
        *
-       * <code>string freeHcHeroItemTimes = 110;</code>
-       * @return The bytes for freeHcHeroItemTimes.
-       */
-      public com.google.protobuf.ByteString
-          getFreeHcHeroItemTimesBytes() {
-        java.lang.Object ref = freeHcHeroItemTimes_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          freeHcHeroItemTimes_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *已经使用过的每日免费看广告获得英雄升级道具次数
-       * </pre>
-       *
-       * <code>string freeHcHeroItemTimes = 110;</code>
+       * <code>int32 freeHcHeroItemTimes = 110;</code>
        * @param value The freeHcHeroItemTimes to set.
        * @return This builder for chaining.
        */
-      public Builder setFreeHcHeroItemTimes(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      public Builder setFreeHcHeroItemTimes(int value) {
+        
         freeHcHeroItemTimes_ = value;
         onChanged();
         return this;
@@ -36447,32 +36275,12 @@ public final class PlayerMsg {
        *已经使用过的每日免费看广告获得英雄升级道具次数
        * </pre>
        *
-       * <code>string freeHcHeroItemTimes = 110;</code>
+       * <code>int32 freeHcHeroItemTimes = 110;</code>
        * @return This builder for chaining.
        */
       public Builder clearFreeHcHeroItemTimes() {
         
-        freeHcHeroItemTimes_ = getDefaultInstance().getFreeHcHeroItemTimes();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *已经使用过的每日免费看广告获得英雄升级道具次数
-       * </pre>
-       *
-       * <code>string freeHcHeroItemTimes = 110;</code>
-       * @param value The bytes for freeHcHeroItemTimes to set.
-       * @return This builder for chaining.
-       */
-      public Builder setFreeHcHeroItemTimesBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        freeHcHeroItemTimes_ = value;
+        freeHcHeroItemTimes_ = 0;
         onChanged();
         return this;
       }
@@ -36846,8 +36654,8 @@ public final class PlayerMsg {
       "ergeDayChallenge\030i \001(\0132\030.Protos.DayChall" +
       "engeInfo\022#\n\007hcHeros\030k \001(\0132\022.Protos.HCHer" +
       "oInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHer" +
-      "oUpTimes\030m \001(\t\022\033\n\023freeHcHeroItemTimes\030n " +
-      "\001(\t\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
+      "oUpTimes\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n " +
+      "\001(\005\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
       "\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003key\030\001" +
       " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013" +
       "\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchem" +
