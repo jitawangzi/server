@@ -58,13 +58,12 @@ public enum ErrorMsgEnum {
 	/** 次数不足 */
 	times_limit(61, "次数不足"),
 	cd_time_error(62, "未到冷却时间"),
+	level_limit(63, "等级已经到上限，可能是等级，星级等"),
 
 	// 100+ 业务错误。
 
 	/** 创建角色名字重复 */
 	player_name_repeat(100, "创建角色名字重复"),
-	/** 等级已达上限 */
-	level_reach_limit(104, "等级已达上限"),
 	/** 前置关卡没有通关 */
 	BattleLevel_pre(106, "前置关卡没有通关"),
 	/** 购买超上限 */

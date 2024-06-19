@@ -20,7 +20,6 @@ message RewardInfo{
     HeroSwordInfo sword = 12;  //武器
     MergeEquipmentInfo mergeEquip = 20;  //合并游戏里面的装备
     HCHeroInfo hcHero = 21;		// 合成英雄奖励
-
 }
 
 //奖励推送,客户端收到这个协议之后，将奖励增加到本地。

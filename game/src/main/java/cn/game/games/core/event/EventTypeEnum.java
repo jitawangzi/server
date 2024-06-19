@@ -63,8 +63,7 @@ public enum EventTypeEnum {
 	/** 一场战斗结束，参数战役id，关卡id，输赢，杀怪数量 ,boss数量*/
 	BattleEnd(17, "一场战斗结束"),
 
-	// 任务相关
-	CardUpGrade(18, "升级卡牌行为，不是真正升级"),
+	HCHero(18, "获得合成英雄"),
 	// 参数，id，value
 	GetItem(19, "获取资源"),
 	/** 消耗资源： 参数 id，数量 */

@@ -63,7 +63,7 @@ public class MergeEquipHandler extends BaseHandler {
 			}
 			equipList.add(id);
 		} else {
-			if (equipList.contains(replaceId)) {
+			if (!equipList.contains(replaceId)) {
 				client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
 				return;
 			}

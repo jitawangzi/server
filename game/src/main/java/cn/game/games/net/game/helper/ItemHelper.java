@@ -27,6 +27,7 @@ import cn.game.protocol.generated.manager.BattlePassPrizeManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.EquipManager;
+import cn.game.protocol.generated.manager.HCHeroManager;
 import cn.game.protocol.generated.manager.HeroFashionManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.HeroSwordManager;
@@ -80,6 +81,10 @@ public class ItemHelper {
 		}
 		case Merge_Equip: {
 			EquipManager.instance().get(id);
+			break;
+		}
+		case HCHero: {
+			HCHeroManager.instance().get(id);
 			break;
 		}
 		default:

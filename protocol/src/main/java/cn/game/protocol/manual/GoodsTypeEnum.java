@@ -15,10 +15,13 @@ public enum GoodsTypeEnum{
 	Item(2, "道具"),
 	/** 英雄*/
 	Hero(3, "英雄"),
+	/** 合成英雄*/
+	HCHero(9, "合成英雄"),
 	/** 装备 */
 	Equipment(7, "装备"),
 	/** 英雄时装 */
-	Fashion(8, "英雄时装"), Gem(9, "宝石"),
+	Fashion(8, "英雄时装"),
+
 	/** 龙 */
 	Dragon(11, "龙"),
 	/** 龙技能 */
@@ -33,6 +36,7 @@ public enum GoodsTypeEnum{
 	Merge_Equip(51, "合并装备"),
 	/** 皮肤 */
 	Skin(88, "皮肤"),
+	Gem(80, "宝石"),
     ;
 	/** id */
 	private int id ; 
