@@ -39,6 +39,14 @@ message HeroInfo{
 	uint32 quality = 7 ;  // 品质。
 	uint32 battlePos = 8 ;  // 上阵位置 1-5 ，0未上阵
 }
+
+// 合成英雄信息
+message HCHeroInfo{
+	string uid = 1;//英雄唯一id
+	uint32 configId = 2;//HCHero配置表 ID
+	uint32 level = 3;//等级
+	uint32 star = 4 ;// 星级
+}
 // 英雄武器
 message HeroSwordInfo{
 	string uid = 1;//武器唯一id

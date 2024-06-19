@@ -42,7 +42,7 @@ public class ItemHandler extends BaseHandler {
 		int count = req.getCount();
 		int param = req.getParam(); 
 
-		ItemConfig item = ItemManager.instance().get(id);
+		ItemConfig item = ItemManager.instance().getNullable(id);
 		if (item == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
 			return;
@@ -57,6 +57,7 @@ public class ItemHandler extends BaseHandler {
 		ItemUse itemUse = ItemUse.valueOf(item.ItemType);
 		List<RewardInfo> rewards = itemUse.use(player, id, count, param);
 		resp.addAllReward(rewards);
+		itemModule.del(id, count);
 		client.sendProtocol(resp);
 	}
 }

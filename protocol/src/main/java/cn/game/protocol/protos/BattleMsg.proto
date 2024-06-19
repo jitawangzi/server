@@ -45,15 +45,6 @@ message BattleFieldEndResponse_13000004{
 }
 
 
-// 肉鸽刷新,每天前3次免费，第四次看广告。
-message BattleRougeRefreshRequest_13000005{
-}
-
-// 肉鸽刷新
-message BattleRougeRefreshResponse_13000006{
-}
-
-
 //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。
 message BattleRewardRequest_13000022{
    repeated uint32 id = 1; 			// Battle表的id
@@ -121,14 +112,6 @@ message PatrolInfo{
 	int32 rewardTime = 1;			// 最后一次领取巡逻奖励的时间(秒时间戳)
 	int32 quickPatrolCount = 2;		// 快速巡逻次数，巡逻过的次数
 	int32 adPatrolCount = 3;		// 看广告快速巡逻次数，巡逻过的次数
-}
-
-/*** 领取体力 ***/
-message BattleStaminaRequest_13000050{
-	int32 time = 1; //领取哪个时间的体力
-}
-
-message BattleStaminaResponse_13000051{
 }
 
 // ****************************************道心磨砺/心魔试炼********************************************
@@ -201,5 +184,28 @@ message DayChallengeInfo{
    repeated int32 randomBuff = 3;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
    repeated int32 rewardIndex = 4;			// 已经领取过奖励箱子的索引， 如果4个箱子就是0 - 3 。
 }
+
+//@NotUseStart
+
+
+// 肉鸽刷新,每天前3次免费，第四次看广告。
+message BattleRougeRefreshRequest_13000005{
+}
+
+// 肉鸽刷新
+message BattleRougeRefreshResponse_13000006{
+}
+
+
+/*** 领取体力 ***/
+message BattleStaminaRequest_13000050{
+	int32 time = 1; //领取哪个时间的体力
+}
+
+message BattleStaminaResponse_13000051{
+}
+
+
+//@NotUseEnd
 
 

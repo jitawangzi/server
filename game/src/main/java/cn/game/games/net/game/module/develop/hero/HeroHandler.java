@@ -32,6 +32,8 @@ import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
+import cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009;
+import cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissResponse_1600000a;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003;
@@ -73,6 +75,7 @@ public class HeroHandler extends BaseHandler {
 		putInvoker(PbProtocol.HeroUpLevelBatchRequest_16000023, this::upLevelBatch);
 		putInvoker(PbProtocol.HeroConflateRequest_16000003, this::conflate);
 		putInvoker(PbProtocol.HeroBattleRequest_16000005, this::battle);
+		putInvoker(PbProtocol.HeroBattleDismissRequest_16000009, this::battleDismiss);
 		putInvoker(PbProtocol.HeroLevelResetRequest_16000007, this::levelReset);
 		putInvoker(PbProtocol.HeroQualityResetRequest_16000011, this::qualityReset);
 		putInvoker(PbProtocol.HeroFreeDayRentRequest_16000030, this::freeDayRent);
@@ -106,13 +109,19 @@ public class HeroHandler extends BaseHandler {
 		List<RewardInfo> rewardsInfos = new ArrayList<>();
 		for (Hero hero : list) {
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-			Integer qualityReceive = illustrationsIds.get(hero.getConfigId());
-
-			int quality = qualityReceive != null ? qualityReceive : heroConfig.InitialQuality;
-			for (; quality <= hero.getQuality(); quality++) {
-				illustrationsIds.put(heroConfig.ID, quality);
-				List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.llustrationsReward);
-				rewardsInfos.addAll(resources);
+			if (illustrationsIds.containsKey(heroConfig.ID)) {
+				int quality = illustrationsIds.get(hero.getConfigId());
+				for (int i = quality + 1; i <= hero.getQuality(); i++) {
+					illustrationsIds.put(heroConfig.ID, i);
+					List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.llustrationsReward);
+					rewardsInfos.addAll(resources);
+				}
+			} else {
+				for (int i = heroConfig.InitialQuality; i <= hero.getQuality(); i++) {
+					illustrationsIds.put(heroConfig.ID, i);
+					List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.llustrationsReward);
+					rewardsInfos.addAll(resources);
+				}
 			}
 		}
 		resp.addAllReward(rewardsInfos);
@@ -127,7 +136,11 @@ public class HeroHandler extends BaseHandler {
 		Map<Integer, Integer> illustrationsIds = heroModule.getIllustrationsHeroQualitys();
 		resp.addAllHeroIds(heroModule.getOwnedHeroIds());
 		Collection<Hero> list = heroModule.list();
+		Set<Integer> addIdSet = new HashSet<Integer>();
 		for (Hero hero : list) {
+			if (addIdSet.contains(hero.getConfigId())) {
+				continue;
+			}
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			HeroIllustrationsInfo.Builder builder = HeroIllustrationsInfo.newBuilder();
 			builder.setHeroId(heroConfig.ID);
@@ -142,6 +155,7 @@ public class HeroHandler extends BaseHandler {
 				}
 			}
 			if (builder.getQualityCount() > 0) {
+				addIdSet.add(builder.getHeroId());
 				resp.addHeros(builder.build());
 			}
 		}
@@ -381,6 +395,24 @@ public class HeroHandler extends BaseHandler {
 		client.sendProtocol(resp.build());
 	}
 
+	private void battleDismiss(NetClient client, Object message) {
+		HeroBattleDismissRequest_16000009 req = (HeroBattleDismissRequest_16000009) message;
+		HeroBattleDismissResponse_1600000a.Builder resp = HeroBattleDismissResponse_1600000a.newBuilder();
+		long uid = Long.parseLong(req.getUid());
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		HeroModule heroModule = player.getHeroModule();
+		Hero hero = heroModule.get(uid);
+		if (hero == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		Map<Long, Integer> battleHeros = heroModule.getBattleHeros();
+		Integer remove = battleHeros.remove(uid);
+		if (remove != null) {
+			player.handleEvent(EventTypeEnum.HeroBattleDismiss, hero);
+		}
+		client.sendProtocol(resp.build());
+	}
 	private void battle(NetClient client, Object message) {
 		HeroBattleRequest_16000005 req = (HeroBattleRequest_16000005) message;
 		HeroBattleResponse_16000006.Builder resp = HeroBattleResponse_16000006.newBuilder();

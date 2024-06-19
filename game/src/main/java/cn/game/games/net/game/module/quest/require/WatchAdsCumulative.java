@@ -4,38 +4,26 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
-import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**
- * 玩家等级条件
- * 
- */
-@ConditionType(type = ConditionTypeEnum.PlayerLevel)
-public class PlayerLevelCondition extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LevelUp };
+@ConditionType(type = ConditionTypeEnum.WatchAdsCumulation)
+public class WatchAdsCumulative extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.WatchAds };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public PlayerLevelCondition() {
-
+	public WatchAdsCumulative() {
 	}
 
 	@Override
 	public long getFinishCount() {
-		return player.getLevel();
+		return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.WatchAdsCumulation);
 	}
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-
-		int type = event.getIntParameter(0);
-		int level = event.getIntParameter(1);
-		if (type == Asset.playerExp.ID) {
-			return true;
-		}
-		return false;
+		return true;
 	}
 }

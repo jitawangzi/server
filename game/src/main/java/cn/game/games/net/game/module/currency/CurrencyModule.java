@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.currency;
 
+import java.util.Collection;
 import java.util.ListIterator;
 
 import cn.game.games.core.GoodsModule;
@@ -7,10 +8,13 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.protocol.generated.config.ExpConfig;
+import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
+import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -210,4 +214,26 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		this.currencyMap = currencyMap;
 	}
 
+	public void setMaxCurrency() {
+		Asset[] values = Asset.values();
+		for (Asset asset : values) {
+			if (asset.Type == 1) {
+				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
+			} else if (asset.Type == 2) {
+				IntMapWrapper expLevelMap = player.getPlayerModule().getExpLevelMap();
+				expLevelMap.setValue(asset.ID, 100);
+			} else if (asset.Type == 3) {
+				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
+			}
+		}
+		// 在给些道具。
+		ItemModule itemModule = player.getItemModule();
+		Collection<ItemConfig> list = ItemManager.instance().list();
+		for (ItemConfig itemConfig : list) {
+			int itemType = itemConfig.ItemType;
+			if (itemType == 1 || itemType == 2 || itemType == 3) {
+				itemModule.add(itemConfig.ID, Integer.MAX_VALUE / 2, OpType.PressureTest);
+			}
+		}
+	}
 }

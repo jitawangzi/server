@@ -83,7 +83,7 @@ public class TestHandler extends BaseHandler {
 //			}
 //
 //		});
-		if (!ServerContext.getInstance().getRunMode().isTest()) {
+		if (ServerContext.getInstance().getRunMode().isProduction()) {
 			return;
 		}
 		logger.warn("===================================test command is enable =================================");
