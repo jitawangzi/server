@@ -24367,27 +24367,44 @@ public final class PlayerMsg {
      *合成的英雄数据
      * </pre>
      *
-     * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
-     * @return Whether the hcHeros field is set.
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
      */
-    boolean hasHcHeros();
+    java.util.List<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo> 
+        getHcHerosList();
     /**
      * <pre>
      *合成的英雄数据
      * </pre>
      *
-     * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
-     * @return The hcHeros.
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
      */
-    cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHeros();
+    cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHeros(int index);
     /**
      * <pre>
      *合成的英雄数据
      * </pre>
      *
-     * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
      */
-    cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHerosOrBuilder();
+    int getHcHerosCount();
+    /**
+     * <pre>
+     *合成的英雄数据
+     * </pre>
+     *
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder> 
+        getHcHerosOrBuilderList();
+    /**
+     * <pre>
+     *合成的英雄数据
+     * </pre>
+     *
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHerosOrBuilder(
+        int index);
 
     /**
      * <pre>
@@ -24414,40 +24431,20 @@ public final class PlayerMsg {
      *已经使用过的每日免费看广告升级英雄次数
      * </pre>
      *
-     * <code>string freeHcHeroUpTimes = 109;</code>
+     * <code>int32 freeHcHeroUpTimes = 109;</code>
      * @return The freeHcHeroUpTimes.
      */
-    java.lang.String getFreeHcHeroUpTimes();
-    /**
-     * <pre>
-     *已经使用过的每日免费看广告升级英雄次数
-     * </pre>
-     *
-     * <code>string freeHcHeroUpTimes = 109;</code>
-     * @return The bytes for freeHcHeroUpTimes.
-     */
-    com.google.protobuf.ByteString
-        getFreeHcHeroUpTimesBytes();
+    int getFreeHcHeroUpTimes();
 
     /**
      * <pre>
      *已经使用过的每日免费看广告获得英雄升级道具次数
      * </pre>
      *
-     * <code>string freeHcHeroItemTimes = 110;</code>
+     * <code>int32 freeHcHeroItemTimes = 110;</code>
      * @return The freeHcHeroItemTimes.
      */
-    java.lang.String getFreeHcHeroItemTimes();
-    /**
-     * <pre>
-     *已经使用过的每日免费看广告获得英雄升级道具次数
-     * </pre>
-     *
-     * <code>string freeHcHeroItemTimes = 110;</code>
-     * @return The bytes for freeHcHeroItemTimes.
-     */
-    com.google.protobuf.ByteString
-        getFreeHcHeroItemTimesBytes();
+    int getFreeHcHeroItemTimes();
   }
   /**
    * <pre>
@@ -24486,9 +24483,8 @@ public final class PlayerMsg {
       shopGroupItems_ = java.util.Collections.emptyList();
       mergeEquips_ = java.util.Collections.emptyList();
       mergeEquipIds_ = emptyIntList();
+      hcHeros_ = java.util.Collections.emptyList();
       curHcHeroUid_ = "";
-      freeHcHeroUpTimes_ = "";
-      freeHcHeroItemTimes_ = "";
     }
 
     @java.lang.Override
@@ -24906,16 +24902,12 @@ public final class PlayerMsg {
               break;
             }
             case 858: {
-              cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder subBuilder = null;
-              if (hcHeros_ != null) {
-                subBuilder = hcHeros_.toBuilder();
+              if (!((mutable_bitField0_ & 0x02000000) != 0)) {
+                hcHeros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo>();
+                mutable_bitField0_ |= 0x02000000;
               }
-              hcHeros_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(hcHeros_);
-                hcHeros_ = subBuilder.buildPartial();
-              }
-
+              hcHeros_.add(
+                  input.readMessage(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.parser(), extensionRegistry));
               break;
             }
             case 866: {
@@ -24924,16 +24916,14 @@ public final class PlayerMsg {
               curHcHeroUid_ = s;
               break;
             }
-            case 874: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 872: {
 
-              freeHcHeroUpTimes_ = s;
+              freeHcHeroUpTimes_ = input.readInt32();
               break;
             }
-            case 882: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 880: {
 
-              freeHcHeroItemTimes_ = s;
+              freeHcHeroItemTimes_ = input.readInt32();
               break;
             }
             default: {
@@ -25004,6 +24994,9 @@ public final class PlayerMsg {
         }
         if (((mutable_bitField0_ & 0x01000000) != 0)) {
           mergeEquipIds_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x02000000) != 0)) {
+          hcHeros_ = java.util.Collections.unmodifiableList(hcHeros_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -27067,41 +27060,63 @@ public final class PlayerMsg {
     }
 
     public static final int HCHEROS_FIELD_NUMBER = 107;
-    private cn.game.protocol.protobuf.BaseMsg.HCHeroInfo hcHeros_;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo> hcHeros_;
     /**
      * <pre>
      *合成的英雄数据
      * </pre>
      *
-     * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
-     * @return Whether the hcHeros field is set.
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
      */
     @java.lang.Override
-    public boolean hasHcHeros() {
-      return hcHeros_ != null;
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo> getHcHerosList() {
+      return hcHeros_;
     }
     /**
      * <pre>
      *合成的英雄数据
      * </pre>
      *
-     * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
-     * @return The hcHeros.
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHeros() {
-      return hcHeros_ == null ? cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.getDefaultInstance() : hcHeros_;
+    public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder> 
+        getHcHerosOrBuilderList() {
+      return hcHeros_;
     }
     /**
      * <pre>
      *合成的英雄数据
      * </pre>
      *
-     * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHerosOrBuilder() {
-      return getHcHeros();
+    public int getHcHerosCount() {
+      return hcHeros_.size();
+    }
+    /**
+     * <pre>
+     *合成的英雄数据
+     * </pre>
+     *
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHeros(int index) {
+      return hcHeros_.get(index);
+    }
+    /**
+     * <pre>
+     *合成的英雄数据
+     * </pre>
+     *
+     * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHerosOrBuilder(
+        int index) {
+      return hcHeros_.get(index);
     }
 
     public static final int CURHCHEROUID_FIELD_NUMBER = 108;
@@ -27151,95 +27166,33 @@ public final class PlayerMsg {
     }
 
     public static final int FREEHCHEROUPTIMES_FIELD_NUMBER = 109;
-    private volatile java.lang.Object freeHcHeroUpTimes_;
+    private int freeHcHeroUpTimes_;
     /**
      * <pre>
      *已经使用过的每日免费看广告升级英雄次数
      * </pre>
      *
-     * <code>string freeHcHeroUpTimes = 109;</code>
+     * <code>int32 freeHcHeroUpTimes = 109;</code>
      * @return The freeHcHeroUpTimes.
      */
     @java.lang.Override
-    public java.lang.String getFreeHcHeroUpTimes() {
-      java.lang.Object ref = freeHcHeroUpTimes_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        freeHcHeroUpTimes_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     *已经使用过的每日免费看广告升级英雄次数
-     * </pre>
-     *
-     * <code>string freeHcHeroUpTimes = 109;</code>
-     * @return The bytes for freeHcHeroUpTimes.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFreeHcHeroUpTimesBytes() {
-      java.lang.Object ref = freeHcHeroUpTimes_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        freeHcHeroUpTimes_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getFreeHcHeroUpTimes() {
+      return freeHcHeroUpTimes_;
     }
 
     public static final int FREEHCHEROITEMTIMES_FIELD_NUMBER = 110;
-    private volatile java.lang.Object freeHcHeroItemTimes_;
+    private int freeHcHeroItemTimes_;
     /**
      * <pre>
      *已经使用过的每日免费看广告获得英雄升级道具次数
      * </pre>
      *
-     * <code>string freeHcHeroItemTimes = 110;</code>
+     * <code>int32 freeHcHeroItemTimes = 110;</code>
      * @return The freeHcHeroItemTimes.
      */
     @java.lang.Override
-    public java.lang.String getFreeHcHeroItemTimes() {
-      java.lang.Object ref = freeHcHeroItemTimes_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        freeHcHeroItemTimes_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     *已经使用过的每日免费看广告获得英雄升级道具次数
-     * </pre>
-     *
-     * <code>string freeHcHeroItemTimes = 110;</code>
-     * @return The bytes for freeHcHeroItemTimes.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFreeHcHeroItemTimesBytes() {
-      java.lang.Object ref = freeHcHeroItemTimes_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        freeHcHeroItemTimes_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getFreeHcHeroItemTimes() {
+      return freeHcHeroItemTimes_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -27401,17 +27354,17 @@ public final class PlayerMsg {
       if (mergeDayChallenge_ != null) {
         output.writeMessage(105, getMergeDayChallenge());
       }
-      if (hcHeros_ != null) {
-        output.writeMessage(107, getHcHeros());
+      for (int i = 0; i < hcHeros_.size(); i++) {
+        output.writeMessage(107, hcHeros_.get(i));
       }
       if (!getCurHcHeroUidBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 108, curHcHeroUid_);
       }
-      if (!getFreeHcHeroUpTimesBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 109, freeHcHeroUpTimes_);
+      if (freeHcHeroUpTimes_ != 0) {
+        output.writeInt32(109, freeHcHeroUpTimes_);
       }
-      if (!getFreeHcHeroItemTimesBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 110, freeHcHeroItemTimes_);
+      if (freeHcHeroItemTimes_ != 0) {
+        output.writeInt32(110, freeHcHeroItemTimes_);
       }
       unknownFields.writeTo(output);
     }
@@ -27644,18 +27597,20 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(105, getMergeDayChallenge());
       }
-      if (hcHeros_ != null) {
+      for (int i = 0; i < hcHeros_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(107, getHcHeros());
+          .computeMessageSize(107, hcHeros_.get(i));
       }
       if (!getCurHcHeroUidBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(108, curHcHeroUid_);
       }
-      if (!getFreeHcHeroUpTimesBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(109, freeHcHeroUpTimes_);
+      if (freeHcHeroUpTimes_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(109, freeHcHeroUpTimes_);
       }
-      if (!getFreeHcHeroItemTimesBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(110, freeHcHeroItemTimes_);
+      if (freeHcHeroItemTimes_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(110, freeHcHeroItemTimes_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -27758,17 +27713,14 @@ public final class PlayerMsg {
         if (!getMergeDayChallenge()
             .equals(other.getMergeDayChallenge())) return false;
       }
-      if (hasHcHeros() != other.hasHcHeros()) return false;
-      if (hasHcHeros()) {
-        if (!getHcHeros()
-            .equals(other.getHcHeros())) return false;
-      }
+      if (!getHcHerosList()
+          .equals(other.getHcHerosList())) return false;
       if (!getCurHcHeroUid()
           .equals(other.getCurHcHeroUid())) return false;
-      if (!getFreeHcHeroUpTimes()
-          .equals(other.getFreeHcHeroUpTimes())) return false;
-      if (!getFreeHcHeroItemTimes()
-          .equals(other.getFreeHcHeroItemTimes())) return false;
+      if (getFreeHcHeroUpTimes()
+          != other.getFreeHcHeroUpTimes()) return false;
+      if (getFreeHcHeroItemTimes()
+          != other.getFreeHcHeroItemTimes()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -27914,16 +27866,16 @@ public final class PlayerMsg {
         hash = (37 * hash) + MERGEDAYCHALLENGE_FIELD_NUMBER;
         hash = (53 * hash) + getMergeDayChallenge().hashCode();
       }
-      if (hasHcHeros()) {
+      if (getHcHerosCount() > 0) {
         hash = (37 * hash) + HCHEROS_FIELD_NUMBER;
-        hash = (53 * hash) + getHcHeros().hashCode();
+        hash = (53 * hash) + getHcHerosList().hashCode();
       }
       hash = (37 * hash) + CURHCHEROUID_FIELD_NUMBER;
       hash = (53 * hash) + getCurHcHeroUid().hashCode();
       hash = (37 * hash) + FREEHCHEROUPTIMES_FIELD_NUMBER;
-      hash = (53 * hash) + getFreeHcHeroUpTimes().hashCode();
+      hash = (53 * hash) + getFreeHcHeroUpTimes();
       hash = (37 * hash) + FREEHCHEROITEMTIMES_FIELD_NUMBER;
-      hash = (53 * hash) + getFreeHcHeroItemTimes().hashCode();
+      hash = (53 * hash) + getFreeHcHeroItemTimes();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -28116,6 +28068,7 @@ public final class PlayerMsg {
           getQuestGroupPointRewardsFieldBuilder();
           getShopGroupItemsFieldBuilder();
           getMergeEquipsFieldBuilder();
+          getHcHerosFieldBuilder();
         }
       }
       @java.lang.Override
@@ -28261,16 +28214,16 @@ public final class PlayerMsg {
           mergeDayChallengeBuilder_ = null;
         }
         if (hcHerosBuilder_ == null) {
-          hcHeros_ = null;
+          hcHeros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x02000000);
         } else {
-          hcHeros_ = null;
-          hcHerosBuilder_ = null;
+          hcHerosBuilder_.clear();
         }
         curHcHeroUid_ = "";
 
-        freeHcHeroUpTimes_ = "";
+        freeHcHeroUpTimes_ = 0;
 
-        freeHcHeroItemTimes_ = "";
+        freeHcHeroItemTimes_ = 0;
 
         return this;
       }
@@ -28488,6 +28441,10 @@ public final class PlayerMsg {
           result.mergeDayChallenge_ = mergeDayChallengeBuilder_.build();
         }
         if (hcHerosBuilder_ == null) {
+          if (((bitField0_ & 0x02000000) != 0)) {
+            hcHeros_ = java.util.Collections.unmodifiableList(hcHeros_);
+            bitField0_ = (bitField0_ & ~0x02000000);
+          }
           result.hcHeros_ = hcHeros_;
         } else {
           result.hcHeros_ = hcHerosBuilder_.build();
@@ -28999,20 +28956,41 @@ public final class PlayerMsg {
         if (other.hasMergeDayChallenge()) {
           mergeMergeDayChallenge(other.getMergeDayChallenge());
         }
-        if (other.hasHcHeros()) {
-          mergeHcHeros(other.getHcHeros());
+        if (hcHerosBuilder_ == null) {
+          if (!other.hcHeros_.isEmpty()) {
+            if (hcHeros_.isEmpty()) {
+              hcHeros_ = other.hcHeros_;
+              bitField0_ = (bitField0_ & ~0x02000000);
+            } else {
+              ensureHcHerosIsMutable();
+              hcHeros_.addAll(other.hcHeros_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.hcHeros_.isEmpty()) {
+            if (hcHerosBuilder_.isEmpty()) {
+              hcHerosBuilder_.dispose();
+              hcHerosBuilder_ = null;
+              hcHeros_ = other.hcHeros_;
+              bitField0_ = (bitField0_ & ~0x02000000);
+              hcHerosBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getHcHerosFieldBuilder() : null;
+            } else {
+              hcHerosBuilder_.addAllMessages(other.hcHeros_);
+            }
+          }
         }
         if (!other.getCurHcHeroUid().isEmpty()) {
           curHcHeroUid_ = other.curHcHeroUid_;
           onChanged();
         }
-        if (!other.getFreeHcHeroUpTimes().isEmpty()) {
-          freeHcHeroUpTimes_ = other.freeHcHeroUpTimes_;
-          onChanged();
+        if (other.getFreeHcHeroUpTimes() != 0) {
+          setFreeHcHeroUpTimes(other.getFreeHcHeroUpTimes());
         }
-        if (!other.getFreeHcHeroItemTimes().isEmpty()) {
-          freeHcHeroItemTimes_ = other.freeHcHeroItemTimes_;
-          onChanged();
+        if (other.getFreeHcHeroItemTimes() != 0) {
+          setFreeHcHeroItemTimes(other.getFreeHcHeroItemTimes());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -36034,33 +36012,30 @@ public final class PlayerMsg {
         return mergeDayChallengeBuilder_;
       }
 
-      private cn.game.protocol.protobuf.BaseMsg.HCHeroInfo hcHeros_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder> hcHerosBuilder_;
-      /**
-       * <pre>
-       *合成的英雄数据
-       * </pre>
-       *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
-       * @return Whether the hcHeros field is set.
-       */
-      public boolean hasHcHeros() {
-        return hcHerosBuilder_ != null || hcHeros_ != null;
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo> hcHeros_ =
+        java.util.Collections.emptyList();
+      private void ensureHcHerosIsMutable() {
+        if (!((bitField0_ & 0x02000000) != 0)) {
+          hcHeros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo>(hcHeros_);
+          bitField0_ |= 0x02000000;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder> hcHerosBuilder_;
+
       /**
        * <pre>
        *合成的英雄数据
        * </pre>
        *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
-       * @return The hcHeros.
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHeros() {
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo> getHcHerosList() {
         if (hcHerosBuilder_ == null) {
-          return hcHeros_ == null ? cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.getDefaultInstance() : hcHeros_;
+          return java.util.Collections.unmodifiableList(hcHeros_);
         } else {
-          return hcHerosBuilder_.getMessage();
+          return hcHerosBuilder_.getMessageList();
         }
       }
       /**
@@ -36068,19 +36043,48 @@ public final class PlayerMsg {
        *合成的英雄数据
        * </pre>
        *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
        */
-      public Builder setHcHeros(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo value) {
+      public int getHcHerosCount() {
+        if (hcHerosBuilder_ == null) {
+          return hcHeros_.size();
+        } else {
+          return hcHerosBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHeros(int index) {
+        if (hcHerosBuilder_ == null) {
+          return hcHeros_.get(index);
+        } else {
+          return hcHerosBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public Builder setHcHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo value) {
         if (hcHerosBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          hcHeros_ = value;
+          ensureHcHerosIsMutable();
+          hcHeros_.set(index, value);
           onChanged();
         } else {
-          hcHerosBuilder_.setMessage(value);
+          hcHerosBuilder_.setMessage(index, value);
         }
-
         return this;
       }
       /**
@@ -36088,17 +36092,76 @@ public final class PlayerMsg {
        *合成的英雄数据
        * </pre>
        *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
        */
       public Builder setHcHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder builderForValue) {
+        if (hcHerosBuilder_ == null) {
+          ensureHcHerosIsMutable();
+          hcHeros_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          hcHerosBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public Builder addHcHeros(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo value) {
+        if (hcHerosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHcHerosIsMutable();
+          hcHeros_.add(value);
+          onChanged();
+        } else {
+          hcHerosBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public Builder addHcHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo value) {
+        if (hcHerosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHcHerosIsMutable();
+          hcHeros_.add(index, value);
+          onChanged();
+        } else {
+          hcHerosBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public Builder addHcHeros(
           cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder builderForValue) {
         if (hcHerosBuilder_ == null) {
-          hcHeros_ = builderForValue.build();
+          ensureHcHerosIsMutable();
+          hcHeros_.add(builderForValue.build());
           onChanged();
         } else {
-          hcHerosBuilder_.setMessage(builderForValue.build());
+          hcHerosBuilder_.addMessage(builderForValue.build());
         }
-
         return this;
       }
       /**
@@ -36106,21 +36169,17 @@ public final class PlayerMsg {
        *合成的英雄数据
        * </pre>
        *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
        */
-      public Builder mergeHcHeros(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo value) {
+      public Builder addHcHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder builderForValue) {
         if (hcHerosBuilder_ == null) {
-          if (hcHeros_ != null) {
-            hcHeros_ =
-              cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.newBuilder(hcHeros_).mergeFrom(value).buildPartial();
-          } else {
-            hcHeros_ = value;
-          }
+          ensureHcHerosIsMutable();
+          hcHeros_.add(index, builderForValue.build());
           onChanged();
         } else {
-          hcHerosBuilder_.mergeFrom(value);
+          hcHerosBuilder_.addMessage(index, builderForValue.build());
         }
-
         return this;
       }
       /**
@@ -36128,17 +36187,35 @@ public final class PlayerMsg {
        *合成的英雄数据
        * </pre>
        *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public Builder addAllHcHeros(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.HCHeroInfo> values) {
+        if (hcHerosBuilder_ == null) {
+          ensureHcHerosIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, hcHeros_);
+          onChanged();
+        } else {
+          hcHerosBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
        */
       public Builder clearHcHeros() {
         if (hcHerosBuilder_ == null) {
-          hcHeros_ = null;
+          hcHeros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x02000000);
           onChanged();
         } else {
-          hcHeros_ = null;
-          hcHerosBuilder_ = null;
+          hcHerosBuilder_.clear();
         }
-
         return this;
       }
       /**
@@ -36146,26 +36223,41 @@ public final class PlayerMsg {
        *合成的英雄数据
        * </pre>
        *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder getHcHerosBuilder() {
-        
-        onChanged();
-        return getHcHerosFieldBuilder().getBuilder();
+      public Builder removeHcHeros(int index) {
+        if (hcHerosBuilder_ == null) {
+          ensureHcHerosIsMutable();
+          hcHeros_.remove(index);
+          onChanged();
+        } else {
+          hcHerosBuilder_.remove(index);
+        }
+        return this;
       }
       /**
        * <pre>
        *合成的英雄数据
        * </pre>
        *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHerosOrBuilder() {
-        if (hcHerosBuilder_ != null) {
-          return hcHerosBuilder_.getMessageOrBuilder();
-        } else {
-          return hcHeros_ == null ?
-              cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.getDefaultInstance() : hcHeros_;
+      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder getHcHerosBuilder(
+          int index) {
+        return getHcHerosFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHerosOrBuilder(
+          int index) {
+        if (hcHerosBuilder_ == null) {
+          return hcHeros_.get(index);  } else {
+          return hcHerosBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
@@ -36173,15 +36265,58 @@ public final class PlayerMsg {
        *合成的英雄数据
        * </pre>
        *
-       * <code>.Protos.HCHeroInfo hcHeros = 107;</code>
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder> 
+           getHcHerosOrBuilderList() {
+        if (hcHerosBuilder_ != null) {
+          return hcHerosBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(hcHeros_);
+        }
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder addHcHerosBuilder() {
+        return getHcHerosFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder addHcHerosBuilder(
+          int index) {
+        return getHcHerosFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *合成的英雄数据
+       * </pre>
+       *
+       * <code>repeated .Protos.HCHeroInfo hcHeros = 107;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder> 
+           getHcHerosBuilderList() {
+        return getHcHerosFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder> 
           getHcHerosFieldBuilder() {
         if (hcHerosBuilder_ == null) {
-          hcHerosBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          hcHerosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder>(
-                  getHcHeros(),
+                  hcHeros_,
+                  ((bitField0_ & 0x02000000) != 0),
                   getParentForChildren(),
                   isClean());
           hcHeros_ = null;
@@ -36285,63 +36420,30 @@ public final class PlayerMsg {
         return this;
       }
 
-      private java.lang.Object freeHcHeroUpTimes_ = "";
+      private int freeHcHeroUpTimes_ ;
       /**
        * <pre>
        *已经使用过的每日免费看广告升级英雄次数
        * </pre>
        *
-       * <code>string freeHcHeroUpTimes = 109;</code>
+       * <code>int32 freeHcHeroUpTimes = 109;</code>
        * @return The freeHcHeroUpTimes.
        */
-      public java.lang.String getFreeHcHeroUpTimes() {
-        java.lang.Object ref = freeHcHeroUpTimes_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          freeHcHeroUpTimes_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      @java.lang.Override
+      public int getFreeHcHeroUpTimes() {
+        return freeHcHeroUpTimes_;
       }
       /**
        * <pre>
        *已经使用过的每日免费看广告升级英雄次数
        * </pre>
        *
-       * <code>string freeHcHeroUpTimes = 109;</code>
-       * @return The bytes for freeHcHeroUpTimes.
-       */
-      public com.google.protobuf.ByteString
-          getFreeHcHeroUpTimesBytes() {
-        java.lang.Object ref = freeHcHeroUpTimes_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          freeHcHeroUpTimes_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *已经使用过的每日免费看广告升级英雄次数
-       * </pre>
-       *
-       * <code>string freeHcHeroUpTimes = 109;</code>
+       * <code>int32 freeHcHeroUpTimes = 109;</code>
        * @param value The freeHcHeroUpTimes to set.
        * @return This builder for chaining.
        */
-      public Builder setFreeHcHeroUpTimes(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      public Builder setFreeHcHeroUpTimes(int value) {
+        
         freeHcHeroUpTimes_ = value;
         onChanged();
         return this;
@@ -36351,93 +36453,40 @@ public final class PlayerMsg {
        *已经使用过的每日免费看广告升级英雄次数
        * </pre>
        *
-       * <code>string freeHcHeroUpTimes = 109;</code>
+       * <code>int32 freeHcHeroUpTimes = 109;</code>
        * @return This builder for chaining.
        */
       public Builder clearFreeHcHeroUpTimes() {
         
-        freeHcHeroUpTimes_ = getDefaultInstance().getFreeHcHeroUpTimes();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *已经使用过的每日免费看广告升级英雄次数
-       * </pre>
-       *
-       * <code>string freeHcHeroUpTimes = 109;</code>
-       * @param value The bytes for freeHcHeroUpTimes to set.
-       * @return This builder for chaining.
-       */
-      public Builder setFreeHcHeroUpTimesBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        freeHcHeroUpTimes_ = value;
+        freeHcHeroUpTimes_ = 0;
         onChanged();
         return this;
       }
 
-      private java.lang.Object freeHcHeroItemTimes_ = "";
+      private int freeHcHeroItemTimes_ ;
       /**
        * <pre>
        *已经使用过的每日免费看广告获得英雄升级道具次数
        * </pre>
        *
-       * <code>string freeHcHeroItemTimes = 110;</code>
+       * <code>int32 freeHcHeroItemTimes = 110;</code>
        * @return The freeHcHeroItemTimes.
        */
-      public java.lang.String getFreeHcHeroItemTimes() {
-        java.lang.Object ref = freeHcHeroItemTimes_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          freeHcHeroItemTimes_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      @java.lang.Override
+      public int getFreeHcHeroItemTimes() {
+        return freeHcHeroItemTimes_;
       }
       /**
        * <pre>
        *已经使用过的每日免费看广告获得英雄升级道具次数
        * </pre>
        *
-       * <code>string freeHcHeroItemTimes = 110;</code>
-       * @return The bytes for freeHcHeroItemTimes.
-       */
-      public com.google.protobuf.ByteString
-          getFreeHcHeroItemTimesBytes() {
-        java.lang.Object ref = freeHcHeroItemTimes_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          freeHcHeroItemTimes_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *已经使用过的每日免费看广告获得英雄升级道具次数
-       * </pre>
-       *
-       * <code>string freeHcHeroItemTimes = 110;</code>
+       * <code>int32 freeHcHeroItemTimes = 110;</code>
        * @param value The freeHcHeroItemTimes to set.
        * @return This builder for chaining.
        */
-      public Builder setFreeHcHeroItemTimes(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      public Builder setFreeHcHeroItemTimes(int value) {
+        
         freeHcHeroItemTimes_ = value;
         onChanged();
         return this;
@@ -36447,32 +36496,12 @@ public final class PlayerMsg {
        *已经使用过的每日免费看广告获得英雄升级道具次数
        * </pre>
        *
-       * <code>string freeHcHeroItemTimes = 110;</code>
+       * <code>int32 freeHcHeroItemTimes = 110;</code>
        * @return This builder for chaining.
        */
       public Builder clearFreeHcHeroItemTimes() {
         
-        freeHcHeroItemTimes_ = getDefaultInstance().getFreeHcHeroItemTimes();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *已经使用过的每日免费看广告获得英雄升级道具次数
-       * </pre>
-       *
-       * <code>string freeHcHeroItemTimes = 110;</code>
-       * @param value The bytes for freeHcHeroItemTimes to set.
-       * @return This builder for chaining.
-       */
-      public Builder setFreeHcHeroItemTimesBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        freeHcHeroItemTimes_ = value;
+        freeHcHeroItemTimes_ = 0;
         onChanged();
         return this;
       }
@@ -36844,10 +36873,10 @@ public final class PlayerMsg {
       "\001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Protos.MergeE" +
       "quipmentInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021m" +
       "ergeDayChallenge\030i \001(\0132\030.Protos.DayChall" +
-      "engeInfo\022#\n\007hcHeros\030k \001(\0132\022.Protos.HCHer" +
+      "engeInfo\022#\n\007hcHeros\030k \003(\0132\022.Protos.HCHer" +
       "oInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHer" +
-      "oUpTimes\030m \001(\t\022\033\n\023freeHcHeroItemTimes\030n " +
-      "\001(\t\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
+      "oUpTimes\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n " +
+      "\001(\005\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
       "\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003key\030\001" +
       " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013" +
       "\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchem" +

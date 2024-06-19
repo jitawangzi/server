@@ -251,10 +251,10 @@ message PlayerAllInfo{
    repeated MergeEquipmentInfo  mergeEquips = 103; //装备数据
    repeated int32  mergeEquipIds = 104; //安装的装备id
    DayChallengeInfo mergeDayChallenge   = 105; //每日挑战。
-   HCHeroInfo hcHeros   = 107; //合成的英雄数据
+   repeated HCHeroInfo hcHeros   = 107; //合成的英雄数据
    string curHcHeroUid = 108;  //当前使用的合成英雄uid
-   string freeHcHeroUpTimes = 109;  //已经使用过的每日免费看广告升级英雄次数
-   string freeHcHeroItemTimes = 110;  //已经使用过的每日免费看广告获得英雄升级道具次数
+   int32 freeHcHeroUpTimes = 109;  //已经使用过的每日免费看广告升级英雄次数
+   int32 freeHcHeroItemTimes = 110;  //已经使用过的每日免费看广告获得英雄升级道具次数
 
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼合并游戏独有的数据︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
