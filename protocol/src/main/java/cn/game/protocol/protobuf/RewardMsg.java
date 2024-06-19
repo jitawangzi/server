@@ -287,6 +287,33 @@ public final class RewardMsg {
      * <code>.Protos.MergeEquipmentInfo mergeEquip = 20;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder getMergeEquipOrBuilder();
+
+    /**
+     * <pre>
+     * 合成英雄奖励
+     * </pre>
+     *
+     * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+     * @return Whether the hcHero field is set.
+     */
+    boolean hasHcHero();
+    /**
+     * <pre>
+     * 合成英雄奖励
+     * </pre>
+     *
+     * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+     * @return The hcHero.
+     */
+    cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHero();
+    /**
+     * <pre>
+     * 合成英雄奖励
+     * </pre>
+     *
+     * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHeroOrBuilder();
   }
   /**
    * <pre>
@@ -465,6 +492,19 @@ public final class RewardMsg {
               if (subBuilder != null) {
                 subBuilder.mergeFrom(mergeEquip_);
                 mergeEquip_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 170: {
+              cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder subBuilder = null;
+              if (hcHero_ != null) {
+                subBuilder = hcHero_.toBuilder();
+              }
+              hcHero_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(hcHero_);
+                hcHero_ = subBuilder.buildPartial();
               }
 
               break;
@@ -881,6 +921,44 @@ public final class RewardMsg {
       return getMergeEquip();
     }
 
+    public static final int HCHERO_FIELD_NUMBER = 21;
+    private cn.game.protocol.protobuf.BaseMsg.HCHeroInfo hcHero_;
+    /**
+     * <pre>
+     * 合成英雄奖励
+     * </pre>
+     *
+     * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+     * @return Whether the hcHero field is set.
+     */
+    @java.lang.Override
+    public boolean hasHcHero() {
+      return hcHero_ != null;
+    }
+    /**
+     * <pre>
+     * 合成英雄奖励
+     * </pre>
+     *
+     * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+     * @return The hcHero.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHero() {
+      return hcHero_ == null ? cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.getDefaultInstance() : hcHero_;
+    }
+    /**
+     * <pre>
+     * 合成英雄奖励
+     * </pre>
+     *
+     * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHeroOrBuilder() {
+      return getHcHero();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -924,6 +1002,9 @@ public final class RewardMsg {
       }
       if (mergeEquip_ != null) {
         output.writeMessage(20, getMergeEquip());
+      }
+      if (hcHero_ != null) {
+        output.writeMessage(21, getHcHero());
       }
       unknownFields.writeTo(output);
     }
@@ -973,6 +1054,10 @@ public final class RewardMsg {
       if (mergeEquip_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(20, getMergeEquip());
+      }
+      if (hcHero_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(21, getHcHero());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1039,6 +1124,11 @@ public final class RewardMsg {
         if (!getMergeEquip()
             .equals(other.getMergeEquip())) return false;
       }
+      if (hasHcHero() != other.hasHcHero()) return false;
+      if (hasHcHero()) {
+        if (!getHcHero()
+            .equals(other.getHcHero())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1089,6 +1179,10 @@ public final class RewardMsg {
       if (hasMergeEquip()) {
         hash = (37 * hash) + MERGEEQUIP_FIELD_NUMBER;
         hash = (53 * hash) + getMergeEquip().hashCode();
+      }
+      if (hasHcHero()) {
+        hash = (37 * hash) + HCHERO_FIELD_NUMBER;
+        hash = (53 * hash) + getHcHero().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1289,6 +1383,12 @@ public final class RewardMsg {
           mergeEquip_ = null;
           mergeEquipBuilder_ = null;
         }
+        if (hcHeroBuilder_ == null) {
+          hcHero_ = null;
+        } else {
+          hcHero_ = null;
+          hcHeroBuilder_ = null;
+        }
         return this;
       }
 
@@ -1364,6 +1464,11 @@ public final class RewardMsg {
           result.mergeEquip_ = mergeEquip_;
         } else {
           result.mergeEquip_ = mergeEquipBuilder_.build();
+        }
+        if (hcHeroBuilder_ == null) {
+          result.hcHero_ = hcHero_;
+        } else {
+          result.hcHero_ = hcHeroBuilder_.build();
         }
         onBuilt();
         return result;
@@ -1442,6 +1547,9 @@ public final class RewardMsg {
         }
         if (other.hasMergeEquip()) {
           mergeMergeEquip(other.getMergeEquip());
+        }
+        if (other.hasHcHero()) {
+          mergeHcHero(other.getHcHero());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3020,6 +3128,161 @@ public final class RewardMsg {
           mergeEquip_ = null;
         }
         return mergeEquipBuilder_;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.HCHeroInfo hcHero_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder> hcHeroBuilder_;
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       * @return Whether the hcHero field is set.
+       */
+      public boolean hasHcHero() {
+        return hcHeroBuilder_ != null || hcHero_ != null;
+      }
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       * @return The hcHero.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo getHcHero() {
+        if (hcHeroBuilder_ == null) {
+          return hcHero_ == null ? cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.getDefaultInstance() : hcHero_;
+        } else {
+          return hcHeroBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       */
+      public Builder setHcHero(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo value) {
+        if (hcHeroBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          hcHero_ = value;
+          onChanged();
+        } else {
+          hcHeroBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       */
+      public Builder setHcHero(
+          cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder builderForValue) {
+        if (hcHeroBuilder_ == null) {
+          hcHero_ = builderForValue.build();
+          onChanged();
+        } else {
+          hcHeroBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       */
+      public Builder mergeHcHero(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo value) {
+        if (hcHeroBuilder_ == null) {
+          if (hcHero_ != null) {
+            hcHero_ =
+              cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.newBuilder(hcHero_).mergeFrom(value).buildPartial();
+          } else {
+            hcHero_ = value;
+          }
+          onChanged();
+        } else {
+          hcHeroBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       */
+      public Builder clearHcHero() {
+        if (hcHeroBuilder_ == null) {
+          hcHero_ = null;
+          onChanged();
+        } else {
+          hcHero_ = null;
+          hcHeroBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder getHcHeroBuilder() {
+        
+        onChanged();
+        return getHcHeroFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHeroOrBuilder() {
+        if (hcHeroBuilder_ != null) {
+          return hcHeroBuilder_.getMessageOrBuilder();
+        } else {
+          return hcHero_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.getDefaultInstance() : hcHero_;
+        }
+      }
+      /**
+       * <pre>
+       * 合成英雄奖励
+       * </pre>
+       *
+       * <code>.Protos.HCHeroInfo hcHero = 21;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder> 
+          getHcHeroFieldBuilder() {
+        if (hcHeroBuilder_ == null) {
+          hcHeroBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder>(
+                  getHcHero(),
+                  getParentForChildren(),
+                  isClean());
+          hcHero_ = null;
+        }
+        return hcHeroBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -5845,7 +6108,7 @@ public final class RewardMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017RewardMsg.proto\022\006Protos\032\rBaseMsg.proto" +
-      "\"\200\003\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
+      "\"\244\003\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
       "AssetInfo\022\036\n\004item\030\002 \001(\0132\020.Protos.ItemInf" +
       "o\022\036\n\004role\030\003 \001(\0132\020.Protos.HeroInfo\022 \n\005equ" +
       "ip\030\007 \001(\0132\021.Protos.EquipInfo\022(\n\007fashion\030\010" +
@@ -5854,13 +6117,13 @@ public final class RewardMsg {
       "otos.DragonInfo\022,\n\013dragonSkill\030\013 \001(\0132\027.P" +
       "rotos.DragonSkillInfo\022$\n\005sword\030\014 \001(\0132\025.P" +
       "rotos.HeroSwordInfo\022.\n\nmergeEquip\030\024 \001(\0132" +
-      "\032.Protos.MergeEquipmentInfo\":\n\023RewardPus" +
-      "h_55000501\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rew" +
-      "ardInfo\"6\n\022SpendPush_55001501\022 \n\005spend\030\001" +
-      " \003(\0132\021.Protos.GoodsInfo\">\n\027RewardShowPus" +
-      "h_55002501\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rew" +
-      "ardInfoB\033\n\031cn.game.protocol.protobufb\006pr" +
-      "oto3"
+      "\032.Protos.MergeEquipmentInfo\022\"\n\006hcHero\030\025 " +
+      "\001(\0132\022.Protos.HCHeroInfo\":\n\023RewardPush_55" +
+      "000501\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
+      "nfo\"6\n\022SpendPush_55001501\022 \n\005spend\030\001 \003(\013" +
+      "2\021.Protos.GoodsInfo\">\n\027RewardShowPush_55" +
+      "002501\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
+      "nfoB\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5872,7 +6135,7 @@ public final class RewardMsg {
     internal_static_Protos_RewardInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_RewardInfo_descriptor,
-        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", "DragonSkill", "Sword", "MergeEquip", });
+        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", "DragonSkill", "Sword", "MergeEquip", "HcHero", });
     internal_static_Protos_RewardPush_55000501_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_RewardPush_55000501_fieldAccessorTable = new
