@@ -222,7 +222,7 @@ public class PlayerHelper {
 		try {
 			GoodsModule goodsModule = player.getGoodsModule(id);
 			rewards = goodsModule.addReward(id, value, opType);
-			log.info("player[{}] addReward  id[{}]count[{}]", player.getPlayerId(), id, value);
+			log.info("player[{}] addReward  id[{}]count[{}]opType[{}]", player.getPlayerId(), id, value, opType);
 			player.handleEvent(EventTypeEnum.GetItem, id, value);
 			BIHelper.resrouceUpdate(player, id, value, opType, true);
 			if (notify && !rewards.isEmpty()) {

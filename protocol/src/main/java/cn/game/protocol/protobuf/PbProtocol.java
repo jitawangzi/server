@@ -114,6 +114,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HCHeroStarUpResponse_26000004 = 0x26000004;    
 	public final static int HCHeroBattleRequest_26000005 = 0x26000005;    //切换使用的英雄  
 	public final static int HCHeroBattleResponse_26000006 = 0x26000006;    
+	public final static int HCHeroCompositeRequest_26000007 = 0x26000007;    //使用碎片合成英雄  
+	public final static int HCHeroCompositeResponse_26000008 = 0x26000008;    
 	public final static int HCHeroAdsRequest_26000009 = 0x26000009;    //看广告获得英雄碎片  
 	public final static int HCHeroAdsResponse_2600000a = 0x2600000a;    
 	public final static int HeroUpLevelRequest_16000001 = 0x16000001;    //英雄升级  
@@ -467,6 +469,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(HCHeroBattleRequest_26000005, cn.game.protocol.protobuf.HCHeroMsg.HCHeroBattleRequest_26000005.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HCHeroBattleResponse_26000006, cn.game.protocol.protobuf.HCHeroMsg.HCHeroBattleResponse_26000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroCompositeRequest_26000007, cn.game.protocol.protobuf.HCHeroMsg.HCHeroCompositeRequest_26000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroCompositeResponse_26000008, cn.game.protocol.protobuf.HCHeroMsg.HCHeroCompositeResponse_26000008.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HCHeroAdsRequest_26000009, cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009.getDefaultInstance()
 				.getParserForType());
@@ -894,6 +900,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("HCHeroStarUpResponse_26000004", 0x26000004);
 		nameIdMap.put("HCHeroBattleRequest_26000005", 0x26000005);
 		nameIdMap.put("HCHeroBattleResponse_26000006", 0x26000006);
+		nameIdMap.put("HCHeroCompositeRequest_26000007", 0x26000007);
+		nameIdMap.put("HCHeroCompositeResponse_26000008", 0x26000008);
 		nameIdMap.put("HCHeroAdsRequest_26000009", 0x26000009);
 		nameIdMap.put("HCHeroAdsResponse_2600000a", 0x2600000a);
 		nameIdMap.put("HeroUpLevelRequest_16000001", 0x16000001);
