@@ -112,7 +112,9 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
-		resp.addAllId(daoHeartBattle.getRewardBattleIds());
+		if (daoHeartBattle != null) {
+			resp.addAllId(daoHeartBattle.getRewardBattleIds());
+		}
 
 		client.sendProtocol(resp);
 	}

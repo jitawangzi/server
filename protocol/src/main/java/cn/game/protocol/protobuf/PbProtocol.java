@@ -108,6 +108,14 @@ public class PbProtocol implements ProtocolParser {
 	public final static int GmPlayerLogouttResponse_7700000a = 0x7700000a;    //响应踢下线  
 	public final static int GmPlayerMailRequest_77000010 = 0x77000010;    //gm给指定玩家发邮件  
 	public final static int GmPlayerMailResponse_77000011 = 0x77000011;    
+	public final static int HCHeroUpLevelRequest_26000001 = 0x26000001;    //英雄升级  
+	public final static int HCHeroUpLevelResponse_26000002 = 0x26000002;    
+	public final static int HCHeroStarUpRequest_26000003 = 0x26000003;    //英雄升星，也就是觉醒  
+	public final static int HCHeroStarUpResponse_26000004 = 0x26000004;    
+	public final static int HCHeroBattleRequest_26000005 = 0x26000005;    //切换使用的英雄  
+	public final static int HCHeroBattleResponse_26000006 = 0x26000006;    
+	public final static int HCHeroAdsRequest_26000009 = 0x26000009;    //看广告获得英雄碎片  
+	public final static int HCHeroAdsResponse_2600000a = 0x2600000a;    
 	public final static int HeroUpLevelRequest_16000001 = 0x16000001;    //英雄升级  
 	public final static int HeroUpLevelResponse_16000002 = 0x16000002;    
 	public final static int HeroUpLevelMaxRequest_16000021 = 0x16000021;    //英雄一键升级,自动升级到最高级。  
@@ -447,6 +455,22 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(GmPlayerMailRequest_77000010, cn.game.protocol.protobuf.GmMsg.GmPlayerMailRequest_77000010.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(GmPlayerMailResponse_77000011, cn.game.protocol.protobuf.GmMsg.GmPlayerMailResponse_77000011.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroUpLevelRequest_26000001, cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelRequest_26000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroUpLevelResponse_26000002, cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelResponse_26000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroStarUpRequest_26000003, cn.game.protocol.protobuf.HCHeroMsg.HCHeroStarUpRequest_26000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroStarUpResponse_26000004, cn.game.protocol.protobuf.HCHeroMsg.HCHeroStarUpResponse_26000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroBattleRequest_26000005, cn.game.protocol.protobuf.HCHeroMsg.HCHeroBattleRequest_26000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroBattleResponse_26000006, cn.game.protocol.protobuf.HCHeroMsg.HCHeroBattleResponse_26000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroAdsRequest_26000009, cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCHeroAdsResponse_2600000a, cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsResponse_2600000a.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroUpLevelRequest_16000001, cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.getDefaultInstance()
 				.getParserForType());
@@ -864,6 +888,14 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("GmPlayerLogouttResponse_7700000a", 0x7700000a);
 		nameIdMap.put("GmPlayerMailRequest_77000010", 0x77000010);
 		nameIdMap.put("GmPlayerMailResponse_77000011", 0x77000011);
+		nameIdMap.put("HCHeroUpLevelRequest_26000001", 0x26000001);
+		nameIdMap.put("HCHeroUpLevelResponse_26000002", 0x26000002);
+		nameIdMap.put("HCHeroStarUpRequest_26000003", 0x26000003);
+		nameIdMap.put("HCHeroStarUpResponse_26000004", 0x26000004);
+		nameIdMap.put("HCHeroBattleRequest_26000005", 0x26000005);
+		nameIdMap.put("HCHeroBattleResponse_26000006", 0x26000006);
+		nameIdMap.put("HCHeroAdsRequest_26000009", 0x26000009);
+		nameIdMap.put("HCHeroAdsResponse_2600000a", 0x2600000a);
 		nameIdMap.put("HeroUpLevelRequest_16000001", 0x16000001);
 		nameIdMap.put("HeroUpLevelResponse_16000002", 0x16000002);
 		nameIdMap.put("HeroUpLevelMaxRequest_16000021", 0x16000021);
