@@ -1,5 +1,9 @@
 package cn.game.core.net.client;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.formula.functions.T;
 
 import cn.game.core.net.protocol.IProtocol;
@@ -13,6 +17,11 @@ public abstract class AbstractNetClient implements NetClient
 	protected String ip;
 	protected ContextInternal context;
 	protected T player;
+
+	// 消息序号: 消息名，消息发送时间，纳秒
+	public Map<Integer, Pair<String, Long>> sendMessages = new ConcurrentHashMap<>();
+	// 消息序号: 消息名，消息接收时间，纳秒
+	public Map<Integer, Pair<String, Long>> recvMessages = new ConcurrentHashMap<>();
 
 	@Override
 	public long getPlayerId() {

@@ -11,5 +11,4 @@
 /src/main/resources/xml
 /velocity.log
 /src/main/java/cn/game/protocol/generated/**
-/message.xlsx
 /messages.csv

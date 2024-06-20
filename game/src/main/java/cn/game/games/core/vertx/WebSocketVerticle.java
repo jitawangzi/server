@@ -1,10 +1,12 @@
 package cn.game.games.core.vertx;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.Message;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.vertx.VxHolder;
@@ -63,7 +65,9 @@ public class WebSocketVerticle extends AbstractVerticle {
 						client.setContext(context);
 						client.setIp(ws.remoteAddress().host());
 					}
-
+					if (ServerContext.getInstance().getRunMode().isPressure()) {
+						client.sendMessages.put(seq, Pair.of(message.getClass().getSimpleName(), System.nanoTime()));
+					}
 					ProtobufProtocol protocol = new ProtobufProtocol(msgID, message, seq);
 					client.setLastRecvPacketTime(System.currentTimeMillis());
 					processor.process(client, protocol);

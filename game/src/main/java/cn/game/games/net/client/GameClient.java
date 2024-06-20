@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLite.Builder;
 import com.google.protobuf.TextFormat;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.protocol.bytes.BaseByteProtocol;
@@ -137,6 +139,9 @@ public class GameClient extends AbstractNetClient {
 							curMessageSeq);
 				}
 			}
+			if (ServerContext.getInstance().getRunMode().isPressure()) {
+				recvMessages.put(curMessageSeq, Pair.of(message.getClass().getSimpleName(), System.nanoTime()));
+			}
 			return true;
 		}
 		log.warn("player[{}] write message[{}] err,sessionId[{}],session[{}]", playerId, TextFormat.shortDebugString((Message) message),
@@ -170,7 +175,6 @@ public class GameClient extends AbstractNetClient {
 				}
 				list.add(protocol);
 			}
-			
 			return true;
 		}
 		return false;
@@ -254,7 +258,7 @@ public class GameClient extends AbstractNetClient {
 			if (now - firstPacketTime < 1000) {
 //				// 超过消息数量，关闭连接
 				GameClientManager.getInstance().removeGameClient(this);
-				log.warn("GameClient[{}] Requested too frequently, force disconnect", toDetailString());
+				log.warn("GameClient[{}] Requested too frequently, force disconnect,seq[{}]", toDetailString(), protocol.getSeq());
 			} else {
 				packetMaxCountPerSecond = 0;
 				firstPacketTime = now;

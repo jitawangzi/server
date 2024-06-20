@@ -65,6 +65,9 @@ public class PointRewardModule extends BasePlayerModule {
 		int[][] fixRewardStage = null;
 		int pointType = 0;
 		OpType opType = null ; 
+		if (subId == 0) {
+			return ResultObject.fail(ErrorMsgEnum.player_data_not_found.getId());
+		}
 		if (type == PointRewardType.QUEST) {
 			QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(subId);
 			pointType = questPointRewardConfig.PointType;

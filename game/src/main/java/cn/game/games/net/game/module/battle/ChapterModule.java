@@ -219,6 +219,11 @@ public class ChapterModule extends BasePlayerModule  {
 	 * @return
 	 */
 	public int calcPatrolGold(int hours) {
+		PatrolConfig patrolConfig = PatrolManager.instance().get(getPatrolBattleId());
+		return patrolConfig.IncomeGold * 60 * hours;
+	}
+
+	public int getPatrolBattleId() {
 		int battleId = 0;
 		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(1);
 		for (BattleConfig battleConfig : battleTypeList) {
@@ -227,8 +232,7 @@ public class ChapterModule extends BasePlayerModule  {
 				break;
 			}
 		}
-		PatrolConfig patrolConfig = PatrolManager.instance().get(battleId);
-		return patrolConfig.IncomeGold * 60 * hours;
+		return battleId;
 	}
 
 	@Deprecated

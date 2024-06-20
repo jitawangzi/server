@@ -584,7 +584,7 @@ public class HeroHandler extends BaseHandler {
 		}
 
 		// 在这里先把万能耗材扣了,之后只扣卡
-		PlayerHelper.delResources(player, OmniItemID, OmniItemCount, null, false);
+		PlayerHelper.delResources(player, OmniItemID, OmniItemCount, OpType.HeroConflate, false);
 		return true;
 	}
 

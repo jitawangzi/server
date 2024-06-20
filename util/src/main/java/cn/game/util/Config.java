@@ -107,6 +107,8 @@ public final class Config {
 	public static String  wechat_midas_offerId;
 	public static byte  wechat_midas_env;
 	public static String  wechat_midas_AppKey;
+	// 消息统计的时间间隔，分钟
+	public static int messageStatisticsInterval;
 
 	/**
 	 *
@@ -164,7 +166,8 @@ public final class Config {
 			wechat_midas_env = Byte.parseByte(initialProp.getProperty("wechat_midas_env", ""));
 			wechat_midas_AppKey = initialProp.getProperty("wechat_midas_AppKey", "");
 			
-			
+			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "1"));
+
 			if (modules.length > 0) {
 				modulesDisabled = new int[modules.length];
 				for (int i = 0; i < modules.length; i++) {

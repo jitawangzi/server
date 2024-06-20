@@ -35,6 +35,7 @@ import cn.game.games.net.data.remote.DataGameServerInterface;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PressureTestManager;
 import cn.game.games.net.game.remote.GameRemoteServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.protocol.generated.config.OldGlobalConst;
@@ -172,6 +173,7 @@ public class GameServer implements GameServerMBean {
 //		ChatManager.getInstance().init();
 		PlayerManager.getInstance().init();
 		ClassManager.getInstance().init();
+		PressureTestManager.getInstance().init();
 		BIHelper.start();
 
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,

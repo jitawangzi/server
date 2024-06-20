@@ -129,6 +129,10 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		if (daoHeartBattle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
 		List<Integer> rewardBattleIds = daoHeartBattle.getRewardBattleIds();
 		if (rewardBattleIds.contains(id)) {
 			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
@@ -461,7 +465,7 @@ public class ChapterHandler extends BaseHandler {
 			hours = minute / 60;
 		}
 
-		PatrolConfig patrolConfig = PatrolManager.instance().get(chapterModule.getMainBattleHighest());
+		PatrolConfig patrolConfig = PatrolManager.instance().get(chapterModule.getPatrolBattleId());
 
 		float incomeRate = player.getWelfareValue(WelfareTypeEnum.PatrolIncome);
 		float rate = 1 + (incomeRate / 10000);
@@ -558,6 +562,9 @@ public class ChapterHandler extends BaseHandler {
 //				return;
 //			}
 			Chapter chapter = chapterModule.getChapter(id);
+			if (chapter == null) {
+				continue;
+			}
 			List<Integer> rewards = chapter.getRewards();
 			if (rewards.contains(index)) {
 				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());

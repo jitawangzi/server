@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.game.util.Rnd;
 
 public class GG {
@@ -24,11 +21,6 @@ public class GG {
 		System.out.println(System.currentTimeMillis());
 		System.out.println(System.nanoTime());
 
-		List<Integer> list = new ArrayList<>();
-
-		list.add(1000000);
-
-		System.out.println(list.contains(Integer.valueOf(1000000)));
 	}
 
 	private static void test() {
