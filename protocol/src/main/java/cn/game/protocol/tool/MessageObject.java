@@ -140,8 +140,7 @@ public class MessageObject implements Comparable<MessageObject> {
 
 	@Override
 	public int compareTo(MessageObject o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.getShortName().compareTo(o.getShortName());
 	}
 	
 	public List<MessageField> getFields() {

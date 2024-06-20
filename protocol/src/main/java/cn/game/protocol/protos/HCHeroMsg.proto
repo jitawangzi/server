@@ -45,6 +45,7 @@ message HCHeroCompositeResponse_26000008{
 
 //看广告获得英雄碎片
 message HCHeroAdsRequest_26000009{
+	int32 id = 1; // HCHero表id
 }
 
 message HCHeroAdsResponse_2600000a{

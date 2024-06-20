@@ -4335,6 +4335,16 @@ public final class HCHeroMsg {
   public interface HCHeroAdsRequest_26000009OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.HCHeroAdsRequest_26000009)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * HCHero表id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
   }
   /**
    * <pre>
@@ -4385,6 +4395,11 @@ public final class HCHeroMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -4417,6 +4432,21 @@ public final class HCHeroMsg {
               cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009.class, cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009.Builder.class);
     }
 
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * HCHero表id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4431,6 +4461,9 @@ public final class HCHeroMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -4440,6 +4473,10 @@ public final class HCHeroMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -4455,6 +4492,8 @@ public final class HCHeroMsg {
       }
       cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009 other = (cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009) obj;
 
+      if (getId()
+          != other.getId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4466,6 +4505,8 @@ public final class HCHeroMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4603,6 +4644,8 @@ public final class HCHeroMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        id_ = 0;
+
         return this;
       }
 
@@ -4629,6 +4672,7 @@ public final class HCHeroMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009 buildPartial() {
         cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009 result = new cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009(this);
+        result.id_ = id_;
         onBuilt();
         return result;
       }
@@ -4677,6 +4721,9 @@ public final class HCHeroMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009 other) {
         if (other == cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -4703,6 +4750,49 @@ public final class HCHeroMsg {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       * HCHero表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * HCHero表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * HCHero表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
         return this;
       }
       @java.lang.Override
@@ -5732,10 +5822,11 @@ public final class HCHeroMsg {
       "eroBattleResponse_26000006\"-\n\037HCHeroComp" +
       "ositeRequest_26000007\022\n\n\002id\030\001 \001(\005\"D\n HCH" +
       "eroCompositeResponse_26000008\022 \n\004hero\030\001 " +
-      "\001(\0132\022.Protos.HCHeroInfo\"\033\n\031HCHeroAdsRequ" +
-      "est_26000009\"@\n\032HCHeroAdsResponse_260000" +
-      "0a\022\"\n\006reward\030\001 \003(\0132\022.Protos.RewardInfoB\033" +
-      "\n\031cn.game.protocol.protobufb\006proto3"
+      "\001(\0132\022.Protos.HCHeroInfo\"\'\n\031HCHeroAdsRequ" +
+      "est_26000009\022\n\n\002id\030\001 \001(\005\"@\n\032HCHeroAdsRes" +
+      "ponse_2600000a\022\"\n\006reward\030\001 \003(\0132\022.Protos." +
+      "RewardInfoB\033\n\031cn.game.protocol.protobufb" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5796,7 +5887,7 @@ public final class HCHeroMsg {
     internal_static_Protos_HCHeroAdsRequest_26000009_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HCHeroAdsRequest_26000009_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Id", });
     internal_static_Protos_HCHeroAdsResponse_2600000a_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_HCHeroAdsResponse_2600000a_fieldAccessorTable = new

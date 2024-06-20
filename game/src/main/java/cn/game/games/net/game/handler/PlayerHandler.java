@@ -128,6 +128,8 @@ public class PlayerHandler extends BaseHandler {
 //		putInvoker(PbProtocol.PlayerLoginRequest_01000055, this::pcChoose);
 		putInvoker(PbProtocol.PlayerReconnecRequest_01000065, this::reconnect);
 		putInvoker(PbProtocol.PlayerNameRequest_01000011, this::rename);
+		putInvoker(PbProtocol.PlayerHeadRequest_01000013, this::head);
+		putInvoker(PbProtocol.PlayerHeadFrameRequest_01000015, this::headFrame);
 		putInvoker(PbProtocol.PlayerGenderRequest_01000017, this::gender);
 //		putInvoker(PbProtocol.ItemUseRequest_01000050, this::useItem);
 		putInvoker(PbProtocol.PlayerCloudBoxRequest_01000042, this::cloudBox);

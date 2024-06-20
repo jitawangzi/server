@@ -14,9 +14,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.keyvalue.MultiKey;
+import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,10 +30,12 @@ public class GlobalMessageStatistics {
 
 	private static final GlobalMessageStatistics instance = new GlobalMessageStatistics();
 
+	public MultiKeyMap<Long, Pair<String, Long>> globalSendMessages = new MultiKeyMap<Long, Pair<String, Long>>();
+	public MultiKeyMap<Long, Pair<String, Long>> globalRecvMessages = new MultiKeyMap<Long, Pair<String, Long>>();
 	// 全局消息发送记录： (客户端ID, 消息序号) => 消息名, 消息发送时间
-	public Map<String, Pair<String, Long>> globalSendMessages = new ConcurrentHashMap<>();
+//	public Map<String, Pair<String, Long>> globalSendMessages = new ConcurrentHashMap<>();
 	// 全局消息接收记录： (客户端ID, 消息序号) => 消息名, 消息接收时间
-	public Map<String, Pair<String, Long>> globalRecvMessages = new ConcurrentHashMap<>();
+//	public Map<String, Pair<String, Long>> globalRecvMessages = new ConcurrentHashMap<>();
 
 	public static GlobalMessageStatistics getInstance() {
 		return instance;
@@ -39,18 +44,18 @@ public class GlobalMessageStatistics {
 	private void mergeAllClientData(Collection<? extends AbstractNetClient> clients) {
 		for (AbstractNetClient client : clients) {
 			client.sendMessages.forEach((k, v) -> {
-				globalSendMessages.put(client.getPlayerId() + "_" + k, v);
+				globalSendMessages.put(client.getPlayerId(), k.longValue(), v);
 			});
 			client.recvMessages.forEach((k, v) -> {
-				globalRecvMessages.put(client.getPlayerId() + "_" + k, v);
+				globalRecvMessages.put(client.getPlayerId(), k.longValue(), v);
 			});
 		}
 	}
 
-	private void mergeClientData(Map<String, Pair<String, Long>> sendMessages, Map<String, Pair<String, Long>> recvMessages) {
-		globalSendMessages.putAll(sendMessages);
-		globalRecvMessages.putAll(recvMessages);
-	}
+//	private void mergeClientData(Map<String, Pair<String, Long>> sendMessages, Map<String, Pair<String, Long>> recvMessages) {
+//		globalSendMessages.putAll(sendMessages);
+//		globalRecvMessages.putAll(recvMessages);
+//	}
 
 	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients) throws IOException {
 		Calendar c = Calendar.getInstance();
@@ -72,7 +77,7 @@ public class GlobalMessageStatistics {
 
 	private void calculateStatistics(String outputFilePath) throws IOException {
 		// 每个消息的所有响应时间
-		Map<String, List<Double>> responseTimes = new HashMap<>();
+		Map<String, List<Double>> responseTimes = new TreeMap<>();
 		// 每个消息的请求数量
 		Map<String, Long> requestCountMap = new HashMap<>();
 
@@ -80,8 +85,8 @@ public class GlobalMessageStatistics {
 //		Map<Long, Integer>
 
 		// 匹配发送接收消息，计算响应时间
-        for (Map.Entry<String, Pair<String, Long>> sendEntry : globalSendMessages.entrySet()) {
-            String key = sendEntry.getKey();
+		for (Entry<MultiKey<? extends Long>, Pair<String, Long>> sendEntry : globalSendMessages.entrySet()) {
+			MultiKey<? extends Long> key = sendEntry.getKey();
             String sendMsgName = sendEntry.getValue().getLeft();
             long sendTime = sendEntry.getValue().getRight();
 

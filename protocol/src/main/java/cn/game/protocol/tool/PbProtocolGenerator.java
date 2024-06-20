@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -154,6 +155,7 @@ public class PbProtocolGenerator {
 
 		// 生成前端用的json文件
 
+		Collections.sort(messages);
 		// 生成协议列表，压测使用。
 		genMessageDescCSV(messages);
 

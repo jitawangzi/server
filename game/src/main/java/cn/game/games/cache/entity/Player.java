@@ -363,7 +363,7 @@ public class Player  {
 				getGameClient().sendProtocol(paymentOrderPush_15010020); 
 				getPlayerModule().addPayCallback(r.body().getOrderId(), promise); 
 			}).onFailure(r -> {
-				log.error("",r) ;
+				log.error("登录服创建充值订单失败： ", r);
 				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.unknown.getId()); 
 				promise.complete(false);
 			}); 
