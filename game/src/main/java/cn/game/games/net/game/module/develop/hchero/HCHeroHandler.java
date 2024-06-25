@@ -75,6 +75,7 @@ public class HCHeroHandler extends BaseHandler {
 	}
 	private void adsItem(NetClient client, Object message) {
 		HCHeroAdsRequest_26000009 req = (HCHeroAdsRequest_26000009) message;
+		int id = req.getId();
 		HCHeroAdsResponse_2600000a.Builder resp = HCHeroAdsResponse_2600000a.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HCHeroModule heroModule = player.getHCHeroModule();
@@ -86,8 +87,11 @@ public class HCHeroHandler extends BaseHandler {
 		player.handleEvent(EventTypeEnum.WatchAds);
 		heroModule.setFreeHcHeroItemTimes(freeHcHeroItemTimes + 1);
 		// 给东西
-		HCHero curHCHero = heroModule.getCurHCHero();
-		HCHeroConfig hcHeroConfig = HCHeroManager.instance().get(curHCHero.getConfigId());
+		HCHeroConfig hcHeroConfig = HCHeroManager.instance().get(id);
+		if (hcHeroConfig.Visible == 0) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
 		List<RewardInfo> resources = PlayerHelper.addResources(player, hcHeroConfig.ItemID, GlobalConst.ADStarPiece, OpType.HCHeroPieceAds);
 		resp.addAllReward(resources);
 		client.sendProtocol(resp.build());
