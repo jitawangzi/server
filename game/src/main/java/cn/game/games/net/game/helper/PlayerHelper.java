@@ -70,7 +70,10 @@ import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
+import cn.game.protocol.protobuf.BaseMsg.HCHeroInfo;
+import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
+import cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
@@ -212,6 +215,38 @@ public class PlayerHelper {
 		if (assetBuilder.getId() > 0) {
 			rewards.add(RewardInfo.newBuilder().setAsset(assetBuilder.build()).build());
 		}
+	}
+
+	/** 
+	 * 根据现有的奖励，在给n倍的奖励
+	 * @param player
+	 * @param rewards
+	 * @param multiple
+	 * @return
+	 */
+	public static List<RewardInfo> multipleRewards(Player player, List<RewardInfo> rewards, int multiple) {
+		List<RewardInfo> ret = new ArrayList<>();
+		Iterator<RewardInfo> iterator = rewards.iterator();
+		while (iterator.hasNext()) {
+			RewardMsg.RewardInfo rewardInfo = (RewardMsg.RewardInfo) iterator.next();
+			if (rewardInfo.hasItem()) {
+				ItemInfo item = rewardInfo.getItem();
+				ret.addAll(addResources(player, item.getId(), item.getCount() * multiple, OpType.BattleEndMultipleReward));
+			} else if (rewardInfo.hasAsset()) {
+				AssetInfo asset = rewardInfo.getAsset();
+				ret.addAll(addResources(player, asset.getId(), (int) asset.getCount() * multiple, OpType.BattleEndMultipleReward));
+			} else if (rewardInfo.hasRole()) {
+				HeroInfo info = rewardInfo.getRole();
+				ret.addAll(addResources(player, info.getConfigId(), multiple, OpType.BattleEndMultipleReward));
+			} else if (rewardInfo.hasMergeEquip()) {
+				MergeEquipmentInfo info = rewardInfo.getMergeEquip();
+				ret.addAll(addResources(player, info.getId(), multiple, OpType.BattleEndMultipleReward));
+			} else if (rewardInfo.hasHcHero()) {
+				HCHeroInfo info = rewardInfo.getHcHero();
+				ret.addAll(addResources(player, info.getConfigId(), multiple, OpType.BattleEndMultipleReward));
+			}
+		}
+		return ret;
 	}
 
 	public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType, boolean notify) {

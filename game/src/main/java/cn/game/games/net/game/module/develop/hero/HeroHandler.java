@@ -227,12 +227,14 @@ public class HeroHandler extends BaseHandler {
 			if (loopCount >= 10000) {
 				throw new RuntimeException("maybe infinite loop，loopCount: " + loopCount);
 			}
+//			if (HeroHelper.isAllHeroMaxLevel(heros)) {
+//				break loop;
+//			}
+			boolean isAllHeroMaxLevel = true;
 			for (Hero hero : heros) {
 				int heroMaxLevel = HeroHelper.getHeroMaxLevel(hero);
 				int curLevel = hero.getLevel();
-				if (HeroHelper.isAllHeroMaxLevel(heros)) {
-					break loop;
-				}
+
 				if (curLevel >= heroMaxLevel) {
 					continue;
 				}
@@ -250,6 +252,10 @@ public class HeroHandler extends BaseHandler {
 				updateHeros.add(hero);
 //				upCount++;
 				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+				isAllHeroMaxLevel = false;
+			}
+			if (isAllHeroMaxLevel) {
+				break;
 			}
 			loopCount++;
 		}

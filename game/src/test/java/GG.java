@@ -1,3 +1,6 @@
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import cn.game.util.Rnd;
 
 public class GG {
@@ -21,6 +24,10 @@ public class GG {
 		System.out.println(System.currentTimeMillis());
 		System.out.println(System.nanoTime());
 
+		AtomicInteger seq = new AtomicInteger(1);
+		System.out.println(seq.getAndIncrement());
+		System.out.println(seq.get());
+		System.out.println(UUID.randomUUID().toString().length());
 	}
 
 	private static void test() {

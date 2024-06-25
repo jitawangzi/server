@@ -19,6 +19,7 @@ public enum LoggerType {
     Elapsed,                                                                    // 时间统计日志
     Combat,                                                                     // 战斗日志
     NetCheck,                                                                     // 网络监控
+	SystemOut,
 
     /* *********************** 一级 ************************* */
     heart("v3"),                                                     // 心跳

@@ -73,6 +73,10 @@
             <AppenderRef ref="Stdout"/>
         </Root>
 
+        <Async name="AsyncCommonError">
+            <AppenderRef ref="CommonError"/>
+        </Async>
+        
         <AsyncLogger name="System" level="info" includeLocation="false" additivity="true">
             <AppenderRef ref="System"/>
         </AsyncLogger>
@@ -242,8 +246,22 @@
     <Appenders>
         <!--log格式采用'|'为分列符号,方便日志分析程序进行分列处理,并且带时区,用以跨地区日志分析使用-->
         <Console name="Console">
-            <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%-6c|%m%n"/>
+            <PatternLayout charset="UTF-8" pattern="[%t] %-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%-6c|%m%n"/>
         </Console>
+
+
+        <!-- 按天滚动的错误日志文件输出 -->
+        <RollingRandomAccessFile name="CommonError" fileName="${path_system}/err.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/err.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
 
 <RollingRandomAccessFile name="Stdout"
                          fileName="${path_system}/${file_stdout}${extension}"

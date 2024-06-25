@@ -40,6 +40,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
 	public final static int BattleFieldEndRequest_13000003 = 0x13000003;    //结束关卡战斗请求  
 	public final static int BattleFieldEndResponse_13000004 = 0x13000004;    //结束关卡战斗  
+	public final static int BattleShareRequest_13000007 = 0x13000007;    //看广告并分享之后额外获得xx倍奖励  
+	public final static int BattleShareResponse_13000008 = 0x13000008;    //看广告并分享之后额外获得xx倍奖励  
 	public final static int BattleRewardRequest_13000022 = 0x13000022;    //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。  
 	public final static int BattleRewardResponse_13000023 = 0x13000023;    
 	public final static int HCBattleRewardRequest_13000027 = 0x13000027;    //合成领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。  
@@ -321,6 +323,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleFieldEndRequest_13000003, cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleFieldEndResponse_13000004, cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleShareRequest_13000007, cn.game.protocol.protobuf.BattleMsg.BattleShareRequest_13000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleShareResponse_13000008, cn.game.protocol.protobuf.BattleMsg.BattleShareResponse_13000008.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleRewardRequest_13000022, cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022.getDefaultInstance()
 				.getParserForType());
@@ -826,6 +832,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleFieldStartResponse_13000002", 0x13000002);
 		nameIdMap.put("BattleFieldEndRequest_13000003", 0x13000003);
 		nameIdMap.put("BattleFieldEndResponse_13000004", 0x13000004);
+		nameIdMap.put("BattleShareRequest_13000007", 0x13000007);
+		nameIdMap.put("BattleShareResponse_13000008", 0x13000008);
 		nameIdMap.put("BattleRewardRequest_13000022", 0x13000022);
 		nameIdMap.put("BattleRewardResponse_13000023", 0x13000023);
 		nameIdMap.put("HCBattleRewardRequest_13000027", 0x13000027);

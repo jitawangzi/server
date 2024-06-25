@@ -139,8 +139,8 @@ public class GameClient extends AbstractNetClient {
 							curMessageSeq);
 				}
 			}
-			if (ServerContext.getInstance().getRunMode().isPressure()) {
-				recvMessages.put(curMessageSeq, Pair.of(message.getClass().getSimpleName(), System.nanoTime()));
+			if (ServerContext.getInstance().getRunMode().isPressure() && ServerContext.getInstance().isPressureDev()) {
+				recvMessages.putIfAbsent(curMessageSeq, Pair.of(message.getClass().getSimpleName(), System.nanoTime()));
 			}
 			return true;
 		}

@@ -80,6 +80,8 @@ public enum OpType{
 	llustrationsReward(148, "英雄图鉴奖励"),
 	BattleStart(160, "战役开始"),
 
+	BattleEndMultipleReward(161, "战役结束多倍奖励"),
+
 	BoxOpen(200, "合并开宝箱"),
 	MergeEquipLvUp(201, "合并装备升级"),
 	HCHeroPieceAds(203, "看广告获得觉醒合成英雄碎片"),

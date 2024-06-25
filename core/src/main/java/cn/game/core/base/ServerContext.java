@@ -10,6 +10,7 @@ import cn.game.util.ServerType;
 public class ServerContext {
 	private static final ServerContext instance = new ServerContext();
 	private static final String serverKey = "server.run.mode";
+	private boolean pressureDev = Boolean.getBoolean("pressureDev");
 	private RunMode runMode = RunMode.Production;
 
 	private ServerContext() {
@@ -62,6 +63,10 @@ public class ServerContext {
 			this.runMode = RunMode.valueOf(mode.toUpperCase());
 		}
 
+	}
+	
+	public boolean isPressureDev() {
+		return pressureDev;
 	}
 
 	public void checkServerId(String serverId) {

@@ -60,12 +60,17 @@ public class SpringContextLoader extends ThreadGroup
 		// 如果spring窗口实例为null，则讲明构建过程出错了，直接退出
 		if (appContext != null)
 			return;
+
+		String os = System.getProperty("os.name").toLowerCase();
+		boolean isWin = os.contains("win");
 		// 这个list实于存放应用程序参数，在这里是配置文件
 		List<String> list = new ArrayList<String>();
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].indexOf(".xml") == -1)
 				continue;
-			list.add(args[i]);
+			String path = isWin ? args[i] : "file:" + args[i]; // 转绝对路径
+			list.add(path);
+
 		}
 		appContext = new FileSystemXmlApplicationContext(list.toArray(new String[0]));
 		log.info("SERVER START COMPLETE. ");

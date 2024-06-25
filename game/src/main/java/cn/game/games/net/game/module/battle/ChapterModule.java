@@ -52,6 +52,7 @@ import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo;
 import cn.game.protocol.protobuf.BattleMsg.PatrolInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
@@ -97,6 +98,12 @@ public class ChapterModule extends BasePlayerModule  {
 	private int quickPatrolCount;
 	/** 每天的广告巡逻次数 */
 	private int adPatrolCount;
+	/** 每天看广告并分享获得多倍战斗奖励的次数。 */
+	private int battleRewardMultipleTimes;
+
+	/** 上一次战斗获得的奖励，后续双倍用 */
+	@JsonIgnore
+	private List<RewardInfo> lastBattleRewards;
 
 	// 战斗相关数据
 	private int type;
@@ -338,6 +345,14 @@ public class ChapterModule extends BasePlayerModule  {
 
 	public int getAttackingId() {
 		return this.id;
+	}
+
+	public List<RewardInfo> getLastBattleRewards() {
+		return lastBattleRewards;
+	}
+
+	public void setLastBattleRewards(List<RewardInfo> lastBattleRewards) {
+		this.lastBattleRewards = lastBattleRewards;
 	}
 
 	public int getStars(int zoneId) {
@@ -666,6 +681,14 @@ public class ChapterModule extends BasePlayerModule  {
 		this.daySweepCount = daySweepCount;
 	}
 
+	public int getBattleRewardMultipleTimes() {
+		return battleRewardMultipleTimes;
+	}
+
+	public void setBattleRewardMultipleTimes(int battleRewardMultipleTimes) {
+		this.battleRewardMultipleTimes = battleRewardMultipleTimes;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -676,6 +699,7 @@ public class ChapterModule extends BasePlayerModule  {
 		this.quickPatrolCount = 0;
 		this.adPatrolCount = 0;
 		this.daySweepCount = 0;
+		this.battleRewardMultipleTimes = 0;
 
 		dayChallenge.reset();
 	}
@@ -761,6 +785,7 @@ public class ChapterModule extends BasePlayerModule  {
 
 		builder.addAllStoreStaminas(storeStaminas);
 		builder.setMergeSweepTimes(daySweepCount);
+		builder.setBattleRewardMultipleTimes(battleRewardMultipleTimes);
 
 		DayChallengeInfo.Builder dayBuilder = DayChallengeInfo.newBuilder();
 		dayBuilder.setBattleId(dayChallenge.getBattleId());
@@ -768,5 +793,6 @@ public class ChapterModule extends BasePlayerModule  {
 		dayBuilder.addAllRandomBuff(dayChallenge.getRandomBuff());
 		dayBuilder.addAllRewardIndex(dayChallenge.getRewardIndex());
 		builder.setMergeDayChallenge(dayBuilder.build());
+
 	}
 }

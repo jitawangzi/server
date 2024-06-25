@@ -21,11 +21,11 @@ public class PressureTestManager {
 
 	/** 初始化一些数据 */
 	public void init() {
-		if (ServerContext.getInstance().getRunMode().isPressure()) {
+		if (ServerContext.getInstance().getRunMode().isPressure() && ServerContext.getInstance().isPressureDev()) {
 			VxHolder.vertx.setPeriodic(Config.messageStatisticsInterval * 60 * 1000, r -> {
 				Collection<GameClient> gameClients = GameClientManager.getInstance().getGameClients();
 				try {
-					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(gameClients);
+					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(gameClients, false);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

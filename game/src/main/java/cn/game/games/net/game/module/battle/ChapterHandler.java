@@ -50,6 +50,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
+import cn.game.protocol.protobuf.BattleMsg.BattleShareRequest_13000007;
+import cn.game.protocol.protobuf.BattleMsg.BattleShareResponse_13000008;
 import cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050;
 import cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051;
 import cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024;
@@ -74,6 +76,7 @@ public class ChapterHandler extends BaseHandler {
 
 		putInvoker(PbProtocol.BattleFieldStartRequest_13000001, (client, message) -> start(client, message));
 		putInvoker(PbProtocol.BattleFieldEndRequest_13000003, (client, message) -> end(client, message));
+		putInvoker(PbProtocol.BattleShareRequest_13000007, (client, message) -> rewardMultiple(client, message));
 //		putInvoker(PbProtocol.BattleFieldSweepRequest_13000005, (client, message) -> sweep(client, message));
 //		putInvoker(PbProtocol.BattleChapterRewardRequest_13000022, (client, message) -> reward(client, message));
 //		putInvoker(PbProtocol.ExploreActRewardRequest_13000020, (client, message) -> exploreActReward(client, message));
@@ -767,6 +770,27 @@ public class ChapterHandler extends BaseHandler {
 		client.sendProtocol(resp, errorCode);
 	}
 
+	protected void rewardMultiple(NetClient client, Object message) {
+		BattleShareRequest_13000007 req = (BattleShareRequest_13000007) message;
+		BattleShareResponse_13000008.Builder resp = BattleShareResponse_13000008.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		int battleRewardMultipleTimes = chapterModule.getBattleRewardMultipleTimes();
+		if (battleRewardMultipleTimes >= GlobalConst.Share) {
+			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		List<RewardInfo> lastBattleRewards = chapterModule.getLastBattleRewards();
+		if (lastBattleRewards == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		chapterModule.setBattleRewardMultipleTimes(battleRewardMultipleTimes + 1);
+		List<RewardInfo> multipleRewards = PlayerHelper.multipleRewards(player, lastBattleRewards, GlobalConst.ShareCnt - 1);
+		resp.addAllRewards(multipleRewards);
+		client.sendProtocol(resp);
+
+	}
 	protected void end(NetClient client, Object message) {
 		BattleFieldEndRequest_13000003 req = (BattleFieldEndRequest_13000003) message;
 		BattleFieldEndResponse_13000004.Builder resp = BattleFieldEndResponse_13000004.newBuilder();
@@ -859,6 +883,9 @@ public class ChapterHandler extends BaseHandler {
 
 		chapterModule.setAttackingData(0, 0, 0, 0, 0, 0);
 		
+		List<RewardInfo> rewardsList = resp.getRewardsList();
+		chapterModule.setLastBattleRewards(rewardsList);
+
 		client.sendProtocol(resp);
 
 	}

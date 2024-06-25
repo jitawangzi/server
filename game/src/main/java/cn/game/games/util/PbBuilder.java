@@ -391,6 +391,7 @@ public class PbBuilder {
 		builder.setTime(mail.getCreateTime());
 		builder.setTitle(mail.getTitle());
 		builder.setType(mail.getType());
+		builder.setId(mailId);
 
 		List<GoodsInfo> collect = mail.getAttachmentList().stream().map(PbBuilder::buildGoodsInfo).collect(toList());
 		builder.addAllAttachments(collect);

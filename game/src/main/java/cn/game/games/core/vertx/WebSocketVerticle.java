@@ -65,8 +65,8 @@ public class WebSocketVerticle extends AbstractVerticle {
 						client.setContext(context);
 						client.setIp(ws.remoteAddress().host());
 					}
-					if (ServerContext.getInstance().getRunMode().isPressure()) {
-						client.sendMessages.put(seq, Pair.of(message.getClass().getSimpleName(), System.nanoTime()));
+					if (ServerContext.getInstance().getRunMode().isPressure() && ServerContext.getInstance().isPressureDev()) {
+						client.sendMessages.putIfAbsent(seq, Pair.of(message.getClass().getSimpleName(), System.nanoTime()));
 					}
 					ProtobufProtocol protocol = new ProtobufProtocol(msgID, message, seq);
 					client.setLastRecvPacketTime(System.currentTimeMillis());

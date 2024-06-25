@@ -44,6 +44,15 @@ message BattleFieldEndResponse_13000004{
 	repeated RewardInfo rewards = 1;		// 获得的奖励
 }
 
+// 看广告并分享之后额外获得xx倍奖励
+message BattleShareRequest_13000007{
+}
+
+// 看广告并分享之后额外获得xx倍奖励
+message BattleShareResponse_13000008{
+	repeated RewardInfo rewards = 1;		// 获得的奖励
+}
+
 
 //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。
 message BattleRewardRequest_13000022{

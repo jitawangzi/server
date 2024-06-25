@@ -57,7 +57,7 @@ public class GlobalMessageStatistics {
 //		globalRecvMessages.putAll(recvMessages);
 //	}
 
-	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients) throws IOException {
+	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients, boolean recordSlowMessage) throws IOException {
 		Calendar c = Calendar.getInstance();
 		int h = c.get(Calendar.HOUR_OF_DAY);
 		int m = c.get(Calendar.MINUTE);
@@ -70,12 +70,20 @@ public class GlobalMessageStatistics {
 			dir.mkdir();
 		}
 		String filePath = dirPath + fileName + ".csv";
-		
+		String slowFilePath = dirPath + "slowMessage.csv";
+
 		mergeAllClientData(clients);
-		calculateStatistics(filePath);
+		calculateStatistics(filePath, slowFilePath, recordSlowMessage);
+		// 清理下消息记录
+		for (AbstractNetClient abstractNetClient : clients) {
+			abstractNetClient.recvMessages.clear();
+			abstractNetClient.sendMessages.clear();
+		}
 	}
 
-	private void calculateStatistics(String outputFilePath) throws IOException {
+	private void calculateStatistics(String outputFilePath, String slowFilePath, boolean recordSlowMessage) throws IOException {
+		// 开发模式
+		boolean pressureDev = Boolean.getBoolean("pressureDev");
 		// 每个消息的所有响应时间
 		Map<String, List<Double>> responseTimes = new TreeMap<>();
 		// 每个消息的请求数量
@@ -87,54 +95,84 @@ public class GlobalMessageStatistics {
 		// 匹配发送接收消息，计算响应时间
 		for (Entry<MultiKey<? extends Long>, Pair<String, Long>> sendEntry : globalSendMessages.entrySet()) {
 			MultiKey<? extends Long> key = sendEntry.getKey();
-            String sendMsgName = sendEntry.getValue().getLeft();
-            long sendTime = sendEntry.getValue().getRight();
+			String sendMsgName = sendEntry.getValue().getLeft();
+			long sendTime = sendEntry.getValue().getRight();
 
-            Pair<String, Long> recvEntry = globalRecvMessages.get(key);
-            if (recvEntry != null) {
-                long recvTime = recvEntry.getRight();
+			Pair<String, Long> recvEntry = globalRecvMessages.get(key);
+			if (recvEntry != null) {
+				long recvTime = recvEntry.getRight();
 				double responseTime = Double.parseDouble(String.format("%.2f", (recvTime - sendTime) / 1_000_000.0));
 
 				responseTimes.computeIfAbsent(sendMsgName, k -> new ArrayList<>()).add(responseTime);
-            }
-			requestCountMap.compute(sendMsgName, (k, v) -> v == null ? 1 : v + 1);
-        }
-        		
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFilePath), StandardCharsets.UTF_8)) {
-
-			writer.write('\ufeff'); // 写入UTF-8 BOM，避免Excel打开csv文件时乱码
-			try (CSVPrinter printer = new CSVPrinter(writer,
-					CSVFormat.DEFAULT.withHeader(
-							"消息号", "请求数量", "响应数量", "响应率", "最小响应", "最大响应", "平均响应", "50%分位", "75%分位", "90%分位", "响应时间"))) {
-				// 每个消息的统计
-				for (Map.Entry<String, List<Double>> entry : responseTimes.entrySet()) {
-	                String msgName = entry.getKey();
-					List<Double> times = entry.getValue();
-
-	                if (!times.isEmpty()) {
-//	                    long requestCount = globalSendMessages.entrySet().stream()
-//	                            .filter(e -> (e.getValue().getLeft() + "_" + globalRecvMessages.get(e.getKey()).getLeft()).equals(msgName))
-//	                            .count();
-						long requestCount = requestCountMap.get(msgName);
-	                    long responseCount = times.size();
-	                    double responseRate = (responseCount / (double) requestCount) * 100;
-	                    double minResponseTime = Collections.min(times);
-	                    double maxResponseTime = Collections.max(times);
-						double avgResponseTime = times.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-
-	                    Collections.sort(times);
-						double p50 = percentile(times, 50);
-						double p75 = percentile(times, 75);
-						double p90 = percentile(times, 90);
-
-	                    printer.printRecord(msgName, requestCount, responseCount, String.format("%.2f%%", responseRate),
-								minResponseTime, maxResponseTime, String.format("%.2f", avgResponseTime), p50, p75, p90, times.toString());
-	                }
-	            }
-				
 			}
-          
+			requestCountMap.compute(sendMsgName, (k, v) -> v == null ? 1 : v + 1);
 		}
+
+		OutputStreamWriter writer = null;
+		CSVPrinter printer = null;
+
+		OutputStreamWriter writerSlow = null;
+		CSVPrinter printerSlow = null;
+		try {
+			String[] headers = new String[] { "消息号", "请求数量", "响应数量", "响应率", "最小响应", "最大响应", "平均响应", "50%分位", "75%分位", "90%分位" };
+			writer = new OutputStreamWriter(new FileOutputStream(outputFilePath), StandardCharsets.UTF_8);
+			// 写入UTF-8 BOM，避免Excel打开csv文件时乱码,注意CSVPrinter的初始化要在这个之后
+			writer.write('\ufeff');
+			printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers));
+
+			if (pressureDev && recordSlowMessage) {
+				writerSlow = new OutputStreamWriter(new FileOutputStream(slowFilePath), StandardCharsets.UTF_8);
+				writerSlow.write('\ufeff');
+				printerSlow = new CSVPrinter(writerSlow, CSVFormat.DEFAULT.withHeader(headers));
+			}
+			// 每个消息的统计
+			for (Map.Entry<String, List<Double>> entry : responseTimes.entrySet()) {
+				String msgName = entry.getKey();
+				List<Double> times = entry.getValue();
+
+				if (!times.isEmpty()) {
+					long requestCount = requestCountMap.get(msgName);
+					long responseCount = times.size();
+					double responseRate = (responseCount / (double) requestCount) * 100;
+					double minResponseTime = Collections.min(times);
+					double maxResponseTime = Collections.max(times);
+					double avgResponseTime = times.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+
+					Collections.sort(times);
+					double p50 = percentile(times, 50);
+					double p75 = percentile(times, 75);
+					double p90 = percentile(times, 90);
+
+					printer.printRecord(msgName, requestCount, responseCount, String.format("%.2f%%", responseRate), minResponseTime, maxResponseTime,
+							String.format("%.2f", avgResponseTime), p50, p75, p90);
+					// 如果有没返回的，或者时间中位数大于10ms的，额外记录下来。
+					if (writerSlow != null && recordSlowMessage && (p50 > 10 || responseRate < 100)) {
+						printerSlow.printRecord(msgName, requestCount, responseCount, String.format("%.2f%%", responseRate), minResponseTime, maxResponseTime,
+								String.format("%.2f", avgResponseTime), p50, p75, p90, times.toString());
+					}
+
+				}
+			}
+			globalSendMessages.clear();
+			globalRecvMessages.clear();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+			if (writerSlow != null) {
+				writerSlow.close();
+			}
+			if (printer != null) {
+				printer.close();
+			}
+			if (printerSlow != null) {
+				printerSlow.close();
+			}
+		}
+
 	}
 
 	private double percentile(List<Double> times, double percentile) {
