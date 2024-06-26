@@ -19,6 +19,7 @@ import cn.game.protocol.generated.config.AttributeVlalueConfig;
 import cn.game.protocol.generated.config.DragonConfig;
 import cn.game.protocol.generated.config.DragonSkillConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeavenlyDaoConfig;
 import cn.game.protocol.generated.config.HeroBookConfig;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
@@ -27,6 +28,7 @@ import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
+import cn.game.protocol.generated.manager.HeavenlyDaoManager;
 import cn.game.protocol.generated.manager.HeroBookManager;
 import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroManager;
@@ -57,6 +59,8 @@ public class AttrModule extends BasePlayerModule {
 	private IntMapWrapper alchemyAttr = new IntMapWrapper();
 	private IntMapWrapper bookAttr = new IntMapWrapper();
 
+	private IntMapWrapper heavenlyDaoAttr = new IntMapWrapper();
+
 	/** 战斗力 */
 	private int power;
 
@@ -74,6 +78,7 @@ public class AttrModule extends BasePlayerModule {
 		calcSwordAttr();
 		calcWallAttr();
 		calcBookAttr();
+		calcHeavenlyDaoAttr();
 		log.info("calcAllAttr ： " + toString());
 	}
 
@@ -95,6 +100,7 @@ public class AttrModule extends BasePlayerModule {
 		playerMap.addAll(gemAttr.getMap());
 		playerMap.addAll(alchemyAttr.getMap());
 		playerMap.addAll(bookAttr.getMap());
+		playerMap.addAll(heavenlyDaoAttr.getMap());
 
 		builder.putAllPlayerAttrs(playerMap.getMap());
 
@@ -236,6 +242,18 @@ public class AttrModule extends BasePlayerModule {
 			}
 		}
 
+	}
+
+	public void calcHeavenlyDaoAttr() {
+		if (!player.isFuncOpen(InitialUI.HeavenlyDaoCultivation)) {
+			return;
+		}
+		heavenlyDaoAttr.clear();
+		int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
+		HeavenlyDaoConfig heavenlyDaoConfig = HeavenlyDaoManager.instance().get(heavenlyDaoLevel);
+		for (int[] att : heavenlyDaoConfig.Attribute) {
+			heavenlyDaoAttr.add(att);
+		}
 	}
 
 	private Hero getMaxQualityHero(Collection<Hero> heros) {

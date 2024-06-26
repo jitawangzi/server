@@ -1,0 +1,42 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+//import "RewardMsg.proto" ;
+//import "BaseMsg.proto" ;
+
+//一些玩家级别的养成
+
+// 潜力修炼，升级
+message DevelopPotentialLvUpRequest_25000001{
+	uint32 id = 1;  	//属性id。Potential表PotentialMark列
+}
+
+message DevelopPotentialLvUpResponse_25000002{
+}
+
+
+// 潜力修炼，突破
+message DevelopPotentialBreakRequest_25000003{
+}
+
+message DevelopPotentialBreakResponse_25000004{
+}
+
+
+// 强援修炼，升级
+message DevelopRescueLvUpRequest_25000007{
+	uint32 id = 1;  	//属性id。Rescue表PotentialMark列
+}
+
+message DevelopRescueLvUpResponse_25000008{
+}
+
+
+// 天道修为晋升，提升等级。
+message DevelopHeavenlyDaoLvUpRequest_25000010{
+}
+
+message DevelopHeavenlyDaoLvUpResponse_25000011{
+}
+

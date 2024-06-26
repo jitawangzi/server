@@ -7,7 +7,7 @@ if %errorlevel% neq 0 (
   echo git pull失败，手动处理后重试
   echo.
   pause
-  goto :eof
+  exit /b %ERRORLEVEL%
 )
 
 :: svn revert -R .

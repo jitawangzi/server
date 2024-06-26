@@ -24210,6 +24210,16 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     *天道修为等级。HeavenlyDao表id
+     * </pre>
+     *
+     * <code>int32 heavenlyDaoLevel = 60;</code>
+     * @return The heavenlyDaoLevel.
+     */
+    int getHeavenlyDaoLevel();
+
+    /**
+     * <pre>
      *︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
      * </pre>
      *
@@ -24852,6 +24862,11 @@ public final class PlayerMsg {
                   GuideDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               guide_.getMutableMap().put(
                   guide__.getKey(), guide__.getValue());
+              break;
+            }
+            case 480: {
+
+              heavenlyDaoLevel_ = input.readInt32();
               break;
             }
             case 802: {
@@ -26861,6 +26876,21 @@ public final class PlayerMsg {
       return map.get(key);
     }
 
+    public static final int HEAVENLYDAOLEVEL_FIELD_NUMBER = 60;
+    private int heavenlyDaoLevel_;
+    /**
+     * <pre>
+     *天道修为等级。HeavenlyDao表id
+     * </pre>
+     *
+     * <code>int32 heavenlyDaoLevel = 60;</code>
+     * @return The heavenlyDaoLevel.
+     */
+    @java.lang.Override
+    public int getHeavenlyDaoLevel() {
+      return heavenlyDaoLevel_;
+    }
+
     public static final int SHOPGROUPITEMS_FIELD_NUMBER = 100;
     private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo> shopGroupItems_;
     /**
@@ -27365,6 +27395,9 @@ public final class PlayerMsg {
           internalGetGuide(),
           GuideDefaultEntryHolder.defaultEntry,
           59);
+      if (heavenlyDaoLevel_ != 0) {
+        output.writeInt32(60, heavenlyDaoLevel_);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         output.writeMessage(100, shopGroupItems_.get(i));
       }
@@ -27600,6 +27633,10 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(59, guide__);
       }
+      if (heavenlyDaoLevel_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(60, heavenlyDaoLevel_);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(100, shopGroupItems_.get(i));
@@ -27737,6 +27774,8 @@ public final class PlayerMsg {
           != other.getFirstLogin()) return false;
       if (!internalGetGuide().equals(
           other.internalGetGuide())) return false;
+      if (getHeavenlyDaoLevel()
+          != other.getHeavenlyDaoLevel()) return false;
       if (!getShopGroupItemsList()
           .equals(other.getShopGroupItemsList())) return false;
       if (getNextFreeOpenBoxTime()
@@ -27887,6 +27926,8 @@ public final class PlayerMsg {
         hash = (37 * hash) + GUIDE_FIELD_NUMBER;
         hash = (53 * hash) + internalGetGuide().hashCode();
       }
+      hash = (37 * hash) + HEAVENLYDAOLEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getHeavenlyDaoLevel();
       if (getShopGroupItemsCount() > 0) {
         hash = (37 * hash) + SHOPGROUPITEMS_FIELD_NUMBER;
         hash = (53 * hash) + getShopGroupItemsList().hashCode();
@@ -28232,6 +28273,8 @@ public final class PlayerMsg {
         firstLogin_ = false;
 
         internalGetMutableGuide().clear();
+        heavenlyDaoLevel_ = 0;
+
         if (shopGroupItemsBuilder_ == null) {
           shopGroupItems_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00400000);
@@ -28454,6 +28497,7 @@ public final class PlayerMsg {
         result.firstLogin_ = firstLogin_;
         result.guide_ = internalGetGuide();
         result.guide_.makeImmutable();
+        result.heavenlyDaoLevel_ = heavenlyDaoLevel_;
         if (shopGroupItemsBuilder_ == null) {
           if (((bitField0_ & 0x00400000) != 0)) {
             shopGroupItems_ = java.util.Collections.unmodifiableList(shopGroupItems_);
@@ -28932,6 +28976,9 @@ public final class PlayerMsg {
         }
         internalGetMutableGuide().mergeFrom(
             other.internalGetGuide());
+        if (other.getHeavenlyDaoLevel() != 0) {
+          setHeavenlyDaoLevel(other.getHeavenlyDaoLevel());
+        }
         if (shopGroupItemsBuilder_ == null) {
           if (!other.shopGroupItems_.isEmpty()) {
             if (shopGroupItems_.isEmpty()) {
@@ -35130,6 +35177,49 @@ public final class PlayerMsg {
         return this;
       }
 
+      private int heavenlyDaoLevel_ ;
+      /**
+       * <pre>
+       *天道修为等级。HeavenlyDao表id
+       * </pre>
+       *
+       * <code>int32 heavenlyDaoLevel = 60;</code>
+       * @return The heavenlyDaoLevel.
+       */
+      @java.lang.Override
+      public int getHeavenlyDaoLevel() {
+        return heavenlyDaoLevel_;
+      }
+      /**
+       * <pre>
+       *天道修为等级。HeavenlyDao表id
+       * </pre>
+       *
+       * <code>int32 heavenlyDaoLevel = 60;</code>
+       * @param value The heavenlyDaoLevel to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHeavenlyDaoLevel(int value) {
+        
+        heavenlyDaoLevel_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *天道修为等级。HeavenlyDao表id
+       * </pre>
+       *
+       * <code>int32 heavenlyDaoLevel = 60;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHeavenlyDaoLevel() {
+        
+        heavenlyDaoLevel_ = 0;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo> shopGroupItems_ =
         java.util.Collections.emptyList();
       private void ensureShopGroupItemsIsMutable() {
@@ -36926,7 +37016,7 @@ public final class PlayerMsg {
       "1\"(\n\030PlayerResetPush_01100016\022\014\n\004type\030\001 " +
       "\001(\005\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 " +
       "\001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\thead" +
-      "Frame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\232\017\n\rPla" +
+      "Frame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\264\017\n\rPla" +
       "yerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Protos.Play" +
       "erInfo\0221\n\006assets\030\002 \003(\0132!.Protos.PlayerAl" +
       "lInfo.AssetsEntry\022=\n\014assetRecover\030\003 \003(\0132" +
@@ -36958,25 +37048,26 @@ public final class PlayerMsg {
       "\026questGroupPointRewards\0308 \003(\0132!.Protos.Q" +
       "uestGroupPointRewardInfo\022\022\n\nfirstLogin\0309" +
       " \001(\010\022/\n\005guide\030; \003(\0132 .Protos.PlayerAllIn" +
-      "fo.GuideEntry\0221\n\016shopGroupItems\030d \003(\0132\031." +
-      "Protos.ShopGroupItemInfo\022\033\n\023nextFreeOpen" +
-      "BoxTime\030e \001(\005\022\027\n\017mergeSweepTimes\030f \001(\005\022/" +
-      "\n\013mergeEquips\030g \003(\0132\032.Protos.MergeEquipm" +
-      "entInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021mergeD" +
-      "ayChallenge\030i \001(\0132\030.Protos.DayChallengeI" +
-      "nfo\022#\n\007hcHeros\030k \003(\0132\022.Protos.HCHeroInfo" +
-      "\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHeroUpTi" +
-      "mes\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n \001(\005\032-" +
-      "\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
-      "\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003key\030\001 \001(\r\022" +
-      "\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key" +
-      "\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchemysEnt" +
-      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014Dr" +
-      "agonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
-      "8\001\0323\n\021DragonSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
-      "value\030\002 \001(\r:\0028\001\032,\n\nGuideEntry\022\013\n\003key\030\001 \001" +
-      "(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.protoco" +
-      "l.protobufb\006proto3"
+      "fo.GuideEntry\022\030\n\020heavenlyDaoLevel\030< \001(\005\022" +
+      "1\n\016shopGroupItems\030d \003(\0132\031.Protos.ShopGro" +
+      "upItemInfo\022\033\n\023nextFreeOpenBoxTime\030e \001(\005\022" +
+      "\027\n\017mergeSweepTimes\030f \001(\005\022/\n\013mergeEquips\030" +
+      "g \003(\0132\032.Protos.MergeEquipmentInfo\022\025\n\rmer" +
+      "geEquipIds\030h \003(\005\0223\n\021mergeDayChallenge\030i " +
+      "\001(\0132\030.Protos.DayChallengeInfo\022#\n\007hcHeros" +
+      "\030k \003(\0132\022.Protos.HCHeroInfo\022\024\n\014curHcHeroU" +
+      "id\030l \001(\t\022\031\n\021freeHcHeroUpTimes\030m \001(\005\022\033\n\023f" +
+      "reeHcHeroItemTimes\030n \001(\005\032-\n\013AssetsEntry\022" +
+      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021Asset" +
+      "RecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r" +
+      ":\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
+      "e\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(" +
+      "\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003" +
+      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSk" +
+      "illsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028" +
+      "\001\032,\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
+      "\001(\r:\0028\001B\033\n\031cn.game.protocol.protobufb\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -37202,7 +37293,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

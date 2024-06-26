@@ -5,3 +5,9 @@ set project=login
 set "file=%workspace%\%project%\pom.xml"
 mvn -f %file% clean package
 
+:: 检查 Maven 命令的执行结果
+if %ERRORLEVEL% neq 0 (
+    echo Maven 命令执行失败，错误代码：%ERRORLEVEL%
+    pause
+    exit /b %ERRORLEVEL%
+)

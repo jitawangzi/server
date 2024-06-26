@@ -245,6 +245,7 @@ message PlayerAllInfo{
    repeated QuestGroupPointRewardInfo questGroupPointRewards = 56 ;  // 任务积分奖励领取记录
    bool firstLogin = 57;		// 是否是每天第一次登陆
    map<uint32, uint32> guide = 59;    	//
+   int32 heavenlyDaoLevel = 60;        //天道修为等级。HeavenlyDao表id
 
    //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
    repeated ShopGroupItemInfo shopGroupItems  = 100;        //商店数据
