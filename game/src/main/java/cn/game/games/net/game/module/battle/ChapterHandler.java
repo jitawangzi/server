@@ -11,6 +11,7 @@ import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.AttrModule;
@@ -147,19 +148,9 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		BattleConfig battleConfig = BattleManager.instance().get(id);
-		if (id != completeBattleId) {
-			boolean isComplete = false;
-			BattleConfig preConfig = battleConfig;
-			while ((preConfig = BattleManager.instance().getNullable(preConfig.preBattle)) != null) {
-				if (preConfig.ID == id) {
-					isComplete = true;
-					break;
-				}
-			}
-			if (!isComplete) {
-				client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
-				return;
-			}
+		if (!BattleHelper.isComplete(completeBattleId, id)) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
 		}
 		rewardBattleIds.add(id); 
 		OpType opType = type == 2 ? OpType.DaoXinComplete : type == 3 ? OpType.XinMoComplete : OpType.YaoWangComplete;

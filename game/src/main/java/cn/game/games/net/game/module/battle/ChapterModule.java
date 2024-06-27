@@ -66,6 +66,7 @@ import cn.game.util.Rnd;
 public class ChapterModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
 			EventTypeEnum.FuncOpen };
+
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
 	/** 主线战役 */
@@ -161,9 +162,23 @@ public class ChapterModule extends BasePlayerModule  {
 	}
 
 
+	/** 
+	 * 某战役是否完成过
+	 * @param battleId
+	 * @return
+	 */
 	public boolean isBattlePass(int battleId) {
-		Chapter chapter = this.chapters.get(battleId);
-		return chapter != null && chapter.getPass();
+		BattleConfig battleConfig = BattleManager.instance().get(battleId);
+		int battleType = battleConfig.BattleType;
+		if (battleType == BattleHelper.Main) {
+			Chapter chapter = this.chapters.get(battleId);
+			return chapter != null && chapter.getPass();
+		}
+		if (battleType == BattleHelper.DaoXinLLiLian || battleType == BattleHelper.XinMoShiLian || battleType == BattleHelper.YaoWangBiePao) {
+			DaoHeartBattle daoHeartBattle = getDaoHeartBattle(battleType);
+			return daoHeartBattle != null && BattleHelper.isComplete(daoHeartBattle.getCompleteBattleId(), battleId);
+		}
+		return false;
 	}
 
 	public void insertBattleEvent(BattleRandomEvent event) {
@@ -721,13 +736,13 @@ public class ChapterModule extends BasePlayerModule  {
 		case FuncOpen: {
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.DaoXinLLiLian) {
-				initDaoXin(2);
+				initDaoXin(BattleHelper.DaoXinLLiLian);
 			}
 			if (func == InitialUI.XinMoShiLian) {
-				initDaoXin(3);
+				initDaoXin(BattleHelper.XinMoShiLian);
 			}
 			if (func == InitialUI.YaoWangBiePao) {
-				initDaoXin(4);
+				initDaoXin(BattleHelper.YaoWangBiePao);
 			}
 			if (func == InitialUI.HangingUpp) {
 				setPatrolRewardTime();

@@ -2,14 +2,14 @@ package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.module.quest.AbstractCondition;
+import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 
 @ConditionType(type = ConditionTypeEnum.EliteFinish)
-public class EliteFinish extends AbstractCondition {
+public class EliteFinish extends AbstractCumulativeCondition {
 	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.ChapterWin };
 
 	@Override
@@ -20,10 +20,6 @@ public class EliteFinish extends AbstractCondition {
 
 	}
 
-	@Override
-	public long getFinishCount() {
-		return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.EliteFinish);
-	}
 	@Override
 	public boolean checkEventParam(GameEvent event) {
 		int id = event.getIntParameter(0);

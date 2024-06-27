@@ -376,7 +376,7 @@ public class ShopModule extends BasePlayerModule {
 				Set<Integer> keySet = fundPassRewardsMap.keySet();
 				for (Integer pass : keySet) {
 					FundPassConfig fundPassConfig = FundPassManager.instance().get(pass);
-					if (fundPassConfig.Exp) {
+					if (fundPassConfig.Exp && fundPassConfig.ExpType == Asset.FundPass.ID) {
 						addExp = true;
 						break;
 					}

@@ -17,11 +17,14 @@ public class LogGame extends AbstractCondition {
 	public LogGame() {
 
 	}
-
+//	@Override
+//	public boolean isAchieve() {
+//		setFinishCount(1);
+//		return super.isAchieve();
+//	}
 	@Override
-	public boolean isAchieve() {
-		setFinishCount(1);
-		return super.isAchieve();
+	public long getFinishCount() {
+		return 1;
 	}
 
 	@Override

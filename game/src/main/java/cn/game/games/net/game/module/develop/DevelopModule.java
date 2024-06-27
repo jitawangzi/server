@@ -52,7 +52,7 @@ public class DevelopModule extends BasePlayerModule {
 			if (func == InitialUI.HeavenlyDaoCultivation) {
 				heavenlyDaoLevel = 1;
 				QuestModule questModule = player.getQuestModule();
-				List<QuestConfig> groupList = QuestManager.instance().getGroupList(QuestTypeEnum.HeavenlyDao.ID);
+				List<QuestConfig> groupList = QuestManager.instance().getTypeList(QuestTypeEnum.HeavenlyDao.ID);
 				for (QuestConfig questConfig : groupList) {
 					questModule.open(questConfig.ID, false);
 				}

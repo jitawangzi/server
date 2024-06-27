@@ -6,19 +6,19 @@ import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-@ConditionType(type = ConditionTypeEnum.RechargeCnt)
-public class RechargeCnt extends AbstractCumulativeCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Charge };
+@ConditionType(type = ConditionTypeEnum.QuickHangUpCumulation)
+public class QuickHangUpCumulation extends AbstractCumulativeCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Patrol };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	public RechargeCnt() {
+	public QuickHangUpCumulation() {
 
 	}
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-		return true;
+		return event.getBoolParameter(0);
 	}
 }

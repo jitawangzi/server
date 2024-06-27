@@ -29,6 +29,7 @@ import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.AchievementMissionConfig;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.MainlineMissionConfig;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -38,6 +39,7 @@ import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.OpType;
@@ -48,6 +50,7 @@ import cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo;
 import cn.game.protocol.protobuf.QuestMsg.QuestGroupPush_20100008;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
+import cn.game.util.StringMapWrapper;
 
 /**
  * @Description
@@ -57,7 +60,7 @@ import cn.game.util.IntMapWrapper;
 public class QuestModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
 			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem,
-			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds };
+			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds, EventTypeEnum.HeroBreak, EventTypeEnum.Hero };
 
 	/** 当前激活的任务 ,key1 ： QuestTypeEnum, key2: QuestConfig id */
 	private Map<Integer, Map<Integer, Quest>> quests;
@@ -68,8 +71,10 @@ public class QuestModule extends BasePlayerModule {
 	// 支线任务保留最后一个任务id
 	private Map<Integer, QuestChallenge> challenges;
 
-	/** 一些累计的计数 */
+	/** 一些累计的计数， 类型->数量*/
 	private IntMapWrapper cumulativeCountMap = new IntMapWrapper();
+	/** 一些累计的计数,类型->数量 ，类型带额外参数的 */
+	private StringMapWrapper cumulativeCountExtMap = new StringMapWrapper();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -168,6 +173,19 @@ public class QuestModule extends BasePlayerModule {
 	 */
 	public int getCumulativeCount(ConditionTypeEnum type) {
 		return this.cumulativeCountMap.getValue(type.ID);
+	}
+
+	/** 
+	 * 获取某类型的累计数 
+	 * @param type
+	 * @param ext 额外参数
+	 * @return
+	 */
+	public int getCumulativeCount(ConditionTypeEnum type, int... ext) {
+		if (ext.length > 0) {
+			return this.cumulativeCountExtMap.getValue(type.ID, ext);
+		}
+		return getCumulativeCount(type);
 	}
 
 	public int getFinishedCount(QuestTypeEnum type) {
@@ -761,6 +779,14 @@ public class QuestModule extends BasePlayerModule {
 //		}
 	}
 
+	public void addCumulativeCount(ConditionTypeEnum type, int count, int... ext) {
+		if (ext.length == 0) {
+			addCumulativeCount(type, count);
+		} else {
+			cumulativeCountExtMap.add(type.ID, count, ext);
+		}
+	}
+
 	public List<QuestGroupInfo> buildAllGroup() {
 		List<QuestGroupInfo> list = new ArrayList<>();
 
@@ -906,6 +932,19 @@ public class QuestModule extends BasePlayerModule {
 		case BattleEnd: {
 			addCumulativeCount(ConditionTypeEnum.KillMonsters, event.getIntParameter(3));
 			addCumulativeCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
+			break;
+		}
+		case HeroBreak: {
+//			int star = event.getIntParameter(0);
+			int quality = event.getIntParameter(1);
+			addCumulativeCount(ConditionTypeEnum.BreakHeroCumulation, 1);
+			addCumulativeCount(ConditionTypeEnum.EarnHeroCumulation, 1, quality);
+			break;
+		}
+		case Hero: {
+			int id = event.getIntParameter(0);
+			HeroConfig heroConfig = HeroManager.instance().get(id);
+			addCumulativeCount(ConditionTypeEnum.BreakHeroCumulation, 1, heroConfig.InitialQuality);
 			break;
 		}
 		case CostItem: {

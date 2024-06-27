@@ -2,25 +2,23 @@ package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.module.quest.AbstractCondition;
+import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-@ConditionType(type = ConditionTypeEnum.PassXinMo)
-public class PassXinMo extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Charge };
-	public PassXinMo() {
+@ConditionType(type = ConditionTypeEnum.EarnHeroCumulation)
+public class EarnHeroCumulation extends AbstractCumulativeCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Hero, EventTypeEnum.HeroBreak };
 
-	}
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-	@Override
-	public long getFinishCount() {
-		return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge);
+
+	public EarnHeroCumulation() {
 
 	}
+
 	@Override
 	public boolean checkEventParam(GameEvent event) {
 		return true;

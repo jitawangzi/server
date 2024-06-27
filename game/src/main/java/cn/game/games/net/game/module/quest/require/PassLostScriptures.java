@@ -8,6 +8,7 @@ import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.PassLostScriptures)
+//TODO
 public class PassLostScriptures extends AbstractCondition {
 	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroBattle, EventTypeEnum.HeroLevelUp };
 

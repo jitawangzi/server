@@ -23,6 +23,21 @@ public class BattleHelper {
 	/** 挑战关卡 */
 	public static final int LEVEL_TYPE_EXPLORE = 3;
 
+	/*	战役类型
+		1-主线
+		2-道心历练
+		3-心魔试炼
+		4-泡泡别跑
+		5-失落真经
+		6-世界Boss
+		7-帮会Boss帮会
+		8-帮会Boss个人*/
+
+	public static final int Main = 1;
+	public static final int DaoXinLLiLian = 2;
+	public static final int XinMoShiLian = 3;
+	public static final int YaoWangBiePao = 4;
+
 	/** 普通关卡里的意识空间 */
 	public static final int BATTLE_LEVEL_TYPE_AWARENESSSPACE = 1;
 
@@ -146,6 +161,29 @@ public class BattleHelper {
 			index = failRandomTrigger.length - 1;
 		}
 		return battleConfig.FailRandom[index];
+	}
+
+	/** 
+	 * 根据已经完成的关卡id，判断某一关是否完成了
+	 * @param completeBattleId
+	 * @param checkId
+	 * @return
+	 */
+	public static boolean isComplete(int completeBattleId, int id) {
+		if (completeBattleId == 0) {
+			return false;
+		}
+		if (id == completeBattleId) {
+			return true;
+		}
+		BattleConfig battleConfig = BattleManager.instance().get(completeBattleId);
+		BattleConfig preConfig = battleConfig;
+		while ((preConfig = BattleManager.instance().getNullable(preConfig.preBattle)) != null) {
+			if (preConfig.ID == id) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 
