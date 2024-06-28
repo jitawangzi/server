@@ -18,7 +18,7 @@ public abstract class HCBattleHandler implements IBattleHandler {
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		HCBattleConfig battleConfig = HCBattleManager.instance().get(dungeonId);
-		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(battleConfig.preBattle)) {
+		if (battleConfig.preBattle > 0 && !chapterModule.isHCBattlePass(battleConfig.preBattle)) {
 			return ErrorMsgEnum.BattleLevel_pre.getId();
 		}
 //		if (!chapterModule.checkChapterTimes(dungeonId)) {

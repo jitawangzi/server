@@ -356,7 +356,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		if (!chapterModule.isBattlePass(id)) {
+		if (!chapterModule.isHCBattlePass(id)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.illegal_request.getId());
 			return;
 		}

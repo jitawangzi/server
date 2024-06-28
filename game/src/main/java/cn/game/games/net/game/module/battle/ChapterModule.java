@@ -181,6 +181,16 @@ public class ChapterModule extends BasePlayerModule  {
 		return false;
 	}
 
+	/** 
+	 * 某合成战役是否完成过
+	 * @param battleId
+	 * @return
+	 */
+	public boolean isHCBattlePass(int battleId) {
+		Chapter chapter = this.chapters.get(battleId);
+		return chapter != null && chapter.getPass();
+	}
+
 	public void insertBattleEvent(BattleRandomEvent event) {
 
 //		DAO.execute(BattleRandomEventMapper.class, MapperConstant.insert,
