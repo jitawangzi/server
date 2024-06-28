@@ -951,6 +951,16 @@ public final class DevelopMsg {
   public interface DevelopPotentialBreakRequest_25000003OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.DevelopPotentialBreakRequest_25000003)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *属性id。Potential表PotentialMark列
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
   }
   /**
    * <pre>
@@ -1001,6 +1011,11 @@ public final class DevelopMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -1033,6 +1048,21 @@ public final class DevelopMsg {
               cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003.class, cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003.Builder.class);
     }
 
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     *属性id。Potential表PotentialMark列
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1047,6 +1077,9 @@ public final class DevelopMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -1056,6 +1089,10 @@ public final class DevelopMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1071,6 +1108,8 @@ public final class DevelopMsg {
       }
       cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003 other = (cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003) obj;
 
+      if (getId()
+          != other.getId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1082,6 +1121,8 @@ public final class DevelopMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1219,6 +1260,8 @@ public final class DevelopMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        id_ = 0;
+
         return this;
       }
 
@@ -1245,6 +1288,7 @@ public final class DevelopMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003 buildPartial() {
         cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003 result = new cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003(this);
+        result.id_ = id_;
         onBuilt();
         return result;
       }
@@ -1293,6 +1337,9 @@ public final class DevelopMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003 other) {
         if (other == cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -1319,6 +1366,49 @@ public final class DevelopMsg {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       *属性id。Potential表PotentialMark列
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *属性id。Potential表PotentialMark列
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *属性id。Potential表PotentialMark列
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
         return this;
       }
       @java.lang.Override
@@ -3622,14 +3712,14 @@ public final class DevelopMsg {
       "\n\020DevelopMsg.proto\022\006Protos\"2\n$DevelopPot" +
       "entialLvUpRequest_25000001\022\n\n\002id\030\001 \001(\r\"\'" +
       "\n%DevelopPotentialLvUpResponse_25000002\"" +
-      "\'\n%DevelopPotentialBreakRequest_25000003" +
-      "\"(\n&DevelopPotentialBreakResponse_250000" +
-      "04\"/\n!DevelopRescueLvUpRequest_25000007\022" +
-      "\n\n\002id\030\001 \001(\r\"$\n\"DevelopRescueLvUpResponse" +
-      "_25000008\"(\n&DevelopHeavenlyDaoLvUpReque" +
-      "st_25000010\")\n\'DevelopHeavenlyDaoLvUpRes" +
-      "ponse_25000011B\033\n\031cn.game.protocol.proto" +
-      "bufb\006proto3"
+      "3\n%DevelopPotentialBreakRequest_25000003" +
+      "\022\n\n\002id\030\001 \001(\r\"(\n&DevelopPotentialBreakRes" +
+      "ponse_25000004\"/\n!DevelopRescueLvUpReque" +
+      "st_25000007\022\n\n\002id\030\001 \001(\r\"$\n\"DevelopRescue" +
+      "LvUpResponse_25000008\"(\n&DevelopHeavenly" +
+      "DaoLvUpRequest_25000010\")\n\'DevelopHeaven" +
+      "lyDaoLvUpResponse_25000011B\033\n\031cn.game.pr" +
+      "otocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3652,7 +3742,7 @@ public final class DevelopMsg {
     internal_static_Protos_DevelopPotentialBreakRequest_25000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DevelopPotentialBreakRequest_25000003_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Id", });
     internal_static_Protos_DevelopPotentialBreakResponse_25000004_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Protos_DevelopPotentialBreakResponse_25000004_fieldAccessorTable = new

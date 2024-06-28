@@ -78,6 +78,11 @@ public enum OpType{
 	YaoWangComplete(147, "妖王快跑通关奖励"),
 
 	llustrationsReward(148, "英雄图鉴奖励"),
+
+	PotentialLvUp(150, "潜力升级"),
+	PotentialBreak(151, "潜力突破"),
+	RescueLvUp(152, "强援升级"),
+
 	BattleStart(160, "战役开始"),
 
 	BattleEndMultipleReward(161, "战役结束多倍奖励"),

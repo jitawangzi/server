@@ -1,16 +1,23 @@
 package cn.game.games.net.game.module.develop;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.protocol.generated.config.PotentialConfig;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.config.RescueConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
+import cn.game.protocol.generated.manager.PotentialManager;
 import cn.game.protocol.generated.manager.QuestManager;
+import cn.game.protocol.generated.manager.RescueManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.util.IntMapWrapper;
 
 /**    
  * 一些玩家级别的养成数据
@@ -23,6 +30,11 @@ public class DevelopModule extends BasePlayerModule {
 
 	/** 天道修为等级 */
 	private int heavenlyDaoLevel;
+	/**  修炼等级。 属性id->等级 */
+	private IntMapWrapper potentiaLvMap = new IntMapWrapper();
+
+	/**  */
+	private boolean isPotentiaBreak;
 
 
 	public int getHeavenlyDaoLevel() {
@@ -32,6 +44,19 @@ public class DevelopModule extends BasePlayerModule {
 	public void setHeavenlyDaoLevel(int heavenlyDaoLevel) {
 		this.heavenlyDaoLevel = heavenlyDaoLevel;
 	}
+
+	public IntMapWrapper getPotentiaLvMap() {
+		return potentiaLvMap;
+	}
+
+	public boolean isPotentiaBreak() {
+		return isPotentiaBreak;
+	}
+
+	public void setPotentiaBreak(boolean isPotentiaBreak) {
+		this.isPotentiaBreak = isPotentiaBreak;
+	}
+
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.setHeavenlyDaoLevel(heavenlyDaoLevel);
@@ -56,6 +81,22 @@ public class DevelopModule extends BasePlayerModule {
 				for (QuestConfig questConfig : groupList) {
 					questModule.open(questConfig.ID, false);
 				}
+			} else if (func == InitialUI.Consciousness) {
+				// 初始修炼等级
+				Map<Integer, List<PotentialConfig>> potentialMarks = PotentialManager.instance().getPotentialMarks();
+				potentialMarks.forEach((k, v) -> {
+					PotentialConfig potential = DevelopHelper.getPotentialConfig(v, 1);
+					if (PlayerHelper.checkCondition(player, potential.PotentialUnlock)) {
+						potentiaLvMap.setValue(potential.PotentialMark, 1);
+					}
+				});
+				Map<Integer, List<RescueConfig>> rescueMarks = RescueManager.instance().getRescueMarks();
+				rescueMarks.forEach((k, v) -> {
+					RescueConfig potential = DevelopHelper.getRescueConfig(v, 1);
+					if (PlayerHelper.checkCondition(player, potential.RescueUnlock)) {
+						potentiaLvMap.setValue(potential.RescueMark, 1);
+					}
+				});
 			}
 			break;
 		}
@@ -65,6 +106,7 @@ public class DevelopModule extends BasePlayerModule {
 		}
 		}
 	}
+
 
 	@Override
 	protected int getInitOrder() {

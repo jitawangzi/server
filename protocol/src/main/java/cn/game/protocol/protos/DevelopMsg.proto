@@ -18,6 +18,7 @@ message DevelopPotentialLvUpResponse_25000002{
 
 // 潜力修炼，突破
 message DevelopPotentialBreakRequest_25000003{
+	uint32 id = 1;  	//属性id。Potential表PotentialMark列
 }
 
 message DevelopPotentialBreakResponse_25000004{

@@ -24220,6 +24220,60 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+    int getPotentialLvMapCount();
+    /**
+     * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+    boolean containsPotentialLvMap(
+        int key);
+    /**
+     * Use {@link #getPotentialLvMapMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getPotentialLvMap();
+    /**
+     * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getPotentialLvMapMap();
+    /**
+     * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+
+    int getPotentialLvMapOrDefault(
+        int key,
+        int defaultValue);
+    /**
+     * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+
+    int getPotentialLvMapOrThrow(
+        int key);
+
+    /**
+     * <pre>
      *︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
      * </pre>
      *
@@ -24869,10 +24923,23 @@ public final class PlayerMsg {
               heavenlyDaoLevel_ = input.readInt32();
               break;
             }
-            case 802: {
+            case 498: {
               if (!((mutable_bitField0_ & 0x00400000) != 0)) {
-                shopGroupItems_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo>();
+                potentialLvMap_ = com.google.protobuf.MapField.newMapField(
+                    PotentialLvMapDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00400000;
+              }
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+              potentialLvMap__ = input.readMessage(
+                  PotentialLvMapDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              potentialLvMap_.getMutableMap().put(
+                  potentialLvMap__.getKey(), potentialLvMap__.getValue());
+              break;
+            }
+            case 802: {
+              if (!((mutable_bitField0_ & 0x00800000) != 0)) {
+                shopGroupItems_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo>();
+                mutable_bitField0_ |= 0x00800000;
               }
               shopGroupItems_.add(
                   input.readMessage(cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.parser(), extensionRegistry));
@@ -24889,18 +24956,18 @@ public final class PlayerMsg {
               break;
             }
             case 826: {
-              if (!((mutable_bitField0_ & 0x00800000) != 0)) {
+              if (!((mutable_bitField0_ & 0x01000000) != 0)) {
                 mergeEquips_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo>();
-                mutable_bitField0_ |= 0x00800000;
+                mutable_bitField0_ |= 0x01000000;
               }
               mergeEquips_.add(
                   input.readMessage(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.parser(), extensionRegistry));
               break;
             }
             case 832: {
-              if (!((mutable_bitField0_ & 0x01000000) != 0)) {
+              if (!((mutable_bitField0_ & 0x02000000) != 0)) {
                 mergeEquipIds_ = newIntList();
-                mutable_bitField0_ |= 0x01000000;
+                mutable_bitField0_ |= 0x02000000;
               }
               mergeEquipIds_.addInt(input.readInt32());
               break;
@@ -24908,9 +24975,9 @@ public final class PlayerMsg {
             case 834: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x01000000) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x02000000) != 0) && input.getBytesUntilLimit() > 0) {
                 mergeEquipIds_ = newIntList();
-                mutable_bitField0_ |= 0x01000000;
+                mutable_bitField0_ |= 0x02000000;
               }
               while (input.getBytesUntilLimit() > 0) {
                 mergeEquipIds_.addInt(input.readInt32());
@@ -24932,9 +24999,9 @@ public final class PlayerMsg {
               break;
             }
             case 858: {
-              if (!((mutable_bitField0_ & 0x02000000) != 0)) {
+              if (!((mutable_bitField0_ & 0x04000000) != 0)) {
                 hcHeros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo>();
-                mutable_bitField0_ |= 0x02000000;
+                mutable_bitField0_ |= 0x04000000;
               }
               hcHeros_.add(
                   input.readMessage(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.parser(), extensionRegistry));
@@ -25016,16 +25083,16 @@ public final class PlayerMsg {
         if (((mutable_bitField0_ & 0x00100000) != 0)) {
           questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
         }
-        if (((mutable_bitField0_ & 0x00400000) != 0)) {
+        if (((mutable_bitField0_ & 0x00800000) != 0)) {
           shopGroupItems_ = java.util.Collections.unmodifiableList(shopGroupItems_);
         }
-        if (((mutable_bitField0_ & 0x00800000) != 0)) {
+        if (((mutable_bitField0_ & 0x01000000) != 0)) {
           mergeEquips_ = java.util.Collections.unmodifiableList(mergeEquips_);
         }
-        if (((mutable_bitField0_ & 0x01000000) != 0)) {
+        if (((mutable_bitField0_ & 0x02000000) != 0)) {
           mergeEquipIds_.makeImmutable(); // C
         }
-        if (((mutable_bitField0_ & 0x02000000) != 0)) {
+        if (((mutable_bitField0_ & 0x04000000) != 0)) {
           hcHeros_ = java.util.Collections.unmodifiableList(hcHeros_);
         }
         this.unknownFields = unknownFields.build();
@@ -25056,6 +25123,8 @@ public final class PlayerMsg {
           return internalGetDragonSkills();
         case 59:
           return internalGetGuide();
+        case 62:
+          return internalGetPotentialLvMap();
         default:
           throw new RuntimeException(
               "Invalid map field number: " + number);
@@ -26891,6 +26960,103 @@ public final class PlayerMsg {
       return heavenlyDaoLevel_;
     }
 
+    public static final int POTENTIALLVMAP_FIELD_NUMBER = 62;
+    private static final class PotentialLvMapDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.Integer> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.Integer>newDefaultInstance(
+                  cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.UINT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.UINT32,
+                  0);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Integer> potentialLvMap_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+    internalGetPotentialLvMap() {
+      if (potentialLvMap_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            PotentialLvMapDefaultEntryHolder.defaultEntry);
+      }
+      return potentialLvMap_;
+    }
+
+    public int getPotentialLvMapCount() {
+      return internalGetPotentialLvMap().getMap().size();
+    }
+    /**
+     * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsPotentialLvMap(
+        int key) {
+      
+      return internalGetPotentialLvMap().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getPotentialLvMapMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getPotentialLvMap() {
+      return getPotentialLvMapMap();
+    }
+    /**
+     * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getPotentialLvMapMap() {
+      return internalGetPotentialLvMap().getMap();
+    }
+    /**
+     * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+    @java.lang.Override
+
+    public int getPotentialLvMapOrDefault(
+        int key,
+        int defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetPotentialLvMap().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     * 修炼数据，key：属性id value：等级
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+     */
+    @java.lang.Override
+
+    public int getPotentialLvMapOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetPotentialLvMap().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
     public static final int SHOPGROUPITEMS_FIELD_NUMBER = 100;
     private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo> shopGroupItems_;
     /**
@@ -27398,6 +27564,12 @@ public final class PlayerMsg {
       if (heavenlyDaoLevel_ != 0) {
         output.writeInt32(60, heavenlyDaoLevel_);
       }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetPotentialLvMap(),
+          PotentialLvMapDefaultEntryHolder.defaultEntry,
+          62);
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         output.writeMessage(100, shopGroupItems_.get(i));
       }
@@ -27637,6 +27809,16 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(60, heavenlyDaoLevel_);
       }
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
+           : internalGetPotentialLvMap().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+        potentialLvMap__ = PotentialLvMapDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(62, potentialLvMap__);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(100, shopGroupItems_.get(i));
@@ -27776,6 +27958,8 @@ public final class PlayerMsg {
           other.internalGetGuide())) return false;
       if (getHeavenlyDaoLevel()
           != other.getHeavenlyDaoLevel()) return false;
+      if (!internalGetPotentialLvMap().equals(
+          other.internalGetPotentialLvMap())) return false;
       if (!getShopGroupItemsList()
           .equals(other.getShopGroupItemsList())) return false;
       if (getNextFreeOpenBoxTime()
@@ -27928,6 +28112,10 @@ public final class PlayerMsg {
       }
       hash = (37 * hash) + HEAVENLYDAOLEVEL_FIELD_NUMBER;
       hash = (53 * hash) + getHeavenlyDaoLevel();
+      if (!internalGetPotentialLvMap().getMap().isEmpty()) {
+        hash = (37 * hash) + POTENTIALLVMAP_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetPotentialLvMap().hashCode();
+      }
       if (getShopGroupItemsCount() > 0) {
         hash = (37 * hash) + SHOPGROUPITEMS_FIELD_NUMBER;
         hash = (53 * hash) + getShopGroupItemsList().hashCode();
@@ -28087,6 +28275,8 @@ public final class PlayerMsg {
             return internalGetDragonSkills();
           case 59:
             return internalGetGuide();
+          case 62:
+            return internalGetPotentialLvMap();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -28110,6 +28300,8 @@ public final class PlayerMsg {
             return internalGetMutableDragonSkills();
           case 59:
             return internalGetMutableGuide();
+          case 62:
+            return internalGetMutablePotentialLvMap();
           default:
             throw new RuntimeException(
                 "Invalid map field number: " + number);
@@ -28275,9 +28467,10 @@ public final class PlayerMsg {
         internalGetMutableGuide().clear();
         heavenlyDaoLevel_ = 0;
 
+        internalGetMutablePotentialLvMap().clear();
         if (shopGroupItemsBuilder_ == null) {
           shopGroupItems_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00400000);
+          bitField0_ = (bitField0_ & ~0x00800000);
         } else {
           shopGroupItemsBuilder_.clear();
         }
@@ -28287,12 +28480,12 @@ public final class PlayerMsg {
 
         if (mergeEquipsBuilder_ == null) {
           mergeEquips_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00800000);
+          bitField0_ = (bitField0_ & ~0x01000000);
         } else {
           mergeEquipsBuilder_.clear();
         }
         mergeEquipIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x01000000);
+        bitField0_ = (bitField0_ & ~0x02000000);
         if (mergeDayChallengeBuilder_ == null) {
           mergeDayChallenge_ = null;
         } else {
@@ -28301,7 +28494,7 @@ public final class PlayerMsg {
         }
         if (hcHerosBuilder_ == null) {
           hcHeros_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x02000000);
+          bitField0_ = (bitField0_ & ~0x04000000);
         } else {
           hcHerosBuilder_.clear();
         }
@@ -28498,10 +28691,12 @@ public final class PlayerMsg {
         result.guide_ = internalGetGuide();
         result.guide_.makeImmutable();
         result.heavenlyDaoLevel_ = heavenlyDaoLevel_;
+        result.potentialLvMap_ = internalGetPotentialLvMap();
+        result.potentialLvMap_.makeImmutable();
         if (shopGroupItemsBuilder_ == null) {
-          if (((bitField0_ & 0x00400000) != 0)) {
+          if (((bitField0_ & 0x00800000) != 0)) {
             shopGroupItems_ = java.util.Collections.unmodifiableList(shopGroupItems_);
-            bitField0_ = (bitField0_ & ~0x00400000);
+            bitField0_ = (bitField0_ & ~0x00800000);
           }
           result.shopGroupItems_ = shopGroupItems_;
         } else {
@@ -28510,17 +28705,17 @@ public final class PlayerMsg {
         result.nextFreeOpenBoxTime_ = nextFreeOpenBoxTime_;
         result.mergeSweepTimes_ = mergeSweepTimes_;
         if (mergeEquipsBuilder_ == null) {
-          if (((bitField0_ & 0x00800000) != 0)) {
+          if (((bitField0_ & 0x01000000) != 0)) {
             mergeEquips_ = java.util.Collections.unmodifiableList(mergeEquips_);
-            bitField0_ = (bitField0_ & ~0x00800000);
+            bitField0_ = (bitField0_ & ~0x01000000);
           }
           result.mergeEquips_ = mergeEquips_;
         } else {
           result.mergeEquips_ = mergeEquipsBuilder_.build();
         }
-        if (((bitField0_ & 0x01000000) != 0)) {
+        if (((bitField0_ & 0x02000000) != 0)) {
           mergeEquipIds_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x01000000);
+          bitField0_ = (bitField0_ & ~0x02000000);
         }
         result.mergeEquipIds_ = mergeEquipIds_;
         if (mergeDayChallengeBuilder_ == null) {
@@ -28529,9 +28724,9 @@ public final class PlayerMsg {
           result.mergeDayChallenge_ = mergeDayChallengeBuilder_.build();
         }
         if (hcHerosBuilder_ == null) {
-          if (((bitField0_ & 0x02000000) != 0)) {
+          if (((bitField0_ & 0x04000000) != 0)) {
             hcHeros_ = java.util.Collections.unmodifiableList(hcHeros_);
-            bitField0_ = (bitField0_ & ~0x02000000);
+            bitField0_ = (bitField0_ & ~0x04000000);
           }
           result.hcHeros_ = hcHeros_;
         } else {
@@ -28979,11 +29174,13 @@ public final class PlayerMsg {
         if (other.getHeavenlyDaoLevel() != 0) {
           setHeavenlyDaoLevel(other.getHeavenlyDaoLevel());
         }
+        internalGetMutablePotentialLvMap().mergeFrom(
+            other.internalGetPotentialLvMap());
         if (shopGroupItemsBuilder_ == null) {
           if (!other.shopGroupItems_.isEmpty()) {
             if (shopGroupItems_.isEmpty()) {
               shopGroupItems_ = other.shopGroupItems_;
-              bitField0_ = (bitField0_ & ~0x00400000);
+              bitField0_ = (bitField0_ & ~0x00800000);
             } else {
               ensureShopGroupItemsIsMutable();
               shopGroupItems_.addAll(other.shopGroupItems_);
@@ -28996,7 +29193,7 @@ public final class PlayerMsg {
               shopGroupItemsBuilder_.dispose();
               shopGroupItemsBuilder_ = null;
               shopGroupItems_ = other.shopGroupItems_;
-              bitField0_ = (bitField0_ & ~0x00400000);
+              bitField0_ = (bitField0_ & ~0x00800000);
               shopGroupItemsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getShopGroupItemsFieldBuilder() : null;
@@ -29015,7 +29212,7 @@ public final class PlayerMsg {
           if (!other.mergeEquips_.isEmpty()) {
             if (mergeEquips_.isEmpty()) {
               mergeEquips_ = other.mergeEquips_;
-              bitField0_ = (bitField0_ & ~0x00800000);
+              bitField0_ = (bitField0_ & ~0x01000000);
             } else {
               ensureMergeEquipsIsMutable();
               mergeEquips_.addAll(other.mergeEquips_);
@@ -29028,7 +29225,7 @@ public final class PlayerMsg {
               mergeEquipsBuilder_.dispose();
               mergeEquipsBuilder_ = null;
               mergeEquips_ = other.mergeEquips_;
-              bitField0_ = (bitField0_ & ~0x00800000);
+              bitField0_ = (bitField0_ & ~0x01000000);
               mergeEquipsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getMergeEquipsFieldBuilder() : null;
@@ -29040,7 +29237,7 @@ public final class PlayerMsg {
         if (!other.mergeEquipIds_.isEmpty()) {
           if (mergeEquipIds_.isEmpty()) {
             mergeEquipIds_ = other.mergeEquipIds_;
-            bitField0_ = (bitField0_ & ~0x01000000);
+            bitField0_ = (bitField0_ & ~0x02000000);
           } else {
             ensureMergeEquipIdsIsMutable();
             mergeEquipIds_.addAll(other.mergeEquipIds_);
@@ -29054,7 +29251,7 @@ public final class PlayerMsg {
           if (!other.hcHeros_.isEmpty()) {
             if (hcHeros_.isEmpty()) {
               hcHeros_ = other.hcHeros_;
-              bitField0_ = (bitField0_ & ~0x02000000);
+              bitField0_ = (bitField0_ & ~0x04000000);
             } else {
               ensureHcHerosIsMutable();
               hcHeros_.addAll(other.hcHeros_);
@@ -29067,7 +29264,7 @@ public final class PlayerMsg {
               hcHerosBuilder_.dispose();
               hcHerosBuilder_ = null;
               hcHeros_ = other.hcHeros_;
-              bitField0_ = (bitField0_ & ~0x02000000);
+              bitField0_ = (bitField0_ & ~0x04000000);
               hcHerosBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getHcHerosFieldBuilder() : null;
@@ -35220,12 +35417,168 @@ public final class PlayerMsg {
         return this;
       }
 
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.Integer> potentialLvMap_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetPotentialLvMap() {
+        if (potentialLvMap_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              PotentialLvMapDefaultEntryHolder.defaultEntry);
+        }
+        return potentialLvMap_;
+      }
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetMutablePotentialLvMap() {
+        onChanged();;
+        if (potentialLvMap_ == null) {
+          potentialLvMap_ = com.google.protobuf.MapField.newMapField(
+              PotentialLvMapDefaultEntryHolder.defaultEntry);
+        }
+        if (!potentialLvMap_.isMutable()) {
+          potentialLvMap_ = potentialLvMap_.copy();
+        }
+        return potentialLvMap_;
+      }
+
+      public int getPotentialLvMapCount() {
+        return internalGetPotentialLvMap().getMap().size();
+      }
+      /**
+       * <pre>
+       * 修炼数据，key：属性id value：等级
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsPotentialLvMap(
+          int key) {
+        
+        return internalGetPotentialLvMap().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getPotentialLvMapMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getPotentialLvMap() {
+        return getPotentialLvMapMap();
+      }
+      /**
+       * <pre>
+       * 修炼数据，key：属性id value：等级
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getPotentialLvMapMap() {
+        return internalGetPotentialLvMap().getMap();
+      }
+      /**
+       * <pre>
+       * 修炼数据，key：属性id value：等级
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+       */
+      @java.lang.Override
+
+      public int getPotentialLvMapOrDefault(
+          int key,
+          int defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetPotentialLvMap().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * 修炼数据，key：属性id value：等级
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+       */
+      @java.lang.Override
+
+      public int getPotentialLvMapOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetPotentialLvMap().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearPotentialLvMap() {
+        internalGetMutablePotentialLvMap().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       * 修炼数据，key：属性id value：等级
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+       */
+
+      public Builder removePotentialLvMap(
+          int key) {
+        
+        internalGetMutablePotentialLvMap().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer>
+      getMutablePotentialLvMap() {
+        return internalGetMutablePotentialLvMap().getMutableMap();
+      }
+      /**
+       * <pre>
+       * 修炼数据，key：属性id value：等级
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+       */
+      public Builder putPotentialLvMap(
+          int key,
+          int value) {
+        
+        
+        internalGetMutablePotentialLvMap().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       * 修炼数据，key：属性id value：等级
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
+       */
+
+      public Builder putAllPotentialLvMap(
+          java.util.Map<java.lang.Integer, java.lang.Integer> values) {
+        internalGetMutablePotentialLvMap().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo> shopGroupItems_ =
         java.util.Collections.emptyList();
       private void ensureShopGroupItemsIsMutable() {
-        if (!((bitField0_ & 0x00400000) != 0)) {
+        if (!((bitField0_ & 0x00800000) != 0)) {
           shopGroupItems_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo>(shopGroupItems_);
-          bitField0_ |= 0x00400000;
+          bitField0_ |= 0x00800000;
          }
       }
 
@@ -35419,7 +35772,7 @@ public final class PlayerMsg {
       public Builder clearShopGroupItems() {
         if (shopGroupItemsBuilder_ == null) {
           shopGroupItems_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00400000);
+          bitField0_ = (bitField0_ & ~0x00800000);
           onChanged();
         } else {
           shopGroupItemsBuilder_.clear();
@@ -35524,7 +35877,7 @@ public final class PlayerMsg {
           shopGroupItemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo, cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.Builder, cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfoOrBuilder>(
                   shopGroupItems_,
-                  ((bitField0_ & 0x00400000) != 0),
+                  ((bitField0_ & 0x00800000) != 0),
                   getParentForChildren(),
                   isClean());
           shopGroupItems_ = null;
@@ -35621,9 +35974,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo> mergeEquips_ =
         java.util.Collections.emptyList();
       private void ensureMergeEquipsIsMutable() {
-        if (!((bitField0_ & 0x00800000) != 0)) {
+        if (!((bitField0_ & 0x01000000) != 0)) {
           mergeEquips_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo>(mergeEquips_);
-          bitField0_ |= 0x00800000;
+          bitField0_ |= 0x01000000;
          }
       }
 
@@ -35817,7 +36170,7 @@ public final class PlayerMsg {
       public Builder clearMergeEquips() {
         if (mergeEquipsBuilder_ == null) {
           mergeEquips_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00800000);
+          bitField0_ = (bitField0_ & ~0x01000000);
           onChanged();
         } else {
           mergeEquipsBuilder_.clear();
@@ -35922,7 +36275,7 @@ public final class PlayerMsg {
           mergeEquipsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder>(
                   mergeEquips_,
-                  ((bitField0_ & 0x00800000) != 0),
+                  ((bitField0_ & 0x01000000) != 0),
                   getParentForChildren(),
                   isClean());
           mergeEquips_ = null;
@@ -35932,9 +36285,9 @@ public final class PlayerMsg {
 
       private com.google.protobuf.Internal.IntList mergeEquipIds_ = emptyIntList();
       private void ensureMergeEquipIdsIsMutable() {
-        if (!((bitField0_ & 0x01000000) != 0)) {
+        if (!((bitField0_ & 0x02000000) != 0)) {
           mergeEquipIds_ = mutableCopy(mergeEquipIds_);
-          bitField0_ |= 0x01000000;
+          bitField0_ |= 0x02000000;
          }
       }
       /**
@@ -35947,7 +36300,7 @@ public final class PlayerMsg {
        */
       public java.util.List<java.lang.Integer>
           getMergeEquipIdsList() {
-        return ((bitField0_ & 0x01000000) != 0) ?
+        return ((bitField0_ & 0x02000000) != 0) ?
                  java.util.Collections.unmodifiableList(mergeEquipIds_) : mergeEquipIds_;
       }
       /**
@@ -36032,7 +36385,7 @@ public final class PlayerMsg {
        */
       public Builder clearMergeEquipIds() {
         mergeEquipIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x01000000);
+        bitField0_ = (bitField0_ & ~0x02000000);
         onChanged();
         return this;
       }
@@ -36195,9 +36548,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo> hcHeros_ =
         java.util.Collections.emptyList();
       private void ensureHcHerosIsMutable() {
-        if (!((bitField0_ & 0x02000000) != 0)) {
+        if (!((bitField0_ & 0x04000000) != 0)) {
           hcHeros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo>(hcHeros_);
-          bitField0_ |= 0x02000000;
+          bitField0_ |= 0x04000000;
          }
       }
 
@@ -36391,7 +36744,7 @@ public final class PlayerMsg {
       public Builder clearHcHeros() {
         if (hcHerosBuilder_ == null) {
           hcHeros_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x02000000);
+          bitField0_ = (bitField0_ & ~0x04000000);
           onChanged();
         } else {
           hcHerosBuilder_.clear();
@@ -36496,7 +36849,7 @@ public final class PlayerMsg {
           hcHerosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder>(
                   hcHeros_,
-                  ((bitField0_ & 0x02000000) != 0),
+                  ((bitField0_ & 0x04000000) != 0),
                   getParentForChildren(),
                   isClean());
           hcHeros_ = null;
@@ -36953,6 +37306,11 @@ public final class PlayerMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_PlayerAllInfo_GuideEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -37016,7 +37374,7 @@ public final class PlayerMsg {
       "1\"(\n\030PlayerResetPush_01100016\022\014\n\004type\030\001 " +
       "\001(\005\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 " +
       "\001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\thead" +
-      "Frame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\264\017\n\rPla" +
+      "Frame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\256\020\n\rPla" +
       "yerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Protos.Play" +
       "erInfo\0221\n\006assets\030\002 \003(\0132!.Protos.PlayerAl" +
       "lInfo.AssetsEntry\022=\n\014assetRecover\030\003 \003(\0132" +
@@ -37049,25 +37407,28 @@ public final class PlayerMsg {
       "uestGroupPointRewardInfo\022\022\n\nfirstLogin\0309" +
       " \001(\010\022/\n\005guide\030; \003(\0132 .Protos.PlayerAllIn" +
       "fo.GuideEntry\022\030\n\020heavenlyDaoLevel\030< \001(\005\022" +
-      "1\n\016shopGroupItems\030d \003(\0132\031.Protos.ShopGro" +
-      "upItemInfo\022\033\n\023nextFreeOpenBoxTime\030e \001(\005\022" +
-      "\027\n\017mergeSweepTimes\030f \001(\005\022/\n\013mergeEquips\030" +
-      "g \003(\0132\032.Protos.MergeEquipmentInfo\022\025\n\rmer" +
-      "geEquipIds\030h \003(\005\0223\n\021mergeDayChallenge\030i " +
-      "\001(\0132\030.Protos.DayChallengeInfo\022#\n\007hcHeros" +
-      "\030k \003(\0132\022.Protos.HCHeroInfo\022\024\n\014curHcHeroU" +
-      "id\030l \001(\t\022\031\n\021freeHcHeroUpTimes\030m \001(\005\022\033\n\023f" +
-      "reeHcHeroItemTimes\030n \001(\005\032-\n\013AssetsEntry\022" +
-      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021Asset" +
-      "RecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r" +
-      ":\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
-      "e\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(" +
-      "\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003" +
-      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSk" +
-      "illsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028" +
-      "\001\032,\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
-      "\001(\r:\0028\001B\033\n\031cn.game.protocol.protobufb\006pr" +
-      "oto3"
+      "A\n\016potentialLvMap\030> \003(\0132).Protos.PlayerA" +
+      "llInfo.PotentialLvMapEntry\0221\n\016shopGroupI" +
+      "tems\030d \003(\0132\031.Protos.ShopGroupItemInfo\022\033\n" +
+      "\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017mergeSweep" +
+      "Times\030f \001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Proto" +
+      "s.MergeEquipmentInfo\022\025\n\rmergeEquipIds\030h " +
+      "\003(\005\0223\n\021mergeDayChallenge\030i \001(\0132\030.Protos." +
+      "DayChallengeInfo\022#\n\007hcHeros\030k \003(\0132\022.Prot" +
+      "os.HCHeroInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021f" +
+      "reeHcHeroUpTimes\030m \001(\005\022\033\n\023freeHcHeroItem" +
+      "Times\030n \001(\005\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022" +
+      "\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022" +
+      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Level" +
+      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/" +
+      "\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
+      "\001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
+      "value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003" +
+      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032,\n\nGuideEnt" +
+      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023Po" +
+      "tentialLvMapEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030" +
+      "\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.protobufb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -37293,7 +37654,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
@@ -37335,6 +37696,12 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_GuideEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_GuideEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_descriptor =
+      internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(7);
+    internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
     cn.game.protocol.protobuf.BaseMsg.getDescriptor();

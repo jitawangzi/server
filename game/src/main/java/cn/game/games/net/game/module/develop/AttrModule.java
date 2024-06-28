@@ -61,6 +61,8 @@ public class AttrModule extends BasePlayerModule {
 
 	private IntMapWrapper heavenlyDaoAttr = new IntMapWrapper();
 
+	private IntMapWrapper potentialAttr = new IntMapWrapper();
+
 	/** 战斗力 */
 	private int power;
 
@@ -79,6 +81,7 @@ public class AttrModule extends BasePlayerModule {
 		calcWallAttr();
 		calcBookAttr();
 		calcHeavenlyDaoAttr();
+		calcPotentialAttrAttr();
 		log.info("calcAllAttr ： " + toString());
 	}
 
@@ -101,6 +104,7 @@ public class AttrModule extends BasePlayerModule {
 		playerMap.addAll(alchemyAttr.getMap());
 		playerMap.addAll(bookAttr.getMap());
 		playerMap.addAll(heavenlyDaoAttr.getMap());
+		playerMap.addAll(potentialAttr.getMap());
 
 		builder.putAllPlayerAttrs(playerMap.getMap());
 
@@ -254,6 +258,18 @@ public class AttrModule extends BasePlayerModule {
 		for (int[] att : heavenlyDaoConfig.Attribute) {
 			heavenlyDaoAttr.add(att);
 		}
+	}
+
+	public void calcPotentialAttrAttr() {
+		if (!player.isFuncOpen(InitialUI.Consciousness)) {
+			return;
+		}
+		potentialAttr.clear();
+//		int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
+//		HeavenlyDaoConfig heavenlyDaoConfig = HeavenlyDaoManager.instance().get(heavenlyDaoLevel);
+//		for (int[] att : heavenlyDaoConfig.Attribute) {
+//			heavenlyDaoAttr.add(att);
+//		}
 	}
 
 	private Hero getMaxQualityHero(Collection<Hero> heros) {
