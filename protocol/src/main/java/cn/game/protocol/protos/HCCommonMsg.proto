@@ -2,8 +2,8 @@ syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
-import "RewardMsg.proto" ;
-import "BaseMsg.proto" ;
+//import "RewardMsg.proto" ;
+//import "BaseMsg.proto" ;
 //合成的一些普通协议
 
 

@@ -32,6 +32,7 @@ import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.develop.dragon.DragonModule;
+import cn.game.games.net.game.module.develop.hccommon.HCCommonModule;
 import cn.game.games.net.game.module.develop.hchero.HCHeroModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
@@ -168,6 +169,10 @@ public class Player  {
 
 	public HCHeroModule getHCHeroModule() {
 		return getModule(HCHeroModule.class);
+	}
+
+	public HCCommonModule getHCCommonModule() {
+		return getModule(HCCommonModule.class);
 	}
 
 	public DragonModule getDragonModule() {

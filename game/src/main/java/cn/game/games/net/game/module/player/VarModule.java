@@ -48,6 +48,14 @@ public class VarModule extends BasePlayerModule {
 		return varMap.getValue(type);
 	}
 
+	public int addVar(int type,int value) {
+		return varMap.add(type, value);
+	}
+
+	public int addVar(int type) {
+		return varMap.add(type, 1);
+	}
+
 	public boolean getBoolVar(int type) {
 		int variable = getVar(type);
 		return  variable > 0;

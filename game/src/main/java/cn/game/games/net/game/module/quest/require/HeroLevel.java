@@ -3,12 +3,12 @@ package cn.game.games.net.game.module.quest.require;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
+import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.HeroLevel)
-public class HeroLevel extends AbstractCumulativeCondition {
+public class HeroLevel extends AbstractCondition {
 	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroLevelUp };
 	@Override
 	public EventTypeEnum[] getEventTypes() {

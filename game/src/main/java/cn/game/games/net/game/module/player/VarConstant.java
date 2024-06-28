@@ -7,6 +7,9 @@ public class VarConstant {
 	/** 玩家改性别次数。 */
 	public static final int GENDER_COUNT = 2;
 	/** 城池等级。  */
-	public static final int WALL_LEVEL = 2;
+	public static final int WALL_LEVEL = 3;
+
+	/**  */
+	public static final int BATTLE_SPEED_ADS_COUNT = 10;
 
 }

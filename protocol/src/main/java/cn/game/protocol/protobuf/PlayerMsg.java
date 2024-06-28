@@ -24519,6 +24519,26 @@ public final class PlayerMsg {
      * @return The freeHcHeroItemTimes.
      */
     int getFreeHcHeroItemTimes();
+
+    /**
+     * <pre>
+     *是否已经解锁了战中倍速
+     * </pre>
+     *
+     * <code>bool battleSpeedUnlock = 112;</code>
+     * @return The battleSpeedUnlock.
+     */
+    boolean getBattleSpeedUnlock();
+
+    /**
+     * <pre>
+     *如果没有解锁战中倍速，已经看了多少次广告了
+     * </pre>
+     *
+     * <code>int32 battleSpeedAdsCount = 113;</code>
+     * @return The battleSpeedAdsCount.
+     */
+    int getBattleSpeedAdsCount();
   }
   /**
    * <pre>
@@ -25021,6 +25041,16 @@ public final class PlayerMsg {
             case 880: {
 
               freeHcHeroItemTimes_ = input.readInt32();
+              break;
+            }
+            case 896: {
+
+              battleSpeedUnlock_ = input.readBool();
+              break;
+            }
+            case 904: {
+
+              battleSpeedAdsCount_ = input.readInt32();
               break;
             }
             default: {
@@ -27421,6 +27451,36 @@ public final class PlayerMsg {
       return freeHcHeroItemTimes_;
     }
 
+    public static final int BATTLESPEEDUNLOCK_FIELD_NUMBER = 112;
+    private boolean battleSpeedUnlock_;
+    /**
+     * <pre>
+     *是否已经解锁了战中倍速
+     * </pre>
+     *
+     * <code>bool battleSpeedUnlock = 112;</code>
+     * @return The battleSpeedUnlock.
+     */
+    @java.lang.Override
+    public boolean getBattleSpeedUnlock() {
+      return battleSpeedUnlock_;
+    }
+
+    public static final int BATTLESPEEDADSCOUNT_FIELD_NUMBER = 113;
+    private int battleSpeedAdsCount_;
+    /**
+     * <pre>
+     *如果没有解锁战中倍速，已经看了多少次广告了
+     * </pre>
+     *
+     * <code>int32 battleSpeedAdsCount = 113;</code>
+     * @return The battleSpeedAdsCount.
+     */
+    @java.lang.Override
+    public int getBattleSpeedAdsCount() {
+      return battleSpeedAdsCount_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -27603,6 +27663,12 @@ public final class PlayerMsg {
       }
       if (freeHcHeroItemTimes_ != 0) {
         output.writeInt32(110, freeHcHeroItemTimes_);
+      }
+      if (battleSpeedUnlock_ != false) {
+        output.writeBool(112, battleSpeedUnlock_);
+      }
+      if (battleSpeedAdsCount_ != 0) {
+        output.writeInt32(113, battleSpeedAdsCount_);
       }
       unknownFields.writeTo(output);
     }
@@ -27868,6 +27934,14 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(110, freeHcHeroItemTimes_);
       }
+      if (battleSpeedUnlock_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(112, battleSpeedUnlock_);
+      }
+      if (battleSpeedAdsCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(113, battleSpeedAdsCount_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -27983,6 +28057,10 @@ public final class PlayerMsg {
           != other.getFreeHcHeroUpTimes()) return false;
       if (getFreeHcHeroItemTimes()
           != other.getFreeHcHeroItemTimes()) return false;
+      if (getBattleSpeedUnlock()
+          != other.getBattleSpeedUnlock()) return false;
+      if (getBattleSpeedAdsCount()
+          != other.getBattleSpeedAdsCount()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -28146,6 +28224,11 @@ public final class PlayerMsg {
       hash = (53 * hash) + getFreeHcHeroUpTimes();
       hash = (37 * hash) + FREEHCHEROITEMTIMES_FIELD_NUMBER;
       hash = (53 * hash) + getFreeHcHeroItemTimes();
+      hash = (37 * hash) + BATTLESPEEDUNLOCK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getBattleSpeedUnlock());
+      hash = (37 * hash) + BATTLESPEEDADSCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleSpeedAdsCount();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -28504,6 +28587,10 @@ public final class PlayerMsg {
 
         freeHcHeroItemTimes_ = 0;
 
+        battleSpeedUnlock_ = false;
+
+        battleSpeedAdsCount_ = 0;
+
         return this;
       }
 
@@ -28735,6 +28822,8 @@ public final class PlayerMsg {
         result.curHcHeroUid_ = curHcHeroUid_;
         result.freeHcHeroUpTimes_ = freeHcHeroUpTimes_;
         result.freeHcHeroItemTimes_ = freeHcHeroItemTimes_;
+        result.battleSpeedUnlock_ = battleSpeedUnlock_;
+        result.battleSpeedAdsCount_ = battleSpeedAdsCount_;
         onBuilt();
         return result;
       }
@@ -29282,6 +29371,12 @@ public final class PlayerMsg {
         }
         if (other.getFreeHcHeroItemTimes() != 0) {
           setFreeHcHeroItemTimes(other.getFreeHcHeroItemTimes());
+        }
+        if (other.getBattleSpeedUnlock() != false) {
+          setBattleSpeedUnlock(other.getBattleSpeedUnlock());
+        }
+        if (other.getBattleSpeedAdsCount() != 0) {
+          setBattleSpeedAdsCount(other.getBattleSpeedAdsCount());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -37038,6 +37133,92 @@ public final class PlayerMsg {
         onChanged();
         return this;
       }
+
+      private boolean battleSpeedUnlock_ ;
+      /**
+       * <pre>
+       *是否已经解锁了战中倍速
+       * </pre>
+       *
+       * <code>bool battleSpeedUnlock = 112;</code>
+       * @return The battleSpeedUnlock.
+       */
+      @java.lang.Override
+      public boolean getBattleSpeedUnlock() {
+        return battleSpeedUnlock_;
+      }
+      /**
+       * <pre>
+       *是否已经解锁了战中倍速
+       * </pre>
+       *
+       * <code>bool battleSpeedUnlock = 112;</code>
+       * @param value The battleSpeedUnlock to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleSpeedUnlock(boolean value) {
+        
+        battleSpeedUnlock_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *是否已经解锁了战中倍速
+       * </pre>
+       *
+       * <code>bool battleSpeedUnlock = 112;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleSpeedUnlock() {
+        
+        battleSpeedUnlock_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int battleSpeedAdsCount_ ;
+      /**
+       * <pre>
+       *如果没有解锁战中倍速，已经看了多少次广告了
+       * </pre>
+       *
+       * <code>int32 battleSpeedAdsCount = 113;</code>
+       * @return The battleSpeedAdsCount.
+       */
+      @java.lang.Override
+      public int getBattleSpeedAdsCount() {
+        return battleSpeedAdsCount_;
+      }
+      /**
+       * <pre>
+       *如果没有解锁战中倍速，已经看了多少次广告了
+       * </pre>
+       *
+       * <code>int32 battleSpeedAdsCount = 113;</code>
+       * @param value The battleSpeedAdsCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleSpeedAdsCount(int value) {
+        
+        battleSpeedAdsCount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *如果没有解锁战中倍速，已经看了多少次广告了
+       * </pre>
+       *
+       * <code>int32 battleSpeedAdsCount = 113;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleSpeedAdsCount() {
+        
+        battleSpeedAdsCount_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -37374,7 +37555,7 @@ public final class PlayerMsg {
       "1\"(\n\030PlayerResetPush_01100016\022\014\n\004type\030\001 " +
       "\001(\005\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 " +
       "\001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\thead" +
-      "Frame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\256\020\n\rPla" +
+      "Frame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\346\020\n\rPla" +
       "yerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Protos.Play" +
       "erInfo\0221\n\006assets\030\002 \003(\0132!.Protos.PlayerAl" +
       "lInfo.AssetsEntry\022=\n\014assetRecover\030\003 \003(\0132" +
@@ -37417,18 +37598,19 @@ public final class PlayerMsg {
       "DayChallengeInfo\022#\n\007hcHeros\030k \003(\0132\022.Prot" +
       "os.HCHeroInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021f" +
       "reeHcHeroUpTimes\030m \001(\005\022\033\n\023freeHcHeroItem" +
-      "Times\030n \001(\005\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022" +
-      "\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022" +
-      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Level" +
-      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/" +
-      "\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
-      "\001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
-      "value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003" +
-      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032,\n\nGuideEnt" +
-      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023Po" +
-      "tentialLvMapEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030" +
-      "\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.protobufb\006" +
-      "proto3"
+      "Times\030n \001(\005\022\031\n\021battleSpeedUnlock\030p \001(\010\022\033" +
+      "\n\023battleSpeedAdsCount\030q \001(\005\032-\n\013AssetsEnt" +
+      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021As" +
+      "setRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
+      "\001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
+      "alue\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001" +
+      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022" +
+      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021Drago" +
+      "nSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r" +
+      ":\0028\001\032,\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
+      "\030\002 \001(\r:\0028\001\0325\n\023PotentialLvMapEntry\022\013\n\003key" +
+      "\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.pro" +
+      "tocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -37654,7 +37836,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

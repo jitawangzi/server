@@ -1,23 +1,18 @@
 package cn.game.games.net.game.module.develop.hccommon;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.config.HCHeroArousalConfig;
-import cn.game.protocol.generated.config.HCHeroConfig;
-import cn.game.protocol.generated.manager.HCHeroArousalManager;
-import cn.game.protocol.generated.manager.HCHeroManager;
-import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.HCHeroMsg.HCHeroCompositeRequest_26000007;
-import cn.game.protocol.protobuf.HCHeroMsg.HCHeroCompositeResponse_26000008;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.games.net.game.module.player.VarConstant;
+import cn.game.games.net.game.module.player.VarModule;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.protobuf.HCCommonMsg.HCBattleSpeedAdsRequest_28000020;
+import cn.game.protocol.protobuf.HCCommonMsg.HCBattleSpeedAdsResponse_28000021;
+import cn.game.protocol.protobuf.PbProtocol;
 
 @Component
 public class HCCommonHandler extends BaseHandler {
@@ -29,29 +24,23 @@ public class HCCommonHandler extends BaseHandler {
 
 	@Override
 	protected void inititialize() {
-//		putInvoker(PbProtocol.hc, this::adsBattleSpeed);
+		putInvoker(PbProtocol.HCBattleSpeedAdsRequest_28000020, this::adsBattleSpeed);
 
 	}
 
 	private void adsBattleSpeed(NetClient client, Object message) {
-		HCHeroCompositeRequest_26000007 req = (HCHeroCompositeRequest_26000007) message;
-		HCHeroCompositeResponse_26000008.Builder resp = HCHeroCompositeResponse_26000008.newBuilder();
-		int id = req.getId();
-		HCHeroConfig heroConfig = HCHeroManager.instance().getNullable(id);
-		if (heroConfig == null) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
-			return;
-		}
-		HCHeroArousalConfig arousalConfig = HCHeroArousalManager.instance().getUIHeroIDStar(id, 0);
+		HCBattleSpeedAdsRequest_28000020 req = (HCBattleSpeedAdsRequest_28000020) message;
+		HCBattleSpeedAdsResponse_28000021.Builder resp = HCBattleSpeedAdsResponse_28000021.newBuilder();
+
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!PlayerHelper.delResources(player, arousalConfig.StarCost, OpType.HCHeroComposite)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
+		VarModule varModule = player.getVarModule(); 
+		HCCommonModule hcCommonModule = player.getHCCommonModule(); 
+		int count = varModule.addVar(VarConstant.BATTLE_SPEED_ADS_COUNT);
+		if (count >= GlobalConst.CombatSpeedAdCnt) {
+			hcCommonModule.setBattleSpeedUnlock(true);
+			varModule.clearVar(VarConstant.BATTLE_SPEED_ADS_COUNT);
 		}
-		List<RewardInfo> resources = PlayerHelper.addResources(player, id, 1);
-		if (!resources.isEmpty()) {
-			resp.setHero(resources.get(0).getHcHero());
-		}
+		player.handleEvent(EventTypeEnum.WatchAds);
 		client.sendProtocol(resp.build());
 	}
 }

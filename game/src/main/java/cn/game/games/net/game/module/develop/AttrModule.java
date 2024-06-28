@@ -254,6 +254,9 @@ public class AttrModule extends BasePlayerModule {
 		}
 		heavenlyDaoAttr.clear();
 		int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
+		if (heavenlyDaoLevel == 0) {
+			return;
+		}
 		HeavenlyDaoConfig heavenlyDaoConfig = HeavenlyDaoManager.instance().get(heavenlyDaoLevel);
 		for (int[] att : heavenlyDaoConfig.Attribute) {
 			heavenlyDaoAttr.add(att);

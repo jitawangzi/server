@@ -118,6 +118,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int GmPlayerLogouttResponse_7700000a = 0x7700000a;    //响应踢下线  
 	public final static int GmPlayerMailRequest_77000010 = 0x77000010;    //gm给指定玩家发邮件  
 	public final static int GmPlayerMailResponse_77000011 = 0x77000011;    
+	public final static int HCBattleSpeedAdsRequest_28000020 = 0x28000020;    //看广告获得战中倍速  
+	public final static int HCBattleSpeedAdsResponse_28000021 = 0x28000021;    
 	public final static int HCHeroUpLevelRequest_26000001 = 0x26000001;    //英雄升级  
 	public final static int HCHeroUpLevelResponse_26000002 = 0x26000002;    
 	public final static int HCHeroStarUpRequest_26000003 = 0x26000003;    //英雄升星，也就是觉醒  
@@ -487,6 +489,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(GmPlayerMailRequest_77000010, cn.game.protocol.protobuf.GmMsg.GmPlayerMailRequest_77000010.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(GmPlayerMailResponse_77000011, cn.game.protocol.protobuf.GmMsg.GmPlayerMailResponse_77000011.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCBattleSpeedAdsRequest_28000020, cn.game.protocol.protobuf.HCCommonMsg.HCBattleSpeedAdsRequest_28000020.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HCBattleSpeedAdsResponse_28000021, cn.game.protocol.protobuf.HCCommonMsg.HCBattleSpeedAdsResponse_28000021.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HCHeroUpLevelRequest_26000001, cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelRequest_26000001.getDefaultInstance()
 				.getParserForType());
@@ -934,6 +940,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("GmPlayerLogouttResponse_7700000a", 0x7700000a);
 		nameIdMap.put("GmPlayerMailRequest_77000010", 0x77000010);
 		nameIdMap.put("GmPlayerMailResponse_77000011", 0x77000011);
+		nameIdMap.put("HCBattleSpeedAdsRequest_28000020", 0x28000020);
+		nameIdMap.put("HCBattleSpeedAdsResponse_28000021", 0x28000021);
 		nameIdMap.put("HCHeroUpLevelRequest_26000001", 0x26000001);
 		nameIdMap.put("HCHeroUpLevelResponse_26000002", 0x26000002);
 		nameIdMap.put("HCHeroStarUpRequest_26000003", 0x26000003);
