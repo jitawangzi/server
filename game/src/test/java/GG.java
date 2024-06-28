@@ -1,33 +1,26 @@
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import cn.game.util.Rnd;
+import cn.game.util.StringMapWrapper;
 
 public class GG {
 	public static int x = 0;
 	public static long firstTime = System.currentTimeMillis();
 
 	public static void main(String[] args) throws Exception {
-//		System.out.println(Integer.MAX_VALUE);
-//		List<Integer> list = new ArrayList<>();
-//
-//		for (int i = 1; i < 10; i++) {
-//			list.add(i);
-//		}
-//
-//		Collections.sort(list);
-//		for (Integer integer : list) {
-//			System.out.println(integer);
-//		}
-//		String string = "HCBattleRewardRequest_13000027";
-//		System.out.println(string.startsWith("Hc"));
-		System.out.println(System.currentTimeMillis());
-		System.out.println(System.nanoTime());
+		StringMapWrapper cumulativeCount = new StringMapWrapper();
+		int key1 = 10001; 
+		int key2 = 10002;
+		int key3 = 10003;
+		int value = 3000 ; 
+		cumulativeCount.add(key1, value, 66);
+		cumulativeCount.add(key2, value, 88);
 
-		AtomicInteger seq = new AtomicInteger(1);
-		System.out.println(seq.getAndIncrement());
-		System.out.println(seq.get());
-		System.out.println(UUID.randomUUID().toString().length());
+		cumulativeCount.getMap().forEach((k, v) -> {
+			System.err.println(k);
+			System.out.println(v);
+		});
+
+//		cumulativeCount.put(key1, value);
+
 	}
 
 	private static void test() {

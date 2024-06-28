@@ -1449,7 +1449,7 @@ public final class QuestMsg {
 
     /**
      * <pre>
-     * 领取/一键领取的任务id
+     * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
      * </pre>
      *
      * <code>repeated int32 ids = 1;</code>
@@ -1458,7 +1458,7 @@ public final class QuestMsg {
     java.util.List<java.lang.Integer> getIdsList();
     /**
      * <pre>
-     * 领取/一键领取的任务id
+     * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
      * </pre>
      *
      * <code>repeated int32 ids = 1;</code>
@@ -1467,7 +1467,7 @@ public final class QuestMsg {
     int getIdsCount();
     /**
      * <pre>
-     * 领取/一键领取的任务id
+     * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
      * </pre>
      *
      * <code>repeated int32 ids = 1;</code>
@@ -1587,7 +1587,7 @@ public final class QuestMsg {
     private com.google.protobuf.Internal.IntList ids_;
     /**
      * <pre>
-     * 领取/一键领取的任务id
+     * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
      * </pre>
      *
      * <code>repeated int32 ids = 1;</code>
@@ -1600,7 +1600,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 领取/一键领取的任务id
+     * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
      * </pre>
      *
      * <code>repeated int32 ids = 1;</code>
@@ -1611,7 +1611,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 领取/一键领取的任务id
+     * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
      * </pre>
      *
      * <code>repeated int32 ids = 1;</code>
@@ -1968,7 +1968,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 领取/一键领取的任务id
+       * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
        * </pre>
        *
        * <code>repeated int32 ids = 1;</code>
@@ -1981,7 +1981,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 领取/一键领取的任务id
+       * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
        * </pre>
        *
        * <code>repeated int32 ids = 1;</code>
@@ -1992,7 +1992,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 领取/一键领取的任务id
+       * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
        * </pre>
        *
        * <code>repeated int32 ids = 1;</code>
@@ -2004,7 +2004,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 领取/一键领取的任务id
+       * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
        * </pre>
        *
        * <code>repeated int32 ids = 1;</code>
@@ -2021,7 +2021,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 领取/一键领取的任务id
+       * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
        * </pre>
        *
        * <code>repeated int32 ids = 1;</code>
@@ -2036,7 +2036,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 领取/一键领取的任务id
+       * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
        * </pre>
        *
        * <code>repeated int32 ids = 1;</code>
@@ -2053,7 +2053,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 领取/一键领取的任务id
+       * Quest表id，想要领取的任务id，如果是空表示一键领取所有能领取的任务
        * </pre>
        *
        * <code>repeated int32 ids = 1;</code>
@@ -5908,7 +5908,7 @@ public final class QuestMsg {
 
     /**
      * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
      * </pre>
      *
      * <code>repeated int32 finishCount = 3;</code>
@@ -5917,7 +5917,7 @@ public final class QuestMsg {
     java.util.List<java.lang.Integer> getFinishCountList();
     /**
      * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
      * </pre>
      *
      * <code>repeated int32 finishCount = 3;</code>
@@ -5926,7 +5926,7 @@ public final class QuestMsg {
     int getFinishCountCount();
     /**
      * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
      * </pre>
      *
      * <code>repeated int32 finishCount = 3;</code>
@@ -6086,7 +6086,7 @@ public final class QuestMsg {
     private com.google.protobuf.Internal.IntList finishCount_;
     /**
      * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
      * </pre>
      *
      * <code>repeated int32 finishCount = 3;</code>
@@ -6099,7 +6099,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
      * </pre>
      *
      * <code>repeated int32 finishCount = 3;</code>
@@ -6110,7 +6110,7 @@ public final class QuestMsg {
     }
     /**
      * <pre>
-     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+     * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
      * </pre>
      *
      * <code>repeated int32 finishCount = 3;</code>
@@ -6587,7 +6587,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
        * </pre>
        *
        * <code>repeated int32 finishCount = 3;</code>
@@ -6600,7 +6600,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
        * </pre>
        *
        * <code>repeated int32 finishCount = 3;</code>
@@ -6611,7 +6611,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
        * </pre>
        *
        * <code>repeated int32 finishCount = 3;</code>
@@ -6623,7 +6623,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
        * </pre>
        *
        * <code>repeated int32 finishCount = 3;</code>
@@ -6640,7 +6640,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
        * </pre>
        *
        * <code>repeated int32 finishCount = 3;</code>
@@ -6655,7 +6655,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
        * </pre>
        *
        * <code>repeated int32 finishCount = 3;</code>
@@ -6672,7 +6672,7 @@ public final class QuestMsg {
       }
       /**
        * <pre>
-       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 对于可以重复刷新的任务有用，主线支线之类的，没有这个状态了
+       * 4 条件完成(可交付/可领奖) 5 已交付(已领奖) 一般完成之后不删除的任务，有这个状态。
        * </pre>
        *
        * <code>repeated int32 finishCount = 3;</code>

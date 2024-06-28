@@ -80,6 +80,8 @@ public abstract class AbstractCondition implements Condition {
 
 	@Override
 	public void setAchieve() {
+		// 设置一下显示数量
+		setFinishCount(getRequireCount());
 		if (!achieve) {
 			finishAction();
 		}
@@ -123,6 +125,12 @@ public abstract class AbstractCondition implements Condition {
 	@Override
 	public int getParam() {
 		return getParam(0);
+	}
+
+	@Override
+	public int[] getExtParam() {
+		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
+		return conditionConfig.extParam;
 	}
 	@Override
 	public String toSaveString() {

@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.quest.require;
 
-import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
@@ -9,7 +8,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.CultivatesImmortals)
 public class CultivatesImmortals extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroBattle, EventTypeEnum.HeroLevelUp };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.CultivatesImmortals };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -22,15 +21,11 @@ public class CultivatesImmortals extends AbstractCondition {
 
 	@Override
 	public long getFinishCount() {
-		int count = 0;
-		int level = getParam(0);
-		return count;
+		return player.getDevelopModule().getHeavenlyDaoLevel();
 	}
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-		Hero hero = event.getParameter(0);
-		int level = getParam(0);
-		return hero.getLevel() >= level;
+		return true;
 	}
 }

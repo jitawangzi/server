@@ -2,12 +2,12 @@ package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.module.quest.AbstractCondition;
+import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.WatchAdsCumulation)
-public class WatchAdsCumulative extends AbstractCondition {
+public class WatchAdsCumulative extends AbstractCumulativeCondition {
 	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.WatchAds };
 
 	@Override
@@ -15,11 +15,6 @@ public class WatchAdsCumulative extends AbstractCondition {
 		return events;
 	}
 	public WatchAdsCumulative() {
-	}
-
-	@Override
-	public long getFinishCount() {
-		return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.WatchAdsCumulation);
 	}
 
 	@Override

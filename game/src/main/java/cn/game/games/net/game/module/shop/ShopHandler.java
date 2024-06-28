@@ -227,6 +227,13 @@ public class ShopHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
 				return;
 			}
+			FundPassConfig fundPassConfig = FundPassManager.instance().get(fundPassRewardsConfig.Index); 
+			
+			if (fundPassRewardsConfig.LvCondition > 0
+					&& player.getPlayerModule().getExpLevelMap().getValue(fundPassConfig.ExpType) < fundPassRewardsConfig.LvCondition) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_level_not_enough.getId());
+				return;
+			}
 			boolean checkCondition = PlayerHelper.checkCondition(player, fundPassRewardsConfig.Condition);
 			if (!checkCondition) {
 				client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());

@@ -33,6 +33,8 @@ public enum EventTypeEnum {
 	
 	WatchAds(130, "看了一次广告"),
 
+	CultivatesImmortals(133, "提升天道修为等级"),
+
 	/** 升级,注意是所有等级，包含玩家等级。  参数： 经验，升到的等级*/
 	LevelUp(2, "升级"),
 	/** 通关关卡，包含剧情普通关卡，探索关卡等 */
@@ -43,7 +45,7 @@ public enum EventTypeEnum {
 	HCChapterFirstWin(5, "主线章节第一次通关"),
 	/** 英雄升级 参数：英雄*/
 	HeroLevelUp(6, "英雄升级"),
-	/** 英雄突破 */
+	/** 英雄突破 ，参数，星级、品质*/
 	HeroBreak(7, "英雄突破"),
 	/** 伙伴升星 */
 	RoleStarUp(8, "伙伴升星"),
@@ -58,7 +60,7 @@ public enum EventTypeEnum {
 	/** 英雄上阵 参数，hero */
 	HeroBattle(14, "英雄上阵"),
 	HeroBattleDismiss(15, "英雄下阵"),
-	/** 获得英雄 */
+	/** 获得英雄  参数： heroId*/
 	Hero(16, "获得英雄"),
 	/** 一场战斗结束，参数战役id，关卡id，输赢，杀怪数量 ,boss数量*/
 	BattleEnd(17, "一场战斗结束"),

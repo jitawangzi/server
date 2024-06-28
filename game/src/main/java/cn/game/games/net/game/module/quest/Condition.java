@@ -46,7 +46,7 @@ public interface Condition extends EventHandler {
 	boolean isAchieve();
 
 	/**
-	 * @Description 设置需求已达成
+	 * @Description 设置需求已达成,需要确认确实条件已经达到了，可以直接完成的情况
 	 */
 	void setAchieve();
 
@@ -89,7 +89,18 @@ public interface Condition extends EventHandler {
 	 */
 	int getParam(int index);
 
+	/** 
+	 * 获取第一个扩展参数，大多数情况扩展参数只有一个
+	 * 特别注意如果没有配置扩展参数，会返回0
+	 * @return
+	 */
 	int getParam();
+
+	/** 
+	 * 获取这个条件的所有扩展参数
+	 * @return
+	 */
+	int[] getExtParam();
 
 	int getCondition();
 

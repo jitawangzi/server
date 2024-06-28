@@ -883,39 +883,97 @@ public class PlayerHelper {
 	 * @Description 基础的条件检查
 	 * @param playerId
 	 * @param condition
-	 * @param param
-	 *            需要传入待检查的一些参数
 	 * @return
 	 */
 	public static boolean checkCondition(Player player, int condition) {
-		if (condition == 0) {
+		if (condition == 0) { // 一般认为没有配置条件，默认符合。
 			return true;
 		}
+		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
+		int count = conditionConfig.numParam;
+		return getConditionCount(player, condition) >= count;
+	}
 
+	/** 
+	 * 获取某条件的计数，一般是根据当前数据直接可以获得的，或者是累计计数等，不需要额外条件的。 
+	 * @param player
+	 * @param condition
+	 * @return
+	 */
+	public static int getConditionCount(Player player, int condition) {
+		if (condition == 0) {
+			return 0;
+		}
 		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
 
 		ConditionTypeEnum type = ConditionTypeEnum.get(conditionConfig.type);
+		if (type.countType == 0) {
+			throw new IllegalArgumentException(condition + " 计数类型是0，只能从任务处获取数据");
+		}
 		int id = conditionConfig.idParam;
-		int count = conditionConfig.numParam;
 		int[] extParam = conditionConfig.extParam;
-		switch (type) {
-			case PlayerLevel: {
-				return player.getLevel() >= count;
+
+		if (type.countType == 2) {
+			// 累计计数带有额外参数的：
+			if (type == ConditionTypeEnum.EarnHeroCumulation) {
+				return player.getQuestModule().getCumulativeCount(type, extParam);
 			}
-			case FundPassLvCondition: {
-				return player.getPlayerModule().getExpLevelMap().getValue(id) >= count;
+			// 累计计数不带额外参数直接获取的
+			return player.getQuestModule().getCumulativeCount(type);
+		}
+		if (type.countType == 1) {
+			switch (type) {
+			// 直接根据当前数据获取的：
+			case PlayerLevel: {
+				return player.getLevel();
 			}
 			case ChapterFinish: {
 				ChapterModule chapterModule = player.getModule(ChapterModule.class);
-				return chapterModule.isBattlePass(id);
+				return chapterModule.isBattlePass(id) ? 1 : 0;
 			}
-			case AccumulatedRecharge: {
-//				return operator(player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge), count, operator);
-				return player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge) >= count;
+			case CultivatesImmortals: {
+				return player.getDevelopModule().getHeavenlyDaoLevel();
 			}
-			default:
-				throw new IllegalArgumentException(" not suport condition  " + type);
+			default: {
+				throw new IllegalArgumentException(" not suport countType1 condition  " + type);
+			}
+			}
 		}
+		throw new IllegalArgumentException(" not suport condition  " + type);
+
+//		switch (type) {
+//		// 直接根据当前数据获取的：
+//		case PlayerLevel: {
+//			return player.getLevel();
+//		}
+//		case ChapterFinish: {
+//			ChapterModule chapterModule = player.getModule(ChapterModule.class);
+//			return chapterModule.isBattlePass(id) ? 1 : 0;
+//		}
+//		case CultivatesImmortals: {
+//			return player.getDevelopModule().getHeavenlyDaoLevel();
+//		}
+//		// 累计计数带有额外参数的：
+//		case EarnHeroCumulation: {
+//			return player.getQuestModule().getCumulativeCount(type, extParam);
+//		}
+//
+//		// 累计计数不带额外参数直接获取的
+//		case RechargeCnt:
+//		case ConsumesDiamonds:
+//		case CumulativeLogins:
+//		case EliteFinish:
+//		case KillBoss:
+//		case KillMonsters:
+//		case WatchAdsCumulation:
+//		case AccumulatedRecharge:
+//		case BreakHeroCumulation: {
+//			return player.getQuestModule().getCumulativeCount(type);
+//		}
+//		default:
+//			throw new IllegalArgumentException(" not suport condition  " + type);
+//		}
+
 	}
 
 	public static boolean operator(int value, int configValue, int operator) {

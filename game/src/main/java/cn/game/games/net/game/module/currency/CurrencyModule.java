@@ -191,7 +191,9 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		if (id == Asset.playerExp.ID) {
 			return UserUpgradeManager.instance().getNullable(level);
 		} else if (id == Asset.FundPass.ID) {
-			return FundPassUpgradeManager.instance().getNullable(level);
+			return FundPassUpgradeManager.instance().getUIExpTypeLv(id,level);
+		} else if (id == Asset.BrawlPoint.ID) {
+			return FundPassUpgradeManager.instance().getUIExpTypeLv(id,level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}

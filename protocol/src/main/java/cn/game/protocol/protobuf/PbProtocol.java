@@ -68,6 +68,14 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleRougeRefreshResponse_13000006 = 0x13000006;    //肉鸽刷新  
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    //领取体力  
 	public final static int BattleStaminaResponse_13000051 = 0x13000051;    
+	public final static int DevelopPotentialLvUpRequest_25000001 = 0x25000001;    //潜力修炼，升级  
+	public final static int DevelopPotentialLvUpResponse_25000002 = 0x25000002;    
+	public final static int DevelopPotentialBreakRequest_25000003 = 0x25000003;    //潜力修炼，突破  
+	public final static int DevelopPotentialBreakResponse_25000004 = 0x25000004;    
+	public final static int DevelopRescueLvUpRequest_25000007 = 0x25000007;    //强援修炼，升级  
+	public final static int DevelopRescueLvUpResponse_25000008 = 0x25000008;    
+	public final static int DevelopHeavenlyDaoLvUpRequest_25000010 = 0x25000010;    //天道修为晋升，提升等级。  
+	public final static int DevelopHeavenlyDaoLvUpResponse_25000011 = 0x25000011;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    //龙解锁  
 	public final static int DragonUnlockResponse_17000002 = 0x17000002;    
 	public final static int DragonStarUpRequest_17000003 = 0x17000003;    //龙升星  
@@ -379,6 +387,22 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleStaminaRequest_13000050, cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleStaminaResponse_13000051, cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DevelopPotentialLvUpRequest_25000001, cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialLvUpRequest_25000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DevelopPotentialLvUpResponse_25000002, cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialLvUpResponse_25000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DevelopPotentialBreakRequest_25000003, cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DevelopPotentialBreakResponse_25000004, cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakResponse_25000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DevelopRescueLvUpRequest_25000007, cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpRequest_25000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DevelopRescueLvUpResponse_25000008, cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpResponse_25000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DevelopHeavenlyDaoLvUpRequest_25000010, cn.game.protocol.protobuf.DevelopMsg.DevelopHeavenlyDaoLvUpRequest_25000010.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(DevelopHeavenlyDaoLvUpResponse_25000011, cn.game.protocol.protobuf.DevelopMsg.DevelopHeavenlyDaoLvUpResponse_25000011.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DragonUnlockRequest_17000001, cn.game.protocol.protobuf.DragonMsg.DragonUnlockRequest_17000001.getDefaultInstance()
 				.getParserForType());
@@ -860,6 +884,14 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleRougeRefreshResponse_13000006", 0x13000006);
 		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);
 		nameIdMap.put("BattleStaminaResponse_13000051", 0x13000051);
+		nameIdMap.put("DevelopPotentialLvUpRequest_25000001", 0x25000001);
+		nameIdMap.put("DevelopPotentialLvUpResponse_25000002", 0x25000002);
+		nameIdMap.put("DevelopPotentialBreakRequest_25000003", 0x25000003);
+		nameIdMap.put("DevelopPotentialBreakResponse_25000004", 0x25000004);
+		nameIdMap.put("DevelopRescueLvUpRequest_25000007", 0x25000007);
+		nameIdMap.put("DevelopRescueLvUpResponse_25000008", 0x25000008);
+		nameIdMap.put("DevelopHeavenlyDaoLvUpRequest_25000010", 0x25000010);
+		nameIdMap.put("DevelopHeavenlyDaoLvUpResponse_25000011", 0x25000011);
 		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
 		nameIdMap.put("DragonUnlockResponse_17000002", 0x17000002);
 		nameIdMap.put("DragonStarUpRequest_17000003", 0x17000003);
