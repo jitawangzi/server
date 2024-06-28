@@ -39,6 +39,7 @@ public class DaoHeartImpl extends XiYouBattleHandler {
 		} else {
 			return ErrorMsgEnum.player_check_error.getId();
 		}
+
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
 		if (dungeonId != daoHeartBattle.getNextBattleId()) {
@@ -60,16 +61,6 @@ public class DaoHeartImpl extends XiYouBattleHandler {
 
 		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
 		resp.addAllRewards(reward);
-		return 0;
-	}
-
-	@Override
-	public int check(Player player, int type, int dungeonId) {
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		BattleConfig battleConfig = BattleManager.instance().get(dungeonId);
-		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart)) {
-			return ErrorMsgEnum.resource_not_enough.getId();
-		}
 		return 0;
 	}
 

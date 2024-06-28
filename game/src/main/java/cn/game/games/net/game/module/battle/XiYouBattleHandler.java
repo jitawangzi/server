@@ -35,8 +35,11 @@ public abstract class XiYouBattleHandler implements IBattleHandler {
 		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(battleConfig.preBattle)) {
 			return ErrorMsgEnum.BattleLevel_pre.getId();
 		}
-		if (!chapterModule.checkChapterTimes(dungeonId)) {
-			return ErrorMsgEnum.times_limit.getId();
+//		if (!chapterModule.checkChapterTimes(dungeonId)) {
+//			return ErrorMsgEnum.times_limit.getId();
+//		}
+		if (battleConfig.BattleCondition > 0 && player.getDevelopModule().getHeavenlyDaoLevel() < battleConfig.BattleCondition) {
+			return ErrorMsgEnum.player_level_not_enough.getId();
 		}
 
 //		if (!PlayerHelper.checkCondition(playerId, battleConfig.enterCondtion)) {
