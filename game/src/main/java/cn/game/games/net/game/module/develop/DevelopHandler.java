@@ -19,6 +19,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.HeavenlyDaoConfig;
 import cn.game.protocol.generated.config.PotentialConfig;
+import cn.game.protocol.generated.config.RescueConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.HeavenlyDaoManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -114,18 +115,66 @@ public class DevelopHandler extends BaseHandler {
 			return;
 		}
 		PotentialConfig potentialConfig = DevelopHelper.getPotentialConfig(id, level);
-//		if (nextConfig == null) {
-//			client.sendProtocol(resp.build(), ErrorMsgEnum.level_limit.getId());
-//			return;
-//		}
-//
-//		PotentialConfig potentialConfig = DevelopHelper.getPotentialConfig(id, level);
+		if (level % potentialConfig.PotentialBreak[0][0] != 0 || developModule.isPotentiaBreak()) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+
+		List<Entry<Integer, Integer>> consumeList = new ArrayList<Map.Entry<Integer, Integer>>();
+		for (int[] consume : potentialConfig.PotentialBreak) {
+			consumeList.add(new AbstractMap.SimpleEntry(consume[1], consume[2]));
+		}
+		if (!PlayerHelper.delResources(player, consumeList, OpType.PotentialBreak)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		developModule.setPotentiaBreak(true);
 		client.sendProtocol(resp.build());
 	}
 	private void rescueLvUp(NetClient client, Object message) {
 		DevelopRescueLvUpRequest_25000007 req = (DevelopRescueLvUpRequest_25000007) message;
 		DevelopRescueLvUpResponse_25000008.Builder resp = DevelopRescueLvUpResponse_25000008.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		int id = req.getId();
+		if (!player.isFuncOpen(InitialUI.Consciousness)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+
+		DevelopModule developModule = player.getDevelopModule();
+		IntMapWrapper potentiaLvMap = developModule.getPotentiaLvMap();
+		int level = potentiaLvMap.getValue(id);
+//		if (level == 0) {
+//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+//			return;
+//		}
+		RescueConfig nextConfig = DevelopHelper.getRescueConfig(id, level + 1);
+		if (nextConfig == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.level_limit.getId());
+			return;
+		}
+
+		RescueConfig config = DevelopHelper.getRescueConfig(id, level);
+
+//		if (PlayerHelper.checkCondition(player, potential.RescueUnlock)) {
+//			potentiaLvMap.setValue(potential.RescueMark, 1);
+//		}
+//		int level = potentiaLvMap.getValue(id);
+//		if (level == 0) {
+//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+//			return;
+//		}
+		List<Entry<Integer, Integer>> consumeList = new ArrayList<Map.Entry<Integer, Integer>>();
+		for (int[] consume : config.RescueConsume) {
+			int calcPotentialConsumeValue = DevelopHelper.calcPotentialConsumeValue(consume[1], consume[2], consume[3], level);
+			consumeList.add(new AbstractMap.SimpleEntry(consume[0], calcPotentialConsumeValue));
+		}
+		if (!PlayerHelper.delResources(player, consumeList, OpType.RescueLvUp)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		potentiaLvMap.add(id, 1);
 		client.sendProtocol(resp.build());
 	}
 	private void heavenlyDaoLvUp(NetClient client, Object message) {

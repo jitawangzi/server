@@ -246,7 +246,8 @@ message PlayerAllInfo{
    bool firstLogin = 57;		// 是否是每天第一次登陆
    map<uint32, uint32> guide = 59;    	//
    int32 heavenlyDaoLevel = 60;        //天道修为等级。HeavenlyDao表id
-   map<uint32, uint32> potentialLvMap = 62;    	// 修炼数据，key：属性id value：等级
+   map<uint32, uint32> potentialLvMap = 62;    	// 修炼数据，包括潜力和强援，key：属性id value：等级
+   bool potentialBreak = 63;    	// 潜力修炼每xx级需要突破，是否突破了。
 
    //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
    repeated ShopGroupItemInfo shopGroupItems  = 100;        //商店数据

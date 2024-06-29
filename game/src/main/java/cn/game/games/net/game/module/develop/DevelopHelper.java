@@ -6,6 +6,7 @@ import cn.game.protocol.generated.config.PotentialConfig;
 import cn.game.protocol.generated.config.RescueConfig;
 import cn.game.protocol.generated.manager.PotentialManager;
 import cn.game.protocol.generated.manager.RescueManager;
+import cn.game.util.BinarySearchUtil;
 
 public class DevelopHelper {
 
@@ -16,12 +17,7 @@ public class DevelopHelper {
 	 * @return
 	 */
 	public static PotentialConfig getPotentialConfig(List<PotentialConfig> list, int level) {
-		for (PotentialConfig potentialConfig : list) {
-			if (level <=potentialConfig.PotentialLv) {
-				return potentialConfig; 
-			}
-		}
-		return null ; 
+		return BinarySearchUtil.findFirstGreaterThan(list, level, r -> r.compareValue());
 	}
 
 	/** 

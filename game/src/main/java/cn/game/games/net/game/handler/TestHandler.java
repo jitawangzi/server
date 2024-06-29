@@ -286,12 +286,12 @@ public class TestHandler extends BaseHandler {
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
 		Collection<Hero> list = player.getHeroModule().list();
-		long uid = 0;
-		for (Hero hero : list) {
-			uid = hero.getId();
-			break;
-		}
-		player.getHeroModule().del(uid, OpType.None);
+//		long uid = 0;
+//		for (Hero hero : list) {
+//			uid = hero.getId();
+//			break;
+//		}
+//		player.getHeroModule().del(uid, OpType.None);
 
 //		drawTest(player);
 

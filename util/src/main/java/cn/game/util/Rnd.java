@@ -293,7 +293,7 @@ public final class Rnd {
 	 * @return
 	 */
 	@SafeVarargs
-	public static <T extends Weightable> T randomWeighableElement(List<T>... list) {
+	public static <T extends Weightable> T randomWeighableElementFromMultipleList(List<T>... list) {
 		int total = 0;
 		for (int i = 0; i < list.length; i++) {
 			List<T> list2 = list[i];
@@ -313,6 +313,16 @@ public final class Rnd {
 			}
 		}
 		return null;
+	}
+
+	/** 
+	 * 按照权重随机出来一个元素
+	 * @param <T>
+	 * @param list
+	 * @return
+	 */
+	public static <T extends Weightable> T randomWeighableElement(List<T> list) {
+		return list.get(randomWeighableIndex(list));
 	}
 	/**
 	 * 按权重随机出指定数量的不重复的元素索引

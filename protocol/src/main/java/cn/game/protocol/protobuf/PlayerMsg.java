@@ -24220,7 +24220,7 @@ public final class PlayerMsg {
 
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -24228,7 +24228,7 @@ public final class PlayerMsg {
     int getPotentialLvMapCount();
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -24243,7 +24243,7 @@ public final class PlayerMsg {
     getPotentialLvMap();
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -24252,7 +24252,7 @@ public final class PlayerMsg {
     getPotentialLvMapMap();
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -24263,7 +24263,7 @@ public final class PlayerMsg {
         int defaultValue);
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -24271,6 +24271,16 @@ public final class PlayerMsg {
 
     int getPotentialLvMapOrThrow(
         int key);
+
+    /**
+     * <pre>
+     * 潜力修炼每xx级需要突破，是否突破了。
+     * </pre>
+     *
+     * <code>bool potentialBreak = 63;</code>
+     * @return The potentialBreak.
+     */
+    boolean getPotentialBreak();
 
     /**
      * <pre>
@@ -24954,6 +24964,11 @@ public final class PlayerMsg {
                   PotentialLvMapDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               potentialLvMap_.getMutableMap().put(
                   potentialLvMap__.getKey(), potentialLvMap__.getValue());
+              break;
+            }
+            case 504: {
+
+              potentialBreak_ = input.readBool();
               break;
             }
             case 802: {
@@ -27018,7 +27033,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -27040,7 +27055,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -27052,7 +27067,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -27069,7 +27084,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
-     * 修炼数据，key：属性id value：等级
+     * 修炼数据，包括潜力和强援，key：属性id value：等级
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -27085,6 +27100,21 @@ public final class PlayerMsg {
         throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
+    }
+
+    public static final int POTENTIALBREAK_FIELD_NUMBER = 63;
+    private boolean potentialBreak_;
+    /**
+     * <pre>
+     * 潜力修炼每xx级需要突破，是否突破了。
+     * </pre>
+     *
+     * <code>bool potentialBreak = 63;</code>
+     * @return The potentialBreak.
+     */
+    @java.lang.Override
+    public boolean getPotentialBreak() {
+      return potentialBreak_;
     }
 
     public static final int SHOPGROUPITEMS_FIELD_NUMBER = 100;
@@ -27630,6 +27660,9 @@ public final class PlayerMsg {
           internalGetPotentialLvMap(),
           PotentialLvMapDefaultEntryHolder.defaultEntry,
           62);
+      if (potentialBreak_ != false) {
+        output.writeBool(63, potentialBreak_);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         output.writeMessage(100, shopGroupItems_.get(i));
       }
@@ -27885,6 +27918,10 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(62, potentialLvMap__);
       }
+      if (potentialBreak_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(63, potentialBreak_);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(100, shopGroupItems_.get(i));
@@ -28034,6 +28071,8 @@ public final class PlayerMsg {
           != other.getHeavenlyDaoLevel()) return false;
       if (!internalGetPotentialLvMap().equals(
           other.internalGetPotentialLvMap())) return false;
+      if (getPotentialBreak()
+          != other.getPotentialBreak()) return false;
       if (!getShopGroupItemsList()
           .equals(other.getShopGroupItemsList())) return false;
       if (getNextFreeOpenBoxTime()
@@ -28194,6 +28233,9 @@ public final class PlayerMsg {
         hash = (37 * hash) + POTENTIALLVMAP_FIELD_NUMBER;
         hash = (53 * hash) + internalGetPotentialLvMap().hashCode();
       }
+      hash = (37 * hash) + POTENTIALBREAK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getPotentialBreak());
       if (getShopGroupItemsCount() > 0) {
         hash = (37 * hash) + SHOPGROUPITEMS_FIELD_NUMBER;
         hash = (53 * hash) + getShopGroupItemsList().hashCode();
@@ -28551,6 +28593,8 @@ public final class PlayerMsg {
         heavenlyDaoLevel_ = 0;
 
         internalGetMutablePotentialLvMap().clear();
+        potentialBreak_ = false;
+
         if (shopGroupItemsBuilder_ == null) {
           shopGroupItems_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00800000);
@@ -28780,6 +28824,7 @@ public final class PlayerMsg {
         result.heavenlyDaoLevel_ = heavenlyDaoLevel_;
         result.potentialLvMap_ = internalGetPotentialLvMap();
         result.potentialLvMap_.makeImmutable();
+        result.potentialBreak_ = potentialBreak_;
         if (shopGroupItemsBuilder_ == null) {
           if (((bitField0_ & 0x00800000) != 0)) {
             shopGroupItems_ = java.util.Collections.unmodifiableList(shopGroupItems_);
@@ -29265,6 +29310,9 @@ public final class PlayerMsg {
         }
         internalGetMutablePotentialLvMap().mergeFrom(
             other.internalGetPotentialLvMap());
+        if (other.getPotentialBreak() != false) {
+          setPotentialBreak(other.getPotentialBreak());
+        }
         if (shopGroupItemsBuilder_ == null) {
           if (!other.shopGroupItems_.isEmpty()) {
             if (shopGroupItems_.isEmpty()) {
@@ -35540,7 +35588,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 修炼数据，key：属性id value：等级
+       * 修炼数据，包括潜力和强援，key：属性id value：等级
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -35562,7 +35610,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 修炼数据，key：属性id value：等级
+       * 修炼数据，包括潜力和强援，key：属性id value：等级
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -35574,7 +35622,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 修炼数据，key：属性id value：等级
+       * 修炼数据，包括潜力和强援，key：属性id value：等级
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -35591,7 +35639,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 修炼数据，key：属性id value：等级
+       * 修炼数据，包括潜力和强援，key：属性id value：等级
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -35616,7 +35664,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 修炼数据，key：属性id value：等级
+       * 修炼数据，包括潜力和强援，key：属性id value：等级
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -35639,7 +35687,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 修炼数据，key：属性id value：等级
+       * 修炼数据，包括潜力和强援，key：属性id value：等级
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -35655,7 +35703,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
-       * 修炼数据，key：属性id value：等级
+       * 修炼数据，包括潜力和强援，key：属性id value：等级
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; potentialLvMap = 62;</code>
@@ -35665,6 +35713,49 @@ public final class PlayerMsg {
           java.util.Map<java.lang.Integer, java.lang.Integer> values) {
         internalGetMutablePotentialLvMap().getMutableMap()
             .putAll(values);
+        return this;
+      }
+
+      private boolean potentialBreak_ ;
+      /**
+       * <pre>
+       * 潜力修炼每xx级需要突破，是否突破了。
+       * </pre>
+       *
+       * <code>bool potentialBreak = 63;</code>
+       * @return The potentialBreak.
+       */
+      @java.lang.Override
+      public boolean getPotentialBreak() {
+        return potentialBreak_;
+      }
+      /**
+       * <pre>
+       * 潜力修炼每xx级需要突破，是否突破了。
+       * </pre>
+       *
+       * <code>bool potentialBreak = 63;</code>
+       * @param value The potentialBreak to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPotentialBreak(boolean value) {
+        
+        potentialBreak_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 潜力修炼每xx级需要突破，是否突破了。
+       * </pre>
+       *
+       * <code>bool potentialBreak = 63;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPotentialBreak() {
+        
+        potentialBreak_ = false;
+        onChanged();
         return this;
       }
 
@@ -37555,7 +37646,7 @@ public final class PlayerMsg {
       "1\"(\n\030PlayerResetPush_01100016\022\014\n\004type\030\001 " +
       "\001(\005\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 " +
       "\001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\thead" +
-      "Frame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\346\020\n\rPla" +
+      "Frame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\376\020\n\rPla" +
       "yerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Protos.Play" +
       "erInfo\0221\n\006assets\030\002 \003(\0132!.Protos.PlayerAl" +
       "lInfo.AssetsEntry\022=\n\014assetRecover\030\003 \003(\0132" +
@@ -37589,28 +37680,29 @@ public final class PlayerMsg {
       " \001(\010\022/\n\005guide\030; \003(\0132 .Protos.PlayerAllIn" +
       "fo.GuideEntry\022\030\n\020heavenlyDaoLevel\030< \001(\005\022" +
       "A\n\016potentialLvMap\030> \003(\0132).Protos.PlayerA" +
-      "llInfo.PotentialLvMapEntry\0221\n\016shopGroupI" +
-      "tems\030d \003(\0132\031.Protos.ShopGroupItemInfo\022\033\n" +
-      "\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017mergeSweep" +
-      "Times\030f \001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Proto" +
-      "s.MergeEquipmentInfo\022\025\n\rmergeEquipIds\030h " +
-      "\003(\005\0223\n\021mergeDayChallenge\030i \001(\0132\030.Protos." +
-      "DayChallengeInfo\022#\n\007hcHeros\030k \003(\0132\022.Prot" +
-      "os.HCHeroInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021f" +
-      "reeHcHeroUpTimes\030m \001(\005\022\033\n\023freeHcHeroItem" +
-      "Times\030n \001(\005\022\031\n\021battleSpeedUnlock\030p \001(\010\022\033" +
-      "\n\023battleSpeedAdsCount\030q \001(\005\032-\n\013AssetsEnt" +
-      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021As" +
-      "setRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
-      "\001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
-      "alue\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001" +
-      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022" +
-      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021Drago" +
-      "nSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r" +
-      ":\0028\001\032,\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
-      "\030\002 \001(\r:\0028\001\0325\n\023PotentialLvMapEntry\022\013\n\003key" +
-      "\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.pro" +
-      "tocol.protobufb\006proto3"
+      "llInfo.PotentialLvMapEntry\022\026\n\016potentialB" +
+      "reak\030? \001(\010\0221\n\016shopGroupItems\030d \003(\0132\031.Pro" +
+      "tos.ShopGroupItemInfo\022\033\n\023nextFreeOpenBox" +
+      "Time\030e \001(\005\022\027\n\017mergeSweepTimes\030f \001(\005\022/\n\013m" +
+      "ergeEquips\030g \003(\0132\032.Protos.MergeEquipment" +
+      "Info\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021mergeDayC" +
+      "hallenge\030i \001(\0132\030.Protos.DayChallengeInfo" +
+      "\022#\n\007hcHeros\030k \003(\0132\022.Protos.HCHeroInfo\022\024\n" +
+      "\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHeroUpTimes" +
+      "\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n \001(\005\022\031\n\021b" +
+      "attleSpeedUnlock\030p \001(\010\022\033\n\023battleSpeedAds" +
+      "Count\030q \001(\005\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022" +
+      "\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022" +
+      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013Level" +
+      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/" +
+      "\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
+      "\001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
+      "value\030\002 \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003" +
+      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032,\n\nGuideEnt" +
+      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023Po" +
+      "tentialLvMapEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030" +
+      "\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.protobufb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -37836,7 +37928,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

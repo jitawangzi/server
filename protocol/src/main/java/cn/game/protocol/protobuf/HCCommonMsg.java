@@ -877,17 +877,14 @@ public final class HCCommonMsg {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\021HCCommonMsg.proto\022\006Protos\032\017RewardMsg.p" +
-      "roto\032\rBaseMsg.proto\"\"\n HCBattleSpeedAdsR" +
-      "equest_28000020\"#\n!HCBattleSpeedAdsRespo" +
-      "nse_28000021B\033\n\031cn.game.protocol.protobu" +
-      "fb\006proto3"
+      "\n\021HCCommonMsg.proto\022\006Protos\"\"\n HCBattleS" +
+      "peedAdsRequest_28000020\"#\n!HCBattleSpeed" +
+      "AdsResponse_28000021B\033\n\031cn.game.protocol" +
+      ".protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          cn.game.protocol.protobuf.RewardMsg.getDescriptor(),
-          cn.game.protocol.protobuf.BaseMsg.getDescriptor(),
         });
     internal_static_Protos_HCBattleSpeedAdsRequest_28000020_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -901,8 +898,6 @@ public final class HCCommonMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HCBattleSpeedAdsResponse_28000021_descriptor,
         new java.lang.String[] { });
-    cn.game.protocol.protobuf.RewardMsg.getDescriptor();
-    cn.game.protocol.protobuf.BaseMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

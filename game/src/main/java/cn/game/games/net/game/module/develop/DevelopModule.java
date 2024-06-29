@@ -49,6 +49,33 @@ public class DevelopModule extends BasePlayerModule {
 		return potentiaLvMap;
 	}
 
+	/** 
+	 * 获取修炼等级
+	 * @param atrrId 属性id
+	 * @param type 1 潜力 2强援
+	 * @return
+	 */
+	public int getCultivationLv(int atrrId, int type) {
+		int value = potentiaLvMap.getValue(atrrId);
+		if (value == 0) {
+			if (type == 1) {
+				PotentialConfig config = DevelopHelper.getPotentialConfig(atrrId, value);
+				if (PlayerHelper.checkCondition(player, config.PotentialUnlock)) {
+					potentiaLvMap.setValue(config.PotentialMark, 1);
+					value = 1;
+				}
+			} else if (type == 2) {
+				RescueConfig config = DevelopHelper.getRescueConfig(atrrId, value);
+				if (PlayerHelper.checkCondition(player, config.RescueUnlock)) {
+					potentiaLvMap.setValue(config.RescueMark, 1);
+					value = 1;
+				}
+			}
+
+		}
+		return value;
+	}
+
 	public boolean isPotentiaBreak() {
 		return isPotentiaBreak;
 	}

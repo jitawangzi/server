@@ -1,16 +1,16 @@
 package cn.game.util;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
+import java.util.function.Function;
 
 /**   
- * @Description 2分查找和4个变体
+ * @Description 2分查找和一些变体
  * @date 2019年3月1日 下午5:15:21
  * @author SYQ
  */
-public class BinarySearch {
+public class BinarySearchUtil {
     private static final int BINARYSEARCH_THRESHOLD   = 5000;
 
 	public static void main(String args[]) {
@@ -22,6 +22,80 @@ public class BinarySearch {
 		System.out.println(searchLast(array, 0, array.length - 1, 3));
 		System.out.println(searchFirstBig(array, 0, array.length - 1, 6));
 		System.out.println(searchLastLess(array, 0, array.length - 1, 3));
+	}
+
+	/**
+	* 通用二分查找方法
+	*
+	* @param list 已排序的列表
+	* @param value 用于比较的值
+	* @param valueExtractor 从对象中提取比较值的函数
+	* @param <T> 列表中对象的类型
+	* @param <U> 比较值的类型
+	* @return 第一个满足条件的对象，如果没有找到则返回null
+	*/
+	public static <T, U extends Comparable<U>> T findFirstLessThan(List<T> list, U value, Function<T, U> valueExtractor) {
+
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+
+		int left = 0;
+		int right = list.size() - 1;
+
+		while (left <= right) {
+			int mid = left + (right - left) / 2;
+			T midItem = list.get(mid);
+			U midValue = valueExtractor.apply(midItem);
+
+			if (midValue.compareTo(value) < 0) {
+				if (mid == list.size() - 1 || valueExtractor.apply(list.get(mid + 1)).compareTo(value) >= 0) {
+					return midItem;
+				}
+				left = mid + 1;
+			} else {
+				right = mid - 1;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * 通用二分查找方法，查找第一个大于给定值的对象
+	 *
+	 * @param list 已排序的列表
+	 * @param value 用于比较的值
+	 * @param valueExtractor 从对象中提取比较值的函数
+	 * @param <T> 列表中对象的类型
+	 * @param <U> 比较值的类型
+	 * @return 第一个大于给定值的对象，如果没有找到则返回null
+	 */
+	public static <T, U extends Comparable<U>> T findFirstGreaterThan(List<T> list, U value, Function<T, U> valueExtractor) {
+
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+
+		int left = 0;
+		int right = list.size() - 1;
+
+		while (left <= right) {
+			int mid = left + (right - left) / 2;
+			T midItem = list.get(mid);
+			U midValue = valueExtractor.apply(midItem);
+
+			if (midValue.compareTo(value) <= 0) {
+				left = mid + 1;
+			} else {
+				if (mid == 0 || valueExtractor.apply(list.get(mid - 1)).compareTo(value) <= 0) {
+					return midItem;
+				}
+				right = mid - 1;
+			}
+		}
+
+		return null;
 	}
 
 	/**

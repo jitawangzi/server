@@ -476,7 +476,16 @@ public class PlayerHelper {
 				int randomIndex = Rnd.randomIndex(randomGivenConfig.RandomParameterWeight);
 				int group = randomGivenConfig.RandomParameterGroupId[randomIndex];
 				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
-				RandomGroupConfig groupConfig = Rnd.randomOne(randomGroupIDList);
+				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
+				resources.addAll(addResources(player, groupConfig.AssetID, groupConfig.Several, opType));
+			}
+		}
+		for (int i = 0; i < randomGivenConfig.FixedNumRandomDrop.length; i++) {
+			int group = randomGivenConfig.FixedNumRandomDrop[i][0];
+			int randomCount = randomGivenConfig.FixedNumRandomDrop[i][1];
+			List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
+			for (int j = 0; j < randomCount; j++) {
+				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
 				resources.addAll(addResources(player, groupConfig.AssetID, groupConfig.Several, opType));
 			}
 		}
