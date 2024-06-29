@@ -74,7 +74,7 @@ public class DevelopHandler extends BaseHandler {
 		}
 		PotentialConfig potentialConfig = DevelopHelper.getPotentialConfig(id, level);
 		// 当前等级需要突破后才能继续升级
-		if (level % potentialConfig.PotentialBreak[0][0] == 0 && !developModule.isPotentiaBreak()) {
+		if (level % potentialConfig.PotentialBreak[0][0] == 0 && !developModule.isPotentiaBreak(id)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.illegal_request.getId());
 			return;
 		}
@@ -89,7 +89,7 @@ public class DevelopHandler extends BaseHandler {
 			return;
 		}
 		developModule.getPotentiaLvMap().add(id, 1);
-		developModule.setPotentiaBreak(false);
+		developModule.setIsPotentiaBreak(id, false);
 
 		client.sendProtocol(resp.build());
 	}
@@ -111,7 +111,7 @@ public class DevelopHandler extends BaseHandler {
 			return;
 		}
 		PotentialConfig potentialConfig = DevelopHelper.getPotentialConfig(id, level);
-		if (level % potentialConfig.PotentialBreak[0][0] != 0 || developModule.isPotentiaBreak()) {
+		if (level % potentialConfig.PotentialBreak[0][0] != 0 || developModule.isPotentiaBreak(id)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
@@ -124,7 +124,7 @@ public class DevelopHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
-		developModule.setPotentiaBreak(true);
+		developModule.setIsPotentiaBreak(id, true);
 		client.sendProtocol(resp.build());
 	}
 	private void rescueLvUp(NetClient client, Object message) {

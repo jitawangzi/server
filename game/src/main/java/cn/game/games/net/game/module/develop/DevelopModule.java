@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.develop;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class DevelopModule extends BasePlayerModule {
 	private IntMapWrapper potentiaLvMap = new IntMapWrapper();
 
 	/**  */
-	private boolean isPotentiaBreak;
+	private Map<Integer, Boolean> isPotentiaBreakMap = new HashMap<Integer, Boolean>();
 
 
 	public int getHeavenlyDaoLevel() {
@@ -47,6 +48,15 @@ public class DevelopModule extends BasePlayerModule {
 
 	public IntMapWrapper getPotentiaLvMap() {
 		return potentiaLvMap;
+	}
+
+	public boolean isPotentiaBreak(int id) {
+		Boolean ret = isPotentiaBreakMap.get(id);
+		return ret == null ? false : ret;
+	}
+
+	public void setIsPotentiaBreak(int id, boolean value) {
+		this.isPotentiaBreakMap.put(id, value);
 	}
 
 	/** 
@@ -76,17 +86,10 @@ public class DevelopModule extends BasePlayerModule {
 		return value;
 	}
 
-	public boolean isPotentiaBreak() {
-		return isPotentiaBreak;
-	}
-
-	public void setPotentiaBreak(boolean isPotentiaBreak) {
-		this.isPotentiaBreak = isPotentiaBreak;
-	}
-
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.setHeavenlyDaoLevel(heavenlyDaoLevel);
+		builder.putAllPotentialLvMap(potentiaLvMap.getMap());
 
 	}
 	@Override
