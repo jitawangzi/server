@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+/**    
+ * 检查bi需要的日志文件，里面有没有空值
+ * @date 2024年6月29日 下午6:58:05
+ * @author SYQ
+ */
 public class CyLogCheck {
 	public static final char delimiter = 0x01;
 	public static final String dir = "d:\\log";

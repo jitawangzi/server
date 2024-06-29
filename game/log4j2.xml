@@ -71,12 +71,9 @@
         <Root level="info" includeLocation="false" additivity="true">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="Stdout"/>
+            <AppenderRef ref="CommonError"/>
         </Root>
 
-        <Async name="AsyncCommonError">
-            <AppenderRef ref="CommonError"/>
-        </Async>
-        
         <AsyncLogger name="System" level="info" includeLocation="false" additivity="true">
             <AppenderRef ref="System"/>
         </AsyncLogger>

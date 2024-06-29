@@ -9,6 +9,8 @@ public class GG {
 		IntMapWrapper map = new IntMapWrapper();
 		int i = map.add(3, 1);
 		System.out.println(i);
+		i = map.add(3, 1);
+		System.out.println(i);
 	}
 
 	private static void test() {
