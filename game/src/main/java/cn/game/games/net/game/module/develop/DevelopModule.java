@@ -90,7 +90,7 @@ public class DevelopModule extends BasePlayerModule {
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.setHeavenlyDaoLevel(heavenlyDaoLevel);
 		builder.putAllPotentialLvMap(potentiaLvMap.getMap());
-
+		builder.putAllPotentialBreak(isPotentiaBreakMap);
 	}
 	@Override
 	public void handleEvent(GameEvent event) {
