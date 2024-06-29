@@ -33,7 +33,6 @@ import cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialLvUpResponse_2500000
 import cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpRequest_25000007;
 import cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpResponse_25000008;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.util.IntMapWrapper;
 
 @Component
 public class DevelopHandler extends BaseHandler {
@@ -63,8 +62,7 @@ public class DevelopHandler extends BaseHandler {
 		}
 
 		DevelopModule developModule = player.getDevelopModule();
-		IntMapWrapper potentiaLvMap = developModule.getPotentiaLvMap();
-		int level = potentiaLvMap.getValue(id);
+		int level = developModule.getCultivationLv(id, 1);
 		if (level == 0) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
@@ -74,7 +72,6 @@ public class DevelopHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.level_limit.getId());
 			return;
 		}
-		
 		PotentialConfig potentialConfig = DevelopHelper.getPotentialConfig(id, level);
 		// 当前等级需要突破后才能继续升级
 		if (level % potentialConfig.PotentialBreak[0][0] == 0 && !developModule.isPotentiaBreak()) {
@@ -91,7 +88,7 @@ public class DevelopHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
-		potentiaLvMap.add(id, 1);
+		developModule.getPotentiaLvMap().add(id, 1);
 		developModule.setPotentiaBreak(false);
 
 		client.sendProtocol(resp.build());
@@ -108,8 +105,7 @@ public class DevelopHandler extends BaseHandler {
 		}
 		int id = req.getId();
 		DevelopModule developModule = player.getDevelopModule();
-		IntMapWrapper potentiaLvMap = developModule.getPotentiaLvMap();
-		int level = potentiaLvMap.getValue(id);
+		int level = developModule.getCultivationLv(id, 1);
 		if (level == 0) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
@@ -143,12 +139,7 @@ public class DevelopHandler extends BaseHandler {
 		}
 
 		DevelopModule developModule = player.getDevelopModule();
-		IntMapWrapper potentiaLvMap = developModule.getPotentiaLvMap();
-		int level = potentiaLvMap.getValue(id);
-//		if (level == 0) {
-//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-//			return;
-//		}
+		int level = developModule.getCultivationLv(id, 2);
 		RescueConfig nextConfig = DevelopHelper.getRescueConfig(id, level + 1);
 		if (nextConfig == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.level_limit.getId());
@@ -157,14 +148,10 @@ public class DevelopHandler extends BaseHandler {
 
 		RescueConfig config = DevelopHelper.getRescueConfig(id, level);
 
-//		if (PlayerHelper.checkCondition(player, potential.RescueUnlock)) {
-//			potentiaLvMap.setValue(potential.RescueMark, 1);
-//		}
-//		int level = potentiaLvMap.getValue(id);
-//		if (level == 0) {
-//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-//			return;
-//		}
+		if (!PlayerHelper.checkCondition(player, config.RescueUnlock)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.condition_check_error.getId());
+			return;
+		}
 		List<Entry<Integer, Integer>> consumeList = new ArrayList<Map.Entry<Integer, Integer>>();
 		for (int[] consume : config.RescueConsume) {
 			int calcPotentialConsumeValue = DevelopHelper.calcPotentialConsumeValue(consume[1], consume[2], consume[3], level);
@@ -174,7 +161,7 @@ public class DevelopHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
-		potentiaLvMap.add(id, 1);
+		developModule.getPotentiaLvMap().add(id, 1);
 		client.sendProtocol(resp.build());
 	}
 	private void heavenlyDaoLvUp(NetClient client, Object message) {

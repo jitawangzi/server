@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.develop;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,6 +25,8 @@ import cn.game.protocol.generated.config.HeroBookConfig;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.HeroSwordConfig;
+import cn.game.protocol.generated.config.PotentialConfig;
+import cn.game.protocol.generated.config.RescueConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.DragonManager;
@@ -33,6 +36,8 @@ import cn.game.protocol.generated.manager.HeroBookManager;
 import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.HeroSwordManager;
+import cn.game.protocol.generated.manager.PotentialManager;
+import cn.game.protocol.generated.manager.RescueManager;
 import cn.game.protocol.protobuf.BattleMsg.HeroAttr;
 import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -268,11 +273,26 @@ public class AttrModule extends BasePlayerModule {
 			return;
 		}
 		potentialAttr.clear();
-//		int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
-//		HeavenlyDaoConfig heavenlyDaoConfig = HeavenlyDaoManager.instance().get(heavenlyDaoLevel);
-//		for (int[] att : heavenlyDaoConfig.Attribute) {
-//			heavenlyDaoAttr.add(att);
-//		}
+		DevelopModule developModule = player.getDevelopModule();
+
+		// 初始修炼等级
+		Map<Integer, List<PotentialConfig>> potentialMarks = PotentialManager.instance().getPotentialMarks();
+		potentialMarks.forEach((k, v) -> {
+			int lv = developModule.getCultivationLv(k, 1);
+			if (lv > 0) {
+				PotentialConfig config = DevelopHelper.getPotentialConfig(v, lv);
+				int attrValue = config.PotentialBase[1] + (lv - 1) * config.PotentialGrow[1];
+				potentialAttr.add(config.PotentialBase[0], attrValue);
+			}
+		});
+		Map<Integer, List<RescueConfig>> rescueMarks = RescueManager.instance().getRescueMarks();
+		rescueMarks.forEach((k, v) -> {
+			int lv = developModule.getCultivationLv(k, 2);
+			if (lv > 0) {
+				RescueConfig config = DevelopHelper.getRescueConfig(v, lv);
+				potentialAttr.add(config.RescueMulHurtPerGrow[0], config.RescueMulHurtPerGrow[1] * lv);
+			}
+		});
 	}
 
 	private Hero getMaxQualityHero(Collection<Hero> heros) {
