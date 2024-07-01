@@ -1,4 +1,4 @@
-import cn.game.util.IntMapWrapper;
+import cn.game.util.JsonUtil;
 import cn.game.util.Rnd;
 
 public class GG {
@@ -6,11 +6,16 @@ public class GG {
 	public static long firstTime = System.currentTimeMillis();
 
 	public static void main(String[] args) throws Exception {
-		IntMapWrapper map = new IntMapWrapper();
-		int i = map.add(3, 1);
-		System.out.println(i);
-		i = map.add(3, 1);
-		System.out.println(i);
+		JsObject jsObject = new JsObject();
+		jsObject.setName("name");
+		jsObject.setAge(12);
+		jsObject.setAddress("address");
+		System.out.println(jsObject);
+		String jsonString = JsonUtil.toJsonString(jsObject);
+		System.out.println(jsonString);
+		String string = "[\"JsObject\",{\"name\":\"name\",\"age\":12,\"address\":\"address\"}]";
+		JsObject fromJson = JsonUtil.parseObject(string, JsObject.class);
+		System.out.println(fromJson);
 	}
 
 	private static void test() {

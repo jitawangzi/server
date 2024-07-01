@@ -37,7 +37,6 @@ public class DevelopModule extends BasePlayerModule {
 	/**  */
 	private Map<Integer, Boolean> isPotentiaBreakMap = new HashMap<Integer, Boolean>();
 
-
 	public int getHeavenlyDaoLevel() {
 		return heavenlyDaoLevel;
 	}
@@ -150,7 +149,6 @@ public class DevelopModule extends BasePlayerModule {
 
 	@Override
 	public void initFromDbAfter() {
-
 	}
 
 }

@@ -1,7 +1,9 @@
 package cn.game.games.net.game;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.RequestCallback;
 
 import com.ctrip.framework.apollo.ConfigService;
+import com.google.common.io.Files;
 import com.google.protobuf.Message;
 import com.sun.tools.attach.VirtualMachine;
 
@@ -27,6 +30,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.net.vertx.rpc.VertxRpcClient;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
+import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.vertx.WebSocketVerticle;
@@ -42,6 +46,7 @@ import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
+import cn.game.util.JsonUtil;
 import cn.game.util.RedissonUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -175,7 +180,7 @@ public class GameServer implements GameServerMBean {
 		ClassManager.getInstance().init();
 		PressureTestManager.getInstance().init();
 		BIHelper.start();
-
+		checkPlayerJsonStruct();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);
@@ -183,12 +188,31 @@ public class GameServer implements GameServerMBean {
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		CommonLogger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", serverId, (System.currentTimeMillis() - start) / 1000));
 
-//		Thread.sleep(3000);
-//		System.exit(1);
 		// 记录bi
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
 //		producer.start();
 //		testUpdateBatch();
+	}
+
+	private void checkPlayerJsonStruct() throws Exception {
+		// 写一个方法，读取当前目录下的player.json文件，读取出里面保存的json字符串，
+		// 然后反序列化成Player对象，检查是否能反序列化成功,如果反序列化成功，则将实例化一个player对象，
+		// 序列化成json字符串保存在player.json中，如果反序列化失败，则给出警告，然后退出程序
+		File file = new File("player.json");
+		if (file.exists()) {
+			String json = Files.readFirstLine(file, Charset.defaultCharset());
+			Player player = null;
+			try {
+				player = JsonUtil.parseObject(json, Player.class);
+			} catch (Exception e) {
+				throw new RuntimeException("Player结构有变化，json反序列化失败，修正数据兼容后重试", e); // 反序列化失败，
+			}
+			Files.write(JsonUtil.toJsonString(player), file, Charset.defaultCharset());
+		} else {
+			Player player = new Player();
+			player.initModule(null);
+			Files.write(JsonUtil.toJsonString(player), file, Charset.defaultCharset());
+		}
 	}
 	private void initGameServerConfig() throws Exception {
 		GameServerStatus.getInstance().start().toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);

@@ -252,7 +252,8 @@ public class Player  {
 			initModule(null); 
 		}
 	}
-	private void initModule(HashMap<String, BasePlayerModule> modulesFromDb) {
+
+	public void initModule(HashMap<String, BasePlayerModule> modulesFromDb) {
 		for (Class<? extends BasePlayerModule> clazz : allModuleClass) {
 			try {
 				if (Modifier.isAbstract(clazz.getModifiers())) {
