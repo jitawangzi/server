@@ -32,7 +32,7 @@ public class SpringApolloLoader extends ApolloLoader {
 			logger.debug(content);
 			String pathName = getPathName();
 			String xmlPath = prop2Xml(pathName);
-			args[i] = "file:" + xmlPath; // 转绝对路径
+//			args[i] = "file:" + xmlPath; // 转绝对路径
 		}
 		// 通过本地文件初始化spring
 		SpringContextLoader.main(args);
