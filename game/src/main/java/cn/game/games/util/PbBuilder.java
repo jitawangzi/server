@@ -11,6 +11,7 @@ import java.util.Map;
 
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Equip;
+import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Group;
 import cn.game.games.cache.entity.GroupMember;
@@ -43,6 +44,7 @@ import cn.game.protocol.protobuf.ChatMsg.ChatGroupBriefInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo;
+import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupInfo;
@@ -51,6 +53,7 @@ import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.UnionMsg;
+import cn.game.util.DateUtil;
 import cn.game.util.Pair;
 
 public class PbBuilder {
@@ -515,9 +518,6 @@ public class PbBuilder {
 		
 	}
 
-	/*
-	
-
 	public static List<ForbidAccountInfo> buildForbidAccount(List<ForbidAccount> accounts) {
 		List<ForbidAccountInfo> res = new ArrayList<>();
 		for (ForbidAccount f : accounts) {
@@ -533,6 +533,7 @@ public class PbBuilder {
 		return res;
 	}
 
+	/*
 	public static List<GoodsInfo> buildGoodsInfo(Map<Integer, Integer> map) {
 		List<GoodsInfo> list = new ArrayList<>();
 
