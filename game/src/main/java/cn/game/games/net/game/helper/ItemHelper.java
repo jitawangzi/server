@@ -299,7 +299,7 @@ public class ItemHelper {
 		}
 		ItemConsumablesConfig config = ItemConsumablesManager.getInstance().getItemConsumablesConfigNullable(itemId);
 		for (int buffId : config.getBuffIds()) {
-			BuffHelper.addBuff(playerId, buffId, null);
+//			BuffHelper.addBuff(playerId, buffId, null);
 		}
 		return;
 	}

@@ -1,4 +1,4 @@
-package cn.game.games.cache.entity;
+package cn.game.games.net.game.module.quest;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import cn.game.games.cache.base.DbEntity;
+import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.quest.Condition;
-import cn.game.games.net.game.module.quest.ConditionContainer;
-import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.QuestMsg.QuestConditionCompletePush_20500001;

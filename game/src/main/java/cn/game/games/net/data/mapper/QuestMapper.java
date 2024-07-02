@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import cn.game.games.cache.entity.Quest;
+import cn.game.games.net.game.module.quest.Quest;
 
 public interface QuestMapper {
 

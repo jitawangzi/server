@@ -1,4 +1,4 @@
-package cn.game.games.cache.op.impl;
+package cn.game.games.net.game.module.friend;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +12,6 @@ import java.util.Set;
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
-import cn.game.games.cache.op.face.IFriendOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
@@ -30,7 +29,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
  * @author syq
  *
  */
-public class FriendOp extends BasePlayerModule implements IFriendOp{
+public class FriendModule extends BasePlayerModule {
 
 	/** 好友数据 */
 	private Map<Long, Friend> friends;
@@ -59,7 +58,6 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 		lastRefreshPlayers = new ArrayList<SimplePlayer>();
 	}
 
-	@Override
 	public void initLoadData(List<Friend> friends,List<FriendApplication> applications) {
 
 		for (Friend friend : friends) {
@@ -99,7 +97,6 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 		
 	}
 
-	@Override
 	public boolean addFriend(long id, String serverId, byte relation) {
 		
 		if (relation == Friend.FRIEND) {
@@ -117,26 +114,22 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 		return true ; 
 		
 	}
-	@Override
 	public Collection<Friend> getAllFriends() {
 
 		return this.friends.values();
 	}
 
-	@Override
 	public Map<Long, FriendApplication> getAllApplications() {
 
 		return this.applications;
 	}
 
-	@Override
 	public boolean addApplication(FriendApplication friendApplication) {
 
 		this.applications.put(friendApplication.getApplyPlayerId(), friendApplication);
 		return true;
 	}
 
-	@Override
 	public boolean applicationDeal(long id, boolean result) {
 
 		FriendApplication delApplication = this.applications.remove(id);
@@ -179,18 +172,15 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 		return false;
 	}
 
-	@Override
 	public boolean isFriend(long playerId) {
 
 		Friend friend = this.friends.get(playerId);
 		return isFriend(friend);
 	}
-	@Override
 	public boolean isFriend(Friend friend) {
 
 		return friend != null && (friend.getRelation() == Friend.FRIEND || friend.getRelation() == Friend.ATTENTION);
 	}
-	@Override
 	public boolean isFriend(Friend friend, boolean localServer) {
 
 		return friend != null && (friend.getRelation() == Friend.FRIEND || friend.getRelation() == Friend.ATTENTION) && localServer
@@ -198,14 +188,10 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 				: !GameServer.getInstance().isLocalServer(friend.getServerId());
 	}
 
-	@Override
 	public boolean isApplicationLimit() {
 		return this.applications.size() >= 50;
 	}
 
-
-
-	@Override
 	public boolean isFriendMax(boolean localServer) {
 		int friendSize = 0;
 
@@ -217,20 +203,17 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 		return friendSize >= maxFriends;
 	}
 
-	@Override
 	public boolean hasRelation(long playerId) {
 		Friend friend = this.friends.get(playerId);
 		return friend != null;
 	}
 
-	@Override
 	public boolean isBlack(long playerId) {
 
 		Friend friend = this.friends.get(playerId);
 		return friend != null && friend.getRelation() == Friend.BLACK;
 	}
 
-	@Override
 	public void delete(long friendId) {
 		Friend friend = this.friends.remove(friendId);
 		if (friend != null) {
@@ -238,12 +221,10 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 		}
 	}
 
-	@Override
 	public Friend getFriend(long id) {
 		return this.friends.get(id);
 	}
 
-	@Override
 	public void refreshDay() {
 
 		for (Friend friend : this.friends.values()) {
@@ -257,30 +238,24 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 		}
 
 	}
-	@Override
 	public long getLastRefreshTime() {
 		return lastRefreshTime;
 	}
-	@Override
 	public void setLastRefreshTime(long lastRefreshTime) {
 		this.lastRefreshTime = lastRefreshTime;
 	}
-	@Override
 	public List<SimplePlayer> getLastRefreshPlayers() {
 		return lastRefreshPlayers;
 	}
-	@Override
 	public void setLastRefreshPlayers(List<SimplePlayer> lastRefreshPlayers) {
 		this.lastRefreshPlayers = lastRefreshPlayers;
 	}
 
-	@Override
 	public boolean addMyApplication(long playerId) {
 		this.myApplications.add(playerId);
 		return false;
 	}
 
-	@Override
 	public Set<Long> excludeIds() {
 		Set<Long> ret = new HashSet<Long>();
 		ret.addAll(this.friends.keySet());
@@ -292,7 +267,6 @@ public class FriendOp extends BasePlayerModule implements IFriendOp{
 		return ret;
 	}
 
-	@Override
 	public boolean removeMyApplications(long playerId) {
 		return this.myApplications.remove(playerId);
 	}

@@ -1,6 +1,6 @@
 package cn.game.games.net.game.helper;
 
-import cn.game.games.cache.entity.Quest;
+import cn.game.games.net.game.module.quest.Quest;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.QuestManager;

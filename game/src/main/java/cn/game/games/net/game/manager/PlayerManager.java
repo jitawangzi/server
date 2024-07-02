@@ -30,7 +30,6 @@ import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Group;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.cache.op.impl.FriendOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.log.GameLogger;
@@ -40,6 +39,7 @@ import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -769,7 +769,7 @@ public class PlayerManager {
 		List<SimplePlayer> ret = new ArrayList<>();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 		Set<Long> excludeIds = friendOp.excludeIds();
 		int level = player.getData().getLevel();
 		ConcurrentMap<Long, SimplePlayer> map = simplePlayers.asMap();

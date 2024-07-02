@@ -1,6 +1,5 @@
 package cn.game.games.net.game.manager;
 
-import cn.game.games.net.game.module.buff.BuffValue;
 
 /**
  * 游戏中自定义常量
@@ -85,16 +84,4 @@ public class GameConstants {
 	/** 序章 */
 	public static final int INTRODUCTION = 21005;
     
-	/** 数值改变中文 */
-    public static String modeString(int changeMode) {
-		switch (changeMode) {
-			case BuffValue.CHANGE_BY_VALUE:			return "绝对值";
-			case BuffValue.CHANGE_BY_PANEL_PERCENT:	return "面板的百分比";
-			case BuffValue.CHANGE_BY_CUR_PERCENT:	return "当前值的百分比";
-			case BuffValue.CHANGE_BY_BODY_PERCENT:	return "身体值的百分比";
-			case BuffValue.CHANGE_BY_MAX_PERCENT:	return "上限的百分比";
-			default:
-				throw new IllegalArgumentException("不支持的数值变化模式:" + changeMode);
-		}
-    }
 }

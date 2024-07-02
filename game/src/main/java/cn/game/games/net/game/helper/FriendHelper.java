@@ -7,12 +7,12 @@ import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.impl.FriendOp;
 import cn.game.games.net.data.mapper.FriendApplicationMapper;
 import cn.game.games.net.data.mapper.FriendMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.util.DAO;
 
 public class FriendHelper {
@@ -23,7 +23,7 @@ public class FriendHelper {
 		FriendApplication friendApplication = FriendApplication.valueOf(playerId, applyPlayerId, applyPlayerServer);
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			FriendOp friendOp = player.getModule(FriendOp.class);
+			FriendModule friendOp = player.getModule(FriendModule.class);
 			if (friendOp.isApplicationLimit()) {
 				return; 
 			}
@@ -50,7 +50,7 @@ public class FriendHelper {
 	public static boolean addFriend(long playerId, long friendId, String friendServer, byte relation) {
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			FriendOp friendOp = player.getModule(FriendOp.class);
+			FriendModule friendOp = player.getModule(FriendModule.class);
 			return friendOp.addFriend(friendId, friendServer, relation);
 
 		} else {
@@ -60,7 +60,7 @@ public class FriendHelper {
 			int count = (int) DAO.executeSync(FriendMapper.class, methed,
 					new Object[] { playerId, ServerContext.getInstance().getServerId() });
 
-			if (count < FriendOp.maxFriends) {
+			if (count < FriendModule.maxFriends) {
 
 				Friend add = Friend.valueOf(playerId, friendId, relation);
 				DAO.insert(add);
@@ -80,7 +80,7 @@ public class FriendHelper {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		if (PlayerManager.getInstance().hasCache(playerId)) {
-			FriendOp friendOp = player.getModule(FriendOp.class);
+			FriendModule friendOp = player.getModule(FriendModule.class);
 			boolean remove = friendOp.removeMyApplications(applyPlayerId);
 			if (remove) {
 				DAO.execute(FriendApplicationMapper.class,
@@ -97,7 +97,7 @@ public class FriendHelper {
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-			FriendOp friendOp = player.getModule(FriendOp.class);
+			FriendModule friendOp = player.getModule(FriendModule.class);
 			FriendApplication remove = friendOp.getAllApplications().remove(applyPlayerId);
 			if (remove != null) {
 				DAO.execute(FriendApplicationMapper.class,
@@ -120,7 +120,7 @@ public class FriendHelper {
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-			FriendOp friendOp = player.getModule(FriendOp.class);
+			FriendModule friendOp = player.getModule(FriendModule.class);
 			if (!friendOp.hasRelation(friendId)) {
 				return; 
 			}
@@ -144,7 +144,7 @@ public class FriendHelper {
 		if (hasCache) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-			FriendOp friendOp = player.getModule(FriendOp.class);
+			FriendModule friendOp = player.getModule(FriendModule.class);
 			return friendOp.isBlack(friendId) ; 
 		}else {
 

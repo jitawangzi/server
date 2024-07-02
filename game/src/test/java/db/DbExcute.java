@@ -6,15 +6,13 @@ import java.util.List;
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Base;
-import cn.game.games.cache.entity.Buff;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.cache.entity.Quest;
 import cn.game.games.cache.entity.Variable;
 import cn.game.games.net.data.mapper.BaseMapper;
-import cn.game.games.net.data.mapper.BuffMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.util.DAO;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
@@ -169,29 +167,29 @@ public class DbExcute {
 }
 
 	public static void testBatchInsert() {
-		List<Buff> list = new ArrayList<>();
-		
-		for (int i = 0; i < 100000; i++) {
-
-			Buff buff = new Buff();
-			buff.setBuffId(1);
-			buff.setId(Rnd.nextLong());
-			buff.setPlayerId(10000L);
-			buff.setTarget(2222L);
-			buff.setUseNum(3);
-			list.add(buff);
-
-			buff = new Buff();
-			buff.setBuffId(2);
-			buff.setId(Rnd.nextLong());
-			buff.setPlayerId(10000L);
-			buff.setLevel(1);
-			buff.setTarget(2222L);
-			buff.setUseNum(3);
-			list.add(buff);
-		}
-
-		DAO.invoke(BuffMapper.class, "batchInsert", list);
+//		List<Buff> list = new ArrayList<>();
+//		
+//		for (int i = 0; i < 100000; i++) {
+//
+//			Buff buff = new Buff();
+//			buff.setBuffId(1);
+//			buff.setId(Rnd.nextLong());
+//			buff.setPlayerId(10000L);
+//			buff.setTarget(2222L);
+//			buff.setUseNum(3);
+//			list.add(buff);
+//
+//			buff = new Buff();
+//			buff.setBuffId(2);
+//			buff.setId(Rnd.nextLong());
+//			buff.setPlayerId(10000L);
+//			buff.setLevel(1);
+//			buff.setTarget(2222L);
+//			buff.setUseNum(3);
+//			list.add(buff);
+//		}
+//
+//		DAO.invoke(BuffMapper.class, "batchInsert", list);
 
 	}
 

@@ -1,4 +1,4 @@
-package cn.game.games.cache.entity;
+package cn.game.games.net.game.module.quest;
 
 import java.io.Serializable;
 import java.util.Date;

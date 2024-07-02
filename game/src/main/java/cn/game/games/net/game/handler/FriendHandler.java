@@ -16,12 +16,12 @@ import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.op.impl.FriendOp;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
@@ -94,7 +94,7 @@ public class FriendHandler extends BaseHandler {
 
 		FriendListResponse_30000002.Builder response = FriendListResponse_30000002.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 		Collection<Friend> allFriends = friendOp.getAllFriends();
 		TaskManager.getInstance().addWorkerTask(() -> {
 
@@ -124,7 +124,7 @@ public class FriendHandler extends BaseHandler {
 		FriendBlackListResponse_30000052.Builder resp = FriendBlackListResponse_30000052.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 		Collection<Friend> allFriends = friendOp.getAllFriends();
 
 		TaskManager.getInstance().addWorkerTask(() -> {
@@ -149,7 +149,7 @@ public class FriendHandler extends BaseHandler {
 		FriendApplyListResponse_30000054.Builder resp = FriendApplyListResponse_30000054.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 		Collection<Friend> allFriends = friendOp.getAllFriends();
 
 		TaskManager.getInstance().addWorkerTask(() -> {
@@ -179,7 +179,7 @@ public class FriendHandler extends BaseHandler {
 		FriendRecommendResponse_30000004.Builder builder = FriendRecommendResponse_30000004.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 		long lastRefreshTime = friendOp.getLastRefreshTime();
 		if (lastRefreshTime > 0 && (System.currentTimeMillis() - lastRefreshTime) < maxTime) {
 			List<SimplePlayer> lastRefreshPlayers = friendOp.getLastRefreshPlayers();
@@ -260,7 +260,7 @@ public class FriendHandler extends BaseHandler {
 			}
 
 			// 如果在我的黑名单中，则先从黑名单中删除
-			FriendOp myFriendOp = player.getModule(FriendOp.class);
+			FriendModule myFriendOp = player.getModule(FriendModule.class);
 			if (myFriendOp.isBlack(id)) {
 				myFriendOp.delete(id);
 			}
@@ -305,7 +305,7 @@ public class FriendHandler extends BaseHandler {
 		List<String> friendIdList = request.getFriendIdList();
 		boolean agree = request.getAgree();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 
 		TaskManager.getInstance().addWorkerTask(() -> {
 
@@ -333,7 +333,7 @@ public class FriendHandler extends BaseHandler {
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
 		String serverId = request.getServerId(); 
 
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 //		if (!friendOp.isFriend(friendId)) {
 //			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 //			return;
@@ -364,7 +364,7 @@ public class FriendHandler extends BaseHandler {
 		FriendshipRequest_30000012 request = (FriendshipRequest_30000012) message;
 		ProtocolStringList friendIdList = request.getFriendIdList();
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 		for (String string : friendIdList) {
 			long friendId = Long.parseLong(string);
 			Friend friend = friendOp.getFriend(friendId);
@@ -373,7 +373,7 @@ public class FriendHandler extends BaseHandler {
 			}
 			Friend friendTarget;
 			if (PlayerManager.getInstance().hasCache(friendId)) {
-				FriendOp targetFriendOp = player.getModule(FriendOp.class);
+				FriendModule targetFriendOp = player.getModule(FriendModule.class);
 				friendTarget = targetFriendOp.getFriend(playerId);
 				if (friendTarget != null) {
 					friendTarget.setGifted(true);
@@ -403,7 +403,7 @@ public class FriendHandler extends BaseHandler {
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
 		for (String idString : request.getFriendIdList()) {
 			long id = Long.parseLong(idString);
-			FriendOp friendOp = player.getModule(FriendOp.class);
+			FriendModule friendOp = player.getModule(FriendModule.class);
 
 			Friend friend = friendOp.getFriend(id);
 			if (friend == null) {
@@ -432,7 +432,7 @@ public class FriendHandler extends BaseHandler {
 		FriendDeleteRequest_30000009 request = (FriendDeleteRequest_30000009) message;
 		long friendId = Long.valueOf(request.getId());
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 		Friend friend = friendOp.getFriend(friendId);
 		if (friend == null) {
 			client.sendProtocol(FriendDeleteResponse_3000000a.getDefaultInstance());
@@ -469,7 +469,7 @@ public class FriendHandler extends BaseHandler {
 
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		FriendOp friendOp = player.getModule(FriendOp.class);
+		FriendModule friendOp = player.getModule(FriendModule.class);
 		if (!friendOp.isFriend(friendId)) {
 
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());

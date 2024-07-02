@@ -23,10 +23,8 @@ import com.google.protobuf.UnsafeByteOperations;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.games.cache.entity.Buff;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.cache.op.impl.BuffOp;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
@@ -34,10 +32,6 @@ import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.ItemMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
-import cn.game.games.net.data.mapper.PlayerExtMapper;
-import cn.game.games.net.data.mapper.RoleMapper;
-import cn.game.games.net.data.mapper.UserMapper;
-import cn.game.games.net.data.mapper.UserTagMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
@@ -46,13 +40,11 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
-import cn.game.games.net.game.module.buff.BuffValue;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.ConsumeConfig;
-import cn.game.protocol.generated.config.EventOptionConfig;
 import cn.game.protocol.generated.config.GameCommandConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RandomGroupConfig;
@@ -61,7 +53,6 @@ import cn.game.protocol.generated.config.versionConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.ConsumeManager;
-import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.GameCommandManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
@@ -290,7 +281,7 @@ public class PlayerHelper {
 		if (value <= 0) {
 			return true;
 		}
-		if (mode != BuffValue.CHANGE_BY_VALUE) {
+		if (mode != 0) {
 			if (value > 100) {
 				return true;
 			}
@@ -1049,12 +1040,12 @@ public class PlayerHelper {
 //				PlayerHelper.sendProtcol(playerId, build);
 				break;
 			
-			case AddBuff: {
-				int id = parameterList.get(0);
-				BuffOp buffOp = player.getModule(BuffOp.class);
-				buffOp.add(id, null);
-				break;
-			}
+//			case AddBuff: {
+//				int id = parameterList.get(0);
+//				BuffOp buffOp = player.getModule(BuffOp.class);
+//				buffOp.add(id, null);
+//				break;
+//			}
 			case DeductionRandomItem: {
 				break;
 			}
@@ -1063,55 +1054,6 @@ public class PlayerHelper {
 		}
 		
 		return true;
-	}
-
-	/** 
-	 * 一般选择事件选项的时候，不需要目标id
-	 * @param playerId
-	 * @param eventId
-	 * @param optionId
-	 * @param notify 是否通知客户端
-	 */
-	public static List<Buff> chooseEventOption(Player player, int eventId, int optionId, boolean notify) {
-
-		EventOptionConfig config = EventOptionManager.getInstance().getEventOptionConfig(optionId);
-		// 选择时花费
-		if (!PlayerHelper.delResources(player, config.getChooseCost(), OpType.EventOptin)) {
-			return null;
-		}
-		List<Buff> ret = new ArrayList<>();
-		if (config.getIsRandom()) {// 权重
-			int[] buffWeight = config.getBuffWeight();
-			int randomIndex = Rnd.randomIndex(buffWeight);
-			int[] buffId = config.getBuffId();
-			int randomBuffId = buffId[randomIndex];
-			List<Buff> buff = BuffHelper.addBuff(player.getPlayerId(), randomBuffId, null, notify);
-			ret.addAll(buff);
-
-		} else {
-			// 固定选项
-			int[] buffId = config.getBuffId();
-			for (int id : buffId) {
-				List<Buff> buff = BuffHelper.addBuff(player.getPlayerId(), id, null, notify);
-				ret.addAll(buff);
-			}
-		}
-
-		return ret;
-	}
-
-	/**
-	 * 查询玩家存档通用数据的任务
-	 * 
-	 * @param uid
-	 * @return
-	 */
-	public static List<DbTask> genUserDbTask(long uid) {
-
-		List<DbTask> dbTasks = new ArrayList<>();
-		dbTasks.add(new DbTask(UserMapper.class, MapperConstant.selectByPrimaryKey, uid));
-		dbTasks.add(new DbTask(UserTagMapper.class, MapperConstant.selectByUid, uid));
-		return dbTasks;
 	}
 	public static List<DbTask> genPlayerDbTask(long uid) {
 
@@ -1278,8 +1220,8 @@ public class PlayerHelper {
 	public static List<DbTask> initDbTasks(long uid, long playerId) {
 		List<DbTask> dbTasks = new ArrayList<>();
 
-		dbTasks.add(new DbTask(PlayerExtMapper.class, MapperConstant.selectByPrimaryKey, playerId));
-		dbTasks.add(new DbTask(RoleMapper.class, MapperConstant.selectByPlayerId, playerId));
+//		dbTasks.add(new DbTask(PlayerExtMapper.class, MapperConstant.selectByPrimaryKey, playerId));
+//		dbTasks.add(new DbTask(RoleMapper.class, MapperConstant.selectByPlayerId, playerId));
 		dbTasks.add(new DbTask(ItemMapper.class, MapperConstant.selectByPrimaryKey, playerId));
 		return dbTasks;
 	}

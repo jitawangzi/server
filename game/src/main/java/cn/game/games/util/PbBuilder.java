@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.collect.Multimap;
-
 import cn.game.core.base.ServerContext;
-import cn.game.games.cache.entity.Buff;
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Friend;
@@ -22,36 +19,28 @@ import cn.game.games.cache.entity.GroupMember;
 import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Member;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.Quest;
-import cn.game.games.cache.entity.QuestChallenge;
 import cn.game.games.cache.entity.Union;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.GameServer;
-import cn.game.games.net.game.helper.BuffHelper;
-import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.UnionManager;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.award.RewardItem;
 import cn.game.games.net.game.module.chat.GroupAllInfo;
+import cn.game.games.net.game.module.quest.Quest;
+import cn.game.games.net.game.module.quest.QuestChallenge;
 import cn.game.games.net.game.module.quest.QuestModule;
-import cn.game.games.net.game.module.store.StoreGoods;
 import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.MailManager;
-import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
-import cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder;
 import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
-import cn.game.protocol.protobuf.BuffMsg;
-import cn.game.protocol.protobuf.BuffMsg.BuffInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupBriefInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
@@ -64,8 +53,6 @@ import cn.game.protocol.protobuf.QuestMsg.QuestInfo;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
-import cn.game.protocol.protobuf.StoreMsg.StoreGoodsInfo;
-import cn.game.protocol.protobuf.StoreMsg.StoreRecommendInfo;
 import cn.game.protocol.protobuf.UnionMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.Pair;
@@ -280,17 +267,6 @@ public class PbBuilder {
 		return itemInfo.build();
 
 	}
-	public static List<RewardInfo> buildRewardInfo(List<RewardItem> list) {
-
-		if (list == null || list.isEmpty()) {
-			return new ArrayList<>(0);
-		}
-		List<RewardInfo> ret = new ArrayList<>(list.size());
-		for (RewardItem entry : list) {
-			ret.add(buildRewardInfo(entry));
-		}
-		return ret;
-	}
 
 	public static RewardPush_55000501 buildRewardPush(List<RewardInfo> rewardItems) {
 
@@ -299,35 +275,7 @@ public class PbBuilder {
 		return builder.build();
 	}
 
-	public static RewardInfo buildRewardInfo(RewardItem item) {
 
-		RewardInfo.Builder reward = RewardInfo.newBuilder();
-		if (item.getId() > 0) {
-			int type = ItemHelper.getGoodsType(item.getId());
-
-			if (type == GoodsTypeEnum.Resource.getId()) {
-				Builder b = AssetInfo.newBuilder().setId(item.getId()).setCount(item.getCount());
-				reward.setAsset(b);
-
-			} else if (type == GoodsTypeEnum.Item.getId()) {
-				BaseMsg.ItemInfo.Builder itemInfo = BaseMsg.ItemInfo.newBuilder();
-				itemInfo.setId(item.getId());
-				itemInfo.setCount(item.getCount());
-				reward.setItem(itemInfo);
-			}
-		}  else if (item.getEquip() != null) {
-			reward.setEquip(buildEquipInfo(item.getEquip()));
-		}
-		return reward.build();
-
-	}
-
-	public static List<RewardInfo> buildRewardInfos(Collection<RewardItem> items) {
-		if (items == null || items.isEmpty()) {
-			return new ArrayList<>(0);
-		}
-		return items.stream().map(PbBuilder::buildRewardInfo).collect(toList());
-	}
 
 	public static List<QuestInfo> buildQuestByGroup(Long playerId, QuestTypeEnum missionTypeEnum, int type) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
@@ -462,23 +410,6 @@ public class PbBuilder {
 		return goodsInfos;
 	}
 
-	// 推荐商店列表
-	public static Collection<StoreRecommendInfo> buildStoreRecommendInfo(
-			List<Pair<Integer, List<Integer>>> allRecommends) {
-		List<StoreRecommendInfo> storeRecommendInfos = new ArrayList<>();
-		for (Pair<Integer, List<Integer>> recommend : allRecommends) {
-			StoreRecommendInfo.Builder builder = StoreRecommendInfo.newBuilder();
-			builder.setId(recommend.first);
-			if (recommend.second != null) {
-				for (Integer giftId : recommend.second) {
-					builder.addGiftId(giftId);
-				}
-			}
-			storeRecommendInfos.add(builder.build());
-		}
-		return storeRecommendInfos;
-	}
-		
 	/**
 	 * 根据群组消息获取一个群组的简单消息 阻塞 不可主线程调用
 	 * 
@@ -759,70 +690,6 @@ public class PbBuilder {
 		return list;
 	}
 
-	private static List<BuffMsg.BuffInfo> buildBuffs(Multimap<Long, Buff> buffs) {
-		List<BuffMsg.BuffInfo> list = new ArrayList<>();
-		buffs.asMap().forEach((k, v) -> {
-			for (Buff buff : v) {
-				// 不同步buff
-				boolean notSync = BuffHelper.notSync(buff.getBuffId());
-				if (notSync) {
-					continue;
-				}
-				BuffInfo buffInfo = buildBuffInfo(buff);
-				list.add(buffInfo);
-			}
-		});
-
-		return list;
-	}
-
-	public static BuffInfo buildBuffInfo(Buff buff) {
-		BuffInfo.Builder build = BuffInfo.newBuilder();
-		build.setUid(buff.getId() + "");
-		build.setId(buff.getBuffId());
-		build.setUse(buff.getUseNum());
-		build.setRound(buff.getRound());
-		build.setTarget(buff.getTarget().toString());
-		return build.build();
-	}
-
-
-	public static BuffMsg.BuffShowInfo buildBuffShowInfo(List<Buff> buffs) {
-		BuffMsg.BuffShowInfo.Builder build = BuffMsg.BuffShowInfo.newBuilder();
-		for (Buff buff : buffs) {
-			build.setBuffId(buff.getBuffId());
-			Long target = buff.getTarget();
-			if (target != null) {
-				build.addTargetIds(target.toString());
-			}
-			if (buff.getRewards() != null) {
-				build.addAllRewards(buff.getRewards());
-			}
-		}
-		return build.build();
-	}
-
-	public static List<StoreGoodsInfo> buildStoreGoodsInfos(Collection<StoreGoods> target) {
-		List<StoreGoodsInfo> res = new ArrayList<>();
-		for (StoreGoods g : target) {
-			res.add(buildStoreGoodsInfo(g));
-		}
-		return res;
-	}
-
-	public static StoreGoodsInfo buildStoreGoodsInfo(StoreGoods g) {
-		StoreGoodsInfo.Builder build = StoreGoodsInfo.newBuilder();
-		build.setUid(g.getUid() + "");
-		build.setId(g.getId());
-		build.setCount(g.getCount());
-		build.setCostId(g.getCostId());
-		build.setCostCount(g.getCostCount());
-		Equip e = g.getEquip();
-		if (e != null) {
-			build.setEquip(buildEquipInfo(e));
-		}
-		return build.build();
-	}
 
 	/*
 		public static List<RoleUpdateInfo> buildRoleUpdateInfo(List<? extends Role> infos){

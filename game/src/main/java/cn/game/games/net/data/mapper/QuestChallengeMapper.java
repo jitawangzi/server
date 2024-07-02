@@ -2,7 +2,7 @@ package cn.game.games.net.data.mapper;
 
 import org.apache.ibatis.annotations.Param;
 
-import cn.game.games.cache.entity.QuestChallenge;
+import cn.game.games.net.game.module.quest.QuestChallenge;
 
 import java.util.List;
 

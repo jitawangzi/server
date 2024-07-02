@@ -1,7 +1,6 @@
 package cn.game.games.net.game.handler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,18 +17,15 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
-import cn.game.games.cache.entity.Buff;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
-import cn.game.games.net.game.helper.EventHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -40,19 +36,13 @@ import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.generated.config.EventOptionConfig;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.OldBuffConfig;
 import cn.game.protocol.generated.config.RandomNameConfig;
-import cn.game.protocol.generated.enume.EffectEnum;
-import cn.game.protocol.generated.manager.EventOptionManager;
 import cn.game.protocol.generated.manager.HeadBoxManager;
 import cn.game.protocol.generated.manager.HeadPortraitManager;
-import cn.game.protocol.generated.manager.OldBuffManager;
 import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.BuffMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
@@ -387,7 +377,7 @@ public class PlayerHandler extends BaseHandler {
 	 * @param netClient
 	 * @param message
 	 */
-	private void addBuff(NetClient netClient, Object message) {
+	/*private void addBuff(NetClient netClient, Object message) {
 		BuffMsg.BuffAddRequest_01000110 req = (BuffMsg.BuffAddRequest_01000110) message;
 		BuffMsg.BuffAddResponse_01000111.Builder resp = BuffMsg.BuffAddResponse_01000111.newBuilder();
 		long playerId = netClient.getPlayerId();
@@ -395,22 +385,22 @@ public class PlayerHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		EventOptionConfig config = EventOptionManager.getInstance().getEventOptionConfig(id);
 		int eventId = config.getEventId();
-		/*		PlayerExt playerExt = player.getExt();
+				PlayerExt playerExt = player.getExt();
 				List<Integer> eventIdList = playerExt.getEventIdList();
 				if (!eventIdList.contains(eventId)) {
 					netClient.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 					return;
-				}*/
+				}
 		//添加buff
 		List<Buff> buffs = PlayerHelper.chooseEventOption(player, eventId, id, true);
 		if (buffs == null) {
 			netClient.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
-		/*		playerExt.removeEventId(eventId);
+				playerExt.removeEventId(eventId);
 				PlayerExt update = PlayerExt.valueOf(playerId);
 				update.setEventIds(playerExt.getEventIds());
-				DAO.updateSelective(update);*/
+				DAO.updateSelective(update);
 		// 添加事件
 		Map<Integer, Integer> addResources = new HashMap<>();
 		for (Buff buff : buffs) {
@@ -421,9 +411,9 @@ public class PlayerHandler extends BaseHandler {
 			}
 		}
 		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.ExploreGetResources, addResources));
-
+	
 		netClient.sendProtocol(resp);
-	}
+	}*/
 /**
 	private void spiritReceive(NetClient client, Object message) {
 		PlayerSpiritReceiveResponse_01000025.Builder resp = PlayerSpiritReceiveResponse_01000025.newBuilder();

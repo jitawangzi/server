@@ -13,10 +13,10 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 
+import cn.game.games.cache.base.DbEntity;
 import cn.game.games.net.game.module.award.UnionApply;
 import cn.game.protocol.generated.enume.UnionBuildingType;
 import cn.game.util.DateUtil;
-import cn.game.games.cache.base.DbEntity;
 
 public class Union implements Serializable, DbEntity {
 	/**
@@ -447,7 +447,7 @@ public class Union implements Serializable, DbEntity {
 	/** 正在升级中的建筑,value:升级开始时间 */
 	private Map<UnionBuildingType, Long> upgradingMap = new HashMap<UnionBuildingType, Long>();
 	/** 工会技能 */
-	private Map<Integer, cn.game.games.cache.entity.Skill> skillMap = new HashMap<Integer, cn.game.games.cache.entity.Skill>();
+//	private Map<Integer, cn.game.games.cache.entity.Skill> skillMap = new HashMap<Integer, cn.game.games.cache.entity.Skill>();
 	// /** 工会道具，可以给会员分配 */
 	// private List<UserItem> itemList ;
 	/** 第一个key为userId， 第二个key为horseId，Byte为雇佣状态， 默认0为未雇佣，大于0表示雇佣 */
@@ -698,16 +698,6 @@ public class Union implements Serializable, DbEntity {
 	public final void setBuildingMap(Map<UnionBuildingType, Integer> buildingMap) {
 
 		this.buildingMap = buildingMap;
-	}
-
-	public final Map<Integer, cn.game.games.cache.entity.Skill> getSkillMap() {
-
-		return skillMap;
-	}
-
-	public final void setSkillMap(Map<Integer, cn.game.games.cache.entity.Skill> skillMap) {
-
-		this.skillMap = skillMap;
 	}
 
 	// public final List<UserItem> getItemList() {

@@ -8,15 +8,11 @@ import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.PlayerExt;
-import cn.game.games.cache.entity.Quest;
-import cn.game.games.cache.entity.QuestChallenge;
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
-import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -109,13 +105,6 @@ public class QuestHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-//		PlayerExt playerExt = PlayerManager.getInstance().getPlayer(playerId).getExt();
-//		playerExt.setBranchGroup(group);
-
-		PlayerExt update = PlayerExt.valueOf(playerId);
-		update.setBranchGroup(group);
-		DAO.updateSelective(update);
-
 		client.sendProtocol(resp);
 	}
 	protected void accept(NetClient client, Object message) {
