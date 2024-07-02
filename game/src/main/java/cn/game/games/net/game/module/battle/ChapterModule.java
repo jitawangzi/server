@@ -12,42 +12,27 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import cn.game.core.util.IdUtil;
-import cn.game.games.cache.entity.BattleEventType;
 import cn.game.games.cache.entity.BattleLevel;
-import cn.game.games.cache.entity.BattleRandomEvent;
 import cn.game.games.cache.entity.Chapter;
-import cn.game.games.cache.entity.Player;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.BattleEventTypeMapper;
 import cn.game.games.net.data.mapper.BattleLevelMapper;
-import cn.game.games.net.data.mapper.BattleRandomEventMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleChapterConfig;
 import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.BattleEventConfig;
 import cn.game.protocol.generated.config.BattleLevelConfig;
-import cn.game.protocol.generated.config.EventRankIntervalConfig;
-import cn.game.protocol.generated.config.EventTriggerConfig;
-import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleChapterManager;
-import cn.game.protocol.generated.manager.BattleEventManager;
 import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.generated.manager.BattleManager;
-import cn.game.protocol.generated.manager.EventRankIntervalManager;
-import cn.game.protocol.generated.manager.EventTriggerManager;
 import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo;
 import cn.game.protocol.protobuf.BattleMsg.PatrolInfo;
@@ -56,7 +41,6 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
-import cn.game.util.Rnd;
 
 /**    
  * 战役、章
@@ -76,14 +60,6 @@ public class ChapterModule extends BasePlayerModule  {
 	@JsonIgnore
 	/** 打过的关卡数据,这里是统一的关卡id，关卡可能包括剧情关卡，普通关卡，战旗关卡等，id按段区分。 */
 	private Map<Integer, BattleLevel> levels;
-	@Deprecated
-	@JsonIgnore
-	/** 产生的随机事件，过期没有通过的，或者成功通过的，不在此列表中 */
-	private List<BattleRandomEvent> battleRandomEvents;
-	@Deprecated
-	@JsonIgnore
-	/** 各种类型的随机事件，每天产生了多少次 */
-	private Map<Integer, Integer> eventTypeMap;
 
 	/** 战役次数 */
 	private IntMapWrapper dailyCount = new IntMapWrapper();
@@ -191,46 +167,6 @@ public class ChapterModule extends BasePlayerModule  {
 		return chapter != null && chapter.getPass();
 	}
 
-	public void insertBattleEvent(BattleRandomEvent event) {
-
-//		DAO.execute(BattleRandomEventMapper.class, MapperConstant.insert,
-//				event);
-	}
-
-	public void removeBattleEvent(long id) {
-
-		for (int i = 0; i < battleRandomEvents.size(); i++) {
-			if (battleRandomEvents.get(i).getId() == id) {
-				battleRandomEvents.remove(i);
-				break;
-			}
-		}
-		DAO.execute(BattleRandomEventMapper.class, MapperConstant.deleteByPrimaryKey,
-				id);
-
-		if (battleRandomEvents.size() == OldGlobalConst.randomEventNumMax - 1) {
-
-//			PlayerHelper.randomBattleEvent(playerId);
-		}
-
-	}
-	public boolean hasBattleEvent(long id) {
-		checkBattleEvent();
-		for (int i = 0; i < battleRandomEvents.size(); i++) {
-			if (battleRandomEvents.get(i).getId() == id) {
-				return true;
-			}
-		}
-		return false;
-	}
-	public BattleRandomEvent getBattleEvent(long id) {
-		for (int i = 0; i < battleRandomEvents.size(); i++) {
-			if (battleRandomEvents.get(i).getId() == id) { 
-				return battleRandomEvents.get(i);
-			}
-		}
-		return null;
-	}
 
 	public void updateBattleLevel(BattleLevel level) {
 		DAO.execute(BattleLevelMapper.class, MapperConstant.updateByPrimaryKey,
@@ -428,150 +364,6 @@ public class ChapterModule extends BasePlayerModule  {
 		return true;
 	}
 
-	public int nextBattleEventTime() {
-
-		checkBattleEvent();
-
-		if (battleRandomEvents.size() >= OldGlobalConst.randomEventNumMax) {
-			return -1; // 不需要产生事件
-		}
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-//		long lastRandomEventTime = player.getData().getLastRandomEventTime();
-//		if (lastRandomEventTime == 0) { 
-//			return 0; 
-//		}
-		int time = (int) (System.currentTimeMillis() - 0);
-		int nextTime = OldGlobalConst.randomEventInterval - time;
-		return nextTime < 0 ? 0 : nextTime;
-	}
-
-	public boolean createBattleEvent() {
-		checkBattleEvent();
-		if (battleRandomEvents.size() >= OldGlobalConst.randomEventNumMax) {
-			return false; 
-		}
-
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		int level = player.getData().getLevel();
-//		long lastRandomEventTime = player.getData().getLastRandomEventTime();
-		long now = System.currentTimeMillis();
-//		if (lastRandomEventTime != 0 && now - lastRandomEventTime < GlobalConst.randomEventInterval) {
-//			return false; 
-//		}
-
-//		int newChapter = getNewChapter();
-//		// 可能现在还不能开章节,就先不产生事件
-//		if (newChapter == 0) { 
-//			return false;
-//		}
-		// 随机事件产生的位置
-		byte max = 20;
-		byte pos = (byte) Rnd.nextInt(max);
-
-		boolean usablePos = false;
-		for (byte i = 0; i < max; i++) {
-			boolean has = false;
-			for (BattleRandomEvent battleRandomEvent : battleRandomEvents) {
-				if (battleRandomEvent.getPos() == pos) {
-					has = true;
-					break;
-				}
-			}
-			if (has) {
-				pos++;
-				if (pos >= max) {
-					pos = 0;
-				}
-			} else {
-				usablePos = true;
-				break;
-			}
-		}
-		if (!usablePos) { // 地方不够用了，不能产生新的事件
-			return false;
-		}
-		
-		// 找出能产生事件的事件类型
-		List<Integer> excludeIds = new ArrayList<Integer>();
-		Collection<EventTriggerConfig> triggerList = EventTriggerManager.getInstance().list();
-		for (EventTriggerConfig config : triggerList) {
-			if (config.getMaxNum() <= 0) {
-				continue;
-			}
-			Integer count = this.eventTypeMap.get(config.getId());
-			if (count != null && count >= config.getMaxNum()) {
-				excludeIds.add(config.getId());
-			}
-		}
-
-		int rankLevlId = 0;
-		Collection<EventRankIntervalConfig> list = EventRankIntervalManager.getInstance().list();
-		for (EventRankIntervalConfig eventRankIntervalConfig : list) {
-			if (level >= eventRankIntervalConfig.getMin() && level <= eventRankIntervalConfig.getMax()) {
-				rankLevlId = eventRankIntervalConfig.getId();
-				break;
-			}
-		}
-		int randomId = BattleHelper.randomBattleEventType(excludeIds);
-		int index = randomId * 100 + rankLevlId;
-		// 玩家等级，和事件类型，能产生的所有随机事件
-		List<BattleEventConfig> rankIntervalList = BattleEventManager.getInstance().getRankIntervalList(index);
-		if (rankIntervalList == null || rankIntervalList.isEmpty()) {
-			return false; 
-		}
-		BattleEventConfig battleEventConfig = rankIntervalList.get(Rnd.get(0, rankIntervalList.size() - 1));
-
-		BattleRandomEvent event = new BattleRandomEvent();
-		event.setId(IdUtil.getId());
-		event.setCreateTime(now);
-		event.setPlayerId(playerId);
-		event.setChapterId(0);
-		event.setRandomId(battleEventConfig.getId());
-		event.setPos(pos);
-
-		insertBattleEvent(event);
-//		player.getData().setLastRandomEventTime(now);
-		battleRandomEvents.add(event);
-
-		// 更新事件类型次数
-		int eventType = battleEventConfig.getType();
-		Integer count = this.eventTypeMap.get(eventType);
-		if (count == null) {
-			this.eventTypeMap.put(eventType, 1);
-			BattleEventType battleEventType = BattleEventType.valueOf(playerId, eventType, 1);
-			DAO.execute(BattleEventTypeMapper.class, MapperConstant.insert,
-					battleEventType);
-		}else {
-			int newCount = count + 1;
-			this.eventTypeMap.put(eventType, newCount);
-
-			BattleEventType battleEventType = BattleEventType.valueOf(playerId, eventType, newCount);
-			DAO.execute(BattleEventTypeMapper.class, MapperConstant.updateByPrimaryKey,
-					battleEventType);
-		}
-
-		if (battleRandomEvents.size() < OldGlobalConst.randomEventNumMax) {
-//			PlayerHelper.randomBattleEvent(playerId);
-		}
-
-		return true;
-	}
-
-	public void checkBattleEvent() {
-
-		long now = System.currentTimeMillis() ; 
-		for (int i = 0; i < battleRandomEvents.size(); i++) {
-			BattleRandomEvent event = battleRandomEvents.get(i);
-
-			if (DateUtil.howLong(TimeUnit.MILLISECONDS, event.getCreateTime(), now) > OldGlobalConst.randomEventTimer) {
-				// 如果在打，就不删除了，先保留，等打完再检查一遍
-				if (uid == event.getId()) {
-					continue;
-				}
-				removeBattleEvent(event.getId());
-			}
-		}
-	}
 
 	public int getNewChapter() {
 		// 当前打过的章节里，如果没有通关的，就是最新章节 
@@ -640,10 +432,6 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 
 		return rewardTimes;
-	}
-
-	public List<BattleRandomEvent> listBattleEvents() {
-		return this.battleRandomEvents;
 	}
 
 

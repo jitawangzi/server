@@ -42,7 +42,6 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PressureTestManager;
 import cn.game.games.net.game.remote.GameRemoteServerInterface;
 import cn.game.games.util.BIHelper;
-import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
@@ -167,8 +166,6 @@ public class GameServer implements GameServerMBean {
 		});
 		initScheduleTask();
 		// ******************** 业务逻辑启动 **************************
-		// 兼容老的代码
-		OldGlobalConst.getInstance().load();
 
 		ManagerHelper.init();
 

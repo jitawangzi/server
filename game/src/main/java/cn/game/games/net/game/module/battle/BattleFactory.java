@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.game.games.net.game.module.battle.impl.BattleChapterImpl;
-import cn.game.games.net.game.module.battle.impl.BattleEventImpl;
 import cn.game.games.net.game.module.battle.impl.DaoHeartImpl;
 import cn.game.games.net.game.module.battle.impl.HCBattleChapterImpl;
 import cn.game.games.net.game.module.battle.impl.XinMoImpl;
@@ -16,7 +15,6 @@ public class BattleFactory {
 
 	static {
 		register(new BattleChapterImpl());
-		register(new BattleEventImpl());
 		register(new DaoHeartImpl());
 		register(new XinMoImpl());
 		register(new YaoWangImpl());

@@ -7,10 +7,8 @@ import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.config.OldBuffConfig;
 import cn.game.protocol.generated.config.EventOptionConfig;
 import cn.game.protocol.generated.enume.EffectEnum;
-import cn.game.protocol.generated.manager.OldBuffManager;
 import cn.game.protocol.generated.manager.EventOptionManager;
 
 public class EventHelper {
@@ -63,11 +61,11 @@ public class EventHelper {
 		for (EventOptionConfig eventOptionConfig : eventIdList) {
 			int[] buffIds = eventOptionConfig.getBuffId();
 			for (int buffId : buffIds) {
-				OldBuffConfig buffConfig = OldBuffManager.getInstance().getBuffConfig(buffId);
-				EffectEnum effectType = buffConfig.getEffectType();
-				if (effectType == type) {
-					return true;
-				}
+//				OldBuffConfig buffConfig = OldBuffManager.getInstance().getBuffConfig(buffId);
+//				EffectEnum effectType = buffConfig.getEffectType();
+//				if (effectType == type) {
+//					return true;
+//				}
 			}
 		}
 		return false;

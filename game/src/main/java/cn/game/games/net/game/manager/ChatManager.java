@@ -25,7 +25,6 @@ import cn.game.games.net.game.helper.ChatHelper;
 import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.generated.config.OldGlobalConst;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatAgreeGroupInvitationPush_51000060;
@@ -136,10 +135,10 @@ public class ChatManager {
 			}
 		}
 
-		playerCreateGroupMaxCount = OldGlobalConst.groupConst.get(0);
-		playerJohnGroupMaxCount = OldGlobalConst.groupConst.get(1);
-		maxGroupApplyCount = OldGlobalConst.groupConst.get(2);
-		groupMaxMemberCount = OldGlobalConst.groupConst.get(3);
+		/*		playerCreateGroupMaxCount = OldGlobalConst.groupConst.get(0);
+				playerJohnGroupMaxCount = OldGlobalConst.groupConst.get(1);
+				maxGroupApplyCount = OldGlobalConst.groupConst.get(2);
+				groupMaxMemberCount = OldGlobalConst.groupConst.get(3);*/
 	}
 
 	/**
