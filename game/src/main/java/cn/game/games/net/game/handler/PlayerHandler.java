@@ -121,7 +121,6 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerBriefInfoRequest_01000007, this::getPlayerBriefInfo);
 		putInvoker(PbProtocol.PlayerBriefInfoOtherRequest_01000009, this::getPlayerOtherBriefInfo);
 		putInvoker(PbProtocol.PlayerShowRequest_01000039, this::show);
-//		putInvoker(PbProtocol.PlayerBuyPowerItemRequest_01000022, this::buyPowerItem);
 //		putInvoker(PbProtocol.PlayerSpiritReceiveRequest_01000024, this::spiritReceive);
 //		putInvoker(PbProtocol.BuffAddRequest_01000110, this::addBuff);
 
@@ -471,15 +470,6 @@ public class PlayerHandler extends BaseHandler {
 		resp.setTime(System.currentTimeMillis() + "");
 		client.sendProtocol(resp.build());
 	}
-	/*	protected void ap(NetClient client, Object message) {
-			PlayerPowerResponse_01000021.Builder resp = PlayerPowerResponse_01000021.newBuilder();
-			Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-			PlayerHelper.recoverPower(player);
-			resp.setValue(player.getData().getPower());
-	
-			client.sendProtocol(resp.build());
-		}*/
-
 
 	protected void getPlayerBriefInfo(NetClient client, Object message) {
 		PlayerBriefInfoRequest_01000007 request = (PlayerBriefInfoRequest_01000007) message;
@@ -531,46 +521,6 @@ public class PlayerHandler extends BaseHandler {
 			client.sendProtocol(response.build(), error);
 		});
 	}
-
-//	protected void buyPowerItem(NetClient client, Object message) {
-//		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-//		List<Map.Entry<Integer, Integer>> spiritBuy = OldGlobalConst.spiritBuy;
-//		int maxBuyCount = spiritBuy.size();
-//
-//		PlayerBuyPowerItemRequest_01000022 request = (PlayerBuyPowerItemRequest_01000022) message;
-//		int count = request.getBuyCount();
-//
-//		PlayerBuyPowerItemResponse_01000023.Builder response = PlayerBuyPowerItemResponse_01000023.newBuilder();
-//		int nowCount = 0;
-//		int nextBuyCount = nowCount + count;
-//		if (nextBuyCount > maxBuyCount) {
-//			client.sendProtocol(response.build(), ErrorMsgEnum.buy_power_count_not.getId());
-//		}
-//
-//		int buyPrice = 0;
-//
-//		int nextCount = 0;
-//		for (int i = 0; i < count; i++) {
-//			nextCount = nowCount + i + 1;
-//
-//			for (Map.Entry<Integer, Integer> entry : spiritBuy) {
-//				if (entry.getKey().intValue() == nextCount) {
-//					buyPrice += entry.getValue().intValue();
-//					break;
-//				}
-//			}
-//		}
-//
-//		boolean result = PlayerHelper.delResources(client.getPlayerId(), ResourceEnum.Gold.getId(), buyPrice, ResourceConsumeEnum.BuyPower);
-//		if (result) {
-//			PlayerHelper.addResources(client.getPlayerId(), OldGlobalConst.spiritBuyItem, count);
-////			player.getData().setBuyPowerCount(nextBuyCount);
-//			client.sendProtocol(response.build());
-//			return;
-//		}
-//
-//		client.sendProtocol(response.build(), ErrorMsgEnum.gold_not_enough.getId());
-//	}
 
 	protected void head(NetClient client, Object message) {
 
