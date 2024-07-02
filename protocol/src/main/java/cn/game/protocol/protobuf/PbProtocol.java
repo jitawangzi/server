@@ -173,7 +173,9 @@ public class PbProtocol implements ProtocolParser {
 	public final static int MergeEquipmentPartStrengthResponse_23000008 = 0x23000008;    
 	public final static int PlayerLoginRequest_01000001 = 0x01000001;    //登陆  
 	public final static int PlayerLoginResponse_01000002 = 0x01000002;    //用户登陆,返回游戏数据  
-	public final static int PlayerLogoutPush_01100030 = 0x01100030;    //退出登录(客户端登录多个账号，或者服务器关闭等)  
+	public final static int PlayerLogoutRequest_01000003 = 0x01000003;    //退出登陆  
+	public final static int PlayerLogoutResponse_01000004 = 0x01000004;    //退出登陆  
+	public final static int PlayerLogoutPush_01100030 = 0x01100030;    //退出登录推送(客户端登录多个账号，或者服务器关闭等)  
 	public final static int PlayerNameRequest_01000011 = 0x01000011;    //修改名字  
 	public final static int PlayerNameResponse_01000012 = 0x01000012;    //修改名字返回  
 	public final static int PlayerHeadRequest_01000013 = 0x01000013;    //修改头像  
@@ -600,6 +602,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PlayerLoginResponse_01000002, cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PlayerLogoutRequest_01000003, cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerLogoutResponse_01000004, cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(PlayerLogoutPush_01100030, cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutPush_01100030.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerNameRequest_01000011, cn.game.protocol.protobuf.PlayerMsg.PlayerNameRequest_01000011.getDefaultInstance()
@@ -995,6 +1001,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("MergeEquipmentPartStrengthResponse_23000008", 0x23000008);
 		nameIdMap.put("PlayerLoginRequest_01000001", 0x01000001);
 		nameIdMap.put("PlayerLoginResponse_01000002", 0x01000002);
+		nameIdMap.put("PlayerLogoutRequest_01000003", 0x01000003);
+		nameIdMap.put("PlayerLogoutResponse_01000004", 0x01000004);
 		nameIdMap.put("PlayerLogoutPush_01100030", 0x01100030);
 		nameIdMap.put("PlayerNameRequest_01000011", 0x01000011);
 		nameIdMap.put("PlayerNameResponse_01000012", 0x01000012);

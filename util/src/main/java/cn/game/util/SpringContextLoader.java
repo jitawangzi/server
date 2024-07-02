@@ -67,7 +67,7 @@ public class SpringContextLoader extends ThreadGroup
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].indexOf(".xml") == -1)
 				continue;
-			list.add("file:"+(isWin?"//":"")+  args[i]);
+			list.add("file:" + (isWin ? "///" : "") + args[i]);
 		}
 		appContext = new FileSystemXmlApplicationContext(list.toArray(new String[0]));
 		log.info("SERVER START COMPLETE. ");

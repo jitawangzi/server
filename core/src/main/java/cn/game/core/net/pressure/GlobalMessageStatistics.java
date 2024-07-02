@@ -23,11 +23,13 @@ import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.client.AbstractNetClient;
 
 public class GlobalMessageStatistics {
-
+	private static final Logger log = LoggerFactory.getLogger(GlobalMessageStatistics.class);
 	private static final GlobalMessageStatistics instance = new GlobalMessageStatistics();
 
 	public MultiKeyMap<Long, Pair<String, Long>> globalSendMessages = new MultiKeyMap<Long, Pair<String, Long>>();
@@ -57,23 +59,23 @@ public class GlobalMessageStatistics {
 //		globalRecvMessages.putAll(recvMessages);
 //	}
 
-	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients, boolean recordSlowMessage) throws IOException {
+	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients) throws IOException {
 		Calendar c = Calendar.getInstance();
 		int h = c.get(Calendar.HOUR_OF_DAY);
 		int m = c.get(Calendar.MINUTE);
-		int s = c.get(Calendar.SECOND);
+//		int s = c.get(Calendar.SECOND);
 
-		String fileName = System.getProperty("botIdStart") + "_" + h + "-" + m + "-" + s;
+		String fileName = System.getProperty("botIdStart") + "_" + h + "-" + m;
 		String dirPath = System.getProperty("user.dir") + "/statistics/";
 		File dir = new File(dirPath);
 		if (!dir.exists()) {
 			dir.mkdir();
 		}
 		String filePath = dirPath + fileName + ".csv";
-		String slowFilePath = dirPath + "slowMessage.csv";
+		String slowFilePath = dirPath + h + "-" + m + "-slowMessage.csv";
 
 		mergeAllClientData(clients);
-		calculateStatistics(filePath, slowFilePath, recordSlowMessage);
+		calculateStatistics(filePath, slowFilePath);
 		// 清理下消息记录
 		for (AbstractNetClient abstractNetClient : clients) {
 			abstractNetClient.recvMessages.clear();
@@ -81,7 +83,7 @@ public class GlobalMessageStatistics {
 		}
 	}
 
-	private void calculateStatistics(String outputFilePath, String slowFilePath, boolean recordSlowMessage) throws IOException {
+	private void calculateStatistics(String outputFilePath, String slowFilePath) throws IOException {
 		// 开发模式
 		boolean pressureDev = Boolean.getBoolean("pressureDev");
 		// 每个消息的所有响应时间
@@ -95,6 +97,8 @@ public class GlobalMessageStatistics {
 		// 匹配发送接收消息，计算响应时间
 		for (Entry<MultiKey<? extends Long>, Pair<String, Long>> sendEntry : globalSendMessages.entrySet()) {
 			MultiKey<? extends Long> key = sendEntry.getKey();
+			Long playerId = key.getKey(0);
+			Long seq = key.getKey(1);
 			String sendMsgName = sendEntry.getValue().getLeft();
 			long sendTime = sendEntry.getValue().getRight();
 
@@ -102,7 +106,9 @@ public class GlobalMessageStatistics {
 			if (recvEntry != null) {
 				long recvTime = recvEntry.getRight();
 				double responseTime = Double.parseDouble(String.format("%.2f", (recvTime - sendTime) / 1_000_000.0));
-
+				if (responseTime < 0) {
+					log.error("响应时间小于0，playerId：{} seq ：{} 消息名：{}，发送时间：{}，接收时间：{}", playerId, seq, sendMsgName, sendTime, recvTime);
+				}
 				responseTimes.computeIfAbsent(sendMsgName, k -> new ArrayList<>()).add(responseTime);
 			}
 			requestCountMap.compute(sendMsgName, (k, v) -> v == null ? 1 : v + 1);
@@ -120,7 +126,7 @@ public class GlobalMessageStatistics {
 			writer.write('\ufeff');
 			printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers));
 
-			if (pressureDev && recordSlowMessage) {
+			if (pressureDev) {
 				writerSlow = new OutputStreamWriter(new FileOutputStream(slowFilePath), StandardCharsets.UTF_8);
 				writerSlow.write('\ufeff');
 				printerSlow = new CSVPrinter(writerSlow, CSVFormat.DEFAULT.withHeader(headers));
@@ -146,7 +152,7 @@ public class GlobalMessageStatistics {
 					printer.printRecord(msgName, requestCount, responseCount, String.format("%.2f%%", responseRate), minResponseTime, maxResponseTime,
 							String.format("%.2f", avgResponseTime), p50, p75, p90);
 					// 如果有没返回的，或者时间中位数大于10ms的，额外记录下来。
-					if (writerSlow != null && recordSlowMessage && (p50 > 10 || responseRate < 100)) {
+					if (writerSlow != null && (p50 > 10 || responseRate < 100)) {
 						printerSlow.printRecord(msgName, requestCount, responseCount, String.format("%.2f%%", responseRate), minResponseTime, maxResponseTime,
 								String.format("%.2f", avgResponseTime), p50, p75, p90, times.toString());
 					}

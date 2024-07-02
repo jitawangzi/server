@@ -25,7 +25,7 @@ public class PressureTestManager {
 			VxHolder.vertx.setPeriodic(Config.messageStatisticsInterval * 60 * 1000, r -> {
 				Collection<GameClient> gameClients = GameClientManager.getInstance().getGameClients();
 				try {
-					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(gameClients, false);
+					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(gameClients);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

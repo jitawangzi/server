@@ -73,6 +73,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadResponse_01000014;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatResponse_01000006;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerNameRequest_01000011;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerNameResponse_01000012;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065;
@@ -113,6 +114,7 @@ public class PlayerHandler extends BaseHandler {
 	protected void inititialize() {
 
 		putInvoker(PbProtocol.PlayerLoginRequest_01000001, this::login);
+		putInvoker(PbProtocol.PlayerLogoutRequest_01000003, this::logout);
 //		putInvoker(PbProtocol.PlayerCreateRequest_01000003, this::createPlayer);
 		putInvoker(PbProtocol.PlayerHeartbeatRequest_01000005, this::heartbeat);
 //		putInvoker(PbProtocol.PlayerPowerRequest_01000020, this::ap);
@@ -771,6 +773,16 @@ public class PlayerHandler extends BaseHandler {
 			}
 			failHandler.handle(failCode);
 			log.error(" get uid or select player error ", p);
+		});
+	}
+
+	protected void logout(NetClient client, Object message) {
+//		PlayerMsg.PlayerLogoutRequest_01000003 req = (PlayerLogoutRequest_01000003) message;
+//		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		// 保存数据
+		Future<?> logout = GameClientManager.getInstance().logout((GameClient) client);
+		logout.onComplete(r -> {
+			client.sendProtocol(PlayerLogoutResponse_01000004.getDefaultInstance());
 		});
 	}
 
