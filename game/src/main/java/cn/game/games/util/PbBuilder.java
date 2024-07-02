@@ -8,11 +8,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Equip;
-import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Group;
 import cn.game.games.cache.entity.GroupMember;
@@ -45,7 +43,6 @@ import cn.game.protocol.protobuf.ChatMsg.ChatGroupBriefInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo;
-import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupInfo;
@@ -54,7 +51,6 @@ import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.UnionMsg;
-import cn.game.util.DateUtil;
 import cn.game.util.Pair;
 
 public class PbBuilder {
@@ -67,50 +63,6 @@ public class PbBuilder {
 		}
 		return builder.build();
 	}
-
-
-	/*public static BagInfo buildBagInfo(long playerId) {
-		BagInfo.Builder builder = BagInfo.newBuilder();
-		// 背包格子数据
-		builder.addAllBagGridInfos(buildBagGridInfo(playerId));
-		//(背包已满)待选择的奖励
-	//		builder.setReward(buildBagRewardNeedChooseInfo(playerId));
-		
-		return builder.build();
-	}
-	
-	public static List<BagGridInfo> buildBagGridInfo(long playerId) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-	
-		ItemModule itemModule = player.getModule(ItemModule.class);
-		EquipOp equipOp = player.getModule(EquipOp.class);
-		List<BagGridInfo> res = new ArrayList<>();
-		// 背包格子数据
-	//		Map<Integer, BagGrid> bagGridMap = itemModule.getBagGridMap();
-	//		for (int gridId : bagGridMap.keySet()) {
-	//			BagGrid bagGrid = bagGridMap.get(gridId);
-	//			int itemId = bagGrid.getItemId();
-	//			int itemCount = bagGrid.getItemCount();
-	//			long equipId = bagGrid.getEquipId();
-	//
-	//			BagGridInfo.Builder newBuilder = BagGridInfo.newBuilder();
-	//			if (bagGrid.isItem()) {
-	//				newBuilder.setId(gridId);
-	//				newBuilder.setItem(ItemInfo.newBuilder().setId(itemId).setCount(itemCount));
-	//				
-	//			} else if (bagGrid.isEquip()) {
-	//				Equip equip = equipOp.get(equipId);
-	//				newBuilder.setId(gridId);
-	//				newBuilder.setEquip(buildEquipInfo(equip));
-	//				
-	//			} else if(bagGrid.isEmpty()) {
-	//				continue;
-	//			}
-	//			res.add(newBuilder.build());
-	//		}
-	//		
-		return res;
-	}*/
 
 	public static EquipInfo buildEquipInfo(Equip e) {
 		EquipInfo.Builder builder = EquipInfo.newBuilder();
@@ -306,17 +258,6 @@ public class PbBuilder {
 		}
 		return list;
 	}
-
-
-//	public static ActivityInfo buildActivityInfo(int id) {
-//		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
-//
-//		builder.setId(id);
-//		// builder.setStartTime(value);
-//		// builder.setState(value);
-//
-//		return builder.build();
-//	}
 
 	public static Collection<MailInfo> buildAllMailInfo(Collection<Mail> mails) {
 
@@ -575,80 +516,6 @@ public class PbBuilder {
 	}
 
 	/*
-		public static List<RoleAttrInfo> buildRoleAttrInfo(Role role) {
-			List<RoleAttrInfo> list = new ArrayList<>();
-			List<RoleAttributeConfig> typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.hp, AttributeSubTypeEnum.cur);
-			int hpCurId = typesubTypeList.get(0).getId();
-			RoleAttrInfo.Builder rHp = RoleAttrInfo.newBuilder();
-			rHp.setId(hpCurId);
-			rHp.setValue(role.getHp());
-			list.add(rHp.build());
-	
-			typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.hp, AttributeSubTypeEnum.curTotal);
-			int hpCurMaxId = typesubTypeList.get(0).getId();
-			RoleAttrInfo.Builder hpCurMaxInfo = RoleAttrInfo.newBuilder();
-			hpCurMaxInfo.setId(hpCurMaxId);
-			hpCurMaxInfo.setValue(role.getHpCurMax());
-			list.add(hpCurMaxInfo.build());
-	
-	//		RoleAttrInfo.Builder rEp = RoleAttrInfo.newBuilder();
-	//		rEp.setId(AttributeTypeEnum.ep.getId());
-	//		rEp.setValue(role.getEp());
-	//		list.add(rEp.build());
-			
-			typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.san, AttributeSubTypeEnum.cur);
-			int sanCurId = typesubTypeList.get(0).getId();
-			RoleAttrInfo.Builder rSan = RoleAttrInfo.newBuilder();
-			rSan.setId(sanCurId);
-			rSan.setValue(role.getSan());
-			list.add(rSan.build());
-			
-			typesubTypeList = RoleAttributeManager.getInstance().getTypesubTypeList(AttributeTypeEnum.san, AttributeSubTypeEnum.curTotal);
-			int sanCurMaxId = typesubTypeList.get(0).getId();
-			RoleAttrInfo.Builder sanCurMaxInfo = RoleAttrInfo.newBuilder();
-			sanCurMaxInfo.setId(sanCurMaxId);
-			sanCurMaxInfo.setValue(role.getSanCurMax());
-			list.add(sanCurMaxInfo.build());
-			
-			return list;
-		}
-	
-		public static StoryInfo buildStoryInfo(Story story) {
-			StoryInfo.Builder builder = StoryInfo.newBuilder();
-			builder.setId(story.getStory());
-			builder.setCount(story.getStartConditionCount());
-			builder.setFinish(story.getFinish());
-			return builder.build();
-		}
-	
-	
-		public static List<TowerPlayerInfo> buildClimbingTowerGroupInfo(List<SimplePlayer> s_players, Collection<ClimbingTower> players) {
-			List<TowerPlayerInfo> res = new ArrayList<>(20);
-			int index = 0;
-			for (ClimbingTower climbingTower : players) {
-				SimplePlayer s_player = s_players.get(index++);
-				TowerPlayerInfo.Builder builder = TowerPlayerInfo.newBuilder();
-				builder.setHead(s_player.head);
-				builder.setName(s_player.name);
-				builder.setScore(climbingTower.getScore());
-				builder.setScoreTime((int) (climbingTower.getScoreTime() / 1000));
-				res.add(builder.build());
-			}
-			return res;
-		}
-	
-	
-		public static List<RoleAttrPointInfo> buidRoleAttrInfo(Map<Integer, Integer> map) {
-			List<RoleAttrPointInfo> list = new ArrayList<>(4);
-			for (Integer key : map.keySet()) {
-				RoleAttrPointInfo.Builder builder = RoleAttrPointInfo.newBuilder();
-				builder.setId(key);
-				builder.setValue(map.get(key));
-				list.add(builder.build());
-			}
-			return list;
-		}
-		*/
 	
 
 	public static List<ForbidAccountInfo> buildForbidAccount(List<ForbidAccount> accounts) {
