@@ -27,6 +27,10 @@ public class IntMapWrapper {
 		return map.compute(id, (k, v) -> v == null ? value : v + value);
 	}
 
+	public int add(int id) {
+		return add(id, 1);
+	}
+
 	public void add(int[] idAndValue) {
 		add(idAndValue[0], idAndValue[1]);
 	}

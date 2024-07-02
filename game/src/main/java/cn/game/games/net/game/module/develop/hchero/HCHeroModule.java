@@ -13,6 +13,7 @@ import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.IntMapWrapper;
 import cn.game.util.ObjUtil;
 
 public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
@@ -22,6 +23,8 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 	private long heroUid;
 	private int freeHcHeroUpTimes;
 	private int freeHcHeroItemTimes;
+
+	private IntMapWrapper heroItemTimesMap = new IntMapWrapper();
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -44,6 +47,7 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 		case NewDay: {
 			freeHcHeroUpTimes = 0;
 			freeHcHeroItemTimes = 0;
+			heroItemTimesMap.clear();
 			break;
 		}
 		}
@@ -106,6 +110,7 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 		for (HCHero hcHero : list) {
 			builder.addHcHeros(hcHero.toHCHeroInfo());
 		}
+		builder.putAllFreeHcHeroItemTimesMap(heroItemTimesMap.getMap());
 	}
 
 	public long getHCHeroId() {
@@ -136,4 +141,7 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 		this.freeHcHeroItemTimes = freeHcHeroItemTimes;
 	}
 
+	public IntMapWrapper getHeroItemTimesMap() {
+		return heroItemTimesMap;
+	}
 }

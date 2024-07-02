@@ -32,6 +32,7 @@ import cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelRequest_26000001;
 import cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelResponse_26000002;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.IntMapWrapper;
 
 @Component
 public class HCHeroHandler extends BaseHandler {
@@ -79,20 +80,28 @@ public class HCHeroHandler extends BaseHandler {
 		HCHeroAdsResponse_2600000a.Builder resp = HCHeroAdsResponse_2600000a.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HCHeroModule heroModule = player.getHCHeroModule();
+		IntMapWrapper heroItemTimesMap = heroModule.getHeroItemTimesMap();
+		int count = heroItemTimesMap.getValue(id);
 		int freeHcHeroItemTimes = heroModule.getFreeHcHeroItemTimes();
-		if (freeHcHeroItemTimes >= GlobalConst.ADStarCnt) {
+		if (count >= GlobalConst.ADStarCnt && freeHcHeroItemTimes >= GlobalConst.ADStarCntShare) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
 			return;
 		}
-		player.handleEvent(EventTypeEnum.WatchAds);
-		heroModule.setFreeHcHeroItemTimes(freeHcHeroItemTimes + 1);
 		// 给东西
 		HCHeroConfig hcHeroConfig = HCHeroManager.instance().get(id);
 		if (hcHeroConfig.Visible == 0) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
-		List<RewardInfo> resources = PlayerHelper.addResources(player, hcHeroConfig.ItemID, GlobalConst.ADStarPiece, OpType.HCHeroPieceAds);
+		player.handleEvent(EventTypeEnum.WatchAds);
+		boolean useHeroSelfCount = count < GlobalConst.ADStarCnt;
+		if (useHeroSelfCount) {
+			heroItemTimesMap.add(id, 1);
+		} else {
+			heroModule.setFreeHcHeroItemTimes(freeHcHeroItemTimes + 1);
+		}
+		int itemCount = useHeroSelfCount?GlobalConst.ADStarPiece:GlobalConst.ADStarPieceShare;
+		List<RewardInfo> resources = PlayerHelper.addResources(player, hcHeroConfig.ItemID, itemCount, OpType.HCHeroPieceAds);
 		resp.addAllReward(resources);
 		client.sendProtocol(resp.build());
 	}

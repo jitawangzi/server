@@ -33,6 +33,10 @@ public class MapWrapper {
 		return map.compute(id, (k, v) -> v == null ? value : v + value);
 	}
 
+	public long add(int id) {
+		return add(id, 1);
+	}
+
 	public boolean del(int id, int value) {
 		Long cur = map.get(id);
 		if (cur == null || cur < value) {
