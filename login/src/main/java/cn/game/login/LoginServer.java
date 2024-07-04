@@ -17,7 +17,6 @@ import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.util.Config;
 import cn.game.util.MailUtil;
-import cn.game.util.RedisUtil;
 import cn.game.util.RedissonUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -75,11 +74,10 @@ public class LoginServer {
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();
 
-		RedisUtil.main(new String[] { Config.vertxRedisUrl });
-
 		VxHolder.init();
-		RedisUtil.setRedisUrl(Config.vertxRedisUrl);
-		VxHolder.deployVerticleSync(new RedisUtil());
+//		RedisUtil.main(new String[] { Config.vertxRedisUrl });
+//		RedisUtil.setRedisUrl(Config.vertxRedisUrl);
+//		VxHolder.deployVerticleSync(new RedisUtil());
 		// 部署发布rest服务
 		RestServer.setPort(vertHttpPort);
 		DeploymentOptions options = new DeploymentOptions();

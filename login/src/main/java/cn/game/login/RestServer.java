@@ -68,7 +68,7 @@ public class RestServer extends AbstractVerticle {
 		router.route("/wechat/ship/push").handler(new WechatShipPush());
 		router.route("/wechat/test").handler(new WechatTest());
 //		router.get().handler(this::handleGet2);
-		// 创建一个httpserver，监听8080端口，并交由路由器分发处理用户请求
+		// 创建一个httpserver，监听端口，并交由路由器分发处理用户请求
 		vertx.createHttpServer().requestHandler(router::handle).listen(port);
 	}
 
