@@ -39,8 +39,8 @@ public enum ErrorMsgEnum {
 	repeat_request(51, "非法的重复操作，例如重复领取某任务奖励等。"),
 	/** 请求参数校验错误 */
 	request_parameter_error(52, "请求参数校验错误，例如合法值是1、2、3，却发了0"),
-	/** 非法请求，一般是客户端不够条件进行当前操作 */
-	illegal_request(53, "非法请求，一般是客户端不够条件进行当前操作，例如功能未开启，等级不足等等"),
+	/** 请求参数为null */
+	request_parameter_null(53, "请求参数为null"),
 	/** 玩家数据不存在 */
 	player_data_not_found(54, "玩家数据不存在"),
 	/** 条件校验错误 */
@@ -62,6 +62,8 @@ public enum ErrorMsgEnum {
 	player_not_exist(64, "玩家不存在"),
 	player_not_online(65, "玩家不在线"),
 	operation_too_fast(66, "操作太快，太频繁了"),
+	/** 非法请求，一般是客户端不够条件进行当前操作 */
+	illegal_request(68, "非法请求，一般是客户端不够条件进行当前操作，例如功能未开启，等级不足等等"),
 
 	// 100+ 业务错误。
 

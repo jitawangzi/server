@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ProtocolStringList;
@@ -103,6 +104,10 @@ public class ChatHandler extends BaseHandler {
 		ChatResponse_31000002.Builder resp = ChatResponse_31000002.newBuilder();
 		ChatType chatType = req.getChatType(); // 聊天类型
 		String content = req.getContent();
+		if (StringUtils.isEmpty(content)) {
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_null.getId());
+			return;
+		}
 		content = KeywordFilter.getInstance().filter(content);
 		ProtocolStringList atPlayerIdsList = req.getAtPlayerIdsList();
 		String targetPlayerId = req.getTargetPlayerId();
