@@ -2,9 +2,7 @@ package cn.game.games.net.game.remote;
 
 import java.util.List;
 
-import cn.game.games.cache.entity.Group;
 import cn.game.games.core.SimplePlayer;
-import cn.game.games.net.game.module.chat.GroupAllInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 
@@ -20,10 +18,6 @@ public interface GameRemoteServerInterface {
 	public Future<SimplePlayer> getSimplePlayerAsync(long id);
 
 	public List<SimplePlayer> getSimplePlayers(List<Long> ids);
-	
-	public Group getGroupBriefInfo(long groupId);
-	
-	public GroupAllInfo getGroupInfo(long groupId);
 
 	public SimplePlayer searchFriendPlayer(long playerId, long searchPlayerId) throws Exception;
 

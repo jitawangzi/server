@@ -75,6 +75,7 @@ import cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501;
 import cn.game.protocol.protobuf.ServerMsg.DbTaskProto;
 import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch2_7d00000c;
 import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch_7d00000b;
+import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
 import cn.game.util.Config;
@@ -841,6 +842,94 @@ public class PlayerHelper {
 		} else {
 			// TODO 当前server保存任务到db,加分布式锁。
 			return null;
+		}
+	}
+
+	/** 
+	 * 给某在线玩家推送一个消息，如果玩家不在线，可以丢弃消息。 
+	 * @param playerId
+	 * @param message
+	 */
+	public static void sendOnlinePlayer(long playerId, Object message) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId); 
+		if (player!=null) {
+			player.getGameClient().sendProtocol(message);
+			return;
+		}
+
+		// 发给所在服务器处理。
+		String serverId = PlayerManager.getInstance().getServerId(playerId);
+		if (StringUtils.isEmpty(serverId)) {
+			return;
+		}
+		com.google.protobuf.Message m = null;
+		if (message instanceof com.google.protobuf.Message) {
+			m = (com.google.protobuf.Message) message;
+		} else if (message instanceof Builder) {
+			m = (com.google.protobuf.Message) ((Builder) message).build();
+		} else {
+			throw new IllegalArgumentException("not support message ：" + message);
+		}
+
+		sendToRemotePlayer(playerId, serverId, m);
+
+	}
+
+	/**
+	 * @Description 给某玩家发送消息，可能是跨服的玩家
+	 * @param playerId
+	 * @param message
+	 * @param serverId
+	 */
+	public void sendProtcolCrossServer(long playerId, String serverId, com.google.protobuf.Message message) {
+		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) { // 本服务器玩家
+			GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+			if (gameClient != null) {
+				gameClient.sendProtocol(message);
+			}
+
+		} else {
+			sendToRemotePlayer(playerId, serverId, message);
+		}
+
+	}
+
+	/**
+	 * @Description 将消息发送给指定服务器的玩家
+	 * @param playerId
+	 *            目标玩家id
+	 * @param message
+	 * @param serverId
+	 *            目标服务器id
+	 */
+	public static void sendToRemotePlayer(long playerId, String serverId, com.google.protobuf.Message message) {
+		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
+		GamePlayerPush_7d000100.Builder builder = GamePlayerPush_7d000100.newBuilder();
+
+		builder.setData(message.toByteString());
+		builder.setId(msgId);
+		builder.setPlayerId(playerId);
+
+		VxHolder.sendToRemoteServer(serverId, PbProtocol.GamePlayerPush_7d000100, builder.build().toByteArray());
+
+	}
+
+	/**
+	 * @Description 将消息广播给跨服玩家
+	 * @param message
+	 * @param playerIds
+	 * @param serverIds
+	 */
+	public static void sendToRemotePlayers(com.google.protobuf.Message message, List<Long> playerIds, List<String> serverIds) {
+		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
+
+		for (int i = 0; i < playerIds.size(); i++) {
+			GamePlayerPush_7d000100.Builder builder = GamePlayerPush_7d000100.newBuilder();
+
+			builder.setData(message.toByteString());
+			builder.setId(msgId);
+			builder.setPlayerId(playerIds.get(i));
+			VxHolder.sendToRemoteServer(serverIds.get(i), msgId, builder.build().toByteArray());
 		}
 	}
 

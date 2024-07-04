@@ -55,6 +55,7 @@ import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
@@ -411,6 +412,22 @@ public class Player  {
 	 */
 	public boolean isFuncOpen(InitialUI type) {
 		return getLevel() >= type.DisplayLevel;
+	}
+
+	public SimplePlayerInfo buildSimplePlayerInfo() {
+
+		Long playerId = getData().getPlayerId();
+		SimplePlayerInfo.Builder builder = SimplePlayerInfo.newBuilder();
+		builder.setId(playerId + "");
+		builder.setLevel(getData().getLevel());
+		builder.setName(getData().getName());
+		builder.setOnline(true);
+		builder.setOfflineTime(0);
+		builder.setHead(getData().getHead());
+		builder.setHeadFrame(getData().getHeadFrame());
+		builder.setServerId(getData().getServerId());
+		return builder.build();
+
 	}
 
 	/** 

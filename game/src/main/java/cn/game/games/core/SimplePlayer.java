@@ -28,8 +28,10 @@ public class SimplePlayer implements Serializable {
 	boolean online;
 
 	public int combat;
-	/** 所在服务器id */
+	/** 所在服务器id，并不是真正的在哪个服务器，只是加一个标签 */
 	public String serverId;
+	/** 所在服务器名，并不是真正的在哪个服务器，只是加一个标签 */
+	public String serverName;
 	/** 被点赞数量 */
 	public int praisedCount;
 	public Object accountAdChannel;

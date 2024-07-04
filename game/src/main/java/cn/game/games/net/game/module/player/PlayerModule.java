@@ -67,6 +67,10 @@ public class PlayerModule extends BasePlayerModule {
 
 	private Map<Integer, Integer> guideMap = new HashMap<Integer, Integer>();
 
+	/** 上次世界聊天发言时间 */
+	private int lastChatTime;
+	
+
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
 		return new Class[] { PlayerIdsMapper.class };
@@ -188,6 +192,14 @@ public class PlayerModule extends BasePlayerModule {
 	public void execPayCallback(long uid) {
 		Promise<Boolean> callback = this.payCallback.remove(uid); 
 		callback.complete(true);; 
+	}
+
+	public int getLastChatTime() {
+		return lastChatTime;
+	}
+
+	public void setLastChatTime(int lastChatTime) {
+		this.lastChatTime = lastChatTime;
 	}
 
 	public void startCloudBoxTask() {

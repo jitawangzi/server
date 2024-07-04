@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +21,13 @@ import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.GameServer;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutPush_01100030;
 import cn.game.protocol.protobuf.ServerMsg.GameCrossBroadcast_7d000008;
 import cn.game.protocol.protobuf.ServerMsg.GameCrossForwardPush_7d000002;
 import cn.game.protocol.protobuf.ServerMsg.GameCrossPlayerBroadcast_7d000005;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerOnlinePush_7d000010;
-import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
@@ -308,26 +307,6 @@ public class GameClientManager {
 	 * @param serverId
 	 *            目标服务器id
 	 */
-	public void sendToRemotePlayer(long playerId, String serverId, Message message) {
-		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-		GamePlayerPush_7d000100.Builder builder = GamePlayerPush_7d000100.newBuilder();
-
-		builder.setData(message.toByteString());
-		builder.setId(msgId);
-		builder.setPlayerId(playerId);
-
-		VxHolder.sendToRemoteServer(serverId, PbProtocol.GamePlayerPush_7d000100, builder.build()
-				.toByteArray());
-
-	}
-	/**
-	 * @Description 将消息发送给指定服务器的玩家，通过cross服务器转发
-	 * @param playerId
-	 *            目标玩家id
-	 * @param message
-	 * @param serverId
-	 *            目标服务器id
-	 */
 	@Deprecated
 	public void sendToRemotePlayerOld(long playerId, String serverId, Message message) {
 		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
@@ -401,34 +380,13 @@ public class GameClientManager {
 					serverIds.removeAll(localServers);
 				}
 
-				sendToRemotePlayers(message, playerIds, serverIds);
+				PlayerHelper.sendToRemotePlayers(message, playerIds, serverIds);
 
 			});
 		}
 
 	}
 
-	/**
-	 * @Description 将消息广播给跨服玩家
-	 * @param message
-	 * @param playerIds
-	 * @param serverIds
-	 */
-	public void sendToRemotePlayers(Message message, List<Long> playerIds, List<String> serverIds) {
-		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-
-		for (int i = 0; i < playerIds.size(); i++) {
-			GamePlayerPush_7d000100.Builder builder = GamePlayerPush_7d000100.newBuilder();
-
-			builder.setData(message.toByteString());
-			builder.setId(msgId);
-			builder.setPlayerId(playerIds.get(i));
-
-			VxHolder.sendToRemoteServer(serverIds.get(i), msgId, builder.build().toByteArray());
-		}
-
-
-	}
 	/**
 	 * @Description 将消息广播给跨服玩家
 	 * @param message
@@ -501,25 +459,6 @@ public class GameClientManager {
 		GamePlayerOnlinePush_7d000010 message = GamePlayerOnlinePush_7d000010.newBuilder().setPlayerId(playerId).setOnline(online).setServerId(ServerContext.getInstance().getServerId())
 				.build();
 		broadcastGameServers(message, serverIds);
-	}
-
-	/**
-	 * @Description 给某玩家发送消息，可能是跨服的玩家
-	 * @param playerId
-	 * @param message
-	 * @param serverId
-	 */
-	public void sendProtcol(long playerId, String serverId, Message message) {
-		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) { // 本服务器玩家
-			GameClient gameClient = getGameClientByPlayer(playerId);
-			if (gameClient != null) {
-				gameClient.sendProtocol(message);
-			}
-
-		} else {
-			sendToRemotePlayer(playerId, serverId, message);
-		}
-
 	}
 
 	public void noticeOne(Object message, Long pId) {

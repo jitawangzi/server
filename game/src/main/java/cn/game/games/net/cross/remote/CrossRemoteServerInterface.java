@@ -2,9 +2,7 @@ package cn.game.games.net.cross.remote;
 
 import java.util.List;
 
-import cn.game.games.cache.entity.Group;
 import cn.game.games.core.SimplePlayer;
-import cn.game.games.net.game.module.chat.GroupAllInfo;
 import cn.game.games.net.game.remote.ServerStatus;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.Pair;
@@ -22,10 +20,6 @@ public interface CrossRemoteServerInterface {
 
 	public SimplePlayer getSimplePlayer(long playerId, String serverId) throws Exception;
 	
-	public Group getOneGroupBriefInfo(long groupId, String serverId) throws Exception;
-	
-	public GroupAllInfo getChatGroupInfo(long groupId, String serverId) throws Exception;
-
 	/**
 	 * @Description 搜索查找好友数据，如果双方有黑名单关系，则不能查看数据
 	 * @param playerId

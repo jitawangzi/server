@@ -59,6 +59,9 @@ public enum ErrorMsgEnum {
 	times_limit(61, "次数不足"),
 	cd_time_error(62, "未到冷却时间"),
 	level_limit(63, "等级已经到上限，可能是等级，星级等"),
+	player_not_exist(64, "玩家不存在"),
+	player_not_online(65, "玩家不在线"),
+	operation_too_fast(66, "操作太快，太频繁了"),
 
 	// 100+ 业务错误。
 
@@ -92,8 +95,6 @@ public enum ErrorMsgEnum {
 	not_notice(119, "公告不合法"),
 	/** 可能没有这个玩家 */
 	player_not_found(127, "可能没有这个玩家"),
-	/** 玩家不在线 */
-	player_not_online(128, "玩家不在线"),
 	/** 该玩家不是好友 */
 	player_not_friend(129, "该玩家不是好友"),
 	/** 已经被拉黑，私聊消息被拒收 */

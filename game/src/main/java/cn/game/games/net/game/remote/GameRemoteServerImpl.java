@@ -6,19 +6,14 @@ import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 
 import cn.game.games.cache.entity.Friend;
-import cn.game.games.cache.entity.Group;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.manager.ChatManager;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.chat.GroupAllInfo;
-import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 
@@ -32,22 +27,6 @@ public class GameRemoteServerImpl implements GameRemoteServerInterface {
 	@Override
 	public List<SimplePlayer> getSimplePlayers(List<Long> ids) {
 		return PlayerManager.getInstance().getAndLoadSimplePlayers(ids);
-	}
-
-	@Override
-	public Group getGroupBriefInfo(long groupId) {
-		return ChatManager.getInstance().getGroupBriefInfoByIdG(groupId);
-	}
-
-	@Override
-	public GroupAllInfo getGroupInfo(long groupId) {
-		ChatGroupInfo chatGroupInfo = ChatManager.getInstance().getChatGroupInfo(groupId); 
-		
-		if(chatGroupInfo == null)
-			return null;
-		
-		GroupAllInfo groupAllInfo = PbBuilder.getGroupAllInfo(chatGroupInfo);
-		return 	groupAllInfo;
 	}
 
 	@Override

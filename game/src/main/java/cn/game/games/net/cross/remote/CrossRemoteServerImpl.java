@@ -8,10 +8,8 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.games.cache.entity.Group;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.cross.CrossServer;
-import cn.game.games.net.game.module.chat.GroupAllInfo;
 import cn.game.games.net.game.remote.GameRemoteServerInterface;
 import cn.game.games.net.game.remote.ServerStatus;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -71,18 +69,6 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 			}
 		}
 		return retList;
-	}
-
-	@Override
-	public Group getOneGroupBriefInfo(long groupId, String serverId) throws Exception {
-		GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
-		return gameServerInterface.getGroupBriefInfo(groupId);
-	}
-
-	@Override
-	public GroupAllInfo getChatGroupInfo(long groupId, String serverId) throws Exception {
-		GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
-		return gameServerInterface.getGroupInfo(groupId);
 	}
 
 	@Override

@@ -128,7 +128,8 @@ message SimplePlayerInfo{
 	uint32 headFrame = 7; 		// 头像框
 	bool online = 8  ;      // 是否在线
 	uint32 offlineTime = 9  ; // 如果离线，此值表示最近的下线时间，秒的时间戳
-	string serverId = 10; // 玩家所在服务器id
+	string serverId = 10; // 玩家所在服务器id，显示用
+	string serverName = 11; // 玩家所在服务器名，显示用
 }
 
 // 玩家展示的名片数据

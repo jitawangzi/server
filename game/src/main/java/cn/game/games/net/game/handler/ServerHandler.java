@@ -77,6 +77,7 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.GamePlayerLogoutRequest_7d000101, this::playerLogout);
 		putInvoker(PbProtocol.GamePlayerRequest_7d000015, this::playerRequest);
 		putInvoker(PbProtocol.PaymentOrderShipRequest_7d000022, this::ship);
+		putInvoker(PbProtocol.GamePlayerPush_7d000011, this::playerPush);
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);

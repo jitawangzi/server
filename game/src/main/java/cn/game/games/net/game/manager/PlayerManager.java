@@ -27,7 +27,6 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.ForbidAccount;
-import cn.game.games.cache.entity.Group;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
@@ -44,7 +43,6 @@ import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
-import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.Pair;
@@ -221,41 +219,6 @@ public class PlayerManager {
 			return getAndLoadSimplePlayer(playerId) ; 
 		}
 		return GameServer.getInstance().getCrossGameServerInterfaceSync().getSimplePlayer(playerId, serverId);
-	}
-	
-	/**
-	 * 跨服获取群组简略信息，如果为空代表没有这个群组的信息，可能是被解散了
-	 * @param groupId
-	 * @param serverId
-	 * @return
-	 */
-	public Group getOneOtherServerGroupBriefInfo(long groupId, String serverId) {
-		Group chatGroupBriefInfo  = null;
-		
-		try {
-			chatGroupBriefInfo = GameServer.getInstance().getCrossGameServerInterfaceSync().getOneGroupBriefInfo(groupId, serverId);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		return chatGroupBriefInfo;
-	}
-	/**
-	 * 跨服获取群组全部信息，如果为空代表没有这个群组的信息，可能是被解散了	
-	 * @param groupId
-	 * @param serverId
-	 * @return
-	 */
-	public ChatGroupInfo getOtherServerGroupInfo(long groupId, String serverId) {
-		ChatGroupInfo chatGroupInfo = null;
-		
-		try {
-			chatGroupInfo = PbBuilder.buildChatGroupInfo(GameServer.getInstance().getCrossGameServerInterfaceSync().getChatGroupInfo(groupId, serverId));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return chatGroupInfo;
 	}
 	
 	/**

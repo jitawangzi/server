@@ -13615,7 +13615,7 @@ public final class BaseMsg {
 
     /**
      * <pre>
-     * 玩家所在服务器id
+     * 玩家所在服务器id，显示用
      * </pre>
      *
      * <code>string serverId = 10;</code>
@@ -13624,7 +13624,7 @@ public final class BaseMsg {
     java.lang.String getServerId();
     /**
      * <pre>
-     * 玩家所在服务器id
+     * 玩家所在服务器id，显示用
      * </pre>
      *
      * <code>string serverId = 10;</code>
@@ -13632,6 +13632,26 @@ public final class BaseMsg {
      */
     com.google.protobuf.ByteString
         getServerIdBytes();
+
+    /**
+     * <pre>
+     * 玩家所在服务器名，显示用
+     * </pre>
+     *
+     * <code>string serverName = 11;</code>
+     * @return The serverName.
+     */
+    java.lang.String getServerName();
+    /**
+     * <pre>
+     * 玩家所在服务器名，显示用
+     * </pre>
+     *
+     * <code>string serverName = 11;</code>
+     * @return The bytes for serverName.
+     */
+    com.google.protobuf.ByteString
+        getServerNameBytes();
   }
   /**
    * <pre>
@@ -13653,6 +13673,7 @@ public final class BaseMsg {
       id_ = "";
       name_ = "";
       serverId_ = "";
+      serverName_ = "";
     }
 
     @java.lang.Override
@@ -13731,6 +13752,12 @@ public final class BaseMsg {
               java.lang.String s = input.readStringRequireUtf8();
 
               serverId_ = s;
+              break;
+            }
+            case 90: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              serverName_ = s;
               break;
             }
             default: {
@@ -13951,7 +13978,7 @@ public final class BaseMsg {
     private volatile java.lang.Object serverId_;
     /**
      * <pre>
-     * 玩家所在服务器id
+     * 玩家所在服务器id，显示用
      * </pre>
      *
      * <code>string serverId = 10;</code>
@@ -13972,7 +13999,7 @@ public final class BaseMsg {
     }
     /**
      * <pre>
-     * 玩家所在服务器id
+     * 玩家所在服务器id，显示用
      * </pre>
      *
      * <code>string serverId = 10;</code>
@@ -13987,6 +14014,52 @@ public final class BaseMsg {
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         serverId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SERVERNAME_FIELD_NUMBER = 11;
+    private volatile java.lang.Object serverName_;
+    /**
+     * <pre>
+     * 玩家所在服务器名，显示用
+     * </pre>
+     *
+     * <code>string serverName = 11;</code>
+     * @return The serverName.
+     */
+    @java.lang.Override
+    public java.lang.String getServerName() {
+      java.lang.Object ref = serverName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        serverName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 玩家所在服务器名，显示用
+     * </pre>
+     *
+     * <code>string serverName = 11;</code>
+     * @return The bytes for serverName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getServerNameBytes() {
+      java.lang.Object ref = serverName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        serverName_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -14034,6 +14107,9 @@ public final class BaseMsg {
       if (!getServerIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 10, serverId_);
       }
+      if (!getServerNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, serverName_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -14076,6 +14152,9 @@ public final class BaseMsg {
       if (!getServerIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, serverId_);
       }
+      if (!getServerNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, serverName_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -14109,6 +14188,8 @@ public final class BaseMsg {
           != other.getOfflineTime()) return false;
       if (!getServerId()
           .equals(other.getServerId())) return false;
+      if (!getServerName()
+          .equals(other.getServerName())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -14139,6 +14220,8 @@ public final class BaseMsg {
       hash = (53 * hash) + getOfflineTime();
       hash = (37 * hash) + SERVERID_FIELD_NUMBER;
       hash = (53 * hash) + getServerId().hashCode();
+      hash = (37 * hash) + SERVERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getServerName().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -14294,6 +14377,8 @@ public final class BaseMsg {
 
         serverId_ = "";
 
+        serverName_ = "";
+
         return this;
       }
 
@@ -14329,6 +14414,7 @@ public final class BaseMsg {
         result.online_ = online_;
         result.offlineTime_ = offlineTime_;
         result.serverId_ = serverId_;
+        result.serverName_ = serverName_;
         onBuilt();
         return result;
       }
@@ -14405,6 +14491,10 @@ public final class BaseMsg {
         }
         if (!other.getServerId().isEmpty()) {
           serverId_ = other.serverId_;
+          onChanged();
+        }
+        if (!other.getServerName().isEmpty()) {
+          serverName_ = other.serverName_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -14889,7 +14979,7 @@ public final class BaseMsg {
       private java.lang.Object serverId_ = "";
       /**
        * <pre>
-       * 玩家所在服务器id
+       * 玩家所在服务器id，显示用
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -14909,7 +14999,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器id
+       * 玩家所在服务器id，显示用
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -14930,7 +15020,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器id
+       * 玩家所在服务器id，显示用
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -14949,7 +15039,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器id
+       * 玩家所在服务器id，显示用
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -14963,7 +15053,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器id
+       * 玩家所在服务器id，显示用
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -14978,6 +15068,102 @@ public final class BaseMsg {
   checkByteStringIsUtf8(value);
         
         serverId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object serverName_ = "";
+      /**
+       * <pre>
+       * 玩家所在服务器名，显示用
+       * </pre>
+       *
+       * <code>string serverName = 11;</code>
+       * @return The serverName.
+       */
+      public java.lang.String getServerName() {
+        java.lang.Object ref = serverName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          serverName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 玩家所在服务器名，显示用
+       * </pre>
+       *
+       * <code>string serverName = 11;</code>
+       * @return The bytes for serverName.
+       */
+      public com.google.protobuf.ByteString
+          getServerNameBytes() {
+        java.lang.Object ref = serverName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          serverName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 玩家所在服务器名，显示用
+       * </pre>
+       *
+       * <code>string serverName = 11;</code>
+       * @param value The serverName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setServerName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        serverName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 玩家所在服务器名，显示用
+       * </pre>
+       *
+       * <code>string serverName = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearServerName() {
+        
+        serverName_ = getDefaultInstance().getServerName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 玩家所在服务器名，显示用
+       * </pre>
+       *
+       * <code>string serverName = 11;</code>
+       * @param value The bytes for serverName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setServerNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        serverName_ = value;
         onChanged();
         return this;
       }
@@ -16842,17 +17028,18 @@ public final class BaseMsg {
       "(\r:\0028\001\"&\n\nDragonInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004star" +
       "\030\002 \001(\r\",\n\017DragonSkillInfo\022\n\n\002id\030\001 \001(\r\022\r\n" +
       "\005level\030\002 \001(\r\".\n\tSkillInfo\022\n\n\002id\030\001 \001(\r\022\025\n" +
-      "\rstrengthenIds\030\002 \003(\r\"\260\001\n\020SimplePlayerInf" +
+      "\rstrengthenIds\030\002 \003(\r\"\304\001\n\020SimplePlayerInf" +
       "o\022\n\n\002id\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\r\n\005level\030\003 \001" +
       "(\r\022\033\n\023combatEffectiveness\030\004 \001(\r\022\014\n\004head\030" +
       "\006 \001(\r\022\021\n\theadFrame\030\007 \001(\r\022\016\n\006online\030\010 \001(\010" +
-      "\022\023\n\013offlineTime\030\t \001(\r\022\020\n\010serverId\030\n \001(\t\"" +
-      "E\n\016PlayerShowInfo\022\r\n\005guild\030\002 \001(\t\022\016\n\006comb" +
-      "at\030\003 \001(\r\022\024\n\014praisedCount\030\004 \001(\r\"H\n\021Paymen" +
-      "tOrderProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006paySig\030" +
-      "\002 \001(\t\022\021\n\tsignature\030\003 \001(\t*-\n\nUpdateType\022\n" +
-      "\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031cn.ga" +
-      "me.protocol.protobufb\006proto3"
+      "\022\023\n\013offlineTime\030\t \001(\r\022\020\n\010serverId\030\n \001(\t\022" +
+      "\022\n\nserverName\030\013 \001(\t\"E\n\016PlayerShowInfo\022\r\n" +
+      "\005guild\030\002 \001(\t\022\016\n\006combat\030\003 \001(\r\022\024\n\014praisedC" +
+      "ount\030\004 \001(\r\"H\n\021PaymentOrderProto\022\020\n\010signD" +
+      "ata\030\001 \001(\t\022\016\n\006paySig\030\002 \001(\t\022\021\n\tsignature\030\003" +
+      " \001(\t*-\n\nUpdateType\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022" +
+      "\n\n\006DELETE\020\002B\033\n\031cn.game.protocol.protobuf" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -16977,7 +17164,7 @@ public final class BaseMsg {
     internal_static_Protos_SimplePlayerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_SimplePlayerInfo_descriptor,
-        new java.lang.String[] { "Id", "Name", "Level", "CombatEffectiveness", "Head", "HeadFrame", "Online", "OfflineTime", "ServerId", });
+        new java.lang.String[] { "Id", "Name", "Level", "CombatEffectiveness", "Head", "HeadFrame", "Online", "OfflineTime", "ServerId", "ServerName", });
     internal_static_Protos_PlayerShowInfo_descriptor =
       getDescriptor().getMessageTypes().get(18);
     internal_static_Protos_PlayerShowInfo_fieldAccessorTable = new

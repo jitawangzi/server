@@ -13,20 +13,16 @@ import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Friend;
-import cn.game.games.cache.entity.Group;
-import cn.game.games.cache.entity.GroupMember;
 import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Member;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.Union;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
-import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.UnionManager;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.chat.GroupAllInfo;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestChallenge;
 import cn.game.games.net.game.module.quest.QuestModule;
@@ -40,8 +36,6 @@ import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
-import cn.game.protocol.protobuf.ChatMsg.ChatGroupBriefInfo;
-import cn.game.protocol.protobuf.ChatMsg.ChatGroupInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo;
 import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
@@ -353,161 +347,6 @@ public class PbBuilder {
 		});
 		return goodsInfos;
 	}
-
-	/**
-	 * 根据群组消息获取一个群组的简单消息 阻塞 不可主线程调用
-	 * 
-	 * @param oneGroup
-	 * @return
-	 */
-	public static ChatGroupBriefInfo getGroupBriefInfo(Group oneGroup, List<GroupMember> groupMembers) {
-		if(oneGroup == null || groupMembers == null)
-			return null;
-		
-		if(groupMembers.size() < 1)
-			return null;
-		
-		ChatGroupBriefInfo.Builder groupBriefBuilder = ChatGroupBriefInfo.newBuilder();
-		groupBriefBuilder.setId(oneGroup.getId().toString());
-		groupBriefBuilder.setName(oneGroup.getName());
-		groupBriefBuilder.setHeadId(oneGroup.getHeadIcon());
-		groupBriefBuilder.setNotice(oneGroup.getNotice());			
-		groupBriefBuilder.setMemberCount(groupMembers.size());
-		
-		int online = 0;
-		for (GroupMember groupMember : groupMembers) {
-			if(GameServer.getInstance().isLocalServer(groupMember.getPlayerServerId())) {
-				Player player = PlayerManager.getInstance().getPlayer(groupMember.getPlayerId());
-				if(player == null)
-					continue;
-				
-				online++;
-			}else {
-				SimplePlayerInfo simplePlayerInfo = PlayerManager.getInstance().getSimpleOtherPlayerInfo(groupMember.getPlayerId().toString(),
-						groupMember.getPlayerServerId());
-				
-				if(simplePlayerInfo.getOnline())
-					online++;
-			}
-		}
-		
-		groupBriefBuilder.setOnlineCount(online);
-		groupBriefBuilder.setManagerId(oneGroup.getManagerId().toString());
-		groupBriefBuilder.setServerId(ServerContext.getInstance().getServerId());
-		return groupBriefBuilder.build();		
-	}
-	
-	public static ChatGroupBriefInfo getGroupBriefInfo(Group oneGroup) {
-		if(oneGroup == null)
-			return null;
-		
-		ChatGroupBriefInfo.Builder groupBriefBuilder = ChatGroupBriefInfo.newBuilder();
-		groupBriefBuilder.setId(oneGroup.getId().toString());
-		groupBriefBuilder.setName(oneGroup.getName());
-		groupBriefBuilder.setHeadId(oneGroup.getHeadIcon());
-		groupBriefBuilder.setNotice(oneGroup.getNotice());			
-		groupBriefBuilder.setMemberCount(oneGroup.getMemberCount());						
-		groupBriefBuilder.setOnlineCount(oneGroup.getOnlineCount());
-		groupBriefBuilder.setManagerId(oneGroup.getManagerId().toString());
-		groupBriefBuilder.setServerId(oneGroup.getServerId());
-		return groupBriefBuilder.build();		
-	}
-	
-	/**
-	 * 根据群组消息获取一个群组的简单消息 阻塞 不可主线程调用
-	 * 
-	 * @param oneGroup
-	 * @return
-	 */
-	public static ChatGroupBriefInfo getGroupBriefInfo(Group oneGroup, int online, int count) {
-		ChatGroupBriefInfo.Builder groupBriefBuilder = ChatGroupBriefInfo.newBuilder();
-		groupBriefBuilder.setId(oneGroup.getId().toString());
-		groupBriefBuilder.setName(oneGroup.getName());
-		groupBriefBuilder.setHeadId(oneGroup.getHeadIcon());
-		groupBriefBuilder.setNotice(oneGroup.getNotice());			
-		groupBriefBuilder.setMemberCount(count);				
-		groupBriefBuilder.setOnlineCount(online);
-		groupBriefBuilder.setManagerId(oneGroup.getManagerId().toString());
-		groupBriefBuilder.setServerId(ServerContext.getInstance().getServerId());
-		return groupBriefBuilder.build();		
-	}
-	
-	public static Group getGroup(Group oneGroup, List<GroupMember> groupMembers) {	
-		
-		int online = 0;
-		for (GroupMember groupMember : groupMembers) {
-			if(GameServer.getInstance().isLocalServer(groupMember.getPlayerServerId())) {
-				Player player = PlayerManager.getInstance().getPlayer(groupMember.getPlayerId());
-				if(player == null)
-					continue;
-				
-				online++;
-			}else {
-				SimplePlayerInfo simplePlayerInfo = PlayerManager.getInstance().getSimpleOtherPlayerInfo(groupMember.getPlayerId().toString(),
-						groupMember.getPlayerServerId());
-				
-				if(simplePlayerInfo.getOnline())
-					online++;
-			}
-		}
-
-		oneGroup.setMemberCount(groupMembers.size());
-		oneGroup.setOnlineCount(online);		
-		oneGroup.setServerId(ServerContext.getInstance().getServerId());
-		return oneGroup;	
-	}
-	
-	public static GroupAllInfo getGroupAllInfo(ChatGroupInfo chatGroupInfo) {
-		ChatGroupBriefInfo briefInfo = chatGroupInfo.getBriefInfo();
-		Group group = new Group();
-		group.setId(Long.parseLong(briefInfo.getId()));
-		group.setHeadIcon(briefInfo.getHeadId());
-		group.setName(briefInfo.getName());
-		group.setNotice(briefInfo.getNotice());
-		group.setMemberCount(briefInfo.getMemberCount());
-		group.setOnlineCount(briefInfo.getOnlineCount());
-		group.setManagerId(Long.parseLong(briefInfo.getManagerId()));
-		group.setServerId(briefInfo.getServerId());
-		
-		List<SimplePlayer> simplePlayers = new ArrayList<SimplePlayer>();
-		
-		for (SimplePlayerInfo simplePlayerInfo : chatGroupInfo.getPlayerInfosList()) {
-			SimplePlayer simplePlayer = buildSimplePlayer(simplePlayerInfo);
-			simplePlayers.add(simplePlayer);
-		}
-		
-		GroupAllInfo groupAllInfo = new GroupAllInfo(group, simplePlayers);		
-		return groupAllInfo;
-	}
-	
-	public static ChatGroupInfo buildChatGroupInfo(GroupAllInfo groupAllInfo) {
-		if(groupAllInfo == null)
-			return null;
-				
-		ChatGroupInfo.Builder chatGroupInfo = ChatGroupInfo.newBuilder();
-		ChatGroupBriefInfo.Builder cBuilder = ChatGroupBriefInfo.newBuilder();
-		
-		cBuilder.setId(groupAllInfo.getGroup().getId().toString());
-		cBuilder.setName(groupAllInfo.getGroup().getName());
-		cBuilder.setHeadId(groupAllInfo.getGroup().getHeadIcon());
-		cBuilder.setNotice(groupAllInfo.getGroup().getNotice());
-		cBuilder.setMemberCount(groupAllInfo.getGroup().getMemberCount());
-		cBuilder.setOnlineCount(groupAllInfo.getGroup().getOnlineCount());
-		cBuilder.setManagerId(groupAllInfo.getGroup().getManagerId().toString());
-		cBuilder.setServerId(groupAllInfo.getGroup().getServerId());
-		
-		List<SimplePlayerInfo> simplePlayerInfos = new ArrayList<BaseMsg.SimplePlayerInfo>();
-		for (SimplePlayer simplePlayer : groupAllInfo.getSimplePlayers()) {
-			SimplePlayerInfo simplePlayerInfo = buildSimplePlayerInfo(simplePlayer);
-			simplePlayerInfos.add(simplePlayerInfo);
-		}
-		
-		chatGroupInfo.setBriefInfo(cBuilder.build());
-		chatGroupInfo.addAllPlayerInfos(simplePlayerInfos);
-		
-		return chatGroupInfo.build();
-	}
-
 
 	public static QuestChallengeGroupInfo buildQuestChallengeGroupInfo(QuestChallenge questChallenge) {
 		QuestChallengeGroupInfo.Builder builder = QuestChallengeGroupInfo.newBuilder();

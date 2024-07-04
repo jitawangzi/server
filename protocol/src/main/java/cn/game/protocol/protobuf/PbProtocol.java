@@ -68,6 +68,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleRougeRefreshResponse_13000006 = 0x13000006;    //肉鸽刷新  
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    //领取体力  
 	public final static int BattleStaminaResponse_13000051 = 0x13000051;    
+	public final static int ChatRequest_31000001 = 0x31000001;    //请求聊天  
+	public final static int ChatResponse_31000002 = 0x31000002;    //请求聊天返回  
+	public final static int ChatMessagePush_31010001 = 0x31010001;    //聊天消息推送  
+	public final static int ServerChatMessagePush_31000010 = 0x31000010;    
 	public final static int DevelopPotentialLvUpRequest_25000001 = 0x25000001;    //潜力修炼，升级  
 	public final static int DevelopPotentialLvUpResponse_25000002 = 0x25000002;    
 	public final static int DevelopPotentialBreakRequest_25000003 = 0x25000003;    //潜力修炼，突破  
@@ -391,6 +395,14 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleStaminaRequest_13000050, cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleStaminaResponse_13000051, cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ChatRequest_31000001, cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ChatResponse_31000002, cn.game.protocol.protobuf.ChatMsg.ChatResponse_31000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ChatMessagePush_31010001, cn.game.protocol.protobuf.ChatMsg.ChatMessagePush_31010001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(ServerChatMessagePush_31000010, cn.game.protocol.protobuf.ChatMsg.ServerChatMessagePush_31000010.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DevelopPotentialLvUpRequest_25000001, cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialLvUpRequest_25000001.getDefaultInstance()
 				.getParserForType());
@@ -896,6 +908,10 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleRougeRefreshResponse_13000006", 0x13000006);
 		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);
 		nameIdMap.put("BattleStaminaResponse_13000051", 0x13000051);
+		nameIdMap.put("ChatRequest_31000001", 0x31000001);
+		nameIdMap.put("ChatResponse_31000002", 0x31000002);
+		nameIdMap.put("ChatMessagePush_31010001", 0x31010001);
+		nameIdMap.put("ServerChatMessagePush_31000010", 0x31000010);
 		nameIdMap.put("DevelopPotentialLvUpRequest_25000001", 0x25000001);
 		nameIdMap.put("DevelopPotentialLvUpResponse_25000002", 0x25000002);
 		nameIdMap.put("DevelopPotentialBreakRequest_25000003", 0x25000003);

@@ -42,6 +42,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PressureTestManager;
 import cn.game.games.net.game.remote.GameRemoteServerInterface;
 import cn.game.games.util.BIHelper;
+import cn.game.games.util.KeywordFilter;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
@@ -178,6 +179,7 @@ public class GameServer implements GameServerMBean {
 		PressureTestManager.getInstance().init();
 		BIHelper.start();
 		checkPlayerJsonStruct();
+		KeywordFilter.getInstance();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);

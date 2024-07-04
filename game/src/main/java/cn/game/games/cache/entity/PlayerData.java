@@ -30,6 +30,16 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	private String accountId;
 	/**
+	 * 是否是gm账号
+	 * @mbg.generated
+	 */
+	private Boolean isGm;
+	/**
+	 * 玩家所在服务器id，这个服务器是虚构出来的，和实际运行的服务器id没有关系
+	 * @mbg.generated
+	 */
+	private String serverId;
+	/**
 	 * 性别 1男2女
 	 * @mbg.generated
 	 */
@@ -229,6 +239,34 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public Boolean getIsGm() {
+		return isGm;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setIsGm(Boolean isGm) {
+		this.isGm = isGm;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getServerId() {
+		return serverId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setServerId(String serverId) {
+		this.serverId = serverId;
 	}
 
 	/**
