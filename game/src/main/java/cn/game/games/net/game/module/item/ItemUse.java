@@ -21,7 +21,7 @@ public enum ItemUse implements IndexedEnum {
 			}
 			ItemConfig itemConfig = ItemManager.instance().get(id);
 			HeroConfig heroConfig = HeroManager.instance().get(param);
-			if (itemConfig.Para != heroConfig.InitialQuality) {
+			if (itemConfig.Para[0] != heroConfig.InitialQuality) {
 				throw new IllegalArgumentException("请求选择hero 的id 和品质不符。");
 			}
 			return player.getHeroModule().addReward(param, 1, OpType.ItemChoose);

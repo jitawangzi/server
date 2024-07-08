@@ -91,6 +91,8 @@ public class DevelopHandler extends BaseHandler {
 		developModule.getPotentiaLvMap().add(id, 1);
 		developModule.setIsPotentiaBreak(id, false);
 
+		player.handleEvent(EventTypeEnum.Practice);
+
 		client.sendProtocol(resp.build());
 	}
 
@@ -162,6 +164,7 @@ public class DevelopHandler extends BaseHandler {
 			return;
 		}
 		developModule.getPotentiaLvMap().add(id, 1);
+		player.handleEvent(EventTypeEnum.Practice);
 		client.sendProtocol(resp.build());
 	}
 	private void heavenlyDaoLvUp(NetClient client, Object message) {

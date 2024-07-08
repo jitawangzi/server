@@ -86,46 +86,7 @@ public enum EventTypeEnum {
 	// 参数 : 商店id，商品id，数量
 	BuyItems(28, "商店购买商品"),
 
-	// 探索事件 
-	/** 探索中经过一回合 */
-	ExploreRound(30, "探索中经过一回合"),
-	/** 探索中人经过一回合 */
-	ExplorePlayerRound(31, "探索中人经过一回合"),
-	/** 探索中怪或者中立单位经过一回合 */
-	ExploreNpcRound(32, "探索中怪或者中立单位经过一回合"),
-	/** 进入某探索地图 */
-	ExploreMapEnter(35, "进入某探索地图"),
-	
-	/** 出探索地图 */
-	ExploreMapEnd(47, "出探索地图"),
-	/** 跨探索区域 */
-	ExploreLevelEnd(36, "跨探索区域"),
-	/** 探索结束 */
-	ExploreEnd(37, "探索结束"),
-	/** 探索开始 */
-	ExploreStart(34, "探索开始"),
-	
-	/** 通关某探索章 */
-	ExploreClearance(38, "通关某探索章"),
-	/** 探索角色复活参数，探索角色uid */
-	ExploreRoleResurrection(39, "探索角色复活"),
-	
-	/** 9-战斗中损失属性值 参数1:角色uid 参数2:属性id 参数3:损失值 */
-	ExploreWoundedInBattle(41, "战斗中损失属性值"),
-	/** 10-战斗胜利 */
-	ExploreBattleWin(42, "战斗胜利"),
-	/** 11-探索地图购买道具(不包括局间) */
-	ExploreExploreStoreBuy(43, "探索地图购买道具"),
-	/** 12-获取晶矿结晶 */
-	ExploreMaterialReward(44, "获取晶矿结晶"),
-	/** 13-宝箱、遗骸获得物品 */
-	ExploreBoxAndRemainsReward(45, "宝箱、遗骸获得物品"),
-	/** 14-获得金币 */
-	ExploreGetCoin(45, "获得金币"),
-	/** 补给值小于某值参数： 补给值 */
-	SupplyLessThanOneValue(46, "补给值小于某值"),
-	/** 忽略啥也不干,只是占位,为了配置数据正确 */
-	Ignore(50, "忽略"),
+	Practice(29, "修炼"),
 
 	//成就相关
 	/** 开启战斗 :  Battle战役id，关卡id*/

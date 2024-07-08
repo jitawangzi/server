@@ -48,7 +48,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 			// TODO 给挂机金币
 			ChapterModule chapterModule = player.getModule(ChapterModule.class);
 			itemId = Asset.gold.ID ; 
-			count = chapterModule.calcPatrolGold(itemConfig.Para);
+			count = chapterModule.calcPatrolGold(itemConfig.Para[0]);
 			return player.getCurrencyModule().add(itemId, count, opType);
 		}
 		return super.add(itemId, count, opType);
