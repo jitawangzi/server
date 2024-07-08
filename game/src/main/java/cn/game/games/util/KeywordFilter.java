@@ -1,33 +1,17 @@
 package cn.game.games.util;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class KeywordFilter {
-
-	private static String filterFileName = "chatfilter.txt";
-	private static char replaceChar = '*';
-	private static KeywordFilter instace;
-
-	public static KeywordFilter getInstance() {
-		if (instace == null) {
-			try {
-				instace = KeywordFilter.createFromFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return instace;
-	}
-
     private static class TrieNode {
 		Map<Character, TrieNode> children;
         boolean isEnd;
@@ -38,13 +22,15 @@ public class KeywordFilter {
     }
 
 	private final TrieNode root;
+	private static final AtomicReference<KeywordFilter> INSTANCE = new AtomicReference<>();
+	private static String filterFileName = "chatfilter.txt";
+//	private static char replaceChar = '*';
 
 	private KeywordFilter(Set<String> keywords) {
 		this.root = new TrieNode();
         for (String keyword : keywords) {
             insert(keyword.toLowerCase());
         }
-		makeImmutable(root);
     }
 
     private void insert(String keyword) {
@@ -54,13 +40,6 @@ public class KeywordFilter {
         }
         node.isEnd = true;
     }
-
-	private void makeImmutable(TrieNode node) {
-		node.children = Collections.unmodifiableMap(node.children);
-		for (TrieNode child : node.children.values()) {
-			makeImmutable(child);
-		}
-	}
 
     public String filter(String text) {
         char[] chars = text.toCharArray();
@@ -86,7 +65,7 @@ public class KeywordFilter {
                     modified = true;
                 }
                 for (int k = i; k <= matchEnd; k++) {
-					result.setCharAt(k, replaceChar);
+					result.setCharAt(k, '*');
                 }
 				i = matchEnd;
             }
@@ -95,9 +74,23 @@ public class KeywordFilter {
         return modified ? result.toString() : text;
     }
 
-	public static KeywordFilter createFromFile() throws IOException {
+	public static KeywordFilter getInstance() {
+		return INSTANCE.get();
+	}
+
+	public static void initializeFromKeywords(Set<String> newKeywords) {
+		KeywordFilter newFilter = new KeywordFilter(newKeywords);
+		INSTANCE.set(newFilter);
+	}
+
+	public static void initializeFromFile() throws IOException {
+		Set<String> keywords = readKeyWordsFromFile(filterFileName);
+		initializeFromKeywords(keywords);
+	}
+
+	private static Set<String> readKeyWordsFromFile(String filename) throws IOException {
 		Set<String> keywords = new HashSet<>();
-		try (InputStream is = KeywordFilter.class.getClassLoader().getResourceAsStream(filterFileName);
+		try (InputStream is = KeywordFilter.class.getClassLoader().getResourceAsStream(filename);
 				BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -107,16 +100,35 @@ public class KeywordFilter {
 				}
 			}
 		} catch (NullPointerException e) {
-			throw new IOException("File not found: " + filterFileName, e);
+			throw new IOException("File not found: " + filename, e);
 		}
-		return new KeywordFilter(keywords);
+		return keywords;
 	}
 
     public static void main(String[] args) {
-		String text1 = "这是一段包含敏感词1和敏感词2的文本";
-		System.out.println(KeywordFilter.getInstance().filter(text1));
+		try {
+			KeywordFilter.initializeFromFile();
 
-		String text2 = "这是一段正常的文本，不包含敏感词";
-		System.out.println(KeywordFilter.getInstance().filter(text2));
+			KeywordFilter filter = KeywordFilter.getInstance();
+
+			String text1 = "这是一段包含敏感词1和敏感词2的文本";
+			System.out.println(filter.filter(text1));
+
+			String text2 = "这是一段正常的文本，不包含敏感词";
+			System.out.println(filter.filter(text2));
+
+			// 动态更新关键词
+			Set<String> keyWordsFromFile = readKeyWordsFromFile(filterFileName);
+			Set<String> newKeywords = new HashSet<>(Arrays.asList("敏感词1", "敏感词2", "新敏感词"));
+			keyWordsFromFile.addAll(newKeywords);
+			KeywordFilter.initializeFromKeywords(keyWordsFromFile);
+
+			filter = KeywordFilter.getInstance(); // 获取更新后的实例
+
+			String text3 = "这是一段包含新敏感词的文本";
+			System.out.println(filter.filter(text3));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 }
