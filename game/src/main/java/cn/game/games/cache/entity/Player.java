@@ -49,6 +49,7 @@ import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.MonthCardManager;
@@ -56,10 +57,12 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
+import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
@@ -342,6 +345,29 @@ public class Player  {
 //		builder.setActionPower(getData().getActionPower());
 //		builder.setActionPowerRecoverTime(PlayerHelper.recoverActionPower(this));
 		builder.setOfflineTime(getData().getOfflineTime().toString());
+		return builder.build();
+	}
+
+	public GmPlayerInfo toGmProto() {
+		GmPlayerInfo.Builder builder = GmPlayerInfo.newBuilder();
+		builder.setPlayerId(String.valueOf(getData().getPlayerId()));
+		builder.setChannel(getData().getChannelId());
+		builder.setServerId(getData().getServerId()); 
+		builder.setPlantform("未知");
+		builder.setName(getData().getName()); 
+		builder.setLevel(getData().getLevel());
+		builder.putAllAssets(getCurrencyModule().getCurrencyMap().getMap());
+		builder.setUnionId("不存在");
+		builder.setUnionName("不存在"); 
+		builder.setIsOnline(getGameClient()!=null); 
+		builder.setCreateTime((int) (DateUtil.parse(getData().getCreateDate()).getTime()/1000)) ; 
+		builder.setLastLoginTime((int) (DateUtil.parse(getData().getLoginDate()).getTime() / 1000));
+		ChapterModule chapterModule = getChapterModule();
+
+		builder.setCurBattleId(chapterModule.getPatrolBattleId());
+		builder.setPower(getAttrModule().getPower());
+		builder.setChargeCumulation(getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge));
+		
 		return builder.build();
 	}
 	

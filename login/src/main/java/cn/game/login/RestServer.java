@@ -38,7 +38,7 @@ public class RestServer extends AbstractVerticle {
 		// 实例化一个路由器出来，用来路由不同的rest接口
 		Router router = Router.router(vertx);
 		// 增加一个处理器，将请求的上下文信息，放到RoutingContext中
-		router.route().handler(BodyHandler.create());
+		router.route().handler(BodyHandler.create().setHandleFileUploads(false));
 		// 处理一个post方法的rest接口
 //		router.post("/post/:param1/:param2").handler(this::handlePost);
 		// 处理一个get方法的rest接口

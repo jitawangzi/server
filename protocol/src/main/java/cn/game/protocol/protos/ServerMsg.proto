@@ -3,6 +3,7 @@ option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
 import "BaseMsg.proto" ;
+import "GmMsg.proto" ;
 //import "PlayerMsg.proto" ;
 // 服务端内部使用的协议
 
@@ -100,6 +101,15 @@ message PaymentOrderShipRequest_7d000022{
 }
 message PaymentOrderShipResponse_7d000023{
 	bool success = 1; //是否发货成功
+}
+
+
+// 请求玩家gm显示数据
+message GameGmPlayerInfoRequest_7d000050{
+	uint64 playerId = 1; // 玩家id
+}
+message GameGmPlayerInfoResponse_7d000051{
+	GmPlayerInfo player = 1;
 }
 
 // ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻

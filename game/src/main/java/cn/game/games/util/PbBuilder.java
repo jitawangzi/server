@@ -47,7 +47,6 @@ import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.UnionMsg;
-import cn.game.util.DateUtil;
 import cn.game.util.Pair;
 
 public class PbBuilder {
@@ -363,9 +362,9 @@ public class PbBuilder {
 			ForbidAccountInfo.Builder builder = ForbidAccountInfo.newBuilder();
 			builder.setPlayerId(f.getPlayerId() + "");
 			builder.setName(f.getName());
-			builder.setLevel(f.getLevel());
 			builder.setReason(f.getReason());
-			builder.setUnblockTime(DateUtil.getTimeByPattern(f.getUnblockTime()));
+//			builder.setEndTime(f.getEndTime());)
+//			builder.setUnblockTime(DateUtil.getTimeByPattern(f.getUnblockTime()));
 
 			res.add(builder.build());
 		}

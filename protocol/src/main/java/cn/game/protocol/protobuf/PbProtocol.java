@@ -71,7 +71,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int ChatRequest_31000001 = 0x31000001;    //请求聊天  
 	public final static int ChatResponse_31000002 = 0x31000002;    //请求聊天返回  
 	public final static int ChatMessagePush_31010001 = 0x31010001;    //聊天消息推送  
-	public final static int ServerChatMessagePush_31000010 = 0x31000010;    
+	public final static int ServerChatMessagePush_31000010 = 0x31000010;    //只服务器使用。  
 	public final static int DevelopPotentialLvUpRequest_25000001 = 0x25000001;    //潜力修炼，升级  
 	public final static int DevelopPotentialLvUpResponse_25000002 = 0x25000002;    
 	public final static int DevelopPotentialBreakRequest_25000003 = 0x25000003;    //潜力修炼，突破  
@@ -110,17 +110,43 @@ public class PbProtocol implements ProtocolParser {
 	public final static int GemLockResponse_10000006 = 0x10000006;    
 	public final static int GemComposeRequest_10000007 = 0x10000007;    //宝石合成 一键合成  
 	public final static int GemComposeResponse_10000008 = 0x10000008;    
+	public final static int GmPlayerRequest_77000021 = 0x77000021;    //查看某玩家数据，优先id，如果id没有通过name查询。  
+	public final static int GmPlayerResponse_77000022 = 0x77000022;    //查看玩家数据响应  
+	public final static int GmOrderRequest_77000025 = 0x77000025;    //查询订单,哪个参数有值用哪个查，如果都没有值  
+	public final static int GmOrderResponse_77000026 = 0x77000026;    //订单响应。  
+	public final static int GmOrderReimburseRequest_77000027 = 0x77000027;    //补单  
+	public final static int GmOrderReimburseResponse_77000028 = 0x77000028;    //补单响应。  
+	public final static int GmMailPlayerSendRequest_77000040 = 0x77000040;    //gm给指定玩家发邮件  
+	public final static int GmMailPlayerSendResponse_77000041 = 0x77000041;    
+	public final static int GmMailServerSendRequest_77000048 = 0x77000048;    //gm给指定服务器发邮件  
+	public final static int GmMailServerSendResponse_77000049 = 0x77000049;    
+	public final static int GmMailListRequest_77000042 = 0x77000042;    //查看邮件列表  
+	public final static int GmMailResponse_77000043 = 0x77000043;    
+	public final static int GmMailCheckRequest_77000044 = 0x77000044;    //审核邮件  
+	public final static int GmMailCheckResponse_77000045 = 0x77000045;    
+	public final static int GmMailDeleteRequest_77000046 = 0x77000046;    //删除邮件  
+	public final static int GmMailDeleteResponse_77000047 = 0x77000047;    
+	public final static int GmNoticeAddRequest_77000060 = 0x77000060;    //增加公告  
+	public final static int GmNoticeAddResponse_77000061 = 0x77000061;    
+	public final static int GmNoticeUpdateRequest_77000062 = 0x77000062;    //更新公告  
+	public final static int GmNoticeUpdateResponse_77000063 = 0x77000063;    
+	public final static int GmNoticeDeleteRequest_77000064 = 0x77000064;    //删除公告  
+	public final static int GmNoticeDeleteResponse_77000065 = 0x77000065;    
+	public final static int GmNoticeListRequest_77000066 = 0x77000066;    //查看公告列表  
+	public final static int GmNoticeListResponse_77000067 = 0x77000067;    
 	public final static int GmShutdownServerRequest_77000001 = 0x77000001;    //关闭服务器  
 	public final static int GmShutdownServerResponse_77000002 = 0x77000002;    //关闭服务器响应  
-	public final static int GmForbidAccountListRequest_77000003 = 0x77000003;    //请求封号列表  
-	public final static int GmForbidAccountListResponse_77000004 = 0x77000004;    //响应封号列表  
-	public final static int GmForbidAccountRequest_77000005 = 0x77000005;    //请求封号  
-	public final static int GmForbidAccountResponse_77000006 = 0x77000006;    //响应封号  
-	public final static int GmUnblockAccountRequest_77000007 = 0x77000007;    //请求解封  
-	public final static int GmUnblockAccountResponse_77000008 = 0x77000008;    //响应解封  
+	public final static int GmAccountForbidListRequest_77000003 = 0x77000003;    //请求封号列表  
+	public final static int GmAccountForbidListResponse_77000004 = 0x77000004;    //响应封号列表  
+	public final static int GmAccountForbidRequest_77000005 = 0x77000005;    //请求封号  
+	public final static int GmAccountForbidResponse_77000006 = 0x77000006;    //响应封号  
+	public final static int GmAccountUnblockRequest_77000007 = 0x77000007;    //请求解封  
+	public final static int GmAccountUnblockResponse_77000008 = 0x77000008;    //响应解封  
+	public final static int GmOperationRequest_77000071 = 0x77000071;    //请求gm操作记录列表  
+	public final static int GmOperationResponse_77000072 = 0x77000072;    //gm操作记录  
 	public final static int GmPlayerLogoutRequest_77000009 = 0x77000009;    //请求踢下线  
 	public final static int GmPlayerLogouttResponse_7700000a = 0x7700000a;    //响应踢下线  
-	public final static int GmPlayerMailRequest_77000010 = 0x77000010;    //gm给指定玩家发邮件  
+	public final static int GmPlayerMailRequest_77000010 = 0x77000010;    //gm给指定玩家发邮件,这个协议不用了。  
 	public final static int GmPlayerMailResponse_77000011 = 0x77000011;    
 	public final static int HCBattleSpeedAdsRequest_28000020 = 0x28000020;    //看广告获得战中倍速  
 	public final static int HCBattleSpeedAdsResponse_28000021 = 0x28000021;    
@@ -208,6 +234,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerAlchemyRequest_01000040 = 0x01000040;    //炼金请求  
 	public final static int PlayerAlchemyResponse_01000041 = 0x01000041;    
 	public final static int PlayerResetPush_01100016 = 0x01100016;    //通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新  
+	public final static int NoticeRequest_01000050 = 0x01000050;    //请求公告数据  
+	public final static int NoticeResponse_01000051 = 0x01000051;    //公告内容  
 	public final static int QuestListRequest_20000001 = 0x20000001;    //查看某类任务数据,一般在任务功能开启时，客户端请求一下。  
 	public final static int QuestListResponse_20000002 = 0x20000002;    //任务数据  
 	public final static int QuestReceiveRequest_20000004 = 0x20000004;    //领取任务奖励  
@@ -254,6 +282,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PaymentOrderCreateResponse_7d000021 = 0x7d000021;    
 	public final static int PaymentOrderShipRequest_7d000022 = 0x7d000022;    //通知game，给玩家发货，执行支付后的流程  
 	public final static int PaymentOrderShipResponse_7d000023 = 0x7d000023;    
+	public final static int GameGmPlayerInfoRequest_7d000050 = 0x7d000050;    //请求玩家gm显示数据  
+	public final static int GameGmPlayerInfoResponse_7d000051 = 0x7d000051;    
 	public final static int GameCrossForwardPush_7d000002 = 0x7d000002;    //Game向Cross发数据，请求转发消息给指定玩家  
 	public final static int CrossGameForwardPush_7d000003 = 0x7d000003;    //Game收到Cross推送，将里面的具体消息发给指定的玩家  
 	public final static int GameCrossPlayerBroadcast_7d000005 = 0x7d000005;    //Game向Cross发数据，将数据包广播给不同Game服务器的玩家  
@@ -480,21 +510,73 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(GemComposeResponse_10000008, cn.game.protocol.protobuf.GemMsg.GemComposeResponse_10000008.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(GmPlayerRequest_77000021, cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmPlayerResponse_77000022, cn.game.protocol.protobuf.GmMsg.GmPlayerResponse_77000022.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmOrderRequest_77000025, cn.game.protocol.protobuf.GmMsg.GmOrderRequest_77000025.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmOrderResponse_77000026, cn.game.protocol.protobuf.GmMsg.GmOrderResponse_77000026.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmOrderReimburseRequest_77000027, cn.game.protocol.protobuf.GmMsg.GmOrderReimburseRequest_77000027.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmOrderReimburseResponse_77000028, cn.game.protocol.protobuf.GmMsg.GmOrderReimburseResponse_77000028.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailPlayerSendRequest_77000040, cn.game.protocol.protobuf.GmMsg.GmMailPlayerSendRequest_77000040.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailPlayerSendResponse_77000041, cn.game.protocol.protobuf.GmMsg.GmMailPlayerSendResponse_77000041.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailServerSendRequest_77000048, cn.game.protocol.protobuf.GmMsg.GmMailServerSendRequest_77000048.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailServerSendResponse_77000049, cn.game.protocol.protobuf.GmMsg.GmMailServerSendResponse_77000049.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailListRequest_77000042, cn.game.protocol.protobuf.GmMsg.GmMailListRequest_77000042.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailResponse_77000043, cn.game.protocol.protobuf.GmMsg.GmMailResponse_77000043.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailCheckRequest_77000044, cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailCheckResponse_77000045, cn.game.protocol.protobuf.GmMsg.GmMailCheckResponse_77000045.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailDeleteRequest_77000046, cn.game.protocol.protobuf.GmMsg.GmMailDeleteRequest_77000046.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmMailDeleteResponse_77000047, cn.game.protocol.protobuf.GmMsg.GmMailDeleteResponse_77000047.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmNoticeAddRequest_77000060, cn.game.protocol.protobuf.GmMsg.GmNoticeAddRequest_77000060.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmNoticeAddResponse_77000061, cn.game.protocol.protobuf.GmMsg.GmNoticeAddResponse_77000061.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmNoticeUpdateRequest_77000062, cn.game.protocol.protobuf.GmMsg.GmNoticeUpdateRequest_77000062.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmNoticeUpdateResponse_77000063, cn.game.protocol.protobuf.GmMsg.GmNoticeUpdateResponse_77000063.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmNoticeDeleteRequest_77000064, cn.game.protocol.protobuf.GmMsg.GmNoticeDeleteRequest_77000064.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmNoticeDeleteResponse_77000065, cn.game.protocol.protobuf.GmMsg.GmNoticeDeleteResponse_77000065.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmNoticeListRequest_77000066, cn.game.protocol.protobuf.GmMsg.GmNoticeListRequest_77000066.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmNoticeListResponse_77000067, cn.game.protocol.protobuf.GmMsg.GmNoticeListResponse_77000067.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(GmShutdownServerRequest_77000001, cn.game.protocol.protobuf.GmMsg.GmShutdownServerRequest_77000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(GmShutdownServerResponse_77000002, cn.game.protocol.protobuf.GmMsg.GmShutdownServerResponse_77000002.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(GmForbidAccountListRequest_77000003, cn.game.protocol.protobuf.GmMsg.GmForbidAccountListRequest_77000003.getDefaultInstance()
+		parsersMap.put(GmAccountForbidListRequest_77000003, cn.game.protocol.protobuf.GmMsg.GmAccountForbidListRequest_77000003.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(GmForbidAccountListResponse_77000004, cn.game.protocol.protobuf.GmMsg.GmForbidAccountListResponse_77000004.getDefaultInstance()
+		parsersMap.put(GmAccountForbidListResponse_77000004, cn.game.protocol.protobuf.GmMsg.GmAccountForbidListResponse_77000004.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(GmForbidAccountRequest_77000005, cn.game.protocol.protobuf.GmMsg.GmForbidAccountRequest_77000005.getDefaultInstance()
+		parsersMap.put(GmAccountForbidRequest_77000005, cn.game.protocol.protobuf.GmMsg.GmAccountForbidRequest_77000005.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(GmForbidAccountResponse_77000006, cn.game.protocol.protobuf.GmMsg.GmForbidAccountResponse_77000006.getDefaultInstance()
+		parsersMap.put(GmAccountForbidResponse_77000006, cn.game.protocol.protobuf.GmMsg.GmAccountForbidResponse_77000006.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(GmUnblockAccountRequest_77000007, cn.game.protocol.protobuf.GmMsg.GmUnblockAccountRequest_77000007.getDefaultInstance()
+		parsersMap.put(GmAccountUnblockRequest_77000007, cn.game.protocol.protobuf.GmMsg.GmAccountUnblockRequest_77000007.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(GmUnblockAccountResponse_77000008, cn.game.protocol.protobuf.GmMsg.GmUnblockAccountResponse_77000008.getDefaultInstance()
+		parsersMap.put(GmAccountUnblockResponse_77000008, cn.game.protocol.protobuf.GmMsg.GmAccountUnblockResponse_77000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmOperationRequest_77000071, cn.game.protocol.protobuf.GmMsg.GmOperationRequest_77000071.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GmOperationResponse_77000072, cn.game.protocol.protobuf.GmMsg.GmOperationResponse_77000072.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(GmPlayerLogoutRequest_77000009, cn.game.protocol.protobuf.GmMsg.GmPlayerLogoutRequest_77000009.getDefaultInstance()
 				.getParserForType());
@@ -676,6 +758,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PlayerResetPush_01100016, cn.game.protocol.protobuf.PlayerMsg.PlayerResetPush_01100016.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(NoticeRequest_01000050, cn.game.protocol.protobuf.PlayerMsg.NoticeRequest_01000050.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(NoticeResponse_01000051, cn.game.protocol.protobuf.PlayerMsg.NoticeResponse_01000051.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(QuestListRequest_20000001, cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(QuestListResponse_20000002, cn.game.protocol.protobuf.QuestMsg.QuestListResponse_20000002.getDefaultInstance()
@@ -767,6 +853,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(PaymentOrderShipRequest_7d000022, cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PaymentOrderShipResponse_7d000023, cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GameGmPlayerInfoRequest_7d000050, cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoRequest_7d000050.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(GameGmPlayerInfoResponse_7d000051, cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoResponse_7d000051.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(GameCrossForwardPush_7d000002, cn.game.protocol.protobuf.ServerMsg.GameCrossForwardPush_7d000002.getDefaultInstance()
 				.getParserForType());
@@ -950,14 +1040,40 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("GemLockResponse_10000006", 0x10000006);
 		nameIdMap.put("GemComposeRequest_10000007", 0x10000007);
 		nameIdMap.put("GemComposeResponse_10000008", 0x10000008);
+		nameIdMap.put("GmPlayerRequest_77000021", 0x77000021);
+		nameIdMap.put("GmPlayerResponse_77000022", 0x77000022);
+		nameIdMap.put("GmOrderRequest_77000025", 0x77000025);
+		nameIdMap.put("GmOrderResponse_77000026", 0x77000026);
+		nameIdMap.put("GmOrderReimburseRequest_77000027", 0x77000027);
+		nameIdMap.put("GmOrderReimburseResponse_77000028", 0x77000028);
+		nameIdMap.put("GmMailPlayerSendRequest_77000040", 0x77000040);
+		nameIdMap.put("GmMailPlayerSendResponse_77000041", 0x77000041);
+		nameIdMap.put("GmMailServerSendRequest_77000048", 0x77000048);
+		nameIdMap.put("GmMailServerSendResponse_77000049", 0x77000049);
+		nameIdMap.put("GmMailListRequest_77000042", 0x77000042);
+		nameIdMap.put("GmMailResponse_77000043", 0x77000043);
+		nameIdMap.put("GmMailCheckRequest_77000044", 0x77000044);
+		nameIdMap.put("GmMailCheckResponse_77000045", 0x77000045);
+		nameIdMap.put("GmMailDeleteRequest_77000046", 0x77000046);
+		nameIdMap.put("GmMailDeleteResponse_77000047", 0x77000047);
+		nameIdMap.put("GmNoticeAddRequest_77000060", 0x77000060);
+		nameIdMap.put("GmNoticeAddResponse_77000061", 0x77000061);
+		nameIdMap.put("GmNoticeUpdateRequest_77000062", 0x77000062);
+		nameIdMap.put("GmNoticeUpdateResponse_77000063", 0x77000063);
+		nameIdMap.put("GmNoticeDeleteRequest_77000064", 0x77000064);
+		nameIdMap.put("GmNoticeDeleteResponse_77000065", 0x77000065);
+		nameIdMap.put("GmNoticeListRequest_77000066", 0x77000066);
+		nameIdMap.put("GmNoticeListResponse_77000067", 0x77000067);
 		nameIdMap.put("GmShutdownServerRequest_77000001", 0x77000001);
 		nameIdMap.put("GmShutdownServerResponse_77000002", 0x77000002);
-		nameIdMap.put("GmForbidAccountListRequest_77000003", 0x77000003);
-		nameIdMap.put("GmForbidAccountListResponse_77000004", 0x77000004);
-		nameIdMap.put("GmForbidAccountRequest_77000005", 0x77000005);
-		nameIdMap.put("GmForbidAccountResponse_77000006", 0x77000006);
-		nameIdMap.put("GmUnblockAccountRequest_77000007", 0x77000007);
-		nameIdMap.put("GmUnblockAccountResponse_77000008", 0x77000008);
+		nameIdMap.put("GmAccountForbidListRequest_77000003", 0x77000003);
+		nameIdMap.put("GmAccountForbidListResponse_77000004", 0x77000004);
+		nameIdMap.put("GmAccountForbidRequest_77000005", 0x77000005);
+		nameIdMap.put("GmAccountForbidResponse_77000006", 0x77000006);
+		nameIdMap.put("GmAccountUnblockRequest_77000007", 0x77000007);
+		nameIdMap.put("GmAccountUnblockResponse_77000008", 0x77000008);
+		nameIdMap.put("GmOperationRequest_77000071", 0x77000071);
+		nameIdMap.put("GmOperationResponse_77000072", 0x77000072);
 		nameIdMap.put("GmPlayerLogoutRequest_77000009", 0x77000009);
 		nameIdMap.put("GmPlayerLogouttResponse_7700000a", 0x7700000a);
 		nameIdMap.put("GmPlayerMailRequest_77000010", 0x77000010);
@@ -1048,6 +1164,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerAlchemyRequest_01000040", 0x01000040);
 		nameIdMap.put("PlayerAlchemyResponse_01000041", 0x01000041);
 		nameIdMap.put("PlayerResetPush_01100016", 0x01100016);
+		nameIdMap.put("NoticeRequest_01000050", 0x01000050);
+		nameIdMap.put("NoticeResponse_01000051", 0x01000051);
 		nameIdMap.put("QuestListRequest_20000001", 0x20000001);
 		nameIdMap.put("QuestListResponse_20000002", 0x20000002);
 		nameIdMap.put("QuestReceiveRequest_20000004", 0x20000004);
@@ -1094,6 +1212,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PaymentOrderCreateResponse_7d000021", 0x7d000021);
 		nameIdMap.put("PaymentOrderShipRequest_7d000022", 0x7d000022);
 		nameIdMap.put("PaymentOrderShipResponse_7d000023", 0x7d000023);
+		nameIdMap.put("GameGmPlayerInfoRequest_7d000050", 0x7d000050);
+		nameIdMap.put("GameGmPlayerInfoResponse_7d000051", 0x7d000051);
 		nameIdMap.put("GameCrossForwardPush_7d000002", 0x7d000002);
 		nameIdMap.put("CrossGameForwardPush_7d000003", 0x7d000003);
 		nameIdMap.put("GameCrossPlayerBroadcast_7d000005", 0x7d000005);

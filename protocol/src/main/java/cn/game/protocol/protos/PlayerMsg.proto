@@ -202,6 +202,13 @@ message PlayerResetPush_01100016{
 //@NotUseEnd
 
 
+/*** 请求公告数据 **/
+message NoticeRequest_01000050{
+}
+/*** 公告内容 **/
+message NoticeResponse_01000051{
+	string notice = 1;
+}
 
 //用户基本信息
 message PlayerInfo{

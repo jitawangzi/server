@@ -24,6 +24,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg.CrossGameForwardPush_7d000003;
 import cn.game.protocol.protobuf.ServerMsg.DbTaskProto;
@@ -33,6 +34,8 @@ import cn.game.protocol.protobuf.ServerMsg.GameCrossPlayerBroadcast_7d000005;
 import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch2_7d00000c;
 import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch_7d00000b;
 import cn.game.protocol.protobuf.ServerMsg.GameDataPush_7d00000a;
+import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoRequest_7d000050;
+import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoResponse_7d000051;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutRequest_7d000101;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutResponse_7d000102;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerOnlinePush_7d000010;
@@ -78,11 +81,25 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.GamePlayerRequest_7d000015, this::playerRequest);
 		putInvoker(PbProtocol.PaymentOrderShipRequest_7d000022, this::ship);
 		putInvoker(PbProtocol.GamePlayerPush_7d000011, this::playerPush);
+		putInvoker(PbProtocol.GameGmPlayerInfoRequest_7d000050, this::gmPlayer);
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
 	}
 
+	protected void gmPlayer(NetClient client, Object message) {
+		GameGmPlayerInfoRequest_7d000050 request = (GameGmPlayerInfoRequest_7d000050) message;
+		GameGmPlayerInfoResponse_7d000051.Builder resp = GameGmPlayerInfoResponse_7d000051.newBuilder();
+		long playerId = request.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.not_online.getId());
+			return;
+		}
+		GmPlayerInfo gmProto = player.toGmProto();
+		resp.setPlayer(gmProto);
+		client.sendProtocol(resp.build(), ErrorMsgEnum.not_online.getId());
+	}
 	protected void ship(NetClient client, Object message) {
 		PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;
 		PaymentOrderShipResponse_7d000023.Builder resp = PaymentOrderShipResponse_7d000023.newBuilder();

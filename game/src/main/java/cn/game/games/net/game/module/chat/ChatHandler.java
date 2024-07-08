@@ -68,8 +68,8 @@ public class ChatHandler extends BaseHandler {
 		chatBuilder.setAtMe(false);
 		notAtMe = chatBuilder.build();
 
-		ChatMessagePush_31010001 atMeMessage = ChatMessagePush_31010001.newBuilder().setMessageInfo(atMe).build();
-		ChatMessagePush_31010001 notAtMeMessage = ChatMessagePush_31010001.newBuilder().setMessageInfo(notAtMe).build();
+		ChatMessagePush_31010001 atMeMessage = ChatMessagePush_31010001.newBuilder().addMessageInfo(atMe).build();
+		ChatMessagePush_31010001 notAtMeMessage = ChatMessagePush_31010001.newBuilder().addMessageInfo(notAtMe).build();
 
 		switch (chatType) {
 		case WORLD_CHAT: {
@@ -126,7 +126,7 @@ public class ChatHandler extends BaseHandler {
 			messageBuilder.setChatType(chatType);
 			messageBuilder.setContent(content);
 			messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
-			PlayerHelper.sendOnlinePlayer(Long.valueOf(targetPlayerId), ChatMessagePush_31010001.newBuilder().setMessageInfo(messageBuilder.build()).build());
+			PlayerHelper.sendOnlinePlayer(Long.valueOf(targetPlayerId), ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
 			break;
 		}
 		case SYSTEM_CHAT: {

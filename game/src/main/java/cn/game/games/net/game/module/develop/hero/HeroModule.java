@@ -131,6 +131,22 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	@Override
 	public List<Hero> add(int itemId, int count, OpType opType) {
+//		如果品质小于某品质： 
+//		只是返回一个hero对象，并不真正加入到程序中。只是构建rewardInfo对象。  
+//		同时转成货币，直接加上，push给客户端。 
+		HeroConfig heroConfig = HeroManager.instance().get(itemId);
+		if (heroConfig.InitialQuality <= 3) {
+			List<Hero> list = new ArrayList<>();
+			Hero hero = new Hero();
+			hero.setConfigId(itemId);
+			hero.setQuality(heroConfig.InitialQuality);
+			hero.setStar(1);
+			hero.setLevel(1);
+			list.add(hero);
+			PlayerHelper.addResources(player, GlobalConst.GachaConversion, OpType.GachaConversion);
+			return list;
+		}
+
 		List<Hero> list = super.add(itemId, count, opType);
 		
 		for (Hero hero : list) {

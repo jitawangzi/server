@@ -21,7 +21,7 @@ message ChatResponse_31000002{
 
 // 聊天消息推送
 message ChatMessagePush_31010001 {
-    ChatMessageInfo messageInfo = 1;
+    repeated ChatMessageInfo messageInfo = 1;
 }
 
 

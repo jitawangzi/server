@@ -1832,19 +1832,28 @@ public final class ChatMsg {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
-     * @return Whether the messageInfo field is set.
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
      */
-    boolean hasMessageInfo();
+    java.util.List<cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo> 
+        getMessageInfoList();
     /**
-     * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
-     * @return The messageInfo.
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
      */
-    cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo getMessageInfo();
+    cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo getMessageInfo(int index);
     /**
-     * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
      */
-    cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder getMessageInfoOrBuilder();
+    int getMessageInfoCount();
+    /**
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder> 
+        getMessageInfoOrBuilderList();
+    /**
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+     */
+    cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder getMessageInfoOrBuilder(
+        int index);
   }
   /**
    * <pre>
@@ -1863,6 +1872,7 @@ public final class ChatMsg {
       super(builder);
     }
     private ChatMessagePush_31010001() {
+      messageInfo_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -1885,6 +1895,7 @@ public final class ChatMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -1896,16 +1907,12 @@ public final class ChatMsg {
               done = true;
               break;
             case 10: {
-              cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder subBuilder = null;
-              if (messageInfo_ != null) {
-                subBuilder = messageInfo_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                messageInfo_ = new java.util.ArrayList<cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo>();
+                mutable_bitField0_ |= 0x00000001;
               }
-              messageInfo_ = input.readMessage(cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(messageInfo_);
-                messageInfo_ = subBuilder.buildPartial();
-              }
-
+              messageInfo_.add(
+                  input.readMessage(cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -1923,6 +1930,9 @@ public final class ChatMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          messageInfo_ = java.util.Collections.unmodifiableList(messageInfo_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -1941,29 +1951,43 @@ public final class ChatMsg {
     }
 
     public static final int MESSAGEINFO_FIELD_NUMBER = 1;
-    private cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo messageInfo_;
+    private java.util.List<cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo> messageInfo_;
     /**
-     * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
-     * @return Whether the messageInfo field is set.
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
      */
     @java.lang.Override
-    public boolean hasMessageInfo() {
-      return messageInfo_ != null;
+    public java.util.List<cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo> getMessageInfoList() {
+      return messageInfo_;
     }
     /**
-     * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
-     * @return The messageInfo.
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo getMessageInfo() {
-      return messageInfo_ == null ? cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.getDefaultInstance() : messageInfo_;
+    public java.util.List<? extends cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder> 
+        getMessageInfoOrBuilderList() {
+      return messageInfo_;
     }
     /**
-     * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder getMessageInfoOrBuilder() {
-      return getMessageInfo();
+    public int getMessageInfoCount() {
+      return messageInfo_.size();
+    }
+    /**
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo getMessageInfo(int index) {
+      return messageInfo_.get(index);
+    }
+    /**
+     * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder getMessageInfoOrBuilder(
+        int index) {
+      return messageInfo_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1980,8 +2004,8 @@ public final class ChatMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (messageInfo_ != null) {
-        output.writeMessage(1, getMessageInfo());
+      for (int i = 0; i < messageInfo_.size(); i++) {
+        output.writeMessage(1, messageInfo_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -1992,9 +2016,9 @@ public final class ChatMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (messageInfo_ != null) {
+      for (int i = 0; i < messageInfo_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getMessageInfo());
+          .computeMessageSize(1, messageInfo_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2011,11 +2035,8 @@ public final class ChatMsg {
       }
       cn.game.protocol.protobuf.ChatMsg.ChatMessagePush_31010001 other = (cn.game.protocol.protobuf.ChatMsg.ChatMessagePush_31010001) obj;
 
-      if (hasMessageInfo() != other.hasMessageInfo()) return false;
-      if (hasMessageInfo()) {
-        if (!getMessageInfo()
-            .equals(other.getMessageInfo())) return false;
-      }
+      if (!getMessageInfoList()
+          .equals(other.getMessageInfoList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2027,9 +2048,9 @@ public final class ChatMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasMessageInfo()) {
+      if (getMessageInfoCount() > 0) {
         hash = (37 * hash) + MESSAGEINFO_FIELD_NUMBER;
-        hash = (53 * hash) + getMessageInfo().hashCode();
+        hash = (53 * hash) + getMessageInfoList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -2163,16 +2184,17 @@ public final class ChatMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getMessageInfoFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
         if (messageInfoBuilder_ == null) {
-          messageInfo_ = null;
+          messageInfo_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          messageInfo_ = null;
-          messageInfoBuilder_ = null;
+          messageInfoBuilder_.clear();
         }
         return this;
       }
@@ -2200,7 +2222,12 @@ public final class ChatMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.ChatMsg.ChatMessagePush_31010001 buildPartial() {
         cn.game.protocol.protobuf.ChatMsg.ChatMessagePush_31010001 result = new cn.game.protocol.protobuf.ChatMsg.ChatMessagePush_31010001(this);
+        int from_bitField0_ = bitField0_;
         if (messageInfoBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            messageInfo_ = java.util.Collections.unmodifiableList(messageInfo_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
           result.messageInfo_ = messageInfo_;
         } else {
           result.messageInfo_ = messageInfoBuilder_.build();
@@ -2253,8 +2280,31 @@ public final class ChatMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.ChatMsg.ChatMessagePush_31010001 other) {
         if (other == cn.game.protocol.protobuf.ChatMsg.ChatMessagePush_31010001.getDefaultInstance()) return this;
-        if (other.hasMessageInfo()) {
-          mergeMessageInfo(other.getMessageInfo());
+        if (messageInfoBuilder_ == null) {
+          if (!other.messageInfo_.isEmpty()) {
+            if (messageInfo_.isEmpty()) {
+              messageInfo_ = other.messageInfo_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureMessageInfoIsMutable();
+              messageInfo_.addAll(other.messageInfo_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.messageInfo_.isEmpty()) {
+            if (messageInfoBuilder_.isEmpty()) {
+              messageInfoBuilder_.dispose();
+              messageInfoBuilder_ = null;
+              messageInfo_ = other.messageInfo_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              messageInfoBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getMessageInfoFieldBuilder() : null;
+            } else {
+              messageInfoBuilder_.addAllMessages(other.messageInfo_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2284,119 +2334,241 @@ public final class ChatMsg {
         }
         return this;
       }
+      private int bitField0_;
 
-      private cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo messageInfo_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder> messageInfoBuilder_;
-      /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
-       * @return Whether the messageInfo field is set.
-       */
-      public boolean hasMessageInfo() {
-        return messageInfoBuilder_ != null || messageInfo_ != null;
+      private java.util.List<cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo> messageInfo_ =
+        java.util.Collections.emptyList();
+      private void ensureMessageInfoIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          messageInfo_ = new java.util.ArrayList<cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo>(messageInfo_);
+          bitField0_ |= 0x00000001;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder> messageInfoBuilder_;
+
       /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
-       * @return The messageInfo.
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
        */
-      public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo getMessageInfo() {
+      public java.util.List<cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo> getMessageInfoList() {
         if (messageInfoBuilder_ == null) {
-          return messageInfo_ == null ? cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.getDefaultInstance() : messageInfo_;
+          return java.util.Collections.unmodifiableList(messageInfo_);
         } else {
-          return messageInfoBuilder_.getMessage();
+          return messageInfoBuilder_.getMessageList();
         }
       }
       /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
        */
-      public Builder setMessageInfo(cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo value) {
+      public int getMessageInfoCount() {
+        if (messageInfoBuilder_ == null) {
+          return messageInfo_.size();
+        } else {
+          return messageInfoBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo getMessageInfo(int index) {
+        if (messageInfoBuilder_ == null) {
+          return messageInfo_.get(index);
+        } else {
+          return messageInfoBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public Builder setMessageInfo(
+          int index, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo value) {
         if (messageInfoBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          messageInfo_ = value;
+          ensureMessageInfoIsMutable();
+          messageInfo_.set(index, value);
           onChanged();
         } else {
-          messageInfoBuilder_.setMessage(value);
+          messageInfoBuilder_.setMessage(index, value);
         }
-
         return this;
       }
       /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
        */
       public Builder setMessageInfo(
+          int index, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder builderForValue) {
+        if (messageInfoBuilder_ == null) {
+          ensureMessageInfoIsMutable();
+          messageInfo_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          messageInfoBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public Builder addMessageInfo(cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo value) {
+        if (messageInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMessageInfoIsMutable();
+          messageInfo_.add(value);
+          onChanged();
+        } else {
+          messageInfoBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public Builder addMessageInfo(
+          int index, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo value) {
+        if (messageInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMessageInfoIsMutable();
+          messageInfo_.add(index, value);
+          onChanged();
+        } else {
+          messageInfoBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public Builder addMessageInfo(
           cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder builderForValue) {
         if (messageInfoBuilder_ == null) {
-          messageInfo_ = builderForValue.build();
+          ensureMessageInfoIsMutable();
+          messageInfo_.add(builderForValue.build());
           onChanged();
         } else {
-          messageInfoBuilder_.setMessage(builderForValue.build());
+          messageInfoBuilder_.addMessage(builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
        */
-      public Builder mergeMessageInfo(cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo value) {
+      public Builder addMessageInfo(
+          int index, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder builderForValue) {
         if (messageInfoBuilder_ == null) {
-          if (messageInfo_ != null) {
-            messageInfo_ =
-              cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.newBuilder(messageInfo_).mergeFrom(value).buildPartial();
-          } else {
-            messageInfo_ = value;
-          }
+          ensureMessageInfoIsMutable();
+          messageInfo_.add(index, builderForValue.build());
           onChanged();
         } else {
-          messageInfoBuilder_.mergeFrom(value);
+          messageInfoBuilder_.addMessage(index, builderForValue.build());
         }
-
         return this;
       }
       /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public Builder addAllMessageInfo(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo> values) {
+        if (messageInfoBuilder_ == null) {
+          ensureMessageInfoIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, messageInfo_);
+          onChanged();
+        } else {
+          messageInfoBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
        */
       public Builder clearMessageInfo() {
         if (messageInfoBuilder_ == null) {
-          messageInfo_ = null;
+          messageInfo_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          messageInfo_ = null;
-          messageInfoBuilder_ = null;
+          messageInfoBuilder_.clear();
         }
-
         return this;
       }
       /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
        */
-      public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder getMessageInfoBuilder() {
-        
-        onChanged();
-        return getMessageInfoFieldBuilder().getBuilder();
+      public Builder removeMessageInfo(int index) {
+        if (messageInfoBuilder_ == null) {
+          ensureMessageInfoIsMutable();
+          messageInfo_.remove(index);
+          onChanged();
+        } else {
+          messageInfoBuilder_.remove(index);
+        }
+        return this;
       }
       /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
        */
-      public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder getMessageInfoOrBuilder() {
-        if (messageInfoBuilder_ != null) {
-          return messageInfoBuilder_.getMessageOrBuilder();
-        } else {
-          return messageInfo_ == null ?
-              cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.getDefaultInstance() : messageInfo_;
+      public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder getMessageInfoBuilder(
+          int index) {
+        return getMessageInfoFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder getMessageInfoOrBuilder(
+          int index) {
+        if (messageInfoBuilder_ == null) {
+          return messageInfo_.get(index);  } else {
+          return messageInfoBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>.Protos.ChatMessageInfo messageInfo = 1;</code>
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      public java.util.List<? extends cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder> 
+           getMessageInfoOrBuilderList() {
+        if (messageInfoBuilder_ != null) {
+          return messageInfoBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(messageInfo_);
+        }
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder addMessageInfoBuilder() {
+        return getMessageInfoFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder addMessageInfoBuilder(
+          int index) {
+        return getMessageInfoFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .Protos.ChatMessageInfo messageInfo = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder> 
+           getMessageInfoBuilderList() {
+        return getMessageInfoFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder> 
           getMessageInfoFieldBuilder() {
         if (messageInfoBuilder_ == null) {
-          messageInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          messageInfoBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo.Builder, cn.game.protocol.protobuf.ChatMsg.ChatMessageInfoOrBuilder>(
-                  getMessageInfo(),
+                  messageInfo_,
+                  ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
           messageInfo_ = null;
@@ -3669,6 +3841,10 @@ public final class ChatMsg {
         getAtPlayerIdsBytes(int index);
   }
   /**
+   * <pre>
+   * 只服务器使用。
+   * </pre>
+   *
    * Protobuf type {@code Protos.ServerChatMessagePush_31000010}
    */
   public static final class ServerChatMessagePush_31000010 extends
@@ -4146,6 +4322,10 @@ public final class ChatMsg {
       return builder;
     }
     /**
+     * <pre>
+     * 只服务器使用。
+     * </pre>
+     *
      * Protobuf type {@code Protos.ServerChatMessagePush_31000010}
      */
     public static final class Builder extends
@@ -4894,7 +5074,7 @@ public final class ChatMsg {
       "2\020.Protos.ChatType\022\017\n\007content\030\002 \001(\t\022\023\n\013a" +
       "tPlayerIds\030\003 \003(\t\022\026\n\016targetPlayerId\030\004 \001(\t" +
       "\"\027\n\025ChatResponse_31000002\"H\n\030ChatMessage" +
-      "Push_31010001\022,\n\013messageInfo\030\001 \001(\0132\027.Pro" +
+      "Push_31010001\022,\n\013messageInfo\030\001 \003(\0132\027.Pro" +
       "tos.ChatMessageInfo\"\202\001\n\017ChatMessageInfo\022" +
       "\"\n\010chatType\030\001 \001(\0162\020.Protos.ChatType\022,\n\ns" +
       "endPlayer\030\002 \001(\0132\030.Protos.SimplePlayerInf" +

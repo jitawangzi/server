@@ -87,6 +87,7 @@ import cn.game.util.RedissonUtil;
 import cn.game.util.Rnd;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 
 public class PlayerHelper {
 
@@ -1190,8 +1191,9 @@ public class PlayerHelper {
 		return false;
 	}
 
-	public static void startLoadPlayerFromDb(GameClient gameClient, PlayerData dbPlayer, Account account) {
-
+	public static Future<Player> startLoadPlayerFromDb(GameClient gameClient, PlayerData dbPlayer, Account account) {
+		Promise<Player> promise = Promise.promise(); 
+		promise.complete(null);
 		Long playerId = dbPlayer.getPlayerId();
 		BiConsumer<Boolean, ? super Throwable> action = (v, throwable) -> {
 			GameClientManager.getInstance().addGameClientPlayer(gameClient);
@@ -1224,6 +1226,7 @@ public class PlayerHelper {
 				});
 			}
 		});
+		return promise.future();
 	}
 
 	public static RFuture<Boolean> trySetServerId(long playerId) {
