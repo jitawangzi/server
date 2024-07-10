@@ -9,7 +9,6 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.DrawConfig;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.DrawMsg.DrawInfo;
@@ -96,7 +95,6 @@ public class DrawModule extends BasePlayerModule {
 		allRewards.add(giftList);
 
 		DrawConfig drawConfig = DrawManager.instance().get(id);
-		int gold = drawConfig.DrawMoney * count;
 		int firstDrawRandomId = drawConfig.DrawRandomId;
 		int nextDrawRandomId = drawConfig.DrawRandomId;
 		if (count == 10 && isFirstTen) {
@@ -126,8 +124,8 @@ public class DrawModule extends BasePlayerModule {
 								}
 			}*/
 		}
-		if (gold > 0) {
-			PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Draw);
+		for (int[] money : drawConfig.DrawMoney) {
+			PlayerHelper.addResources(player, money[0], money[1] * count, OpType.Draw);
 		}
 		if (freeOnce) {
 			freeDrawTime.setValue(id, DateUtil.currentTimeSeconds());
