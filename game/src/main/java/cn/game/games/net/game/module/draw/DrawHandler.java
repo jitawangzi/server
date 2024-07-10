@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.draw;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -11,6 +13,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.DrawConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -65,7 +68,38 @@ public class DrawHandler extends BaseHandler {
 		boolean ten = req.getTen();
 		boolean freeOnce = req.getFreeOnce();
 		int id = req.getId();
+		int drawCount = ten ? 10 : 1;
 		DrawConfig drawConfig = DrawManager.instance().get(id);
+
+		List<SimpleEntry<Integer, Integer>> costEntries = new ArrayList<>();
+		if (!freeOnce) {
+			int costItemId = drawConfig.DrawConsumeId[0];
+			if (ten) {
+				int costItemCount = drawConfig.DrawConsumeId[1] * drawCount;
+				int count = (int) player.getItemModule().getCount(costItemId);
+				if (count > 0) {
+					costEntries.add(new SimpleEntry(costItemId, count > costItemCount ? costItemCount : count));
+				}
+				if (count < costItemCount) {
+					boolean useAnother = false;
+					for (int[] consume : GlobalConst.GachaConsume) {
+						if (consume[0] == costItemId) {
+							costEntries.add(new SimpleEntry(consume[1], (consume[2] * (costItemCount - count))));
+							useAnother = true;
+							break;
+						}
+					}
+					if (!useAnother) {
+                        client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+                        return;
+                    }
+				}
+
+			}else {
+				costEntries.add(new SimpleEntry<>(costItemId, drawConfig.DrawConsumeId[1]));
+			}
+
+		}
 		if (freeOnce) {
 			int nextFreeTime = drawModule.getNextFreeTime(id);
 			if (nextFreeTime != 0 && nextFreeTime < DateUtil.currentTimeSeconds()) {
@@ -77,17 +111,16 @@ public class DrawHandler extends BaseHandler {
 				return;
 			}
 		} else {
-			boolean delResources = PlayerHelper.delResources(player, ten ? drawConfig.DrawConsumeId[1] : drawConfig.DrawConsumeId[0], OpType.Draw);
+			boolean delResources = PlayerHelper.delResources(player, costEntries, OpType.Draw);
 			if (!delResources) {
 				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 				return;
 			}
 		}
-		int count = ten ? 10 : 1;
-		List<List<RewardInfo>> allRewards = drawModule.draw(id, count, freeOnce);
-		int gold = drawConfig.DrawMoney * count;
+		List<List<RewardInfo>> allRewards = drawModule.draw(id, drawCount, freeOnce);
+		int gold = drawConfig.DrawMoney * drawCount;
 
-		player.handleEvent(EventTypeEnum.Draw, count);
+		player.handleEvent(EventTypeEnum.Draw, drawCount);
 
 		resp.addAllRewards(allRewards.get(0));
 		resp.addAllHeros(allRewards.get(1));

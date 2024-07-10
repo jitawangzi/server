@@ -96,7 +96,7 @@ public class PlayerHelper {
 //	private static final Logger resourceDelLog = LoggerFactory.getLogger("resourceDelLog");
 //	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
 
-	public static boolean isEnough(Player player, List<Entry<Integer, Integer>> list) {
+	public static boolean isEnough(Player player, List<? extends Entry<Integer, Integer>> list) {
 
 		if (list == null || list.isEmpty()) {
 			return true;
@@ -360,7 +360,7 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(Player player, List<Entry<Integer, Integer>> list, OpType consumeType) {
+	public static boolean delResources(Player player, List<? extends Entry<Integer, Integer>> list, OpType consumeType) {
 
 		if (list == null || list.isEmpty()) {
 			return true;
