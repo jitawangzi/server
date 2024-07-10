@@ -1,9 +1,7 @@
 package cn.game.games.net.game.module.draw;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
@@ -68,18 +66,18 @@ public class DrawModule extends BasePlayerModule {
 	public DrawInfo buildDrawInfo(int id) {
 		cn.game.protocol.protobuf.DrawMsg.DrawInfo.Builder newBuilder = DrawInfo.newBuilder();
 		newBuilder.setNextFreeTime(getNextFreeTime(id));
-		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
-		Map<Integer, Integer> mapMax = new HashMap<Integer, Integer>();
-		List<GiftCardConfig> drawIdList = GiftCardManager.instance().getDrawIdList(id);
-		for (GiftCardConfig giftCardConfig : drawIdList) {
-			int curTimes = drawTimes.getValue(giftCardConfig.ID);
-			int maxTimes = giftCardConfig.GiftCardCount[giftIndex.getValue(giftCardConfig.ID)];
-			mapMax.put(giftCardConfig.GiftCardQuality, maxTimes);
-			map.put(giftCardConfig.GiftCardQuality, maxTimes - curTimes);
-		}
-
-		newBuilder.putAllGiftRemainingTimes(map);
-		newBuilder.putAllGiftMaxTimes(mapMax);
+		/*		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+				Map<Integer, Integer> mapMax = new HashMap<Integer, Integer>();
+				List<GiftCardConfig> drawIdList = GiftCardManager.instance().getDrawIdList(id);
+				for (GiftCardConfig giftCardConfig : drawIdList) {
+					int curTimes = drawTimes.getValue(giftCardConfig.ID);
+					int maxTimes = giftCardConfig.GiftCardCount[giftIndex.getValue(giftCardConfig.ID)];
+					mapMax.put(giftCardConfig.GiftCardQuality, maxTimes);
+					map.put(giftCardConfig.GiftCardQuality, maxTimes - curTimes);
+				}
+		
+				newBuilder.putAllGiftRemainingTimes(map);
+				newBuilder.putAllGiftMaxTimes(mapMax);*/
 		return newBuilder.build();
 	}
 
@@ -116,18 +114,18 @@ public class DrawModule extends BasePlayerModule {
 
 				int giftCardId = giftCardConfig.ID;
 				drawTimes.add(giftCardId, 1);
-				int curIndex = giftIndex.getValue(giftCardId);
-				int curTimes = drawTimes.getValue(giftCardId);
-				int remaining = giftCardConfig.GiftCardCount[curIndex] - curTimes;
-				if (remaining == 0) {
-					// 送卡
-					giftList.addAll(PlayerHelper.addReward(player, giftCardConfig.GiftCardRandomId[curIndex], OpType.Draw));
-					// next index
-					if (curIndex < giftCardConfig.GiftCardRandomId.length - 1) {
-						giftIndex.add(giftCardId, 1);
-					}
-					drawTimes.setValue(giftCardId, 0);
-				}
+				/*				int curIndex = giftIndex.getValue(giftCardId);
+								int curTimes = drawTimes.getValue(giftCardId);
+								int remaining = giftCardConfig.GiftCardCount[curIndex] - curTimes;
+								if (remaining == 0) {
+									// 送卡
+									giftList.addAll(PlayerHelper.addReward(player, giftCardConfig.GiftCardRandomId[curIndex], OpType.Draw));
+									// next index
+									if (curIndex < giftCardConfig.GiftCardRandomId.length - 1) {
+										giftIndex.add(giftCardId, 1);
+									}
+									drawTimes.setValue(giftCardId, 0);
+								}*/
 			}
 		}
 		if (gold > 0) {

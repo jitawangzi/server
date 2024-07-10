@@ -135,8 +135,8 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 //		只是返回一个hero对象，并不真正加入到程序中。只是构建rewardInfo对象。  
 //		同时转成货币，直接加上，push给客户端。 
 		HeroConfig heroConfig = HeroManager.instance().get(itemId);
-		if (heroConfig.InitialQuality <= 3) {
-			List<Hero> list = new ArrayList<>();
+		if (heroConfig.InitialQuality == 3) {
+			List<Hero> list = new ArrayList<>(1);
 			Hero hero = new Hero();
 			hero.setConfigId(itemId);
 			hero.setQuality(heroConfig.InitialQuality);
