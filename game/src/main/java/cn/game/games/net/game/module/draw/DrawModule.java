@@ -8,11 +8,9 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.DrawConfig;
-import cn.game.protocol.generated.config.GiftCardConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.DrawManager;
-import cn.game.protocol.generated.manager.GiftCardManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.DrawMsg.DrawInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -89,7 +87,7 @@ public class DrawModule extends BasePlayerModule {
 	 */
 	public List<List<RewardInfo>> draw(int id, int count, boolean freeOnce) {
 		List<List<RewardInfo>> allRewards = new ArrayList<>();
-		List<GiftCardConfig> giftCardList = GiftCardManager.instance().getDrawIdList(id);
+//		List<GiftCardConfig> giftCardList = GiftCardManager.instance().getDrawIdList(id);
 
 		List<RewardInfo> ret = new ArrayList<>();
 		List<RewardInfo> giftList = new ArrayList<>();
@@ -109,12 +107,12 @@ public class DrawModule extends BasePlayerModule {
 		for (int i = 0; i < count; i++) {
 			List<RewardInfo> reward = PlayerHelper.addReward(player, i == 0 ? firstDrawRandomId : nextDrawRandomId, OpType.Draw);
 			ret.addAll(reward);
-
+			/*
 			for (GiftCardConfig giftCardConfig : giftCardList) {
-
+			
 				int giftCardId = giftCardConfig.ID;
 				drawTimes.add(giftCardId, 1);
-				/*				int curIndex = giftIndex.getValue(giftCardId);
+								int curIndex = giftIndex.getValue(giftCardId);
 								int curTimes = drawTimes.getValue(giftCardId);
 								int remaining = giftCardConfig.GiftCardCount[curIndex] - curTimes;
 								if (remaining == 0) {
@@ -125,8 +123,8 @@ public class DrawModule extends BasePlayerModule {
 										giftIndex.add(giftCardId, 1);
 									}
 									drawTimes.setValue(giftCardId, 0);
-								}*/
-			}
+								}
+			}*/
 		}
 		if (gold > 0) {
 			PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Draw);
