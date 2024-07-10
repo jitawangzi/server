@@ -142,6 +142,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			hero.setQuality(heroConfig.InitialQuality);
 			hero.setStar(1);
 			hero.setLevel(1);
+			hero.setPlayerId(playerId);
 			list.add(hero);
 			PlayerHelper.addResources(player, GlobalConst.GachaConversion, OpType.GachaConversion);
 			return list;
