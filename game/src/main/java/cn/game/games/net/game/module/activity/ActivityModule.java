@@ -95,11 +95,11 @@ public class ActivityModule extends BasePlayerModule {
 
 	@Override
 	public void initFromDbAfter() {
-		checkExpired();
 		// 这里注意一个活动，多开启时间的
 		for (ActivityBase activityBase : activities.values()) {
 			activityBase.init(activityBase.getId(), player, false);
 		}
+		checkExpired();
 		// 可能符合开启条件的新任务。
 		Set<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
 		for (Integer id : openList) {
