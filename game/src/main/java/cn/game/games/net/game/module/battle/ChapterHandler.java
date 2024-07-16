@@ -172,8 +172,10 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 			return;
 		}
-
-		mengYanMiJingBattle.setRandomBuff(req.getBuffIdsList());
+		Map<Integer, Integer> buffIdsList = req.getBuffIdsMap();
+		if (!buffIdsList.isEmpty()) {
+			mengYanMiJingBattle.setBuffIdsMap(buffIdsList);
+		}
 		mengYanMiJingBattle.setBuffRefreshTimes(buffRefreshTimes - 1);
 
 		client.sendProtocol(resp);
@@ -212,7 +214,7 @@ public class ChapterHandler extends BaseHandler {
 		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getMengYanMiJingBattle();
 		resp.setBuffRefreshTimes(mengYanMiJingBattle.getBuffRefreshTimes());
 		resp.setStartBattle(mengYanMiJingBattle.getStartBattleId());
-		resp.addAllBuffIds(mengYanMiJingBattle.getBuffIds());
+		resp.putAllBuffIds(mengYanMiJingBattle.getBuffIdsMap());
 		resp.addAllQuickRewardId(mengYanMiJingBattle.getRewardBattleIds());
 		resp.addAllRandomBuff(mengYanMiJingBattle.getRandomBuff());
 

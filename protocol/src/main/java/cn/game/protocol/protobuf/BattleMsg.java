@@ -25911,17 +25911,7 @@ public final class BattleMsg {
      *  选择使用的全部buff
      * </pre>
      *
-     * <code>repeated int32 buffIds = 6;</code>
-     * @return A list containing the buffIds.
-     */
-    java.util.List<java.lang.Integer> getBuffIdsList();
-    /**
-     * <pre>
-     *  选择使用的全部buff
-     * </pre>
-     *
-     * <code>repeated int32 buffIds = 6;</code>
-     * @return The count of buffIds.
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
      */
     int getBuffIdsCount();
     /**
@@ -25929,11 +25919,46 @@ public final class BattleMsg {
      *  选择使用的全部buff
      * </pre>
      *
-     * <code>repeated int32 buffIds = 6;</code>
-     * @param index The index of the element to return.
-     * @return The buffIds at the given index.
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
      */
-    int getBuffIds(int index);
+    boolean containsBuffIds(
+        int key);
+    /**
+     * Use {@link #getBuffIdsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getBuffIds();
+    /**
+     * <pre>
+     *  选择使用的全部buff
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getBuffIdsMap();
+    /**
+     * <pre>
+     *  选择使用的全部buff
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+     */
+
+    int getBuffIdsOrDefault(
+        int key,
+        int defaultValue);
+    /**
+     * <pre>
+     *  选择使用的全部buff
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+     */
+
+    int getBuffIdsOrThrow(
+        int key);
 
     /**
      * <pre>
@@ -25961,7 +25986,6 @@ public final class BattleMsg {
       lineups_ = java.util.Collections.emptyList();
       randomBuff_ = emptyIntList();
       quickRewardId_ = emptyIntList();
-      buffIds_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -26051,25 +26075,17 @@ public final class BattleMsg {
               input.popLimit(limit);
               break;
             }
-            case 48: {
-              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
-                buffIds_ = newIntList();
-                mutable_bitField0_ |= 0x00000008;
-              }
-              buffIds_.addInt(input.readInt32());
-              break;
-            }
             case 50: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000008) != 0) && input.getBytesUntilLimit() > 0) {
-                buffIds_ = newIntList();
+              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+                buffIds_ = com.google.protobuf.MapField.newMapField(
+                    BuffIdsDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000008;
               }
-              while (input.getBytesUntilLimit() > 0) {
-                buffIds_.addInt(input.readInt32());
-              }
-              input.popLimit(limit);
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+              buffIds__ = input.readMessage(
+                  BuffIdsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              buffIds_.getMutableMap().put(
+                  buffIds__.getKey(), buffIds__.getValue());
               break;
             }
             case 64: {
@@ -26101,9 +26117,6 @@ public final class BattleMsg {
         if (((mutable_bitField0_ & 0x00000004) != 0)) {
           quickRewardId_.makeImmutable(); // C
         }
-        if (((mutable_bitField0_ & 0x00000008) != 0)) {
-          buffIds_.makeImmutable(); // C
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -26113,6 +26126,18 @@ public final class BattleMsg {
       return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleNightmareRealmResponse_13000081_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 6:
+          return internalGetBuffIds();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -26277,44 +26302,101 @@ public final class BattleMsg {
     private int quickRewardIdMemoizedSerializedSize = -1;
 
     public static final int BUFFIDS_FIELD_NUMBER = 6;
-    private com.google.protobuf.Internal.IntList buffIds_;
-    /**
-     * <pre>
-     *  选择使用的全部buff
-     * </pre>
-     *
-     * <code>repeated int32 buffIds = 6;</code>
-     * @return A list containing the buffIds.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getBuffIdsList() {
+    private static final class BuffIdsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.Integer> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.Integer>newDefaultInstance(
+                  cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleNightmareRealmResponse_13000081_BuffIdsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Integer> buffIds_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+    internalGetBuffIds() {
+      if (buffIds_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            BuffIdsDefaultEntryHolder.defaultEntry);
+      }
       return buffIds_;
     }
-    /**
-     * <pre>
-     *  选择使用的全部buff
-     * </pre>
-     *
-     * <code>repeated int32 buffIds = 6;</code>
-     * @return The count of buffIds.
-     */
+
     public int getBuffIdsCount() {
-      return buffIds_.size();
+      return internalGetBuffIds().getMap().size();
     }
     /**
      * <pre>
      *  选择使用的全部buff
      * </pre>
      *
-     * <code>repeated int32 buffIds = 6;</code>
-     * @param index The index of the element to return.
-     * @return The buffIds at the given index.
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
      */
-    public int getBuffIds(int index) {
-      return buffIds_.getInt(index);
+
+    @java.lang.Override
+    public boolean containsBuffIds(
+        int key) {
+      
+      return internalGetBuffIds().getMap().containsKey(key);
     }
-    private int buffIdsMemoizedSerializedSize = -1;
+    /**
+     * Use {@link #getBuffIdsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getBuffIds() {
+      return getBuffIdsMap();
+    }
+    /**
+     * <pre>
+     *  选择使用的全部buff
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getBuffIdsMap() {
+      return internalGetBuffIds().getMap();
+    }
+    /**
+     * <pre>
+     *  选择使用的全部buff
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+     */
+    @java.lang.Override
+
+    public int getBuffIdsOrDefault(
+        int key,
+        int defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetBuffIds().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     *  选择使用的全部buff
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+     */
+    @java.lang.Override
+
+    public int getBuffIdsOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetBuffIds().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
 
     public static final int STARTBATTLE_FIELD_NUMBER = 8;
     private int startBattle_;
@@ -26366,13 +26448,12 @@ public final class BattleMsg {
       for (int i = 0; i < quickRewardId_.size(); i++) {
         output.writeInt32NoTag(quickRewardId_.getInt(i));
       }
-      if (getBuffIdsList().size() > 0) {
-        output.writeUInt32NoTag(50);
-        output.writeUInt32NoTag(buffIdsMemoizedSerializedSize);
-      }
-      for (int i = 0; i < buffIds_.size(); i++) {
-        output.writeInt32NoTag(buffIds_.getInt(i));
-      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetBuffIds(),
+          BuffIdsDefaultEntryHolder.defaultEntry,
+          6);
       if (startBattle_ != 0) {
         output.writeInt32(8, startBattle_);
       }
@@ -26421,19 +26502,15 @@ public final class BattleMsg {
         }
         quickRewardIdMemoizedSerializedSize = dataSize;
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < buffIds_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(buffIds_.getInt(i));
-        }
-        size += dataSize;
-        if (!getBuffIdsList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        buffIdsMemoizedSerializedSize = dataSize;
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
+           : internalGetBuffIds().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+        buffIds__ = BuffIdsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(6, buffIds__);
       }
       if (startBattle_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -26462,8 +26539,8 @@ public final class BattleMsg {
           != other.getBuffRefreshTimes()) return false;
       if (!getQuickRewardIdList()
           .equals(other.getQuickRewardIdList())) return false;
-      if (!getBuffIdsList()
-          .equals(other.getBuffIdsList())) return false;
+      if (!internalGetBuffIds().equals(
+          other.internalGetBuffIds())) return false;
       if (getStartBattle()
           != other.getStartBattle()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -26491,9 +26568,9 @@ public final class BattleMsg {
         hash = (37 * hash) + QUICKREWARDID_FIELD_NUMBER;
         hash = (53 * hash) + getQuickRewardIdList().hashCode();
       }
-      if (getBuffIdsCount() > 0) {
+      if (!internalGetBuffIds().getMap().isEmpty()) {
         hash = (37 * hash) + BUFFIDS_FIELD_NUMBER;
-        hash = (53 * hash) + getBuffIdsList().hashCode();
+        hash = (53 * hash) + internalGetBuffIds().hashCode();
       }
       hash = (37 * hash) + STARTBATTLE_FIELD_NUMBER;
       hash = (53 * hash) + getStartBattle();
@@ -26604,6 +26681,28 @@ public final class BattleMsg {
         return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleNightmareRealmResponse_13000081_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 6:
+            return internalGetBuffIds();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 6:
+            return internalGetMutableBuffIds();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -26643,8 +26742,7 @@ public final class BattleMsg {
 
         quickRewardId_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000004);
-        buffIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000008);
+        internalGetMutableBuffIds().clear();
         startBattle_ = 0;
 
         return this;
@@ -26694,11 +26792,8 @@ public final class BattleMsg {
           bitField0_ = (bitField0_ & ~0x00000004);
         }
         result.quickRewardId_ = quickRewardId_;
-        if (((bitField0_ & 0x00000008) != 0)) {
-          buffIds_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000008);
-        }
-        result.buffIds_ = buffIds_;
+        result.buffIds_ = internalGetBuffIds();
+        result.buffIds_.makeImmutable();
         result.startBattle_ = startBattle_;
         onBuilt();
         return result;
@@ -26797,16 +26892,8 @@ public final class BattleMsg {
           }
           onChanged();
         }
-        if (!other.buffIds_.isEmpty()) {
-          if (buffIds_.isEmpty()) {
-            buffIds_ = other.buffIds_;
-            bitField0_ = (bitField0_ & ~0x00000008);
-          } else {
-            ensureBuffIdsIsMutable();
-            buffIds_.addAll(other.buffIds_);
-          }
-          onChanged();
-        }
+        internalGetMutableBuffIds().mergeFrom(
+            other.internalGetBuffIds());
         if (other.getStartBattle() != 0) {
           setStartBattle(other.getStartBattle());
         }
@@ -27409,110 +27496,159 @@ public final class BattleMsg {
         return this;
       }
 
-      private com.google.protobuf.Internal.IntList buffIds_ = emptyIntList();
-      private void ensureBuffIdsIsMutable() {
-        if (!((bitField0_ & 0x00000008) != 0)) {
-          buffIds_ = mutableCopy(buffIds_);
-          bitField0_ |= 0x00000008;
-         }
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.Integer> buffIds_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetBuffIds() {
+        if (buffIds_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              BuffIdsDefaultEntryHolder.defaultEntry);
+        }
+        return buffIds_;
       }
-      /**
-       * <pre>
-       *  选择使用的全部buff
-       * </pre>
-       *
-       * <code>repeated int32 buffIds = 6;</code>
-       * @return A list containing the buffIds.
-       */
-      public java.util.List<java.lang.Integer>
-          getBuffIdsList() {
-        return ((bitField0_ & 0x00000008) != 0) ?
-                 java.util.Collections.unmodifiableList(buffIds_) : buffIds_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetMutableBuffIds() {
+        onChanged();;
+        if (buffIds_ == null) {
+          buffIds_ = com.google.protobuf.MapField.newMapField(
+              BuffIdsDefaultEntryHolder.defaultEntry);
+        }
+        if (!buffIds_.isMutable()) {
+          buffIds_ = buffIds_.copy();
+        }
+        return buffIds_;
       }
-      /**
-       * <pre>
-       *  选择使用的全部buff
-       * </pre>
-       *
-       * <code>repeated int32 buffIds = 6;</code>
-       * @return The count of buffIds.
-       */
+
       public int getBuffIdsCount() {
-        return buffIds_.size();
+        return internalGetBuffIds().getMap().size();
       }
       /**
        * <pre>
        *  选择使用的全部buff
        * </pre>
        *
-       * <code>repeated int32 buffIds = 6;</code>
-       * @param index The index of the element to return.
-       * @return The buffIds at the given index.
+       * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
        */
-      public int getBuffIds(int index) {
-        return buffIds_.getInt(index);
+
+      @java.lang.Override
+      public boolean containsBuffIds(
+          int key) {
+        
+        return internalGetBuffIds().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getBuffIdsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getBuffIds() {
+        return getBuffIdsMap();
       }
       /**
        * <pre>
        *  选择使用的全部buff
        * </pre>
        *
-       * <code>repeated int32 buffIds = 6;</code>
-       * @param index The index to set the value at.
-       * @param value The buffIds to set.
-       * @return This builder for chaining.
+       * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
        */
-      public Builder setBuffIds(
-          int index, int value) {
-        ensureBuffIdsIsMutable();
-        buffIds_.setInt(index, value);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getBuffIdsMap() {
+        return internalGetBuffIds().getMap();
       }
       /**
        * <pre>
        *  选择使用的全部buff
        * </pre>
        *
-       * <code>repeated int32 buffIds = 6;</code>
-       * @param value The buffIds to add.
-       * @return This builder for chaining.
+       * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
        */
-      public Builder addBuffIds(int value) {
-        ensureBuffIdsIsMutable();
-        buffIds_.addInt(value);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public int getBuffIdsOrDefault(
+          int key,
+          int defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetBuffIds().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
        * <pre>
        *  选择使用的全部buff
        * </pre>
        *
-       * <code>repeated int32 buffIds = 6;</code>
-       * @param values The buffIds to add.
-       * @return This builder for chaining.
+       * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
        */
-      public Builder addAllBuffIds(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureBuffIdsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, buffIds_);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public int getBuffIdsOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetBuffIds().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
       }
-      /**
-       * <pre>
-       *  选择使用的全部buff
-       * </pre>
-       *
-       * <code>repeated int32 buffIds = 6;</code>
-       * @return This builder for chaining.
-       */
+
       public Builder clearBuffIds() {
-        buffIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000008);
-        onChanged();
+        internalGetMutableBuffIds().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       *  选择使用的全部buff
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+       */
+
+      public Builder removeBuffIds(
+          int key) {
+        
+        internalGetMutableBuffIds().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer>
+      getMutableBuffIds() {
+        return internalGetMutableBuffIds().getMutableMap();
+      }
+      /**
+       * <pre>
+       *  选择使用的全部buff
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+       */
+      public Builder putBuffIds(
+          int key,
+          int value) {
+        
+        
+        internalGetMutableBuffIds().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       *  选择使用的全部buff
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
+       */
+
+      public Builder putAllBuffIds(
+          java.util.Map<java.lang.Integer, java.lang.Integer> values) {
+        internalGetMutableBuffIds().getMutableMap()
+            .putAll(values);
         return this;
       }
 
@@ -27620,17 +27756,7 @@ public final class BattleMsg {
      *  使用的全部buff，如果是null表示放弃本次加成
      * </pre>
      *
-     * <code>repeated int32 buffIds = 1;</code>
-     * @return A list containing the buffIds.
-     */
-    java.util.List<java.lang.Integer> getBuffIdsList();
-    /**
-     * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
-     * </pre>
-     *
-     * <code>repeated int32 buffIds = 1;</code>
-     * @return The count of buffIds.
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
      */
     int getBuffIdsCount();
     /**
@@ -27638,11 +27764,46 @@ public final class BattleMsg {
      *  使用的全部buff，如果是null表示放弃本次加成
      * </pre>
      *
-     * <code>repeated int32 buffIds = 1;</code>
-     * @param index The index of the element to return.
-     * @return The buffIds at the given index.
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
      */
-    int getBuffIds(int index);
+    boolean containsBuffIds(
+        int key);
+    /**
+     * Use {@link #getBuffIdsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getBuffIds();
+    /**
+     * <pre>
+     *  使用的全部buff，如果是null表示放弃本次加成
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getBuffIdsMap();
+    /**
+     * <pre>
+     *  使用的全部buff，如果是null表示放弃本次加成
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+     */
+
+    int getBuffIdsOrDefault(
+        int key,
+        int defaultValue);
+    /**
+     * <pre>
+     *  使用的全部buff，如果是null表示放弃本次加成
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+     */
+
+    int getBuffIdsOrThrow(
+        int key);
   }
   /**
    * <pre>
@@ -27661,7 +27822,6 @@ public final class BattleMsg {
       super(builder);
     }
     private BattleNightmareRealmBuffUpdateRequest_13000082() {
-      buffIds_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -27695,25 +27855,17 @@ public final class BattleMsg {
             case 0:
               done = true;
               break;
-            case 8: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                buffIds_ = newIntList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              buffIds_.addInt(input.readInt32());
-              break;
-            }
             case 10: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
-                buffIds_ = newIntList();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                buffIds_ = com.google.protobuf.MapField.newMapField(
+                    BuffIdsDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000001;
               }
-              while (input.getBytesUntilLimit() > 0) {
-                buffIds_.addInt(input.readInt32());
-              }
-              input.popLimit(limit);
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+              buffIds__ = input.readMessage(
+                  BuffIdsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              buffIds_.getMutableMap().put(
+                  buffIds__.getKey(), buffIds__.getValue());
               break;
             }
             default: {
@@ -27731,9 +27883,6 @@ public final class BattleMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          buffIds_.makeImmutable(); // C
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -27743,6 +27892,18 @@ public final class BattleMsg {
       return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 1:
+          return internalGetBuffIds();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -27752,44 +27913,101 @@ public final class BattleMsg {
     }
 
     public static final int BUFFIDS_FIELD_NUMBER = 1;
-    private com.google.protobuf.Internal.IntList buffIds_;
-    /**
-     * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
-     * </pre>
-     *
-     * <code>repeated int32 buffIds = 1;</code>
-     * @return A list containing the buffIds.
-     */
-    @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getBuffIdsList() {
+    private static final class BuffIdsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.Integer> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.Integer>newDefaultInstance(
+                  cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_BuffIdsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.INT32,
+                  0);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Integer> buffIds_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+    internalGetBuffIds() {
+      if (buffIds_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            BuffIdsDefaultEntryHolder.defaultEntry);
+      }
       return buffIds_;
     }
-    /**
-     * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
-     * </pre>
-     *
-     * <code>repeated int32 buffIds = 1;</code>
-     * @return The count of buffIds.
-     */
+
     public int getBuffIdsCount() {
-      return buffIds_.size();
+      return internalGetBuffIds().getMap().size();
     }
     /**
      * <pre>
      *  使用的全部buff，如果是null表示放弃本次加成
      * </pre>
      *
-     * <code>repeated int32 buffIds = 1;</code>
-     * @param index The index of the element to return.
-     * @return The buffIds at the given index.
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
      */
-    public int getBuffIds(int index) {
-      return buffIds_.getInt(index);
+
+    @java.lang.Override
+    public boolean containsBuffIds(
+        int key) {
+      
+      return internalGetBuffIds().getMap().containsKey(key);
     }
-    private int buffIdsMemoizedSerializedSize = -1;
+    /**
+     * Use {@link #getBuffIdsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getBuffIds() {
+      return getBuffIdsMap();
+    }
+    /**
+     * <pre>
+     *  使用的全部buff，如果是null表示放弃本次加成
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getBuffIdsMap() {
+      return internalGetBuffIds().getMap();
+    }
+    /**
+     * <pre>
+     *  使用的全部buff，如果是null表示放弃本次加成
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+     */
+    @java.lang.Override
+
+    public int getBuffIdsOrDefault(
+        int key,
+        int defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetBuffIds().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     *  使用的全部buff，如果是null表示放弃本次加成
+     * </pre>
+     *
+     * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+     */
+    @java.lang.Override
+
+    public int getBuffIdsOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetBuffIds().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
 
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
@@ -27805,14 +28023,12 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
-      if (getBuffIdsList().size() > 0) {
-        output.writeUInt32NoTag(10);
-        output.writeUInt32NoTag(buffIdsMemoizedSerializedSize);
-      }
-      for (int i = 0; i < buffIds_.size(); i++) {
-        output.writeInt32NoTag(buffIds_.getInt(i));
-      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetBuffIds(),
+          BuffIdsDefaultEntryHolder.defaultEntry,
+          1);
       unknownFields.writeTo(output);
     }
 
@@ -27822,19 +28038,15 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
-      {
-        int dataSize = 0;
-        for (int i = 0; i < buffIds_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(buffIds_.getInt(i));
-        }
-        size += dataSize;
-        if (!getBuffIdsList().isEmpty()) {
-          size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        buffIdsMemoizedSerializedSize = dataSize;
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
+           : internalGetBuffIds().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+        buffIds__ = BuffIdsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(1, buffIds__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -27851,8 +28063,8 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082 other = (cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082) obj;
 
-      if (!getBuffIdsList()
-          .equals(other.getBuffIdsList())) return false;
+      if (!internalGetBuffIds().equals(
+          other.internalGetBuffIds())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -27864,9 +28076,9 @@ public final class BattleMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getBuffIdsCount() > 0) {
+      if (!internalGetBuffIds().getMap().isEmpty()) {
         hash = (37 * hash) + BUFFIDS_FIELD_NUMBER;
-        hash = (53 * hash) + getBuffIdsList().hashCode();
+        hash = (53 * hash) + internalGetBuffIds().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -27979,6 +28191,28 @@ public final class BattleMsg {
         return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 1:
+            return internalGetBuffIds();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 1:
+            return internalGetMutableBuffIds();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -28005,8 +28239,7 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        buffIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        internalGetMutableBuffIds().clear();
         return this;
       }
 
@@ -28034,11 +28267,8 @@ public final class BattleMsg {
       public cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082 buildPartial() {
         cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082 result = new cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082(this);
         int from_bitField0_ = bitField0_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          buffIds_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.buffIds_ = buffIds_;
+        result.buffIds_ = internalGetBuffIds();
+        result.buffIds_.makeImmutable();
         onBuilt();
         return result;
       }
@@ -28087,16 +28317,8 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082.getDefaultInstance()) return this;
-        if (!other.buffIds_.isEmpty()) {
-          if (buffIds_.isEmpty()) {
-            buffIds_ = other.buffIds_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureBuffIdsIsMutable();
-            buffIds_.addAll(other.buffIds_);
-          }
-          onChanged();
-        }
+        internalGetMutableBuffIds().mergeFrom(
+            other.internalGetBuffIds());
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -28127,110 +28349,159 @@ public final class BattleMsg {
       }
       private int bitField0_;
 
-      private com.google.protobuf.Internal.IntList buffIds_ = emptyIntList();
-      private void ensureBuffIdsIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          buffIds_ = mutableCopy(buffIds_);
-          bitField0_ |= 0x00000001;
-         }
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.Integer> buffIds_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetBuffIds() {
+        if (buffIds_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              BuffIdsDefaultEntryHolder.defaultEntry);
+        }
+        return buffIds_;
       }
-      /**
-       * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
-       * </pre>
-       *
-       * <code>repeated int32 buffIds = 1;</code>
-       * @return A list containing the buffIds.
-       */
-      public java.util.List<java.lang.Integer>
-          getBuffIdsList() {
-        return ((bitField0_ & 0x00000001) != 0) ?
-                 java.util.Collections.unmodifiableList(buffIds_) : buffIds_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetMutableBuffIds() {
+        onChanged();;
+        if (buffIds_ == null) {
+          buffIds_ = com.google.protobuf.MapField.newMapField(
+              BuffIdsDefaultEntryHolder.defaultEntry);
+        }
+        if (!buffIds_.isMutable()) {
+          buffIds_ = buffIds_.copy();
+        }
+        return buffIds_;
       }
-      /**
-       * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
-       * </pre>
-       *
-       * <code>repeated int32 buffIds = 1;</code>
-       * @return The count of buffIds.
-       */
+
       public int getBuffIdsCount() {
-        return buffIds_.size();
+        return internalGetBuffIds().getMap().size();
       }
       /**
        * <pre>
        *  使用的全部buff，如果是null表示放弃本次加成
        * </pre>
        *
-       * <code>repeated int32 buffIds = 1;</code>
-       * @param index The index of the element to return.
-       * @return The buffIds at the given index.
+       * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
        */
-      public int getBuffIds(int index) {
-        return buffIds_.getInt(index);
+
+      @java.lang.Override
+      public boolean containsBuffIds(
+          int key) {
+        
+        return internalGetBuffIds().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getBuffIdsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getBuffIds() {
+        return getBuffIdsMap();
       }
       /**
        * <pre>
        *  使用的全部buff，如果是null表示放弃本次加成
        * </pre>
        *
-       * <code>repeated int32 buffIds = 1;</code>
-       * @param index The index to set the value at.
-       * @param value The buffIds to set.
-       * @return This builder for chaining.
+       * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
        */
-      public Builder setBuffIds(
-          int index, int value) {
-        ensureBuffIdsIsMutable();
-        buffIds_.setInt(index, value);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getBuffIdsMap() {
+        return internalGetBuffIds().getMap();
       }
       /**
        * <pre>
        *  使用的全部buff，如果是null表示放弃本次加成
        * </pre>
        *
-       * <code>repeated int32 buffIds = 1;</code>
-       * @param value The buffIds to add.
-       * @return This builder for chaining.
+       * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
        */
-      public Builder addBuffIds(int value) {
-        ensureBuffIdsIsMutable();
-        buffIds_.addInt(value);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public int getBuffIdsOrDefault(
+          int key,
+          int defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetBuffIds().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
        * <pre>
        *  使用的全部buff，如果是null表示放弃本次加成
        * </pre>
        *
-       * <code>repeated int32 buffIds = 1;</code>
-       * @param values The buffIds to add.
-       * @return This builder for chaining.
+       * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
        */
-      public Builder addAllBuffIds(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureBuffIdsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, buffIds_);
-        onChanged();
-        return this;
+      @java.lang.Override
+
+      public int getBuffIdsOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetBuffIds().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
       }
-      /**
-       * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
-       * </pre>
-       *
-       * <code>repeated int32 buffIds = 1;</code>
-       * @return This builder for chaining.
-       */
+
       public Builder clearBuffIds() {
-        buffIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
+        internalGetMutableBuffIds().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       *  使用的全部buff，如果是null表示放弃本次加成
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+       */
+
+      public Builder removeBuffIds(
+          int key) {
+        
+        internalGetMutableBuffIds().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer>
+      getMutableBuffIds() {
+        return internalGetMutableBuffIds().getMutableMap();
+      }
+      /**
+       * <pre>
+       *  使用的全部buff，如果是null表示放弃本次加成
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+       */
+      public Builder putBuffIds(
+          int key,
+          int value) {
+        
+        
+        internalGetMutableBuffIds().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       *  使用的全部buff，如果是null表示放弃本次加成
+       * </pre>
+       *
+       * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
+       */
+
+      public Builder putAllBuffIds(
+          java.util.Map<java.lang.Integer, java.lang.Integer> values) {
+        internalGetMutableBuffIds().getMutableMap()
+            .putAll(values);
         return this;
       }
       @java.lang.Override
@@ -35293,10 +35564,20 @@ public final class BattleMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_BattleNightmareRealmResponse_13000081_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleNightmareRealmResponse_13000081_BuffIdsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleNightmareRealmResponse_13000081_BuffIdsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_BuffIdsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_BuffIdsEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_BattleNightmareRealmBuffUpdateResponse_13000083_descriptor;
   private static final 
@@ -35431,30 +35712,36 @@ public final class BattleMsg {
       " \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDaoHeartSweepR" +
       "esponse_13000067\022#\n\007rewards\030\001 \003(\0132\022.Prot" +
       "os.RewardInfo\"&\n$BattleNightmareRealmReq" +
-      "uest_13000080\"\267\001\n%BattleNightmareRealmRe" +
+      "uest_13000080\"\243\002\n%BattleNightmareRealmRe" +
       "sponse_13000081\022#\n\007lineups\030\001 \003(\0132\022.Proto" +
       "s.LineupInfo\022\022\n\nrandomBuff\030\003 \003(\005\022\030\n\020buff" +
       "RefreshTimes\030\004 \001(\005\022\025\n\rquickRewardId\030\005 \003(" +
-      "\005\022\017\n\007buffIds\030\006 \003(\005\022\023\n\013startBattle\030\010 \001(\005\"" +
-      "A\n.BattleNightmareRealmBuffUpdateRequest" +
-      "_13000082\022\017\n\007buffIds\030\001 \003(\005\"1\n/BattleNigh" +
-      "tmareRealmBuffUpdateResponse_13000083\"+\n" +
-      ")BattleNightmareRealmQuickRequest_130000" +
-      "84\"Q\n*BattleNightmareRealmQuickResponse_" +
-      "13000085\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rewar" +
-      "dInfo\"E\n4BattleDayChallengeReceiveActive" +
-      "PointRequest_13000070\022\r\n\005index\030\001 \001(\005\"\\\n5" +
-      "BattleDayChallengeReceiveActivePointResp" +
-      "onse_13000071\022#\n\007rewards\030\001 \003(\0132\022.Protos." +
-      "RewardInfo\"b\n\020DayChallengeInfo\022\023\n\013battle" +
-      "Times\030\001 \001(\005\022\020\n\010battleId\030\002 \001(\005\022\022\n\nrandomB" +
-      "uff\030\003 \003(\005\022\023\n\013rewardIndex\030\004 \003(\005\"*\n\nLineup" +
-      "Info\022\013\n\003seq\030\001 \001(\005\022\017\n\007heroUid\030\002 \003(\t\"$\n\"Ba" +
-      "ttleRougeRefreshRequest_13000005\"%\n#Batt" +
-      "leRougeRefreshResponse_13000006\"-\n\035Battl" +
-      "eStaminaRequest_13000050\022\014\n\004time\030\001 \001(\005\" " +
-      "\n\036BattleStaminaResponse_13000051B\033\n\031cn.g" +
-      "ame.protocol.protobufb\006proto3"
+      "\005\022K\n\007buffIds\030\006 \003(\0132:.Protos.BattleNightm" +
+      "areRealmResponse_13000081.BuffIdsEntry\022\023" +
+      "\n\013startBattle\030\010 \001(\005\032.\n\014BuffIdsEntry\022\013\n\003k" +
+      "ey\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"\266\001\n.BattleNi" +
+      "ghtmareRealmBuffUpdateRequest_13000082\022T" +
+      "\n\007buffIds\030\001 \003(\0132C.Protos.BattleNightmare" +
+      "RealmBuffUpdateRequest_13000082.BuffIdsE" +
+      "ntry\032.\n\014BuffIdsEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005val" +
+      "ue\030\002 \001(\005:\0028\001\"1\n/BattleNightmareRealmBuff" +
+      "UpdateResponse_13000083\"+\n)BattleNightma" +
+      "reRealmQuickRequest_13000084\"Q\n*BattleNi" +
+      "ghtmareRealmQuickResponse_13000085\022#\n\007re" +
+      "wards\030\001 \003(\0132\022.Protos.RewardInfo\"E\n4Battl" +
+      "eDayChallengeReceiveActivePointRequest_1" +
+      "3000070\022\r\n\005index\030\001 \001(\005\"\\\n5BattleDayChall" +
+      "engeReceiveActivePointResponse_13000071\022" +
+      "#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"b\n\020" +
+      "DayChallengeInfo\022\023\n\013battleTimes\030\001 \001(\005\022\020\n" +
+      "\010battleId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(\005\022\023\n\013r" +
+      "ewardIndex\030\004 \003(\005\"*\n\nLineupInfo\022\013\n\003seq\030\001 " +
+      "\001(\005\022\017\n\007heroUid\030\002 \003(\t\"$\n\"BattleRougeRefre" +
+      "shRequest_13000005\"%\n#BattleRougeRefresh" +
+      "Response_13000006\"-\n\035BattleStaminaReques" +
+      "t_13000050\022\014\n\004time\030\001 \001(\005\" \n\036BattleStamin" +
+      "aResponse_13000051B\033\n\031cn.game.protocol.p" +
+      "rotobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -35689,12 +35976,24 @@ public final class BattleMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleNightmareRealmResponse_13000081_descriptor,
         new java.lang.String[] { "Lineups", "RandomBuff", "BuffRefreshTimes", "QuickRewardId", "BuffIds", "StartBattle", });
+    internal_static_Protos_BattleNightmareRealmResponse_13000081_BuffIdsEntry_descriptor =
+      internal_static_Protos_BattleNightmareRealmResponse_13000081_descriptor.getNestedTypes().get(0);
+    internal_static_Protos_BattleNightmareRealmResponse_13000081_BuffIdsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleNightmareRealmResponse_13000081_BuffIdsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_descriptor =
       getDescriptor().getMessageTypes().get(34);
     internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_descriptor,
         new java.lang.String[] { "BuffIds", });
+    internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_BuffIdsEntry_descriptor =
+      internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_descriptor.getNestedTypes().get(0);
+    internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_BuffIdsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleNightmareRealmBuffUpdateRequest_13000082_BuffIdsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_BattleNightmareRealmBuffUpdateResponse_13000083_descriptor =
       getDescriptor().getMessageTypes().get(35);
     internal_static_Protos_BattleNightmareRealmBuffUpdateResponse_13000083_fieldAccessorTable = new

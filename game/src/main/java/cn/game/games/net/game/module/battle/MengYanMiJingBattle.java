@@ -1,7 +1,11 @@
 package cn.game.games.net.game.module.battle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.protocol.generated.config.BattleConfig;
@@ -29,8 +33,12 @@ public class MengYanMiJingBattle {
 	private List<Integer> rewardBattleIds = new ArrayList<>();
 	/**  可用的buff刷新次数 */
 	private int buffRefreshTimes;
-	private List<Integer> buffIds = new ArrayList<>();
-
+	/** 客户端选择的buff */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@Deprecated
+	private List<Integer> buffIds = new ArrayList<Integer>();
+	/** 客户端选择的buff */
+	private Map<Integer, Integer> buffIdsMap = new HashMap<Integer, Integer>();
 
 	public MengYanMiJingBattle() {
 	};
@@ -161,6 +169,14 @@ public class MengYanMiJingBattle {
 
 	public List<Integer> getBuffIds() {
 		return buffIds;
+	}
+
+	public Map<Integer, Integer> getBuffIdsMap() {
+		return buffIdsMap;
+	}
+
+	public void setBuffIdsMap(Map<Integer, Integer> buffIdsMap) {
+		this.buffIdsMap = buffIdsMap;
 	}
 
 }
