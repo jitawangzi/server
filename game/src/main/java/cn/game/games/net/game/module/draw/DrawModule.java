@@ -9,13 +9,16 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.DrawConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.SupremeRandomGroupConfig;
 import cn.game.protocol.generated.manager.DrawManager;
+import cn.game.protocol.generated.manager.SupremeRandomGroupManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.DrawMsg.DrawInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
+import cn.game.util.Rnd;
 
 public class DrawModule extends BasePlayerModule {
 
@@ -26,6 +29,9 @@ public class DrawModule extends BasePlayerModule {
 	/** 免费单抽的时间 key：DrawConfig 表id */
 	private IntMapWrapper freeDrawTime = new IntMapWrapper();
 	private boolean isFirstTen = true;
+
+	/** 至尊抽卡，已经抽过的索引、下标 SupremeRandomGroupConfig */
+	private List<Integer> supremeRandomGroupList = new ArrayList<Integer>();
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -95,35 +101,45 @@ public class DrawModule extends BasePlayerModule {
 		allRewards.add(giftList);
 
 		DrawConfig drawConfig = DrawManager.instance().get(id);
-		int firstDrawRandomId = drawConfig.DrawRandomId;
-		int nextDrawRandomId = drawConfig.DrawRandomId;
-		if (count == 10 && isFirstTen) {
-			firstDrawRandomId = GlobalConst.FirstMandatoryDraw;
-			isFirstTen = false;
+		if (id == 2) { // 至尊抽卡走特殊逻辑。首次十连给指定的卡，接下来走特殊卡池
+			List<SupremeRandomGroupConfig> list = SupremeRandomGroupManager.instance().list();
+			if (count == 10 && isFirstTen) {
+				List<RewardInfo> reward = PlayerHelper.addReward(player, GlobalConst.FirstMandatoryDraw, OpType.Draw);
+				ret.addAll(reward);
+				isFirstTen = false;
+				// 相当于从卡池里抽了一个
+				for (int i = 0; i < Rnd.RANDOM_MAX; i++) {
+					int randomWeighableIndex = Rnd.randomWeighableIndex(list, supremeRandomGroupList);
+					SupremeRandomGroupConfig supremeRandomGroupConfig = list.get(randomWeighableIndex);
+					if (!supremeRandomGroupConfig.SupremeRandomParameterTarget) {
+						supremeRandomGroupList.add(randomWeighableIndex);
+						break;
+					}
+				}
+				count--;
+			}
+			for (int i = 0; i < count; i++) {
+				int randomWeighableIndex = Rnd.randomWeighableIndex(list, supremeRandomGroupList); 
+				SupremeRandomGroupConfig supremeRandomGroupConfig = list.get(randomWeighableIndex); 
+				if (supremeRandomGroupConfig.SupremeRandomParameterTarget) {
+					supremeRandomGroupList.clear(); 
+				}else {
+					supremeRandomGroupList.add(randomWeighableIndex); 
+					if (supremeRandomGroupList.size() >= list.size()) {
+                        supremeRandomGroupList.clear();
+					}
+				}
+				
+				List<RewardInfo> reward = PlayerHelper.addReward(player, supremeRandomGroupConfig.GivenID, OpType.Draw);
+				ret.addAll(reward);
+			}
+		} else {
+			for (int i = 0; i < count; i++) {
+				List<RewardInfo> reward = PlayerHelper.addReward(player, drawConfig.DrawRandomId, OpType.Draw);
+				ret.addAll(reward);
+			}
 		}
 		
-		for (int i = 0; i < count; i++) {
-			List<RewardInfo> reward = PlayerHelper.addReward(player, i == 0 ? firstDrawRandomId : nextDrawRandomId, OpType.Draw);
-			ret.addAll(reward);
-			/*
-			for (GiftCardConfig giftCardConfig : giftCardList) {
-			
-				int giftCardId = giftCardConfig.ID;
-				drawTimes.add(giftCardId, 1);
-								int curIndex = giftIndex.getValue(giftCardId);
-								int curTimes = drawTimes.getValue(giftCardId);
-								int remaining = giftCardConfig.GiftCardCount[curIndex] - curTimes;
-								if (remaining == 0) {
-									// 送卡
-									giftList.addAll(PlayerHelper.addReward(player, giftCardConfig.GiftCardRandomId[curIndex], OpType.Draw));
-									// next index
-									if (curIndex < giftCardConfig.GiftCardRandomId.length - 1) {
-										giftIndex.add(giftCardId, 1);
-									}
-									drawTimes.setValue(giftCardId, 0);
-								}
-			}*/
-		}
 		for (int[] money : drawConfig.DrawMoney) {
 			PlayerHelper.addResources(player, money[0], money[1] * count, OpType.Draw);
 		}
