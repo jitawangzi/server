@@ -546,6 +546,9 @@ public class ChapterModule extends BasePlayerModule  {
 		this.battleRewardMultipleTimes = 0;
 
 		dayChallenge.reset();
+		if (mengYanMiJingBattle != null) {
+			mengYanMiJingBattle.setCanQuick(true);
+		}
 	}
 	@Override
 	public void handleEvent(GameEvent event) {

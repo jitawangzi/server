@@ -218,6 +218,20 @@ public class ChapterHandler extends BaseHandler {
 		resp.addAllQuickRewardId(mengYanMiJingBattle.getRewardBattleIds());
 		resp.addAllRandomBuff(mengYanMiJingBattle.getRandomBuff());
 
+		boolean canQuick = false;
+		if (!mengYanMiJingBattle.isCanQuick()) {
+			canQuick = false;
+		} else {
+			if (!mengYanMiJingBattle.getRewardBattleIds().isEmpty()) {
+				canQuick = false;
+			} else {
+				int maxSweepBattle = mengYanMiJingBattle.maxSweepBattle();
+				BattleConfig battleConfig = BattleManager.instance().getNullable(maxSweepBattle);
+				canQuick = battleConfig != null;
+			}
+		}
+		resp.setCanQuickReward(canQuick);
+
 		client.sendProtocol(resp);
 	}
 

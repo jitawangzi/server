@@ -39,6 +39,8 @@ public class MengYanMiJingBattle {
 	private List<Integer> buffIds = new ArrayList<Integer>();
 	/** 客户端选择的buff */
 	private Map<Integer, Integer> buffIdsMap = new HashMap<Integer, Integer>();
+	/** 是否可以扫荡,功能开启第二天才可以扫 */
+	private boolean canQuick = false;
 
 	public MengYanMiJingBattle() {
 	};
@@ -177,6 +179,14 @@ public class MengYanMiJingBattle {
 
 	public void setBuffIdsMap(Map<Integer, Integer> buffIdsMap) {
 		this.buffIdsMap = buffIdsMap;
+	}
+
+	public boolean isCanQuick() {
+		return canQuick;
+	}
+
+	public void setCanQuick(boolean canQuick) {
+		this.canQuick = canQuick;
 	}
 
 }

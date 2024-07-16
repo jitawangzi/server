@@ -25908,7 +25908,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -25916,7 +25916,7 @@ public final class BattleMsg {
     int getBuffIdsCount();
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -25931,7 +25931,7 @@ public final class BattleMsg {
     getBuffIds();
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -25940,7 +25940,7 @@ public final class BattleMsg {
     getBuffIdsMap();
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -25951,7 +25951,7 @@ public final class BattleMsg {
         int defaultValue);
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -25969,6 +25969,16 @@ public final class BattleMsg {
      * @return The startBattle.
      */
     int getStartBattle();
+
+    /**
+     * <pre>
+     * 是否可以进行扫荡， 如果为true，需要先进行扫荡在手动挑战，如果为false 可以直接挑战
+     * </pre>
+     *
+     * <code>bool canQuickReward = 9;</code>
+     * @return The canQuickReward.
+     */
+    boolean getCanQuickReward();
   }
   /**
    * Protobuf type {@code Protos.BattleNightmareRealmResponse_13000081}
@@ -26091,6 +26101,11 @@ public final class BattleMsg {
             case 64: {
 
               startBattle_ = input.readInt32();
+              break;
+            }
+            case 72: {
+
+              canQuickReward_ = input.readBool();
               break;
             }
             default: {
@@ -26329,7 +26344,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -26351,7 +26366,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -26363,7 +26378,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -26380,7 +26395,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *  选择使用的全部buff
+     *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -26411,6 +26426,21 @@ public final class BattleMsg {
     @java.lang.Override
     public int getStartBattle() {
       return startBattle_;
+    }
+
+    public static final int CANQUICKREWARD_FIELD_NUMBER = 9;
+    private boolean canQuickReward_;
+    /**
+     * <pre>
+     * 是否可以进行扫荡， 如果为true，需要先进行扫荡在手动挑战，如果为false 可以直接挑战
+     * </pre>
+     *
+     * <code>bool canQuickReward = 9;</code>
+     * @return The canQuickReward.
+     */
+    @java.lang.Override
+    public boolean getCanQuickReward() {
+      return canQuickReward_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -26456,6 +26486,9 @@ public final class BattleMsg {
           6);
       if (startBattle_ != 0) {
         output.writeInt32(8, startBattle_);
+      }
+      if (canQuickReward_ != false) {
+        output.writeBool(9, canQuickReward_);
       }
       unknownFields.writeTo(output);
     }
@@ -26516,6 +26549,10 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(8, startBattle_);
       }
+      if (canQuickReward_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(9, canQuickReward_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -26543,6 +26580,8 @@ public final class BattleMsg {
           other.internalGetBuffIds())) return false;
       if (getStartBattle()
           != other.getStartBattle()) return false;
+      if (getCanQuickReward()
+          != other.getCanQuickReward()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -26574,6 +26613,9 @@ public final class BattleMsg {
       }
       hash = (37 * hash) + STARTBATTLE_FIELD_NUMBER;
       hash = (53 * hash) + getStartBattle();
+      hash = (37 * hash) + CANQUICKREWARD_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getCanQuickReward());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -26745,6 +26787,8 @@ public final class BattleMsg {
         internalGetMutableBuffIds().clear();
         startBattle_ = 0;
 
+        canQuickReward_ = false;
+
         return this;
       }
 
@@ -26795,6 +26839,7 @@ public final class BattleMsg {
         result.buffIds_ = internalGetBuffIds();
         result.buffIds_.makeImmutable();
         result.startBattle_ = startBattle_;
+        result.canQuickReward_ = canQuickReward_;
         onBuilt();
         return result;
       }
@@ -26896,6 +26941,9 @@ public final class BattleMsg {
             other.internalGetBuffIds());
         if (other.getStartBattle() != 0) {
           setStartBattle(other.getStartBattle());
+        }
+        if (other.getCanQuickReward() != false) {
+          setCanQuickReward(other.getCanQuickReward());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -27524,7 +27572,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  选择使用的全部buff
+       *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -27546,7 +27594,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  选择使用的全部buff
+       *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -27558,7 +27606,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  选择使用的全部buff
+       *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -27575,7 +27623,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  选择使用的全部buff
+       *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -27600,7 +27648,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  选择使用的全部buff
+       *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -27623,7 +27671,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  选择使用的全部buff
+       *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -27639,7 +27687,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  选择使用的全部buff
+       *  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 6;</code>
@@ -27691,6 +27739,49 @@ public final class BattleMsg {
       public Builder clearStartBattle() {
         
         startBattle_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean canQuickReward_ ;
+      /**
+       * <pre>
+       * 是否可以进行扫荡， 如果为true，需要先进行扫荡在手动挑战，如果为false 可以直接挑战
+       * </pre>
+       *
+       * <code>bool canQuickReward = 9;</code>
+       * @return The canQuickReward.
+       */
+      @java.lang.Override
+      public boolean getCanQuickReward() {
+        return canQuickReward_;
+      }
+      /**
+       * <pre>
+       * 是否可以进行扫荡， 如果为true，需要先进行扫荡在手动挑战，如果为false 可以直接挑战
+       * </pre>
+       *
+       * <code>bool canQuickReward = 9;</code>
+       * @param value The canQuickReward to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCanQuickReward(boolean value) {
+        
+        canQuickReward_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是否可以进行扫荡， 如果为true，需要先进行扫荡在手动挑战，如果为false 可以直接挑战
+       * </pre>
+       *
+       * <code>bool canQuickReward = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCanQuickReward() {
+        
+        canQuickReward_ = false;
         onChanged();
         return this;
       }
@@ -27753,7 +27844,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -27761,7 +27852,7 @@ public final class BattleMsg {
     int getBuffIdsCount();
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -27776,7 +27867,7 @@ public final class BattleMsg {
     getBuffIds();
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -27785,7 +27876,7 @@ public final class BattleMsg {
     getBuffIdsMap();
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -27796,7 +27887,7 @@ public final class BattleMsg {
         int defaultValue);
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -27940,7 +28031,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -27962,7 +28053,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -27974,7 +28065,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -27991,7 +28082,7 @@ public final class BattleMsg {
     }
     /**
      * <pre>
-     *  使用的全部buff，如果是null表示放弃本次加成
+     *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
      * </pre>
      *
      * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -28377,7 +28468,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
+       *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -28399,7 +28490,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
+       *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -28411,7 +28502,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
+       *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -28428,7 +28519,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
+       *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -28453,7 +28544,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
+       *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -28476,7 +28567,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
+       *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -28492,7 +28583,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *  使用的全部buff，如果是null表示放弃本次加成
+       *  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
        * </pre>
        *
        * <code>map&lt;int32, int32&gt; buffIds = 1;</code>
@@ -35712,36 +35803,36 @@ public final class BattleMsg {
       " \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDaoHeartSweepR" +
       "esponse_13000067\022#\n\007rewards\030\001 \003(\0132\022.Prot" +
       "os.RewardInfo\"&\n$BattleNightmareRealmReq" +
-      "uest_13000080\"\243\002\n%BattleNightmareRealmRe" +
+      "uest_13000080\"\273\002\n%BattleNightmareRealmRe" +
       "sponse_13000081\022#\n\007lineups\030\001 \003(\0132\022.Proto" +
       "s.LineupInfo\022\022\n\nrandomBuff\030\003 \003(\005\022\030\n\020buff" +
       "RefreshTimes\030\004 \001(\005\022\025\n\rquickRewardId\030\005 \003(" +
       "\005\022K\n\007buffIds\030\006 \003(\0132:.Protos.BattleNightm" +
       "areRealmResponse_13000081.BuffIdsEntry\022\023" +
-      "\n\013startBattle\030\010 \001(\005\032.\n\014BuffIdsEntry\022\013\n\003k" +
-      "ey\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"\266\001\n.BattleNi" +
-      "ghtmareRealmBuffUpdateRequest_13000082\022T" +
-      "\n\007buffIds\030\001 \003(\0132C.Protos.BattleNightmare" +
-      "RealmBuffUpdateRequest_13000082.BuffIdsE" +
-      "ntry\032.\n\014BuffIdsEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005val" +
-      "ue\030\002 \001(\005:\0028\001\"1\n/BattleNightmareRealmBuff" +
-      "UpdateResponse_13000083\"+\n)BattleNightma" +
-      "reRealmQuickRequest_13000084\"Q\n*BattleNi" +
-      "ghtmareRealmQuickResponse_13000085\022#\n\007re" +
-      "wards\030\001 \003(\0132\022.Protos.RewardInfo\"E\n4Battl" +
-      "eDayChallengeReceiveActivePointRequest_1" +
-      "3000070\022\r\n\005index\030\001 \001(\005\"\\\n5BattleDayChall" +
-      "engeReceiveActivePointResponse_13000071\022" +
-      "#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"b\n\020" +
-      "DayChallengeInfo\022\023\n\013battleTimes\030\001 \001(\005\022\020\n" +
-      "\010battleId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(\005\022\023\n\013r" +
-      "ewardIndex\030\004 \003(\005\"*\n\nLineupInfo\022\013\n\003seq\030\001 " +
-      "\001(\005\022\017\n\007heroUid\030\002 \003(\t\"$\n\"BattleRougeRefre" +
-      "shRequest_13000005\"%\n#BattleRougeRefresh" +
-      "Response_13000006\"-\n\035BattleStaminaReques" +
-      "t_13000050\022\014\n\004time\030\001 \001(\005\" \n\036BattleStamin" +
-      "aResponse_13000051B\033\n\031cn.game.protocol.p" +
-      "rotobufb\006proto3"
+      "\n\013startBattle\030\010 \001(\005\022\026\n\016canQuickReward\030\t " +
+      "\001(\010\032.\n\014BuffIdsEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005valu" +
+      "e\030\002 \001(\005:\0028\001\"\266\001\n.BattleNightmareRealmBuff" +
+      "UpdateRequest_13000082\022T\n\007buffIds\030\001 \003(\0132" +
+      "C.Protos.BattleNightmareRealmBuffUpdateR" +
+      "equest_13000082.BuffIdsEntry\032.\n\014BuffIdsE" +
+      "ntry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"1\n/" +
+      "BattleNightmareRealmBuffUpdateResponse_1" +
+      "3000083\"+\n)BattleNightmareRealmQuickRequ" +
+      "est_13000084\"Q\n*BattleNightmareRealmQuic" +
+      "kResponse_13000085\022#\n\007rewards\030\001 \003(\0132\022.Pr" +
+      "otos.RewardInfo\"E\n4BattleDayChallengeRec" +
+      "eiveActivePointRequest_13000070\022\r\n\005index" +
+      "\030\001 \001(\005\"\\\n5BattleDayChallengeReceiveActiv" +
+      "ePointResponse_13000071\022#\n\007rewards\030\001 \003(\013" +
+      "2\022.Protos.RewardInfo\"b\n\020DayChallengeInfo" +
+      "\022\023\n\013battleTimes\030\001 \001(\005\022\020\n\010battleId\030\002 \001(\005\022" +
+      "\022\n\nrandomBuff\030\003 \003(\005\022\023\n\013rewardIndex\030\004 \003(\005" +
+      "\"*\n\nLineupInfo\022\013\n\003seq\030\001 \001(\005\022\017\n\007heroUid\030\002" +
+      " \003(\t\"$\n\"BattleRougeRefreshRequest_130000" +
+      "05\"%\n#BattleRougeRefreshResponse_1300000" +
+      "6\"-\n\035BattleStaminaRequest_13000050\022\014\n\004ti" +
+      "me\030\001 \001(\005\" \n\036BattleStaminaResponse_130000" +
+      "51B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -35975,7 +36066,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleNightmareRealmResponse_13000081_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleNightmareRealmResponse_13000081_descriptor,
-        new java.lang.String[] { "Lineups", "RandomBuff", "BuffRefreshTimes", "QuickRewardId", "BuffIds", "StartBattle", });
+        new java.lang.String[] { "Lineups", "RandomBuff", "BuffRefreshTimes", "QuickRewardId", "BuffIds", "StartBattle", "CanQuickReward", });
     internal_static_Protos_BattleNightmareRealmResponse_13000081_BuffIdsEntry_descriptor =
       internal_static_Protos_BattleNightmareRealmResponse_13000081_descriptor.getNestedTypes().get(0);
     internal_static_Protos_BattleNightmareRealmResponse_13000081_BuffIdsEntry_fieldAccessorTable = new

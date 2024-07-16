@@ -194,13 +194,15 @@ message BattleNightmareRealmResponse_13000081{
 	repeated int32 randomBuff = 3;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
 	int32 buffRefreshTimes = 4;  // 可用的buff刷新次数
 	repeated int32 quickRewardId = 5;    // 领取过的快速奖励的Battle表id(Battle表ClearGameReward有值的)
-	map<int32,int32> buffIds = 6;		//  选择使用的全部buff
+	map<int32,int32> buffIds = 6;		//  选择使用的全部buff,key NightmareRealmBuff表id: value:等级
 	int32  startBattle = 8;			//  手动战斗的起始关卡 Battle表id
+	// 是否可以进行扫荡， 如果为true，需要先进行扫荡在手动挑战，如果为false 可以直接挑战
+	bool canQuickReward = 9;
 }
 
 /*** 梦魇秘境更新buff***/
 message BattleNightmareRealmBuffUpdateRequest_13000082{
-	map<int32,int32> buffIds = 1;			//  使用的全部buff，如果是null表示放弃本次加成
+	map<int32,int32> buffIds = 1;			//  使用的全部buff，如果是null表示放弃本次加成。key NightmareRealmBuff表id: value:等级
 }
 message BattleNightmareRealmBuffUpdateResponse_13000083{
 }
