@@ -61,6 +61,8 @@ public enum OpType{
 
 	BattleSweep(135, "关卡扫荡"),
 
+	MengYanMiJingFirstFinish(138, "梦魇秘境首通奖励"),
+	MengYanMiJingFirst(139, "梦魇秘境扫荡奖励"),
 	DaoXinFirstFinish(140, "道心试炼首通奖励"),
 	
 	XinMoFirstFinish(141, "心魔试炼首通奖励"),

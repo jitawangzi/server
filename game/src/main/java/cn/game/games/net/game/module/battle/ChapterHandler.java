@@ -1,7 +1,9 @@
 package cn.game.games.net.game.module.battle;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,7 @@ import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.AttrModule;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.protocol.generated.config.BattleConfig;
@@ -45,6 +48,14 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartResponse_13000002;
+import cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048;
+import cn.game.protocol.protobuf.BattleMsg.BattleLineupResponse_13000049;
+import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082;
+import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateResponse_13000083;
+import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmQuickRequest_13000084;
+import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmQuickResponse_13000085;
+import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmRequest_13000080;
+import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmResponse_13000081;
 import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044;
 import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
@@ -61,6 +72,7 @@ import cn.game.protocol.protobuf.BattleMsg.HCBattleRewardRequest_13000027;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleRewardResponse_13000028;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleSweepRequest_13000040;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleSweepResponse_13000041;
+import cn.game.protocol.protobuf.BattleMsg.LineupInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -94,6 +106,10 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleDaoHeartSweepBatchRequest_13000062, this::daoHeartSweepBatch);
 		putInvoker(PbProtocol.BattleDaoHeartSweepRequest_13000066, this::daoHeartReward);
 		putInvoker(PbProtocol.BattleDaoHeartSweepRequest_13000064, this::daoHeartRewardInfo);
+		putInvoker(PbProtocol.BattleLineupRequest_13000048, this::lineup);
+		putInvoker(PbProtocol.BattleNightmareRealmRequest_13000080, this::nightmareRealm);
+		putInvoker(PbProtocol.BattleNightmareRealmBuffUpdateRequest_13000082, this::nightmareRealmBuff);
+		putInvoker(PbProtocol.BattleNightmareRealmQuickRequest_13000084, this::nightmareRealmQuick);
 	}
 
 	protected void empty(NetClient client, Object message) {
@@ -104,6 +120,116 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void nightmareRealmQuick(NetClient client, Object message) {
+		BattleNightmareRealmQuickRequest_13000084 req = (BattleNightmareRealmQuickRequest_13000084) message;
+		BattleNightmareRealmQuickResponse_13000085.Builder resp = BattleNightmareRealmQuickResponse_13000085.newBuilder();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (!player.isFuncOpen(InitialUI.NightmareRealm)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getMengYanMiJingBattle();
+		List<Integer> rewardBattleIds = mengYanMiJingBattle.getRewardBattleIds();
+		int maxSweepBattle = mengYanMiJingBattle.maxSweepBattle();
+		List<RewardInfo> rewardsList = new ArrayList<>(); 
+		
+		BattleConfig battleConfig = BattleManager.instance().getNullable(maxSweepBattle);
+		while (battleConfig != null) {
+			if (battleConfig.ClearGameReward > 0 && !rewardBattleIds.contains(battleConfig.ID)) {
+				List<RewardInfo> list = PlayerHelper.addReward(player, battleConfig.ClearGameReward, OpType.MengYanMiJingFirst);
+				rewardsList.addAll(list); 
+				rewardBattleIds.add(battleConfig.ID); 
+			}
+			battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+		}
+		resp.addAllRewards(rewardsList);
+		client.sendProtocol(resp);
+	}
+
+	protected void nightmareRealmBuff(NetClient client, Object message) {
+		BattleNightmareRealmBuffUpdateRequest_13000082 req = (BattleNightmareRealmBuffUpdateRequest_13000082) message;
+		BattleNightmareRealmBuffUpdateResponse_13000083.Builder resp = BattleNightmareRealmBuffUpdateResponse_13000083.newBuilder();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		if (!player.isFuncOpen(InitialUI.NightmareRealm)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getMengYanMiJingBattle();
+		int buffRefreshTimes = mengYanMiJingBattle.getBuffRefreshTimes();
+		if (buffRefreshTimes < 0) {
+			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+
+		mengYanMiJingBattle.setRandomBuff(req.getBuffIdsList());
+		mengYanMiJingBattle.setBuffRefreshTimes(buffRefreshTimes - 1);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void nightmareRealm(NetClient client, Object message) {
+		BattleNightmareRealmRequest_13000080 req = (BattleNightmareRealmRequest_13000080) message;
+		BattleNightmareRealmResponse_13000081.Builder resp = BattleNightmareRealmResponse_13000081.newBuilder();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		if (!player.isFuncOpen(InitialUI.NightmareRealm)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		HeroModule heroModule = player.getHeroModule();
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		Map<Integer, List<String>> lineups = chapterModule.getLineups(9);
+
+		if (lineups != null) {
+			lineups.forEach((k, v) -> {
+				LineupInfo.Builder lineup = LineupInfo.newBuilder();
+				lineup.setSeq(k);
+				Iterator<String> iterator = v.iterator();
+				while (iterator.hasNext()) {
+					String string = (String) iterator.next();
+					if (heroModule.get(Long.parseLong(string)) == null) {
+						iterator.remove();
+					}
+				}
+				lineup.addAllHeroUid(v);
+				resp.addLineups(lineup);
+			});
+		}
+		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getMengYanMiJingBattle();
+		resp.setBuffRefreshTimes(mengYanMiJingBattle.getBuffRefreshTimes());
+		resp.setStartBattle(mengYanMiJingBattle.getStartBattleId());
+		resp.addAllBuffIds(mengYanMiJingBattle.getBuffIds());
+		resp.addAllQuickRewardId(mengYanMiJingBattle.getRewardBattleIds());
+		resp.addAllRandomBuff(mengYanMiJingBattle.getRandomBuff());
+
+		client.sendProtocol(resp);
+	}
+
+	protected void lineup(NetClient client, Object message) {
+		BattleLineupRequest_13000048 req = (BattleLineupRequest_13000048) message;
+		BattleLineupResponse_13000049.Builder resp = BattleLineupResponse_13000049.newBuilder();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		int battleType = req.getBattleType(); 
+		LineupInfo lineup = req.getLineup();
+		
+		chapterModule.updateLineup(battleType, lineup.getSeq(), lineup.getHeroUidList());
 
 		client.sendProtocol(resp);
 	}
@@ -185,28 +311,33 @@ public class ChapterHandler extends BaseHandler {
 		if (freeRemaning > 0) {
 			daoHeartBattle.setFreeSweep(daoHeartBattle.getFreeSweep() + freeRemaning);
 		}
-		int paySweep = daoHeartBattle.getPaySweep();
-		int payRemaning = daoHeartBattle.getMaxPaySweepCount() - paySweep;
-		if (payRemaning > 0) {
-			daoHeartBattle.setPaySweep(paySweep + payRemaning);
+		int payRemaning = 0;
+		if (pay) {
+			int paySweep = daoHeartBattle.getPaySweep();
+			payRemaning = daoHeartBattle.getMaxPaySweepCount() - paySweep;
+			if (payRemaning > 0) {
+				daoHeartBattle.setPaySweep(paySweep + payRemaning);
+			}
 		}
 		int allCount = freeRemaning + payRemaning;
 		if (allCount == 0) {
 			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 			return;
 		}
-		List<Integer> payList = new ArrayList<>();
-		int[][] paySweepCostAll = daoHeartBattle.getPaySweepCostAll();
-		for (int i = daoHeartBattle.getPaySweep(); i < paySweepCostAll.length; i++) {
-			payList.add(paySweepCostAll[i][0], paySweepCostAll[i][1]);
-		}
-		int[] payArray = new int[payList.size()];
-		for (int i : payArray) {
-			payArray[i] = payList.get(i);
-		}
-		if (!PlayerHelper.delResources(player, payArray, opType)) {
-			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
+		if (pay) {
+			List<Integer> payList = new ArrayList<>();
+			int[][] paySweepCostAll = daoHeartBattle.getPaySweepCostAll();
+			for (int i = daoHeartBattle.getPaySweep(); i < paySweepCostAll.length; i++) {
+				payList.add(paySweepCostAll[i][0], paySweepCostAll[i][1]);
+			}
+			int[] payArray = new int[payList.size()];
+			for (int i : payArray) {
+				payArray[i] = payList.get(i);
+			}
+			if (!PlayerHelper.delResources(player, payArray, opType)) {
+				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+				return;
+			}
 		}
 
 		BattleConfig battleConfig = BattleManager.instance().get(id);
@@ -814,6 +945,11 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, errorCode);
 			return;
 		}
+
+		if (req.getWin()) {
+			player.handleEvent(EventTypeEnum.ChapterWin, attackingDungeonId);
+		}
+
 //		BattleLevelConfig levelConfig = BattleLevelManager.getInstance().getBattleLevelConfig(0);
 //		int apCost = levelConfig.getEnergyExpend();
 

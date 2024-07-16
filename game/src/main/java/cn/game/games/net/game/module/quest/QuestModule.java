@@ -26,7 +26,6 @@ import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.AchievementMissionConfig;
-import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.MainlineMissionConfig;
 import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
@@ -36,7 +35,6 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.AchievementMissionManager;
-import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.QuestManager;
@@ -880,6 +878,10 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	@Override
+	public int eventHandlerOrder() {
+		return 100;
+	}
+	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case NewWeek: {
@@ -921,10 +923,11 @@ public class QuestModule extends BasePlayerModule {
 		}
 		case ChapterWin: {
 			int id = event.getIntParameter(0);
-			BattleConfig battleConfig = BattleManager.instance().get(id);
-			if (battleConfig.BattleType == 2) {
-				addCumulativeCount(ConditionTypeEnum.EliteFinish, 1);
-			}
+			// 这个不用了
+//			BattleConfig battleConfig = BattleManager.instance().get(id);
+//			if (battleConfig.BattleType == 2) {
+//				addCumulativeCount(ConditionTypeEnum.EliteFinish, 1);
+//			}
 			break;
 		}
 		case BattleEnd: {
@@ -942,7 +945,7 @@ public class QuestModule extends BasePlayerModule {
 		case Hero: {
 			int id = event.getIntParameter(0);
 			HeroConfig heroConfig = HeroManager.instance().get(id);
-			addCumulativeCount(ConditionTypeEnum.BreakHeroCumulation, 1, heroConfig.InitialQuality);
+			addCumulativeCount(ConditionTypeEnum.EarnHeroCumulation, 1, heroConfig.InitialQuality);
 			break;
 		}
 		case CostItem: {

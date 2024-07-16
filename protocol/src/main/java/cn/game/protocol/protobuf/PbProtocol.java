@@ -52,6 +52,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HCBattleSweepResponse_13000041 = 0x13000041;    
 	public final static int BattlePatrolRewardRequest_13000044 = 0x13000044;    //领取巡逻奖励  
 	public final static int BattlePatrolRewardResponse_13000045 = 0x13000045;    
+	public final static int BattleLineupRequest_13000048 = 0x13000048;    //保存阵容  
+	public final static int BattleLineupResponse_13000049 = 0x13000049;    
 	public final static int BattleDaoHeartRequest_13000055 = 0x13000055;    //查看道心磨砺 心魔试炼数据  
 	public final static int BattleDaoHeartResponse_13000056 = 0x13000056;    
 	public final static int BattleDaoHeartSweepRequest_13000060 = 0x13000060;    //扫荡道心磨砺 心魔试炼关卡  
@@ -62,6 +64,12 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleDaoHeartSweepResponse_13000065 = 0x13000065;    
 	public final static int BattleDaoHeartSweepRequest_13000066 = 0x13000066;    //领取道心磨砺 心魔试炼关卡通关奖励  
 	public final static int BattleDaoHeartSweepResponse_13000067 = 0x13000067;    
+	public final static int BattleNightmareRealmRequest_13000080 = 0x13000080;    //请求梦魇秘境数据  
+	public final static int BattleNightmareRealmResponse_13000081 = 0x13000081;    
+	public final static int BattleNightmareRealmBuffUpdateRequest_13000082 = 0x13000082;    //梦魇秘境更新buff  
+	public final static int BattleNightmareRealmBuffUpdateResponse_13000083 = 0x13000083;    
+	public final static int BattleNightmareRealmQuickRequest_13000084 = 0x13000084;    //梦魇秘境快速战斗  
+	public final static int BattleNightmareRealmQuickResponse_13000085 = 0x13000085;    
 	public final static int BattleDayChallengeReceiveActivePointRequest_13000070 = 0x13000070;    //领取每日挑战活跃积分奖励  
 	public final static int BattleDayChallengeReceiveActivePointResponse_13000071 = 0x13000071;    
 	public final static int BattleRougeRefreshRequest_13000005 = 0x13000005;    //肉鸽刷新,每天前3次免费，第四次看广告。  
@@ -394,6 +402,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(BattlePatrolRewardResponse_13000045, cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(BattleLineupRequest_13000048, cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleLineupResponse_13000049, cn.game.protocol.protobuf.BattleMsg.BattleLineupResponse_13000049.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(BattleDaoHeartRequest_13000055, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleDaoHeartResponse_13000056, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056.getDefaultInstance()
@@ -413,6 +425,18 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleDaoHeartSweepRequest_13000066, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleDaoHeartSweepResponse_13000067, cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000067.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleNightmareRealmRequest_13000080, cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmRequest_13000080.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleNightmareRealmResponse_13000081, cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmResponse_13000081.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleNightmareRealmBuffUpdateRequest_13000082, cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleNightmareRealmBuffUpdateResponse_13000083, cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateResponse_13000083.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleNightmareRealmQuickRequest_13000084, cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmQuickRequest_13000084.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleNightmareRealmQuickResponse_13000085, cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmQuickResponse_13000085.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleDayChallengeReceiveActivePointRequest_13000070, cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.getDefaultInstance()
 				.getParserForType());
@@ -982,6 +1006,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("HCBattleSweepResponse_13000041", 0x13000041);
 		nameIdMap.put("BattlePatrolRewardRequest_13000044", 0x13000044);
 		nameIdMap.put("BattlePatrolRewardResponse_13000045", 0x13000045);
+		nameIdMap.put("BattleLineupRequest_13000048", 0x13000048);
+		nameIdMap.put("BattleLineupResponse_13000049", 0x13000049);
 		nameIdMap.put("BattleDaoHeartRequest_13000055", 0x13000055);
 		nameIdMap.put("BattleDaoHeartResponse_13000056", 0x13000056);
 		nameIdMap.put("BattleDaoHeartSweepRequest_13000060", 0x13000060);
@@ -992,6 +1018,12 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleDaoHeartSweepResponse_13000065", 0x13000065);
 		nameIdMap.put("BattleDaoHeartSweepRequest_13000066", 0x13000066);
 		nameIdMap.put("BattleDaoHeartSweepResponse_13000067", 0x13000067);
+		nameIdMap.put("BattleNightmareRealmRequest_13000080", 0x13000080);
+		nameIdMap.put("BattleNightmareRealmResponse_13000081", 0x13000081);
+		nameIdMap.put("BattleNightmareRealmBuffUpdateRequest_13000082", 0x13000082);
+		nameIdMap.put("BattleNightmareRealmBuffUpdateResponse_13000083", 0x13000083);
+		nameIdMap.put("BattleNightmareRealmQuickRequest_13000084", 0x13000084);
+		nameIdMap.put("BattleNightmareRealmQuickResponse_13000085", 0x13000085);
 		nameIdMap.put("BattleDayChallengeReceiveActivePointRequest_13000070", 0x13000070);
 		nameIdMap.put("BattleDayChallengeReceiveActivePointResponse_13000071", 0x13000071);
 		nameIdMap.put("BattleRougeRefreshRequest_13000005", 0x13000005);

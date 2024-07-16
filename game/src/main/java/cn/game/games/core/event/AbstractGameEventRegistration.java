@@ -20,7 +20,7 @@ public abstract class AbstractGameEventRegistration implements GameEventRegistra
 			if (!hlist.contains(eventHandler))// 不重复添加
 				hlist.addFirst(eventHandler);
 		} else {
-			hlist = new SingleLinkedList<EventHandler>();
+			hlist = new SingleLinkedList<EventHandler>(EventHandler.ORDER_COMPARATOR);
 			hlist.addFirst(eventHandler);
 			eventHandlers.put(eventType, hlist);
 		}

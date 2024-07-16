@@ -1,6 +1,8 @@
 package cn.game.util;
 
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * 
@@ -14,18 +16,54 @@ public class SingleLinkedList<T> implements Iterable<T> {
 
 	/** 哨兵头节点，不保存数据 */
 	public Node<T> sentry = new Node<>();
+	private Comparator<? super T> comparator;
+
+	public SingleLinkedList() {
+		this(null);
+	}
+
+	public SingleLinkedList(Comparator<? super T> comparator) {
+		this.comparator = comparator;
+	}
+
+	public void setComparator(Comparator<? super T> comparator) {
+		this.comparator = comparator;
+	}
 
 	/**
 	 * 链表头部增加数据，一般用这个，速度快，不用维持顺序,迭代时增加的数据不会被迭代到
 	 * 
 	 * @param data
 	 */
-	public void addFirst(T data) {
+	public void addFirstOld(T data) {
 
 		Node<T> add = new Node<T>(data);
 		add.next = sentry.next;
 		sentry.next = add;
 	}
+
+	public void addFirst(T data) {
+		addSorted(data);
+	}
+
+	/**
+	* 插入元素，保持较小的元素在前面
+	* @param data 要插入的数据
+	*/
+	public void addSorted(T data) {
+		if (comparator == null) {
+			throw new IllegalStateException("Comparator is not set");
+		}
+		Node<T> newNode = new Node<>(data);
+		Node<T> current = sentry;
+
+		while (current.next != null && comparator.compare(current.next.data, data) < 0) {
+			current = current.next;
+		}
+		newNode.next = current.next;
+		current.next = newNode;
+	}
+
 	/**
 	 * @Description 链表尾部增加节点
 	 * @param data
@@ -143,24 +181,38 @@ public class SingleLinkedList<T> implements Iterable<T> {
 	}
 
 	private class Itr implements Iterator<T> {
+		private Node<T> prev = sentry;
+		private Node<T> current = sentry;
+		private Node<T> next = sentry.next;
+		private boolean canRemove = false;
 
-		private Node<T> node = sentry;
 		@Override
 		public boolean hasNext() {
-			return node.next != null;
+			return next != null;
 		}
 
 		@Override
 		public T next() {
-			node = node.next;
-			return node.data;
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			prev = current;
+			current = next;
+			next = next.next;
+			canRemove = true;
+			return current.data;
 		}
+
 		@Override
 		public void remove() {
-			SingleLinkedList.this.remove(node);
+			if (!canRemove) {
+				throw new IllegalStateException();
+			}
+			prev.next = next;
+			current = prev;
+			canRemove = false;
 		}
 	}
-
 	public static void main(String args[]) {
 		testModifyWhileIterating();
 	}

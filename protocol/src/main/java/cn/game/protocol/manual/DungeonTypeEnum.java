@@ -15,6 +15,10 @@ public enum DungeonTypeEnum{
 
 	/** 妖王别跑战斗 */
 	YaoWang(4, "妖王别跑战斗"),
+
+	/** 梦魇秘境战斗 */
+	MengYanMiJing(9, "梦魇秘境战斗"),
+
 	/** 突发事件 */
 	BattleEvent(33, "突发事件"),
 	/** 探索战斗 */

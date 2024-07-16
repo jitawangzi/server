@@ -21,9 +21,9 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -285,8 +285,9 @@ public class TestHandler extends BaseHandler {
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
-		Collection<Hero> list = player.getHeroModule().list();
-		PlayerHelper.addReward(player, 20011, OpType.None);
+//		Collection<Hero> list = player.getHeroModule().list();
+//		PlayerHelper.addReward(player, 20011, OpType.None);
+		player.handleEvent(EventTypeEnum.CostItem, Asset.diamond.ID, 3000);
 //		long uid = 0;
 //		for (Hero hero : list) {
 //			uid = hero.getId();

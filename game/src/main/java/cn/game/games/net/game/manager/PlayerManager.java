@@ -664,7 +664,7 @@ public class PlayerManager {
 	// }
 
 	
-	public void deletePlayer(long id) {
+	public Player deletePlayer(long id) {
 
 		Player del = id_players.get(id);
 		if (del != null) {
@@ -678,6 +678,7 @@ public class PlayerManager {
 			int onlineTime = (int) ((nowTime - loginTime) / 1000);
 			loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]", id, false,false, onlineTime);
 		}
+		return del;
 	}
 
 	

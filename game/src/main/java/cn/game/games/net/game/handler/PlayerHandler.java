@@ -915,9 +915,6 @@ public class PlayerHandler extends BaseHandler {
 
 				PlayerManager.getInstance().initAdd(player);
 
-				if (ServerContext.getInstance().getRunMode().isPressure()) {
-					player.getCurrencyModule().setMaxCurrency();
-				}
 				// 初始的资源
 				PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 

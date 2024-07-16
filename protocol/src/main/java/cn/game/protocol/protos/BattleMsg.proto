@@ -123,6 +123,15 @@ message PatrolInfo{
 	int32 adPatrolCount = 3;		// 看广告快速巡逻次数，巡逻过的次数
 }
 
+/*** 保存阵容 ***/
+message BattleLineupRequest_13000048{
+	int32 battleType = 1;			// 玩法类型，梦魇秘境  9
+	LineupInfo lineup = 2;//  阵容数据
+}
+message BattleLineupResponse_13000049{
+}
+
+
 // ****************************************道心磨砺/心魔试炼********************************************
 ///*** 查看道心磨砺/心魔试炼数据 ***/
 message BattleDaoHeartRequest_13000055{
@@ -174,6 +183,36 @@ message BattleDaoHeartSweepResponse_13000067{
 	repeated RewardInfo rewards = 1;//
 }
 
+
+// ****************************************梦魇秘境********************************************
+
+/*** 请求梦魇秘境数据 ***/
+message BattleNightmareRealmRequest_13000080{
+}
+message BattleNightmareRealmResponse_13000081{
+	repeated LineupInfo lineups = 1;//  阵容数据
+	repeated int32 randomBuff = 3;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
+	int32 buffRefreshTimes = 4;  // 可用的buff刷新次数
+	repeated int32 quickRewardId = 5;    // 领取过的快速奖励的Battle表id(Battle表ClearGameReward有值的)
+	repeated int32 buffIds = 6;		//  选择使用的全部buff
+	int32  startBattle = 8;			//  手动战斗的起始关卡 Battle表id
+}
+
+/*** 梦魇秘境更新buff***/
+message BattleNightmareRealmBuffUpdateRequest_13000082{
+	repeated int32 buffIds = 1;			//  使用的全部buff，如果是null表示放弃本次加成
+}
+message BattleNightmareRealmBuffUpdateResponse_13000083{
+}
+
+/*** 梦魇秘境快速战斗***/
+message BattleNightmareRealmQuickRequest_13000084{
+}
+message BattleNightmareRealmQuickResponse_13000085{
+	repeated RewardInfo rewards = 1;//
+}
+
+
 // ****************************************每日挑战********************************************
 
 // 领取每日挑战活跃积分奖励
@@ -194,8 +233,12 @@ message DayChallengeInfo{
    repeated int32 rewardIndex = 4;			// 已经领取过奖励箱子的索引， 如果4个箱子就是0 - 3 。
 }
 
-//@NotUseStart
+message LineupInfo{
+	int32 seq = 1; 							// 阵容顺序，从0开始
+	repeated string heroUid = 2;			// 英雄唯一id
+}
 
+//@NotUseStart
 
 // 肉鸽刷新,每天前3次免费，第四次看广告。
 message BattleRougeRefreshRequest_13000005{
@@ -213,7 +256,6 @@ message BattleStaminaRequest_13000050{
 
 message BattleStaminaResponse_13000051{
 }
-
 
 //@NotUseEnd
 

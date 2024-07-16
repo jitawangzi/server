@@ -16,31 +16,6 @@ import cn.game.util.Rnd;
 
 public class BattleHelper {
 
-	/** 普通关卡 */
-	public static final int LEVEL_TYPE_BATTLELEVEL = 1;
-	/** 剧情关卡 */
-	public static final int LEVEL_TYPE_PLOT = 2;
-	/** 挑战关卡 */
-	public static final int LEVEL_TYPE_EXPLORE = 3;
-
-	/*	战役类型
-		1-主线
-		2-道心历练
-		3-心魔试炼
-		4-泡泡别跑
-		5-失落真经
-		6-世界Boss
-		7-帮会Boss帮会
-		8-帮会Boss个人*/
-
-	public static final int Main = 1;
-	public static final int DaoXinLLiLian = 2;
-	public static final int XinMoShiLian = 3;
-	public static final int YaoWangBiePao = 4;
-
-	/** 普通关卡里的意识空间 */
-	public static final int BATTLE_LEVEL_TYPE_AWARENESSSPACE = 1;
-
 	public static int getBattleLevelType(int id) {
 		return id / 10000;
 	}
@@ -125,14 +100,16 @@ public class BattleHelper {
 	/** 
 	 * 随机一个战役的buff
 	 * @param battleId
+	 * @param playType 1 道心、心魔  2梦魇秘境
 	 * @return
 	 */
-	public static List<Integer> randomBuffs(int battleId) {
+	public static List<Integer> randomBuffs(int battleId, int playType) {
 		List<Integer> ret = new ArrayList<>();
 		BattleConfig battleConfig = BattleManager.instance().get(battleId);
 		for (int[] buffs : battleConfig.Cnt) {
 			for (int i = 0; i < buffs[1]; i++) {
-				List<GamePlayRandomBuffConfig> gamePlayMarkBuffCategoryList = GamePlayRandomBuffManager.instance().getGamePlayMarkBuffCategoryList(1, buffs[0]);
+				List<GamePlayRandomBuffConfig> gamePlayMarkBuffCategoryList = GamePlayRandomBuffManager.instance().getGamePlayMarkBuffCategoryList(playType,
+						buffs[0]);
 				GamePlayRandomBuffConfig randomWeighableElement = Rnd.randomWeighableElement(gamePlayMarkBuffCategoryList);
 				ret.add(randomWeighableElement.GamePlayBuffId);
 			}
@@ -186,5 +163,21 @@ public class BattleHelper {
 		return false;
 	}
 
+	public static BattleConfig nextBattleConfig(int id) {
+		BattleConfig battleConfig = BattleManager.instance().getNullable(id);
+		if (battleConfig == null) {
+			return null;
+		}
+		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(battleConfig.BattleType);
+		if (battleTypeList == null) {
+			return null;
+		}
+		for (BattleConfig config : battleTypeList) {
+			if (config.preBattle == id) {
+				return config;
+			}
+		}
+		return null;
+	}
 
 }

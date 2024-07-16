@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.game.util.Rnd;
 
 public class GG {
@@ -5,7 +8,14 @@ public class GG {
 	public static long firstTime = System.currentTimeMillis();
 
 	public static void main(String[] args) throws Exception {
-
+		List<List<String>> ret = new ArrayList<>();
+		List<String> list = new ArrayList<>();
+		list.add("1");
+		
+		ret.set(1, list);
+		
+		System.out.println(ret.get(0));
+		
 	}
 
 	private static void test() {

@@ -118,7 +118,7 @@ public class KeywordFilter {
 			System.out.println(filter.filter(text2));
 
 			// 动态更新关键词
-			Set<String> keyWordsFromFile = readKeyWordsFromFile(filterFileName);
+			Set<String> keyWordsFromFile = KeywordFilter.readKeyWordsFromFile(filterFileName);
 			Set<String> newKeywords = new HashSet<>(Arrays.asList("敏感词1", "敏感词2", "新敏感词"));
 			keyWordsFromFile.addAll(newKeywords);
 			KeywordFilter.initializeFromKeywords(keyWordsFromFile);

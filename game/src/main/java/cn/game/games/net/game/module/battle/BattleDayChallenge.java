@@ -33,7 +33,7 @@ public class BattleDayChallenge {
 		if (battleTypeList != null) {
 			BattleConfig battleConfig = Rnd.randomOne(battleTypeList);
 			this.battleId = battleConfig.ID;
-			randomBuff.addAll(BattleHelper.randomBuffs(battleConfig.ID));
+			randomBuff.addAll(BattleHelper.randomBuffs(battleConfig.ID, 1));
 		}
 	}
 	public int getBattleTimes() {

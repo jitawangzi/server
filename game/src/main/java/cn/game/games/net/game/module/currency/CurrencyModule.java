@@ -222,12 +222,14 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 			if (asset.Type == 1) {
 				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
 			} else if (asset.Type == 2) {
-				IntMapWrapper expLevelMap = player.getPlayerModule().getExpLevelMap();
-				expLevelMap.setValue(asset.ID, 100);
+				if (asset == Asset.playerExp) {
+					addExp(asset.ID, 1000000000);
+				}
 			} else if (asset.Type == 3) {
 				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
 			}
 		}
+
 		// 在给些道具。
 		ItemModule itemModule = player.getItemModule();
 		Collection<ItemConfig> list = ItemManager.instance().list();

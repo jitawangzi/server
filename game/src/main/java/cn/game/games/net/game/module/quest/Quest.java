@@ -316,8 +316,12 @@ public class Quest implements Serializable, DbEntity {
 			if (requires != null) {
 				for (int i = 0; i < requires.size(); i++) {
 					long count = requires.get(i).getFinishCount();
+					long requireCount = requires.get(i).getRequireCount();
 					if (count >= Integer.MAX_VALUE) {
 						count = Integer.MAX_VALUE;
+					}
+					if (count >= requireCount) {
+						count = requireCount;
 					}
 					questInfo.addFinishCount((int) count);
 				}

@@ -179,7 +179,7 @@ public class GameServer implements GameServerMBean {
 		PressureTestManager.getInstance().init();
 		BIHelper.start();
 		checkPlayerJsonStruct();
-		KeywordFilter.getInstance();
+		KeywordFilter.initializeFromFile();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);

@@ -48,7 +48,7 @@ public class DaoHeartBattle {
 
 		BattleConfig next = BattleManager.instance().getNullable(nextBattleId);
 		if (next != null) {
-			randomBuff.addAll(BattleHelper.randomBuffs(nextBattleId));
+			randomBuff.addAll(BattleHelper.randomBuffs(nextBattleId, 1));
 		}
 	}
 
@@ -59,7 +59,7 @@ public class DaoHeartBattle {
 			nextBattleId = nextBattleId();
 			BattleConfig next = BattleManager.instance().getNullable(nextBattleId);
 			if (next != null) {
-				randomBuff.addAll(BattleHelper.randomBuffs(nextBattleId));
+				randomBuff.addAll(BattleHelper.randomBuffs(nextBattleId, 1));
 			}
 		}
 	}

@@ -34,6 +34,7 @@ import cn.game.protocol.generated.manager.BattleChapterManager;
 import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo;
 import cn.game.protocol.protobuf.BattleMsg.PatrolInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -103,7 +104,30 @@ public class ChapterModule extends BasePlayerModule  {
 	private BattleDayChallenge dayChallenge = new BattleDayChallenge();
 
 	private Map<Integer, DaoHeartBattle> daoBattleMap = new HashMap<Integer, DaoHeartBattle>();
+	/** 阵容数据，玩法-> 阵容顺序->阵容里面的角色 */
+	private Map<Integer, Map<Integer, List<String>>> lineupMaps = new HashMap<Integer, Map<Integer, List<String>>>();
 
+	/** 梦魇秘境 */
+	private MengYanMiJingBattle mengYanMiJingBattle;
+
+	/** 
+	 * 
+	 * @param type
+	 * @param lineupId  ，一般从0开始。 
+	 * @param lineup
+	 */
+	public void updateLineup(int type, int lineupId, List<String> heroUids) {
+		Map<Integer, List<String>> map = lineupMaps.get(type);
+		if (map == null) {
+			map = new HashMap<Integer, List<String>>();
+			lineupMaps.put(type, map);
+		}
+		map.put(lineupId, heroUids);
+	}
+
+	public Map<Integer, List<String>> getLineups(int type) {
+		return lineupMaps.get(type);
+	}
 	public void addChapter(int battleId) {
 		Chapter chapter = chapters.get(battleId);
 		if (chapter == null) {
@@ -146,13 +170,16 @@ public class ChapterModule extends BasePlayerModule  {
 	public boolean isBattlePass(int battleId) {
 		BattleConfig battleConfig = BattleManager.instance().get(battleId);
 		int battleType = battleConfig.BattleType;
-		if (battleType == BattleHelper.Main) {
+		if (battleType == DungeonTypeEnum.BattleChapter.getId()) {
 			Chapter chapter = this.chapters.get(battleId);
 			return chapter != null && chapter.getPass();
 		}
-		if (battleType == BattleHelper.DaoXinLLiLian || battleType == BattleHelper.XinMoShiLian || battleType == BattleHelper.YaoWangBiePao) {
+		if (battleType == DungeonTypeEnum.DaoHeart.getId() || battleType == DungeonTypeEnum.XinMo.getId() || battleType == DungeonTypeEnum.YaoWang.getId()) {
 			DaoHeartBattle daoHeartBattle = getDaoHeartBattle(battleType);
 			return daoHeartBattle != null && BattleHelper.isComplete(daoHeartBattle.getCompleteBattleId(), battleId);
+		}
+		if (battleType == DungeonTypeEnum.MengYanMiJing.getId()) {
+			return mengYanMiJingBattle.getCompleteBattleId() >= battleId;
 		}
 		return false;
 	}
@@ -502,6 +529,10 @@ public class ChapterModule extends BasePlayerModule  {
 		this.battleRewardMultipleTimes = battleRewardMultipleTimes;
 	}
 
+	public MengYanMiJingBattle getMengYanMiJingBattle() {
+		return mengYanMiJingBattle;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -534,16 +565,20 @@ public class ChapterModule extends BasePlayerModule  {
 		case FuncOpen: {
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.DaoXinLLiLian) {
-				initDaoXin(BattleHelper.DaoXinLLiLian);
+				initDaoXin(DungeonTypeEnum.DaoHeart.getId());
 			}
 			if (func == InitialUI.XinMoShiLian) {
-				initDaoXin(BattleHelper.XinMoShiLian);
+				initDaoXin(DungeonTypeEnum.XinMo.getId());
 			}
 			if (func == InitialUI.YaoWangBiePao) {
-				initDaoXin(BattleHelper.YaoWangBiePao);
+				initDaoXin(DungeonTypeEnum.YaoWang.getId());
 			}
 			if (func == InitialUI.HangingUpp) {
 				setPatrolRewardTime();
+			}
+			if (func == InitialUI.NightmareRealm) {
+				mengYanMiJingBattle = new MengYanMiJingBattle();
+				mengYanMiJingBattle.init();
 			}
 			break;
 		}

@@ -13,7 +13,6 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.net.vertx.rpc.VertxRPCService;
 import cn.game.core.util.IdUtil;
-import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.util.Config;
 import cn.game.util.MailUtil;
@@ -105,7 +104,6 @@ public class LoginServer {
 		});
 
 		log.info("登录服启动成功。耗时[{}]s", (System.currentTimeMillis() - start) / 1000);
-		WechatHelper.main(args);
 	}
 
 	public static void main(String[] args) {
