@@ -20,6 +20,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeishiConfig;
+import cn.game.protocol.generated.config.HunhuoConfig;
 import cn.game.protocol.generated.config.RechargeStoreConfig;
 import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
@@ -27,6 +28,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.HeishiManager;
+import cn.game.protocol.generated.manager.HunhuoManager;
 import cn.game.protocol.generated.manager.RechargeStoreManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.ShopManager;
@@ -246,6 +248,7 @@ public class ShopModule extends BasePlayerModule {
 		}
 	}
 
+
 	public void refreshStaminaItems() {
 		// 刷新体力商店
 		int shop = 5;
@@ -263,8 +266,20 @@ public class ShopModule extends BasePlayerModule {
 
 	}
 
-	private void refreshShopNewWeek() {
+	public void refreshHunhuoItems() {
+		// 刷新魂火商店
+		int shop = 10;
+		shopItemsMap.removeAll(shop);
+		List<HunhuoConfig> configs = HunhuoManager.instance().list();
+		if (configs != null) {
+			for (HunhuoConfig hunhuoConfig : configs) {
+				shopItemsMap.put(shop, new ShopItem(hunhuoConfig.Item));
+			}
+		}
+	}
 
+	private void refreshShopNewWeek() {
+		refreshHunhuoItems();
 	}
 
 	/*private void refreshShop() {

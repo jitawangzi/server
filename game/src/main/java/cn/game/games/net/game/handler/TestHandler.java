@@ -489,7 +489,7 @@ public class TestHandler extends BaseHandler {
 				} else if (goodsType == GoodsTypeEnum.Hero.getId()) {
 					Collection<HeroConfig> list = HeroManager.instance().list();
 					for (HeroConfig e : list) {
-						rewardItems = PlayerHelper.addResources(player, e.ID, 1, OpType.Test);
+						rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
 						allRewards.addAll(rewardItems);
 					}
 				} else {
