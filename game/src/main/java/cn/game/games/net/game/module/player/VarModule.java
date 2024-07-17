@@ -9,8 +9,9 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.IntMapWrapper;
 
 /**    
- * 专门处理玩家的一些零散的int和boolean类型变量。 并且这种变量大多修改的不频繁
- * 修改频繁的变量可以放到t_player_data表中。
+ * 专门处理玩家的一些零散的int和boolean类型变量。 
+ * 各种次数等等，都可以放这里
+ * key 放到 @VarConstant
  * @date 2024年2月26日 下午6:19:36
  * @author SYQ
  */

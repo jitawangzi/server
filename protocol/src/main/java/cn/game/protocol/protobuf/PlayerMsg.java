@@ -25636,6 +25636,26 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 每天分享复活次数。
+     * </pre>
+     *
+     * <code>int32 shareReliveCount = 34;</code>
+     * @return The shareReliveCount.
+     */
+    int getShareReliveCount();
+
+    /**
+     * <pre>
+     * 每天看广告复活次数。
+     * </pre>
+     *
+     * <code>int32 adReliveCount = 35;</code>
+     * @return The adReliveCount.
+     */
+    int getAdReliveCount();
+
+    /**
+     * <pre>
      *月卡
      * </pre>
      *
@@ -26751,6 +26771,16 @@ public final class PlayerMsg {
             case 264: {
 
               battleRewardMultipleTimes_ = input.readInt32();
+              break;
+            }
+            case 272: {
+
+              shareReliveCount_ = input.readInt32();
+              break;
+            }
+            case 280: {
+
+              adReliveCount_ = input.readInt32();
               break;
             }
             case 322: {
@@ -28336,6 +28366,36 @@ public final class PlayerMsg {
       return battleRewardMultipleTimes_;
     }
 
+    public static final int SHARERELIVECOUNT_FIELD_NUMBER = 34;
+    private int shareReliveCount_;
+    /**
+     * <pre>
+     * 每天分享复活次数。
+     * </pre>
+     *
+     * <code>int32 shareReliveCount = 34;</code>
+     * @return The shareReliveCount.
+     */
+    @java.lang.Override
+    public int getShareReliveCount() {
+      return shareReliveCount_;
+    }
+
+    public static final int ADRELIVECOUNT_FIELD_NUMBER = 35;
+    private int adReliveCount_;
+    /**
+     * <pre>
+     * 每天看广告复活次数。
+     * </pre>
+     *
+     * <code>int32 adReliveCount = 35;</code>
+     * @return The adReliveCount.
+     */
+    @java.lang.Override
+    public int getAdReliveCount() {
+      return adReliveCount_;
+    }
+
     public static final int MONTHCARDS_FIELD_NUMBER = 40;
     private java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> monthCards_;
     /**
@@ -29754,6 +29814,12 @@ public final class PlayerMsg {
       if (battleRewardMultipleTimes_ != 0) {
         output.writeInt32(33, battleRewardMultipleTimes_);
       }
+      if (shareReliveCount_ != 0) {
+        output.writeInt32(34, shareReliveCount_);
+      }
+      if (adReliveCount_ != 0) {
+        output.writeInt32(35, adReliveCount_);
+      }
       for (int i = 0; i < monthCards_.size(); i++) {
         output.writeMessage(40, monthCards_.get(i));
       }
@@ -29983,6 +30049,14 @@ public final class PlayerMsg {
       if (battleRewardMultipleTimes_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(33, battleRewardMultipleTimes_);
+      }
+      if (shareReliveCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(34, shareReliveCount_);
+      }
+      if (adReliveCount_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(35, adReliveCount_);
       }
       for (int i = 0; i < monthCards_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -30214,6 +30288,10 @@ public final class PlayerMsg {
           != other.getFreeRougeTimes()) return false;
       if (getBattleRewardMultipleTimes()
           != other.getBattleRewardMultipleTimes()) return false;
+      if (getShareReliveCount()
+          != other.getShareReliveCount()) return false;
+      if (getAdReliveCount()
+          != other.getAdReliveCount()) return false;
       if (!getMonthCardsList()
           .equals(other.getMonthCardsList())) return false;
       if (getMonthCardDoubleBonus()
@@ -30360,6 +30438,10 @@ public final class PlayerMsg {
       hash = (53 * hash) + getFreeRougeTimes();
       hash = (37 * hash) + BATTLEREWARDMULTIPLETIMES_FIELD_NUMBER;
       hash = (53 * hash) + getBattleRewardMultipleTimes();
+      hash = (37 * hash) + SHARERELIVECOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getShareReliveCount();
+      hash = (37 * hash) + ADRELIVECOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getAdReliveCount();
       if (getMonthCardsCount() > 0) {
         hash = (37 * hash) + MONTHCARDS_FIELD_NUMBER;
         hash = (53 * hash) + getMonthCardsList().hashCode();
@@ -30735,6 +30817,10 @@ public final class PlayerMsg {
 
         battleRewardMultipleTimes_ = 0;
 
+        shareReliveCount_ = 0;
+
+        adReliveCount_ = 0;
+
         if (monthCardsBuilder_ == null) {
           monthCards_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00004000);
@@ -30950,6 +31036,8 @@ public final class PlayerMsg {
         }
         result.freeRougeTimes_ = freeRougeTimes_;
         result.battleRewardMultipleTimes_ = battleRewardMultipleTimes_;
+        result.shareReliveCount_ = shareReliveCount_;
+        result.adReliveCount_ = adReliveCount_;
         if (monthCardsBuilder_ == null) {
           if (((bitField0_ & 0x00004000) != 0)) {
             monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
@@ -31348,6 +31436,12 @@ public final class PlayerMsg {
         }
         if (other.getBattleRewardMultipleTimes() != 0) {
           setBattleRewardMultipleTimes(other.getBattleRewardMultipleTimes());
+        }
+        if (other.getShareReliveCount() != 0) {
+          setShareReliveCount(other.getShareReliveCount());
+        }
+        if (other.getAdReliveCount() != 0) {
+          setAdReliveCount(other.getAdReliveCount());
         }
         if (monthCardsBuilder_ == null) {
           if (!other.monthCards_.isEmpty()) {
@@ -35421,6 +35515,92 @@ public final class PlayerMsg {
       public Builder clearBattleRewardMultipleTimes() {
         
         battleRewardMultipleTimes_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int shareReliveCount_ ;
+      /**
+       * <pre>
+       * 每天分享复活次数。
+       * </pre>
+       *
+       * <code>int32 shareReliveCount = 34;</code>
+       * @return The shareReliveCount.
+       */
+      @java.lang.Override
+      public int getShareReliveCount() {
+        return shareReliveCount_;
+      }
+      /**
+       * <pre>
+       * 每天分享复活次数。
+       * </pre>
+       *
+       * <code>int32 shareReliveCount = 34;</code>
+       * @param value The shareReliveCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setShareReliveCount(int value) {
+        
+        shareReliveCount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每天分享复活次数。
+       * </pre>
+       *
+       * <code>int32 shareReliveCount = 34;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearShareReliveCount() {
+        
+        shareReliveCount_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int adReliveCount_ ;
+      /**
+       * <pre>
+       * 每天看广告复活次数。
+       * </pre>
+       *
+       * <code>int32 adReliveCount = 35;</code>
+       * @return The adReliveCount.
+       */
+      @java.lang.Override
+      public int getAdReliveCount() {
+        return adReliveCount_;
+      }
+      /**
+       * <pre>
+       * 每天看广告复活次数。
+       * </pre>
+       *
+       * <code>int32 adReliveCount = 35;</code>
+       * @param value The adReliveCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdReliveCount(int value) {
+        
+        adReliveCount_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每天看广告复活次数。
+       * </pre>
+       *
+       * <code>int32 adReliveCount = 35;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAdReliveCount() {
+        
+        adReliveCount_ = 0;
         onChanged();
         return this;
       }
@@ -40149,7 +40329,7 @@ public final class PlayerMsg {
       "1\022\016\n\006notice\030\001 \001(\t\"k\n\nPlayerInfo\022\n\n\002id\030\001 " +
       "\001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head" +
       "\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offlineTime" +
-      "\030\026 \001(\t\"\362\022\n\rPlayerAllInfo\022\"\n\006player\030\001 \001(\013" +
+      "\030\026 \001(\t\"\243\023\n\rPlayerAllInfo\022\"\n\006player\030\001 \001(\013" +
       "2\022.Protos.PlayerInfo\0221\n\006assets\030\002 \003(\0132!.P" +
       "rotos.PlayerAllInfo.AssetsEntry\022=\n\014asset" +
       "Recover\030\003 \003(\0132\'.Protos.PlayerAllInfo.Ass" +
@@ -40168,49 +40348,50 @@ public final class PlayerMsg {
       "tos.PlayerAllInfo.DragonSkillsEntry\022#\n\007b" +
       "attles\030\036 \003(\0132\022.Protos.BattleInfo\022\026\n\016free" +
       "RougeTimes\030\037 \001(\005\022!\n\031battleRewardMultiple" +
-      "Times\030! \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos" +
-      ".MonthCardProto\022\034\n\024monthCardDoubleBonus\030" +
-      "* \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&\n\010fundPass\030" +
-      ", \003(\0132\024.Protos.FundPassInfo\022\030\n\020heishiFre" +
-      "shTimes\030. \001(\005\022\030\n\020freeDayRentHeros\030/ \003(\t\022" +
-      "\032\n\022freeDayRentHeroUid\0301 \001(\t\022\025\n\rstoreStam" +
-      "inas\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132\024.Protos.Cl" +
-      "oudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos.Patr" +
-      "olInfo\022+\n\013questGroups\0307 \003(\0132\026.Protos.Que" +
-      "stGroupInfo\022A\n\026questGroupPointRewards\0308 " +
-      "\003(\0132!.Protos.QuestGroupPointRewardInfo\022\022" +
-      "\n\nfirstLogin\0309 \001(\010\022/\n\005guide\030; \003(\0132 .Prot" +
-      "os.PlayerAllInfo.GuideEntry\022\030\n\020heavenlyD" +
-      "aoLevel\030< \001(\005\022A\n\016potentialLvMap\030> \003(\0132)." +
-      "Protos.PlayerAllInfo.PotentialLvMapEntry" +
-      "\022A\n\016potentialBreak\030? \003(\0132).Protos.Player" +
-      "AllInfo.PotentialBreakEntry\0221\n\016shopGroup" +
-      "Items\030d \003(\0132\031.Protos.ShopGroupItemInfo\022\033" +
-      "\n\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017mergeSwee" +
-      "pTimes\030f \001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Prot" +
-      "os.MergeEquipmentInfo\022\025\n\rmergeEquipIds\030h" +
-      " \003(\005\0223\n\021mergeDayChallenge\030i \001(\0132\030.Protos" +
-      ".DayChallengeInfo\022#\n\007hcHeros\030k \003(\0132\022.Pro" +
-      "tos.HCHeroInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021" +
-      "freeHcHeroUpTimes\030m \001(\005\022\033\n\023freeHcHeroIte" +
-      "mTimes\030n \001(\005\022Q\n\026freeHcHeroItemTimesMap\030o" +
-      " \003(\01321.Protos.PlayerAllInfo.FreeHcHeroIt" +
-      "emTimesMapEntry\022\031\n\021battleSpeedUnlock\030p \001" +
-      "(\010\022\033\n\023battleSpeedAdsCount\030q \001(\005\032-\n\013Asset" +
-      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323" +
-      "\n\021AssetRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
-      "e\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022" +
-      "\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003k" +
-      "ey\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEn" +
-      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021D" +
-      "ragonSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002" +
-      " \001(\r:\0028\001\032,\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
-      "alue\030\002 \001(\r:\0028\001\0325\n\023PotentialLvMapEntry\022\013\n" +
-      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023Potenti" +
-      "alBreakEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\010" +
-      ":\0028\001\032=\n\033FreeHcHeroItemTimesMapEntry\022\013\n\003k" +
-      "ey\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.p" +
-      "rotocol.protobufb\006proto3"
+      "Times\030! \001(\005\022\030\n\020shareReliveCount\030\" \001(\005\022\025\n" +
+      "\radReliveCount\030# \001(\005\022*\n\nmonthCards\030( \003(\013" +
+      "2\026.Protos.MonthCardProto\022\034\n\024monthCardDou" +
+      "bleBonus\030* \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&\n\010" +
+      "fundPass\030, \003(\0132\024.Protos.FundPassInfo\022\030\n\020" +
+      "heishiFreshTimes\030. \001(\005\022\030\n\020freeDayRentHer" +
+      "os\030/ \003(\t\022\032\n\022freeDayRentHeroUid\0301 \001(\t\022\025\n\r" +
+      "storeStaminas\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132\024." +
+      "Protos.CloudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Pr" +
+      "otos.PatrolInfo\022+\n\013questGroups\0307 \003(\0132\026.P" +
+      "rotos.QuestGroupInfo\022A\n\026questGroupPointR" +
+      "ewards\0308 \003(\0132!.Protos.QuestGroupPointRew" +
+      "ardInfo\022\022\n\nfirstLogin\0309 \001(\010\022/\n\005guide\030; \003" +
+      "(\0132 .Protos.PlayerAllInfo.GuideEntry\022\030\n\020" +
+      "heavenlyDaoLevel\030< \001(\005\022A\n\016potentialLvMap" +
+      "\030> \003(\0132).Protos.PlayerAllInfo.PotentialL" +
+      "vMapEntry\022A\n\016potentialBreak\030? \003(\0132).Prot" +
+      "os.PlayerAllInfo.PotentialBreakEntry\0221\n\016" +
+      "shopGroupItems\030d \003(\0132\031.Protos.ShopGroupI" +
+      "temInfo\022\033\n\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017" +
+      "mergeSweepTimes\030f \001(\005\022/\n\013mergeEquips\030g \003" +
+      "(\0132\032.Protos.MergeEquipmentInfo\022\025\n\rmergeE" +
+      "quipIds\030h \003(\005\0223\n\021mergeDayChallenge\030i \001(\013" +
+      "2\030.Protos.DayChallengeInfo\022#\n\007hcHeros\030k " +
+      "\003(\0132\022.Protos.HCHeroInfo\022\024\n\014curHcHeroUid\030" +
+      "l \001(\t\022\031\n\021freeHcHeroUpTimes\030m \001(\005\022\033\n\023free" +
+      "HcHeroItemTimes\030n \001(\005\022Q\n\026freeHcHeroItemT" +
+      "imesMap\030o \003(\01321.Protos.PlayerAllInfo.Fre" +
+      "eHcHeroItemTimesMapEntry\022\031\n\021battleSpeedU" +
+      "nlock\030p \001(\010\022\033\n\023battleSpeedAdsCount\030q \001(\005" +
+      "\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
+      "\001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003key\030\001 \001(" +
+      "\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003k" +
+      "ey\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchemysE" +
+      "ntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014" +
+      "DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r" +
+      ":\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r" +
+      "\n\005value\030\002 \001(\r:\0028\001\032,\n\nGuideEntry\022\013\n\003key\030\001" +
+      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023PotentialLvMa" +
+      "pEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325" +
+      "\n\023PotentialBreakEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
+      "lue\030\002 \001(\010:\0028\001\032=\n\033FreeHcHeroItemTimesMapE" +
+      "ntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031" +
+      "cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -40460,7 +40641,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "FreeHcHeroItemTimesMap", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "ShareReliveCount", "AdReliveCount", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "FreeHcHeroItemTimesMap", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

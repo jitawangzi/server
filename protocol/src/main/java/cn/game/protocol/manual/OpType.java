@@ -89,6 +89,7 @@ public enum OpType{
 
 	BattleEndMultipleReward(161, "战役结束多倍奖励"),
 	GachaConversion(162, "蓝卡转化货币"),
+	Relive(163, "复活"),
 
 	BoxOpen(200, "合并开宝箱"),
 	MergeEquipLvUp(201, "合并装备升级"),

@@ -53,6 +53,15 @@ message BattleShareResponse_13000008{
 	repeated RewardInfo rewards = 1;		// 获得的奖励
 }
 
+// 复活
+message BattleReliveRequest_13000010{
+	int32 type = 1;   // 1分享 2广告 3消耗资源
+}
+
+//复活
+message BattleReliveResponse_13000011{
+}
+
 
 //领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。
 message BattleRewardRequest_13000022{

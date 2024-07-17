@@ -57,11 +57,12 @@ public enum ErrorMsgEnum {
 	resource_not_enough(60, "资源不足"),
 	/** 次数不足 */
 	times_limit(61, "次数不足"),
-	cd_time_error(62, "未到冷却时间"),
-	level_limit(63, "等级已经到上限，可能是等级，星级等"),
-	player_not_exist(64, "玩家不存在"),
-	player_not_online(65, "玩家不在线"),
-	operation_too_fast(66, "操作太快，太频繁了"),
+	free_times_limit(62, "免费次数不足"),
+	cd_time_error(63, "未到冷却时间"),
+	level_limit(64, "等级已经到上限，可能是等级，星级等"),
+	player_not_exist(65, "玩家不存在"),
+	player_not_online(66, "玩家不在线"),
+	operation_too_fast(67, "操作太快，太频繁了"),
 	/** 非法请求，一般是客户端不够条件进行当前操作 */
 	illegal_request(68, "非法请求，一般是客户端不够条件进行当前操作，例如功能未开启，等级不足等等"),
 

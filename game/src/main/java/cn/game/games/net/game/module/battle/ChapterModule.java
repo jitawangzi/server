@@ -99,6 +99,13 @@ public class ChapterModule extends BasePlayerModule  {
 
 	/** 每日扫荡次数 */
 	private int daySweepCount;
+	/** 每日分享复活次数 */
+	private int shareReliveCount;
+	/** 每日广告复活次数 */
+	private int adReliveCount;
+	/** 单次战斗复活次数 */
+	@JsonIgnore
+	private int reliveCountPerBattle;
 
 	/** 每日挑战数据 */
 	private BattleDayChallenge dayChallenge = new BattleDayChallenge();
@@ -533,6 +540,29 @@ public class ChapterModule extends BasePlayerModule  {
 		return mengYanMiJingBattle;
 	}
 
+	public int getShareReliveCount() {
+		return shareReliveCount;
+	}
+
+	public void setShareReliveCount(int shareReliveCount) {
+		this.shareReliveCount = shareReliveCount;
+	}
+
+	public int getAdReliveCount() {
+		return adReliveCount;
+	}
+
+	public void setAdReliveCount(int adReliveCount) {
+		this.adReliveCount = adReliveCount;
+	}
+	public int getReliveCountPerBattle() {
+		return reliveCountPerBattle;
+	}
+
+	public void setReliveCountPerBattle(int reliveCountPerBattle) {
+		this.reliveCountPerBattle = reliveCountPerBattle;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -543,6 +573,8 @@ public class ChapterModule extends BasePlayerModule  {
 		this.quickPatrolCount = 0;
 		this.adPatrolCount = 0;
 		this.daySweepCount = 0;
+		this.shareReliveCount = 0;
+		this.adReliveCount = 0;
 		this.battleRewardMultipleTimes = 0;
 
 		dayChallenge.reset();
@@ -637,6 +669,8 @@ public class ChapterModule extends BasePlayerModule  {
 		builder.addAllStoreStaminas(storeStaminas);
 		builder.setMergeSweepTimes(daySweepCount);
 		builder.setBattleRewardMultipleTimes(battleRewardMultipleTimes);
+		builder.setShareReliveCount(shareReliveCount);
+		builder.setAdReliveCount(adReliveCount);
 
 		DayChallengeInfo.Builder dayBuilder = DayChallengeInfo.newBuilder();
 		dayBuilder.setBattleId(dayChallenge.getBattleId());

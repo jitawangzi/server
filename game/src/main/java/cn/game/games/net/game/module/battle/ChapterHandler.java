@@ -58,6 +58,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmRequest_13000080;
 import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmResponse_13000081;
 import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044;
 import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045;
+import cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010;
+import cn.game.protocol.protobuf.BattleMsg.BattleReliveResponse_13000011;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
@@ -110,6 +112,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleNightmareRealmRequest_13000080, this::nightmareRealm);
 		putInvoker(PbProtocol.BattleNightmareRealmBuffUpdateRequest_13000082, this::nightmareRealmBuff);
 		putInvoker(PbProtocol.BattleNightmareRealmQuickRequest_13000084, this::nightmareRealmQuick);
+		putInvoker(PbProtocol.BattleReliveRequest_13000010, this::relive);
 	}
 
 	protected void empty(NetClient client, Object message) {
@@ -121,6 +124,46 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
+		client.sendProtocol(resp);
+	}
+
+	protected void relive(NetClient client, Object message) {
+		BattleReliveRequest_13000010 req = (BattleReliveRequest_13000010) message;
+		BattleReliveResponse_13000011.Builder resp = BattleReliveResponse_13000011.newBuilder();
+		int type = req.getType();
+		if (type < 1 || type > 3) {
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		if (chapterModule.getReliveCountPerBattle() >= 2) {
+			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		if (type == 1) {
+			if (chapterModule.getShareReliveCount() >= GlobalConst.ShareResurrection) {
+				client.sendProtocol(resp, ErrorMsgEnum.free_times_limit.getId());
+				return;
+			}
+			chapterModule.setShareReliveCount(chapterModule.getShareReliveCount() + 1);
+		} else if (type == 2) {
+			if (chapterModule.getAdReliveCount() >= GlobalConst.AdResurrection) {
+				client.sendProtocol(resp, ErrorMsgEnum.free_times_limit.getId());
+				return;
+			}
+			chapterModule.setAdReliveCount(chapterModule.getAdReliveCount() + 1);
+			player.handleEvent(EventTypeEnum.WatchAds);
+
+		} else if (type == 3) {
+			if (!PlayerHelper.delResources(player, GlobalConst.RefreshConsum, OpType.Relive)) {
+				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+				return;
+			}
+		}
+		
+		chapterModule.setReliveCountPerBattle(chapterModule.getReliveCountPerBattle() + 1);
 		client.sendProtocol(resp);
 	}
 
@@ -885,6 +928,8 @@ public class ChapterHandler extends BaseHandler {
 			AttrModule module = player.getModule(AttrModule.class);
 			module.calcAllAttr();
 			resp.setAttrs(module.buildBattleAttrs());
+
+			chapterModule.setReliveCountPerBattle(0);
 		}
 		//添加怪物图鉴
 //		List<Integer> monsterSequence = levelConfig.getMonsterSequence();
