@@ -13,7 +13,7 @@ import cn.game.core.task.TaskManager;
 
 
 /**
- * @Description 在线玩家的定时任务，下线会自动清除所有任务
+ * 在线玩家的定时任务，下线会自动清除所有任务
  * 2020年9月22日 上午10:49:40
  * @author SYQ
  */
@@ -30,7 +30,7 @@ public class OnLineTaskManager {
 	}
 
 	/**
-	 * @Description 给玩家增加一个定时任务
+	 * 给玩家增加一个定时任务
 	 * @param playerId
 	 * @param r
 	 * @param delay
@@ -48,7 +48,7 @@ public class OnLineTaskManager {
 		list.add(scheduleGeneral);
 	}
 	/**
-	 * @Description 给玩家增加一个周期任务
+	 * 给玩家增加一个周期任务
 	 * @param playerId
 	 * @param r
 	 *            任务
@@ -71,7 +71,7 @@ public class OnLineTaskManager {
 	}
 
 	/**
-	 * @Description 移除一个玩家所有的定时任务
+	 * 移除一个玩家所有的定时任务
 	 * @param playerId
 	 */
 	public void removeScheduledTask(long playerId) {

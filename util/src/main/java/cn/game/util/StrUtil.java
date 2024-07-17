@@ -210,7 +210,7 @@ public class StrUtil {
 	}
 	
 	/**
-	 * @Description 把字符串按|分隔为数组
+	 * 把字符串按|分隔为数组
 	 * @param array
 	 * @return
 	 */
@@ -226,7 +226,7 @@ public class StrUtil {
 		return ret;
 	}
 	/**
-	 * @Description 把字符串解析为两个数组,例如： 10010:8|10011:6|10012:6 转换成
+	 * 把字符串解析为两个数组,例如： 10010:8|10011:6|10012:6 转换成
 	 *              [[10010,10011,10012],[8,6,6]]
 	 * @param 第一数组是id集合，第二个数组是权重集合
 	 * @return

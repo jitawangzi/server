@@ -2,7 +2,7 @@ package cn.game.util.db;
 
 
 /**
- * @Description Mybatis中操作json的参数
+ * Mybatis中操作json的参数
  * 2021年4月6日 下午2:44:38
  * @author SYQ
  */

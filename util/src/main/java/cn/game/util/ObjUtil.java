@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**   
- * @Description 
+ * 
  * 2016-6-17 下午3:05:31
  * @author SYQ
  */
@@ -147,7 +147,7 @@ public class ObjUtil {
 		
 	}
 	/**
-	 * @Description 对象的每个属性为一行,如果属性为基本类型则不换行.
+	 * 对象的每个属性为一行,如果属性为基本类型则不换行.
 	 * @param obj
 	 * @param buffer
 	 * @param newLine

@@ -84,7 +84,7 @@ public class ZeroMQRpcClient implements Runnable, RpcClient {
 //	}
 
 	/**
-	 * @Description 给指定服务器发送消息
+	 * 给指定服务器发送消息
 	 * @param message
 	 * @param serverId
 	 */

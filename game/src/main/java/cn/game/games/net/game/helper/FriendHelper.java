@@ -71,7 +71,7 @@ public class FriendHelper {
 	}
 
 	/**
-	 * @Description 成为好友后，如果我也申请对方为好友了，删除这个申请
+	 * 成为好友后，如果我也申请对方为好友了，删除这个申请
 	 * @param playerId
 	 * @param applyPlayerId
 	 * @return
@@ -111,7 +111,7 @@ public class FriendHelper {
 	}
 
 	/**
-	 * @Description 单向删除好友
+	 * 单向删除好友
 	 * @param playerId
 	 * @param friendId
 	 */
@@ -132,7 +132,7 @@ public class FriendHelper {
 	}
 
 	/**
-	 * @Description 判断单向拉黑关系
+	 * 判断单向拉黑关系
 	 * @param playerId
 	 *            拉黑操作发起方
 	 * @param friendId

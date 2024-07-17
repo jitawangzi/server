@@ -145,7 +145,7 @@ public class PlayerManager {
 	}
 
 	/**
-	 * @Description 严禁在主线程内直接调用！！！！！！！！！！！！！！！
+	 * 严禁在主线程内直接调用！！！！！！！！！！！！！！！
 	 * 
 	 *              没有数据时会从数据库查找数据，是阻塞操作，如果没有查找到数据会报异常，调用方要处理异常，并且在线程池中执行。
 	 * @param playerId
@@ -171,7 +171,7 @@ public class PlayerManager {
 		});
 	}
 	/**
-	 * @Description 严禁在主线程内直接调用！！！！！！！！！！！！！！！
+	 * 严禁在主线程内直接调用！！！！！！！！！！！！！！！
 	 * 
 	 *              没有数据时会从数据库查找数据，是阻塞操作，要在其他线程里执行
 	 * @param playerIds
@@ -206,7 +206,7 @@ public class PlayerManager {
 		return presentPlayers;
 	}
 	/**
-	 * @Description 严禁在主线程内直接调用！！！！！！！！！！！！！！！ 注意确保serverId的正确性
+	 * 严禁在主线程内直接调用！！！！！！！！！！！！！！！ 注意确保serverId的正确性
 	 * 
 	 *              没有数据时会从其他服务器查找数据，是阻塞操作，在线程池中执行。
 	 * @param playerId
@@ -222,7 +222,7 @@ public class PlayerManager {
 	}
 	
 	/**
-	 * @Description 严禁在主线程内直接调用！！！！！！！！！！！！！！！
+	 * 严禁在主线程内直接调用！！！！！！！！！！！！！！！
 	 * 
 	 *              没有数据时会从其他服务器查找数据，是阻塞操作，在线程池中执行。
 	 * @param playerId
@@ -368,7 +368,7 @@ public class PlayerManager {
 	}
 
 	/**
-	 * @Description 获取本服玩家简单信息
+	 * 获取本服玩家简单信息
 	 * @param playerId
 	 * @return null，玩家不在缓存
 	 */
@@ -416,7 +416,7 @@ public class PlayerManager {
 	}
 
 	/**
-	 * @Description 获取其他服玩家简单信息，需要保证参数是其他服的玩家id
+	 * 获取其他服玩家简单信息，需要保证参数是其他服的玩家id
 	 * @param playerId
 	 * @return null，玩家不在缓存
 	 */
@@ -429,7 +429,7 @@ public class PlayerManager {
 	}
 
 	/**
-	 * @Description 尝试获取玩家简单信息，本服玩家，或者其他服玩家
+	 * 尝试获取玩家简单信息，本服玩家，或者其他服玩家
 	 * @param playerId
 	 * @param serverId
 	 *            玩家所在服务器id
@@ -442,7 +442,7 @@ public class PlayerManager {
 		return simplePlayersOtherServer.getIfPresent(playerId);
 	}
 	/**
-	 * @Description 主动添加玩家简单数据到缓存，一般是添加其他服务器的玩家
+	 * 主动添加玩家简单数据到缓存，一般是添加其他服务器的玩家
 	 * @param simplePlayer
 	 */
 	public void addSimplePlayer(SimplePlayer simplePlayer) {
@@ -453,7 +453,7 @@ public class PlayerManager {
 		}
 	}
 	/**
-	 * @Description 主动添加玩家简单数据到缓存，一般是添加其他服务器的玩家
+	 * 主动添加玩家简单数据到缓存，一般是添加其他服务器的玩家
 	 * @param simplePlayers
 	 */
 	public void addSimplePlayers(List<SimplePlayer> simplePlayers) {
@@ -502,7 +502,7 @@ public class PlayerManager {
 	}
 
 	/**
-	 * @Description 获取指定角色id的角色数据
+	 * 获取指定角色id的角色数据
 	 * @param playerId
 	 * @return
 	 */
@@ -635,7 +635,7 @@ public class PlayerManager {
 	}
 	
 	/**
-	 * @Description 判断某玩家在服务器是否有缓存数据
+	 * 判断某玩家在服务器是否有缓存数据
 	 * @param playerId
 	 * @return
 	 */
@@ -724,7 +724,7 @@ public class PlayerManager {
 	}
 
 	/**
-	 * @Description 根据某一玩家，来推荐等级相近的玩家,不能再主线程调用。
+	 * 根据某一玩家，来推荐等级相近的玩家,不能再主线程调用。
 	 * @param playerId
 	 * @return
 	 */
@@ -998,7 +998,7 @@ public class PlayerManager {
 	}
 
 	/**
-	 * @Description 保存在线玩家缓存数据到数据库
+	 * 保存在线玩家缓存数据到数据库
 	 * @param playerId
 	 * @param logout
 	 *            是否是退出时
@@ -1048,7 +1048,7 @@ public class PlayerManager {
 	}
 
 	/**
-	 * @Description 保存在线玩家缓存数据到数据库
+	 * 保存在线玩家缓存数据到数据库
 	 * @param playerId
 	 * @return 
 	 */

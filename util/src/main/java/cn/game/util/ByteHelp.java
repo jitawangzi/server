@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**   
- * @Description 二进制转换帮助类
+ * 二进制转换帮助类
  * 2017年4月23日 上午10:24:48
  * @author SYQ
  */
@@ -127,7 +127,7 @@ public class ByteHelp {
 	}
 
 	/**
-	 * @Description 更新一个给定的int值，将参数中指定的位更新给1，通常来记录连续多个boolean值
+	 * 更新一个给定的int值，将参数中指定的位更新给1，通常来记录连续多个boolean值
 	 * @param value
 	 * @param index 里面的值应该小于32
 	 * @return
@@ -148,7 +148,7 @@ public class ByteHelp {
 	}
 
 	/**
-	 * @Description 将value的bit位更新为1
+	 * 将value的bit位更新为1
 	 * @param value
 	 * @param bit
 	 * @return new  value
@@ -176,7 +176,7 @@ public class ByteHelp {
 	}
 
 	/** 
-	 * @Description 获取一个int型数字所有位数为1的集合
+	 * 获取一个int型数字所有位数为1的集合
 	 * @param value
 	 * @return
 	 */
@@ -191,7 +191,7 @@ public class ByteHelp {
 	}
 
 	/**
-	 * @Description 计算一个int的二进制值里有几个1
+	 * 计算一个int的二进制值里有几个1
 	 * @param value
 	 * @return
 	 */
@@ -208,7 +208,7 @@ public class ByteHelp {
 	}
 
 	/**
-	 * @Description 判断某个数的 某位是否为1
+	 * 判断某个数的 某位是否为1
 	 * @param value	
 	 * @param index
 	 * @return

@@ -6,7 +6,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Player;
 
 /**
- * @Description 玩家的简单数据，一般用来显示用
+ * 玩家的简单数据，一般用来显示用
  * 2020年11月2日 下午1:46:12
  * @author SYQ
  */

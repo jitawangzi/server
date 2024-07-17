@@ -61,7 +61,7 @@ import cn.game.util.log.SystemLogger;
 import cn.game.util.quartz.QuartzInitializer;
 
 /**
- * @Description vertx重构通讯
+ * vertx重构通讯
  * 2021年4月12日 上午10:17:27
  * @author SYQ
  */
@@ -399,7 +399,7 @@ public class GameServer implements GameServerMBean {
 //	}
 
 	/**
-	 * @Description 是否是本地服务器
+	 * 是否是本地服务器
 	 * @param serverId
 	 * @return
 	 */
@@ -417,7 +417,7 @@ public class GameServer implements GameServerMBean {
 	}
 
 	/**
-	 * @Description 获取逻辑服远程调用接口,异步的
+	 * 获取逻辑服远程调用接口,异步的
 	 * @param serverId
 	 *            逻辑服id
 	 * @return
@@ -435,7 +435,7 @@ public class GameServer implements GameServerMBean {
 	}
 
 	/**
-	 * @Description 获取逻辑服远程调用接口,同步的
+	 * 获取逻辑服远程调用接口,同步的
 	 * @param serverId
 	 *            逻辑服id
 	 * @return

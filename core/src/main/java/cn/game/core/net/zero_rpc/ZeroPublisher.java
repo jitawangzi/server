@@ -41,7 +41,7 @@ public class ZeroPublisher implements Runnable {
 
 
 	/**
-	 * @Description 发布的消息前两帧为serverId，消息类型，后面的随意
+	 * 发布的消息前两帧为serverId，消息类型，后面的随意
 	 * @param msg
 	 */
 	public void pubMessage(ZMsg msg) {
@@ -54,7 +54,7 @@ public class ZeroPublisher implements Runnable {
 	}
 
 	/**
-	 * @Description 给指定server发布protobuf类型的消息
+	 * 给指定server发布protobuf类型的消息
 	 * @param serverId
 	 * @param message
 	 */
@@ -69,7 +69,7 @@ public class ZeroPublisher implements Runnable {
 		ZeroPublisher.getInstance().pubMessage(msg);
 	}
 	/**
-	 * @Description 给指定server发布protobuf类型的消息
+	 * 给指定server发布protobuf类型的消息
 	 * @param serverId
 	 * @param data
 	 */
@@ -82,7 +82,7 @@ public class ZeroPublisher implements Runnable {
 		ZeroPublisher.getInstance().pubMessage(msg);
 	}
 	/**
-	 * @Description 发布protobuf类型的消息
+	 * 发布protobuf类型的消息
 	 * @param message
 	 */
 	public void pubMessage(Message message) {

@@ -20,7 +20,7 @@ import cn.game.util.ByteHelp;
 import cn.game.util.KryoUtils;
 
 /**   
- * @Description 执行数据库任务
+ * 执行数据库任务
  * 2017年4月14日 下午3:39:32
  * @author SYQ
  */
@@ -48,7 +48,7 @@ public class DbTaskManager implements Runnable {
 	}
 
 	/**
-	 * @Description 
+	 * 
 	 * @param mapperClass Mapper接口
 	 * @param method	接口中的方法
 	 * @param args		方法参数
@@ -70,7 +70,7 @@ public class DbTaskManager implements Runnable {
 	}
 
 	/**
-	 * @Description 
+	 * 
 	 * @param methodName 方法名
 	 * @param clazz	方法参数类型
 	 * @param args	方法参数
@@ -102,7 +102,7 @@ public class DbTaskManager implements Runnable {
 	}
 
 	/**
-	 * @Description 废弃了
+	 * 废弃了
 	 * @param msg
 	 * @param caller
 	 * @param callbackMothed
@@ -154,7 +154,7 @@ public class DbTaskManager implements Runnable {
 	}
 
 	/**
-	 * @Description 默认的非阻塞无回掉方法的数据库任务
+	 * 默认的非阻塞无回掉方法的数据库任务
 	 * @param mapperClass
 	 * @param method
 	 * @param args
@@ -166,7 +166,7 @@ public class DbTaskManager implements Runnable {
 	}
 
 	/**
-	 * @Description 无回调，可选择同步或异步的数据库任务
+	 * 无回调，可选择同步或异步的数据库任务
 	 * @param mapperClass
 	 * @param method
 	 * @param args

@@ -8,7 +8,7 @@ import cn.game.core.net.client.AbstractNetClient;
 import cn.game.util.GameCrypt;
 
 /**
- * @Description 网关保持和客户端的连接
+ * 网关保持和客户端的连接
  * 2017年4月5日 下午3:47:42
  * @author SYQ
  */

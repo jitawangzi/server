@@ -29,7 +29,7 @@ import cn.game.util.SpringContextLoader;
 
 
 /**
- * @Description 服务端用pull接收任务，处理后发送给一个线程，pub
+ * 服务端用pull接收任务，处理后发送给一个线程，pub
  * 2016年11月17日 上午10:06:17
  * @author SYQ
  * @param <T>

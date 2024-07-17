@@ -6,14 +6,14 @@ import cn.game.games.net.game.db.DbTask;
 import io.vertx.core.Future;
 
 /**
- * @Description DataServer提供给GameServer调用的远程接口
+ * DataServer提供给GameServer调用的远程接口
  * 2020年11月2日 下午12:55:18
  * @author SYQ
  */
 public interface DataGameServerInterface {
 
 	/**
-	 * @Description 执行数据库操作
+	 * 执行数据库操作
 	 * @param mapperClass
 	 *            mybatis的Mapper class
 	 * @param method
@@ -37,7 +37,7 @@ public interface DataGameServerInterface {
 	public Future<List<Object>> execAsync(List<DbTask> tasks);
 
 	/**
-	 * @Description 一次性执行多个数据库操作
+	 * 一次性执行多个数据库操作
 	 * @param tasks
 	 * @return
 	 */

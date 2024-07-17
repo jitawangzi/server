@@ -5,7 +5,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 
 /**
- * @Description 战斗接口
+ * 战斗接口
  * 2021年1月14日 下午6:17:52
  * @author SYQ
  */

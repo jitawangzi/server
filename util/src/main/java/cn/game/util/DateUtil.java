@@ -16,7 +16,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**   
- * @Description 
+ * 
  * 2016-7-8 下午4:46:08
  * @author SYQ
  */
@@ -328,7 +328,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * @Description 距离一天的重置时间还有多少秒
+	 * 距离一天的重置时间还有多少秒
 	 * @param hour  以某个小时为重置点
 	 * @return
 	 */
@@ -348,7 +348,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * @Description 以当天的几点作为一天的分割点
+	 * 以当天的几点作为一天的分割点
 	 * @param hour
 	 * @return
 	 */
@@ -412,7 +412,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * @Description 判断当前时间是否在两个时间之内
+	 * 判断当前时间是否在两个时间之内
 	 * @param start
 	 * @param end
 	 * @return

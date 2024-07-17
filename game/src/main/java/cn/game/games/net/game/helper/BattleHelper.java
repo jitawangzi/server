@@ -20,7 +20,7 @@ public class BattleHelper {
 		return id / 10000;
 	}
 	/**
-	 * @Description 随机出来一个事件类型，去除指定的类型
+	 * 随机出来一个事件类型，去除指定的类型
 	 * @param excludeIds
 	 * @return
 	 */
@@ -57,7 +57,7 @@ public class BattleHelper {
 
 	}
 	/**
-	 * @Description 战斗结束时，计算获得的玩家经验
+	 * 战斗结束时，计算获得的玩家经验
 	 * @param level
 	 *            当前等级
 	 * @param ap
@@ -72,7 +72,7 @@ public class BattleHelper {
 
 	}
 	/**
-	 * @Description 战斗结束时，计算获得的角色经验
+	 * 战斗结束时，计算获得的角色经验
 	 * @param level
 	 *            当前等级
 	 * @param ap
@@ -85,7 +85,7 @@ public class BattleHelper {
 
 	}
 	/**
-	 * @Description 战斗结束时，计算获得的金币
+	 * 战斗结束时，计算获得的金币
 	 * @param level
 	 *            当前等级
 	 * @param ap

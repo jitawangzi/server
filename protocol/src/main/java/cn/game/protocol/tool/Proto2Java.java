@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * @Description 将protobuf的.proto文件转成java代码(可以通过插件代替)
+ * 将protobuf的.proto文件转成java代码(可以通过插件代替)
  * 2017年4月24日 下午6:00:51
  * @author SYQ
  */

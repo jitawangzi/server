@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @Description Redisson分布式锁
+ * Redisson分布式锁
  * 2020年12月10日 下午4:11:36
  * @author SYQ
  */
@@ -25,7 +25,7 @@ public class LockUtil {
 	public static final int leaseTime = 30;
 
 	/**
-	 * @Description 同步获取锁，如果正常获取到锁则直接锁定,处理完业务后需要手动释放锁
+	 * 同步获取锁，如果正常获取到锁则直接锁定,处理完业务后需要手动释放锁
 	 * @param locks
 	 * @return lock，成功获取到锁，只能在获取锁成功情况下才能进行后续处理； null，获取锁失败
 	 */
@@ -62,7 +62,7 @@ public class LockUtil {
 		return null;
 	}
 	/**
-	 * @Description 异步获取锁，建议使用
+	 * 异步获取锁，建议使用
 	 *              {@link LockUtil#lockAndRunAsync(Consumer, String...)}代替
 	 * @param locks
 	 * @return
@@ -73,7 +73,7 @@ public class LockUtil {
 		return lock.tryLockAsync(waitTime, leaseTime, TimeUnit.SECONDS);
 	}
 	/**
-	 * @Description 获取锁之后 直接执行任务,不用释放锁,但是执行任务之前，需要判断是否获取到锁
+	 * 获取锁之后 直接执行任务,不用释放锁,但是执行任务之前，需要判断是否获取到锁
 	 * @param action
 	 * @param locks
 	 */
@@ -103,7 +103,7 @@ public class LockUtil {
 		});
 	}
 	/**
-	 * @Description 对key获取锁之后，在处理数据
+	 * 对key获取锁之后，在处理数据
 	 * @param action
 	 *            获取数据后的操作
 	 * @param failAction
@@ -142,7 +142,7 @@ public class LockUtil {
 	}
 
 	/**
-	 * @Description 把key转化为对应的锁字符串
+	 * 把key转化为对应的锁字符串
 	 * @param key
 	 * @return
 	 */
@@ -150,7 +150,7 @@ public class LockUtil {
 		return "lock_" + key;
 	}
 	/**
-	 * @Description 把key转化为对应的锁字符串
+	 * 把key转化为对应的锁字符串
 	 * @param keys
 	 * @return
 	 */
@@ -163,7 +163,7 @@ public class LockUtil {
 	}
 
 	/**
-	 * @Description 释放锁，解锁和加锁应该在同一个线程
+	 * 释放锁，解锁和加锁应该在同一个线程
 	 * @param lock
 	 */
 	public static void unlock(RLock lock) {

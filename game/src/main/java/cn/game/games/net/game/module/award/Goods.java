@@ -3,7 +3,7 @@ package cn.game.games.net.game.module.award;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 
 /**
- * @Description 物品id和数量的封装
+ * 物品id和数量的封装
  * 2020年10月15日 上午10:51:01
  * @author SYQ
  */

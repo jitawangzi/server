@@ -3,7 +3,7 @@ package cn.game.core.map;
 import java.io.Serializable;
 
 /**
- * @Description 实际是地图格子的坐标
+ * 实际是地图格子的坐标
  * 2020年12月24日 下午5:55:16
  * @author SYQ
  */

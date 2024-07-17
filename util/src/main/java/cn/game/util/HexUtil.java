@@ -13,7 +13,7 @@ public class HexUtil {
 	}
 
 	/**
-	 * @Description 将一个int型数字转成完整的16进制，补0
+	 * 将一个int型数字转成完整的16进制，补0
 	 * @param i
 	 * @return
 	 */

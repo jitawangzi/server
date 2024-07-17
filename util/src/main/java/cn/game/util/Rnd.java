@@ -238,7 +238,7 @@ public final class Rnd {
 		return 0;
 	}
 	/**
-	 * @Description 从带权重的对象集合里随机一个下标
+	 * 从带权重的对象集合里随机一个下标
 	 * @param list
 	 * @return
 	 */
@@ -258,7 +258,7 @@ public final class Rnd {
 		return -1;
 	}
 	/**
-	 * @Description 从带权重的对象集合里随机一个下标，排除指定索引的元素
+	 * 从带权重的对象集合里随机一个下标，排除指定索引的元素
 	 * @param excludeIndexs
 	 *            排除的索引
 	 * @param list
@@ -384,7 +384,7 @@ public final class Rnd {
 	}
 	
 	/**
-	 * @Description 索引在start和end之间，按权重随机出来一个
+	 * 索引在start和end之间，按权重随机出来一个
 	 * @param weight
 	 * @param start
 	 * @param end
@@ -419,7 +419,7 @@ public final class Rnd {
 	}
 
 	/**
-	 * @Description 索引在start和end之间，按权重随机出来一个
+	 * 索引在start和end之间，按权重随机出来一个
 	 * @param weight
 	 * @param start
 	 * @param end
@@ -548,7 +548,7 @@ public final class Rnd {
 		return nextDouble() < value;
 	}
 	/**
-	 * @Description 按百分比随机
+	 * 按百分比随机
 	 * @param value
 	 * @return
 	 */
@@ -557,7 +557,7 @@ public final class Rnd {
 	}
 	
 	/**
-	 * @Description 包含两个数字的的数组，0为最小数，1为最大数，在范围中随机
+	 * 包含两个数字的的数组，0为最小数，1为最大数，在范围中随机
 	 * @param value
 	 * @return
 	 */

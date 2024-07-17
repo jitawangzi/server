@@ -39,7 +39,7 @@ import de.javakaffee.kryoserializers.guava.TreeMultimapSerializer;
 import de.javakaffee.kryoserializers.guava.UnmodifiableNavigableSetSerializer;
 
 /**
- * @Description 代替protostuff，不要序列化匿名类
+ * 代替protostuff，不要序列化匿名类
  * 2020年11月13日 下午4:48:30
  * @author SYQ
  */
@@ -92,7 +92,7 @@ public class KryoUtils {
 	};
 
 	/**
-	 * @Description 把指定对象序列化成字节数组，反序列化时不能修改对象
+	 * 把指定对象序列化成字节数组，反序列化时不能修改对象
 	 * @param obj
 	 * @return
 	 */
@@ -117,7 +117,7 @@ public class KryoUtils {
 	}
 
 	/**
-	 * @Description 将字节数组反序列化成指定Class类型，反序列化时不能修改对象
+	 * 将字节数组反序列化成指定Class类型，反序列化时不能修改对象
 	 * @param data
 	 * @param clazz
 	 * @return
@@ -138,7 +138,7 @@ public class KryoUtils {
 		return kryosWithVersion.get().readClassAndObject(input);
 	}
 	/**
-	 * @Description 把指定对象序列化成字节数组,带对象版本，不支持对象属性名更改、删除，可以新增
+	 * 把指定对象序列化成字节数组,带对象版本，不支持对象属性名更改、删除，可以新增
 	 * @param obj
 	 * @return
 	 */
@@ -150,7 +150,7 @@ public class KryoUtils {
 	}
 
 	/**
-	 * @Description 将字节数组反序列化成指定Class类型,如果对象新增了字段，需要加@Since注解，value
+	 * 将字节数组反序列化成指定Class类型,如果对象新增了字段，需要加@Since注解，value
 	 *              需要是最新的版本
 	 * @param data
 	 * @param clazz

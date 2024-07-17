@@ -40,7 +40,7 @@ public class MessageObject implements Comparable<MessageObject> {
 		return shortName.indexOf("Request") >= 0;
 	}
 	/**   
-	 * @Description 
+	 * 
 	 * 2021年9月1日 下午12:33:03
 	 * @author SYQ
 	 */

@@ -68,7 +68,7 @@ public class CrossServer {
 	}
 
 	/**
-	 * @Description 获取逻辑服远程调用接口,同步的
+	 * 获取逻辑服远程调用接口,同步的
 	 * @param serverId
 	 *            逻辑服id
 	 * @return

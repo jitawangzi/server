@@ -3,7 +3,7 @@ package cn.game.core.net.transport;
 import java.io.Serializable;
 
 /**
- * @Description 表示远程调用的结果
+ * 表示远程调用的结果
  * 2020年9月11日 下午3:05:04
  * @author SYQ
  */

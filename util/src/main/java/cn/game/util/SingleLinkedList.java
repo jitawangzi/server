@@ -65,7 +65,7 @@ public class SingleLinkedList<T> implements Iterable<T> {
 	}
 
 	/**
-	 * @Description 链表尾部增加节点
+	 * 链表尾部增加节点
 	 * @param data
 	 */
 	private void addLast(Node<T> data) {
@@ -75,7 +75,7 @@ public class SingleLinkedList<T> implements Iterable<T> {
 	}
 
 	/**
-	 * @Description 链表尾部增加数据
+	 * 链表尾部增加数据
 	 * @param data
 	 */
 	private void addLast(T data) {
@@ -86,7 +86,7 @@ public class SingleLinkedList<T> implements Iterable<T> {
 	}
 
 	/**
-	 * @Description  在指定的节点后增加数据
+	 *  在指定的节点后增加数据
 	 * @param node
 	 * @param data
 	 */

@@ -11,7 +11,7 @@ import org.zeromq.ZMsg;
 import cn.game.util.ByteHelp;
 
 /**
- * @Description 逻辑服的阻塞操作就是操作数据库，所以可以分离出一个数据库Socket，
+ * 逻辑服的阻塞操作就是操作数据库，所以可以分离出一个数据库Socket，
  *              通过sub套接字来接受回掉，完成剩下的操作，回调前的上下文保存在本线程。
  *              貌似不太适合。
  * 使用dealer来分配网关服消息，处理完毕返回，但是如果想在自定义线程发送消息，则很困难。

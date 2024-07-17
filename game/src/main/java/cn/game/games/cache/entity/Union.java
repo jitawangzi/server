@@ -885,7 +885,7 @@ public class Union implements Serializable, DbEntity {
 	}
 
 	/**
-	 * @Description 获取建筑的升级id
+	 * 获取建筑的升级id
 	 * @param type
 	 * @return
 	 */

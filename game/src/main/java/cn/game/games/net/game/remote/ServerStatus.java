@@ -3,7 +3,7 @@ package cn.game.games.net.game.remote;
 import java.io.Serializable;
 
 /**
- * @Description 服务器状态
+ * 服务器状态
  * 2021年2月25日 下午2:44:03
  * @author SYQ
  */

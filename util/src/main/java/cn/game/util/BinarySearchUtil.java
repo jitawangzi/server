@@ -6,7 +6,7 @@ import java.util.RandomAccess;
 import java.util.function.Function;
 
 /**   
- * @Description 2分查找和一些变体
+ * 2分查找和一些变体
  * 2019年3月1日 下午5:15:21
  * @author SYQ
  */
@@ -99,7 +99,7 @@ public class BinarySearchUtil {
 	}
 
 	/**
-	 * @Description  普通查找
+	 *  普通查找
 	 * @param array
 	 * @param low
 	 * @param high
@@ -122,7 +122,7 @@ public class BinarySearchUtil {
 	}
 
 	/**
-	 * @Description 第一个值等于给定元素
+	 * 第一个值等于给定元素
 	 * @param array
 	 * @param low
 	 * @param high
@@ -149,7 +149,7 @@ public class BinarySearchUtil {
 	}
 
 	/**
-	 * @Description 最后一个值等于给定元素
+	 * 最后一个值等于给定元素
 	 * @param array
 	 * @param low
 	 * @param high
@@ -176,7 +176,7 @@ public class BinarySearchUtil {
 	}
 
 	/**
-	 * @Description 第一个值大于等于给定元素
+	 * 第一个值大于等于给定元素
 	 * @param array
 	 * @param low
 	 * @param high
@@ -201,7 +201,7 @@ public class BinarySearchUtil {
 	}
 
 	/**
-	 * @Description 最后一个小于等于给定元素
+	 * 最后一个小于等于给定元素
 	 * @param array
 	 * @param low
 	 * @param high

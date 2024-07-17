@@ -36,7 +36,7 @@ public interface NetClient {
 	public void setContext(ContextInternal context);
 
 	/**
-	 * @Description 连接是否活跃
+	 * 连接是否活跃
 	 * @return
 	 */
 	boolean isActive();

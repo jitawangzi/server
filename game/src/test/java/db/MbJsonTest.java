@@ -10,7 +10,7 @@ import cn.game.util.db.MbJsonParamObject;
 
 
 /**
- * @Description Mybatis中json格式数据操作示例
+ * Mybatis中json格式数据操作示例
  * 2021年4月6日 下午2:54:41
  * @author SYQ
  */

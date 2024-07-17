@@ -7,7 +7,7 @@ public interface LoginGameServerInterface {
 	public boolean isAvailable();
 
 	/**
-	 * @Description 检查sessionId是否有效
+	 * 检查sessionId是否有效
 	 * @param passportSessionId
 	 * @return 有效的uid
 	 */
@@ -16,7 +16,7 @@ public interface LoginGameServerInterface {
 	public Future<Long> getUid2(String passportSessionId);
 
 	/**
-	 * @Description 测试使用，获取uid，没有则添加
+	 * 测试使用，获取uid，没有则添加
 	 * @param name
 	 * @return
 	 */

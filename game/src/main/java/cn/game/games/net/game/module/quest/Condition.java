@@ -46,7 +46,7 @@ public interface Condition extends EventHandler {
 	boolean isAchieve();
 
 	/**
-	 * @Description 设置需求已达成,需要确认确实条件已经达到了，可以直接完成的情况
+	 * 设置需求已达成,需要确认确实条件已经达到了，可以直接完成的情况
 	 */
 	void setAchieve();
 

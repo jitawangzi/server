@@ -47,7 +47,7 @@ public class ZmqSender implements Runnable {
 
 
 	/**
-	 * @Description 发布的消息前两帧为serverId，消息类型，后面的随意
+	 * 发布的消息前两帧为serverId，消息类型，后面的随意
 	 * @param msg
 	 */
 	public void pubMessage(ZMsg msg) {
@@ -67,7 +67,7 @@ public class ZmqSender implements Runnable {
 	}
 
 	/**
-	 * @Description 给指定server发布protobuf类型的消息
+	 * 给指定server发布protobuf类型的消息
 	 * @param serverId
 	 * @param message
 	 */
@@ -77,7 +77,7 @@ public class ZmqSender implements Runnable {
 		pubMessage(serverId, myServerId, msgId, message.toByteArray());
 	}
 	/**
-	 * @Description 给指定server发布protobuf类型的消息
+	 * 给指定server发布protobuf类型的消息
 	 * @param recvServer
 	 * @param sendServer
 	 * @param msgId

@@ -54,7 +54,7 @@ public class UnionManager {
 	}
 
 	/**
-	 * @Description 获取一个玩家的成员数据
+	 * 获取一个玩家的成员数据
 	 * @param playerId
 	 * @return
 	 */
@@ -63,7 +63,7 @@ public class UnionManager {
 		return member;
 	}
 	/**
-	 * @Description 获取一个工会的所有成员
+	 * 获取一个工会的所有成员
 	 * @param unionId
 	 * @return
 	 */
@@ -71,7 +71,7 @@ public class UnionManager {
 		return this.unionMembersMap.get(unionId);
 	}
 	/**
-	 * @Description 获取工会
+	 * 获取工会
 	 * @param id
 	 * @return
 	 */
@@ -170,7 +170,7 @@ public class UnionManager {
 	}
 
 	/**
-	 * @Description 某人加入到工会中
+	 * 某人加入到工会中
 	 * @param playerId
 	 * @param name
 	 * @param union
@@ -208,7 +208,7 @@ public class UnionManager {
 		return member != null && member.getUnionId() > 0;
 	}
 	/**
-	 * @Description 检查某人是否申请过某工会
+	 * 检查某人是否申请过某工会
 	 * @param playerId
 	 * @param unionId
 	 * @return
@@ -219,7 +219,7 @@ public class UnionManager {
 	}
 
 	/**
-	 * @Description 解散工会
+	 * 解散工会
 	 * @param id
 	 */
 	public void disbandUnion(long id) {
@@ -235,7 +235,7 @@ public class UnionManager {
 	}
 
 	/**
-	 * @Description 移除工会中的某个成员
+	 * 移除工会中的某个成员
 	 * @param playerId
 	 * @param unionId
 	 * @return

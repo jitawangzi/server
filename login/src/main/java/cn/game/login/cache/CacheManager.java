@@ -9,7 +9,7 @@ import io.vertx.core.Future;
 import io.vertx.redis.client.Response;
 
 /**
- * @Description redis缓存管理
+ * redis缓存管理
  * 2020年8月26日 下午5:48:19
  * @author SYQ
  */
@@ -27,7 +27,7 @@ public class CacheManager {
 	}
 	
 	/**
-	 * @Description 异步载入缓存
+	 * 异步载入缓存
 	 * @param consumer
 	 *            查询后的操作
 	 * @param cacheType
@@ -41,7 +41,7 @@ public class CacheManager {
 		RedisUtil.incr(cacheType.key(ks), consumer);
 	}
 	/**
-	 * @Description 异步载入缓存
+	 * 异步载入缓存
 	 * @param cacheType
 	 * @param ks
 	 * @return

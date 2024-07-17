@@ -1,7 +1,7 @@
 package cn.game.protocol.manual;
 
 /**
- * @Description 操作类型
+ * 操作类型
  * 2020年10月9日 上午10:46:02
  * @author SYQ
  */

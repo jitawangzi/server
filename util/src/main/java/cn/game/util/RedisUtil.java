@@ -20,7 +20,7 @@ import io.vertx.redis.client.RedisOptions;
 import io.vertx.redis.client.Response;
 
 /**
- * @Description vert.x redis客户端
+ * vert.x redis客户端
  * 2020年8月26日 下午2:53:14
  * @author SYQ
  */
@@ -103,7 +103,7 @@ public class RedisUtil extends AbstractVerticle {
 		return future;
 	}
 	/**
-	 * @Description 同步查询redis缓存，极少使用
+	 * 同步查询redis缓存，极少使用
 	 * @param key
 	 * @return
 	 */

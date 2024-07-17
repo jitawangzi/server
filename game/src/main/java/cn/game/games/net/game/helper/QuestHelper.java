@@ -50,7 +50,7 @@ public class QuestHelper {
 		return quest != null && (quest.getState() == ACCEPTED);
 	}
 	/**
-	 * @Description 任务是否自动通过邮件发送奖励
+	 * 任务是否自动通过邮件发送奖励
 	 * @param id
 	 * @return
 	 */
@@ -62,7 +62,7 @@ public class QuestHelper {
 	}
 
 	/**
-	 * @Description 获取任务配置文件
+	 * 获取任务配置文件
 	 * @param id
 	 * @return
 	 */
@@ -87,7 +87,7 @@ public class QuestHelper {
 		return QuestManager.instance().get(id);
 	}
 	/**
-	 * @Description 获取任务配置文件
+	 * 获取任务配置文件
 	 * @param id
 	 * @return
 	 */
@@ -106,7 +106,7 @@ public class QuestHelper {
 	}
 	
 	/**
-	 * @Description 判断执行任务的条件命令
+	 * 判断执行任务的条件命令
 	 * @param quest
 	 * @param cond
 	 */

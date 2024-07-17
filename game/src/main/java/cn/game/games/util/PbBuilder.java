@@ -102,7 +102,7 @@ public class PbBuilder {
 	}
 
 	/**
-	 * @Description 根据在线玩家对象构建玩家数据，需要保证参数不能为空
+	 * 根据在线玩家对象构建玩家数据，需要保证参数不能为空
 	 * @param player
 	 * @return
 	 */

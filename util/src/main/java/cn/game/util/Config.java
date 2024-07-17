@@ -19,7 +19,7 @@ import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
 
 /**   
- * @Description 
+ * 
  * 2016-6-17 上午10:24:35
  * @author SYQ
  */
@@ -240,7 +240,7 @@ public final class Config {
 	}
 
 	/**
-	 * @Description 检查文本，返回替换违法字的新文本
+	 * 检查文本，返回替换违法字的新文本
 	 * @param text
 	 * @return
 	 */

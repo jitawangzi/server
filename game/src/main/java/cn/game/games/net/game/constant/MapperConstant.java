@@ -15,7 +15,7 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.TypeFilter;
 
 /**
- * @Description 常用的数据库操作方法字符串
+ * 常用的数据库操作方法字符串
  * 2017年4月14日 下午4:34:30
  * @author SYQ
  */

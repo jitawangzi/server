@@ -24,7 +24,7 @@ public class WebSocketCodecPacket {
 	}
 
 	/**
-	 * @Description 增加了消息id和错误码
+	 * 增加了消息id和错误码
 	 * @param buffer
 	 * @param msgId
 	 * @param errorCode

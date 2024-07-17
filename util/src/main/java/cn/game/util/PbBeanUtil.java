@@ -80,7 +80,7 @@ public class PbBeanUtil {
 	}
 
 	/**
-	 * @Description 对简单Builder的赋值
+	 * 对简单Builder的赋值
 	 * @param source
 	 * @param builder
 	 */
@@ -105,7 +105,7 @@ public class PbBeanUtil {
 	}
 
 	/**
-	 * @Description 对消息（Message赋值）
+	 * 对消息（Message赋值）
 	 * @param source
 	 * @param message   一个消息的默认实例
 	 * @param key

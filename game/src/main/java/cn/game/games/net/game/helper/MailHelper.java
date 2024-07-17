@@ -17,7 +17,7 @@ import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.manager.MailManager;
 
 /**
- * @Description 邮件帮助类
+ * 邮件帮助类
  * 2020年10月15日 上午11:47:04
  * @author SYQ
  */
@@ -57,7 +57,7 @@ public class MailHelper {
 		sendMail(receiverId, 0, sender, title, content, type, attachmentList);
 	}
 	/**
-	 * @Description 发送多语言版的邮件
+	 * 发送多语言版的邮件
 	 * @param receiverId
 	 * @param senderId
 	 *            发件人文本id

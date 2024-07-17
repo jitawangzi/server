@@ -308,7 +308,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 进行某操作时扣除资源，包括所有大类型
+	 * 进行某操作时扣除资源，包括所有大类型
 	 * @param playerId
 	 * @param id
 	 * @param value
@@ -354,7 +354,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 进行某操作时扣除资源，包括所有大类型
+	 * 进行某操作时扣除资源，包括所有大类型
 	 * @param playerId
 	 * @param list
 	 * @param consumeType
@@ -544,7 +544,7 @@ public class PlayerHelper {
 	}
 	
 	/**
-	 * @Description 初始化新角色数据，角色第一次创建时需要调用此方法
+	 * 初始化新角色数据，角色第一次创建时需要调用此方法
 	 * @param player
 	 */
 	public static void initNewPlayerData(Player player) {
@@ -564,7 +564,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 登陆后进行一些初始化操作，例如刷新离线数据等，初始化定时任务等等, 创建新玩家后，也会执行此方法;
+	 * 登陆后进行一些初始化操作，例如刷新离线数据等，初始化定时任务等等, 创建新玩家后，也会执行此方法;
 	 * @param player
 	 */
 	public static void initAfterLogin(Player player) {
@@ -781,7 +781,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 主动给玩家发送消息
+	 * 主动给玩家发送消息
 	 * @param playerId
 	 * @param message
 	 */
@@ -882,7 +882,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 给某玩家发送消息，可能是跨服的玩家
+	 * 给某玩家发送消息，可能是跨服的玩家
 	 * @param playerId
 	 * @param message
 	 * @param serverId
@@ -901,7 +901,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 将消息发送给指定服务器的玩家
+	 * 将消息发送给指定服务器的玩家
 	 * @param playerId
 	 *            目标玩家id
 	 * @param message
@@ -921,7 +921,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 将消息广播给跨服玩家
+	 * 将消息广播给跨服玩家
 	 * @param message
 	 * @param playerIds
 	 * @param serverIds
@@ -940,7 +940,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 是否满足所有条件
+	 * 是否满足所有条件
 	 * @param playerId
 	 * @param conditions
 	 * @return
@@ -985,7 +985,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @Description 基础的条件检查
+	 * 基础的条件检查
 	 * @param playerId
 	 * @param condition
 	 * @return

@@ -19,7 +19,7 @@ import cn.game.util.ByteHelp;
 import cn.game.util.Config;
 
 /**
- * @Description game---gate客户端
+ * game---gate客户端
  * 2017年3月27日 下午2:36:37
  * @author SYQ
  */

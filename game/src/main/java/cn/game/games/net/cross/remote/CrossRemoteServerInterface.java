@@ -8,7 +8,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.Pair;
 
 /**
- * @Description 跨服提供给其他服务器调用的接口
+ * 跨服提供给其他服务器调用的接口
  * 2021年4月12日 下午2:10:22
  * @author SYQ
  */
@@ -21,7 +21,7 @@ public interface CrossRemoteServerInterface {
 	public SimplePlayer getSimplePlayer(long playerId, String serverId) throws Exception;
 	
 	/**
-	 * @Description 搜索查找好友数据，如果双方有黑名单关系，则不能查看数据
+	 * 搜索查找好友数据，如果双方有黑名单关系，则不能查看数据
 	 * @param playerId
 	 *            被查看人
 	 * @param searchPlayerId
@@ -33,7 +33,7 @@ public interface CrossRemoteServerInterface {
 	public SimplePlayer searchFriendPlayer(long playerId, long searchPlayerId, String serverId) throws Exception;
 
 	/**
-	 * @Description 增加好友
+	 * 增加好友
 	 * @param playerId
 	 * @param friendId
 	 * @param serverId
@@ -46,7 +46,7 @@ public interface CrossRemoteServerInterface {
 	public boolean addMail(long playerId, String serverId, int titleId, int contentId, int typeId, String resourceText);
 
 	/**
-	 * @Description 查询服务器状态
+	 * 查询服务器状态
 	 * @param serverIds
 	 * @return
 	 */

@@ -146,7 +146,7 @@ public class GameClientManager {
 	}
 
 	/**
-	 * @Description 玩家退出，清除缓存，保存数据
+	 * 玩家退出，清除缓存，保存数据
 	 * @param gameClient
 	 * @return 
 	 */
@@ -208,7 +208,7 @@ public class GameClientManager {
 	}
 
 	/**
-	 * @Description 持久化所有玩家的数据
+	 * 持久化所有玩家的数据
 	 */
 	public void storeAllPlayers() {
 
@@ -269,7 +269,7 @@ public class GameClientManager {
 	}
 
 	/**
-	 * @Description 给所有在线玩家广播消息
+	 * 给所有在线玩家广播消息
 	 * @param message
 	 */
 	public void broadcast(Object message) {
@@ -278,7 +278,7 @@ public class GameClientManager {
 	}
 
 	/**
-	 * @Description 给指定的一些玩家广播消息
+	 * 给指定的一些玩家广播消息
 	 * @param message
 	 * @param playerIds
 	 */
@@ -300,7 +300,7 @@ public class GameClientManager {
 	}
 	
 	/**
-	 * @Description 将消息发送给指定服务器的玩家，通过cross服务器转发
+	 * 将消息发送给指定服务器的玩家，通过cross服务器转发
 	 * @param playerId
 	 *            目标玩家id
 	 * @param message
@@ -323,7 +323,7 @@ public class GameClientManager {
 
 	}
 	/**
-	 * @Description 将消息发送给指定Game服务器
+	 * 将消息发送给指定Game服务器
 	 * @param serverId
 	 *            目标服务器id
 	 * @param message
@@ -333,7 +333,7 @@ public class GameClientManager {
 		VxHolder.sendToRemoteServer(serverId, msgId, message.toByteArray());
 	}
 	/**
-	 * @Description 将消息发送给指定Game服务器，通过cross转发
+	 * 将消息发送给指定Game服务器，通过cross转发
 	 * @param serverId
 	 *            目标服务器id
 	 * @param message
@@ -353,7 +353,7 @@ public class GameClientManager {
 	}
 
 	/**
-	 * @Description 给本服玩家和跨服玩家广播消息
+	 * 给本服玩家和跨服玩家广播消息
 	 * @param message
 	 * @param playerIds
 	 * @param serverIds
@@ -388,7 +388,7 @@ public class GameClientManager {
 	}
 
 	/**
-	 * @Description 将消息广播给跨服玩家
+	 * 将消息广播给跨服玩家
 	 * @param message
 	 * @param playerIds
 	 * @param serverIds
@@ -409,7 +409,7 @@ public class GameClientManager {
 
 	}
 	/**
-	 * @Description 将消息广播给其他GameServer服务器
+	 * 将消息广播给其他GameServer服务器
 	 * @param message
 	 *            待广播消息
 	 * @param serverIds
@@ -426,7 +426,7 @@ public class GameClientManager {
 		}
 	}
 	/**
-	 * @Description 将消息广播给其他GameServer服务器,通过cross服务器
+	 * 将消息广播给其他GameServer服务器,通过cross服务器
 	 * @param message
 	 *            待广播消息
 	 * @param serverIds
@@ -449,7 +449,7 @@ public class GameClientManager {
 
 	}
 	/**
-	 * @Description 将玩家的在线状态广播给其他服务器，暂时广播给所有服务器，以后根据系统，广播给指定服务器
+	 * 将玩家的在线状态广播给其他服务器，暂时广播给所有服务器，以后根据系统，广播给指定服务器
 	 * @param playerId
 	 * @param online
 	 * @param serverIds

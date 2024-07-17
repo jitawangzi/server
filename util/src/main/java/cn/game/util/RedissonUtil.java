@@ -21,7 +21,7 @@ import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
 /**
- * @Description Redisson操作工具类，封装常用方法
+ * Redisson操作工具类，封装常用方法
  * 2021年3月11日 下午3:07:23
  * @author SYQ
  */
@@ -43,7 +43,7 @@ public class RedissonUtil {
 	}
 
 	/**
-	 * @Description 使用高级功能如集合等等，可以获取redis实例进行操作，一般的存储读取使用封装好的方法
+	 * 使用高级功能如集合等等，可以获取redis实例进行操作，一般的存储读取使用封装好的方法
 	 * @return
 	 */
 	public static RedissonClient getRedis() {
@@ -69,7 +69,7 @@ public class RedissonUtil {
 	}
 
 	/**
-	 * @Description 异步设置值
+	 * 异步设置值
 	 * @param key
 	 * @param value
 	 */
@@ -85,7 +85,7 @@ public class RedissonUtil {
 	}
 
 	/**
-	 * @Description 异步设置，带过期时间
+	 * 异步设置，带过期时间
 	 * @param key
 	 * @param value
 	 * @param expire
@@ -106,7 +106,7 @@ public class RedissonUtil {
 	}
 	
 	/**
-	 * @Description 异步设置，带过期时间,key不存在才设置
+	 * 异步设置，带过期时间,key不存在才设置
 	 * @param key
 	 * @param value
 	 * @param expire
@@ -124,7 +124,7 @@ public class RedissonUtil {
 	}
 
 	/**
-	 * @Description 设置成功后执行逻辑
+	 * 设置成功后执行逻辑
 	 * @param <V>
 	 * @param key
 	 * @param value
@@ -143,7 +143,7 @@ public class RedissonUtil {
 	}
 
 	/**
-	 * @Description 同步设置值( 尽量用异步方法)
+	 * 同步设置值( 尽量用异步方法)
 	 * @param key
 	 * @param value
 	 */
@@ -152,7 +152,7 @@ public class RedissonUtil {
 		bucket.set(value);
 	}
 	/**
-	 * @Description 同步设置值,带过期时间(尽量用异步方法)
+	 * 同步设置值,带过期时间(尽量用异步方法)
 	 * @param <V>
 	 * @param key
 	 * @param value
@@ -165,7 +165,7 @@ public class RedissonUtil {
 	}
 
 	/**
-	 * @Description 异步获取所有key后，执行业务,调用这个方法时，至少传入两个key
+	 * 异步获取所有key后，执行业务,调用这个方法时，至少传入两个key
 	 * @param consumer
 	 * @param keys
 	 */
@@ -184,7 +184,7 @@ public class RedissonUtil {
 		});
 	}
 	/**
-	 * @Description 异步获取key后，执行业务
+	 * 异步获取key后，执行业务
 	 * @param <V>
 	 * @param key
 	 * @param consumer
@@ -204,7 +204,7 @@ public class RedissonUtil {
 		});
 	}
 	/**
-	 * @Description 异步批量设置key
+	 * 异步批量设置key
 	 * @param keys
 	 * @param values
 	 */
@@ -224,7 +224,7 @@ public class RedissonUtil {
 
 	}
 	/**
-	 * @Description 异步批量设置key，返回Futrue
+	 * 异步批量设置key，返回Futrue
 	 * @param keys
 	 * @param values
 	 * @return
@@ -247,7 +247,7 @@ public class RedissonUtil {
 	}
 
 	/**
-	 * @Description 获取keys的异步查询结果
+	 * 获取keys的异步查询结果
 	 * @param keys
 	 * @return
 	 */
@@ -263,7 +263,7 @@ public class RedissonUtil {
 		return batch.executeAsync();
 	}
 	/**
-	 * @Description 异步获取key
+	 * 异步获取key
 	 * @param <V>
 	 * @param key
 	 * @return
@@ -273,7 +273,7 @@ public class RedissonUtil {
 		return bucket.getAsync();
 	}
 	/**
-	 * @Description 同步方法，等待异步查询结果并消费，如果没有数据，结果是空的ArrayList
+	 * 同步方法，等待异步查询结果并消费，如果没有数据，结果是空的ArrayList
 	 * @param action
 	 * @param keys
 	 * @throws InterruptedException
@@ -285,7 +285,7 @@ public class RedissonUtil {
 		action.accept(getAndWaitAsyncResult(keys));
 	}
 	/**
-	 * @Description 等待异步批量查询结果
+	 * 等待异步批量查询结果
 	 * @param keys
 	 * @return 非空
 	 * @throws InterruptedException
@@ -300,7 +300,7 @@ public class RedissonUtil {
 	}
 
 	/**
-	 * @Description 同步获取key的值
+	 * 同步获取key的值
 	 * @param <V>
 	 * @param key
 	 * @return

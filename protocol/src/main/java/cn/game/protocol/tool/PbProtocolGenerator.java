@@ -31,7 +31,7 @@ import cn.game.protocol.tool.MessageObject.MessageField;
 import cn.game.util.ExcelUtil;
 
 /**
- * @Description proto文件修改后执行
+ * proto文件修改后执行
  * 2017年5月6日 下午6:58:34
  * @author SYQ
  */
@@ -283,7 +283,7 @@ public class PbProtocolGenerator {
 	}
 
 	/**
-	 * @Description 读取所有的message，和enum
+	 * 读取所有的message，和enum
 	 * @param protoPath
 	 * @return
 	 * @throws Exception

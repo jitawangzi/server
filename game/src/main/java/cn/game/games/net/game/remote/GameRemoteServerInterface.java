@@ -7,7 +7,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 
 /**
- * @Description GameServer提供给其他服务器调用的接口
+ * GameServer提供给其他服务器调用的接口
  * 2020年11月30日 上午10:35:37
  * @author SYQ
  */

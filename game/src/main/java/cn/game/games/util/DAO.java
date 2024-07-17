@@ -59,7 +59,7 @@ public class DAO {
 	}
 
 	/**
-	 * @Description 更新整行数据，包含blob字段。
+	 * 更新整行数据，包含blob字段。
 	 * @param arg
 	 * @return 
 	 */
@@ -69,7 +69,7 @@ public class DAO {
 	}
 
 	/**
-	 * @Description 更新部分字段，可以包含blob
+	 * 更新部分字段，可以包含blob
 	 * @param arg
 	 * @return 
 	 */

@@ -47,7 +47,7 @@ import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
 import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager;
 
 /**
- * @Description 方便获取进程内vertx实例，一般一个进程一个vertx实例 跨进程的通讯，一般也封装在这里
+ * 方便获取进程内vertx实例，一般一个进程一个vertx实例 跨进程的通讯，一般也封装在这里
  * 2021年4月12日 上午10:27:07
  * @author SYQ
  */
@@ -116,7 +116,7 @@ public class VxHolder {
 		}
 	}
 	/**
-	 * @Description 同步部署Verticle，只在服务器启动时使用
+	 * 同步部署Verticle，只在服务器启动时使用
 	 * @param verticle
 	 * @return
 	 * @throws InterruptedException
@@ -203,7 +203,7 @@ public class VxHolder {
 		vertx.eventBus().request(serverId, message, protobufOptions, replyHandler);
 	}
 	/**
-	 * @Description 给某类服务器广播消息
+	 * 给某类服务器广播消息
 	 * @param serverId
 	 * @param msgId
 	 * @param byteArray

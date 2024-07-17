@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @Description 针对全部玩家的邮件，可能也用不到
+ * 针对全部玩家的邮件，可能也用不到
  * 2020年10月15日 下午2:30:40
  * @author SYQ
  */

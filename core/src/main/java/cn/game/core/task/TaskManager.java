@@ -27,7 +27,7 @@ import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.vertx.core.Context;
 
 /**
- * @Description 服务器端任务
+ * 服务器端任务
  * 2018年11月5日 上午10:23:27
  * @author SYQ
  * @param <R>
@@ -55,7 +55,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * @Description 任务类型
+	 * 任务类型
 	 * 2021年3月15日 下午2:40:41
 	 * @author SYQ
 	 */
@@ -95,7 +95,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * @Description 向主线程中添加一个任务
+	 * 向主线程中添加一个任务
 	 * @param runnable
 	 */
 	public void addMainTask(Runnable runnable) {
@@ -108,7 +108,7 @@ public class TaskManager {
 		}
 	}
 	/**
-	 * @Description 向工作线程池中添加一个任务，用来执行耗时或者阻塞的操作
+	 * 向工作线程池中添加一个任务，用来执行耗时或者阻塞的操作
 	 * @param runnable
 	 */
 	public void addWorkerTask(Runnable runnable) {
@@ -121,7 +121,7 @@ public class TaskManager {
 		}
 	}
 	/**
-	 * @Description 向异步线程池中添加一个任务，执行非阻塞任务
+	 * 向异步线程池中添加一个任务，执行非阻塞任务
 	 * @param runnable
 	 */
 	public void addAsyncTask(Runnable runnable) {
@@ -182,7 +182,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * @Description 增加阻塞的任务
+	 * 增加阻塞的任务
 	 * @param callbackTask
 	 *            回调任务,默认执行在逻辑主线程中
 	 * @param blockTask
@@ -200,7 +200,7 @@ public class TaskManager {
 		}, mainExecutor);
 	}
 	/**
-	 * @Description 增加阻塞的任务
+	 * 增加阻塞的任务
 	 * @param blockTask
 	 *            当前要执行的阻塞任务
 	 */
@@ -214,7 +214,7 @@ public class TaskManager {
 		});
 	}
 	/**
-	 * @Description 增加阻塞的任务
+	 * 增加阻塞的任务
 	 * @param runnable
 	 *            当前要执行的阻塞任务
 	 */
@@ -229,7 +229,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * @Description 增加阻塞的任务
+	 * 增加阻塞的任务
 	 * @param task   回调任务
 	 * @param suppliers 所有任务完成后，获取所有的返回结果，再执行callBack（任务间没有依赖关系）
 	 */
@@ -259,7 +259,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * @Description 增加阻塞的任务
+	 * 增加阻塞的任务
 	 * @param task   回调任务
 	 * @param functions 依次在同一线程完成任务，后一个任务会等待前一个任务的返回值，
 	 * 都执行完后再执行callBack,最后的任务在默认的Executor中执行
@@ -284,7 +284,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * @Description 增加阻塞的任务,依次在同一线程完成任务，后一个任务会等待前一个任务的返回值 第一个正常应该是
+	 * 增加阻塞的任务,依次在同一线程完成任务，后一个任务会等待前一个任务的返回值 第一个正常应该是
 	 *              Supplier 类型，最后一个是Consumer类型，不过可以都简化为Function
 	 *              这里所有的任务都是在ForkJoinPool池中执行的，需注意线程安全
 	 * @param functions
@@ -321,7 +321,7 @@ public class TaskManager {
 	}
 
 	/**
-	 * @Description 给定的延迟事件执行后，按照固定的间隔周期执行
+	 * 给定的延迟事件执行后，按照固定的间隔周期执行
 	 * @param command
 	 * @param initialDelay
 	 *            首次执行任务的等待时间（毫秒）
