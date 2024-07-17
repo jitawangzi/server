@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
 
 /**    
  * 微信发货消息参数
- * @date 2024年3月25日 上午11:11:16
+ * 2024年3月25日 上午11:11:16
  * @author SYQ
  */
 public class WechatPushBean {

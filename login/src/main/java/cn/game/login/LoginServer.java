@@ -28,7 +28,7 @@ import io.vertx.core.VertxOptions;
 
 /**
  * @Description
- * @date 2017年4月13日 下午7:21:32
+ * 2017年4月13日 下午7:21:32
  * @author SYQ
  */
 public class LoginServer {

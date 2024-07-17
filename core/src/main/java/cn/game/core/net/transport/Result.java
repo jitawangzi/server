@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * @Description 表示远程调用的结果
- * @date 2020年9月11日 下午3:05:04
+ * 2020年9月11日 下午3:05:04
  * @author SYQ
  */
 public class Result implements Serializable {

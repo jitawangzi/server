@@ -2,7 +2,7 @@ package cn.game.games.core.log;
 
 /**
  * @author PangHongFeng
- * @date 2023/4/18
+ * 2023/4/18
  * 日志线程，目前用来处理比较耗费资源的快照打印
  */
 public class GameLoggerRunner {

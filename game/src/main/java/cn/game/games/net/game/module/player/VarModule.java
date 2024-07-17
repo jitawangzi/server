@@ -12,7 +12,7 @@ import cn.game.util.IntMapWrapper;
  * 专门处理玩家的一些零散的int和boolean类型变量。 
  * 各种次数等等，都可以放这里
  * key 放到 @VarConstant
- * @date 2024年2月26日 下午6:19:36
+ * 2024年2月26日 下午6:19:36
  * @author SYQ
  */
 public class VarModule extends BasePlayerModule {

@@ -30,7 +30,7 @@ import io.vertx.ext.web.RoutingContext;
 
 /**    
  * 微信平台发货推送消息
- * @date 2024年3月26日 下午2:26:34
+ * 2024年3月26日 下午2:26:34
  * @author SYQ
  */
 public class WechatShipPush implements Handler<RoutingContext> {

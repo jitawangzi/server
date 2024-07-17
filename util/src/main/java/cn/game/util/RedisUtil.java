@@ -21,7 +21,7 @@ import io.vertx.redis.client.Response;
 
 /**
  * @Description vert.x redis客户端
- * @date 2020年8月26日 下午2:53:14
+ * 2020年8月26日 下午2:53:14
  * @author SYQ
  */
 public class RedisUtil extends AbstractVerticle {

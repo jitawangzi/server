@@ -9,7 +9,7 @@ import io.vertx.core.Future;
  * 这里面的方法，都在多表(每个功能单独表)情况下使用。 
  * 单表不用处理数据库，会忽略这些方法调用。 
  * 单表里面的单独表，用DAO类的方法更新数据。 
- * @date 2024年4月8日 下午6:45:47
+ * 2024年4月8日 下午6:45:47
  * @author SYQ
  */
 public interface DbEntity {

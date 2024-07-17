@@ -20,7 +20,7 @@ import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
 /**   
  * @Description 
- * @date 2016-6-17 上午10:24:35
+ * 2016-6-17 上午10:24:35
  * @author SYQ
  */
 public final class Config {

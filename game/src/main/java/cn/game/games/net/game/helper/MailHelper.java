@@ -18,7 +18,7 @@ import cn.game.protocol.generated.manager.MailManager;
 
 /**
  * @Description 邮件帮助类
- * @date 2020年10月15日 上午11:47:04
+ * 2020年10月15日 上午11:47:04
  * @author SYQ
  */
 public class MailHelper {

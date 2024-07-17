@@ -45,7 +45,7 @@ import cn.game.util.IntMapWrapper;
 
 /**    
  * 战役、章
- * @date 2024年4月12日 下午4:29:43
+ * 2024年4月12日 下午4:29:43
  * @author SYQ
  */
 public class ChapterModule extends BasePlayerModule  {

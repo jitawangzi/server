@@ -8,7 +8,7 @@ import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 /**
  * 通过spring初始化logback
  * 
- * @date 2021年11月9日 下午5:40:42
+ * 2021年11月9日 下午5:40:42
  * @author SYQ
  */
 //@Component

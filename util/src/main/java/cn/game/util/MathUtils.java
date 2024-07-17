@@ -3,7 +3,7 @@ package cn.game.util;
 
 /**    
  * 一些计算方法，和前端同步，只用在公式计算中
- * @date 2022年8月31日 下午4:02:06
+ * 2022年8月31日 下午4:02:06
  * @author SYQ
  */
 public class MathUtils {

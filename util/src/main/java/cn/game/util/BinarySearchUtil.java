@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 /**   
  * @Description 2分查找和一些变体
- * @date 2019年3月1日 下午5:15:21
+ * 2019年3月1日 下午5:15:21
  * @author SYQ
  */
 public class BinarySearchUtil {

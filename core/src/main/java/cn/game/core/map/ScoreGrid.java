@@ -3,7 +3,7 @@ package cn.game.core.map;
 
 /**    
  * 带分数的格子
- * @date 2021年12月30日 下午5:20:22
+ * 2021年12月30日 下午5:20:22
  * @author SYQ
  */
 public class ScoreGrid extends Grid implements Comparable<ScoreGrid> {

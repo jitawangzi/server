@@ -8,7 +8,7 @@ import io.vertx.core.Future;
 
 /**
  * @Description GameServer提供给其他服务器调用的接口
- * @date 2020年11月30日 上午10:35:37
+ * 2020年11月30日 上午10:35:37
  * @author SYQ
  */
 public interface GameRemoteServerInterface {

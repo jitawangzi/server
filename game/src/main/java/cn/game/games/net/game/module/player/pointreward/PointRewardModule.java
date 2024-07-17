@@ -22,7 +22,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
  * 积分领宝箱， 七日任务， 每日挑战积分等等
- * @date 2024年5月27日 上午11:16:05
+ * 2024年5月27日 上午11:16:05
  * @author SYQ
  */
 public class PointRewardModule extends BasePlayerModule {

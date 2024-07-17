@@ -28,7 +28,7 @@ import io.vertx.core.Context;
 
 /**
  * @Description 服务器端任务
- * @date 2018年11月5日 上午10:23:27
+ * 2018年11月5日 上午10:23:27
  * @author SYQ
  * @param <R>
  */
@@ -56,7 +56,7 @@ public class TaskManager {
 
 	/**
 	 * @Description 任务类型
-	 * @date 2021年3月15日 下午2:40:41
+	 * 2021年3月15日 下午2:40:41
 	 * @author SYQ
 	 */
 	public enum TaskType {

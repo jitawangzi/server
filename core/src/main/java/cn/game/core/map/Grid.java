@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * @Description 实际是地图格子的坐标
- * @date 2020年12月24日 下午5:55:16
+ * 2020年12月24日 下午5:55:16
  * @author SYQ
  */
 public class Grid implements Serializable {

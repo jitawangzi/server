@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 通过apollo获取配置后，进行后续的载入
  * 
- * @date 2021年11月9日 下午5:39:13
+ * 2021年11月9日 下午5:39:13
  * @author SYQ
  */
 public abstract class ApolloLoader {

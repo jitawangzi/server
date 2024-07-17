@@ -10,7 +10,7 @@ import java.util.Random;
  * @ClassName: Rnd
  * @Description: 随机数生成帮助类
  * @author luopeihuai luopeihuai@126.com
- * @date 2010-12-17 下午02:02:48
+ * 2010-12-17 下午02:02:48
  */
 public final class Rnd {
 	private static final Random random = new Random();

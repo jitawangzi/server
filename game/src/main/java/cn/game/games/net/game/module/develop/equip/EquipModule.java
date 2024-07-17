@@ -11,7 +11,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 /**    
  * 装备模块
- * @date 2024年2月19日 上午10:55:53
+ * 2024年2月19日 上午10:55:53
  * @author SYQ
  */
 public class EquipModule extends AbstractItemNoStackModule<Equip> {

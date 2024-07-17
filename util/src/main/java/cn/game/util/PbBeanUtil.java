@@ -21,7 +21,7 @@ import cn.game.util.reflect.BeanMap;;
  * @ClassName: PbBeanUtil
  * @Description: TODO
  * @author Melon
- * @date 2013-12-13 下午7:19:11
+ * 2013-12-13 下午7:19:11
  */
 public class PbBeanUtil {
 

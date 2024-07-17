@@ -20,7 +20,7 @@ import cn.game.util.DateUtil;
 /**
  * 基本的活动，这个活动可能是全体活动，也可能是玩家的活动
  * 
- * @date 2021年6月9日 下午12:15:20
+ * 2021年6月9日 下午12:15:20
  * @author SYQ
  */
 public abstract class ActivityBase implements EventHandler {

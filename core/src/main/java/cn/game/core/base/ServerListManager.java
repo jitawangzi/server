@@ -21,7 +21,7 @@ import cn.game.util.ZkHelper;
 
 /**    
  * 管理某zk地址下的server列表，工具配置的。 
- * @date 2024年2月1日 下午4:20:41
+ * 2024年2月1日 下午4:20:41
  * @author SYQ
  */
 public class ServerListManager {

@@ -6,7 +6,7 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 
 /** 
 * 默认角色标签条件
-* @date 2022年11月4日 下午5:30:29 
+* 2022年11月4日 下午5:30:29 
 * @author YYB 
 */
 public abstract class AbstractRoleTagCondition extends AbstractCondition {

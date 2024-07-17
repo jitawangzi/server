@@ -3,7 +3,7 @@ import java.util.Collection;
 
 /** 
 * 
-* @date 2023年3月28日 上午11:18:01 
+* 2023年3月28日 上午11:18:01 
 * @author YYB 
 */
 public class CollectionUtil {

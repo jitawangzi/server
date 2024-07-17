@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * @Description 服务器状态
- * @date 2021年2月25日 下午2:44:03
+ * 2021年2月25日 下午2:44:03
  * @author SYQ
  */
 public class ServerStatus implements Serializable {

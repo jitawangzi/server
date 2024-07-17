@@ -21,7 +21,7 @@ import cn.game.util.KryoUtils;
 
 /**   
  * @Description 执行数据库任务
- * @date 2017年4月14日 下午3:39:32
+ * 2017年4月14日 下午3:39:32
  * @author SYQ
  */
 public class DbTaskManager implements Runnable {

@@ -10,7 +10,7 @@ import cn.game.protocol.generated.manager.BattleManager;
 
 /**    
  * 参与主线章节次数
- * @date 2024年5月8日 下午5:49:16
+ * 2024年5月8日 下午5:49:16
  * @author SYQ
  */
 @ConditionType(type = ConditionTypeEnum.ParticipateChapter)

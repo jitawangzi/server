@@ -9,7 +9,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 /**    
  * 通关某章节次数
- * @date 2024年5月8日 下午5:19:23
+ * 2024年5月8日 下午5:19:23
  * @author SYQ
  */
 @ConditionType(type = ConditionTypeEnum.ChapterFinish)

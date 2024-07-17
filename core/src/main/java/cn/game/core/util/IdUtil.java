@@ -18,7 +18,7 @@ import cn.game.util.ZkHelper;
 
 /**    
  * 分布式id生成
- * @date 2024年2月5日 上午10:31:04
+ * 2024年2月5日 上午10:31:04
  * @author SYQ
  */
 public class IdUtil {

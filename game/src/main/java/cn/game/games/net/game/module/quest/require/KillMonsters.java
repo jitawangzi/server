@@ -8,7 +8,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 /**    
  * 累计杀怪
- * @date 2024年5月8日 下午6:36:31
+ * 2024年5月8日 下午6:36:31
  * @author SYQ
  */
 @ConditionType(type = ConditionTypeEnum.KillMonsters)

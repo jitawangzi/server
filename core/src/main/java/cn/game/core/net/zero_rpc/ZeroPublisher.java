@@ -18,7 +18,7 @@ import cn.game.util.SpringContextLoader;
 
 /**
  * @Description
- * @date 2020年9月11日 下午2:45:39
+ * 2020年9月11日 下午2:45:39
  * @author SYQ
  */
 @Deprecated

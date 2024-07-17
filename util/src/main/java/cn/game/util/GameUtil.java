@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 
 /**    
  * 一些常用方法
- * @date 2022年4月12日 下午12:12:57
+ * 2022年4月12日 下午12:12:57
  * @author SYQ
  */
 public class GameUtil {

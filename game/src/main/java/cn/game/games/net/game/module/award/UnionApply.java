@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 /**   
  * @Description 
- * @date 2016-9-30 上午11:29:01
+ * 2016-9-30 上午11:29:01
  * @author SYQ
  */
 public class UnionApply implements Serializable{

@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 
 /**
  * @Description 表示远程调用时的命令
- * @date 2016年10月26日 下午2:30:21
+ * 2016年10月26日 下午2:30:21
  * @author SYQ
  */
 public class Command implements Serializable {

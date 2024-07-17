@@ -10,7 +10,7 @@ import io.vertx.redis.client.Response;
 
 /**
  * @Description redis缓存管理
- * @date 2020年8月26日 下午5:48:19
+ * 2020年8月26日 下午5:48:19
  * @author SYQ
  */
 @Deprecated

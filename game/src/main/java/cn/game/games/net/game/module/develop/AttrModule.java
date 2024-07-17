@@ -45,7 +45,7 @@ import cn.game.util.IntMapWrapper;
 
 /**    
  * 各种属性的计算
- * @date 2024年4月15日 下午6:29:59
+ * 2024年4月15日 下午6:29:59
  * @author SYQ
  */
 public class AttrModule extends BasePlayerModule {

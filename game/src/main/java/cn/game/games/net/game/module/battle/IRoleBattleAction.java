@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.battle;
 /** 
 * 角色一场战斗中的行为
-* @date 2022年11月7日 上午11:06:08 
+* 2022年11月7日 上午11:06:08 
 * @author YYB 
 */
 public interface IRoleBattleAction {

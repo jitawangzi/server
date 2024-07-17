@@ -22,7 +22,7 @@ import io.vertx.ext.web.RoutingContext;
 
 /**    
  * 这里账号没有考虑分表情况，或者先用redis把所有账号都存上并且持久化
- * @date 2024年3月26日 下午5:53:10
+ * 2024年3月26日 下午5:53:10
  * @author SYQ
  */
 public class VertxRegisterReq implements Handler<RoutingContext> {

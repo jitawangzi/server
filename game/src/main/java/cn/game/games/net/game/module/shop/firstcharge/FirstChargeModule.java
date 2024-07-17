@@ -10,7 +10,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 /**    
  * 首冲礼包
- * @date 2024年4月22日 下午6:50:48
+ * 2024年4月22日 下午6:50:48
  * @author SYQ
  */
 public class FirstChargeModule extends BasePlayerModule {

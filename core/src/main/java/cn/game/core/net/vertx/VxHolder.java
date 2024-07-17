@@ -48,7 +48,7 @@ import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager;
 
 /**
  * @Description 方便获取进程内vertx实例，一般一个进程一个vertx实例 跨进程的通讯，一般也封装在这里
- * @date 2021年4月12日 上午10:27:07
+ * 2021年4月12日 上午10:27:07
  * @author SYQ
  */
 public class VxHolder {

@@ -10,7 +10,7 @@ import cn.game.util.Rnd;
 
 /**    
  * 每日挑战
- * @date 2024年5月27日 上午10:50:49
+ * 2024年5月27日 上午10:50:49
  * @author SYQ
  */
 public class BattleDayChallenge {

@@ -21,7 +21,7 @@ import cn.game.util.log.SystemLogger;
 /**
  * 通过spring初始化log4j
  * 
- * @date 2021年11月9日 下午5:40:42
+ * 2021年11月9日 下午5:40:42
  * @author SYQ
  */
 //@Component

@@ -40,7 +40,7 @@ import de.javakaffee.kryoserializers.guava.UnmodifiableNavigableSetSerializer;
 
 /**
  * @Description 代替protostuff，不要序列化匿名类
- * @date 2020年11月13日 下午4:48:30
+ * 2020年11月13日 下午4:48:30
  * @author SYQ
  */
 public class KryoUtils {

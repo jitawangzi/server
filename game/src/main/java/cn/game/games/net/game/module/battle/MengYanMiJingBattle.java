@@ -14,7 +14,7 @@ import cn.game.protocol.generated.manager.BattleManager;
 
 /**    
  * 梦魇秘境
- * @date 2024年7月15日 下午2:07:37
+ * 2024年7月15日 下午2:07:37
  * @author SYQ
  */
 public class MengYanMiJingBattle {

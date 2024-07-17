@@ -9,7 +9,7 @@ import cn.game.protocol.manual.OpType;
 
 /**    
  * HCBattle表的战斗
- * @date 2024年5月29日 上午10:32:23
+ * 2024年5月29日 上午10:32:23
  * @author SYQ
  */
 public abstract class HCBattleHandler implements IBattleHandler {

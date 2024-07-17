@@ -29,7 +29,7 @@ import org.apache.http.protocol.HTTP;
 /**
  * x库
  * @author 金永哲
- * @date 2013-02-19
+ * 2013-02-19
  * @version 1.0.1
  * 
  * 2013-02-21 加方法getPage(String url, Map<String, String> params, String pageEncoding, Map<String, String> headers)

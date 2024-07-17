@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * @Description mybatis json 参数封装
- * @date 2021年4月2日 下午3:55:28
+ * 2021年4月2日 下午3:55:28
  * @author SYQ
  */
 @Deprecated

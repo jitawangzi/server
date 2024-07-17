@@ -7,7 +7,7 @@ import io.vertx.core.Future;
 
 /**
  * @Description DataServer提供给GameServer调用的远程接口
- * @date 2020年11月2日 下午12:55:18
+ * 2020年11月2日 下午12:55:18
  * @author SYQ
  */
 public interface DataGameServerInterface {

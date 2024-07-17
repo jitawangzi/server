@@ -5,7 +5,7 @@ import java.util.List;
 
 /**    
  * 首冲活动
- * @date 2024年4月23日 下午5:59:15
+ * 2024年4月23日 下午5:59:15
  * @author SYQ
  */
 //@ActivityType(type = ActivityTypeEnum.FirstCharge)

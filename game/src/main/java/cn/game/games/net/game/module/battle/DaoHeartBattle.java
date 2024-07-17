@@ -10,7 +10,7 @@ import cn.game.protocol.generated.manager.BattleManager;
 
 /**    
  * 道心磨砺和心魔试炼
- * @date 2024年5月31日 下午4:56:08
+ * 2024年5月31日 下午4:56:08
  * @author SYQ
  */
 public class DaoHeartBattle {

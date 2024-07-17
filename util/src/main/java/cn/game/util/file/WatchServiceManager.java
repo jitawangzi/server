@@ -21,7 +21,7 @@ import cn.game.util.MailUtil;
 
 /**
  * 只监听xml文件修改
- * @date 2018年11月10日 下午1:54:30
+ * 2018年11月10日 下午1:54:30
  * @author SYQ
  */
 public class WatchServiceManager implements Runnable {

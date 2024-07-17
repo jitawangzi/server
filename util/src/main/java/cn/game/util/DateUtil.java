@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 /**   
  * @Description 
- * @date 2016-7-8 下午4:46:08
+ * 2016-7-8 下午4:46:08
  * @author SYQ
  */
 public final class DateUtil {

@@ -18,7 +18,7 @@ import cn.game.util.ByteHelp;
 
 /**    
  *  ShardingSphere 使用帮助类
- * @date 2022年10月12日 下午12:18:26
+ * 2022年10月12日 下午12:18:26
  * @author SYQ
  */
 public class ShardingSphereUtil {

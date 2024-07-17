@@ -7,7 +7,7 @@ import io.protostuff.runtime.RuntimeSchema;
 
 /**
  * @Description 对于包含null的集合，序列化时会丢弃null元素，可能某些情况下不适合
- * @date 2020年9月11日 下午2:35:16
+ * 2020年9月11日 下午2:35:16
  * @author SYQ
  */
 public class ProtostuffUtils {

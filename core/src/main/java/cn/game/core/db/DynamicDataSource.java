@@ -20,7 +20,7 @@ import cn.game.core.net.vertx.VxHolder;
 
 /**    
  * 多数据源实现，主要用来获取多个shardingsphere连接，同时只会连接一个。 
- * @date 2022年6月21日 下午3:49:24
+ * 2022年6月21日 下午3:49:24
  * @author SYQ
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {

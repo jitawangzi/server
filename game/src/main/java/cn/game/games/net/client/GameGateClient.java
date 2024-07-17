@@ -20,7 +20,7 @@ import cn.game.util.Config;
 
 /**
  * @Description game---gate客户端
- * @date 2017年3月27日 下午2:36:37
+ * 2017年3月27日 下午2:36:37
  * @author SYQ
  */
 public class GameGateClient extends AbstractNetClient {

@@ -4,7 +4,7 @@ import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 
 /**
  * @Description 物品id和数量的封装
- * @date 2020年10月15日 上午10:51:01
+ * 2020年10月15日 上午10:51:01
  * @author SYQ
  */
 public class Goods {

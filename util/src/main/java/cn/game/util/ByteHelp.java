@@ -6,7 +6,7 @@ import java.util.List;
 
 /**   
  * @Description 二进制转换帮助类
- * @date 2017年4月23日 上午10:24:48
+ * 2017年4月23日 上午10:24:48
  * @author SYQ
  */
 public class ByteHelp {

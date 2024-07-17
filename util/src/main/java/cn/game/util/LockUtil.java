@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @Description Redisson分布式锁
- * @date 2020年12月10日 下午4:11:36
+ * 2020年12月10日 下午4:11:36
  * @author SYQ
  */
 public class LockUtil {

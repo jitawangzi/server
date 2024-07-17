@@ -20,7 +20,7 @@ import cn.game.util.SpringContextLoader;
 
 /**
  * @Description
- * @date 2020年11月27日 下午2:47:37
+ * 2020年11月27日 下午2:47:37
  * @author SYQ
  */
 public class ZmqSender implements Runnable {

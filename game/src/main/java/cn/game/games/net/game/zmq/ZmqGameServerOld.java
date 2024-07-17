@@ -16,7 +16,7 @@ import cn.game.util.ByteHelp;
  *              貌似不太适合。
  * 使用dealer来分配网关服消息，处理完毕返回，但是如果想在自定义线程发送消息，则很困难。
  * 想办法让zmq只处理通讯层，不干扰逻辑和架构。
- * @date 2017年3月29日 下午5:12:36
+ * 2017年3月29日 下午5:12:36
  * @author SYQ
  */
 public class ZmqGameServerOld {

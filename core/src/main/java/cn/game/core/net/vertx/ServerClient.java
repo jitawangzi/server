@@ -10,7 +10,7 @@ import io.vertx.serviceproxy.ServiceException;
 
 /**
  * @Description 服务器之间的连接客户端
- * @date 2021年4月9日 下午5:08:02
+ * 2021年4月9日 下午5:08:02
  * @author SYQ
  */
 public class ServerClient extends AbstractNetClient {

@@ -12,7 +12,7 @@ import org.zeromq.ZMsg;
 
 /**
  * @Description
- * @date 2016年10月26日 下午2:30:30
+ * 2016年10月26日 下午2:30:30
  * @author SYQ
  */
 public class GateTaskPusher implements Runnable {

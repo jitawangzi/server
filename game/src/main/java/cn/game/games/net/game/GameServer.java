@@ -62,7 +62,7 @@ import cn.game.util.quartz.QuartzInitializer;
 
 /**
  * @Description vertx重构通讯
- * @date 2021年4月12日 上午10:17:27
+ * 2021年4月12日 上午10:17:27
  * @author SYQ
  */
 public class GameServer implements GameServerMBean {

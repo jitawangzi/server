@@ -28,7 +28,7 @@ import io.vertx.core.spi.cluster.NodeInfo;
 
 /**    
  * 某zk地址下的存活的server列表。 
- * @date 2024年2月1日 下午4:20:41
+ * 2024年2月1日 下午4:20:41
  * @author SYQ
  */
 public class ActiveServerListManager {

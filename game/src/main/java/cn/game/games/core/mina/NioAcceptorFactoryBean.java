@@ -23,7 +23,7 @@ import cn.game.util.MBeanManager;
 
 /**   
  * @Description 
- * @date 2017年4月1日 上午10:30:00
+ * 2017年4月1日 上午10:30:00
  * @author SYQ
  */
 public class NioAcceptorFactoryBean extends AbstractFactoryBean

@@ -25,7 +25,7 @@ import io.vertx.core.Future;
 
 /**    
  * 一些数据库操作的方便封装
- * @date 2024年4月8日 下午6:54:11
+ * 2024年4月8日 下午6:54:11
  * @author SYQ
  */
 public class DAO {

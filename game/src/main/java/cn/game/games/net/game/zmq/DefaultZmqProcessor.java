@@ -14,7 +14,7 @@ import cn.game.util.SpringContextLoader;
 
 /**
  * @Description 处理zmq消息
- * @date 2017年4月1日 上午11:35:47
+ * 2017年4月1日 上午11:35:47
  * @author SYQ
  */
 public class DefaultZmqProcessor implements ZmqProcessor {

@@ -9,7 +9,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityStatePush_11100006;
 /**
  * 玩家自己的活动
  * 
- * @date 2021年6月9日 下午12:15:20
+ * 2021年6月9日 下午12:15:20
  * @author SYQ
  */
 public abstract class PlayerActivityBase extends ActivityBase {

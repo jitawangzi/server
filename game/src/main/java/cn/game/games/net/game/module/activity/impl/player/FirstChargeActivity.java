@@ -23,7 +23,7 @@ import cn.game.util.DateUtil;
 
 /**    
  * 单充活动
- * @date 2024年4月30日 上午11:27:15
+ * 2024年4月30日 上午11:27:15
  * @author SYQ
  */
 @ActivityType(type = ActivityTypeEnum.FirstCharge)

@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.item;
 /** 
 * 
-* @date 2022年12月10日 上午11:28:28 
+* 2022年12月10日 上午11:28:28 
 * @author YYB 
 */
 public class BagItem {

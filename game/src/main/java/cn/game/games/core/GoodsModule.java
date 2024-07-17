@@ -18,7 +18,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
  * 代表玩家拥有的所有物品
- * @date 2024年2月5日 下午7:18:21
+ * 2024年2月5日 下午7:18:21
  * @author SYQ
  */
 public abstract class GoodsModule<E extends Item, T extends Item> extends BasePlayerModule {

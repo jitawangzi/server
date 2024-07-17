@@ -9,7 +9,7 @@ import cn.game.util.Pair;
 
 /**
  * @Description 跨服提供给其他服务器调用的接口
- * @date 2021年4月12日 下午2:10:22
+ * 2021年4月12日 下午2:10:22
  * @author SYQ
  */
 public interface CrossRemoteServerInterface {

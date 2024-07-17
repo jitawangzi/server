@@ -32,7 +32,7 @@ import cn.game.util.ExcelUtil;
 
 /**
  * @Description proto文件修改后执行
- * @date 2017年5月6日 下午6:58:34
+ * 2017年5月6日 下午6:58:34
  * @author SYQ
  */
 public class PbProtocolGenerator {

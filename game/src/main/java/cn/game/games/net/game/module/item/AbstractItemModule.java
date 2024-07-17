@@ -14,7 +14,7 @@ import cn.game.protocol.manual.OpType;
 
 /**    
  * 这里通常处理能重叠的那些东西
- * @date 2024年2月19日 上午10:55:53
+ * 2024年2月19日 上午10:55:53
  * @author SYQ
  */
 public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, Item> {

@@ -25,7 +25,7 @@ import io.vertx.core.Promise;
 
 /**    
  * 管理GameServer状态 
- * @date 2024年2月1日 下午4:20:41
+ * 2024年2月1日 下午4:20:41
  * @author SYQ
  */
 public class GameServerStatus {

@@ -7,7 +7,7 @@ import com.ubird.astar.core.AStarNode;
 
 /**    
  * 检查地图障碍是否会形成环
- * @date 2022年8月20日 下午3:03:29
+ * 2022年8月20日 下午3:03:29
  * @author SYQ
  */
 public class RingChecker {

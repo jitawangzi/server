@@ -22,7 +22,7 @@ import com.ctrip.framework.apollo.ConfigService;
 
 /**
  * @Description Redisson操作工具类，封装常用方法
- * @date 2021年3月11日 下午3:07:23
+ * 2021年3月11日 下午3:07:23
  * @author SYQ
  */
 public class RedissonUtil {

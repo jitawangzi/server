@@ -10,7 +10,7 @@ import cn.game.games.net.game.GameServer;
 
 /**    
  * 条件容器，一般管理那种需要持续观察变化的那种条件
- * @date 2022年6月6日 下午12:28:49
+ * 2022年6月6日 下午12:28:49
  * @author SYQ
  */
 public class ConditionContainer {

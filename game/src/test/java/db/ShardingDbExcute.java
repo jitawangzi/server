@@ -19,7 +19,7 @@ import cn.game.util.ZkHelper;
 
 /**    
  * shardingsphere对于;分隔的多sql执行不支持。
- * @date 2024年3月28日 下午4:40:04
+ * 2024年3月28日 下午4:40:04
  * @author SYQ
  */
 public class ShardingDbExcute {

@@ -9,7 +9,7 @@ import java.util.Set;
 
 /**    
  * 检查bi需要的日志文件，里面有没有空值
- * @date 2024年6月29日 下午6:58:05
+ * 2024年6月29日 下午6:58:05
  * @author SYQ
  */
 public class CyLogCheck {

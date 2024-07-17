@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**   
  * @Description 
- * @date 2016-6-17 下午3:05:31
+ * 2016-6-17 下午3:05:31
  * @author SYQ
  */
 public class ObjUtil {

@@ -17,7 +17,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
  * 
  * 枚举的格式不带name，输出excel的时候，特别添加一下
  * 
- * @date 2024年5月13日 下午2:39:45
+ * 2024年5月13日 下午2:39:45
  * @author SYQ
  */
 public class EnumToExcel {

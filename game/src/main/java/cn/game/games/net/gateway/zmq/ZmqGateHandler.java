@@ -70,7 +70,7 @@ public class ZmqGateHandler implements Runnable {
 
 	/**
 	 * @Description 处理别的服务器发送给网关服的消息
-	 * @date 2017年3月27日 下午5:55:42
+	 * 2017年3月27日 下午5:55:42
 	 * @author SYQ
 	 */
 	class GateReceiveHandler implements IZLoopHandler {
@@ -140,7 +140,7 @@ public class ZmqGateHandler implements Runnable {
 
 	/**
 	 * @Description 网关收到客户端消息后，转发给后端的服务器
-	 * @date 2017年3月27日 下午5:56:27
+	 * 2017年3月27日 下午5:56:27
 	 * @author SYQ
 	 */
 	class GateSendHandler implements IZLoopHandler {

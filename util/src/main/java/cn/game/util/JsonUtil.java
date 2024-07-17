@@ -30,7 +30,7 @@ import com.fasterxml.jackson.datatype.guava.GuavaModule;
 
 /**    
  * 对jackson的一个封装
- * @date 2024年3月1日 下午5:14:33
+ * 2024年3月1日 下午5:14:33
  * @author SYQ
  */
 public class JsonUtil {

@@ -18,7 +18,7 @@ import com.google.protobuf.Message.Builder;
 * @ClassName: BeanUtil
 * @Description: TODO
 * @author Melon
-* @date 2013-12-13 下午7:19:11
+* 2013-12-13 下午7:19:11
  */
 public class BeanUtil {
 	

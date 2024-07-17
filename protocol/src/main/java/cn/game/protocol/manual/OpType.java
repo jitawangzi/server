@@ -2,7 +2,7 @@ package cn.game.protocol.manual;
 
 /**
  * @Description 操作类型
- * @date 2020年10月9日 上午10:46:02
+ * 2020年10月9日 上午10:46:02
  * @author SYQ
  */
 public enum OpType{

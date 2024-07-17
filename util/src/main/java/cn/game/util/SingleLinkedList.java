@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
  * 
  * 最简单的链表，满足迭代时修改，不用维持顺序
  * 
- * @date 2021年6月16日 下午2:35:09
+ * 2021年6月16日 下午2:35:09
  * @author SYQ
  * @param <T>
  */

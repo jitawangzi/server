@@ -20,7 +20,7 @@ import cn.game.util.MBeanManager;
 
 /**
  * @Description 负责zmq消息接收和发送
- * @date 2017年4月1日 上午11:36:06
+ * 2017年4月1日 上午11:36:06
  * @author SYQ
  */
 public class ZmqAcceptor implements Runnable {

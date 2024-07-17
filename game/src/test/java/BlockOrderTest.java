@@ -8,7 +8,7 @@ import io.vertx.core.Vertx;
 /**    
  * 同一个线程提交的阻塞任务，如果是有序，则在同一个线程执行。 
  * 如果不同线程提交的阻塞任务，如果是有序，也是在各自的线程顺序执行。 
- * @date 2024年4月7日 下午5:49:47
+ * 2024年4月7日 下午5:49:47
  * @author SYQ
  */
 public class BlockOrderTest {

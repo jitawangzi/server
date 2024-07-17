@@ -10,7 +10,7 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 /**
  * 初始化spring
  * 
- * @date 2021年11月9日 下午5:42:23
+ * 2021年11月9日 下午5:42:23
  * @author SYQ
  */
 public class SpringApolloLoader extends ApolloLoader {

@@ -31,7 +31,7 @@ import io.vertx.core.http.ServerWebSocket;
 
 /**   
  * @Description 逻辑服务器中代表的客户端,直接和客户端通讯
- * @date 2020年8月20日 下午2:44:51
+ * 2020年8月20日 下午2:44:51
  * @author SYQ
  */
 public class GameClient extends AbstractNetClient {

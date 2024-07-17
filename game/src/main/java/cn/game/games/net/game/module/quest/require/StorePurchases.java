@@ -8,7 +8,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 /**    
  * 黑市购买商品
- * @date 2024年5月8日 下午5:50:06
+ * 2024年5月8日 下午5:50:06
  * @author SYQ
  */
 @ConditionType(type = ConditionTypeEnum.StorePurchases)
