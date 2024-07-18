@@ -270,11 +270,16 @@ public class ChapterHandler extends BaseHandler {
 			} else {
 				int maxSweepBattle = mengYanMiJingBattle.maxSweepBattle();
 				BattleConfig battleConfig = BattleManager.instance().getNullable(maxSweepBattle);
-				canQuick = battleConfig != null;
+				while (battleConfig != null) {
+					if (battleConfig.ClearGameReward > 0) {
+						canQuick = true;
+						break;
+					}
+					battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+				}
 			}
 		}
 		resp.setCanQuickReward(canQuick);
-
 		client.sendProtocol(resp);
 	}
 

@@ -62,6 +62,8 @@ public class PlayerModule extends BasePlayerModule {
 	
 	/** 随机宝箱，小云宝箱 */
 	private List<Goods> cloudBox;
+	/** 每日出现的小云宝箱次数 */
+	private int cloudBoxCount;
 	private int lastCloudBoxRewardTime;
 	private boolean isFirstLoign = false;
 
@@ -206,6 +208,9 @@ public class PlayerModule extends BasePlayerModule {
 		int[] randomCLoud = GlobalConst.RandomCLoud;
 		if (randomCLoud[0] == 1) {
 			player.setPeriodicTask(randomCLoud[1]*1000, r -> {
+				if (cloudBoxCount >= GlobalConst.RandomCLoudCnt) {
+					return;
+				}
 				if (cloudBox != null && !cloudBox.isEmpty()) {
 					return;
 				}
@@ -216,6 +221,7 @@ public class PlayerModule extends BasePlayerModule {
 					cloudBox = PlayerHelper.randomReward(player, randomCLoud[3]);
 					List<GoodsInfo> collect = cloudBox.stream().map(Goods::toGoodsInfo).collect(Collectors.toList());
 					player.getGameClient().sendProtocol(PlayerCloudBoxPush_01100040.newBuilder().setCloudBox(CloudBoxInfo.newBuilder().addAllItems(collect)));
+					cloudBoxCount++;
 				}
 			});
 		}
@@ -285,6 +291,7 @@ public class PlayerModule extends BasePlayerModule {
 		}
 		case NewDay: {
 			isFirstLoign = true;
+			cloudBoxCount = 0;
 			break;
 		}
 		}

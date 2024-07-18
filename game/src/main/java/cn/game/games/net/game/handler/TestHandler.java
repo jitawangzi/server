@@ -23,7 +23,6 @@ import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -32,6 +31,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.util.DAO;
@@ -287,7 +287,9 @@ public class TestHandler extends BaseHandler {
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
 //		Collection<Hero> list = player.getHeroModule().list();
 //		PlayerHelper.addReward(player, 20011, OpType.None);
-		player.handleEvent(EventTypeEnum.CostItem, Asset.diamond.ID, 3000);
+//		player.handleEvent(EventTypeEnum.CostItem, Asset.diamond.ID, 3000);
+
+		drawTest2(player);
 //		long uid = 0;
 //		for (Hero hero : list) {
 //			uid = hero.getId();
@@ -415,6 +417,43 @@ public class TestHandler extends BaseHandler {
 		}
 
 		System.err.println(MessageFormat.format("循环{0}次，每次{1}连抽结果,紫:{2} 金:{3} 红:{4}", lp, count, r4, r5, r6));
+	}
+
+	private void drawTest2(Player player) {
+		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(300001);
+
+		int r3 = 0, r4 = 0, r5 = 0, r6 = 0;
+		int lp = 1000;
+		int count = 100;
+		DrawModule module = player.getModule(DrawModule.class);
+		for (int j = 0; j < lp; j++) {
+
+			for (int i = 0; i < count; i++) {
+
+				List<List<RewardInfo>> draw = module.draw(2, 1, false);
+				for (List<RewardInfo> list : draw) {
+
+					for (RewardInfo list2 : list) {
+
+						HeroConfig heroConfig = HeroManager.instance().get(list2.getRole().getConfigId());
+						if (heroConfig.InitialQuality == 4) {
+							r4++;
+						} else if (heroConfig.InitialQuality == 5) {
+							r5++;
+						} else if (heroConfig.InitialQuality == 6) {
+							r6++;
+						} else if (heroConfig.InitialQuality == 3) {
+							r3++;
+						}
+					}
+				}
+//				if (i % 10 == 0) {
+//					System.out.println(MessageFormat.format("第{0}次十连抽结果,紫:{1} 金:{2} 红:{3}", i / 10, r4, r5, r6));
+//				}
+			}
+		}
+
+		System.err.println(MessageFormat.format("{0}次抽卡结果,蓝:{1} 紫:{2} 金:{3} 红:{4}", lp * count, r3, r4, r5, r6));
 	}
 
 	/*
