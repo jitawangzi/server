@@ -420,17 +420,16 @@ public class TestHandler extends BaseHandler {
 	}
 
 	private void drawTest2(Player player) {
-		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(300001);
-
 		int r3 = 0, r4 = 0, r5 = 0, r6 = 0;
 		int lp = 1000;
 		int count = 100;
+		int drawCount = 1;
 		DrawModule module = player.getModule(DrawModule.class);
 		for (int j = 0; j < lp; j++) {
 
 			for (int i = 0; i < count; i++) {
 
-				List<List<RewardInfo>> draw = module.draw(2, 1, false);
+				List<List<RewardInfo>> draw = module.draw(2, drawCount, false);
 				for (List<RewardInfo> list : draw) {
 
 					for (RewardInfo list2 : list) {
