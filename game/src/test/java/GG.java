@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-
+import cn.game.util.ByteHelp;
 import cn.game.util.Rnd;
 
 public class GG {
@@ -8,14 +6,10 @@ public class GG {
 	public static long firstTime = System.currentTimeMillis();
 
 	public static void main(String[] args) throws Exception {
-		List<List<String>> ret = new ArrayList<>();
-		List<String> list = new ArrayList<>();
-		list.add("1");
-		
-		ret.set(1, list);
-		
-		System.out.println(ret.get(0));
-		
+		byte[] da = new byte[] { -1, 66, 100, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+
+		String string = ByteHelp.toString(da, 20);
+		System.out.println(string);
 	}
 
 	private static void test() {

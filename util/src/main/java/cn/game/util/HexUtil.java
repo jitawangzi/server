@@ -161,4 +161,21 @@ public class HexUtil {
 		}
 		return baos.toByteArray();
 	}
+
+	public static String bytesToHex(byte[] bytes) {
+		char[] hexChars = new char[bytes.length * 2];
+		for (int j = 0; j < bytes.length; j++) {
+			int v = bytes[j] & 0xFF;
+			hexChars[j * 2] = HEX[v >>> 4];
+			hexChars[j * 2 + 1] = HEX[v & 0x0F];
+		}
+		return new String(hexChars);
+	}
+
+	public static String bytesToHexPreview(byte[] bytes, int n) {
+		int length = Math.min(n, bytes.length);
+		byte[] preview = new byte[length];
+		System.arraycopy(bytes, 0, preview, 0, length);
+		return bytesToHex(preview);
+	}
 }

@@ -421,7 +421,7 @@ public class TestHandler extends BaseHandler {
 
 	private void drawTest2(Player player) {
 		int r3 = 0, r4 = 0, r5 = 0, r6 = 0;
-		int lp = 1000;
+		int lp = 100;
 		int count = 100;
 		int drawCount = 1;
 		DrawModule module = player.getModule(DrawModule.class);

@@ -126,6 +126,30 @@ public class ByteHelp {
 		return b.toString();
 	}
 
+	/** 
+	 * 输出一个二维数组的前n位
+	 * @param a
+	 * @param length
+	 * @return
+	 */
+	public static String toString(byte[] a, int length) {
+
+		if (a == null)
+			return "null";
+		int iMax = length > a.length - 1 ? a.length - 1 : length;
+		if (iMax == -1)
+			return "[]";
+
+		StringBuilder b = new StringBuilder();
+		b.append('[');
+		for (int i = 0;; i++) {
+			b.append(a[i]);
+			if (i == iMax)
+				return b.append(']').toString();
+			b.append(", ");
+		}
+	}
+
 	/**
 	 * 更新一个给定的int值，将参数中指定的位更新给1，通常来记录连续多个boolean值
 	 * @param value

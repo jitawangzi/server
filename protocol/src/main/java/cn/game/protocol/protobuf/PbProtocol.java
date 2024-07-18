@@ -2,13 +2,18 @@ package cn.game.protocol.protobuf;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.protocol.parser.ProtocolParser;
+import cn.game.util.ByteHelp;
 
 public class PbProtocol implements ProtocolParser {
+	private static final Logger log = LoggerFactory.getLogger(PbProtocol.class);
 
 	public static Map<Integer, Parser<?>> parsersMap = new HashMap<Integer, Parser<?>>();
 	public static Map<String, Integer> nameIdMap = new HashMap<String, Integer>();
@@ -1310,6 +1315,8 @@ public class PbProtocol implements ProtocolParser {
 		try {
 			return (Message) parser.parseFrom(data);
 		} catch (InvalidProtocolBufferException e) {
+			log.error("Failed to parse message. ID: {}, Data length: {}, First 20 bytes: {}", msgID, data.length,
+				ByteHelp.toString(data, 20));
 			throw new RuntimeException(e);
 		}
 	}

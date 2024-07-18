@@ -164,7 +164,10 @@ public class GameClient extends AbstractNetClient {
 			compositeBuffer.writerIndex(headerBuf.readableBytes() + bodyBuf.readableBytes());
 			
 			channel.writeBinaryMessage(Buffer.buffer(compositeBuffer));
-			
+//			if (msgId == PbProtocol.PlayerLoginResponse_01000002) {
+//				log.error("player[{}] sendProtocol[{}] seq[{}] errorCode[{}]data length[{}] First 20 bytes[{}]", playerId, msgId, seq, errorCode, data.length,
+//						ByteHelp.toString(data, 20));
+//			}
 			if (recored && seq > 0) {
 				// 记录seq对应下发的数据，相同的seq直接返回老数据
 				IProtocol<byte[]> protocol = new BaseByteProtocol(msgId, data, seq, errorCode);
