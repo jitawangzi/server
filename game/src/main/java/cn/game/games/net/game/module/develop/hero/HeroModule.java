@@ -30,7 +30,7 @@ import cn.game.util.Rnd;
 
 public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.CostUidItem,
-			EventTypeEnum.Hero };
+			EventTypeEnum.Hero, EventTypeEnum.HeroQuality };
 
 	/** 当前使用的英雄id */
 	private long heroUid;
@@ -45,6 +45,9 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	/** 领取过图鉴奖励的英雄id,领取到什么品质了 */
 	private Map<Integer, Integer> illustrationsHeroQualitys = new HashMap<Integer, Integer>();
+
+	/** 某个英雄id，达到的最大品质。 */
+	private Map<Integer, Integer> illustrationsHeroQualitysMax = new HashMap<Integer, Integer>();
 
 	/** 曾经拥有过的英雄id */
 	private List<Integer> ownedHeroIds = new ArrayList<>();
@@ -97,6 +100,24 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			int configId = event.getIntParameter(0);
 			if (ownedHeroIds.contains(configId)) {
 				ownedHeroIds.remove(Integer.valueOf(configId));
+			}
+			if (!illustrationsHeroQualitysMax.containsKey(configId)) {
+				HeroConfig heroConfig = HeroManager.instance().get(configId);
+				illustrationsHeroQualitysMax.put(configId, heroConfig.InitialQuality);
+			}
+			break;
+		}
+		case HeroQuality: {
+			Hero hero = event.getParameter(0);
+			int configId = hero.getConfigId();
+			HeroConfig heroConfig = HeroManager.instance().get(configId);
+			if (!illustrationsHeroQualitysMax.containsKey(configId)) {
+				illustrationsHeroQualitysMax.put(configId, heroConfig.InitialQuality);
+			} else {
+				int oldQuality = illustrationsHeroQualitysMax.get(configId);
+				if (hero.getQuality() > oldQuality) {
+					illustrationsHeroQualitysMax.put(configId, hero.getQuality());
+				}
 			}
 			break;
 		}
@@ -242,6 +263,10 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	public List<Integer> getOwnedHeroIds() {
 		return ownedHeroIds;
+	}
+
+	public Map<Integer, Integer> getIllustrationsHeroQualitysMax() {
+		return illustrationsHeroQualitysMax;
 	}
 
 }

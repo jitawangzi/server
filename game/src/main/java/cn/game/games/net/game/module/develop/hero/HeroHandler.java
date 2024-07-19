@@ -104,26 +104,26 @@ public class HeroHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HeroModule heroModule = player.getHeroModule();
 		Map<Integer, Integer> illustrationsIds = heroModule.getIllustrationsHeroQualitys();
-		Collection<Hero> list = heroModule.list();
+		Map<Integer, Integer> qualitysMax = heroModule.getIllustrationsHeroQualitysMax();
 		
 		List<RewardInfo> rewardsInfos = new ArrayList<>();
-		for (Hero hero : list) {
-			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+		qualitysMax.forEach((configId, qualityMax) -> {
+			HeroConfig heroConfig = HeroManager.instance().get(configId);
 			if (illustrationsIds.containsKey(heroConfig.ID)) {
-				int quality = illustrationsIds.get(hero.getConfigId());
-				for (int i = quality + 1; i <= hero.getQuality(); i++) {
+				int quality = illustrationsIds.get(configId);
+				for (int i = quality + 1; i <= qualityMax; i++) {
 					illustrationsIds.put(heroConfig.ID, i);
 					List<RewardInfo> resources = PlayerHelper.addReward(player, GlobalConst.HeroBookAward, OpType.llustrationsReward);
 					rewardsInfos.addAll(resources);
 				}
 			} else {
-				for (int i = heroConfig.InitialQuality; i <= hero.getQuality(); i++) {
+				for (int i = heroConfig.InitialQuality; i <= qualityMax; i++) {
 					illustrationsIds.put(heroConfig.ID, i);
 					List<RewardInfo> resources = PlayerHelper.addReward(player, GlobalConst.HeroBookAward, OpType.llustrationsReward);
 					rewardsInfos.addAll(resources);
 				}
 			}
-		}
+		});
 		resp.addAllReward(rewardsInfos);
 		// 给奖励
 		client.sendProtocol(resp.build());
@@ -135,30 +135,32 @@ public class HeroHandler extends BaseHandler {
 		HeroModule heroModule = player.getHeroModule();
 		Map<Integer, Integer> illustrationsIds = heroModule.getIllustrationsHeroQualitys();
 		resp.addAllHeroIds(heroModule.getOwnedHeroIds());
-		Collection<Hero> list = heroModule.list();
-		Set<Integer> addIdSet = new HashSet<Integer>();
-		for (Hero hero : list) {
-			if (addIdSet.contains(hero.getConfigId())) {
-				continue;
-			}
-			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+		Map<Integer, Integer> qualitysMax = heroModule.getIllustrationsHeroQualitysMax();
+//		Set<Integer> addIdSet = new HashSet<Integer>();
+		qualitysMax.forEach((configId, qualityMax) -> {
+
+//			if (addIdSet.contains(configId)) {
+//				return;
+//			}
+			HeroConfig heroConfig = HeroManager.instance().get(configId);
 			HeroIllustrationsInfo.Builder builder = HeroIllustrationsInfo.newBuilder();
-			builder.setHeroId(heroConfig.ID);
-			if (illustrationsIds.containsKey(heroConfig.ID)) {
-				int quality = illustrationsIds.get(hero.getConfigId());
-				for (int i = quality + 1; i <= hero.getQuality(); i++) {
+			builder.setHeroId(configId);
+			if (illustrationsIds.containsKey(configId)) {
+				int qualityReward = illustrationsIds.get(configId);
+				for (int i = qualityReward + 1; i <= qualityMax; i++) {
 					builder.addQuality(i);
 				}
 			} else {
-				for (int i = heroConfig.InitialQuality; i <= hero.getQuality(); i++) {
+				for (int i = heroConfig.InitialQuality; i <= qualityMax; i++) {
 					builder.addQuality(i);
 				}
 			}
 			if (builder.getQualityCount() > 0) {
-				addIdSet.add(builder.getHeroId());
+//				addIdSet.add(builder.getHeroId());
 				resp.addHeros(builder.build());
 			}
-		}
+
+		});
 		client.sendProtocol(resp.build());
 	}
 
@@ -528,6 +530,7 @@ public class HeroHandler extends BaseHandler {
 		}
 		hero.setStar(nextQualityStarConfig.Star);
 		hero.setQuality(nextQualityStarConfig.InitialQuality);
+		player.handleEvent(EventTypeEnum.HeroQuality, hero);
 
 		// 英雄突破，奖励固定元宝
 		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.HeroConflate);

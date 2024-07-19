@@ -87,6 +87,8 @@ public enum EventTypeEnum {
 	BuyItems(28, "商店购买商品"),
 
 	Practice(29, "修炼"),
+	/** 参数： hero */
+	HeroQuality(30, "英雄品质提升"),
 
 	//成就相关
 	/** 开启战斗 :  Battle战役id，关卡id*/
