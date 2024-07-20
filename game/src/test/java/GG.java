@@ -1,17 +1,19 @@
-import cn.game.util.ByteHelp;
+import java.math.BigDecimal;
+
 import cn.game.util.Rnd;
 
 public class GG {
 	public static int x = 0;
 	public static long firstTime = System.currentTimeMillis();
 
-	public static void main(String[] args) throws Exception {
-		byte[] da = new byte[] { -1, 66, 100, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+	public static void main(String[] args) {
+		BigDecimal a = new BigDecimal("9.8").setScale(2);
+		BigDecimal b = new BigDecimal("9.11").setScale(2);
 
-		String string = ByteHelp.toString(da, 20);
-		System.out.println(string);
+		System.out.println("a: " + a); // 输出 a 的值
+		System.out.println("b: " + b); // 输出 b 的值
+		System.out.println(a.compareTo(b)); // 应该输出 -1 表示 a < b
 	}
-
 	private static void test() {
 		int c2 = 0;
 

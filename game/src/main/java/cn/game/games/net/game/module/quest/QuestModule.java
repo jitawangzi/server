@@ -56,7 +56,7 @@ import cn.game.util.StringMapWrapper;
 public class QuestModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
 			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem,
-			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds, EventTypeEnum.HeroBreak, EventTypeEnum.Hero };
+			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds, EventTypeEnum.HeroBreak, EventTypeEnum.Hero, EventTypeEnum.Patrol };
 
 	/** 当前激活的任务 ,key1 ： QuestTypeEnum, key2: QuestConfig id */
 	private Map<Integer, Map<Integer, Quest>> quests;
@@ -954,6 +954,10 @@ public class QuestModule extends BasePlayerModule {
 			if (id == Asset.diamond.ID) {
 				addCumulativeCount(ConditionTypeEnum.ConsumesDiamonds, count);
 			}
+			break;
+		}
+		case Patrol: {
+			addCumulativeCount(ConditionTypeEnum.QuickHangUpCumulation, 1);
 			break;
 		}
 		}
