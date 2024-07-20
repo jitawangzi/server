@@ -251,6 +251,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerResetPush_01100016 = 0x01100016;    //通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新  
 	public final static int NoticeRequest_01000050 = 0x01000050;    //请求公告数据  
 	public final static int NoticeResponse_01000051 = 0x01000051;    //公告内容  
+	public final static int PlayerBatchPush_01100100 = 0x01100100;    //一次推送多个消息  
 	public final static int QuestListRequest_20000001 = 0x20000001;    //查看某类任务数据,一般在任务功能开启时，客户端请求一下。  
 	public final static int QuestListResponse_20000002 = 0x20000002;    //任务数据  
 	public final static int QuestReceiveRequest_20000004 = 0x20000004;    //领取任务奖励  
@@ -797,6 +798,8 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(NoticeResponse_01000051, cn.game.protocol.protobuf.PlayerMsg.NoticeResponse_01000051.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PlayerBatchPush_01100100, cn.game.protocol.protobuf.PlayerMsg.PlayerBatchPush_01100100.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(QuestListRequest_20000001, cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(QuestListResponse_20000002, cn.game.protocol.protobuf.QuestMsg.QuestListResponse_20000002.getDefaultInstance()
@@ -1211,6 +1214,7 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerResetPush_01100016", 0x01100016);
 		nameIdMap.put("NoticeRequest_01000050", 0x01000050);
 		nameIdMap.put("NoticeResponse_01000051", 0x01000051);
+		nameIdMap.put("PlayerBatchPush_01100100", 0x01100100);
 		nameIdMap.put("QuestListRequest_20000001", 0x20000001);
 		nameIdMap.put("QuestListResponse_20000002", 0x20000002);
 		nameIdMap.put("QuestReceiveRequest_20000004", 0x20000004);
