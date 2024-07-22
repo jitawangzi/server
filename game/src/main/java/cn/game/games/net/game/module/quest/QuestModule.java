@@ -284,7 +284,7 @@ public class QuestModule extends BasePlayerModule {
 					PlayerHelper.command(playerId, missionConfig.getEndCommand());
 				}*/
 
-		setState(quest, QuestHelper.REWARDED);
+		setState(quest, QuestHelper.REWARDED, true);
 
 		/*		List<Entry<Integer, Integer>> reward = questConfig.getReward();
 				int chooseRewardType = questConfig.getChooseRewardType();
@@ -439,7 +439,7 @@ public class QuestModule extends BasePlayerModule {
 					QuestGroupPush_20100008.newBuilder().setType(questConfig.Type).build());
 			QuestHelper.notifyQuestChange(quest, UpdateType.ADD);
 		}
-		setState(quest, initState);
+		setState(quest, initState, notify);
 		// 检查任务是否可以完成
 		quest.checkFinish();
 
@@ -635,7 +635,7 @@ public class QuestModule extends BasePlayerModule {
 		return false;
 	}
 
-	public void setState(Quest quest, byte state) {
+	public void setState(Quest quest, byte state, boolean notify) {
 		if (quest == null) {
 			return;
 		}
@@ -650,7 +650,9 @@ public class QuestModule extends BasePlayerModule {
 			Quest now = get(quest.getId());
 			if (now != null) { // 有可能设置状态时领奖了，这任务已经被删除了，就不在推送这个任务状态了
 				update(quest);
-				QuestHelper.notifyQuestChange(quest, UpdateType.UPDATE);
+				if (notify) {
+					QuestHelper.notifyQuestChange(quest, UpdateType.UPDATE);
+				}
 			}
 		}
 
@@ -827,7 +829,7 @@ public class QuestModule extends BasePlayerModule {
 			for (Entry<Integer, Quest> entry : group.entrySet()) {
 				Quest quest = entry.getValue();
 				if (quest.getState() == QuestHelper.SHOW) {
-					setState(quest, QuestHelper.CAN_ACCEPT);
+					setState(quest, QuestHelper.CAN_ACCEPT, notify);
 				}
 			}
 		}

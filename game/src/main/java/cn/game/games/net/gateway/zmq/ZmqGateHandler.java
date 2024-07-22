@@ -1,6 +1,5 @@
 package cn.game.games.net.gateway.zmq;
 
-import org.apache.mina.core.buffer.IoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZContext;
@@ -13,10 +12,6 @@ import org.zeromq.ZMQ.Poller;
 import org.zeromq.ZMQ.Socket;
 import org.zeromq.ZMsg;
 
-import com.google.protobuf.Message;
-import com.google.protobuf.TextFormat;
-
-import cn.game.core.net.websocket.WebSocketCodecPacket;
 import cn.game.games.net.client.GateClient;
 import cn.game.games.net.gateway.GateClientManager;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -111,19 +106,19 @@ public class ZmqGateHandler implements Runnable {
 				// gateClient.sendProtocol(msg);
 				// }
 				byte[] data = msg.pop().getData();
-				WebSocketCodecPacket resp = WebSocketCodecPacket.buildPacket(IoBuffer.wrap(data), msgID, errorCode);
-				gateClient.sendProtocol(resp);
+//				WebSocketCodecPacket resp = WebSocketCodecPacket.buildPacket(IoBuffer.wrap(data), msgID, errorCode);
+//				gateClient.sendProtocol(resp);
 
 				if (Config.recordSendData) {
 					try {
 
 						if (msgID != PbProtocol.PlayerHeartbeatResponse_01000006) {
-							Message parseFrom = PbProtocol.getInstance().parseFrom(msgID, resp.getPacket().array());
-							sendLog.info("opType[send][{}]code[{}]msgName[{}]msgValue[{}]", gateClient, errorCode,
-									parseFrom.getClass().getSimpleName(), TextFormat.shortDebugString(parseFrom));
-							if (errorCode > 0) {
-								System.err.println("msgName :" + parseFrom.getClass().getSimpleName() + "  errorCode: " + errorCode);
-							}
+//							Message parseFrom = PbProtocol.getInstance().parseFrom(msgID, resp.getPacket().array());
+//							sendLog.info("opType[send][{}]code[{}]msgName[{}]msgValue[{}]", gateClient, errorCode,
+//									parseFrom.getClass().getSimpleName(), TextFormat.shortDebugString(parseFrom));
+//							if (errorCode > 0) {
+//								System.err.println("msgName :" + parseFrom.getClass().getSimpleName() + "  errorCode: " + errorCode);
+//							}
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

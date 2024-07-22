@@ -124,7 +124,7 @@ public class QuestHandler extends BaseHandler {
 			return;
 		}
 
-		questModule.setState(quest, QuestHelper.ACCEPTED);
+		questModule.setState(quest, QuestHelper.ACCEPTED, true);
 
 		resp.setQuest(quest.toQuestInfo());
 		client.sendProtocol(resp);

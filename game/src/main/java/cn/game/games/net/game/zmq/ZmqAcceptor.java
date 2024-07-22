@@ -11,7 +11,7 @@ import org.zeromq.ZMsg;
 
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.bytes.BaseByteProtocol;
-import cn.game.games.core.mina.HandlerState;
+import cn.game.games.core.netty.HandlerState;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.client.GameGateClient;
 import cn.game.games.net.game.manager.GameClientManager;

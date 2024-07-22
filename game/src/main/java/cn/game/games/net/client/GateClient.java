@@ -1,11 +1,9 @@
 package cn.game.games.net.client;
 
-import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.client.AbstractNetClient;
-import cn.game.util.GameCrypt;
 
 /**
  * 网关保持和客户端的连接
@@ -20,10 +18,8 @@ public class GateClient extends AbstractNetClient {
 	private static final Logger log = LoggerFactory.getLogger(GameClient.class);
 	private static final Logger onlineLog = LoggerFactory.getLogger("onlineLog");
 
-	/** 加解密 */
-	private GameCrypt gameCrypt;
 	/** 连接会话 */
-	private IoSession session;
+//	private IoSession session;
 
 	// -------------------------------------------
 	// 帐号信息
@@ -39,16 +35,16 @@ public class GateClient extends AbstractNetClient {
 
 	@Override
 	public void sendProtocol(Object message) {
-		if (session == null || session.isClosing() || !session.isConnected()) {
-			log.warn("write message[{}]err,session[{}]", message, session);
-		} else {
-			session.write(message);
-		}
+//		if (session == null || session.isClosing() || !session.isConnected()) {
+//			log.warn("write message[{}]err,session[{}]", message, session);
+//		} else {
+//			session.write(message);
+//		}
 	}
 
-	public GateClient(GameCrypt gameCrypt, IoSession ioSession) {
-		this.gameCrypt = gameCrypt;
-		this.session = ioSession;
+	public GateClient() {
+//		this.gameCrypt = gameCrypt;
+//		this.session = ioSession;
 		// this.sessionId = IdUtil.getId(IdType.SESSION) ;
 		// this.sessionAddr = ByteHelp.toByteArray(sessionId) ;
 		// log.debug("GateClient sessionIdp[{}],
@@ -56,21 +52,6 @@ public class GateClient extends AbstractNetClient {
 
 	}
 
-	public GameCrypt getGameCrypt() {
-		return gameCrypt;
-	}
-
-	public void setGameCrypt(GameCrypt gameCrypt) {
-		this.gameCrypt = gameCrypt;
-	}
-
-	public IoSession getSession() {
-		return session;
-	}
-
-	public void setSession(IoSession session) {
-		this.session = session;
-	}
 	public String getIp() {
 		return ip;
 	}

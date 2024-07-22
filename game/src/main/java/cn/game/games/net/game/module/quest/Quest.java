@@ -208,7 +208,7 @@ public class Quest implements Serializable, DbEntity {
 
 		Player player = PlayerManager.getInstance().getPlayer(getPlayerId());
 		QuestModule questModule = player.getQuestModule();
-		questModule.setState(this, QuestHelper.CAN_ACCEPT);
+		questModule.setState(this, QuestHelper.CAN_ACCEPT, true);
 		setStartTime(System.currentTimeMillis());
 
 	}
@@ -259,7 +259,7 @@ public class Quest implements Serializable, DbEntity {
 		Consumer<Condition> finishAction = t -> {
 			QuestModule questModule = player.getModule(QuestModule.class);
 			if (this.getState() == QuestHelper.ACCEPTED) {
-				questModule.setState(this, QuestHelper.CAN_GIVEWARD);
+				questModule.setState(this, QuestHelper.CAN_GIVEWARD, true);
 			}
 		};
 		if (conditionContainer == null) {
