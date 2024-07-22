@@ -168,10 +168,6 @@ public class PlayerHelper {
 	public static boolean isEnough(Player player, int id, int count) {
 		return player.getGoodsModule(id).isEnough(id, count);
 	}
-	public static boolean isEnough(long playerId, int id, int count) {
-		Player player =  PlayerManager.getInstance().getPlayer(playerId) ; 
-		return isEnough(player, id, count);
-	}
 
 	/** 
 	 * 合并同id 的资源和道具的数量。 

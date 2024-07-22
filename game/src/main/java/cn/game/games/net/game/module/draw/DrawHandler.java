@@ -74,31 +74,25 @@ public class DrawHandler extends BaseHandler {
 		List<SimpleEntry<Integer, Integer>> costEntries = new ArrayList<>();
 		if (!freeOnce) {
 			int costItemId = drawConfig.DrawConsumeId[0];
-			if (ten) {
-				int costItemCount = drawConfig.DrawConsumeId[1] * drawCount;
-				int count = (int) player.getItemModule().getCount(costItemId);
-				if (count > 0) {
-					costEntries.add(new SimpleEntry(costItemId, count > costItemCount ? costItemCount : count));
-				}
-				if (count < costItemCount) {
-					boolean useAnother = false;
-					for (int[] consume : GlobalConst.GachaConsume) {
-						if (consume[0] == costItemId) {
-							costEntries.add(new SimpleEntry(consume[1], (consume[2] * (costItemCount - count))));
-							useAnother = true;
-							break;
-						}
-					}
-					if (!useAnother) {
-                        client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-                        return;
-                    }
-				}
-
-			}else {
-				costEntries.add(new SimpleEntry<>(costItemId, drawConfig.DrawConsumeId[1]));
+			int costItemCount = drawConfig.DrawConsumeId[1] * drawCount;
+			int count = (int) player.getItemModule().getCount(costItemId);
+			if (count > 0) {
+				costEntries.add(new SimpleEntry(costItemId, count > costItemCount ? costItemCount : count));
 			}
-
+			if (count < costItemCount) {
+				boolean useAnother = false;
+				for (int[] consume : GlobalConst.GachaConsume) {
+					if (consume[0] == costItemId) {
+						costEntries.add(new SimpleEntry(consume[1], (consume[2] * (costItemCount - count))));
+						useAnother = true;
+						break;
+					}
+				}
+				if (!useAnother) {
+					client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+					return;
+				}
+			}
 		}
 		if (freeOnce) {
 			int nextFreeTime = drawModule.getNextFreeTime(id);
