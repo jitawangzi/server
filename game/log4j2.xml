@@ -264,7 +264,7 @@
                          fileName="${path_system}/${file_stdout}${extension}"
                          immediateFlush="true"
                          filePattern="${path_system}/${file_stdout}.%d{yyyy-MM-dd}-%i${extension}">
-    <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%m%n"/>
+    <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|[%t]|%m%n"/>
     <Policies>
         <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
         <SizeBasedTriggeringPolicy size="100MB"/>
