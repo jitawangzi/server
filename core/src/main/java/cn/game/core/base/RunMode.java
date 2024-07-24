@@ -2,7 +2,7 @@ package cn.game.core.base;
 
 public enum RunMode {
 
-	TEST, CHECK, PRESSURE, Production;
+	TEST, CHECK, PRESSURE, PRODUCTION;
 
 	public boolean isTest() {
 		return this.equals(TEST);
@@ -15,7 +15,7 @@ public enum RunMode {
 		return this.equals(PRESSURE);
 	}
 	public boolean isProduction() {
-		return this.equals(Production);
+		return this.equals(PRODUCTION);
 	}
 
 }

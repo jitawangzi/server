@@ -11,7 +11,7 @@ public class ServerContext {
 	private static final ServerContext instance = new ServerContext();
 	private static final String serverKey = "server.run.mode";
 	private boolean pressureDev = Boolean.getBoolean("pressureDev");
-	private RunMode runMode = RunMode.Production;
+	private RunMode runMode = RunMode.PRODUCTION;
 
 	private ServerContext() {
 	};

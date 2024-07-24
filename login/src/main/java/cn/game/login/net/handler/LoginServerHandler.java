@@ -83,13 +83,10 @@ public class LoginServerHandler extends BaseHandler {
 //		ObjUtil.setDefaultValue(payOrder); 
 		
 		VxHolder.vertx.executeBlocking(r -> {
-			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class) ; 
-			mapper.insert(payOrder); 
 			
 			String rawDate = signData.toJSONString();
 			//? 
 			String paySig = WechatHelper.calcPaymentGameItemPaySig(rawDate); 
-			
 			String signature = WechatHelper.calcSignature(rawDate, user.getSessionKey()); 
 			
 			Builder newBuilder = PaymentOrderProto.newBuilder(); 
@@ -98,9 +95,12 @@ public class LoginServerHandler extends BaseHandler {
 			newBuilder.setSignature(signature); 
 			resp.setOrderId(outTradeNo); 
 			
+			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+			mapper.insert(payOrder);
+
 			client.sendProtocol(resp.setOrder(newBuilder.build()));
 		}).onFailure(e -> {
-			resp.setOrderId(outTradeNo); 
+			resp.setOrderId(0);
 			client.sendProtocol(resp.build());
 
 //			client.sendProtocol(ExceptionUtils.getFullStackTrace(e),1) ; 

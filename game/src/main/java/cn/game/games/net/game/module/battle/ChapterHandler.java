@@ -779,16 +779,16 @@ public class ChapterHandler extends BaseHandler {
 			int index = indexList.get(i);
 			int id = idList.get(i);
 			BattleConfig battleConfig = BattleManager.instance().get(id);
-
-			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index], OpType.BattleEnd);
-
-			resp.addAllReward(reward);
 			Chapter chapter = chapterModule.getChapter(id);
+			if (chapter == null) {
+				continue;
+			}
 			chapter.getRewards().add(index);
+			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index], OpType.BattleEnd);
+			resp.addAllReward(reward);
 		}
 
 		client.sendProtocol(resp);
-	
 	}
 
 	protected void hcChapterReward(NetClient client, Object message) {

@@ -272,10 +272,14 @@ public class GameClient extends AbstractNetClient {
 			return true;
 		}
 		List<IProtocol<byte[]>> list = this.recentMessages.get(seq);
+		// 这个seq的消息处理过了
 		if (list != null && !list.isEmpty()) {
 			for (IProtocol<byte[]> send : list) {
 				sendProtocol(send.getMsgID(), send.getSeq(), send.getData(), send.getErrorCode(), false);
 			}
+			return false;
+		}
+		if (curMessageSeq > 0 && seq <= curMessageSeq) {
 			return false;
 		}
 		this.curMessageSeq = seq;

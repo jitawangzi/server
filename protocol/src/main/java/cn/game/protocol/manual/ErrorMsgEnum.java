@@ -81,17 +81,6 @@ public enum ErrorMsgEnum {
 	/** 不能使用 */
 	not_use(115, "不能使用"),
 
-	/** 没有权限做此操作 */
-	not_jurisdiction(117, "没有权限做此操作"),
-	/** 群组人数已满 */
-	max_group_count(122, "群组人数已满"),
-	/** 玩家已在群组里 */
-	not_player_group(123, "玩家已在群组里"),
-	/** 玩家的群组数已满 */
-	not_player_group_count(124, "玩家的群组数已满"),
-	/** 群组不存在 */
-	not_group(116, "群组不存在"),
-
 	/** 名字不合法 */
 	not_name(118, "名字不合法"),
 	/** 公告不合法 */
@@ -114,6 +103,8 @@ public enum ErrorMsgEnum {
 	// 英雄
 	hero_level_max(180, "英雄等级到达上限"),
 	hero_break_max(181, "英雄突破到达上限"),
+
+	payment_order_create_fail(360, "充值订单创建失败。"),
 
 	// 商店，月卡
 	/** 商品不存在 */
