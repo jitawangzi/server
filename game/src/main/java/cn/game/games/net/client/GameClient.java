@@ -245,8 +245,8 @@ public class GameClient extends AbstractNetClient {
 	public void close() {
 		channel.close().onSuccess(r -> {
 			log.info("client[{}] close success", this);
-		}).onFailure(r -> {
-			log.info("client[{}] close fail", this);
+		}).onFailure(e -> {
+			log.info("client[{" + this + "}] close fail", e);
 		});
 	}
 

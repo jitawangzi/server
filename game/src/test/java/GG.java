@@ -1,4 +1,11 @@
-import java.math.BigDecimal;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+import com.google.common.io.Files;
 
 import cn.game.util.Rnd;
 
@@ -6,13 +13,19 @@ public class GG {
 	public static int x = 0;
 	public static long firstTime = System.currentTimeMillis();
 
-	public static void main(String[] args) {
-		BigDecimal a = new BigDecimal("9.8").setScale(2);
-		BigDecimal b = new BigDecimal("9.11").setScale(2);
+	public static void main(String[] args) throws IOException {
+		List<String> lines22 = Files.readLines(new File("D:/22.txt"), Charset.defaultCharset());
+		Set<String> set22 = new java.util.HashSet<String>(lines22);
+		List<String> lines23 = Files.readLines(new File("D:/23.txt"), Charset.defaultCharset());
+		Set<String> set23 = new java.util.HashSet<String>(lines23);
+		System.out.println("22日登陆： " + set22.size());
+		System.out.println("23日登陆： " + set23.size());
+		// 获取交集
+		Set<String> intersection = Sets.intersection(set22, set23);
 
-		System.out.println("a: " + a); // 输出 a 的值
-		System.out.println("b: " + b); // 输出 b 的值
-		System.out.println(a.compareTo(b)); // 应该输出 -1 表示 a < b
+		System.out.println("交集数：  " + intersection.size());
+		System.out.println("比例：  " + intersection.size() * 1.0f / set22.size());
+		System.out.println(intersection);
 	}
 	private static void test() {
 		int c2 = 0;

@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.core.base.ActiveServerListManager;
@@ -93,6 +91,10 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 						} else {
 							continue;
 						}
+					}
+					// 停服状态的先不发下去
+					if (status == ServerList.STATUS_SHUTDOWN) {
+						continue; 
 					}
 					boolean isGm = false;
 					if (u != null) {

@@ -59,6 +59,7 @@ import cn.game.util.log.CommonLogger;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.SystemLogger;
 import cn.game.util.quartz.QuartzInitializer;
+import io.vertx.core.DeploymentOptions;
 
 /**
  * vertx重构通讯
@@ -193,13 +194,16 @@ public class GameServer implements GameServerMBean {
 //		testUpdateBatch();
 	}
 
+	/** 
+	 * 检查 player 模块数据 结构是否有变化
+	 * @throws Exception
+	 */
 	private void checkPlayerJsonStruct() throws Exception {
-		// 写一个方法，读取当前目录下的player.json文件，读取出里面保存的json字符串，
-		// 然后反序列化成Player对象，检查是否能反序列化成功,如果反序列化成功，则将实例化一个player对象，
-		// 序列化成json字符串保存在player.json中，如果反序列化失败，则给出警告，然后退出程序
 		File file = new File("player.json");
 		if (file.exists()) {
+//			String json = FileUtils.readFileToString(file, Charset.defaultCharset());
 			String json = Files.readFirstLine(file, Charset.defaultCharset());
+
 			Player player = null;
 			try {
 				player = JsonUtil.parseObject(json, Player.class);
@@ -207,10 +211,12 @@ public class GameServer implements GameServerMBean {
 				throw new RuntimeException("Player结构有变化，json反序列化失败，修正数据兼容后重试", e); // 反序列化失败，
 			}
 			Files.write(JsonUtil.toJsonString(player), file, Charset.defaultCharset());
+//			FileUtils.writeStringToFile(file, JsonUtil.toJsonString(player), Charset.defaultCharset());
 		} else {
 			Player player = new Player();
 			player.initModule(null);
 			Files.write(JsonUtil.toJsonString(player), file, Charset.defaultCharset());
+//			FileUtils.writeStringToFile(file, JsonUtil.toJsonString(player), Charset.defaultCharset());
 		}
 	}
 	private void initGameServerConfig() throws Exception {
@@ -299,8 +305,9 @@ public class GameServer implements GameServerMBean {
 	private void initVerticle() throws Exception {
 		rpcClient = new VertxRpcClient();
 		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
-		wsVerticle = VxHolder
-				.deployVerticleSync(new WebSocketVerticle(GameServerStatus.getInstance().getServerInfo().getPort()));
+
+		DeploymentOptions options = new DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors() * 2);
+		wsVerticle = VxHolder.deployVerticleSync(WebSocketVerticle.class, options);
 	}
 
 	private void initQuartz() throws IOException {

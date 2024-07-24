@@ -10,6 +10,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.games.core.GameServerStatus;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -18,22 +19,23 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.SpringContextLoader;
 import io.netty.buffer.ByteBuf;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.impl.ContextInternal;
 
 public class WebSocketVerticle extends AbstractVerticle {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketVerticle.class);
-	private int port;
-	private static int count = 0;
+	private int port = GameServerStatus.getInstance().getServerInfo().getPort();
+//	private static int count = 0;
 
-	public WebSocketVerticle(int port) {
-		this.port = port;
+	public WebSocketVerticle() {
 	}
 	@Override
 	public void start() throws Exception {
+		log.debug("Starting WebSocketVerticle on thread: " + Thread.currentThread().getName());
 		Processor processor = (Processor) SpringContextLoader.getContext().getBean("processor");
-
-		vertx.createHttpServer().webSocketHandler(ws -> {
+		HttpServerOptions serverOptions = new HttpServerOptions().setReusePort(true);
+		vertx.createHttpServer(serverOptions).webSocketHandler(ws -> {
 //			System.out.println("client connected: " + ws.textHandlerID());
 //			System.out.println("client connected: " + ws.binaryHandlerID());
 			ws.binaryMessageHandler(r -> {
@@ -86,11 +88,10 @@ public class WebSocketVerticle extends AbstractVerticle {
 					});
 		}).connectionHandler(r -> {
 			if (log.isDebugEnabled()) {
-				log.debug("websocket connection create success , remoteAddress[{}] ", r.remoteAddress());
+				log.debug("websocket connection create success , remoteAddress[{}] threadName[{}] ", r.remoteAddress(), Thread.currentThread().getName());
 			}
 		}).listen(port).onSuccess(r -> {
-			log.info("websocket listen on {} success ", port);
-
+			log.debug("websocket listen on {} success ", port);
 		}).onFailure(e -> {
 			log.error("websocket start error : port  " + port, e);
 			throw new RuntimeException("websocket start error");

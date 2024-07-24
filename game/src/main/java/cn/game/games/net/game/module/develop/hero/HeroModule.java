@@ -18,7 +18,6 @@ import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.generated.config.DayCardConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.DayCardManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
@@ -188,8 +187,6 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		hero.setLevel(1);
 		hero.setQuality(heroConfig.InitialQuality);
 
-		// 拥有新英雄，奖励固定元宝
-		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.NewHeroReward);
 		player.handleEvent(EventTypeEnum.Hero, heroConfig.ID);
 	}
 

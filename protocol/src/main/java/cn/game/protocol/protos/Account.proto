@@ -25,6 +25,8 @@ message AccountLoginResponse{
   HttpResult result                    = 1;
   string passport_session_id = 2;			// 登陆会话id，请求服务器列表时使用
   string user_id = 3;						//
+  bool isNew = 10;				// 是否是新注册的账号
+  string ext = 11;  			// 扩展参数，WECHAT渠道为openid
 }
 
 // 账号的渠道类型

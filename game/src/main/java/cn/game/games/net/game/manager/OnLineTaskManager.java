@@ -17,6 +17,7 @@ import cn.game.core.task.TaskManager;
  * 2020年9月22日 上午10:49:40
  * @author SYQ
  */
+@Deprecated
 public class OnLineTaskManager {
 
 	private static final Logger log = LoggerFactory.getLogger(OnLineTaskManager.class);

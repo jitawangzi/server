@@ -112,8 +112,6 @@ public class DrawHandler extends BaseHandler {
 			}
 		}
 		List<List<RewardInfo>> allRewards = drawModule.draw(id, drawCount, freeOnce);
-//		int gold = drawConfig.DrawMoney * drawCount;
-
 		player.handleEvent(EventTypeEnum.Draw, drawCount);
 
 		resp.addAllRewards(allRewards.get(0));

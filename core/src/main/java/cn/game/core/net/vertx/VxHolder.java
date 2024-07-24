@@ -89,9 +89,11 @@ public class VxHolder {
 		VertxOptions options = new VertxOptions().setClusterManager(zookeeperClusterManager).setEventBusOptions(
 				eventBusOptions);
 		options.setMetricsOptions(new DropwizardMetricsOptions().setEnabled(true).setJmxEnabled(true).setJmxDomain("vertx-metrics"));
-		options.setBlockedThreadCheckInterval(Integer.MAX_VALUE);
+		if (ServerContext.getInstance().getRunMode().isTest()) {
+			options.setBlockedThreadCheckInterval(Integer.MAX_VALUE);
+		}
 		options.setInternalBlockingPoolSize(32);
-		options.setWorkerPoolSize(Runtime.getRuntime().availableProcessors() * 2);
+		options.setWorkerPoolSize(options.getEventLoopPoolSize() * 2);
 
 		Future<Vertx> clusteredVertxFuture = Vertx.clusteredVertx(options);
 		vertx = clusteredVertxFuture.toCompletionStage().toCompletableFuture().get(3000, TimeUnit.SECONDS);

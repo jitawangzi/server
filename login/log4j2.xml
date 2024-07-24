@@ -2,7 +2,7 @@
 <!--级别:TRACE > DEBUG > INFO > WARN > ERROR > FATAL-->
 <Configuration status="DEBUG" shutdownHook="disable">
     <Properties>
-        <Property name="path_system">${sys:SEVER_PATH}/login_logs/</Property>
+        <Property name="path_system">./logs/</Property>
         <Property name="date_suffix">%d{yyyy-MM-dd}</Property>
         <Property name="extension">.log</Property>
     </Properties>

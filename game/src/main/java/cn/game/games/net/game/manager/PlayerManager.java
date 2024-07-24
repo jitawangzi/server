@@ -25,18 +25,13 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
-import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
-import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.util.DAO;
@@ -44,7 +39,6 @@ import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.util.DateUtil;
-import cn.game.util.JsonUtil;
 import cn.game.util.Pair;
 import cn.game.util.RedissonUtil;
 import cn.game.util.Rnd;
@@ -971,90 +965,21 @@ public class PlayerManager {
 
 	}
 	
-	
-	/** 
-	 * 清理玩家缓存
-	 * @param playerId
-	 * @return 
-	 */
-	public Future<?> logoutCache(long playerId) {
 
-		Future<List<Object>> dbFuture = saveClientCache(playerId, true).onComplete(r -> {
-			OnLineTaskManager.getInstance().removeScheduledTask(playerId);
-			PlayerManager.getInstance().getPlayer(playerId);
-			deletePlayer(playerId);
-		});
-		RFuture<Boolean> deleteAsync = RedissonUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
-		Future<Object> deleteFuture = Future.future(promise -> {
-			deleteAsync.onComplete((v, throwable) -> {
-				if (v) {
-					promise.complete(v);
-				} else {
-					promise.fail(throwable);
-				}
-			});
-		});
-		return CompositeFuture.join(dbFuture, deleteFuture);
-	}
-
-	/**
-	 * 保存在线玩家缓存数据到数据库
-	 * @param playerId
-	 * @param logout
-	 *            是否是退出时
-	 * @return 
-	 */
-	public Future<List<Object>> saveClientCache(long playerId, boolean logout) {
-
-		Player player = getPlayer(playerId);
-		if (player != null) {
-			if (player.isActive()) {
-				PlayerData data = player.getData();
-				if (logout) {
-					data.setOfflineTime(System.currentTimeMillis());
-					data.setGameTime(data.getGameTime()
-							+ (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
-
-					player.cancelAllTimer();
-					GameLogger.logout(player);
-					// TODO 异步保存SimplePlayer 到redis。
-
-				}
-				if (GameServer.getInstance().isSinglePlayerTable()) {
-					data.beforeSave();
-					data.setModules(JsonUtil.toJsonString(player.getModules()));
-					List<DbTask> dbTasks = new ArrayList<>(1);
-					dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKeyWithBLOBs, data));
-					return DAO.execute(dbTasks);
-				}
-				List<DbEntity> entities = new ArrayList<>();
-
-				for (BasePlayerModule module : player.getAllModule()) {
-					module.autoSaveTasks(entities);
-				}
-				List<DbTask> dbTasks = new ArrayList<>(entities.size());
-				for (DbEntity dbEntity : entities) {
-					dbEntity.beforeSave();
-					dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKeySelective,
-							dbEntity));
-				}
-				if (!dbTasks.isEmpty()) {
-					Future<List<Object>> updateFuture = DAO.execute(dbTasks);
-					return updateFuture;
-				}
-			}
-		}
-		return Future.succeededFuture();
-	}
-
-	/**
-	 * 保存在线玩家缓存数据到数据库
-	 * @param playerId
-	 * @return 
-	 */
-	public Future<List<Object>> saveClientCache(long playerId) {
-		return saveClientCache(playerId, false);
-	}
+//	public Future<Object> logoutCache2(long playerId) {
+//		return saveClientCache(playerId, true).onSuccess(r -> {
+//			OnLineTaskManager.getInstance().removeScheduledTask(playerId);
+//			PlayerManager.getInstance().getPlayer(playerId);
+//			deletePlayer(playerId);
+//		}).compose(v -> {
+//			RFuture<Boolean> deleteAsync = RedissonUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+//			return Future.fromCompletionStage(deleteAsync.toCompletableFuture());
+//		}).map(result -> (Object) result) // 将 Boolean 结果转换为 Object
+//				.otherwise(e -> {
+//					log.error("Error during logout cache process for playerId: " + playerId, e);
+//					return null; // 在错误情况下返回 null 作为 Object
+//				});
+//	}
 
 	/** 
 	 * 延长 player id锁

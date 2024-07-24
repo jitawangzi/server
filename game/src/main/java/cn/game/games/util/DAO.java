@@ -119,11 +119,16 @@ public class DAO {
 	public static Future<List<Object>> execute(List<DbTask> tasks) {
 		Future<List<Object>> future = VxHolder.vertx.executeBlocking(promise -> {
 			List<Object> ret = new ArrayList<>();
-			for (DbTask dbTask : tasks) {
-				Object result = invoke(dbTask.getMapper(), dbTask.getMethod(), dbTask.getArg());
-				ret.add(result);
+			try {
+				for (DbTask dbTask : tasks) {
+					Object result = invoke(dbTask.getMapper(), dbTask.getMethod(), dbTask.getArg());
+					ret.add(result);
+				}
+				promise.complete(ret);
+			} catch (Exception e) {
+				promise.fail(e);
+				log.error("db execute error", e);
 			}
-			promise.complete(ret);
 		}, false);
 		return future;
 	}
@@ -144,12 +149,9 @@ public class DAO {
 				promise.complete(result);
 			} catch (Throwable e) {
 				promise.fail(e);
+				log.error("db execute error", e);
 			}
 		}, false);
-		future.onFailure(r -> {
-			r.printStackTrace();
-			log.error("db execute error", r);
-		});
 		return future;
 	}
 

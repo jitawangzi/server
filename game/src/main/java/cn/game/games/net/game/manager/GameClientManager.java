@@ -158,7 +158,10 @@ public class GameClientManager {
 		}
 		removeGameClient(gameClient);
 		broadcastOnlineToOtherServer(playerId, false, null);
-		return PlayerManager.getInstance().logoutCache(playerId);
+		if (player != null) {
+			return player.logout();
+		}
+		return Future.succeededFuture();
 	}
 	
 	/**

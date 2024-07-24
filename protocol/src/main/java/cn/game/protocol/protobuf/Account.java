@@ -2660,6 +2660,36 @@ public final class Account {
      */
     com.google.protobuf.ByteString
         getUserIdBytes();
+
+    /**
+     * <pre>
+     * 是否是新注册的账号
+     * </pre>
+     *
+     * <code>bool isNew = 10;</code>
+     * @return The isNew.
+     */
+    boolean getIsNew();
+
+    /**
+     * <pre>
+     * 扩展参数，WECHAT渠道为openid
+     * </pre>
+     *
+     * <code>string ext = 11;</code>
+     * @return The ext.
+     */
+    java.lang.String getExt();
+    /**
+     * <pre>
+     * 扩展参数，WECHAT渠道为openid
+     * </pre>
+     *
+     * <code>string ext = 11;</code>
+     * @return The bytes for ext.
+     */
+    com.google.protobuf.ByteString
+        getExtBytes();
   }
   /**
    * Protobuf type {@code Protos.AccountLoginResponse}
@@ -2676,6 +2706,7 @@ public final class Account {
     private AccountLoginResponse() {
       passportSessionId_ = "";
       userId_ = "";
+      ext_ = "";
     }
 
     @java.lang.Override
@@ -2731,6 +2762,17 @@ public final class Account {
               java.lang.String s = input.readStringRequireUtf8();
 
               userId_ = s;
+              break;
+            }
+            case 80: {
+
+              isNew_ = input.readBool();
+              break;
+            }
+            case 90: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              ext_ = s;
               break;
             }
             default: {
@@ -2881,6 +2923,67 @@ public final class Account {
       }
     }
 
+    public static final int ISNEW_FIELD_NUMBER = 10;
+    private boolean isNew_;
+    /**
+     * <pre>
+     * 是否是新注册的账号
+     * </pre>
+     *
+     * <code>bool isNew = 10;</code>
+     * @return The isNew.
+     */
+    @java.lang.Override
+    public boolean getIsNew() {
+      return isNew_;
+    }
+
+    public static final int EXT_FIELD_NUMBER = 11;
+    private volatile java.lang.Object ext_;
+    /**
+     * <pre>
+     * 扩展参数，WECHAT渠道为openid
+     * </pre>
+     *
+     * <code>string ext = 11;</code>
+     * @return The ext.
+     */
+    @java.lang.Override
+    public java.lang.String getExt() {
+      java.lang.Object ref = ext_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        ext_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 扩展参数，WECHAT渠道为openid
+     * </pre>
+     *
+     * <code>string ext = 11;</code>
+     * @return The bytes for ext.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getExtBytes() {
+      java.lang.Object ref = ext_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        ext_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2904,6 +3007,12 @@ public final class Account {
       if (!getUserIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userId_);
       }
+      if (isNew_ != false) {
+        output.writeBool(10, isNew_);
+      }
+      if (!getExtBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, ext_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -2922,6 +3031,13 @@ public final class Account {
       }
       if (!getUserIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userId_);
+      }
+      if (isNew_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(10, isNew_);
+      }
+      if (!getExtBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, ext_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2947,6 +3063,10 @@ public final class Account {
           .equals(other.getPassportSessionId())) return false;
       if (!getUserId()
           .equals(other.getUserId())) return false;
+      if (getIsNew()
+          != other.getIsNew()) return false;
+      if (!getExt()
+          .equals(other.getExt())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2966,6 +3086,11 @@ public final class Account {
       hash = (53 * hash) + getPassportSessionId().hashCode();
       hash = (37 * hash) + USER_ID_FIELD_NUMBER;
       hash = (53 * hash) + getUserId().hashCode();
+      hash = (37 * hash) + ISNEW_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsNew());
+      hash = (37 * hash) + EXT_FIELD_NUMBER;
+      hash = (53 * hash) + getExt().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3109,6 +3234,10 @@ public final class Account {
 
         userId_ = "";
 
+        isNew_ = false;
+
+        ext_ = "";
+
         return this;
       }
 
@@ -3142,6 +3271,8 @@ public final class Account {
         }
         result.passportSessionId_ = passportSessionId_;
         result.userId_ = userId_;
+        result.isNew_ = isNew_;
+        result.ext_ = ext_;
         onBuilt();
         return result;
       }
@@ -3199,6 +3330,13 @@ public final class Account {
         }
         if (!other.getUserId().isEmpty()) {
           userId_ = other.userId_;
+          onChanged();
+        }
+        if (other.getIsNew() != false) {
+          setIsNew(other.getIsNew());
+        }
+        if (!other.getExt().isEmpty()) {
+          ext_ = other.ext_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -3532,6 +3670,145 @@ public final class Account {
   checkByteStringIsUtf8(value);
         
         userId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean isNew_ ;
+      /**
+       * <pre>
+       * 是否是新注册的账号
+       * </pre>
+       *
+       * <code>bool isNew = 10;</code>
+       * @return The isNew.
+       */
+      @java.lang.Override
+      public boolean getIsNew() {
+        return isNew_;
+      }
+      /**
+       * <pre>
+       * 是否是新注册的账号
+       * </pre>
+       *
+       * <code>bool isNew = 10;</code>
+       * @param value The isNew to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsNew(boolean value) {
+        
+        isNew_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是否是新注册的账号
+       * </pre>
+       *
+       * <code>bool isNew = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsNew() {
+        
+        isNew_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object ext_ = "";
+      /**
+       * <pre>
+       * 扩展参数，WECHAT渠道为openid
+       * </pre>
+       *
+       * <code>string ext = 11;</code>
+       * @return The ext.
+       */
+      public java.lang.String getExt() {
+        java.lang.Object ref = ext_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          ext_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 扩展参数，WECHAT渠道为openid
+       * </pre>
+       *
+       * <code>string ext = 11;</code>
+       * @return The bytes for ext.
+       */
+      public com.google.protobuf.ByteString
+          getExtBytes() {
+        java.lang.Object ref = ext_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          ext_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 扩展参数，WECHAT渠道为openid
+       * </pre>
+       *
+       * <code>string ext = 11;</code>
+       * @param value The ext to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExt(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        ext_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 扩展参数，WECHAT渠道为openid
+       * </pre>
+       *
+       * <code>string ext = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExt() {
+        
+        ext_ = getDefaultInstance().getExt();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 扩展参数，WECHAT渠道为openid
+       * </pre>
+       *
+       * <code>string ext = 11;</code>
+       * @param value The bytes for ext to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExtBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        ext_ = value;
         onChanged();
         return this;
       }
@@ -7311,25 +7588,25 @@ public final class Account {
       "untRegisterResponse\022\"\n\006result\030\001 \001(\0132\022.Pr" +
       "otos.HttpResult\"J\n\014AccountLogin\022+\n\007chann" +
       "el\030\001 \001(\0162\032.Protos.AccountChannelType\022\r\n\005" +
-      "token\030\002 \001(\t\"h\n\024AccountLoginResponse\022\"\n\006r" +
-      "esult\030\001 \001(\0132\022.Protos.HttpResult\022\033\n\023passp" +
-      "ort_session_id\030\002 \001(\t\022\017\n\007user_id\030\003 \001(\t\"0\n" +
-      "\021AccountServerList\022\033\n\023passport_session_i" +
-      "d\030\001 \001(\t\"d\n\031AccountServerListResponse\022\"\n\006" +
-      "result\030\001 \001(\0132\022.Protos.HttpResult\022#\n\007serv" +
-      "ers\030\002 \003(\0132\022.Protos.ServerInfo\"g\n\nServerI" +
-      "nfo\022\020\n\010serverId\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\n\n\002i" +
-      "p\030\003 \001(\t\022\014\n\004port\030\004 \001(\005\022\016\n\006status\030\005 \001(\005\022\017\n" +
-      "\007version\030\006 \001(\t\"K\n\nHttpResult\022\020\n\010errorMsg" +
-      "\030\001 \001(\t\022+\n\terrorCode\030\002 \001(\0162\030.Protos.Accou" +
-      "ntErrorCode*8\n\022AccountChannelType\022\010\n\004NON" +
-      "E\020\000\022\014\n\010OFFICIAL\020\001\022\n\n\006WECHAT\020\002*\260\001\n\020Accoun" +
-      "tErrorCode\022\021\n\rACCOUNT_EMPTY\020\000\022\021\n\rACCOUNT" +
-      "_EXIST\020\001\022\025\n\021ACCOUNT_NOT_EXIST\020\002\022\022\n\016PASSW" +
-      "ORD_ERROR\020\003\022\027\n\023CHANNEL_NOT_SUPPORT\020\004\022\032\n\026" +
-      "PASSPORT_SESSION_ERROR\020\005\022\026\n\022CHANNEL_CHEC" +
-      "K_FAIL\020\006B\033\n\031cn.game.protocol.protobufb\006p" +
-      "roto3"
+      "token\030\002 \001(\t\"\204\001\n\024AccountLoginResponse\022\"\n\006" +
+      "result\030\001 \001(\0132\022.Protos.HttpResult\022\033\n\023pass" +
+      "port_session_id\030\002 \001(\t\022\017\n\007user_id\030\003 \001(\t\022\r" +
+      "\n\005isNew\030\n \001(\010\022\013\n\003ext\030\013 \001(\t\"0\n\021AccountSer" +
+      "verList\022\033\n\023passport_session_id\030\001 \001(\t\"d\n\031" +
+      "AccountServerListResponse\022\"\n\006result\030\001 \001(" +
+      "\0132\022.Protos.HttpResult\022#\n\007servers\030\002 \003(\0132\022" +
+      ".Protos.ServerInfo\"g\n\nServerInfo\022\020\n\010serv" +
+      "erId\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\n\n\002ip\030\003 \001(\t\022\014\n\004" +
+      "port\030\004 \001(\005\022\016\n\006status\030\005 \001(\005\022\017\n\007version\030\006 " +
+      "\001(\t\"K\n\nHttpResult\022\020\n\010errorMsg\030\001 \001(\t\022+\n\te" +
+      "rrorCode\030\002 \001(\0162\030.Protos.AccountErrorCode" +
+      "*8\n\022AccountChannelType\022\010\n\004NONE\020\000\022\014\n\010OFFI" +
+      "CIAL\020\001\022\n\n\006WECHAT\020\002*\260\001\n\020AccountErrorCode\022" +
+      "\021\n\rACCOUNT_EMPTY\020\000\022\021\n\rACCOUNT_EXIST\020\001\022\025\n" +
+      "\021ACCOUNT_NOT_EXIST\020\002\022\022\n\016PASSWORD_ERROR\020\003" +
+      "\022\027\n\023CHANNEL_NOT_SUPPORT\020\004\022\032\n\026PASSPORT_SE" +
+      "SSION_ERROR\020\005\022\026\n\022CHANNEL_CHECK_FAIL\020\006B\033\n" +
+      "\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7358,7 +7635,7 @@ public final class Account {
     internal_static_Protos_AccountLoginResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_AccountLoginResponse_descriptor,
-        new java.lang.String[] { "Result", "PassportSessionId", "UserId", });
+        new java.lang.String[] { "Result", "PassportSessionId", "UserId", "IsNew", "Ext", });
     internal_static_Protos_AccountServerList_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_Protos_AccountServerList_fieldAccessorTable = new

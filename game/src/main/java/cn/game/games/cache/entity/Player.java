@@ -12,19 +12,26 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.games.cache.base.DbEntity;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.GameServer;
+import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.games.net.game.module.battle.ChapterModule;
@@ -47,6 +54,7 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
+import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
@@ -64,6 +72,7 @@ import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
+import cn.game.util.RedissonUtil;
 import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Future;
@@ -117,7 +126,8 @@ public class Player  {
 		timerTask.remove(id);
 		VxHolder.vertx.cancelTimer(id);
 	}
-	public void cancelAllTimer() {
+
+	private void cancelAllTimer() {
 		for (Long id : timerTask) {
 			VxHolder.vertx.cancelTimer(id);
 		}
@@ -454,6 +464,61 @@ public class Player  {
 		builder.setServerId(getData().getServerId());
 		return builder.build();
 
+	}
+
+	/**
+	 * 保存缓存数据到数据库
+	 * @return 
+	 */
+	public Future<List<Object>> saveClientCache() {
+		if (this.isActive()) {
+			PlayerData data = getData();
+			if (GameServer.getInstance().isSinglePlayerTable()) {
+				data.beforeSave();
+				data.setModules(JsonUtil.toJsonString(getModules()));
+				List<DbTask> dbTasks = new ArrayList<>(1);
+				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKeyWithBLOBs, data));
+				return DAO.execute(dbTasks);
+			}
+			List<DbEntity> entities = new ArrayList<>();
+
+			for (BasePlayerModule module : getAllModule()) {
+				module.autoSaveTasks(entities);
+			}
+			List<DbTask> dbTasks = new ArrayList<>(entities.size());
+			for (DbEntity dbEntity : entities) {
+				dbEntity.beforeSave();
+				dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKeySelective, dbEntity));
+			}
+			if (!dbTasks.isEmpty()) {
+				Future<List<Object>> updateFuture = DAO.execute(dbTasks);
+				return updateFuture;
+			}
+		}
+		return Future.succeededFuture();
+	}
+
+	/** 
+	 * 退出，数据存库
+	 * @param playerId
+	 * @return 
+	 */
+	public Future<Object> logout() {
+		data.setOfflineTime(System.currentTimeMillis());
+		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
+
+		return saveClientCache().onSuccess(r -> {
+			cancelAllTimer();
+			GameLogger.logout(this);
+			// TODO 异步保存SimplePlayer 到redis。
+			PlayerManager.getInstance().deletePlayer(playerId);
+		}).compose(v -> {
+			RFuture<Boolean> deleteAsync = RedissonUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+			return Future.fromCompletionStage(deleteAsync.toCompletableFuture());
+		}).mapEmpty().otherwise(e -> {
+			log.error("Error during logout cache process for playerId: " + playerId, e);
+			return null;
+		});
 	}
 
 	/** 

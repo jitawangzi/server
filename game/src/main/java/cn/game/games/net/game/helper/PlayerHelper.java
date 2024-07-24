@@ -576,7 +576,7 @@ public class PlayerHelper {
 //			}) ;
 //		}, Config.ONELINE_SAVE, Config.ONELINE_SAVE);
 		player.setPeriodicTask(Config.ONLINE_SAVE * 1000, r -> {
-			PlayerManager.getInstance().saveClientCache(playerId);
+			player.saveClientCache();
 		});
 		// 上线后生成自己的简单信息
 		try {

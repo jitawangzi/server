@@ -533,7 +533,7 @@ public class HeroHandler extends BaseHandler {
 		player.handleEvent(EventTypeEnum.HeroQuality, hero);
 
 		// 英雄突破，奖励固定元宝
-		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.HeroConflate);
+//		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.HeroConflate);
 
 		player.handleEvent(EventTypeEnum.HeroBreak, hero.getStar(), hero.getQuality());
 
