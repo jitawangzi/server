@@ -71,4 +71,5 @@ enum AccountErrorCode{
 	CHANNEL_NOT_SUPPORT=4; //不支持的登陆渠道
 	PASSPORT_SESSION_ERROR=5; //错误的sessinon，可能没有登陆，或者过期了。
 	CHANNEL_CHECK_FAIL=6; // 渠道账号校验错误
+	ACCOUNT_CREATE_FAIL=8; // 账号创建失败
 }

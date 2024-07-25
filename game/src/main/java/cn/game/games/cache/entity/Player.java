@@ -387,7 +387,7 @@ public class Player  {
 	 * @return
 	 */
 	public Future<Boolean> pay(int[] cost) {
-		if (cost == null || cost.length == 0) {
+		if (cost == null || cost.length == 0 || (cost.length == 1 && cost[0] == 0)) {
 			return Future.succeededFuture(true);
 		}
 		int costType = cost[0] ; 
@@ -402,7 +402,9 @@ public class Player  {
 				promise.complete(true);
 			}
 		} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
-			
+			if (Boolean.getBoolean("DisableRecharge")) {
+				return Future.succeededFuture(true);
+			}
 			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId())
 					.setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1] * 100).setItemId("yuanbao001").build();
 			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);

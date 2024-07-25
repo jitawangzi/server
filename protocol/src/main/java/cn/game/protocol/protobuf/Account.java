@@ -222,6 +222,14 @@ public final class Account {
      * <code>CHANNEL_CHECK_FAIL = 6;</code>
      */
     CHANNEL_CHECK_FAIL(6),
+    /**
+     * <pre>
+     * 账号创建失败
+     * </pre>
+     *
+     * <code>ACCOUNT_CREATE_FAIL = 8;</code>
+     */
+    ACCOUNT_CREATE_FAIL(8),
     UNRECOGNIZED(-1),
     ;
 
@@ -281,6 +289,14 @@ public final class Account {
      * <code>CHANNEL_CHECK_FAIL = 6;</code>
      */
     public static final int CHANNEL_CHECK_FAIL_VALUE = 6;
+    /**
+     * <pre>
+     * 账号创建失败
+     * </pre>
+     *
+     * <code>ACCOUNT_CREATE_FAIL = 8;</code>
+     */
+    public static final int ACCOUNT_CREATE_FAIL_VALUE = 8;
 
 
     public final int getNumber() {
@@ -314,6 +330,7 @@ public final class Account {
         case 4: return CHANNEL_NOT_SUPPORT;
         case 5: return PASSPORT_SESSION_ERROR;
         case 6: return CHANNEL_CHECK_FAIL;
+        case 8: return ACCOUNT_CREATE_FAIL;
         default: return null;
       }
     }
@@ -7601,12 +7618,13 @@ public final class Account {
       "\001(\t\"K\n\nHttpResult\022\020\n\010errorMsg\030\001 \001(\t\022+\n\te" +
       "rrorCode\030\002 \001(\0162\030.Protos.AccountErrorCode" +
       "*8\n\022AccountChannelType\022\010\n\004NONE\020\000\022\014\n\010OFFI" +
-      "CIAL\020\001\022\n\n\006WECHAT\020\002*\260\001\n\020AccountErrorCode\022" +
+      "CIAL\020\001\022\n\n\006WECHAT\020\002*\311\001\n\020AccountErrorCode\022" +
       "\021\n\rACCOUNT_EMPTY\020\000\022\021\n\rACCOUNT_EXIST\020\001\022\025\n" +
       "\021ACCOUNT_NOT_EXIST\020\002\022\022\n\016PASSWORD_ERROR\020\003" +
       "\022\027\n\023CHANNEL_NOT_SUPPORT\020\004\022\032\n\026PASSPORT_SE" +
-      "SSION_ERROR\020\005\022\026\n\022CHANNEL_CHECK_FAIL\020\006B\033\n" +
-      "\031cn.game.protocol.protobufb\006proto3"
+      "SSION_ERROR\020\005\022\026\n\022CHANNEL_CHECK_FAIL\020\006\022\027\n" +
+      "\023ACCOUNT_CREATE_FAIL\020\010B\033\n\031cn.game.protoc" +
+      "ol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -25,6 +25,9 @@ public enum CacheType {
 	/** 服务器序列号最大值 */
 	DISTRIBUTED_WORKER_COUNTER,
 	
+	/** 自增起始id */
+	Player_MAX_ID,
+
 	;
 
 	public String key(Object... ks) {

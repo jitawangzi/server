@@ -9,10 +9,12 @@ import com.ctrip.framework.apollo.ConfigService;
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerListManager;
+import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.net.vertx.rpc.VertxRPCService;
 import cn.game.core.util.IdUtil;
+import cn.game.login.mapper.UserMapper;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.util.Config;
 import cn.game.util.MailUtil;
@@ -89,6 +91,7 @@ public class LoginServer {
 		ActiveServerListManager.getInstance().start(ServerType.Game);
 		GlobalConst.instance().load();
 
+		initPlayerMaxId();
 		System.gc();
 
 		long freeMem = (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory()
@@ -129,6 +132,22 @@ public class LoginServer {
 			}
 			log.error("登录服启动失败", e);
 			System.exit(1);
+		}
+	}
+
+	public void initPlayerMaxId() {
+		String key = CacheType.Player_MAX_ID.key();
+		Integer maxPlayerId = RedissonUtil.get(key);
+		if (maxPlayerId == null) {
+			UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
+			Long selectMaxId = userMapper.selectMaxId();
+			if (selectMaxId == null) {
+				int[] createUID = GlobalConst.CreateUID;
+				selectMaxId = (long) (createUID[0] + createUID[1]);
+			} else {
+				selectMaxId += 1;
+			}
+			RedissonUtil.getRedis().getBucket(key).compareAndSet(null, selectMaxId);
 		}
 	}
 

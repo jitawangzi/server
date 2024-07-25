@@ -46,4 +46,6 @@ public interface UserMapper {
 
 	int updateServers(HashMap<String, String> map);
 
+	Long selectMaxId();
+
 }

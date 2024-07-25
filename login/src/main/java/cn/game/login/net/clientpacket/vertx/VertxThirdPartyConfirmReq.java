@@ -169,6 +169,11 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 								Buffer data = Buffer.buffer(byteArray);
 								response.end(data);
 								return;
+							}).onFailure(e -> {
+								log.error("", e);
+								HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("可能是账号创建失败")
+										.setErrorCode(AccountErrorCode.ACCOUNT_CREATE_FAIL).build();
+								response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 							});
 						}
 					});
@@ -267,7 +272,6 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 			});
 
 			break;
-
 		}
 		default:
 
