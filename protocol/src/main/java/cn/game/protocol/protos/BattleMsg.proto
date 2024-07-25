@@ -141,6 +141,22 @@ message BattleLineupResponse_13000049{
 }
 
 
+
+/*** 合成游戏保存棋盘数据 ***/
+message HCBattleDataSaveRequest_13000100{
+	string data = 1;			//
+}
+message HCBattleDataSaveResponse_13000101{
+}
+
+/*** 合成游戏请求棋盘数据 ***/
+message HCBattleDataRequest_13000102{
+}
+message HCBattleDataResponse_13000103{
+	string data = 1;			//
+}
+
+
 // ****************************************道心磨砺/心魔试炼********************************************
 ///*** 查看道心磨砺/心魔试炼数据 ***/
 message BattleDaoHeartRequest_13000055{

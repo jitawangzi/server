@@ -144,8 +144,6 @@ message PlayerExpLevelPush_01100050{
    ExpLevelInfo expLevel = 1;   //
 }
 
-
-//@NotUseStart
 /*** 保存新手引导步骤 ***/
 message PlayerGuideRequest_01000060{
 	uint32 type = 1;  	//类型
@@ -155,6 +153,13 @@ message PlayerGuideRequest_01000060{
 message PlayerGuideResponse_01000061{
 }
 
+message GuideInfo{
+	uint32 type = 1;  	//类型
+    uint32 step = 2;	//该类型下进行到哪一步了
+}
+
+
+//@NotUseStart
 
 
 /*** 获取一组玩家简略信息 本服 ***/
@@ -278,6 +283,8 @@ message PlayerAllInfo{
    int32 heavenlyDaoLevel = 60;        //天道修为等级。HeavenlyDao表id
    map<uint32, uint32> potentialLvMap = 62;    	// 修炼数据，包括潜力和强援，key：属性id value：等级
    map<uint32, bool> potentialBreak = 63;    	// 潜力修炼每xx级需要突破，是否突破了。
+   repeated GuideInfo guides = 65;    	// 引导进行到哪一步了。
+
 
    //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
    repeated ShopGroupItemInfo shopGroupItems  = 100;        //商店数据

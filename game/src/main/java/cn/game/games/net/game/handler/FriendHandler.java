@@ -3,8 +3,6 @@ package cn.game.games.net.game.handler;
 import java.util.Collection;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ProtocolStringList;
@@ -57,8 +55,6 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
 
 @Component
 public class FriendHandler extends BaseHandler {
-
-	private static final Logger log = LoggerFactory.getLogger(FriendHandler.class);
 
 	@Override
 	protected int getModule() {
