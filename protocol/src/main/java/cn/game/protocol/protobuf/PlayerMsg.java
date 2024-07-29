@@ -27996,6 +27996,7 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -28003,6 +28004,7 @@ public final class PlayerMsg {
     int getGuideCount();
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -28017,6 +28019,7 @@ public final class PlayerMsg {
     getGuide();
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -28025,6 +28028,7 @@ public final class PlayerMsg {
     getGuideMap();
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -28035,6 +28039,7 @@ public final class PlayerMsg {
         int defaultValue);
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -28204,6 +28209,26 @@ public final class PlayerMsg {
      */
     cn.game.protocol.protobuf.PlayerMsg.GuideInfoOrBuilder getGuidesOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     * 已经开始，尚未结束的战斗类型，暂时没有用到。
+     * </pre>
+     *
+     * <code>int32 battleType = 68;</code>
+     * @return The battleType.
+     */
+    int getBattleType();
+
+    /**
+     * <pre>
+     * 已经开始，尚未结束的战斗id，battle 表id
+     * </pre>
+     *
+     * <code>int32 battleId = 69;</code>
+     * @return The battleId.
+     */
+    int getBattleId();
 
     /**
      * <pre>
@@ -28974,6 +28999,16 @@ public final class PlayerMsg {
               }
               guides_.add(
                   input.readMessage(cn.game.protocol.protobuf.PlayerMsg.GuideInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 544: {
+
+              battleType_ = input.readInt32();
+              break;
+            }
+            case 552: {
+
+              battleId_ = input.readInt32();
               break;
             }
             case 802: {
@@ -30980,6 +31015,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -31001,6 +31037,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -31012,6 +31049,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -31028,6 +31066,7 @@ public final class PlayerMsg {
     }
     /**
      * <pre>
+     *  弃用了。
      * </pre>
      *
      * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -31312,6 +31351,36 @@ public final class PlayerMsg {
     public cn.game.protocol.protobuf.PlayerMsg.GuideInfoOrBuilder getGuidesOrBuilder(
         int index) {
       return guides_.get(index);
+    }
+
+    public static final int BATTLETYPE_FIELD_NUMBER = 68;
+    private int battleType_;
+    /**
+     * <pre>
+     * 已经开始，尚未结束的战斗类型，暂时没有用到。
+     * </pre>
+     *
+     * <code>int32 battleType = 68;</code>
+     * @return The battleType.
+     */
+    @java.lang.Override
+    public int getBattleType() {
+      return battleType_;
+    }
+
+    public static final int BATTLEID_FIELD_NUMBER = 69;
+    private int battleId_;
+    /**
+     * <pre>
+     * 已经开始，尚未结束的战斗id，battle 表id
+     * </pre>
+     *
+     * <code>int32 battleId = 69;</code>
+     * @return The battleId.
+     */
+    @java.lang.Override
+    public int getBattleId() {
+      return battleId_;
     }
 
     public static final int SHOPGROUPITEMS_FIELD_NUMBER = 100;
@@ -31969,6 +32038,12 @@ public final class PlayerMsg {
       for (int i = 0; i < guides_.size(); i++) {
         output.writeMessage(65, guides_.get(i));
       }
+      if (battleType_ != 0) {
+        output.writeInt32(68, battleType_);
+      }
+      if (battleId_ != 0) {
+        output.writeInt32(69, battleId_);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         output.writeMessage(100, shopGroupItems_.get(i));
       }
@@ -32252,6 +32327,14 @@ public final class PlayerMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(65, guides_.get(i));
       }
+      if (battleType_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(68, battleType_);
+      }
+      if (battleId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(69, battleId_);
+      }
       for (int i = 0; i < shopGroupItems_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(100, shopGroupItems_.get(i));
@@ -32419,6 +32502,10 @@ public final class PlayerMsg {
           other.internalGetPotentialBreak())) return false;
       if (!getGuidesList()
           .equals(other.getGuidesList())) return false;
+      if (getBattleType()
+          != other.getBattleType()) return false;
+      if (getBattleId()
+          != other.getBattleId()) return false;
       if (!getShopGroupItemsList()
           .equals(other.getShopGroupItemsList())) return false;
       if (getNextFreeOpenBoxTime()
@@ -32593,6 +32680,10 @@ public final class PlayerMsg {
         hash = (37 * hash) + GUIDES_FIELD_NUMBER;
         hash = (53 * hash) + getGuidesList().hashCode();
       }
+      hash = (37 * hash) + BATTLETYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleType();
+      hash = (37 * hash) + BATTLEID_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleId();
       if (getShopGroupItemsCount() > 0) {
         hash = (37 * hash) + SHOPGROUPITEMS_FIELD_NUMBER;
         hash = (53 * hash) + getShopGroupItemsList().hashCode();
@@ -32974,6 +33065,10 @@ public final class PlayerMsg {
         } else {
           guidesBuilder_.clear();
         }
+        battleType_ = 0;
+
+        battleId_ = 0;
+
         if (shopGroupItemsBuilder_ == null) {
           shopGroupItems_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x02000000);
@@ -33217,6 +33312,8 @@ public final class PlayerMsg {
         } else {
           result.guides_ = guidesBuilder_.build();
         }
+        result.battleType_ = battleType_;
+        result.battleId_ = battleId_;
         if (shopGroupItemsBuilder_ == null) {
           if (((bitField0_ & 0x02000000) != 0)) {
             shopGroupItems_ = java.util.Collections.unmodifiableList(shopGroupItems_);
@@ -33737,6 +33834,12 @@ public final class PlayerMsg {
               guidesBuilder_.addAllMessages(other.guides_);
             }
           }
+        }
+        if (other.getBattleType() != 0) {
+          setBattleType(other.getBattleType());
+        }
+        if (other.getBattleId() != 0) {
+          setBattleId(other.getBattleId());
         }
         if (shopGroupItemsBuilder_ == null) {
           if (!other.shopGroupItems_.isEmpty()) {
@@ -39909,6 +40012,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *  弃用了。
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -39930,6 +40034,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *  弃用了。
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -39941,6 +40046,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *  弃用了。
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -39957,6 +40063,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *  弃用了。
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -39981,6 +40088,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *  弃用了。
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -40003,6 +40111,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *  弃用了。
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -40018,6 +40127,7 @@ public final class PlayerMsg {
       }
       /**
        * <pre>
+       *  弃用了。
        * </pre>
        *
        * <code>map&lt;uint32, uint32&gt; guide = 59;</code>
@@ -40695,6 +40805,92 @@ public final class PlayerMsg {
           guides_ = null;
         }
         return guidesBuilder_;
+      }
+
+      private int battleType_ ;
+      /**
+       * <pre>
+       * 已经开始，尚未结束的战斗类型，暂时没有用到。
+       * </pre>
+       *
+       * <code>int32 battleType = 68;</code>
+       * @return The battleType.
+       */
+      @java.lang.Override
+      public int getBattleType() {
+        return battleType_;
+      }
+      /**
+       * <pre>
+       * 已经开始，尚未结束的战斗类型，暂时没有用到。
+       * </pre>
+       *
+       * <code>int32 battleType = 68;</code>
+       * @param value The battleType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleType(int value) {
+        
+        battleType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经开始，尚未结束的战斗类型，暂时没有用到。
+       * </pre>
+       *
+       * <code>int32 battleType = 68;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleType() {
+        
+        battleType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int battleId_ ;
+      /**
+       * <pre>
+       * 已经开始，尚未结束的战斗id，battle 表id
+       * </pre>
+       *
+       * <code>int32 battleId = 69;</code>
+       * @return The battleId.
+       */
+      @java.lang.Override
+      public int getBattleId() {
+        return battleId_;
+      }
+      /**
+       * <pre>
+       * 已经开始，尚未结束的战斗id，battle 表id
+       * </pre>
+       *
+       * <code>int32 battleId = 69;</code>
+       * @param value The battleId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleId(int value) {
+        
+        battleId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经开始，尚未结束的战斗id，battle 表id
+       * </pre>
+       *
+       * <code>int32 battleId = 69;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleId() {
+        
+        battleId_ = 0;
+        onChanged();
+        return this;
       }
 
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo> shopGroupItems_ =
@@ -42792,7 +42988,7 @@ public final class PlayerMsg {
       "\"+\n\tBatchItem\022\r\n\005msgId\030\002 \001(\005\022\017\n\007payload\030" +
       "\004 \001(\014\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030" +
       "\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\the" +
-      "adFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\306\023\n\rP" +
+      "adFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 \001(\t\"\354\023\n\rP" +
       "layerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Protos.Pl" +
       "ayerInfo\0221\n\006assets\030\002 \003(\0132!.Protos.Player" +
       "AllInfo.AssetsEntry\022=\n\014assetRecover\030\003 \003(" +
@@ -42830,33 +43026,34 @@ public final class PlayerMsg {
       "tos.PlayerAllInfo.PotentialLvMapEntry\022A\n" +
       "\016potentialBreak\030? \003(\0132).Protos.PlayerAll" +
       "Info.PotentialBreakEntry\022!\n\006guides\030A \003(\013" +
-      "2\021.Protos.GuideInfo\0221\n\016shopGroupItems\030d " +
-      "\003(\0132\031.Protos.ShopGroupItemInfo\022\033\n\023nextFr" +
-      "eeOpenBoxTime\030e \001(\005\022\027\n\017mergeSweepTimes\030f" +
-      " \001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Protos.Merge" +
-      "EquipmentInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021" +
-      "mergeDayChallenge\030i \001(\0132\030.Protos.DayChal" +
-      "lengeInfo\022#\n\007hcHeros\030k \003(\0132\022.Protos.HCHe" +
-      "roInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHe" +
-      "roUpTimes\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n" +
-      " \001(\005\022Q\n\026freeHcHeroItemTimesMap\030o \003(\01321.P" +
-      "rotos.PlayerAllInfo.FreeHcHeroItemTimesM" +
-      "apEntry\022\031\n\021battleSpeedUnlock\030p \001(\010\022\033\n\023ba" +
-      "ttleSpeedAdsCount\030q \001(\005\032-\n\013AssetsEntry\022\013" +
-      "\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetR" +
-      "ecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:" +
-      "\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
-      "\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r" +
-      "\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003k" +
-      "ey\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSki" +
-      "llsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001" +
-      "\032,\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001" +
-      "(\r:\0028\001\0325\n\023PotentialLvMapEntry\022\013\n\003key\030\001 \001" +
-      "(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023PotentialBreakE" +
-      "ntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\010:\0028\001\032=\n\033" +
-      "FreeHcHeroItemTimesMapEntry\022\013\n\003key\030\001 \001(\r" +
-      "\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.protocol." +
-      "protobufb\006proto3"
+      "2\021.Protos.GuideInfo\022\022\n\nbattleType\030D \001(\005\022" +
+      "\020\n\010battleId\030E \001(\005\0221\n\016shopGroupItems\030d \003(" +
+      "\0132\031.Protos.ShopGroupItemInfo\022\033\n\023nextFree" +
+      "OpenBoxTime\030e \001(\005\022\027\n\017mergeSweepTimes\030f \001" +
+      "(\005\022/\n\013mergeEquips\030g \003(\0132\032.Protos.MergeEq" +
+      "uipmentInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021me" +
+      "rgeDayChallenge\030i \001(\0132\030.Protos.DayChalle" +
+      "ngeInfo\022#\n\007hcHeros\030k \003(\0132\022.Protos.HCHero" +
+      "Info\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHero" +
+      "UpTimes\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n \001" +
+      "(\005\022Q\n\026freeHcHeroItemTimesMap\030o \003(\01321.Pro" +
+      "tos.PlayerAllInfo.FreeHcHeroItemTimesMap" +
+      "Entry\022\031\n\021battleSpeedUnlock\030p \001(\010\022\033\n\023batt" +
+      "leSpeedAdsCount\030q \001(\005\032-\n\013AssetsEntry\022\013\n\003" +
+      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRec" +
+      "overEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028" +
+      "\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002" +
+      " \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r" +
+      "\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key" +
+      "\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkill" +
+      "sEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032," +
+      "\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r" +
+      ":\0028\001\0325\n\023PotentialLvMapEntry\022\013\n\003key\030\001 \001(\r" +
+      "\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023PotentialBreakEnt" +
+      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\010:\0028\001\032=\n\033Fr" +
+      "eeHcHeroItemTimesMapEntry\022\013\n\003key\030\001 \001(\r\022\r" +
+      "\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.pr" +
+      "otobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -43124,7 +43321,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "ShareReliveCount", "AdReliveCount", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "Guides", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "FreeHcHeroItemTimesMap", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "ShareReliveCount", "AdReliveCount", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "Guides", "BattleType", "BattleId", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "FreeHcHeroItemTimesMap", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new

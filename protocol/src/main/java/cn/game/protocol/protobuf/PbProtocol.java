@@ -99,6 +99,12 @@ public class PbProtocol implements ProtocolParser {
 	public final static int DevelopRescueLvUpResponse_25000008 = 0x25000008;    
 	public final static int DevelopHeavenlyDaoLvUpRequest_25000010 = 0x25000010;    //天道修为晋升，提升等级。  
 	public final static int DevelopHeavenlyDaoLvUpResponse_25000011 = 0x25000011;    
+	public final static int QianKunMirrorReversalRequest_25000020 = 0x25000020;    //乾坤逆转请求  
+	public final static int QianKunMirrorReversalResponse_25000021 = 0x25000021;    
+	public final static int QianKunMirrorReplaceRequest_25000022 = 0x25000022;    //替换或者丢弃灵魄  
+	public final static int QianKunMirrorReplaceResponse_25000023 = 0x25000023;    
+	public final static int QianKunMirrorLevelUpRequest_25000024 = 0x25000024;    //升级乾坤镜等级。  
+	public final static int QianKunMirrorLevelUpResponse_25000025 = 0x25000025;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    //龙解锁  
 	public final static int DragonUnlockResponse_17000002 = 0x17000002;    
 	public final static int DragonStarUpRequest_17000003 = 0x17000003;    //龙升星  
@@ -497,6 +503,18 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(DevelopHeavenlyDaoLvUpRequest_25000010, cn.game.protocol.protobuf.DevelopMsg.DevelopHeavenlyDaoLvUpRequest_25000010.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DevelopHeavenlyDaoLvUpResponse_25000011, cn.game.protocol.protobuf.DevelopMsg.DevelopHeavenlyDaoLvUpResponse_25000011.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QianKunMirrorReversalRequest_25000020, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QianKunMirrorReversalResponse_25000021, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QianKunMirrorReplaceRequest_25000022, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QianKunMirrorReplaceResponse_25000023, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QianKunMirrorLevelUpRequest_25000024, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QianKunMirrorLevelUpResponse_25000025, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DragonUnlockRequest_17000001, cn.game.protocol.protobuf.DragonMsg.DragonUnlockRequest_17000001.getDefaultInstance()
 				.getParserForType());
@@ -1074,6 +1092,12 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("DevelopRescueLvUpResponse_25000008", 0x25000008);
 		nameIdMap.put("DevelopHeavenlyDaoLvUpRequest_25000010", 0x25000010);
 		nameIdMap.put("DevelopHeavenlyDaoLvUpResponse_25000011", 0x25000011);
+		nameIdMap.put("QianKunMirrorReversalRequest_25000020", 0x25000020);
+		nameIdMap.put("QianKunMirrorReversalResponse_25000021", 0x25000021);
+		nameIdMap.put("QianKunMirrorReplaceRequest_25000022", 0x25000022);
+		nameIdMap.put("QianKunMirrorReplaceResponse_25000023", 0x25000023);
+		nameIdMap.put("QianKunMirrorLevelUpRequest_25000024", 0x25000024);
+		nameIdMap.put("QianKunMirrorLevelUpResponse_25000025", 0x25000025);
 		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
 		nameIdMap.put("DragonUnlockResponse_17000002", 0x17000002);
 		nameIdMap.put("DragonStarUpRequest_17000003", 0x17000003);

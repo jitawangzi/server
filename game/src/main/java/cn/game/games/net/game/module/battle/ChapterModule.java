@@ -678,6 +678,8 @@ public class ChapterModule extends BasePlayerModule  {
 		dayBuilder.addAllRandomBuff(dayChallenge.getRandomBuff());
 		dayBuilder.addAllRewardIndex(dayChallenge.getRewardIndex());
 		builder.setMergeDayChallenge(dayBuilder.build());
+		builder.setBattleType(type) ; 
+		builder.setBattleId(dungeonId);
 
 	}
 }

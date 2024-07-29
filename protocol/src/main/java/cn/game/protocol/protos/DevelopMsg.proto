@@ -41,3 +41,40 @@ message DevelopHeavenlyDaoLvUpRequest_25000010{
 message DevelopHeavenlyDaoLvUpResponse_25000011{
 }
 
+//**************************** 乾坤镜 ***************************
+
+//灵魄数据
+message SpiritualInfo{
+  uint32 quality  = 1; //  品质
+  // 名字？
+  map<uint32, uint32> attrs = 6; //附加属性条目 ， id->数值
+}
+
+// 乾坤逆转请求
+message QianKunMirrorReversalRequest_25000020{
+}
+
+message QianKunMirrorReversalResponse_25000021{
+	SpiritualInfo spiritual = 1;
+}
+
+
+// 替换或者丢弃灵魄
+message QianKunMirrorReplaceRequest_25000022{
+	bool replace = 1; // true 替换， false  丢弃。
+}
+
+message QianKunMirrorReplaceResponse_25000023{
+}
+
+
+
+
+// 升级乾坤镜等级。
+message QianKunMirrorLevelUpRequest_25000024{
+}
+
+message QianKunMirrorLevelUpResponse_25000025{
+}
+
+

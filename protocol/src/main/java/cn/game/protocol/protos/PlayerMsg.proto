@@ -279,11 +279,13 @@ message PlayerAllInfo{
    repeated QuestGroupInfo questGroups = 55 ;  // 任务数据
    repeated QuestGroupPointRewardInfo questGroupPointRewards = 56 ;  // 任务积分奖励领取记录
    bool firstLogin = 57;		// 是否是每天第一次登陆
-   map<uint32, uint32> guide = 59;    	//
+   map<uint32, uint32> guide = 59;    	//  弃用了。
    int32 heavenlyDaoLevel = 60;        //天道修为等级。HeavenlyDao表id
    map<uint32, uint32> potentialLvMap = 62;    	// 修炼数据，包括潜力和强援，key：属性id value：等级
    map<uint32, bool> potentialBreak = 63;    	// 潜力修炼每xx级需要突破，是否突破了。
    repeated GuideInfo guides = 65;    	// 引导进行到哪一步了。
+   int32 battleType = 68 ;     // 已经开始，尚未结束的战斗类型，暂时没有用到。
+   int32 battleId = 69 ;     // 已经开始，尚未结束的战斗id，battle 表id
 
 
    //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻

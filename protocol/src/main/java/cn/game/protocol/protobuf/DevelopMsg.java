@@ -3660,6 +3660,3732 @@ public final class DevelopMsg {
 
   }
 
+  public interface SpiritualInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.SpiritualInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *  品质
+     * </pre>
+     *
+     * <code>uint32 quality = 1;</code>
+     * @return The quality.
+     */
+    int getQuality();
+
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+    int getAttrsCount();
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+    boolean containsAttrs(
+        int key);
+    /**
+     * Use {@link #getAttrsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getAttrs();
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getAttrsMap();
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+
+    int getAttrsOrDefault(
+        int key,
+        int defaultValue);
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+
+    int getAttrsOrThrow(
+        int key);
+  }
+  /**
+   * <pre>
+   *灵魄数据
+   * </pre>
+   *
+   * Protobuf type {@code Protos.SpiritualInfo}
+   */
+  public static final class SpiritualInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.SpiritualInfo)
+      SpiritualInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SpiritualInfo.newBuilder() to construct.
+    private SpiritualInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SpiritualInfo() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SpiritualInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SpiritualInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              quality_ = input.readUInt32();
+              break;
+            }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                attrs_ = com.google.protobuf.MapField.newMapField(
+                    AttrsDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000001;
+              }
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+              attrs__ = input.readMessage(
+                  AttrsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              attrs_.getMutableMap().put(
+                  attrs__.getKey(), attrs__.getValue());
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_SpiritualInfo_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 6:
+          return internalGetAttrs();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_SpiritualInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.class, cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder.class);
+    }
+
+    public static final int QUALITY_FIELD_NUMBER = 1;
+    private int quality_;
+    /**
+     * <pre>
+     *  品质
+     * </pre>
+     *
+     * <code>uint32 quality = 1;</code>
+     * @return The quality.
+     */
+    @java.lang.Override
+    public int getQuality() {
+      return quality_;
+    }
+
+    public static final int ATTRS_FIELD_NUMBER = 6;
+    private static final class AttrsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.Integer> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.Integer>newDefaultInstance(
+                  cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_SpiritualInfo_AttrsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.UINT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.UINT32,
+                  0);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Integer> attrs_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+    internalGetAttrs() {
+      if (attrs_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            AttrsDefaultEntryHolder.defaultEntry);
+      }
+      return attrs_;
+    }
+
+    public int getAttrsCount() {
+      return internalGetAttrs().getMap().size();
+    }
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsAttrs(
+        int key) {
+      
+      return internalGetAttrs().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getAttrsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getAttrs() {
+      return getAttrsMap();
+    }
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getAttrsMap() {
+      return internalGetAttrs().getMap();
+    }
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+    @java.lang.Override
+
+    public int getAttrsOrDefault(
+        int key,
+        int defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetAttrs().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     * 名字？
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     */
+    @java.lang.Override
+
+    public int getAttrsOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetAttrs().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (quality_ != 0) {
+        output.writeUInt32(1, quality_);
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetAttrs(),
+          AttrsDefaultEntryHolder.defaultEntry,
+          6);
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (quality_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, quality_);
+      }
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
+           : internalGetAttrs().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+        attrs__ = AttrsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(6, attrs__);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo other = (cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo) obj;
+
+      if (getQuality()
+          != other.getQuality()) return false;
+      if (!internalGetAttrs().equals(
+          other.internalGetAttrs())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + QUALITY_FIELD_NUMBER;
+      hash = (53 * hash) + getQuality();
+      if (!internalGetAttrs().getMap().isEmpty()) {
+        hash = (37 * hash) + ATTRS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetAttrs().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *灵魄数据
+     * </pre>
+     *
+     * Protobuf type {@code Protos.SpiritualInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.SpiritualInfo)
+        cn.game.protocol.protobuf.DevelopMsg.SpiritualInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_SpiritualInfo_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 6:
+            return internalGetAttrs();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 6:
+            return internalGetMutableAttrs();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_SpiritualInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.class, cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        quality_ = 0;
+
+        internalGetMutableAttrs().clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_SpiritualInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo build() {
+        cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo buildPartial() {
+        cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo result = new cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo(this);
+        int from_bitField0_ = bitField0_;
+        result.quality_ = quality_;
+        result.attrs_ = internalGetAttrs();
+        result.attrs_.makeImmutable();
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo other) {
+        if (other == cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.getDefaultInstance()) return this;
+        if (other.getQuality() != 0) {
+          setQuality(other.getQuality());
+        }
+        internalGetMutableAttrs().mergeFrom(
+            other.internalGetAttrs());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int quality_ ;
+      /**
+       * <pre>
+       *  品质
+       * </pre>
+       *
+       * <code>uint32 quality = 1;</code>
+       * @return The quality.
+       */
+      @java.lang.Override
+      public int getQuality() {
+        return quality_;
+      }
+      /**
+       * <pre>
+       *  品质
+       * </pre>
+       *
+       * <code>uint32 quality = 1;</code>
+       * @param value The quality to set.
+       * @return This builder for chaining.
+       */
+      public Builder setQuality(int value) {
+        
+        quality_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *  品质
+       * </pre>
+       *
+       * <code>uint32 quality = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearQuality() {
+        
+        quality_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.Integer> attrs_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetAttrs() {
+        if (attrs_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              AttrsDefaultEntryHolder.defaultEntry);
+        }
+        return attrs_;
+      }
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetMutableAttrs() {
+        onChanged();;
+        if (attrs_ == null) {
+          attrs_ = com.google.protobuf.MapField.newMapField(
+              AttrsDefaultEntryHolder.defaultEntry);
+        }
+        if (!attrs_.isMutable()) {
+          attrs_ = attrs_.copy();
+        }
+        return attrs_;
+      }
+
+      public int getAttrsCount() {
+        return internalGetAttrs().getMap().size();
+      }
+      /**
+       * <pre>
+       * 名字？
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsAttrs(
+          int key) {
+        
+        return internalGetAttrs().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getAttrsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getAttrs() {
+        return getAttrsMap();
+      }
+      /**
+       * <pre>
+       * 名字？
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getAttrsMap() {
+        return internalGetAttrs().getMap();
+      }
+      /**
+       * <pre>
+       * 名字？
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       */
+      @java.lang.Override
+
+      public int getAttrsOrDefault(
+          int key,
+          int defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetAttrs().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * 名字？
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       */
+      @java.lang.Override
+
+      public int getAttrsOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetAttrs().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearAttrs() {
+        internalGetMutableAttrs().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       * 名字？
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       */
+
+      public Builder removeAttrs(
+          int key) {
+        
+        internalGetMutableAttrs().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer>
+      getMutableAttrs() {
+        return internalGetMutableAttrs().getMutableMap();
+      }
+      /**
+       * <pre>
+       * 名字？
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       */
+      public Builder putAttrs(
+          int key,
+          int value) {
+        
+        
+        internalGetMutableAttrs().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       * 名字？
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       */
+
+      public Builder putAllAttrs(
+          java.util.Map<java.lang.Integer, java.lang.Integer> values) {
+        internalGetMutableAttrs().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.SpiritualInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.SpiritualInfo)
+    private static final cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo();
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SpiritualInfo>
+        PARSER = new com.google.protobuf.AbstractParser<SpiritualInfo>() {
+      @java.lang.Override
+      public SpiritualInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SpiritualInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SpiritualInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SpiritualInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QianKunMirrorReversalRequest_25000020OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QianKunMirrorReversalRequest_25000020)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * 乾坤逆转请求
+   * </pre>
+   *
+   * Protobuf type {@code Protos.QianKunMirrorReversalRequest_25000020}
+   */
+  public static final class QianKunMirrorReversalRequest_25000020 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QianKunMirrorReversalRequest_25000020)
+      QianKunMirrorReversalRequest_25000020OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QianKunMirrorReversalRequest_25000020.newBuilder() to construct.
+    private QianKunMirrorReversalRequest_25000020(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QianKunMirrorReversalRequest_25000020() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QianKunMirrorReversalRequest_25000020();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QianKunMirrorReversalRequest_25000020(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalRequest_25000020_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalRequest_25000020_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 other = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 乾坤逆转请求
+     * </pre>
+     *
+     * Protobuf type {@code Protos.QianKunMirrorReversalRequest_25000020}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QianKunMirrorReversalRequest_25000020)
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalRequest_25000020_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalRequest_25000020_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalRequest_25000020_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 build() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 buildPartial() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 result = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020) {
+          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 other) {
+        if (other == cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QianKunMirrorReversalRequest_25000020)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QianKunMirrorReversalRequest_25000020)
+    private static final cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020();
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QianKunMirrorReversalRequest_25000020>
+        PARSER = new com.google.protobuf.AbstractParser<QianKunMirrorReversalRequest_25000020>() {
+      @java.lang.Override
+      public QianKunMirrorReversalRequest_25000020 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QianKunMirrorReversalRequest_25000020(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QianKunMirrorReversalRequest_25000020> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QianKunMirrorReversalRequest_25000020> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QianKunMirrorReversalResponse_25000021OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QianKunMirrorReversalResponse_25000021)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+     * @return Whether the spiritual field is set.
+     */
+    boolean hasSpiritual();
+    /**
+     * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+     * @return The spiritual.
+     */
+    cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo getSpiritual();
+    /**
+     * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+     */
+    cn.game.protocol.protobuf.DevelopMsg.SpiritualInfoOrBuilder getSpiritualOrBuilder();
+  }
+  /**
+   * Protobuf type {@code Protos.QianKunMirrorReversalResponse_25000021}
+   */
+  public static final class QianKunMirrorReversalResponse_25000021 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QianKunMirrorReversalResponse_25000021)
+      QianKunMirrorReversalResponse_25000021OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QianKunMirrorReversalResponse_25000021.newBuilder() to construct.
+    private QianKunMirrorReversalResponse_25000021(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QianKunMirrorReversalResponse_25000021() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QianKunMirrorReversalResponse_25000021();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QianKunMirrorReversalResponse_25000021(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder subBuilder = null;
+              if (spiritual_ != null) {
+                subBuilder = spiritual_.toBuilder();
+              }
+              spiritual_ = input.readMessage(cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(spiritual_);
+                spiritual_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalResponse_25000021_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalResponse_25000021_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021.Builder.class);
+    }
+
+    public static final int SPIRITUAL_FIELD_NUMBER = 1;
+    private cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo spiritual_;
+    /**
+     * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+     * @return Whether the spiritual field is set.
+     */
+    @java.lang.Override
+    public boolean hasSpiritual() {
+      return spiritual_ != null;
+    }
+    /**
+     * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+     * @return The spiritual.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo getSpiritual() {
+      return spiritual_ == null ? cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.getDefaultInstance() : spiritual_;
+    }
+    /**
+     * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfoOrBuilder getSpiritualOrBuilder() {
+      return getSpiritual();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (spiritual_ != null) {
+        output.writeMessage(1, getSpiritual());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (spiritual_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getSpiritual());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 other = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021) obj;
+
+      if (hasSpiritual() != other.hasSpiritual()) return false;
+      if (hasSpiritual()) {
+        if (!getSpiritual()
+            .equals(other.getSpiritual())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasSpiritual()) {
+        hash = (37 * hash) + SPIRITUAL_FIELD_NUMBER;
+        hash = (53 * hash) + getSpiritual().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.QianKunMirrorReversalResponse_25000021}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QianKunMirrorReversalResponse_25000021)
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalResponse_25000021_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalResponse_25000021_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (spiritualBuilder_ == null) {
+          spiritual_ = null;
+        } else {
+          spiritual_ = null;
+          spiritualBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReversalResponse_25000021_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 build() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 buildPartial() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 result = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021(this);
+        if (spiritualBuilder_ == null) {
+          result.spiritual_ = spiritual_;
+        } else {
+          result.spiritual_ = spiritualBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021) {
+          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 other) {
+        if (other == cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021.getDefaultInstance()) return this;
+        if (other.hasSpiritual()) {
+          mergeSpiritual(other.getSpiritual());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo spiritual_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo, cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder, cn.game.protocol.protobuf.DevelopMsg.SpiritualInfoOrBuilder> spiritualBuilder_;
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       * @return Whether the spiritual field is set.
+       */
+      public boolean hasSpiritual() {
+        return spiritualBuilder_ != null || spiritual_ != null;
+      }
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       * @return The spiritual.
+       */
+      public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo getSpiritual() {
+        if (spiritualBuilder_ == null) {
+          return spiritual_ == null ? cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.getDefaultInstance() : spiritual_;
+        } else {
+          return spiritualBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       */
+      public Builder setSpiritual(cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo value) {
+        if (spiritualBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          spiritual_ = value;
+          onChanged();
+        } else {
+          spiritualBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       */
+      public Builder setSpiritual(
+          cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder builderForValue) {
+        if (spiritualBuilder_ == null) {
+          spiritual_ = builderForValue.build();
+          onChanged();
+        } else {
+          spiritualBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       */
+      public Builder mergeSpiritual(cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo value) {
+        if (spiritualBuilder_ == null) {
+          if (spiritual_ != null) {
+            spiritual_ =
+              cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.newBuilder(spiritual_).mergeFrom(value).buildPartial();
+          } else {
+            spiritual_ = value;
+          }
+          onChanged();
+        } else {
+          spiritualBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       */
+      public Builder clearSpiritual() {
+        if (spiritualBuilder_ == null) {
+          spiritual_ = null;
+          onChanged();
+        } else {
+          spiritual_ = null;
+          spiritualBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       */
+      public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder getSpiritualBuilder() {
+        
+        onChanged();
+        return getSpiritualFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       */
+      public cn.game.protocol.protobuf.DevelopMsg.SpiritualInfoOrBuilder getSpiritualOrBuilder() {
+        if (spiritualBuilder_ != null) {
+          return spiritualBuilder_.getMessageOrBuilder();
+        } else {
+          return spiritual_ == null ?
+              cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.getDefaultInstance() : spiritual_;
+        }
+      }
+      /**
+       * <code>.Protos.SpiritualInfo spiritual = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo, cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder, cn.game.protocol.protobuf.DevelopMsg.SpiritualInfoOrBuilder> 
+          getSpiritualFieldBuilder() {
+        if (spiritualBuilder_ == null) {
+          spiritualBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo, cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder, cn.game.protocol.protobuf.DevelopMsg.SpiritualInfoOrBuilder>(
+                  getSpiritual(),
+                  getParentForChildren(),
+                  isClean());
+          spiritual_ = null;
+        }
+        return spiritualBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QianKunMirrorReversalResponse_25000021)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QianKunMirrorReversalResponse_25000021)
+    private static final cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021();
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QianKunMirrorReversalResponse_25000021>
+        PARSER = new com.google.protobuf.AbstractParser<QianKunMirrorReversalResponse_25000021>() {
+      @java.lang.Override
+      public QianKunMirrorReversalResponse_25000021 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QianKunMirrorReversalResponse_25000021(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QianKunMirrorReversalResponse_25000021> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QianKunMirrorReversalResponse_25000021> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalResponse_25000021 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QianKunMirrorReplaceRequest_25000022OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QianKunMirrorReplaceRequest_25000022)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * true 替换， false  丢弃。
+     * </pre>
+     *
+     * <code>bool replace = 1;</code>
+     * @return The replace.
+     */
+    boolean getReplace();
+  }
+  /**
+   * <pre>
+   * 替换或者丢弃灵魄
+   * </pre>
+   *
+   * Protobuf type {@code Protos.QianKunMirrorReplaceRequest_25000022}
+   */
+  public static final class QianKunMirrorReplaceRequest_25000022 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QianKunMirrorReplaceRequest_25000022)
+      QianKunMirrorReplaceRequest_25000022OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QianKunMirrorReplaceRequest_25000022.newBuilder() to construct.
+    private QianKunMirrorReplaceRequest_25000022(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QianKunMirrorReplaceRequest_25000022() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QianKunMirrorReplaceRequest_25000022();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QianKunMirrorReplaceRequest_25000022(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              replace_ = input.readBool();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceRequest_25000022_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceRequest_25000022_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.Builder.class);
+    }
+
+    public static final int REPLACE_FIELD_NUMBER = 1;
+    private boolean replace_;
+    /**
+     * <pre>
+     * true 替换， false  丢弃。
+     * </pre>
+     *
+     * <code>bool replace = 1;</code>
+     * @return The replace.
+     */
+    @java.lang.Override
+    public boolean getReplace() {
+      return replace_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (replace_ != false) {
+        output.writeBool(1, replace_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (replace_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, replace_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 other = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022) obj;
+
+      if (getReplace()
+          != other.getReplace()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + REPLACE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getReplace());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 替换或者丢弃灵魄
+     * </pre>
+     *
+     * Protobuf type {@code Protos.QianKunMirrorReplaceRequest_25000022}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QianKunMirrorReplaceRequest_25000022)
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceRequest_25000022_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceRequest_25000022_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        replace_ = false;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceRequest_25000022_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 build() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 buildPartial() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 result = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022(this);
+        result.replace_ = replace_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022) {
+          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 other) {
+        if (other == cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.getDefaultInstance()) return this;
+        if (other.getReplace() != false) {
+          setReplace(other.getReplace());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private boolean replace_ ;
+      /**
+       * <pre>
+       * true 替换， false  丢弃。
+       * </pre>
+       *
+       * <code>bool replace = 1;</code>
+       * @return The replace.
+       */
+      @java.lang.Override
+      public boolean getReplace() {
+        return replace_;
+      }
+      /**
+       * <pre>
+       * true 替换， false  丢弃。
+       * </pre>
+       *
+       * <code>bool replace = 1;</code>
+       * @param value The replace to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReplace(boolean value) {
+        
+        replace_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * true 替换， false  丢弃。
+       * </pre>
+       *
+       * <code>bool replace = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReplace() {
+        
+        replace_ = false;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QianKunMirrorReplaceRequest_25000022)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QianKunMirrorReplaceRequest_25000022)
+    private static final cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022();
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QianKunMirrorReplaceRequest_25000022>
+        PARSER = new com.google.protobuf.AbstractParser<QianKunMirrorReplaceRequest_25000022>() {
+      @java.lang.Override
+      public QianKunMirrorReplaceRequest_25000022 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QianKunMirrorReplaceRequest_25000022(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QianKunMirrorReplaceRequest_25000022> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QianKunMirrorReplaceRequest_25000022> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QianKunMirrorReplaceResponse_25000023OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QianKunMirrorReplaceResponse_25000023)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code Protos.QianKunMirrorReplaceResponse_25000023}
+   */
+  public static final class QianKunMirrorReplaceResponse_25000023 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QianKunMirrorReplaceResponse_25000023)
+      QianKunMirrorReplaceResponse_25000023OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QianKunMirrorReplaceResponse_25000023.newBuilder() to construct.
+    private QianKunMirrorReplaceResponse_25000023(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QianKunMirrorReplaceResponse_25000023() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QianKunMirrorReplaceResponse_25000023();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QianKunMirrorReplaceResponse_25000023(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceResponse_25000023_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceResponse_25000023_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 other = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.QianKunMirrorReplaceResponse_25000023}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QianKunMirrorReplaceResponse_25000023)
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceResponse_25000023_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceResponse_25000023_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorReplaceResponse_25000023_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 build() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 buildPartial() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 result = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023) {
+          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 other) {
+        if (other == cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QianKunMirrorReplaceResponse_25000023)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QianKunMirrorReplaceResponse_25000023)
+    private static final cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023();
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QianKunMirrorReplaceResponse_25000023>
+        PARSER = new com.google.protobuf.AbstractParser<QianKunMirrorReplaceResponse_25000023>() {
+      @java.lang.Override
+      public QianKunMirrorReplaceResponse_25000023 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QianKunMirrorReplaceResponse_25000023(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QianKunMirrorReplaceResponse_25000023> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QianKunMirrorReplaceResponse_25000023> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QianKunMirrorLevelUpRequest_25000024OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QianKunMirrorLevelUpRequest_25000024)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * 升级乾坤镜等级。
+   * </pre>
+   *
+   * Protobuf type {@code Protos.QianKunMirrorLevelUpRequest_25000024}
+   */
+  public static final class QianKunMirrorLevelUpRequest_25000024 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QianKunMirrorLevelUpRequest_25000024)
+      QianKunMirrorLevelUpRequest_25000024OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QianKunMirrorLevelUpRequest_25000024.newBuilder() to construct.
+    private QianKunMirrorLevelUpRequest_25000024(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QianKunMirrorLevelUpRequest_25000024() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QianKunMirrorLevelUpRequest_25000024();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QianKunMirrorLevelUpRequest_25000024(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 other = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 升级乾坤镜等级。
+     * </pre>
+     *
+     * Protobuf type {@code Protos.QianKunMirrorLevelUpRequest_25000024}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QianKunMirrorLevelUpRequest_25000024)
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 build() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 buildPartial() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 result = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024) {
+          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 other) {
+        if (other == cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QianKunMirrorLevelUpRequest_25000024)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QianKunMirrorLevelUpRequest_25000024)
+    private static final cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024();
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QianKunMirrorLevelUpRequest_25000024>
+        PARSER = new com.google.protobuf.AbstractParser<QianKunMirrorLevelUpRequest_25000024>() {
+      @java.lang.Override
+      public QianKunMirrorLevelUpRequest_25000024 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QianKunMirrorLevelUpRequest_25000024(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QianKunMirrorLevelUpRequest_25000024> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QianKunMirrorLevelUpRequest_25000024> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QianKunMirrorLevelUpResponse_25000025OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.QianKunMirrorLevelUpResponse_25000025)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code Protos.QianKunMirrorLevelUpResponse_25000025}
+   */
+  public static final class QianKunMirrorLevelUpResponse_25000025 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.QianKunMirrorLevelUpResponse_25000025)
+      QianKunMirrorLevelUpResponse_25000025OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use QianKunMirrorLevelUpResponse_25000025.newBuilder() to construct.
+    private QianKunMirrorLevelUpResponse_25000025(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private QianKunMirrorLevelUpResponse_25000025() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new QianKunMirrorLevelUpResponse_25000025();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private QianKunMirrorLevelUpResponse_25000025(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 other = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.QianKunMirrorLevelUpResponse_25000025}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.QianKunMirrorLevelUpResponse_25000025)
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 build() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 buildPartial() {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 result = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025) {
+          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 other) {
+        if (other == cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.QianKunMirrorLevelUpResponse_25000025)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.QianKunMirrorLevelUpResponse_25000025)
+    private static final cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025();
+    }
+
+    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QianKunMirrorLevelUpResponse_25000025>
+        PARSER = new com.google.protobuf.AbstractParser<QianKunMirrorLevelUpResponse_25000025>() {
+      @java.lang.Override
+      public QianKunMirrorLevelUpResponse_25000025 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QianKunMirrorLevelUpResponse_25000025(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QianKunMirrorLevelUpResponse_25000025> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QianKunMirrorLevelUpResponse_25000025> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_DevelopPotentialLvUpRequest_25000001_descriptor;
   private static final 
@@ -3700,6 +7426,46 @@ public final class DevelopMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_DevelopHeavenlyDaoLvUpResponse_25000011_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_SpiritualInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_SpiritualInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_SpiritualInfo_AttrsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_SpiritualInfo_AttrsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QianKunMirrorReversalRequest_25000020_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QianKunMirrorReversalRequest_25000020_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QianKunMirrorReversalResponse_25000021_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QianKunMirrorReversalResponse_25000021_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QianKunMirrorReplaceRequest_25000022_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QianKunMirrorReplaceRequest_25000022_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QianKunMirrorReplaceResponse_25000023_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QianKunMirrorReplaceResponse_25000023_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3718,8 +7484,19 @@ public final class DevelopMsg {
       "st_25000007\022\n\n\002id\030\001 \001(\r\"$\n\"DevelopRescue" +
       "LvUpResponse_25000008\"(\n&DevelopHeavenly" +
       "DaoLvUpRequest_25000010\")\n\'DevelopHeaven" +
-      "lyDaoLvUpResponse_25000011B\033\n\031cn.game.pr" +
-      "otocol.protobufb\006proto3"
+      "lyDaoLvUpResponse_25000011\"\177\n\rSpiritualI" +
+      "nfo\022\017\n\007quality\030\001 \001(\r\022/\n\005attrs\030\006 \003(\0132 .Pr" +
+      "otos.SpiritualInfo.AttrsEntry\032,\n\nAttrsEn" +
+      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\"\'\n%Q" +
+      "ianKunMirrorReversalRequest_25000020\"R\n&" +
+      "QianKunMirrorReversalResponse_25000021\022(" +
+      "\n\tspiritual\030\001 \001(\0132\025.Protos.SpiritualInfo" +
+      "\"7\n$QianKunMirrorReplaceRequest_25000022" +
+      "\022\017\n\007replace\030\001 \001(\010\"\'\n%QianKunMirrorReplac" +
+      "eResponse_25000023\"&\n$QianKunMirrorLevel" +
+      "UpRequest_25000024\"\'\n%QianKunMirrorLevel" +
+      "UpResponse_25000025B\033\n\031cn.game.protocol." +
+      "protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3772,6 +7549,54 @@ public final class DevelopMsg {
     internal_static_Protos_DevelopHeavenlyDaoLvUpResponse_25000011_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DevelopHeavenlyDaoLvUpResponse_25000011_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_SpiritualInfo_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_Protos_SpiritualInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_SpiritualInfo_descriptor,
+        new java.lang.String[] { "Quality", "Attrs", });
+    internal_static_Protos_SpiritualInfo_AttrsEntry_descriptor =
+      internal_static_Protos_SpiritualInfo_descriptor.getNestedTypes().get(0);
+    internal_static_Protos_SpiritualInfo_AttrsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_SpiritualInfo_AttrsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_Protos_QianKunMirrorReversalRequest_25000020_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_Protos_QianKunMirrorReversalRequest_25000020_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QianKunMirrorReversalRequest_25000020_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_QianKunMirrorReversalResponse_25000021_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_Protos_QianKunMirrorReversalResponse_25000021_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QianKunMirrorReversalResponse_25000021_descriptor,
+        new java.lang.String[] { "Spiritual", });
+    internal_static_Protos_QianKunMirrorReplaceRequest_25000022_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_Protos_QianKunMirrorReplaceRequest_25000022_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QianKunMirrorReplaceRequest_25000022_descriptor,
+        new java.lang.String[] { "Replace", });
+    internal_static_Protos_QianKunMirrorReplaceResponse_25000023_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_Protos_QianKunMirrorReplaceResponse_25000023_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QianKunMirrorReplaceResponse_25000023_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor,
         new java.lang.String[] { });
   }
 
