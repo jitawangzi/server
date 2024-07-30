@@ -22,6 +22,8 @@ message PlayerLoginRequest_01000001{
 	string sdkVersion = 40;  //  SDK版本号：小游戏定死为“NULL”
 	string system = 41;  //  系统: 小游戏定死“system”
 
+	string clue_token = 50 ; // 目前是在调起微信小程序时调用wx.getLaunchOptionsSync()获取到所有的参数内容并且转成Json字符串。
+
 //    string deviceId = 25; //设备唯一标识：MAC或者UUID或者IMEI，这里小游戏变为账号id ，即微信的openid
 //    string accountId = 26; //登录账号id，这里是微信的unionid
 // 这两个暂时用不到
@@ -198,6 +200,13 @@ message PlayerAlchemyRequest_01000040{
 }
 
 message PlayerAlchemyResponse_01000041{
+}
+/*** 请求巡逻数据，一般是在功能刚开启时请求。  ***/
+message PlayerPatrolInfoRequest_01000070{
+}
+
+message PlayerPatrolInfoResponse_01000071{
+	PatrolInfo patrol = 1;//巡逻/挂机
 }
 
 /*** 通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新 ****/

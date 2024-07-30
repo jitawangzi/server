@@ -23,6 +23,7 @@ import com.google.protobuf.UnsafeByteOperations;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
@@ -81,6 +82,7 @@ import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
+import cn.game.util.JsonUtil;
 import cn.game.util.KryoUtils;
 import cn.game.util.Pair;
 import cn.game.util.RedissonUtil;
@@ -576,7 +578,7 @@ public class PlayerHelper {
 //			}) ;
 //		}, Config.ONELINE_SAVE, Config.ONELINE_SAVE);
 		player.setPeriodicTask(Config.ONLINE_SAVE * 1000, r -> {
-			player.saveClientCache();
+			saveClientCache(player.getPlayerId());
 		});
 		// 上线后生成自己的简单信息
 		try {
@@ -1158,7 +1160,7 @@ public class PlayerHelper {
 	 * @param reconnect
 	 * @return  是否重连了 
 	 */
-	public static boolean reconnect(GameClient oldGameClient, GameClient newGameClient, boolean reconnect) {
+	public static boolean reconnect(GameClient oldGameClient, GameClient newGameClient, boolean reconnect, long playerId) {
 		if (oldGameClient != null && oldGameClient.getPlayerId() > 0) { // 可能不同设备登录同一账号,应该退出老的GameClient
 			if (oldGameClient != newGameClient) {
 				if (reconnect) {
@@ -1167,29 +1169,27 @@ public class PlayerHelper {
 					newGameClient.copyClintLoign(oldGameClient);
 				}
 				oldGameClient.sendProtocol(PlayerLogoutPush_01100030.getDefaultInstance());
-				GameClientManager.getInstance().removeGameClientConnection(oldGameClient);
+				GameClientManager.getInstance().removeGameClient(oldGameClient);
 
 				GameClientManager.getInstance().addGameClientSession(newGameClient);
 				GameClientManager.getInstance().addGameClientPlayer(newGameClient);
 			}
-
-			Player player = PlayerManager.getInstance().getPlayer(oldGameClient.getPlayerId());
-			if (player == null) {
-				newGameClient.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
-				return true; 
-			}
-			player.setGameClient((GameClient) newGameClient);
-					
-			PlayerHelper.refresh(player);
-			player.handleEvent(EventTypeEnum.Reconnect);
-			PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
-			resp2.setReconnect(reconnect);
-			resp2.setInfo(PbBuilder.buildPlayerInfo(player));
-			resp2.setTime(System.currentTimeMillis() + "");
-			newGameClient.sendProtocol(resp2);
-			return true;
 		}
-		return false;
+
+		Player player = PlayerManager.getInstance().getPlayer(playerId > 0 ? playerId : oldGameClient == null ? 0 : oldGameClient.getPlayerId());
+		if (player == null) {
+			return false;
+		}
+		player.setGameClient((GameClient) newGameClient);
+
+		PlayerHelper.refresh(player);
+		player.handleEvent(EventTypeEnum.Reconnect);
+		PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
+		resp2.setReconnect(reconnect);
+		resp2.setInfo(PbBuilder.buildPlayerInfo(player));
+		resp2.setTime(System.currentTimeMillis() + "");
+		newGameClient.sendProtocol(resp2);
+		return true;
 	}
 
 	public static Future<Player> startLoadPlayerFromDb(GameClient gameClient, PlayerData dbPlayer, Account account) {
@@ -1402,5 +1402,70 @@ public class PlayerHelper {
 
 	public static void addTask(Player player, Handler<Void> action) {
 		player.getGameClient().getContext().runOnContext(action);
+	}
+
+	/** 
+	 * 退出，数据存库
+	 * @param playerId
+	 * @return 
+	 */
+	public static Future<Object> logout(long playerId) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null) {
+			return Future.succeededFuture();
+		}
+		PlayerData data = player.getData();
+		data.setOfflineTime(System.currentTimeMillis());
+		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
+
+		return saveClientCache(playerId).onSuccess(r -> {
+			player.cancelAllTimer();
+			GameLogger.logout(player);
+			// TODO 异步保存SimplePlayer 到redis。
+			PlayerManager.getInstance().deletePlayer(playerId);
+		}).compose(v -> {
+			RFuture<Boolean> deleteAsync = RedissonUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+			return Future.fromCompletionStage(deleteAsync.toCompletableFuture());
+		}).mapEmpty().otherwise(e -> {
+			log.error("Error during logout cache process for playerId: " + playerId, e);
+			return null;
+		});
+	}
+
+	/**
+	 * 保存缓存数据到数据库
+	 * 这个方法最好不要放到Player里边，万一Player没有保证唯一，以PlayerManger里面的Player为准。不会覆盖数据
+	 * @return 
+	 */
+	public static Future<List<Object>> saveClientCache(long playerId) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null) {
+			return Future.succeededFuture();
+		}
+		if (player.isActive()) {
+			PlayerData data = player.getData();
+			if (GameServer.getInstance().isSinglePlayerTable()) {
+				data.beforeSave();
+				data.setModules(JsonUtil.toJsonString(player.getModules()));
+				List<DbTask> dbTasks = new ArrayList<>(1);
+				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKeyWithBLOBs, data));
+				return DAO.execute(dbTasks);
+			}
+			List<DbEntity> entities = new ArrayList<>();
+
+			for (BasePlayerModule module : player.getAllModule()) {
+				module.autoSaveTasks(entities);
+			}
+			List<DbTask> dbTasks = new ArrayList<>(entities.size());
+			for (DbEntity dbEntity : entities) {
+				dbEntity.beforeSave();
+				dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKeySelective, dbEntity));
+			}
+			if (!dbTasks.isEmpty()) {
+				Future<List<Object>> updateFuture = DAO.execute(dbTasks);
+				return updateFuture;
+			}
+		}
+		return Future.succeededFuture();
 	}
 }

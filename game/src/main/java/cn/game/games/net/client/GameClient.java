@@ -260,8 +260,9 @@ public class GameClient extends AbstractNetClient {
 			long now = System.currentTimeMillis();
 			if (now - firstPacketTime < 1000) {
 //				// 超过消息数量，关闭连接
-				GameClientManager.getInstance().removeGameClient(this);
+				GameClientManager.getInstance().logout(this);
 				log.warn("GameClient[{}] Requested too frequently, force disconnect,seq[{}]", toDetailString(), protocol.getSeq());
+				return false;
 			} else {
 				packetMaxCountPerSecond = 0;
 				firstPacketTime = now;

@@ -66,11 +66,6 @@ public class GameClientManager {
 		log.info("addGameClientSession " + gameClient.toDetailString());
 	}
 	
-	public void removeGameClientSession(GameClient gameClient) {
-		clients.remove(gameClient.getSessionId());
-		log.info("removeGameClientSession " + gameClient.toDetailString());
-	}
-	
 	/** 
 	 * 删除一个GameClient
 	 * @param gameClient
@@ -78,45 +73,18 @@ public class GameClientManager {
 	public void removeGameClient(GameClient gameClient) {
 		log.info("removeGameClient " + gameClient.toDetailString());
 		if (gameClient.getSessionId() != null) {
-			GameClient remove = clients.remove(gameClient.getSessionId());
-			if (remove == null) {
-				log.error("clients " + clients + " remove client " + gameClient.toDetailString() + " " + gameClient.toString());
-			} else {
-				log.info("remove old client " + remove.toDetailString());
+			GameClient gameClient2 = clients.get(gameClient.getSessionId());
+			if (gameClient2 != null && gameClient2 == gameClient) {
+				clients.remove(gameClient.getSessionId());
 			}
 		} else {
-			log.error("clients " + clients + " remove client " + gameClient.toDetailString());
+			log.warn("clients [{}] remove client[{}] unusual, gameClient.getSessionId() is null ", clients, gameClient.toDetailString());
 		}
 		if (gameClient.getPlayerId() > 0) {
-			GameClient remove = players.remove(gameClient.getPlayerId());
-			if (remove == null) {
-				log.error("clients " + clients + " remove player " + gameClient.toDetailString() + " " + gameClient.toString());
-			} else {
-				log.info("remove old player " + remove.toDetailString());
+			GameClient gameClient2 = players.get(gameClient.getPlayerId());
+			if (gameClient2 != null && gameClient2 == gameClient) {
+				players.remove(gameClient.getPlayerId());
 			}
-		}
-		connections.remove(gameClient.getChannel().binaryHandlerID());
-
-		gameClient.sendProtocol(PlayerLogoutPush_01100030.getDefaultInstance());
-		gameClient.close();
-	}
-
-	/** 
-	 * 一般是删除老的连接
-	 * @param gameClient
-	 */
-	public void removeGameClientConnection(GameClient gameClient) {
-		log.info("removeGameClient " + gameClient.toDetailString());
-		if (gameClient.getSessionId() != null) {
-			GameClient remove = clients.remove(gameClient.getSessionId());
-			if (remove == null) {
-				log.error("clients " + clients + " remove client " + gameClient.toDetailString() + " "
-						+ gameClient.toString());
-			} else {
-				log.info("remove old client " + remove.toDetailString());
-			}
-		} else {
-			log.error("clients " + clients + " remove client " + gameClient.toDetailString());
 		}
 		connections.remove(gameClient.getChannel().binaryHandlerID());
 
@@ -126,10 +94,6 @@ public class GameClientManager {
 
 	public void addGameClientPlayer(GameClient gameClient) {
 
-//		GameClient oldGameClient = players.get(gameClient.getPlayerId());
-//		if (oldGameClient != null) {
-//			removeGameClient(oldGameClient);
-//		}
 		if (gameClient.getPlayerId() > 0) {
 			players.put(gameClient.getPlayerId(), gameClient);
 			log.info("addGameClientPlayer " + gameClient.toDetailString());
@@ -158,10 +122,7 @@ public class GameClientManager {
 		}
 		removeGameClient(gameClient);
 		broadcastOnlineToOtherServer(playerId, false, null);
-		if (player != null) {
-			return player.logout();
-		}
-		return Future.succeededFuture();
+		return PlayerHelper.logout(playerId);
 	}
 	
 	/**

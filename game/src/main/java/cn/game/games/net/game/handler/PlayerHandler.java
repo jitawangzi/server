@@ -31,6 +31,7 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.util.AddressUtil;
@@ -66,6 +67,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerNameRequest_01000011;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerNameResponse_01000012;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolInfoRequest_01000070;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolInfoResponse_01000071;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecResponse_01000066;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039;
@@ -125,6 +128,7 @@ public class PlayerHandler extends BaseHandler {
 //		putInvoker(PbProtocol.ItemUseRequest_01000050, this::useItem);
 		putInvoker(PbProtocol.PlayerCloudBoxRequest_01000042, this::cloudBox);
 		putInvoker(PbProtocol.PlayerGuideRequest_01000060, this::guide);
+		putInvoker(PbProtocol.PlayerPatrolInfoRequest_01000070, this::patrolInfo);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
 	}
 
@@ -135,6 +139,15 @@ public class PlayerHandler extends BaseHandler {
 		PlayerModule playerModule = player.getPlayerModule();
 		Map<Integer, Integer> guideMap = playerModule.getGuideMap();
 		guideMap.put(request.getType(), request.getStep());
+		client.sendProtocol(resp);
+	}
+
+	private void patrolInfo(NetClient client, Object message) {
+		PlayerPatrolInfoRequest_01000070 request = (PlayerPatrolInfoRequest_01000070) message;
+		PlayerPatrolInfoResponse_01000071.Builder resp = PlayerPatrolInfoResponse_01000071.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ChapterModule chapterModule = player.getChapterModule();
+		resp.setPatrol(chapterModule.buildPatrolInfo());
 		client.sendProtocol(resp);
 	}
 	private void cloudBox(NetClient client, Object message) {
@@ -611,7 +624,7 @@ public class PlayerHandler extends BaseHandler {
 		
 		GameClient newGameClient = (GameClient) client;
 		newGameClient.setSessionId(passportSessionId);
-		boolean isReconnect = PlayerHelper.reconnect(oldGameClient, newGameClient, reconnect);
+		boolean isReconnect = PlayerHelper.reconnect(oldGameClient, newGameClient, reconnect, 0);
 		if (isReconnect) {
 			return;
 		}
@@ -676,7 +689,7 @@ public class PlayerHandler extends BaseHandler {
 			}
 
 			GameClient oldGameClient2 = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-			if (PlayerHelper.reconnect(oldGameClient2, newGameClient, reconnect)) {
+			if (PlayerHelper.reconnect(oldGameClient2, newGameClient, reconnect, playerId)) {
 				return;
 			}
 

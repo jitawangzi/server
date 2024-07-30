@@ -41,7 +41,7 @@ message DevelopHeavenlyDaoLvUpRequest_25000010{
 message DevelopHeavenlyDaoLvUpResponse_25000011{
 }
 
-//**************************** 乾坤镜 ***************************
+//  **************************** 乾坤镜 ***************************
 
 //灵魄数据
 message SpiritualInfo{

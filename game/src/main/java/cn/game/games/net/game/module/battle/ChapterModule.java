@@ -663,8 +663,7 @@ public class ChapterModule extends BasePlayerModule  {
 			Chapter value = entry.getValue();
 			builder.addBattles(value.toBattleInfo());
 		}
-		builder.setPatrol(
-				PatrolInfo.newBuilder().setAdPatrolCount(adPatrolCount).setQuickPatrolCount(quickPatrolCount).setRewardTime(lastPatrolRewardTime).build());
+		builder.setPatrol(buildPatrolInfo());
 
 		builder.addAllStoreStaminas(storeStaminas);
 		builder.setMergeSweepTimes(daySweepCount);
@@ -681,5 +680,9 @@ public class ChapterModule extends BasePlayerModule  {
 		builder.setBattleType(type) ; 
 		builder.setBattleId(dungeonId);
 
+	}
+
+	public PatrolInfo buildPatrolInfo() {
+		return PatrolInfo.newBuilder().setAdPatrolCount(adPatrolCount).setQuickPatrolCount(quickPatrolCount).setRewardTime(lastPatrolRewardTime).build();
 	}
 }

@@ -258,6 +258,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerShowResponse_0100003a = 0x0100003a;    
 	public final static int PlayerAlchemyRequest_01000040 = 0x01000040;    //炼金请求  
 	public final static int PlayerAlchemyResponse_01000041 = 0x01000041;    
+	public final static int PlayerPatrolInfoRequest_01000070 = 0x01000070;    //请求巡逻数据，一般是在功能刚开启时请求。  
+	public final static int PlayerPatrolInfoResponse_01000071 = 0x01000071;    
 	public final static int PlayerResetPush_01100016 = 0x01100016;    //通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新  
 	public final static int NoticeRequest_01000050 = 0x01000050;    //请求公告数据  
 	public final static int NoticeResponse_01000051 = 0x01000051;    //公告内容  
@@ -822,6 +824,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PlayerAlchemyResponse_01000041, cn.game.protocol.protobuf.PlayerMsg.PlayerAlchemyResponse_01000041.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PlayerPatrolInfoRequest_01000070, cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolInfoRequest_01000070.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerPatrolInfoResponse_01000071, cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolInfoResponse_01000071.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(PlayerResetPush_01100016, cn.game.protocol.protobuf.PlayerMsg.PlayerResetPush_01100016.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(NoticeRequest_01000050, cn.game.protocol.protobuf.PlayerMsg.NoticeRequest_01000050.getDefaultInstance()
@@ -1251,6 +1257,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerShowResponse_0100003a", 0x0100003a);
 		nameIdMap.put("PlayerAlchemyRequest_01000040", 0x01000040);
 		nameIdMap.put("PlayerAlchemyResponse_01000041", 0x01000041);
+		nameIdMap.put("PlayerPatrolInfoRequest_01000070", 0x01000070);
+		nameIdMap.put("PlayerPatrolInfoResponse_01000071", 0x01000071);
 		nameIdMap.put("PlayerResetPush_01100016", 0x01100016);
 		nameIdMap.put("NoticeRequest_01000050", 0x01000050);
 		nameIdMap.put("NoticeResponse_01000051", 0x01000051);
