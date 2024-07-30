@@ -50,7 +50,9 @@ public class DaoHeartImpl extends XiYouBattleHandler {
 
 	@Override
 	public int battleEnd(long playerId, BattleFieldEndRequest_13000003 request, BattleFieldEndResponse_13000004.Builder resp) {
-
+		if (!request.getWin()) {
+			return 0;
+		}
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		int attackingType = chapterModule.getAttackingType();
