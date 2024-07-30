@@ -616,11 +616,6 @@ public class ChapterHandler extends BaseHandler {
 					client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 					return;
 				}
-				// 消耗
-				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.Patrol)) {
-					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-					return;
-				}
 				chapterModule.setAdPatrolCount(quickPatrolCount + 1);
 				player.handleEvent(EventTypeEnum.WatchAds);
 

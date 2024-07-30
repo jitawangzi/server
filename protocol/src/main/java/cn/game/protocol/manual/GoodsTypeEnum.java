@@ -27,7 +27,7 @@ public enum GoodsTypeEnum{
 	/** 龙技能 */
 	DragonSkill(12, "龙技能"),
 
-	Sword(6, "武器"),
+	Sword(36, "武器"),
 
 	/** 角色 */
 	Role(44, "角色"),

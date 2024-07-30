@@ -317,38 +317,6 @@ public class PlayerHandler extends BaseHandler {
 //				}).compose(u -> loginFutrue);
 //	}
 
-	public Future<?> testloginFutrue(NetClient client, String passportSessionId, long id) {
-		Future<?> loginFutrue = DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, id)
-				.onSuccess(p -> {
-					Player dbPlayer = (Player) p;
-					long playerId = dbPlayer.getPlayerId();
-					client.setPlayerId(playerId);
-					// 被封账号,限制登录
-					boolean checkUnlock = PlayerManager.getInstance().checkUnlock(playerId);
-					if (!checkUnlock) {
-						client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(),
-								ErrorMsgEnum.login_forbidden.getId());
-						GameClientManager.getInstance().removeGameClient(((GameClient) client));
-						return;
-					}
-
-					GameClientManager.getInstance().addGameClientPlayer((GameClient) client);
-//					GameClientManager.getInstance().addGameClientSession((GameClient) client);
-
-//					PlayerManager.getInstance().initAdd(dbPlayer);
-					// load from db
-					PlayerHelper.selectPlayerData(dbPlayer);
-//					PlayerHelper.selectPlayerDataWithMQ(false, dbPlayer);
-
-				}).onFailure(p -> {
-					log.error("player session  " + passportSessionId + " login error ", p);
-					client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(),
-							ErrorMsgEnum.unknown.getId());
-				});
-
-		return loginFutrue;
-	}
-
 	private void reconnect(NetClient client, Object message) {
 		PlayerReconnecRequest_01000065 req = (PlayerReconnecRequest_01000065) message;
 		PlayerReconnecResponse_01000066.Builder resp = PlayerReconnecResponse_01000066.newBuilder();

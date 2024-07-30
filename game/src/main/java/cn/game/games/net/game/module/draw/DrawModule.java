@@ -104,34 +104,37 @@ public class DrawModule extends BasePlayerModule {
 		if (id == 2) { // 至尊抽卡走特殊逻辑。首次十连给指定的卡，接下来走特殊卡池
 			List<SupremeRandomGroupConfig> list = SupremeRandomGroupManager.instance().list();
 			if (count == 10 && isFirstTen) {
-				List<RewardInfo> reward = PlayerHelper.addReward(player, GlobalConst.FirstMandatoryDraw, OpType.Draw);
-				ret.addAll(reward);
+				for (int i = 0; i < count; i++) {
+					List<RewardInfo> reward = PlayerHelper.addReward(player, GlobalConst.FirstMandatoryDraw[i], OpType.Draw);
+					ret.addAll(reward);
+				}
 				isFirstTen = false;
 				// 相当于从卡池里抽了一个
-				for (int i = 0; i < Rnd.RANDOM_MAX; i++) {
+//				for (int i = 0; i < Rnd.RANDOM_MAX; i++) {
+//					int randomWeighableIndex = Rnd.randomWeighableIndex(list, supremeRandomGroupList);
+//					SupremeRandomGroupConfig supremeRandomGroupConfig = list.get(randomWeighableIndex);
+//					if (!supremeRandomGroupConfig.SupremeRandomParameterTarget) {
+//						supremeRandomGroupList.add(randomWeighableIndex);
+//						break;
+//					}
+//				}
+//				count--;
+			} else {
+				for (int i = 0; i < count; i++) {
 					int randomWeighableIndex = Rnd.randomWeighableIndex(list, supremeRandomGroupList);
 					SupremeRandomGroupConfig supremeRandomGroupConfig = list.get(randomWeighableIndex);
-					if (!supremeRandomGroupConfig.SupremeRandomParameterTarget) {
+					if (supremeRandomGroupConfig.SupremeRandomParameterTarget) {
+						supremeRandomGroupList.clear();
+					} else {
 						supremeRandomGroupList.add(randomWeighableIndex);
-						break;
+						if (supremeRandomGroupList.size() >= list.size()) {
+							supremeRandomGroupList.clear();
+						}
 					}
+
+					List<RewardInfo> reward = PlayerHelper.addReward(player, supremeRandomGroupConfig.GivenID, OpType.Draw);
+					ret.addAll(reward);
 				}
-				count--;
-			}
-			for (int i = 0; i < count; i++) {
-				int randomWeighableIndex = Rnd.randomWeighableIndex(list, supremeRandomGroupList); 
-				SupremeRandomGroupConfig supremeRandomGroupConfig = list.get(randomWeighableIndex); 
-				if (supremeRandomGroupConfig.SupremeRandomParameterTarget) {
-					supremeRandomGroupList.clear(); 
-				}else {
-					supremeRandomGroupList.add(randomWeighableIndex); 
-					if (supremeRandomGroupList.size() >= list.size()) {
-                        supremeRandomGroupList.clear();
-					}
-				}
-				
-				List<RewardInfo> reward = PlayerHelper.addReward(player, supremeRandomGroupConfig.GivenID, OpType.Draw);
-				ret.addAll(reward);
 			}
 		} else {
 			for (int i = 0; i < count; i++) {

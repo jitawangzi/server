@@ -3,7 +3,6 @@ package cn.game.games.net.game.handler;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,7 +21,6 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.client.GameClient;
@@ -283,24 +281,26 @@ public class TestHandler extends BaseHandler {
 	protected void test(NetClient client, Object message) {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		GameClientManager.getInstance().logout((GameClient) client);
+
 //		GameClientManager.getInstance().logout((GameClient)client); 
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 
 //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
-		Collection<Hero> list = player.getHeroModule().list();
+//		Collection<Hero> list = player.getHeroModule().list();
 //		PlayerHelper.addReward(player, 20011, OpType.None);
 //		player.handleEvent(EventTypeEnum.CostItem, Asset.diamond.ID, 3000);
-		Iterator<Hero> iterator = list.iterator();
+//		Iterator<Hero> iterator = list.iterator();
 		long uid = 0;
-		while (iterator.hasNext()) {
-			Hero hero = (Hero) iterator.next();
-			if (hero.getConfigId() == 354001) {
-				uid = hero.getId();
-				break;
-			}
-		}
+//		while (iterator.hasNext()) {
+//			Hero hero = (Hero) iterator.next();
+//			if (hero.getConfigId() == 354001) {
+//				uid = hero.getId();
+//				break;
+//			}
+//		}
 
-		player.getHeroModule().del(uid, OpType.None);
+//		player.getHeroModule().del(uid, OpType.None);
 //		drawTest2(player);
 //		long uid = 0;
 //		for (Hero hero : list) {

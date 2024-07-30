@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cn.game.games.net.game.module.battle.impl.BattleChapterImpl;
 import cn.game.games.net.game.module.battle.impl.DaoHeartImpl;
+import cn.game.games.net.game.module.battle.impl.DayChallengeImpl;
 import cn.game.games.net.game.module.battle.impl.HCBattleChapterImpl;
 import cn.game.games.net.game.module.battle.impl.MengYanMiJingImpl;
 import cn.game.games.net.game.module.battle.impl.XinMoImpl;
@@ -19,8 +20,9 @@ public class BattleFactory {
 		register(new DaoHeartImpl());
 		register(new XinMoImpl());
 		register(new YaoWangImpl());
-		register(new HCBattleChapterImpl());
 		register(new MengYanMiJingImpl());
+		register(new HCBattleChapterImpl());
+		register(new DayChallengeImpl());
 	}
 
 	public static void register(IBattleHandler battleHandler) {
