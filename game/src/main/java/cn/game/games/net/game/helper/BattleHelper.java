@@ -105,7 +105,10 @@ public class BattleHelper {
 	 */
 	public static List<Integer> randomBuffs(int battleId, int playType) {
 		List<Integer> ret = new ArrayList<>();
-		BattleConfig battleConfig = BattleManager.instance().get(battleId);
+		BattleConfig battleConfig = BattleManager.instance().getNullable(battleId);
+		if (battleConfig == null) {
+			return ret;
+		}
 		for (int[] buffs : battleConfig.Cnt) {
 			for (int i = 0; i < buffs[1]; i++) {
 				List<GamePlayRandomBuffConfig> gamePlayMarkBuffCategoryList = GamePlayRandomBuffManager.instance().getGamePlayMarkBuffCategoryList(playType,

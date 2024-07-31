@@ -65,7 +65,7 @@ public class ChapterModule extends BasePlayerModule  {
 	/** 战役次数 */
 	private IntMapWrapper dailyCount = new IntMapWrapper();
 
-	/** 主线战役最高id */
+	/** 主线战役最高id,已通关的 */
 	private int mainBattleHighest;
 	/** 每日免费肉鸽刷新次数 */
 	private int freeRougeTimes;
@@ -228,7 +228,7 @@ public class ChapterModule extends BasePlayerModule  {
 	}
 
 	/** 
-	 * 获取可以打的，最新的战役id
+	 * 获取可以打的，最新的战役id，最新解锁的，还没通关的
 	 * @param type  {@link BattleConfig#BattleType} 
 	 * @return
 	 */
@@ -616,7 +616,6 @@ public class ChapterModule extends BasePlayerModule  {
 			break;
 		}
 		case PLAYER_CREATE: {
-			newDay();
 			break;
 		}
 		case FuncOpen: {

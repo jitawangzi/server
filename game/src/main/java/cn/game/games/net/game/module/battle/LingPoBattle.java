@@ -6,6 +6,8 @@ import java.util.List;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
+import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualInfo;
 
@@ -43,10 +45,28 @@ public class LingPoBattle {
 		adsGetBattleTimes = false;
 		changeBattleTimes = 0;
 		if (battleId == 0) {
-			battleId = player.getChapterModule().getFightBattleId(DungeonTypeEnum.LingPo.getId());
+			initBattleId(player);
 		}
 		this.randomBuff.clear();
 		randomBuff.addAll(BattleHelper.randomBuffs(battleId, 3));
+	}
+
+	/** 
+	 * 获取可以打的，最新的战役id
+	 * @param type  {@link BattleConfig#BattleType} 
+	 * @return
+	 */
+	private void initBattleId(Player player) {
+
+		int mainBattleId = player.getChapterModule().getFightMainBattleId();
+
+		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(DungeonTypeEnum.LingPo.getId());
+		for (BattleConfig battleConfig : battleTypeList) {
+			if (battleConfig.preBattle == mainBattleId) {
+				battleId = battleConfig.ID;
+				break;
+			}
+		}
 	}
 
 	public void battleEnd() {
