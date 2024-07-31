@@ -116,6 +116,8 @@ public class ChapterModule extends BasePlayerModule  {
 
 	/** 梦魇秘境 */
 	private MengYanMiJingBattle mengYanMiJingBattle;
+	/** 灵魄之战 */
+	private LingPoBattle lingPoBattle;
 
 	/** 
 	 * 
@@ -221,13 +223,18 @@ public class ChapterModule extends BasePlayerModule  {
 	 * @return
 	 */
 	public int calcPatrolGold(int hours) {
-		PatrolConfig patrolConfig = PatrolManager.instance().get(getPatrolBattleId());
+		PatrolConfig patrolConfig = PatrolManager.instance().get(getFightMainBattleId());
 		return patrolConfig.IncomeGold * 60 * hours;
 	}
 
-	public int getPatrolBattleId() {
+	/** 
+	 * 获取可以打的，最新的战役id
+	 * @param type  {@link BattleConfig#BattleType} 
+	 * @return
+	 */
+	public int getFightBattleId(int type) {
 		int battleId = 0;
-		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(1);
+		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(type);
 		for (BattleConfig battleConfig : battleTypeList) {
 			if (battleConfig.preBattle == mainBattleHighest) {
 				battleId = battleConfig.ID;
@@ -235,6 +242,14 @@ public class ChapterModule extends BasePlayerModule  {
 			}
 		}
 		return battleId;
+	}
+
+	/** 
+	 * 获取主线战役可以打的最新的战役id
+	 * @return
+	 */
+	public int getFightMainBattleId() {
+		return getFightBattleId(DungeonTypeEnum.BattleChapter.getId());
 	}
 
 	@Deprecated
@@ -563,6 +578,10 @@ public class ChapterModule extends BasePlayerModule  {
 		this.reliveCountPerBattle = reliveCountPerBattle;
 	}
 
+	public LingPoBattle getLingPoBattle() {
+		return lingPoBattle;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -580,6 +599,9 @@ public class ChapterModule extends BasePlayerModule  {
 		dayChallenge.reset();
 		if (mengYanMiJingBattle != null) {
 			mengYanMiJingBattle.setCanQuick(true);
+		}
+		if (lingPoBattle != null) {
+			lingPoBattle.reset(player);
 		}
 	}
 	@Override
@@ -614,6 +636,10 @@ public class ChapterModule extends BasePlayerModule  {
 			if (func == InitialUI.NightmareRealm) {
 				mengYanMiJingBattle = new MengYanMiJingBattle();
 				mengYanMiJingBattle.init();
+			}
+			if (func == InitialUI.SpiritBattle) {
+				lingPoBattle = new LingPoBattle();
+				lingPoBattle.init(player);
 			}
 			break;
 		}

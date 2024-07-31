@@ -18,6 +18,8 @@ public enum DungeonTypeEnum{
 
 	/** 梦魇秘境战斗 */
 	MengYanMiJing(9, "梦魇秘境战斗"),
+	/** 灵魄之战 */
+	LingPo(10, "灵魄之战"),
 
 	/** 突发事件 */
 	BattleEvent(33, "突发事件"),

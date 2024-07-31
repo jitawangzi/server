@@ -19,8 +19,9 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.protocol.bytes.BaseByteProtocol;
-import cn.game.games.net.game.manager.GameClientManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.Config;
 import cn.game.util.HexUtil;
 import io.netty.buffer.ByteBuf;
@@ -260,8 +261,9 @@ public class GameClient extends AbstractNetClient {
 			long now = System.currentTimeMillis();
 			if (now - firstPacketTime < 1000) {
 //				// 超过消息数量，关闭连接
-				GameClientManager.getInstance().logout(this);
-				log.warn("GameClient[{}] Requested too frequently, force disconnect,seq[{}]", toDetailString(), protocol.getSeq());
+//				GameClientManager.getInstance().logout(this);
+//				log.warn("GameClient[{}] Requested too frequently, force disconnect,seq[{}]", toDetailString(), protocol.getSeq());
+				sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.requests_too_frequent.getId());
 				return false;
 			} else {
 				packetMaxCountPerSecond = 0;

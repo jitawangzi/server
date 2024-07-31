@@ -163,7 +163,6 @@ message GuideInfo{
 
 //@NotUseStart
 
-
 /*** 获取一组玩家简略信息 本服 ***/
 message PlayerBriefInfoRequest_01000007{
 	repeated string playerIds = 1;
@@ -224,7 +223,6 @@ message NoticeResponse_01000051{
 	string notice = 1;
 }
 
-
 // 一次推送多个消息
 message PlayerBatchPush_01100100 {
   repeated BatchItem items = 1;
@@ -234,7 +232,6 @@ message BatchItem {
   int32 msgId = 2;
   bytes payload = 4;
 }
-
 
 //用户基本信息
 message PlayerInfo{

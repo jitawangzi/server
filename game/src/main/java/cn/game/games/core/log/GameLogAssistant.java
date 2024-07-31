@@ -12,6 +12,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.protocol.manual.OpType;
+import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.log.Logger;
 
@@ -22,10 +23,10 @@ import cn.game.util.log.Logger;
  */
 public class GameLogAssistant extends Logger {
 
-	/**
-	 * 全游戏唯一标识
-	 */
-	public static final String APP_KEY = "23121231442121";
+//	/**
+//	 * 全游戏唯一标识
+//	 */
+//	public static final String APP_KEY = "23121231442121";
 
 	public static String TIME_ZONE = "-1";
 
@@ -46,7 +47,7 @@ public class GameLogAssistant extends Logger {
 	static Object[] buildLogCYPrefix(Player player, String logName, String logVersion, String stepNum) {
 		Account account = player.getAccount();
 
-		return new Object[] { getCurrentTimeLogText(), APP_KEY, account.version != null ? account.version : "null", logName, logVersion, stepNum,
+		return new Object[] { getCurrentTimeLogText(), Config.APP_KEY, account.version != null ? account.version : "null", logName, logVersion, stepNum,
 				ServerContext.getInstance().getServerId(), account.adChannel != null ? account.adChannel : "null",
 				player.getData().getAccountId() != null ? player.getData().getAccountId() : "null",
 				player.getPlayerId(), player.getLevel(), -1, player.getData().getDeviceId() != null ? player.getData().getDeviceId() : "null" };
@@ -60,7 +61,7 @@ public class GameLogAssistant extends Logger {
 	 */
 	static Object[] buildLogCYPrefix(SimplePlayer simplePlayer, String logName, String logVersion, String stepNum) {
 
-		return new Object[] { getCurrentTimeLogText(), APP_KEY, "null", logName, logVersion, stepNum, -1,
+		return new Object[] { getCurrentTimeLogText(), Config.APP_KEY, "null", logName, logVersion, stepNum, -1,
 				simplePlayer.accountAdChannel != null ? simplePlayer.accountAdChannel : "null",
 				simplePlayer.getAccountId() != null ? simplePlayer.getAccountId() : "null", simplePlayer.getId(), simplePlayer.getLevel(), -1,
 //                LeagueManager.getLeagueIdByPlayerId(miniPlayer.getPlayerId(), miniPlayer.getServerNum()) <= 0?"null":LeagueManager.getLeagueIdByPlayerId(miniPlayer.getPlayerId(), miniPlayer.getServerNum()),

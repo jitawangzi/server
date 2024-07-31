@@ -116,6 +116,7 @@ public class GameClientManager {
 	 */
 	public Future<?> logout(GameClient gameClient) {
 		long playerId = gameClient.getPlayerId();
+		log.info("GameClient[{}]start logout", gameClient.toDetailString());
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {
 			player.setIslogouting(true);

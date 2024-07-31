@@ -1423,6 +1423,7 @@ public class PlayerHelper {
 			GameLogger.logout(player);
 			// TODO 异步保存SimplePlayer 到redis。
 			PlayerManager.getInstance().deletePlayer(playerId);
+//			log.info("GameClient[{}] Player[{}] logout finished[{}]", player.getGameClient() == null ? "" : player.getGameClient().toDetailString(), playerId);
 		}).compose(v -> {
 			RFuture<Boolean> deleteAsync = RedissonUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
 			return Future.fromCompletionStage(deleteAsync.toCompletableFuture());

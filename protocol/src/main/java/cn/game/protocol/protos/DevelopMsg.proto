@@ -46,8 +46,8 @@ message DevelopHeavenlyDaoLvUpResponse_25000011{
 //灵魄数据
 message SpiritualInfo{
   uint32 quality  = 1; //  品质
-  // 名字？
-  map<uint32, uint32> attrs = 6; //附加属性条目 ， id->数值
+  int32 level = 2;
+  map<uint32, uint32> attrs = 3; //附加属性条目 ， id->数值
 }
 
 // 乾坤逆转请求
@@ -66,15 +66,4 @@ message QianKunMirrorReplaceRequest_25000022{
 
 message QianKunMirrorReplaceResponse_25000023{
 }
-
-
-
-
-// 升级乾坤镜等级。
-message QianKunMirrorLevelUpRequest_25000024{
-}
-
-message QianKunMirrorLevelUpResponse_25000025{
-}
-
 

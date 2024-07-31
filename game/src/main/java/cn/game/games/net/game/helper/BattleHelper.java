@@ -100,7 +100,7 @@ public class BattleHelper {
 	/** 
 	 * 随机一个战役的buff
 	 * @param battleId
-	 * @param playType 1 道心、心魔  2梦魇秘境
+	 * @param playType 1 道心、心魔  2梦魇秘境 {@link GamePlayRandomBuffConfig#GamePlayMark}
 	 * @return
 	 */
 	public static List<Integer> randomBuffs(int battleId, int playType) {
@@ -142,21 +142,32 @@ public class BattleHelper {
 
 	/** 
 	 * 根据已经完成的关卡id，判断某一关是否完成了
+	 * 
 	 * @param completeBattleId
 	 * @param checkId
 	 * @return
 	 */
 	public static boolean isComplete(int completeBattleId, int id) {
-		if (completeBattleId == 0) {
+		return isPreBattle(completeBattleId, id);
+	}
+
+	/** 
+	 * 判断某关，是否是某关的前置关卡
+	 * @param id 当前关卡id
+	 * @param preId  需要判断的前置关卡id
+	 * @return
+	 */
+	public static boolean isPreBattle(int id, int preId) {
+		if (id == 0) {
 			return false;
 		}
-		if (id == completeBattleId) {
+		if (preId == id) {
 			return true;
 		}
-		BattleConfig battleConfig = BattleManager.instance().get(completeBattleId);
+		BattleConfig battleConfig = BattleManager.instance().get(id);
 		BattleConfig preConfig = battleConfig;
 		while ((preConfig = BattleManager.instance().getNullable(preConfig.preBattle)) != null) {
-			if (preConfig.ID == id) {
+			if (preConfig.ID == preId) {
 				return true;
 			}
 		}

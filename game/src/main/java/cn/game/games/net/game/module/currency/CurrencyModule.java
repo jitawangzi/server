@@ -95,8 +95,8 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		return new Currency(configId, getCount(configId));
 	}
 
-	public Currency get(Asset asset) {
-		return new Currency(asset.ID, getCount(asset.ID));
+	public long get(Asset asset) {
+		return getCount(asset.ID);
 	}
 
 	@Override

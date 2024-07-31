@@ -7,6 +7,7 @@ import cn.game.games.net.game.module.battle.impl.BattleChapterImpl;
 import cn.game.games.net.game.module.battle.impl.DaoHeartImpl;
 import cn.game.games.net.game.module.battle.impl.DayChallengeImpl;
 import cn.game.games.net.game.module.battle.impl.HCBattleChapterImpl;
+import cn.game.games.net.game.module.battle.impl.LingPoImpl;
 import cn.game.games.net.game.module.battle.impl.MengYanMiJingImpl;
 import cn.game.games.net.game.module.battle.impl.XinMoImpl;
 import cn.game.games.net.game.module.battle.impl.YaoWangImpl;
@@ -21,6 +22,7 @@ public class BattleFactory {
 		register(new XinMoImpl());
 		register(new YaoWangImpl());
 		register(new MengYanMiJingImpl());
+		register(new LingPoImpl());
 		register(new HCBattleChapterImpl());
 		register(new DayChallengeImpl());
 	}

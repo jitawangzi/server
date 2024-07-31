@@ -83,6 +83,16 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleNightmareRealmQuickResponse_13000085 = 0x13000085;    
 	public final static int BattleDayChallengeReceiveActivePointRequest_13000070 = 0x13000070;    //领取每日挑战活跃积分奖励  
 	public final static int BattleDayChallengeReceiveActivePointResponse_13000071 = 0x13000071;    
+	public final static int BattleSpiritualInfoRequest_13000090 = 0x13000090;    //请求灵魄之战数据  
+	public final static int BattleSpiritualInfoResponse_13000091 = 0x13000091;    
+	public final static int BattleSpiritualReceiveActivePointRequest_13000092 = 0x13000092;    //领取灵魄之战活跃积分奖励  
+	public final static int BattleSpiritualReceiveActivePointResponse_13000093 = 0x13000093;    
+	public final static int BattleSpiritualGetTimesRequest_13000094 = 0x13000094;    //看广告获取灵魄之战挑战次数  
+	public final static int BattleSpiritualGetTimesResponse_13000095 = 0x13000095;    
+	public final static int BattleSpiritualGetPointRequest_13000096 = 0x13000096;    //补满积分。  
+	public final static int BattleSpiritualGetPointResponse_13000097 = 0x13000097;    
+	public final static int BattleSpiritualChangeBattleRequest_13000098 = 0x13000098;    //提升或者降低难度  
+	public final static int BattleSpiritualChangeBattleResponse_13000099 = 0x13000099;    
 	public final static int BattleRougeRefreshRequest_13000005 = 0x13000005;    //肉鸽刷新,每天前3次免费，第四次看广告。  
 	public final static int BattleRougeRefreshResponse_13000006 = 0x13000006;    //肉鸽刷新  
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    //领取体力  
@@ -103,8 +113,6 @@ public class PbProtocol implements ProtocolParser {
 	public final static int QianKunMirrorReversalResponse_25000021 = 0x25000021;    
 	public final static int QianKunMirrorReplaceRequest_25000022 = 0x25000022;    //替换或者丢弃灵魄  
 	public final static int QianKunMirrorReplaceResponse_25000023 = 0x25000023;    
-	public final static int QianKunMirrorLevelUpRequest_25000024 = 0x25000024;    //升级乾坤镜等级。  
-	public final static int QianKunMirrorLevelUpResponse_25000025 = 0x25000025;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    //龙解锁  
 	public final static int DragonUnlockResponse_17000002 = 0x17000002;    
 	public final static int DragonStarUpRequest_17000003 = 0x17000003;    //龙升星  
@@ -474,6 +482,26 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(BattleDayChallengeReceiveActivePointResponse_13000071, cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointResponse_13000071.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(BattleSpiritualInfoRequest_13000090, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualInfoRequest_13000090.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualInfoResponse_13000091, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualInfoResponse_13000091.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualReceiveActivePointRequest_13000092, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualReceiveActivePointRequest_13000092.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualReceiveActivePointResponse_13000093, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualReceiveActivePointResponse_13000093.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualGetTimesRequest_13000094, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetTimesRequest_13000094.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualGetTimesResponse_13000095, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetTimesResponse_13000095.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualGetPointRequest_13000096, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointRequest_13000096.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualGetPointResponse_13000097, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointResponse_13000097.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualChangeBattleRequest_13000098, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleSpiritualChangeBattleResponse_13000099, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleResponse_13000099.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(BattleRougeRefreshRequest_13000005, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleRougeRefreshResponse_13000006, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006.getDefaultInstance()
@@ -513,10 +541,6 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(QianKunMirrorReplaceRequest_25000022, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(QianKunMirrorReplaceResponse_25000023, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(QianKunMirrorLevelUpRequest_25000024, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(QianKunMirrorLevelUpResponse_25000025, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DragonUnlockRequest_17000001, cn.game.protocol.protobuf.DragonMsg.DragonUnlockRequest_17000001.getDefaultInstance()
 				.getParserForType());
@@ -1082,6 +1106,16 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleNightmareRealmQuickResponse_13000085", 0x13000085);
 		nameIdMap.put("BattleDayChallengeReceiveActivePointRequest_13000070", 0x13000070);
 		nameIdMap.put("BattleDayChallengeReceiveActivePointResponse_13000071", 0x13000071);
+		nameIdMap.put("BattleSpiritualInfoRequest_13000090", 0x13000090);
+		nameIdMap.put("BattleSpiritualInfoResponse_13000091", 0x13000091);
+		nameIdMap.put("BattleSpiritualReceiveActivePointRequest_13000092", 0x13000092);
+		nameIdMap.put("BattleSpiritualReceiveActivePointResponse_13000093", 0x13000093);
+		nameIdMap.put("BattleSpiritualGetTimesRequest_13000094", 0x13000094);
+		nameIdMap.put("BattleSpiritualGetTimesResponse_13000095", 0x13000095);
+		nameIdMap.put("BattleSpiritualGetPointRequest_13000096", 0x13000096);
+		nameIdMap.put("BattleSpiritualGetPointResponse_13000097", 0x13000097);
+		nameIdMap.put("BattleSpiritualChangeBattleRequest_13000098", 0x13000098);
+		nameIdMap.put("BattleSpiritualChangeBattleResponse_13000099", 0x13000099);
 		nameIdMap.put("BattleRougeRefreshRequest_13000005", 0x13000005);
 		nameIdMap.put("BattleRougeRefreshResponse_13000006", 0x13000006);
 		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);
@@ -1102,8 +1136,6 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("QianKunMirrorReversalResponse_25000021", 0x25000021);
 		nameIdMap.put("QianKunMirrorReplaceRequest_25000022", 0x25000022);
 		nameIdMap.put("QianKunMirrorReplaceResponse_25000023", 0x25000023);
-		nameIdMap.put("QianKunMirrorLevelUpRequest_25000024", 0x25000024);
-		nameIdMap.put("QianKunMirrorLevelUpResponse_25000025", 0x25000025);
 		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
 		nameIdMap.put("DragonUnlockResponse_17000002", 0x17000002);
 		nameIdMap.put("DragonStarUpRequest_17000003", 0x17000003);

@@ -91,6 +91,10 @@ public enum OpType{
 	GachaConversion(162, "蓝卡转化货币"),
 	Relive(163, "复活"),
 
+	LingPoBattle(165, "灵魄之战"),
+	LingPoBattlePointFull(166, "灵魄之战补积分"),
+	LingPoBattleChange(167, "灵魄之战改难度"),
+
 	BoxOpen(200, "合并开宝箱"),
 	MergeEquipLvUp(201, "合并装备升级"),
 	HCHeroPieceAds(203, "看广告获得觉醒合成英雄碎片"),

@@ -31,6 +31,7 @@ public enum ErrorMsgEnum {
 	/** 不在线/不在当前服务器 */
 	not_online(11, "不在线/不在当前服务器"),
 	session_not_exist(12, "session错误，需要先登陆"),
+	requests_too_frequent(13, "请求太频繁"),
 
 	// #通用错误 50 - 99
 	/** 玩家数据校验错误。 */
@@ -65,6 +66,7 @@ public enum ErrorMsgEnum {
 	operation_too_fast(67, "操作太快，太频繁了"),
 	/** 非法请求，一般是客户端不够条件进行当前操作 */
 	illegal_request(68, "非法请求，一般是客户端不够条件进行当前操作，例如功能未开启，等级不足等等"),
+	not_watch_ads(69, "需要先看广告才能进行该操作"),
 
 	// 100+ 业务错误。
 

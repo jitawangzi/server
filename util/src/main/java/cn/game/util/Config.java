@@ -110,6 +110,9 @@ public final class Config {
 	// 消息统计的时间间隔，分钟
 	public static int messageStatisticsInterval;
 
+	/** 游戏唯一表示 */
+	public static String APP_KEY;
+
 	/**
 	 *
 	 */
@@ -167,6 +170,8 @@ public final class Config {
 			wechat_midas_AppKey = initialProp.getProperty("wechat_midas_AppKey", "");
 			
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "1"));
+
+			APP_KEY = initialProp.getProperty("APP_KEY", "");
 
 			if (modules.length > 0) {
 				modulesDisabled = new int[modules.length];

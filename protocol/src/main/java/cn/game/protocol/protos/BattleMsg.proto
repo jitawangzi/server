@@ -239,6 +239,11 @@ message BattleNightmareRealmQuickResponse_13000085{
 	repeated RewardInfo rewards = 1;//
 }
 
+message LineupInfo{
+	int32 seq = 1; 							// 阵容顺序，从0开始
+	repeated string heroUid = 2;			// 英雄唯一id
+}
+
 
 // ****************************************每日挑战********************************************
 
@@ -260,10 +265,67 @@ message DayChallengeInfo{
    repeated int32 rewardIndex = 4;			// 已经领取过奖励箱子的索引， 如果4个箱子就是0 - 3 。
 }
 
-message LineupInfo{
-	int32 seq = 1; 							// 阵容顺序，从0开始
-	repeated string heroUid = 2;			// 英雄唯一id
+
+// ****************************************灵魄之战********************************************
+
+// 请求灵魄之战数据
+message BattleSpiritualInfoRequest_13000090
+{
 }
+
+message BattleSpiritualInfoResponse_13000091
+{
+	BattleSpiritualInfo battleSpiritualInfo = 1;
+}
+
+// 领取灵魄之战活跃积分奖励
+message BattleSpiritualReceiveActivePointRequest_13000092
+{
+	int32 index = 1 ;  // 0-3，一共4个奖励，领哪个
+}
+
+message BattleSpiritualReceiveActivePointResponse_13000093
+{
+	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
+}
+
+message BattleSpiritualInfo{
+   int32 battleTimes   = 1; //当天累计挑战过的次数。
+   int32 battleId   = 2; //当前难度，（Battle表id,类型是灵魄之战）
+   repeated int32 randomBuff = 3;			// 每天不同的随机 增益或者减益buff， HeroBUFF表id
+   repeated int32 rewardIndex = 4;			// 已经领取过奖励箱子的索引， 如果4个箱子就是0 - 3 。
+   int32 changeBattleTimes   = 6; //升降难度次数。
+   bool adsGetBattleTimes = 7;    // 是否需要看广告获得挑战次数，打完第一次，第二次需要先看广告。
+}
+
+// 看广告获取灵魄之战挑战次数
+message BattleSpiritualGetTimesRequest_13000094
+{
+}
+
+message BattleSpiritualGetTimesResponse_13000095
+{
+}
+
+// 补满积分。
+message BattleSpiritualGetPointRequest_13000096
+{
+}
+
+message BattleSpiritualGetPointResponse_13000097
+{
+}
+
+//  提升或者降低难度
+message BattleSpiritualChangeBattleRequest_13000098
+{
+	int32 battleId   = 2; //提升或者降低到的难度（Battle表id）
+}
+
+message BattleSpiritualChangeBattleResponse_13000099
+{
+}
+
 
 //@NotUseStart
 
@@ -283,7 +345,5 @@ message BattleStaminaRequest_13000050{
 
 message BattleStaminaResponse_13000051{
 }
-
 //@NotUseEnd
-
 

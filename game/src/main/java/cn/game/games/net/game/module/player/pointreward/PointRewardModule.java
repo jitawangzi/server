@@ -10,9 +10,11 @@ import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -28,7 +30,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 public class PointRewardModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.ResourceRemove, EventTypeEnum.NewDay };
 
-	/** 任务积分宝箱活跃奖励领取情况 type: subId : 领过的奖励index */
+	/** 任务积分宝箱活跃奖励领取情况 type: subType : 领过的奖励index */
 	private Map<PointRewardType, Map<Integer, List<Integer>>> activeRewardMap = new HashMap<PointRewardType, Map<Integer, List<Integer>>>();
 
 	public Map<Integer, List<Integer>> getActiveRewardTypeMap(PointRewardType type) {
@@ -53,35 +55,46 @@ public class PointRewardModule extends BasePlayerModule {
 		return list;
 	}
 
-	public void clearActiveRewardList(PointRewardType type, int subId) {
-		List<Integer> activeRewardList = getActiveRewardList(type, subId);
+	public List<Integer> getActiveRewardList(PointRewardType type) {
+		return getActiveRewardList(type, 0);
+	}
+
+	public void clearActiveRewardList(PointRewardType type, int subType) {
+		List<Integer> activeRewardList = getActiveRewardList(type, subType);
 		activeRewardList.clear();
 	}
 
-	public ResultObject addReward(PointRewardType type, int subId, int index) {
+	public ResultObject addReward(PointRewardType type, int subType, int index) {
 
 		int[] conditionStage;
 		int[] randomRewardStage = null;
 		int[][] fixRewardStage = null;
 		int pointType = 0;
 		OpType opType = null ; 
-		if (subId == 0) {
-			return ResultObject.fail(ErrorMsgEnum.player_data_not_found.getId());
-		}
+//		if (subId == 0) {
+//			return ResultObject.fail(ErrorMsgEnum.player_data_not_found.getId());
+//		}
 		if (type == PointRewardType.QUEST) {
-			QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(subId);
+			QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(subType);
 			pointType = questPointRewardConfig.PointType;
 
 			conditionStage = questPointRewardConfig.Stage;
 			fixRewardStage = questPointRewardConfig.Reward;
 			opType = OpType.QuestActiveReward; 
 		} else if (type == PointRewardType.DAY_CHALLENGE) {
-			HCBattleConfig battleConfig = HCBattleManager.instance().get(subId);
+			HCBattleConfig battleConfig = HCBattleManager.instance().get(subType);
 			pointType = Asset.dailyIntegral.ID;
 
 			conditionStage = battleConfig.DailyIntegralCondition;
 			randomRewardStage = battleConfig.DailyInBoxRandomId;
 			opType = OpType.DayChallengeReward; 
+		} else if (type == PointRewardType.LingPo) {
+			BattleConfig battleConfig = BattleManager.instance().get(player.getChapterModule().getLingPoBattle().getBattleId());
+			pointType = Asset.SpiritBattlePoint.ID;
+
+			conditionStage = battleConfig.BattleBoxTrigger;
+			randomRewardStage = battleConfig.BattleBoxRandomId;
+			opType = OpType.LingPoBattle;
 		} else {
 			throw new IllegalArgumentException("没有实现的PointRewardType :" + type);
 		}
@@ -92,7 +105,7 @@ public class PointRewardModule extends BasePlayerModule {
 			return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
 		}
 
-		List<Integer> activeRewardList = getActiveRewardList(type, subId);
+		List<Integer> activeRewardList = getActiveRewardList(type, subType);
 		if (activeRewardList.contains(index)) {
 			return ResultObject.fail(ErrorMsgEnum.repeat_request.getId());
 		}

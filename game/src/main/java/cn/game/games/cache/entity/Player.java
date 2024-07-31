@@ -365,7 +365,7 @@ public class Player  {
 		builder.setLastLoginTime((int) (DateUtil.parse(getData().getLoginDate()).getTime() / 1000));
 		ChapterModule chapterModule = getChapterModule();
 
-		builder.setCurBattleId(chapterModule.getPatrolBattleId());
+		builder.setCurBattleId(chapterModule.getFightMainBattleId());
 		builder.setPower(getAttrModule().getPower());
 		builder.setChargeCumulation(getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge));
 		

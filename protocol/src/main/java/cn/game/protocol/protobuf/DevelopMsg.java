@@ -3675,19 +3675,25 @@ public final class DevelopMsg {
     int getQuality();
 
     /**
+     * <code>int32 level = 2;</code>
+     * @return The level.
+     */
+    int getLevel();
+
+    /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
     int getAttrsCount();
     /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
     boolean containsAttrs(
         int key);
@@ -3699,19 +3705,19 @@ public final class DevelopMsg {
     getAttrs();
     /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
     java.util.Map<java.lang.Integer, java.lang.Integer>
     getAttrsMap();
     /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
 
     int getAttrsOrDefault(
@@ -3719,10 +3725,10 @@ public final class DevelopMsg {
         int defaultValue);
     /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
 
     int getAttrsOrThrow(
@@ -3783,7 +3789,12 @@ public final class DevelopMsg {
               quality_ = input.readUInt32();
               break;
             }
-            case 50: {
+            case 16: {
+
+              level_ = input.readInt32();
+              break;
+            }
+            case 26: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 attrs_ = com.google.protobuf.MapField.newMapField(
                     AttrsDefaultEntryHolder.defaultEntry);
@@ -3825,7 +3836,7 @@ public final class DevelopMsg {
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 6:
+        case 3:
           return internalGetAttrs();
         default:
           throw new RuntimeException(
@@ -3855,7 +3866,18 @@ public final class DevelopMsg {
       return quality_;
     }
 
-    public static final int ATTRS_FIELD_NUMBER = 6;
+    public static final int LEVEL_FIELD_NUMBER = 2;
+    private int level_;
+    /**
+     * <code>int32 level = 2;</code>
+     * @return The level.
+     */
+    @java.lang.Override
+    public int getLevel() {
+      return level_;
+    }
+
+    public static final int ATTRS_FIELD_NUMBER = 3;
     private static final class AttrsDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.Integer, java.lang.Integer> defaultEntry =
@@ -3883,10 +3905,10 @@ public final class DevelopMsg {
     }
     /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
 
     @java.lang.Override
@@ -3905,10 +3927,10 @@ public final class DevelopMsg {
     }
     /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
     @java.lang.Override
 
@@ -3917,10 +3939,10 @@ public final class DevelopMsg {
     }
     /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
     @java.lang.Override
 
@@ -3934,10 +3956,10 @@ public final class DevelopMsg {
     }
     /**
      * <pre>
-     * 名字？
+     *附加属性条目 ， id-&gt;数值
      * </pre>
      *
-     * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+     * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
      */
     @java.lang.Override
 
@@ -3969,12 +3991,15 @@ public final class DevelopMsg {
       if (quality_ != 0) {
         output.writeUInt32(1, quality_);
       }
+      if (level_ != 0) {
+        output.writeInt32(2, level_);
+      }
       com.google.protobuf.GeneratedMessageV3
         .serializeIntegerMapTo(
           output,
           internalGetAttrs(),
           AttrsDefaultEntryHolder.defaultEntry,
-          6);
+          3);
       unknownFields.writeTo(output);
     }
 
@@ -3988,6 +4013,10 @@ public final class DevelopMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(1, quality_);
       }
+      if (level_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, level_);
+      }
       for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
            : internalGetAttrs().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
@@ -3996,7 +4025,7 @@ public final class DevelopMsg {
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(6, attrs__);
+            .computeMessageSize(3, attrs__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4015,6 +4044,8 @@ public final class DevelopMsg {
 
       if (getQuality()
           != other.getQuality()) return false;
+      if (getLevel()
+          != other.getLevel()) return false;
       if (!internalGetAttrs().equals(
           other.internalGetAttrs())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -4030,6 +4061,8 @@ public final class DevelopMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + QUALITY_FIELD_NUMBER;
       hash = (53 * hash) + getQuality();
+      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getLevel();
       if (!internalGetAttrs().getMap().isEmpty()) {
         hash = (37 * hash) + ATTRS_FIELD_NUMBER;
         hash = (53 * hash) + internalGetAttrs().hashCode();
@@ -4149,7 +4182,7 @@ public final class DevelopMsg {
       protected com.google.protobuf.MapField internalGetMapField(
           int number) {
         switch (number) {
-          case 6:
+          case 3:
             return internalGetAttrs();
           default:
             throw new RuntimeException(
@@ -4160,7 +4193,7 @@ public final class DevelopMsg {
       protected com.google.protobuf.MapField internalGetMutableMapField(
           int number) {
         switch (number) {
-          case 6:
+          case 3:
             return internalGetMutableAttrs();
           default:
             throw new RuntimeException(
@@ -4195,6 +4228,8 @@ public final class DevelopMsg {
         super.clear();
         quality_ = 0;
 
+        level_ = 0;
+
         internalGetMutableAttrs().clear();
         return this;
       }
@@ -4224,6 +4259,7 @@ public final class DevelopMsg {
         cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo result = new cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo(this);
         int from_bitField0_ = bitField0_;
         result.quality_ = quality_;
+        result.level_ = level_;
         result.attrs_ = internalGetAttrs();
         result.attrs_.makeImmutable();
         onBuilt();
@@ -4276,6 +4312,9 @@ public final class DevelopMsg {
         if (other == cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.getDefaultInstance()) return this;
         if (other.getQuality() != 0) {
           setQuality(other.getQuality());
+        }
+        if (other.getLevel() != 0) {
+          setLevel(other.getLevel());
         }
         internalGetMutableAttrs().mergeFrom(
             other.internalGetAttrs());
@@ -4352,6 +4391,37 @@ public final class DevelopMsg {
         return this;
       }
 
+      private int level_ ;
+      /**
+       * <code>int32 level = 2;</code>
+       * @return The level.
+       */
+      @java.lang.Override
+      public int getLevel() {
+        return level_;
+      }
+      /**
+       * <code>int32 level = 2;</code>
+       * @param value The level to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLevel(int value) {
+        
+        level_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 level = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLevel() {
+        
+        level_ = 0;
+        onChanged();
+        return this;
+      }
+
       private com.google.protobuf.MapField<
           java.lang.Integer, java.lang.Integer> attrs_;
       private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
@@ -4380,10 +4450,10 @@ public final class DevelopMsg {
       }
       /**
        * <pre>
-       * 名字？
+       *附加属性条目 ， id-&gt;数值
        * </pre>
        *
-       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
        */
 
       @java.lang.Override
@@ -4402,10 +4472,10 @@ public final class DevelopMsg {
       }
       /**
        * <pre>
-       * 名字？
+       *附加属性条目 ， id-&gt;数值
        * </pre>
        *
-       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
        */
       @java.lang.Override
 
@@ -4414,10 +4484,10 @@ public final class DevelopMsg {
       }
       /**
        * <pre>
-       * 名字？
+       *附加属性条目 ， id-&gt;数值
        * </pre>
        *
-       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
        */
       @java.lang.Override
 
@@ -4431,10 +4501,10 @@ public final class DevelopMsg {
       }
       /**
        * <pre>
-       * 名字？
+       *附加属性条目 ， id-&gt;数值
        * </pre>
        *
-       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
        */
       @java.lang.Override
 
@@ -4456,10 +4526,10 @@ public final class DevelopMsg {
       }
       /**
        * <pre>
-       * 名字？
+       *附加属性条目 ， id-&gt;数值
        * </pre>
        *
-       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
        */
 
       public Builder removeAttrs(
@@ -4479,10 +4549,10 @@ public final class DevelopMsg {
       }
       /**
        * <pre>
-       * 名字？
+       *附加属性条目 ， id-&gt;数值
        * </pre>
        *
-       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
        */
       public Builder putAttrs(
           int key,
@@ -4495,10 +4565,10 @@ public final class DevelopMsg {
       }
       /**
        * <pre>
-       * 名字？
+       *附加属性条目 ， id-&gt;数值
        * </pre>
        *
-       * <code>map&lt;uint32, uint32&gt; attrs = 6;</code>
+       * <code>map&lt;uint32, uint32&gt; attrs = 3;</code>
        */
 
       public Builder putAllAttrs(
@@ -6542,850 +6612,6 @@ public final class DevelopMsg {
 
   }
 
-  public interface QianKunMirrorLevelUpRequest_25000024OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.QianKunMirrorLevelUpRequest_25000024)
-      com.google.protobuf.MessageOrBuilder {
-  }
-  /**
-   * <pre>
-   * 升级乾坤镜等级。
-   * </pre>
-   *
-   * Protobuf type {@code Protos.QianKunMirrorLevelUpRequest_25000024}
-   */
-  public static final class QianKunMirrorLevelUpRequest_25000024 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.QianKunMirrorLevelUpRequest_25000024)
-      QianKunMirrorLevelUpRequest_25000024OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use QianKunMirrorLevelUpRequest_25000024.newBuilder() to construct.
-    private QianKunMirrorLevelUpRequest_25000024(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private QianKunMirrorLevelUpRequest_25000024() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new QianKunMirrorLevelUpRequest_25000024();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private QianKunMirrorLevelUpRequest_25000024(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.Builder.class);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 other = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024) obj;
-
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 升级乾坤镜等级。
-     * </pre>
-     *
-     * Protobuf type {@code Protos.QianKunMirrorLevelUpRequest_25000024}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.QianKunMirrorLevelUpRequest_25000024)
-        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 build() {
-        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 buildPartial() {
-        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 result = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024(this);
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024) {
-          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 other) {
-        if (other == cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.QianKunMirrorLevelUpRequest_25000024)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.QianKunMirrorLevelUpRequest_25000024)
-    private static final cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024();
-    }
-
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<QianKunMirrorLevelUpRequest_25000024>
-        PARSER = new com.google.protobuf.AbstractParser<QianKunMirrorLevelUpRequest_25000024>() {
-      @java.lang.Override
-      public QianKunMirrorLevelUpRequest_25000024 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new QianKunMirrorLevelUpRequest_25000024(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<QianKunMirrorLevelUpRequest_25000024> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<QianKunMirrorLevelUpRequest_25000024> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpRequest_25000024 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface QianKunMirrorLevelUpResponse_25000025OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.QianKunMirrorLevelUpResponse_25000025)
-      com.google.protobuf.MessageOrBuilder {
-  }
-  /**
-   * Protobuf type {@code Protos.QianKunMirrorLevelUpResponse_25000025}
-   */
-  public static final class QianKunMirrorLevelUpResponse_25000025 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.QianKunMirrorLevelUpResponse_25000025)
-      QianKunMirrorLevelUpResponse_25000025OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use QianKunMirrorLevelUpResponse_25000025.newBuilder() to construct.
-    private QianKunMirrorLevelUpResponse_25000025(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private QianKunMirrorLevelUpResponse_25000025() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new QianKunMirrorLevelUpResponse_25000025();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private QianKunMirrorLevelUpResponse_25000025(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.Builder.class);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 other = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025) obj;
-
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code Protos.QianKunMirrorLevelUpResponse_25000025}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.QianKunMirrorLevelUpResponse_25000025)
-        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.class, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.DevelopMsg.internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 build() {
-        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 buildPartial() {
-        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 result = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025(this);
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025) {
-          return mergeFrom((cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 other) {
-        if (other == cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.QianKunMirrorLevelUpResponse_25000025)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.QianKunMirrorLevelUpResponse_25000025)
-    private static final cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025();
-    }
-
-    public static cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<QianKunMirrorLevelUpResponse_25000025>
-        PARSER = new com.google.protobuf.AbstractParser<QianKunMirrorLevelUpResponse_25000025>() {
-      @java.lang.Override
-      public QianKunMirrorLevelUpResponse_25000025 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new QianKunMirrorLevelUpResponse_25000025(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<QianKunMirrorLevelUpResponse_25000025> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<QianKunMirrorLevelUpResponse_25000025> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorLevelUpResponse_25000025 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_DevelopPotentialLvUpRequest_25000001_descriptor;
   private static final 
@@ -7456,16 +6682,6 @@ public final class DevelopMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_QianKunMirrorReplaceResponse_25000023_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -7484,19 +6700,17 @@ public final class DevelopMsg {
       "st_25000007\022\n\n\002id\030\001 \001(\r\"$\n\"DevelopRescue" +
       "LvUpResponse_25000008\"(\n&DevelopHeavenly" +
       "DaoLvUpRequest_25000010\")\n\'DevelopHeaven" +
-      "lyDaoLvUpResponse_25000011\"\177\n\rSpiritualI" +
-      "nfo\022\017\n\007quality\030\001 \001(\r\022/\n\005attrs\030\006 \003(\0132 .Pr" +
-      "otos.SpiritualInfo.AttrsEntry\032,\n\nAttrsEn" +
-      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\"\'\n%Q" +
-      "ianKunMirrorReversalRequest_25000020\"R\n&" +
-      "QianKunMirrorReversalResponse_25000021\022(" +
-      "\n\tspiritual\030\001 \001(\0132\025.Protos.SpiritualInfo" +
-      "\"7\n$QianKunMirrorReplaceRequest_25000022" +
-      "\022\017\n\007replace\030\001 \001(\010\"\'\n%QianKunMirrorReplac" +
-      "eResponse_25000023\"&\n$QianKunMirrorLevel" +
-      "UpRequest_25000024\"\'\n%QianKunMirrorLevel" +
-      "UpResponse_25000025B\033\n\031cn.game.protocol." +
-      "protobufb\006proto3"
+      "lyDaoLvUpResponse_25000011\"\216\001\n\rSpiritual" +
+      "Info\022\017\n\007quality\030\001 \001(\r\022\r\n\005level\030\002 \001(\005\022/\n\005" +
+      "attrs\030\003 \003(\0132 .Protos.SpiritualInfo.Attrs" +
+      "Entry\032,\n\nAttrsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
+      "e\030\002 \001(\r:\0028\001\"\'\n%QianKunMirrorReversalRequ" +
+      "est_25000020\"R\n&QianKunMirrorReversalRes" +
+      "ponse_25000021\022(\n\tspiritual\030\001 \001(\0132\025.Prot" +
+      "os.SpiritualInfo\"7\n$QianKunMirrorReplace" +
+      "Request_25000022\022\017\n\007replace\030\001 \001(\010\"\'\n%Qia" +
+      "nKunMirrorReplaceResponse_25000023B\033\n\031cn" +
+      ".game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7555,7 +6769,7 @@ public final class DevelopMsg {
     internal_static_Protos_SpiritualInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_SpiritualInfo_descriptor,
-        new java.lang.String[] { "Quality", "Attrs", });
+        new java.lang.String[] { "Quality", "Level", "Attrs", });
     internal_static_Protos_SpiritualInfo_AttrsEntry_descriptor =
       internal_static_Protos_SpiritualInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_SpiritualInfo_AttrsEntry_fieldAccessorTable = new
@@ -7585,18 +6799,6 @@ public final class DevelopMsg {
     internal_static_Protos_QianKunMirrorReplaceResponse_25000023_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_QianKunMirrorReplaceResponse_25000023_descriptor,
-        new java.lang.String[] { });
-    internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor =
-      getDescriptor().getMessageTypes().get(13);
-    internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QianKunMirrorLevelUpRequest_25000024_descriptor,
-        new java.lang.String[] { });
-    internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor =
-      getDescriptor().getMessageTypes().get(14);
-    internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_QianKunMirrorLevelUpResponse_25000025_descriptor,
         new java.lang.String[] { });
   }
 

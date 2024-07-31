@@ -16,6 +16,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
@@ -66,6 +67,16 @@ import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
 import cn.game.protocol.protobuf.BattleMsg.BattleShareRequest_13000007;
 import cn.game.protocol.protobuf.BattleMsg.BattleShareResponse_13000008;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleResponse_13000099;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointRequest_13000096;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointResponse_13000097;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetTimesRequest_13000094;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetTimesResponse_13000095;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualInfoRequest_13000090;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualInfoResponse_13000091;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualReceiveActivePointRequest_13000092;
+import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualReceiveActivePointResponse_13000093;
 import cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050;
 import cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051;
 import cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024;
@@ -113,6 +124,11 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleNightmareRealmBuffUpdateRequest_13000082, this::nightmareRealmBuff);
 		putInvoker(PbProtocol.BattleNightmareRealmQuickRequest_13000084, this::nightmareRealmQuick);
 		putInvoker(PbProtocol.BattleReliveRequest_13000010, this::relive);
+		putInvoker(PbProtocol.BattleSpiritualInfoRequest_13000090, this::spiritualInfo);
+		putInvoker(PbProtocol.BattleSpiritualReceiveActivePointRequest_13000092, this::spiritualReceiveActivePoint);
+		putInvoker(PbProtocol.BattleSpiritualGetTimesRequest_13000094, this::spiritualAds);
+		putInvoker(PbProtocol.BattleSpiritualGetPointRequest_13000096, this::spiritualGetPoint);
+		putInvoker(PbProtocol.BattleSpiritualChangeBattleRequest_13000098, this::spiritualChangeBattle);
 	}
 
 	protected void empty(NetClient client, Object message) {
@@ -123,6 +139,144 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void spiritualChangeBattle(NetClient client, Object message) {
+		BattleSpiritualChangeBattleRequest_13000098 req = (BattleSpiritualChangeBattleRequest_13000098) message;
+		BattleSpiritualChangeBattleResponse_13000099 resp = BattleSpiritualChangeBattleResponse_13000099.getDefaultInstance();
+
+		int battleId = req.getBattleId();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (!player.isFuncOpen(InitialUI.SpiritBattle)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
+		if (lingPoBattle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		boolean preBattle = BattleHelper.isPreBattle(lingPoBattle.getBattleId(), battleId);
+		if (!preBattle) {
+			client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
+			return;
+		}
+		// 次数扣元宝。
+		int changeBattleTimes = lingPoBattle.getChangeBattleTimes();
+		int cost = changeBattleTimes >= GlobalConst.SpiritBattleChangeCost.length
+				? GlobalConst.SpiritBattleChangeCost[GlobalConst.SpiritBattleChangeCost.length - 1]
+				: GlobalConst.SpiritBattleChangeCost[changeBattleTimes];
+		if (!PlayerHelper.delResources(player, Asset.gold.ID, cost, OpType.LingPoBattleChange)) {
+			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		lingPoBattle.setBattleId(battleId);
+		lingPoBattle.setChangeBattleTimes(changeBattleTimes + 1);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void spiritualGetPoint(NetClient client, Object message) {
+		BattleSpiritualGetPointRequest_13000096 req = (BattleSpiritualGetPointRequest_13000096) message;
+		BattleSpiritualGetPointResponse_13000097 resp = BattleSpiritualGetPointResponse_13000097.getDefaultInstance();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		if (!player.isFuncOpen(InitialUI.SpiritBattle)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
+		if (lingPoBattle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		int cid = Asset.SpiritBattlePoint.ID;
+		CurrencyModule currencyModule = player.getCurrencyModule();
+		long curCount = currencyModule.getCount(cid);
+
+		BattleConfig battleConfig = BattleManager.instance().get(lingPoBattle.getBattleId());
+		int[] battleBoxTrigger = battleConfig.BattleBoxTrigger;
+		int maxCount = battleBoxTrigger[battleBoxTrigger.length - 1];
+
+		// 检查花费
+		int cost = (int) Math.ceil(((double) (maxCount - curCount)) / GlobalConst.SpiritBattlePointFull);
+		if (!PlayerHelper.delResources(player, Asset.gold.ID, cost, OpType.LingPoBattlePointFull)) {
+			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		// 补满
+		currencyModule.setCount(cid, maxCount);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void spiritualAds(NetClient client, Object message) {
+		BattleSpiritualGetTimesRequest_13000094 req = (BattleSpiritualGetTimesRequest_13000094) message;
+		BattleSpiritualGetTimesResponse_13000095 resp = BattleSpiritualGetTimesResponse_13000095.getDefaultInstance();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (!player.isFuncOpen(InitialUI.SpiritBattle)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
+		if (lingPoBattle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		lingPoBattle.setAdsGetBattleTimes(false);
+		player.handleEvent(EventTypeEnum.WatchAds);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void spiritualReceiveActivePoint(NetClient client, Object message) {
+		BattleSpiritualReceiveActivePointRequest_13000092 req = (BattleSpiritualReceiveActivePointRequest_13000092) message;
+		BattleSpiritualReceiveActivePointResponse_13000093.Builder resp = BattleSpiritualReceiveActivePointResponse_13000093.newBuilder();
+		int index = req.getIndex();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (!player.isFuncOpen(InitialUI.SpiritBattle)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		PointRewardModule pointRewardModule = player.getPointRewardModule();
+		ResultObject resultObject = pointRewardModule.addReward(PointRewardType.LingPo, 0, index);
+		if (!resultObject.isOK()) {
+			client.sendProtocol(resp, resultObject.getErrorCode());
+			return;
+		}
+		resp.addAllRewards((Iterable<? extends RewardInfo>) resultObject.getValue());
+		client.sendProtocol(resp);
+	}
+
+	protected void spiritualInfo(NetClient client, Object message) {
+		BattleSpiritualInfoRequest_13000090 req = (BattleSpiritualInfoRequest_13000090) message;
+		BattleSpiritualInfoResponse_13000091.Builder resp = BattleSpiritualInfoResponse_13000091.newBuilder();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		if (!player.isFuncOpen(InitialUI.SpiritBattle)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
+		if (lingPoBattle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		resp.setBattleSpiritualInfo(lingPoBattle.buildBattleInfo(player));
 
 		client.sendProtocol(resp);
 	}
@@ -649,7 +803,7 @@ public class ChapterHandler extends BaseHandler {
 			hours = minute / 60;
 		}
 
-		PatrolConfig patrolConfig = PatrolManager.instance().get(chapterModule.getPatrolBattleId());
+		PatrolConfig patrolConfig = PatrolManager.instance().get(chapterModule.getFightMainBattleId());
 
 		float incomeRate = player.getWelfareValue(WelfareTypeEnum.PatrolIncome);
 		float rate = 1 + (incomeRate / 10000);

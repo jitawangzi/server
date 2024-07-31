@@ -13,6 +13,7 @@ import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.OpType;
+import cn.game.util.Config;
 import cn.game.util.log.Logger;
 import cn.game.util.log.LoggerType;
 import cn.game.util.log.SystemLogger;
@@ -150,7 +151,7 @@ public class GameLogger extends Logger {
 	 */
 	public static void heart() {
 		try {
-			Object[] array = new Object[] { getCurrentTimeLogText(), GameLogAssistant.APP_KEY, "null", LoggerType.heart.name(), LoggerType.heart.version,
+			Object[] array = new Object[] { getCurrentTimeLogText(), Config.APP_KEY, "null", LoggerType.heart.name(), LoggerType.heart.version,
 					"1010", ServerContext.getInstance().getServerId(), PlayerManager.getInstance().getOnlineCount() };
 			LoggerType.heart.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
