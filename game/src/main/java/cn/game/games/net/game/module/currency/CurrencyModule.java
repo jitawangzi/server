@@ -15,6 +15,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.ItemManager;
+import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -194,6 +195,8 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 			return FundPassUpgradeManager.instance().getUIExpTypeLv(id,level);
 		} else if (id == Asset.BrawlPoint.ID) {
 			return FundPassUpgradeManager.instance().getUIExpTypeLv(id,level);
+		} else if (id == Asset.QiankunMirrorExp.ID) {
+			return QiankunMirrorLvManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}

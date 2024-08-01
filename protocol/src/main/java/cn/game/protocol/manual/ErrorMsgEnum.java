@@ -68,6 +68,8 @@ public enum ErrorMsgEnum {
 	illegal_request(68, "非法请求，一般是客户端不够条件进行当前操作，例如功能未开启，等级不足等等"),
 	not_watch_ads(69, "需要先看广告才能进行该操作"),
 
+	/** 前置条件校验错误 */
+	pre_condition_check_error(70, "前置条件校验错误"),
 	// 100+ 业务错误。
 
 	/** 创建角色名字重复 */

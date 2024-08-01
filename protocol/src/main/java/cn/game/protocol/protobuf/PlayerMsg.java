@@ -28826,6 +28826,33 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 乾坤镜，灵根淬炼
+     * </pre>
+     *
+     * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+     * @return Whether the qianKunMirrorInfo field is set.
+     */
+    boolean hasQianKunMirrorInfo();
+    /**
+     * <pre>
+     * 乾坤镜，灵根淬炼
+     * </pre>
+     *
+     * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+     * @return The qianKunMirrorInfo.
+     */
+    cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo getQianKunMirrorInfo();
+    /**
+     * <pre>
+     * 乾坤镜，灵根淬炼
+     * </pre>
+     *
+     * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+     */
+    cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfoOrBuilder getQianKunMirrorInfoOrBuilder();
+
+    /**
+     * <pre>
      *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
      * </pre>
      *
@@ -30076,6 +30103,19 @@ public final class PlayerMsg {
                   DragonSkillsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               dragonSkills_.getMutableMap().put(
                   dragonSkills__.getKey(), dragonSkills__.getValue());
+              break;
+            }
+            case 154: {
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.Builder subBuilder = null;
+              if (qianKunMirrorInfo_ != null) {
+                subBuilder = qianKunMirrorInfo_.toBuilder();
+              }
+              qianKunMirrorInfo_ = input.readMessage(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(qianKunMirrorInfo_);
+                qianKunMirrorInfo_ = subBuilder.buildPartial();
+              }
+
               break;
             }
             case 242: {
@@ -31620,6 +31660,44 @@ public final class PlayerMsg {
         throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
+    }
+
+    public static final int QIANKUNMIRRORINFO_FIELD_NUMBER = 19;
+    private cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo qianKunMirrorInfo_;
+    /**
+     * <pre>
+     * 乾坤镜，灵根淬炼
+     * </pre>
+     *
+     * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+     * @return Whether the qianKunMirrorInfo field is set.
+     */
+    @java.lang.Override
+    public boolean hasQianKunMirrorInfo() {
+      return qianKunMirrorInfo_ != null;
+    }
+    /**
+     * <pre>
+     * 乾坤镜，灵根淬炼
+     * </pre>
+     *
+     * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+     * @return The qianKunMirrorInfo.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo getQianKunMirrorInfo() {
+      return qianKunMirrorInfo_ == null ? cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.getDefaultInstance() : qianKunMirrorInfo_;
+    }
+    /**
+     * <pre>
+     * 乾坤镜，灵根淬炼
+     * </pre>
+     *
+     * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfoOrBuilder getQianKunMirrorInfoOrBuilder() {
+      return getQianKunMirrorInfo();
     }
 
     public static final int BATTLES_FIELD_NUMBER = 30;
@@ -33245,6 +33323,9 @@ public final class PlayerMsg {
           internalGetDragonSkills(),
           DragonSkillsDefaultEntryHolder.defaultEntry,
           17);
+      if (qianKunMirrorInfo_ != null) {
+        output.writeMessage(19, getQianKunMirrorInfo());
+      }
       for (int i = 0; i < battles_.size(); i++) {
         output.writeMessage(30, battles_.get(i));
       }
@@ -33486,6 +33567,10 @@ public final class PlayerMsg {
             .build();
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(17, dragonSkills__);
+      }
+      if (qianKunMirrorInfo_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(19, getQianKunMirrorInfo());
       }
       for (int i = 0; i < battles_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -33743,6 +33828,11 @@ public final class PlayerMsg {
           other.internalGetDragons())) return false;
       if (!internalGetDragonSkills().equals(
           other.internalGetDragonSkills())) return false;
+      if (hasQianKunMirrorInfo() != other.hasQianKunMirrorInfo()) return false;
+      if (hasQianKunMirrorInfo()) {
+        if (!getQianKunMirrorInfo()
+            .equals(other.getQianKunMirrorInfo())) return false;
+      }
       if (!getBattlesList()
           .equals(other.getBattlesList())) return false;
       if (getFreeRougeTimes()
@@ -33896,6 +33986,10 @@ public final class PlayerMsg {
       if (!internalGetDragonSkills().getMap().isEmpty()) {
         hash = (37 * hash) + DRAGONSKILLS_FIELD_NUMBER;
         hash = (53 * hash) + internalGetDragonSkills().hashCode();
+      }
+      if (hasQianKunMirrorInfo()) {
+        hash = (37 * hash) + QIANKUNMIRRORINFO_FIELD_NUMBER;
+        hash = (53 * hash) + getQianKunMirrorInfo().hashCode();
       }
       if (getBattlesCount() > 0) {
         hash = (37 * hash) + BATTLES_FIELD_NUMBER;
@@ -34283,6 +34377,12 @@ public final class PlayerMsg {
         internalGetMutableAlchemys().clear();
         internalGetMutableDragons().clear();
         internalGetMutableDragonSkills().clear();
+        if (qianKunMirrorInfoBuilder_ == null) {
+          qianKunMirrorInfo_ = null;
+        } else {
+          qianKunMirrorInfo_ = null;
+          qianKunMirrorInfoBuilder_ = null;
+        }
         if (battlesBuilder_ == null) {
           battles_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00002000);
@@ -34511,6 +34611,11 @@ public final class PlayerMsg {
         result.dragons_.makeImmutable();
         result.dragonSkills_ = internalGetDragonSkills();
         result.dragonSkills_.makeImmutable();
+        if (qianKunMirrorInfoBuilder_ == null) {
+          result.qianKunMirrorInfo_ = qianKunMirrorInfo_;
+        } else {
+          result.qianKunMirrorInfo_ = qianKunMirrorInfoBuilder_.build();
+        }
         if (battlesBuilder_ == null) {
           if (((bitField0_ & 0x00002000) != 0)) {
             battles_ = java.util.Collections.unmodifiableList(battles_);
@@ -34902,6 +35007,9 @@ public final class PlayerMsg {
             other.internalGetDragons());
         internalGetMutableDragonSkills().mergeFrom(
             other.internalGetDragonSkills());
+        if (other.hasQianKunMirrorInfo()) {
+          mergeQianKunMirrorInfo(other.getQianKunMirrorInfo());
+        }
         if (battlesBuilder_ == null) {
           if (!other.battles_.isEmpty()) {
             if (battles_.isEmpty()) {
@@ -38648,6 +38756,161 @@ public final class PlayerMsg {
         internalGetMutableDragonSkills().getMutableMap()
             .putAll(values);
         return this;
+      }
+
+      private cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo qianKunMirrorInfo_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.Builder, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfoOrBuilder> qianKunMirrorInfoBuilder_;
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       * @return Whether the qianKunMirrorInfo field is set.
+       */
+      public boolean hasQianKunMirrorInfo() {
+        return qianKunMirrorInfoBuilder_ != null || qianKunMirrorInfo_ != null;
+      }
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       * @return The qianKunMirrorInfo.
+       */
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo getQianKunMirrorInfo() {
+        if (qianKunMirrorInfoBuilder_ == null) {
+          return qianKunMirrorInfo_ == null ? cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.getDefaultInstance() : qianKunMirrorInfo_;
+        } else {
+          return qianKunMirrorInfoBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       */
+      public Builder setQianKunMirrorInfo(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo value) {
+        if (qianKunMirrorInfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          qianKunMirrorInfo_ = value;
+          onChanged();
+        } else {
+          qianKunMirrorInfoBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       */
+      public Builder setQianKunMirrorInfo(
+          cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.Builder builderForValue) {
+        if (qianKunMirrorInfoBuilder_ == null) {
+          qianKunMirrorInfo_ = builderForValue.build();
+          onChanged();
+        } else {
+          qianKunMirrorInfoBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       */
+      public Builder mergeQianKunMirrorInfo(cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo value) {
+        if (qianKunMirrorInfoBuilder_ == null) {
+          if (qianKunMirrorInfo_ != null) {
+            qianKunMirrorInfo_ =
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.newBuilder(qianKunMirrorInfo_).mergeFrom(value).buildPartial();
+          } else {
+            qianKunMirrorInfo_ = value;
+          }
+          onChanged();
+        } else {
+          qianKunMirrorInfoBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       */
+      public Builder clearQianKunMirrorInfo() {
+        if (qianKunMirrorInfoBuilder_ == null) {
+          qianKunMirrorInfo_ = null;
+          onChanged();
+        } else {
+          qianKunMirrorInfo_ = null;
+          qianKunMirrorInfoBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       */
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.Builder getQianKunMirrorInfoBuilder() {
+        
+        onChanged();
+        return getQianKunMirrorInfoFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       */
+      public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfoOrBuilder getQianKunMirrorInfoOrBuilder() {
+        if (qianKunMirrorInfoBuilder_ != null) {
+          return qianKunMirrorInfoBuilder_.getMessageOrBuilder();
+        } else {
+          return qianKunMirrorInfo_ == null ?
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.getDefaultInstance() : qianKunMirrorInfo_;
+        }
+      }
+      /**
+       * <pre>
+       * 乾坤镜，灵根淬炼
+       * </pre>
+       *
+       * <code>.Protos.QianKunMirrorInfo qianKunMirrorInfo = 19;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.Builder, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfoOrBuilder> 
+          getQianKunMirrorInfoFieldBuilder() {
+        if (qianKunMirrorInfoBuilder_ == null) {
+          qianKunMirrorInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo.Builder, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfoOrBuilder>(
+                  getQianKunMirrorInfo(),
+                  getParentForChildren(),
+                  isClean());
+          qianKunMirrorInfo_ = null;
+        }
+        return qianKunMirrorInfoBuilder_;
       }
 
       private java.util.List<cn.game.protocol.protobuf.BattleMsg.BattleInfo> battles_ =
@@ -44232,134 +44495,136 @@ public final class PlayerMsg {
     java.lang.String[] descriptorData = {
       "\n\017PlayerMsg.proto\022\006Protos\032\017RewardMsg.pro" +
       "to\032\rBaseMsg.proto\032\rShopMsg.proto\032\017Battle" +
-      "Msg.proto\032\016QuestMsg.proto\"\311\001\n\033PlayerLogi" +
-      "nRequest_01000001\022\021\n\tsessionId\030\001 \001(\t\022\021\n\t" +
-      "reconnect\030\002 \001(\010\022\020\n\010verstion\030\003 \001(\t\022\020\n\010pla" +
-      "tform\030\024 \001(\005\022\021\n\tadChannel\030\036 \001(\t\022\025\n\rsdkPay" +
-      "Channel\030\037 \001(\t\022\022\n\nsdkVersion\030( \001(\t\022\016\n\006sys" +
-      "tem\030) \001(\t\022\022\n\nclue_token\0302 \001(\t\"d\n\034PlayerL" +
-      "oginResponse_01000002\022#\n\004info\030\001 \001(\0132\025.Pr" +
-      "otos.PlayerAllInfo\022\021\n\treconnect\030\002 \001(\010\022\014\n" +
-      "\004time\030\003 \001(\t\"\036\n\034PlayerLogoutRequest_01000" +
-      "003\"\037\n\035PlayerLogoutResponse_01000004\"\033\n\031" +
-      "PlayerLogoutPush_01100030\"*\n\032PlayerNameR" +
-      "equest_01000011\022\014\n\004name\030\001 \001(\t\"\035\n\033PlayerN" +
-      "ameResponse_01000012\"*\n\032PlayerHeadReques" +
-      "t_01000013\022\014\n\004head\030\001 \001(\005\"\035\n\033PlayerHeadRe" +
-      "sponse_01000014\"4\n\037PlayerHeadFrameReques" +
-      "t_01000015\022\021\n\theadFrame\030\001 \001(\005\"\"\n PlayerH" +
-      "eadFrameResponse_01000016\"-\n\034PlayerGende" +
-      "rRequest_01000017\022\r\n\005isMan\030\001 \001(\010\"\037\n\035Play" +
-      "erGenderResponse_01000018\"E\n\036PlayerRecon" +
-      "necRequest_01000065\022\021\n\tsessionId\030\001 \001(\t\022\020" +
-      "\n\010playerId\030\002 \001(\r\"Z\n\037PlayerReconnecRespon" +
-      "se_01000066\022)\n\nplayerInfo\030\001 \001(\0132\025.Protos" +
-      ".PlayerAllInfo\022\014\n\004time\030\002 \001(\t\"!\n\037PlayerHe" +
-      "artbeatRequest_01000005\"0\n PlayerHeartbe" +
-      "atResponse_01000006\022\014\n\004time\030\001 \001(\t\")\n\030Pla" +
-      "yerErrorPush_01000099\022\r\n\005error\030\001 \001(\t\".\n\013" +
-      "AlchemyInfo\022\020\n\010configId\030\001 \001(\r\022\r\n\005level\030\002" +
-      " \001(\r\"E\n\033PlayerCloudBoxPush_01100040\022&\n\010c" +
-      "loudBox\030\001 \001(\0132\024.Protos.CloudBoxInfo\" \n\036P" +
-      "layerCloudBoxRequest_01000042\"F\n\037PlayerC" +
-      "loudBoxResponse_01000043\022#\n\007rewards\030\001 \003(" +
-      "\0132\022.Protos.RewardInfo\"0\n\014CloudBoxInfo\022 \n" +
-      "\005items\030\005 \003(\0132\021.Protos.GoodsInfo\"6\n\014ExpLe" +
-      "velInfo\022\n\n\002id\030\001 \001(\r\022\013\n\003exp\030\002 \001(\r\022\r\n\005leve" +
-      "l\030\003 \001(\r\"E\n\033PlayerExpLevelPush_01100050\022&" +
-      "\n\010expLevel\030\001 \001(\0132\024.Protos.ExpLevelInfo\"9" +
-      "\n\033PlayerGuideRequest_01000060\022\014\n\004type\030\001 " +
-      "\001(\r\022\014\n\004step\030\002 \001(\r\"\036\n\034PlayerGuideResponse" +
-      "_01000061\"\'\n\tGuideInfo\022\014\n\004type\030\001 \001(\r\022\014\n\004" +
-      "step\030\002 \001(\r\"4\n\037PlayerBriefInfoRequest_010" +
-      "00007\022\021\n\tplayerIds\030\001 \003(\t\"M\n PlayerBriefI" +
-      "nfoResponse_01000008\022)\n\007players\030\001 \003(\0132\030." +
-      "Protos.SimplePlayerInfo\"L\n$PlayerBriefIn" +
-      "foOtherRequest_01000009\022\021\n\tplayerIds\030\001 \003" +
-      "(\t\022\021\n\tserverIds\030\002 \003(\t\"R\n%PlayerBriefInfo" +
-      "OtherResponse_0100000a\022)\n\007players\030\001 \003(\0132" +
-      "\030.Protos.SimplePlayerInfo\"@\n\032PlayerShowR" +
-      "equest_01000039\022\020\n\010playerId\030\001 \001(\t\022\020\n\010ser" +
-      "verId\030\002 \001(\t\"E\n\033PlayerShowResponse_010000" +
-      "3a\022&\n\006player\030\001 \001(\0132\026.Protos.PlayerShowIn" +
-      "fo\"1\n\035PlayerAlchemyRequest_01000040\022\020\n\010c" +
-      "onfigId\030\001 \001(\r\" \n\036PlayerAlchemyResponse_0" +
-      "1000041\"\"\n PlayerPatrolInfoRequest_01000" +
-      "070\"G\n!PlayerPatrolInfoResponse_01000071" +
-      "\022\"\n\006patrol\030\001 \001(\0132\022.Protos.PatrolInfo\"(\n\030" +
-      "PlayerResetPush_01100016\022\014\n\004type\030\001 \001(\005\"\030" +
-      "\n\026NoticeRequest_01000050\")\n\027NoticeRespon" +
-      "se_01000051\022\016\n\006notice\030\001 \001(\t\"<\n\030PlayerBat" +
-      "chPush_01100100\022 \n\005items\030\001 \003(\0132\021.Protos." +
-      "BatchItem\"+\n\tBatchItem\022\r\n\005msgId\030\002 \001(\005\022\017\n" +
-      "\007payload\030\004 \001(\014\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r" +
-      "\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n " +
-      "\001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 " +
-      "\001(\t\"\354\023\n\rPlayerAllInfo\022\"\n\006player\030\001 \001(\0132\022." +
-      "Protos.PlayerInfo\0221\n\006assets\030\002 \003(\0132!.Prot" +
-      "os.PlayerAllInfo.AssetsEntry\022=\n\014assetRec" +
-      "over\030\003 \003(\0132\'.Protos.PlayerAllInfo.AssetR" +
-      "ecoverEntry\0221\n\006levels\030\004 \003(\0132!.Protos.Pla" +
-      "yerAllInfo.LevelsEntry\022\037\n\005items\030\005 \003(\0132\020." +
-      "Protos.ItemInfo\022)\n\010fashions\030\006 \003(\0132\027.Prot" +
-      "os.HeroFashionInfo\022\037\n\005heros\030\007 \003(\0132\020.Prot" +
-      "os.HeroInfo\022%\n\006swords\030\010 \003(\0132\025.Protos.Her" +
-      "oSwordInfo\022\024\n\014heroSwordUid\030\t \001(\t\022\035\n\004gems" +
-      "\030\n \003(\0132\017.Protos.GemInfo\022!\n\006equips\030\013 \003(\0132" +
-      "\021.Protos.EquipInfo\022)\n\nequipParts\030\014 \003(\0132\025" +
-      ".Protos.EquipPartInfo\0225\n\010alchemys\030\016 \003(\0132" +
-      "#.Protos.PlayerAllInfo.AlchemysEntry\0223\n\007" +
-      "dragons\030\020 \003(\0132\".Protos.PlayerAllInfo.Dra" +
-      "gonsEntry\022=\n\014dragonSkills\030\021 \003(\0132\'.Protos" +
-      ".PlayerAllInfo.DragonSkillsEntry\022#\n\007batt" +
-      "les\030\036 \003(\0132\022.Protos.BattleInfo\022\026\n\016freeRou" +
-      "geTimes\030\037 \001(\005\022!\n\031battleRewardMultipleTim" +
-      "es\030! \001(\005\022\030\n\020shareReliveCount\030\" \001(\005\022\025\n\rad" +
-      "ReliveCount\030# \001(\005\022*\n\nmonthCards\030( \003(\0132\026." +
-      "Protos.MonthCardProto\022\034\n\024monthCardDouble" +
-      "Bonus\030* \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&\n\010fun" +
-      "dPass\030, \003(\0132\024.Protos.FundPassInfo\022\030\n\020hei" +
-      "shiFreshTimes\030. \001(\005\022\030\n\020freeDayRentHeros\030" +
-      "/ \003(\t\022\032\n\022freeDayRentHeroUid\0301 \001(\t\022\025\n\rsto" +
-      "reStaminas\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132\024.Pro" +
-      "tos.CloudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Proto" +
-      "s.PatrolInfo\022+\n\013questGroups\0307 \003(\0132\026.Prot" +
-      "os.QuestGroupInfo\022A\n\026questGroupPointRewa" +
-      "rds\0308 \003(\0132!.Protos.QuestGroupPointReward" +
-      "Info\022\022\n\nfirstLogin\0309 \001(\010\022/\n\005guide\030; \003(\0132" +
-      " .Protos.PlayerAllInfo.GuideEntry\022\030\n\020hea" +
-      "venlyDaoLevel\030< \001(\005\022A\n\016potentialLvMap\030> " +
-      "\003(\0132).Protos.PlayerAllInfo.PotentialLvMa" +
-      "pEntry\022A\n\016potentialBreak\030? \003(\0132).Protos." +
-      "PlayerAllInfo.PotentialBreakEntry\022!\n\006gui" +
-      "des\030A \003(\0132\021.Protos.GuideInfo\022\022\n\nbattleTy" +
-      "pe\030D \001(\005\022\020\n\010battleId\030E \001(\005\0221\n\016shopGroupI" +
-      "tems\030d \003(\0132\031.Protos.ShopGroupItemInfo\022\033\n" +
-      "\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017mergeSweep" +
-      "Times\030f \001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Proto" +
-      "s.MergeEquipmentInfo\022\025\n\rmergeEquipIds\030h " +
-      "\003(\005\0223\n\021mergeDayChallenge\030i \001(\0132\030.Protos." +
-      "DayChallengeInfo\022#\n\007hcHeros\030k \003(\0132\022.Prot" +
-      "os.HCHeroInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021f" +
-      "reeHcHeroUpTimes\030m \001(\005\022\033\n\023freeHcHeroItem" +
-      "Times\030n \001(\005\022Q\n\026freeHcHeroItemTimesMap\030o " +
-      "\003(\01321.Protos.PlayerAllInfo.FreeHcHeroIte" +
-      "mTimesMapEntry\022\031\n\021battleSpeedUnlock\030p \001(" +
-      "\010\022\033\n\023battleSpeedAdsCount\030q \001(\005\032-\n\013Assets" +
-      "Entry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n" +
-      "\021AssetRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value" +
-      "\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r" +
-      "\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003ke" +
-      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEnt" +
-      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021Dr" +
-      "agonSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
-      "\001(\r:\0028\001\032,\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005va" +
-      "lue\030\002 \001(\r:\0028\001\0325\n\023PotentialLvMapEntry\022\013\n\003" +
-      "key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023Potentia" +
-      "lBreakEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\010:" +
-      "\0028\001\032=\n\033FreeHcHeroItemTimesMapEntry\022\013\n\003ke" +
-      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.pr" +
-      "otocol.protobufb\006proto3"
+      "Msg.proto\032\016QuestMsg.proto\032\020DevelopMsg.pr" +
+      "oto\"\311\001\n\033PlayerLoginRequest_01000001\022\021\n\ts" +
+      "essionId\030\001 \001(\t\022\021\n\treconnect\030\002 \001(\010\022\020\n\010ver" +
+      "stion\030\003 \001(\t\022\020\n\010platform\030\024 \001(\005\022\021\n\tadChann" +
+      "el\030\036 \001(\t\022\025\n\rsdkPayChannel\030\037 \001(\t\022\022\n\nsdkVe" +
+      "rsion\030( \001(\t\022\016\n\006system\030) \001(\t\022\022\n\nclue_toke" +
+      "n\0302 \001(\t\"d\n\034PlayerLoginResponse_01000002\022" +
+      "#\n\004info\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\021\n\t" +
+      "reconnect\030\002 \001(\010\022\014\n\004time\030\003 \001(\t\"\036\n\034PlayerL" +
+      "ogoutRequest_01000003\"\037\n\035PlayerLogoutRes" +
+      "ponse_01000004\"\033\n\031PlayerLogoutPush_01100" +
+      "030\"*\n\032PlayerNameRequest_01000011\022\014\n\004nam" +
+      "e\030\001 \001(\t\"\035\n\033PlayerNameResponse_01000012\"*" +
+      "\n\032PlayerHeadRequest_01000013\022\014\n\004head\030\001 \001" +
+      "(\005\"\035\n\033PlayerHeadResponse_01000014\"4\n\037Pla" +
+      "yerHeadFrameRequest_01000015\022\021\n\theadFram" +
+      "e\030\001 \001(\005\"\"\n PlayerHeadFrameResponse_01000" +
+      "016\"-\n\034PlayerGenderRequest_01000017\022\r\n\005i" +
+      "sMan\030\001 \001(\010\"\037\n\035PlayerGenderResponse_01000" +
+      "018\"E\n\036PlayerReconnecRequest_01000065\022\021\n" +
+      "\tsessionId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\r\"Z\n\037Pl" +
+      "ayerReconnecResponse_01000066\022)\n\nplayerI" +
+      "nfo\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\014\n\004time" +
+      "\030\002 \001(\t\"!\n\037PlayerHeartbeatRequest_0100000" +
+      "5\"0\n PlayerHeartbeatResponse_01000006\022\014\n" +
+      "\004time\030\001 \001(\t\")\n\030PlayerErrorPush_01000099\022" +
+      "\r\n\005error\030\001 \001(\t\".\n\013AlchemyInfo\022\020\n\010configI" +
+      "d\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"E\n\033PlayerCloudBox" +
+      "Push_01100040\022&\n\010cloudBox\030\001 \001(\0132\024.Protos" +
+      ".CloudBoxInfo\" \n\036PlayerCloudBoxRequest_0" +
+      "1000042\"F\n\037PlayerCloudBoxResponse_010000" +
+      "43\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"" +
+      "0\n\014CloudBoxInfo\022 \n\005items\030\005 \003(\0132\021.Protos." +
+      "GoodsInfo\"6\n\014ExpLevelInfo\022\n\n\002id\030\001 \001(\r\022\013\n" +
+      "\003exp\030\002 \001(\r\022\r\n\005level\030\003 \001(\r\"E\n\033PlayerExpLe" +
+      "velPush_01100050\022&\n\010expLevel\030\001 \001(\0132\024.Pro" +
+      "tos.ExpLevelInfo\"9\n\033PlayerGuideRequest_0" +
+      "1000060\022\014\n\004type\030\001 \001(\r\022\014\n\004step\030\002 \001(\r\"\036\n\034P" +
+      "layerGuideResponse_01000061\"\'\n\tGuideInfo" +
+      "\022\014\n\004type\030\001 \001(\r\022\014\n\004step\030\002 \001(\r\"4\n\037PlayerBr" +
+      "iefInfoRequest_01000007\022\021\n\tplayerIds\030\001 \003" +
+      "(\t\"M\n PlayerBriefInfoResponse_01000008\022)" +
+      "\n\007players\030\001 \003(\0132\030.Protos.SimplePlayerInf" +
+      "o\"L\n$PlayerBriefInfoOtherRequest_0100000" +
+      "9\022\021\n\tplayerIds\030\001 \003(\t\022\021\n\tserverIds\030\002 \003(\t\"" +
+      "R\n%PlayerBriefInfoOtherResponse_0100000a" +
+      "\022)\n\007players\030\001 \003(\0132\030.Protos.SimplePlayerI" +
+      "nfo\"@\n\032PlayerShowRequest_01000039\022\020\n\010pla" +
+      "yerId\030\001 \001(\t\022\020\n\010serverId\030\002 \001(\t\"E\n\033PlayerS" +
+      "howResponse_0100003a\022&\n\006player\030\001 \001(\0132\026.P" +
+      "rotos.PlayerShowInfo\"1\n\035PlayerAlchemyReq" +
+      "uest_01000040\022\020\n\010configId\030\001 \001(\r\" \n\036Playe" +
+      "rAlchemyResponse_01000041\"\"\n PlayerPatro" +
+      "lInfoRequest_01000070\"G\n!PlayerPatrolInf" +
+      "oResponse_01000071\022\"\n\006patrol\030\001 \001(\0132\022.Pro" +
+      "tos.PatrolInfo\"(\n\030PlayerResetPush_011000" +
+      "16\022\014\n\004type\030\001 \001(\005\"\030\n\026NoticeRequest_010000" +
+      "50\")\n\027NoticeResponse_01000051\022\016\n\006notice\030" +
+      "\001 \001(\t\"<\n\030PlayerBatchPush_01100100\022 \n\005ite" +
+      "ms\030\001 \003(\0132\021.Protos.BatchItem\"+\n\tBatchItem" +
+      "\022\r\n\005msgId\030\002 \001(\005\022\017\n\007payload\030\004 \001(\014\"k\n\nPlay" +
+      "erInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMa" +
+      "n\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r" +
+      "\022\023\n\013offlineTime\030\026 \001(\t\"\242\024\n\rPlayerAllInfo\022" +
+      "\"\n\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006a" +
+      "ssets\030\002 \003(\0132!.Protos.PlayerAllInfo.Asset" +
+      "sEntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Pl" +
+      "ayerAllInfo.AssetRecoverEntry\0221\n\006levels\030" +
+      "\004 \003(\0132!.Protos.PlayerAllInfo.LevelsEntry" +
+      "\022\037\n\005items\030\005 \003(\0132\020.Protos.ItemInfo\022)\n\010fas" +
+      "hions\030\006 \003(\0132\027.Protos.HeroFashionInfo\022\037\n\005" +
+      "heros\030\007 \003(\0132\020.Protos.HeroInfo\022%\n\006swords\030" +
+      "\010 \003(\0132\025.Protos.HeroSwordInfo\022\024\n\014heroSwor" +
+      "dUid\030\t \001(\t\022\035\n\004gems\030\n \003(\0132\017.Protos.GemInf" +
+      "o\022!\n\006equips\030\013 \003(\0132\021.Protos.EquipInfo\022)\n\n" +
+      "equipParts\030\014 \003(\0132\025.Protos.EquipPartInfo\022" +
+      "5\n\010alchemys\030\016 \003(\0132#.Protos.PlayerAllInfo" +
+      ".AlchemysEntry\0223\n\007dragons\030\020 \003(\0132\".Protos" +
+      ".PlayerAllInfo.DragonsEntry\022=\n\014dragonSki" +
+      "lls\030\021 \003(\0132\'.Protos.PlayerAllInfo.DragonS" +
+      "killsEntry\0224\n\021qianKunMirrorInfo\030\023 \001(\0132\031." +
+      "Protos.QianKunMirrorInfo\022#\n\007battles\030\036 \003(" +
+      "\0132\022.Protos.BattleInfo\022\026\n\016freeRougeTimes\030" +
+      "\037 \001(\005\022!\n\031battleRewardMultipleTimes\030! \001(\005" +
+      "\022\030\n\020shareReliveCount\030\" \001(\005\022\025\n\radReliveCo" +
+      "unt\030# \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos.M" +
+      "onthCardProto\022\034\n\024monthCardDoubleBonus\030* " +
+      "\001(\010\022\024\n\014chapterPacks\030) \003(\r\022&\n\010fundPass\030, " +
+      "\003(\0132\024.Protos.FundPassInfo\022\030\n\020heishiFresh" +
+      "Times\030. \001(\005\022\030\n\020freeDayRentHeros\030/ \003(\t\022\032\n" +
+      "\022freeDayRentHeroUid\0301 \001(\t\022\025\n\rstoreStamin" +
+      "as\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132\024.Protos.Clou" +
+      "dBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos.Patrol" +
+      "Info\022+\n\013questGroups\0307 \003(\0132\026.Protos.Quest" +
+      "GroupInfo\022A\n\026questGroupPointRewards\0308 \003(" +
+      "\0132!.Protos.QuestGroupPointRewardInfo\022\022\n\n" +
+      "firstLogin\0309 \001(\010\022/\n\005guide\030; \003(\0132 .Protos" +
+      ".PlayerAllInfo.GuideEntry\022\030\n\020heavenlyDao" +
+      "Level\030< \001(\005\022A\n\016potentialLvMap\030> \003(\0132).Pr" +
+      "otos.PlayerAllInfo.PotentialLvMapEntry\022A" +
+      "\n\016potentialBreak\030? \003(\0132).Protos.PlayerAl" +
+      "lInfo.PotentialBreakEntry\022!\n\006guides\030A \003(" +
+      "\0132\021.Protos.GuideInfo\022\022\n\nbattleType\030D \001(\005" +
+      "\022\020\n\010battleId\030E \001(\005\0221\n\016shopGroupItems\030d \003" +
+      "(\0132\031.Protos.ShopGroupItemInfo\022\033\n\023nextFre" +
+      "eOpenBoxTime\030e \001(\005\022\027\n\017mergeSweepTimes\030f " +
+      "\001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Protos.MergeE" +
+      "quipmentInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021m" +
+      "ergeDayChallenge\030i \001(\0132\030.Protos.DayChall" +
+      "engeInfo\022#\n\007hcHeros\030k \003(\0132\022.Protos.HCHer" +
+      "oInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHer" +
+      "oUpTimes\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n " +
+      "\001(\005\022Q\n\026freeHcHeroItemTimesMap\030o \003(\01321.Pr" +
+      "otos.PlayerAllInfo.FreeHcHeroItemTimesMa" +
+      "pEntry\022\031\n\021battleSpeedUnlock\030p \001(\010\022\033\n\023bat" +
+      "tleSpeedAdsCount\030q \001(\005\032-\n\013AssetsEntry\022\013\n" +
+      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRe" +
+      "coverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
+      "8\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030" +
+      "\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022" +
+      "\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003ke" +
+      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkil" +
+      "lsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032" +
+      ",\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
+      "\r:\0028\001\0325\n\023PotentialLvMapEntry\022\013\n\003key\030\001 \001(" +
+      "\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023PotentialBreakEn" +
+      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\010:\0028\001\032=\n\033F" +
+      "reeHcHeroItemTimesMapEntry\022\013\n\003key\030\001 \001(\r\022" +
+      "\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.p" +
+      "rotobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -44369,6 +44634,7 @@ public final class PlayerMsg {
           cn.game.protocol.protobuf.ShopMsg.getDescriptor(),
           cn.game.protocol.protobuf.BattleMsg.getDescriptor(),
           cn.game.protocol.protobuf.QuestMsg.getDescriptor(),
+          cn.game.protocol.protobuf.DevelopMsg.getDescriptor(),
         });
     internal_static_Protos_PlayerLoginRequest_01000001_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -44639,7 +44905,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "ShareReliveCount", "AdReliveCount", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "Guides", "BattleType", "BattleId", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "FreeHcHeroItemTimesMap", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "QianKunMirrorInfo", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "ShareReliveCount", "AdReliveCount", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "Guides", "BattleType", "BattleId", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "FreeHcHeroItemTimesMap", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
@@ -44705,6 +44971,7 @@ public final class PlayerMsg {
     cn.game.protocol.protobuf.ShopMsg.getDescriptor();
     cn.game.protocol.protobuf.BattleMsg.getDescriptor();
     cn.game.protocol.protobuf.QuestMsg.getDescriptor();
+    cn.game.protocol.protobuf.DevelopMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

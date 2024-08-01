@@ -469,7 +469,16 @@ public class Player  {
 	 * @return
 	 */
 	public int getLevel() {
-		return getPlayerModule().getExpLevelMap().getValue(Asset.playerExp.ID);
+		return getLevel(Asset.playerExp);
+	}
+
+	/** 
+	 * 获取某种等级
+	 * @param exp 代表经验的id
+	 * @return
+	 */
+	public int getLevel(Asset exp) {
+		return getPlayerModule().getExpLevelMap().getValue(exp.ID);
 	}
 	public long getPlayerId() {
 		return playerId;

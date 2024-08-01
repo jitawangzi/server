@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.function.Function;
 
 /**
  * @ClassName: Rnd
@@ -161,6 +162,29 @@ public final class Rnd {
 			}
 		}
 
+		return -1;
+	}
+
+	/** 
+	 * 按照一个集合里面元素的权重随机。 
+	 * @param <T>
+	 * @param list
+	 * @param function
+	 * @return
+	 */
+	public static <T> int randomIndex(List<T> list, Function<T, Integer> function) {
+		int total = 0;
+		for (T i : list) {
+			total += function.apply(i);
+		}
+		int rand = Rnd.nextInt(total);
+		int current = 0;
+		for (int i = 0; i < list.size(); i++) {
+			current += function.apply(list.get(i));
+			if (rand < current) {
+				return i;
+			}
+		}
 		return -1;
 	}
 	

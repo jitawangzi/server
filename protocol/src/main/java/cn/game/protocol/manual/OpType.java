@@ -95,6 +95,8 @@ public enum OpType{
 	LingPoBattlePointFull(166, "灵魄之战补积分"),
 	LingPoBattleChange(167, "灵魄之战改难度"),
 
+	QianKunMirror(169, "乾坤镜"),
+
 	BoxOpen(200, "合并开宝箱"),
 	MergeEquipLvUp(201, "合并装备升级"),
 	HCHeroPieceAds(203, "看广告获得觉醒合成英雄碎片"),

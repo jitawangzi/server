@@ -10355,6 +10355,702 @@ public final class BaseMsg {
 
   }
 
+  public interface AttrGrowInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.AttrGrowInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *  属性id
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * 初始值
+     * </pre>
+     *
+     * <code>uint32 startValue = 2;</code>
+     * @return The startValue.
+     */
+    int getStartValue();
+
+    /**
+     * <pre>
+     * 成长值
+     * </pre>
+     *
+     * <code>uint32 growValue = 3;</code>
+     * @return The growValue.
+     */
+    int getGrowValue();
+  }
+  /**
+   * <pre>
+   *属性信息
+   * </pre>
+   *
+   * Protobuf type {@code Protos.AttrGrowInfo}
+   */
+  public static final class AttrGrowInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.AttrGrowInfo)
+      AttrGrowInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use AttrGrowInfo.newBuilder() to construct.
+    private AttrGrowInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private AttrGrowInfo() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new AttrGrowInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private AttrGrowInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readUInt32();
+              break;
+            }
+            case 16: {
+
+              startValue_ = input.readUInt32();
+              break;
+            }
+            case 24: {
+
+              growValue_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_AttrGrowInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_AttrGrowInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo.class, cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     *  属性id
+     * </pre>
+     *
+     * <code>uint32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int STARTVALUE_FIELD_NUMBER = 2;
+    private int startValue_;
+    /**
+     * <pre>
+     * 初始值
+     * </pre>
+     *
+     * <code>uint32 startValue = 2;</code>
+     * @return The startValue.
+     */
+    @java.lang.Override
+    public int getStartValue() {
+      return startValue_;
+    }
+
+    public static final int GROWVALUE_FIELD_NUMBER = 3;
+    private int growValue_;
+    /**
+     * <pre>
+     * 成长值
+     * </pre>
+     *
+     * <code>uint32 growValue = 3;</code>
+     * @return The growValue.
+     */
+    @java.lang.Override
+    public int getGrowValue() {
+      return growValue_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeUInt32(1, id_);
+      }
+      if (startValue_ != 0) {
+        output.writeUInt32(2, startValue_);
+      }
+      if (growValue_ != 0) {
+        output.writeUInt32(3, growValue_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, id_);
+      }
+      if (startValue_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, startValue_);
+      }
+      if (growValue_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, growValue_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo other = (cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (getStartValue()
+          != other.getStartValue()) return false;
+      if (getGrowValue()
+          != other.getGrowValue()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + STARTVALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getStartValue();
+      hash = (37 * hash) + GROWVALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getGrowValue();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *属性信息
+     * </pre>
+     *
+     * Protobuf type {@code Protos.AttrGrowInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.AttrGrowInfo)
+        cn.game.protocol.protobuf.BaseMsg.AttrGrowInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_AttrGrowInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_AttrGrowInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo.class, cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        startValue_ = 0;
+
+        growValue_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_AttrGrowInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo build() {
+        cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo buildPartial() {
+        cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo result = new cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo(this);
+        result.id_ = id_;
+        result.startValue_ = startValue_;
+        result.growValue_ = growValue_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo other) {
+        if (other == cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getStartValue() != 0) {
+          setStartValue(other.getStartValue());
+        }
+        if (other.getGrowValue() != 0) {
+          setGrowValue(other.getGrowValue());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       *  属性id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *  属性id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *  属性id
+       * </pre>
+       *
+       * <code>uint32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int startValue_ ;
+      /**
+       * <pre>
+       * 初始值
+       * </pre>
+       *
+       * <code>uint32 startValue = 2;</code>
+       * @return The startValue.
+       */
+      @java.lang.Override
+      public int getStartValue() {
+        return startValue_;
+      }
+      /**
+       * <pre>
+       * 初始值
+       * </pre>
+       *
+       * <code>uint32 startValue = 2;</code>
+       * @param value The startValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStartValue(int value) {
+        
+        startValue_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 初始值
+       * </pre>
+       *
+       * <code>uint32 startValue = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStartValue() {
+        
+        startValue_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int growValue_ ;
+      /**
+       * <pre>
+       * 成长值
+       * </pre>
+       *
+       * <code>uint32 growValue = 3;</code>
+       * @return The growValue.
+       */
+      @java.lang.Override
+      public int getGrowValue() {
+        return growValue_;
+      }
+      /**
+       * <pre>
+       * 成长值
+       * </pre>
+       *
+       * <code>uint32 growValue = 3;</code>
+       * @param value The growValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGrowValue(int value) {
+        
+        growValue_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 成长值
+       * </pre>
+       *
+       * <code>uint32 growValue = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGrowValue() {
+        
+        growValue_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.AttrGrowInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.AttrGrowInfo)
+    private static final cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo();
+    }
+
+    public static cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<AttrGrowInfo>
+        PARSER = new com.google.protobuf.AbstractParser<AttrGrowInfo>() {
+      @java.lang.Override
+      public AttrGrowInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new AttrGrowInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<AttrGrowInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<AttrGrowInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.AttrGrowInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface GemInfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.GemInfo)
       com.google.protobuf.MessageOrBuilder {
@@ -16951,6 +17647,11 @@ public final class BaseMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_HeroAttrPointInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_AttrGrowInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_AttrGrowInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_GemInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -17021,25 +17722,26 @@ public final class BaseMsg {
       "fo\022\013\n\003uid\030\001 \001(\t\022\020\n\010configId\030\002 \001(\r\022\014\n\004sta" +
       "r\030\003 \001(\r\")\n\014HeroAttrInfo\022\n\n\002id\030\001 \001(\r\022\r\n\005v" +
       "alue\030\002 \001(\r\".\n\021HeroAttrPointInfo\022\n\n\002id\030\001 " +
-      "\001(\r\022\r\n\005value\030\002 \001(\r\"\221\001\n\007GemInfo\022\013\n\003uid\030\001 " +
-      "\001(\t\022\020\n\010configId\030\002 \001(\r\022)\n\005attrs\030\003 \003(\0132\032.P" +
-      "rotos.GemInfo.AttrsEntry\022\016\n\006isLock\030\004 \001(\010" +
-      "\032,\n\nAttrsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001" +
-      "(\r:\0028\001\"&\n\nDragonInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004star" +
-      "\030\002 \001(\r\",\n\017DragonSkillInfo\022\n\n\002id\030\001 \001(\r\022\r\n" +
-      "\005level\030\002 \001(\r\".\n\tSkillInfo\022\n\n\002id\030\001 \001(\r\022\025\n" +
-      "\rstrengthenIds\030\002 \003(\r\"\304\001\n\020SimplePlayerInf" +
-      "o\022\n\n\002id\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\r\n\005level\030\003 \001" +
-      "(\r\022\033\n\023combatEffectiveness\030\004 \001(\r\022\014\n\004head\030" +
-      "\006 \001(\r\022\021\n\theadFrame\030\007 \001(\r\022\016\n\006online\030\010 \001(\010" +
-      "\022\023\n\013offlineTime\030\t \001(\r\022\020\n\010serverId\030\n \001(\t\022" +
-      "\022\n\nserverName\030\013 \001(\t\"E\n\016PlayerShowInfo\022\r\n" +
-      "\005guild\030\002 \001(\t\022\016\n\006combat\030\003 \001(\r\022\024\n\014praisedC" +
-      "ount\030\004 \001(\r\"H\n\021PaymentOrderProto\022\020\n\010signD" +
-      "ata\030\001 \001(\t\022\016\n\006paySig\030\002 \001(\t\022\021\n\tsignature\030\003" +
-      " \001(\t*-\n\nUpdateType\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022" +
-      "\n\n\006DELETE\020\002B\033\n\031cn.game.protocol.protobuf" +
-      "b\006proto3"
+      "\001(\r\022\r\n\005value\030\002 \001(\r\"A\n\014AttrGrowInfo\022\n\n\002id" +
+      "\030\001 \001(\r\022\022\n\nstartValue\030\002 \001(\r\022\021\n\tgrowValue\030" +
+      "\003 \001(\r\"\221\001\n\007GemInfo\022\013\n\003uid\030\001 \001(\t\022\020\n\010config" +
+      "Id\030\002 \001(\r\022)\n\005attrs\030\003 \003(\0132\032.Protos.GemInfo" +
+      ".AttrsEntry\022\016\n\006isLock\030\004 \001(\010\032,\n\nAttrsEntr" +
+      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\"&\n\nDra" +
+      "gonInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004star\030\002 \001(\r\",\n\017Dra" +
+      "gonSkillInfo\022\n\n\002id\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"" +
+      ".\n\tSkillInfo\022\n\n\002id\030\001 \001(\r\022\025\n\rstrengthenId" +
+      "s\030\002 \003(\r\"\304\001\n\020SimplePlayerInfo\022\n\n\002id\030\001 \001(\t" +
+      "\022\014\n\004name\030\002 \001(\t\022\r\n\005level\030\003 \001(\r\022\033\n\023combatE" +
+      "ffectiveness\030\004 \001(\r\022\014\n\004head\030\006 \001(\r\022\021\n\thead" +
+      "Frame\030\007 \001(\r\022\016\n\006online\030\010 \001(\010\022\023\n\013offlineTi" +
+      "me\030\t \001(\r\022\020\n\010serverId\030\n \001(\t\022\022\n\nserverName" +
+      "\030\013 \001(\t\"E\n\016PlayerShowInfo\022\r\n\005guild\030\002 \001(\t\022" +
+      "\016\n\006combat\030\003 \001(\r\022\024\n\014praisedCount\030\004 \001(\r\"H\n" +
+      "\021PaymentOrderProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006" +
+      "paySig\030\002 \001(\t\022\021\n\tsignature\030\003 \001(\t*-\n\nUpdat" +
+      "eType\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033" +
+      "\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -17129,8 +17831,14 @@ public final class BaseMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroAttrPointInfo_descriptor,
         new java.lang.String[] { "Id", "Value", });
-    internal_static_Protos_GemInfo_descriptor =
+    internal_static_Protos_AttrGrowInfo_descriptor =
       getDescriptor().getMessageTypes().get(13);
+    internal_static_Protos_AttrGrowInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_AttrGrowInfo_descriptor,
+        new java.lang.String[] { "Id", "StartValue", "GrowValue", });
+    internal_static_Protos_GemInfo_descriptor =
+      getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_GemInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_GemInfo_descriptor,
@@ -17142,37 +17850,37 @@ public final class BaseMsg {
         internal_static_Protos_GemInfo_AttrsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_DragonInfo_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_DragonInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DragonInfo_descriptor,
         new java.lang.String[] { "Id", "Star", });
     internal_static_Protos_DragonSkillInfo_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_Protos_DragonSkillInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_DragonSkillInfo_descriptor,
         new java.lang.String[] { "Id", "Level", });
     internal_static_Protos_SkillInfo_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_Protos_SkillInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_SkillInfo_descriptor,
         new java.lang.String[] { "Id", "StrengthenIds", });
     internal_static_Protos_SimplePlayerInfo_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_Protos_SimplePlayerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_SimplePlayerInfo_descriptor,
         new java.lang.String[] { "Id", "Name", "Level", "CombatEffectiveness", "Head", "HeadFrame", "Online", "OfflineTime", "ServerId", "ServerName", });
     internal_static_Protos_PlayerShowInfo_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_PlayerShowInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerShowInfo_descriptor,
         new java.lang.String[] { "Guild", "Combat", "PraisedCount", });
     internal_static_Protos_PaymentOrderProto_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_PaymentOrderProto_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PaymentOrderProto_descriptor,

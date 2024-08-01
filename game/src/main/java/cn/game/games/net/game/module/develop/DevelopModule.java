@@ -17,6 +17,7 @@ import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.PotentialManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.generated.manager.RescueManager;
+import cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.IntMapWrapper;
 
@@ -37,6 +38,8 @@ public class DevelopModule extends BasePlayerModule {
 	/**  */
 	private Map<Integer, Boolean> isPotentiaBreakMap = new HashMap<Integer, Boolean>();
 
+	private QianKunMirrorInfo.Builder qiankunMirrorBuilder = QianKunMirrorInfo.newBuilder();
+
 	public int getHeavenlyDaoLevel() {
 		return heavenlyDaoLevel;
 	}
@@ -56,6 +59,10 @@ public class DevelopModule extends BasePlayerModule {
 
 	public void setIsPotentiaBreak(int id, boolean value) {
 		this.isPotentiaBreakMap.put(id, value);
+	}
+
+	public QianKunMirrorInfo.Builder getQiankunMirrorBuilder() {
+		return qiankunMirrorBuilder;
 	}
 
 	/** 
@@ -90,6 +97,8 @@ public class DevelopModule extends BasePlayerModule {
 		builder.setHeavenlyDaoLevel(heavenlyDaoLevel);
 		builder.putAllPotentialLvMap(potentiaLvMap.getMap());
 		builder.putAllPotentialBreak(isPotentiaBreakMap);
+		builder.setQianKunMirrorInfo(qiankunMirrorBuilder);
+
 	}
 	@Override
 	public void handleEvent(GameEvent event) {

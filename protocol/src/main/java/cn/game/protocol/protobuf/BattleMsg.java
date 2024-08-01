@@ -39146,7 +39146,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     *当前难度，（Battle表id）
+     *当前难度，（Battle表id,类型是灵魄之战）
      * </pre>
      *
      * <code>int32 battleId = 2;</code>
@@ -39399,7 +39399,7 @@ public final class BattleMsg {
     private int battleId_;
     /**
      * <pre>
-     *当前难度，（Battle表id）
+     *当前难度，（Battle表id,类型是灵魄之战）
      * </pre>
      *
      * <code>int32 battleId = 2;</code>
@@ -40011,7 +40011,7 @@ public final class BattleMsg {
       private int battleId_ ;
       /**
        * <pre>
-       *当前难度，（Battle表id）
+       *当前难度，（Battle表id,类型是灵魄之战）
        * </pre>
        *
        * <code>int32 battleId = 2;</code>
@@ -40023,7 +40023,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *当前难度，（Battle表id）
+       *当前难度，（Battle表id,类型是灵魄之战）
        * </pre>
        *
        * <code>int32 battleId = 2;</code>
@@ -40038,7 +40038,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       *当前难度，（Battle表id）
+       *当前难度，（Battle表id,类型是灵魄之战）
        * </pre>
        *
        * <code>int32 battleId = 2;</code>

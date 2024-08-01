@@ -113,6 +113,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int QianKunMirrorReversalResponse_25000021 = 0x25000021;    
 	public final static int QianKunMirrorReplaceRequest_25000022 = 0x25000022;    //替换或者丢弃灵魄  
 	public final static int QianKunMirrorReplaceResponse_25000023 = 0x25000023;    
+	public final static int QianKunMirrorSpiritualRootUnlockRequest_25000024 = 0x25000024;    //点亮 解锁 灵根淬炼  
+	public final static int QianKunMirrorSpiritualRootUnlockResponse_25000025 = 0x25000025;    
 	public final static int DragonUnlockRequest_17000001 = 0x17000001;    //龙解锁  
 	public final static int DragonUnlockResponse_17000002 = 0x17000002;    
 	public final static int DragonStarUpRequest_17000003 = 0x17000003;    //龙升星  
@@ -541,6 +543,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(QianKunMirrorReplaceRequest_25000022, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(QianKunMirrorReplaceResponse_25000023, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceResponse_25000023.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QianKunMirrorSpiritualRootUnlockRequest_25000024, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorSpiritualRootUnlockRequest_25000024.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(QianKunMirrorSpiritualRootUnlockResponse_25000025, cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorSpiritualRootUnlockResponse_25000025.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(DragonUnlockRequest_17000001, cn.game.protocol.protobuf.DragonMsg.DragonUnlockRequest_17000001.getDefaultInstance()
 				.getParserForType());
@@ -1136,6 +1142,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("QianKunMirrorReversalResponse_25000021", 0x25000021);
 		nameIdMap.put("QianKunMirrorReplaceRequest_25000022", 0x25000022);
 		nameIdMap.put("QianKunMirrorReplaceResponse_25000023", 0x25000023);
+		nameIdMap.put("QianKunMirrorSpiritualRootUnlockRequest_25000024", 0x25000024);
+		nameIdMap.put("QianKunMirrorSpiritualRootUnlockResponse_25000025", 0x25000025);
 		nameIdMap.put("DragonUnlockRequest_17000001", 0x17000001);
 		nameIdMap.put("DragonUnlockResponse_17000002", 0x17000002);
 		nameIdMap.put("DragonStarUpRequest_17000003", 0x17000003);

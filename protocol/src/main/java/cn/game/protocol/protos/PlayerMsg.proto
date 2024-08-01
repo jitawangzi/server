@@ -7,6 +7,7 @@ import "BaseMsg.proto" ;
 import "ShopMsg.proto" ;
 import "BattleMsg.proto" ;
 import "QuestMsg.proto";
+import "DevelopMsg.proto";
 
 /*** 登陆****/
 message PlayerLoginRequest_01000001{
@@ -261,6 +262,7 @@ message PlayerAllInfo{
    map<uint32, uint32> alchemys = 14;        //炼金 key:Alchemy表id value：炼金等级。
    map<uint32, uint32> dragons = 16;    	//龙。 key:Dragon表id。value：龙的星级
    map<uint32, uint32> dragonSkills = 17;   //龙技能。 key:DragonSkill表id。value：技能等级
+   QianKunMirrorInfo qianKunMirrorInfo = 19;   // 乾坤镜，灵根淬炼
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
    repeated BattleInfo battles = 30;        //打过的战役，包括通关的和非通关的。

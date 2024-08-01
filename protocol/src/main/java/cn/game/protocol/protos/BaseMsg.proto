@@ -91,6 +91,13 @@ message HeroAttrPointInfo{
 	uint32 value = 2;// 属性点数
 }
 
+//属性信息
+message AttrGrowInfo{
+	uint32 id 	 = 1;//  属性id
+	uint32 startValue = 2;// 初始值
+	uint32 growValue = 3;// 成长值
+}
+
 // 宝石数据
 message GemInfo{
   string uid	   = 1; //唯一id

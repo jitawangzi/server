@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.google.protobuf.Message;
 
 /**    
  * 对jackson的一个封装
@@ -53,6 +54,8 @@ public class JsonUtil {
 		module.addDeserializer(org.apache.commons.collections4.map.MultiKeyMap.class, new MultiKeyMapDeserializer4());
 		objectMapper.registerModule(module);
 		objectMapper.registerModule(new GuavaModule()); // 注册 Guava 模块
+		objectMapper.registerModule(new com.hubspot.jackson.datatype.protobuf.ProtobufModule()); // 注册 Guava 模块
+//		objectMapper.registerModule(new ProtobufModule());
 		// 写入类名
 		PolymorphicTypeValidator ptv = LaissezFaireSubTypeValidator.instance;
 		objectMapper.activateDefaultTyping(ptv, DefaultTyping.NON_FINAL);
@@ -195,4 +198,59 @@ public class JsonUtil {
 			return deserialize(p, ctxt);
 		}
 	}
+
+	static class MyProtobufModule1 extends SimpleModule {
+		public MyProtobufModule1() {
+			super("MyProtobufModule1");
+
+	        addSerializer(Message.class, new JsonSerializer<Message>() {
+	            @Override
+	            public void serialize(Message value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+//					gen.writeString(JsonFormat.printer().print(value));
+//	            	pbpro
+//	            	gen.writeNumber(0);
+					gen.writeBinary(value.toByteArray());
+	            }
+	        });
+
+	        addDeserializer(Message.class, new JsonDeserializer<Message>() {
+	            @Override
+	            public Message deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+//				       // 在这里实现将 JSON 反序列化为 Protobuf 对象的逻辑
+					byte[] bytes = p.getBinaryValue();
+//					Message.Builder builder = Message.newBuilder();
+//					builder.mergeFrom(bytes);
+//					return builder.build();
+					return null;
+	            }
+	        });
+	    }
+	}
+
+//	class MyProtobufModule extends SimpleModule {
+
+//		@Override
+//		public void setupModule(SetupContext context) {
+//			context.addSerializer(Message.class, new ProtobufJsonSerializer());
+//			context.addDeserializer(Message.class, new ProtobufJsonDeserializer());
+//		}
+
+//		class ProtobufJsonSerializer extends JsonSerializer<Message> {
+//
+//			@Override
+//			public void serialize(Message value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+//				gen.writeString(JsonFormat.printer().print(value));
+//			}
+//		}
+
+//		class ProtobufJsonDeserializer extends JsonDeserializer<Message> {
+//
+//			@Override
+//			public Message deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+//				Message.Builder builder = ((Message.Builder) ctxt.constructType(ctxt.getContextualType()).newInstance());
+//				JsonFormat.parser().merge(p.readValueAsTree(), builder);
+//				return builder.build();
+//			}
+//		}
+//	}
 }
