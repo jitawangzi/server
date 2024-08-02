@@ -89,7 +89,8 @@ public enum EventTypeEnum {
 	Practice(29, "修炼"),
 	/** 参数： hero */
 	HeroQuality(30, "英雄品质提升"),
-
+	/** 第一次通关主线  参数: 章节id ，battle表id*/
+	ChapterFirstWin(33, "第一次通关主线 "),
 	//成就相关
 	/** 开启战斗 :  Battle战役id，关卡id*/
 	BattleStart(54, "开启战斗"),

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -65,6 +66,7 @@ public class BattleChapterImpl extends XiYouBattleHandler {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 1) {
 				chapterModule.setMainBattleHighest(chapter.getBattleId());
+				player.handleEvent(EventTypeEnum.ChapterFirstWin, chapter.getBattleId());
 			}
 		}
 		chapter.setFinishTimes(chapter.getFinishTimes() + 1);

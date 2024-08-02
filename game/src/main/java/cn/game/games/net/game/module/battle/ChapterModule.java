@@ -50,7 +50,7 @@ import cn.game.util.IntMapWrapper;
  */
 public class ChapterModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
-			EventTypeEnum.FuncOpen };
+			EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin };
 
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
@@ -616,6 +616,12 @@ public class ChapterModule extends BasePlayerModule  {
 			break;
 		}
 		case PLAYER_CREATE: {
+			break;
+		}
+		case ChapterFirstWin: {
+			if (lingPoBattle != null) {
+				lingPoBattle.updateBattleId(player);
+			}
 			break;
 		}
 		case FuncOpen: {

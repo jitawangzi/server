@@ -51,6 +51,13 @@ public class LingPoBattle {
 		randomBuff.addAll(BattleHelper.randomBuffs(battleId, 3));
 	}
 
+	public void updateBattleId(Player player) {
+		initBattleId(player);
+		if (randomBuff.isEmpty()) {
+			randomBuff.addAll(BattleHelper.randomBuffs(battleId, 3));
+		}
+	}
+
 	/** 
 	 * 获取可以打的，最新的战役id
 	 * @param type  {@link BattleConfig#BattleType} 
@@ -58,11 +65,13 @@ public class LingPoBattle {
 	 */
 	private void initBattleId(Player player) {
 
-		int mainBattleId = player.getChapterModule().getFightMainBattleId();
-
+		int mainBattleId = player.getChapterModule().getMainBattleHighest();
+		if (mainBattleId == 0) {
+			return;
+		}
 		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(DungeonTypeEnum.LingPo.getId());
 		for (BattleConfig battleConfig : battleTypeList) {
-			if (battleConfig.preBattle == mainBattleId) {
+			if (BattleHelper.isComplete(mainBattleId, battleConfig.preBattle)) {
 				battleId = battleConfig.ID;
 				break;
 			}
