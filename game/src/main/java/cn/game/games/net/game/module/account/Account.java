@@ -20,6 +20,7 @@ public class Account {
 	public final int platform;// 平台标示： 1 IOS APP ，2 安卓 APP ，3 IOS小游戏，4 安卓小游戏，5 window 微信小游戏，6 mac微信小游戏
     public final String sdkPayChannel;//sdk充值渠道
 	public final String system;// 系统: 小游戏定死“system”
+	public final String clue_token;//
 
 	public Account(PlayerLoginRequest_01000001 req) {
 //        this.accountType = req.getAccountType();
@@ -37,6 +38,7 @@ public class Account {
         this.platform = req.getPlatform();
         this.sdkPayChannel = req.getSdkPayChannel();
 		this.system = req.getSystem();
+		this.clue_token = req.getClueToken();
     }
 
     public int getAccountType() {
@@ -54,4 +56,9 @@ public class Account {
 	public int getPlatform() {
         return platform;
     }
+
+	public String getClue_token() {
+		return clue_token;
+	}
+
 }

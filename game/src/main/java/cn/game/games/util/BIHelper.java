@@ -17,7 +17,7 @@ public class BIHelper {
 		});
 	}
 
-	public static void resrouceUpdate(Player player, int id, long value, OpType opType, boolean isAdd) {
+	public static void resourceUpdate(Player player, int id, long value, OpType opType, boolean isAdd) {
 
 		int goodsType = ItemHelper.getGoodsType(id);
 		if (goodsType == GoodsTypeEnum.Resource.getId()) {

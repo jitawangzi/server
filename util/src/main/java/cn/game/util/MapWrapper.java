@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**    
- * 对Map的一个简单封装，保存kv数值
+ * 对Map的一个简单封装，方便计算保存kv数值，key int  value long
  * 2024年3月19日 下午6:59:46
  * @author SYQ
  */
@@ -30,6 +30,9 @@ public class MapWrapper {
 	}
 
 	public long add(int id, int value) {
+		if (value == 0) {
+			return 0;
+		}
 		return map.compute(id, (k, v) -> v == null ? value : v + value);
 	}
 
@@ -55,8 +58,8 @@ public class MapWrapper {
 		return map;
 	}
 
-	public void setMap(Map<Integer, Long> map) {
-		this.map = map;
+	public void clear() {
+		this.map.clear();
 	}
 
 }

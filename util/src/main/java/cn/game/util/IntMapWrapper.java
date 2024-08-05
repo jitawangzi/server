@@ -3,6 +3,11 @@ package cn.game.util;
 import java.util.HashMap;
 import java.util.Map;
 
+/**    
+ * 对Map的一个简单封装，方便计算保存kv数值，key int  value int
+ * 2024年3月19日 下午6:59:46
+ * @author SYQ
+ */
 public class IntMapWrapper {
 	private Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
@@ -24,6 +29,9 @@ public class IntMapWrapper {
 	}
 
 	public int add(int id, int value) {
+		if (value == 0) {
+			return 0;
+		}
 		return map.compute(id, (k, v) -> v == null ? value : v + value);
 	}
 
@@ -74,10 +82,6 @@ public class IntMapWrapper {
 
 	public Map<Integer, Integer> getMap() {
 		return map;
-	}
-
-	public void setMap(Map<Integer, Integer> map) {
-		this.map = map;
 	}
 
 	public void clear() {

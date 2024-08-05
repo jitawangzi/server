@@ -131,7 +131,7 @@ public class ChapterModule extends BasePlayerModule  {
 			map = new HashMap<Integer, List<String>>();
 			lineupMaps.put(type, map);
 		}
-		map.put(lineupId, heroUids);
+		map.put(lineupId, new ArrayList<String>(heroUids));
 	}
 
 	public Map<Integer, List<String>> getLineups(int type) {

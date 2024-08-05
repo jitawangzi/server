@@ -24,6 +24,7 @@ public enum LoggerType {
     /* *********************** 一级 ************************* */
     heart("v3"),                                                     // 心跳
     login,                                                                      // 登录
+	login_wxxcx, // 微信小程序登录
     rolebuild,                                                                  // 创建角色
     rolelogin,                                                                  // 创建角色
     logout,                                                                     // 登出

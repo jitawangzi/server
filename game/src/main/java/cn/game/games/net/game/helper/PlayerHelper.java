@@ -250,7 +250,7 @@ public class PlayerHelper {
 			rewards = goodsModule.addReward(id, value, opType);
 			log.info("player[{}] addReward  id[{}]count[{}]opType[{}]", player.getPlayerId(), id, value, opType);
 			player.handleEvent(EventTypeEnum.GetItem, id, value);
-			BIHelper.resrouceUpdate(player, id, value, opType, true);
+			BIHelper.resourceUpdate(player, id, value, opType, true);
 			if (notify && !rewards.isEmpty()) {
 				player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
 			}
@@ -346,7 +346,7 @@ public class PlayerHelper {
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
 				player.getGameClient().sendProtocol(spendPush.build());
 			}
-			BIHelper.resrouceUpdate(player, id, value, consumeType, false);
+			BIHelper.resourceUpdate(player, id, value, consumeType, false);
 		}
 		return ret;
 	}
@@ -562,7 +562,8 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * 登陆后进行一些初始化操作，例如刷新离线数据等，初始化定时任务等等, 创建新玩家后，也会执行此方法;
+	 * 登陆后进行一些初始化操作，例如刷新离线数据、初始化定时任务等等, 
+	 * 创建新玩家后，也会执行此方法;
 	 * @param player
 	 */
 	public static void initAfterLogin(Player player) {
@@ -590,6 +591,7 @@ public class PlayerHelper {
 
 		GameLogger.login(player);
 		GameLogger.rolelogin(player);
+		GameLogger.login_wxxcx(player);
 	}
 
 

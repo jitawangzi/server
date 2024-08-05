@@ -145,8 +145,7 @@ public class GameClient extends AbstractNetClient {
 			}
 			return true;
 		}
-		log.warn("player[{}] write message[{}] err,sessionId[{}],session[{}]", playerId, TextFormat.shortDebugString((Message) message),
-				sessionId, channel);
+		log.warn("GameClient[{}] write message[{}] err", this, TextFormat.shortDebugString((Message) message));
 		return false;
 
 	}
@@ -211,12 +210,11 @@ public class GameClient extends AbstractNetClient {
 	public void setLastRecvPacketTime(long lastRecvPacketTime) {
 		this.lastRecvPacketTime = lastRecvPacketTime;
 	}
-
+	
 	@Override
 	public String toString() {
-
-		return "GameClient" + "[" + playerId + "]" + "sessionId" + "[" + sessionId + "]" + "name" + "["
-				+ ("") + "]";
+//		return "GameClient [playerId=" + playerId + ", sessionId=" + sessionId + ", connectionId=" + channel.binaryHandlerID() + "]";
+		return toDetailString();
 	}
 	public String toDetailString() {
 		
@@ -263,7 +261,8 @@ public class GameClient extends AbstractNetClient {
 //				// 超过消息数量，关闭连接
 //				GameClientManager.getInstance().logout(this);
 //				log.warn("GameClient[{}] Requested too frequently, force disconnect,seq[{}]", toDetailString(), protocol.getSeq());
-				sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.requests_too_frequent.getId());
+				sendProtocol(protocol.getMsgID(), protocol.getSeq(), PlayerErrorPush_01000099.getDefaultInstance().toByteArray(),
+						ErrorMsgEnum.requests_too_frequent.getId(), false);
 				return false;
 			} else {
 				packetMaxCountPerSecond = 0;

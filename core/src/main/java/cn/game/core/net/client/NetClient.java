@@ -7,7 +7,7 @@ import io.vertx.core.impl.ContextInternal;
 public interface NetClient {
 
 	/** 
-	 * 是否需要处理这个消息，比如重复消息不应该在处理
+	 * 是否需要处理这个消息，比如重复消息不应该再次处理
 	 * @param message
 	 * @return
 	 */

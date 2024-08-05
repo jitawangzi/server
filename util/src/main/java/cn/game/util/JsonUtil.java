@@ -55,7 +55,6 @@ public class JsonUtil {
 		objectMapper.registerModule(module);
 		objectMapper.registerModule(new GuavaModule()); // 注册 Guava 模块
 		objectMapper.registerModule(new com.hubspot.jackson.datatype.protobuf.ProtobufModule()); // 注册 Guava 模块
-//		objectMapper.registerModule(new ProtobufModule());
 		// 写入类名
 		PolymorphicTypeValidator ptv = LaissezFaireSubTypeValidator.instance;
 		objectMapper.activateDefaultTyping(ptv, DefaultTyping.NON_FINAL);

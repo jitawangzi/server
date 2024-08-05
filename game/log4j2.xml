@@ -24,6 +24,7 @@
         <!-- *********************** 一级 ************************* -->
         <Property name="file_heart">heart</Property>
         <Property name="file_login">login</Property>
+        <Property name="file_login_wxxcx">login_wxxcx</Property>
         <Property name="file_rolebuild">rolebuild</Property>
         <Property name="file_rolelogin">rolelogin</Property>
         <Property name="file_logout">logout</Property>
@@ -117,6 +118,9 @@
 
         <AsyncLogger name="login" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="login"/>
+        </AsyncLogger>
+        <AsyncLogger name="login_wxxcx" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="login_wxxcx"/>
         </AsyncLogger>
 
         <AsyncLogger name="rolebuild" level="info" includeLocation="false" additivity="false">
@@ -377,6 +381,16 @@
         <RollingRandomAccessFile name="login"
                                  immediateFlush="true"
                                  filePattern="${path_cy_game}/${file_login}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="login_wxxcx"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_login_wxxcx}.log.${date_suffix}">
             <PatternLayout charset="UTF-8" pattern="%m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/>

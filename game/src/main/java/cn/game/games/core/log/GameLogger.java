@@ -177,6 +177,19 @@ public class GameLogger extends Logger {
 		}
 	}
 
+	public static void login_wxxcx(Player player) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login_wxxcx.name(), LoggerType.login_wxxcx.version, "2051")),
+					player.getData().getName() == null ? "null" : player.getData().getName(), player.getGameClient().getIp(),
+					player.getCurrencyModule().getCount(Asset.diamond.ID),
+					player.getAccount().getClue_token() == null ? "{}" : player.getAccount().getClue_token() };
+			LoggerType.login_wxxcx.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
 	/**
 	 * 创建角色
 	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id

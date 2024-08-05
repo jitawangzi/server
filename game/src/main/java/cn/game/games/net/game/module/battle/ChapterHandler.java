@@ -160,8 +160,15 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
 			return;
 		}
-		boolean preBattle = BattleHelper.isPreBattle(lingPoBattle.getBattleId(), battleId);
-		if (!preBattle) {
+//		boolean preBattle = BattleHelper.isPreBattle(lingPoBattle.getBattleId(), battleId);
+//		if (!preBattle) {
+//			client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
+//			return;
+//		}
+		int mainBattleId = player.getChapterModule().getMainBattleHighest();
+		BattleConfig battleConfig = BattleManager.instance().get(battleId);
+
+		if (!BattleHelper.isComplete(mainBattleId, battleConfig.preBattle)) {
 			client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
 			return;
 		}
