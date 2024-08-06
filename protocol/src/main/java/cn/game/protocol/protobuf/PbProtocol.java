@@ -201,6 +201,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int HeroUpLevelMaxResponse_16000022 = 0x16000022;    
 	public final static int HeroUpLevelBatchRequest_16000023 = 0x16000023;    //批量英雄升级，能升级哪个升级哪个  
 	public final static int HeroUpLevelBatchResponse_16000024 = 0x16000024;    
+	public final static int HeroBattleUpLevelBatchRequest_16000025 = 0x16000025;    //批量升级上阵的英雄，按照品质和星级的顺序  
+	public final static int HeroBattleUpLevelBatchResponse_16000026 = 0x16000026;    
 	public final static int HeroConflateRequest_16000003 = 0x16000003;    //英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。  
 	public final static int HeroConflateResponse_16000004 = 0x16000004;    //合成返回,客户端这里自己把相关的英雄、万能耗材扣掉。  
 	public final static int HeroBattleRequest_16000005 = 0x16000005;    //英雄上阵  
@@ -720,6 +722,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(HeroUpLevelBatchResponse_16000024, cn.game.protocol.protobuf.HeroMsg.HeroUpLevelBatchResponse_16000024.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(HeroBattleUpLevelBatchRequest_16000025, cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(HeroBattleUpLevelBatchResponse_16000026, cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(HeroConflateRequest_16000003, cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(HeroConflateResponse_16000004, cn.game.protocol.protobuf.HeroMsg.HeroConflateResponse_16000004.getDefaultInstance()
@@ -1230,6 +1236,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("HeroUpLevelMaxResponse_16000022", 0x16000022);
 		nameIdMap.put("HeroUpLevelBatchRequest_16000023", 0x16000023);
 		nameIdMap.put("HeroUpLevelBatchResponse_16000024", 0x16000024);
+		nameIdMap.put("HeroBattleUpLevelBatchRequest_16000025", 0x16000025);
+		nameIdMap.put("HeroBattleUpLevelBatchResponse_16000026", 0x16000026);
 		nameIdMap.put("HeroConflateRequest_16000003", 0x16000003);
 		nameIdMap.put("HeroConflateResponse_16000004", 0x16000004);
 		nameIdMap.put("HeroBattleRequest_16000005", 0x16000005);

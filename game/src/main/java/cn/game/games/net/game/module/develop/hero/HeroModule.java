@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
@@ -231,6 +232,14 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	public Map<Long, Integer> getBattleHeros() {
 		return battleHeros;
+	}
+
+	public List<Hero> getBattleHeroList() {
+		List<Hero> list = new ArrayList<>();
+		for (Entry<Long, Integer> entry : battleHeros.entrySet()) {
+			list.add(get(entry.getKey()));
+		}
+		return list;
 	}
 
 	public Set<Long> getBattleHeroIds() {

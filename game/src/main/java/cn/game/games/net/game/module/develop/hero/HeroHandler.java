@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.develop.hero;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,6 +37,8 @@ import cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissResponse_1600000a;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006;
+import cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025;
+import cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateResponse_16000004;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032;
@@ -73,6 +76,7 @@ public class HeroHandler extends BaseHandler {
 		putInvoker(PbProtocol.HeroUpLevelRequest_16000001, this::upLevel);
 		putInvoker(PbProtocol.HeroUpLevelMaxRequest_16000021, this::upLevelMax);
 		putInvoker(PbProtocol.HeroUpLevelBatchRequest_16000023, this::upLevelBatch);
+		putInvoker(PbProtocol.HeroBattleUpLevelBatchRequest_16000025, this::upLevelBattleBatch);
 		putInvoker(PbProtocol.HeroConflateRequest_16000003, this::conflate);
 		putInvoker(PbProtocol.HeroBattleRequest_16000005, this::battle);
 		putInvoker(PbProtocol.HeroBattleDismissRequest_16000009, this::battleDismiss);
@@ -202,6 +206,87 @@ public class HeroHandler extends BaseHandler {
 		client.sendProtocol(resp.build());
 	}
 
+	private void upLevelBattleBatch(NetClient client, Object message) {
+		HeroBattleUpLevelBatchRequest_16000025 req = (HeroBattleUpLevelBatchRequest_16000025) message;
+		HeroBattleUpLevelBatchResponse_16000026.Builder resp = HeroBattleUpLevelBatchResponse_16000026.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (!player.isFuncOpen(InitialUI.CardLv)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		HeroModule heroModule = player.getHeroModule();
+		List<Hero> heros = heroModule.getBattleHeroList();
+		if (heros == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		Collections.sort(heros, (o2, o1) -> {
+			if (o1.getQuality() == o2.getQuality()) {
+				return o1.getStar() - o2.getStar();
+			}
+			return o1.getQuality() - o2.getQuality();
+		});
+
+		int itemId = GlobalConst.HeroLvItem;
+		int itemCount = 0;
+		int moneyId = Asset.gold.ID;
+		int moneyCount = 0;
+
+		Set<Hero> updateHeros = new HashSet<Hero>();
+		int loopCount = 0;
+//		int upCount = 0;
+		loop: while (true) {
+			if (loopCount >= 10000) {
+				throw new RuntimeException("maybe infinite loop，loopCount: " + loopCount);
+			}
+//			if (HeroHelper.isAllHeroMaxLevel(heros)) {
+//				break loop;
+//			}
+			boolean isAllHeroMaxLevel = true;
+			for (Hero hero : heros) {
+				int heroMaxLevel = HeroHelper.getHeroMaxLevel(hero);
+				int curLevel = hero.getLevel();
+
+				if (curLevel >= heroMaxLevel) {
+					continue;
+				}
+				HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
+				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+					break loop;
+				}
+				HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
+				if (nextHeroLvConfig == null) {
+					continue;
+				}
+				itemCount += heroLvConfig.LvConsumeItem;
+				moneyCount += heroLvConfig.LvConsumeMoney;
+				hero.setLevel(curLevel + 1);
+				updateHeros.add(hero);
+//				upCount++;
+				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+				isAllHeroMaxLevel = false;
+			}
+			if (isAllHeroMaxLevel) {
+				break;
+			}
+			loopCount++;
+		}
+
+		List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
+		deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
+		deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
+		PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
+
+		for (Hero entry : updateHeros) {
+			resp.addHeros(entry.toHeroLevelInfo());
+		}
+//		if (upCount > 0) {
+//			player.handleEvent(EventTypeEnum.HeroLevelUp, upCount);
+//		}
+		client.sendProtocol(resp.build());
+	}
+
+	@Deprecated
 	private void upLevelBatch(NetClient client, Object message) {
 		HeroUpLevelBatchRequest_16000023 req = (HeroUpLevelBatchRequest_16000023) message;
 		HeroUpLevelBatchResponse_16000024.Builder resp = HeroUpLevelBatchResponse_16000024.newBuilder();

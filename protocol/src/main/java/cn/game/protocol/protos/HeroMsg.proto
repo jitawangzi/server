@@ -27,7 +27,14 @@ message HeroUpLevelBatchRequest_16000023{
 }
 
 message HeroUpLevelBatchResponse_16000024{
-	repeated HeroInfo heros = 1;	// 升级后的英雄等级数据，注意这里只取uid和等级数据。
+	repeated HeroInfo heros = 1;	// 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+}
+//批量升级上阵的英雄，按照品质和星级的顺序
+message HeroBattleUpLevelBatchRequest_16000025{
+}
+
+message HeroBattleUpLevelBatchResponse_16000026{
+	repeated HeroInfo heros = 1;	// 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
 }
 
 

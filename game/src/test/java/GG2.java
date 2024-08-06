@@ -1,24 +1,22 @@
-import java.util.Map;
-
-import cn.game.util.JsonUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GG2 {
 
 	public static void main(String[] args) throws Exception {
-		JSTest jsTest = new JSTest();
-		jsTest.i2 = 2;
-
-		String jsonString = JsonUtil.toJsonString(jsTest);
-		System.out.println(jsonString);
-		GG2.JSTest object = JsonUtil.parseObject(jsonString, JSTest.class);
-		System.out.println(object.i);
-		System.out.println(object.i2);
 		
-		Map<Integer, JSTest> map = new java.util.HashMap<>();
-		map.put(1, jsTest);
+		List<Integer> list = new ArrayList<>();
 
-		String mapString = JsonUtil.toJsonString(map);
-		System.err.println(mapString);
+		list.add(3);
+		list.add(8);
+		list.add(1);
+		list.add(2);
+
+		list.sort((a, b) -> a - b);
+
+		for (Integer integer : list) {
+			System.out.println(integer);
+		}
 
 	}
 

@@ -2598,7 +2598,7 @@ public final class HeroMsg {
 
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2607,7 +2607,7 @@ public final class HeroMsg {
         getHerosList();
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2615,7 +2615,7 @@ public final class HeroMsg {
     cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index);
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2623,7 +2623,7 @@ public final class HeroMsg {
     int getHerosCount();
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2632,7 +2632,7 @@ public final class HeroMsg {
         getHerosOrBuilderList();
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2735,7 +2735,7 @@ public final class HeroMsg {
     private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_;
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2746,7 +2746,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2758,7 +2758,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2769,7 +2769,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -2780,7 +2780,7 @@ public final class HeroMsg {
     }
     /**
      * <pre>
-     * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
      * </pre>
      *
      * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3147,7 +3147,7 @@ public final class HeroMsg {
 
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3161,7 +3161,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3175,7 +3175,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3189,7 +3189,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3210,7 +3210,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3228,7 +3228,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3248,7 +3248,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3269,7 +3269,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3287,7 +3287,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3305,7 +3305,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3324,7 +3324,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3341,7 +3341,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3358,7 +3358,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3369,7 +3369,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3383,7 +3383,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3398,7 +3398,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3409,7 +3409,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3421,7 +3421,7 @@ public final class HeroMsg {
       }
       /**
        * <pre>
-       * 升级后的英雄等级数据，注意这里只取uid和等级数据。
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
        * </pre>
        *
        * <code>repeated .Protos.HeroInfo heros = 1;</code>
@@ -3492,6 +3492,1337 @@ public final class HeroMsg {
 
     @java.lang.Override
     public cn.game.protocol.protobuf.HeroMsg.HeroUpLevelBatchResponse_16000024 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface HeroBattleUpLevelBatchRequest_16000025OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.HeroBattleUpLevelBatchRequest_16000025)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   *批量升级上阵的英雄，按照品质和星级的顺序
+   * </pre>
+   *
+   * Protobuf type {@code Protos.HeroBattleUpLevelBatchRequest_16000025}
+   */
+  public static final class HeroBattleUpLevelBatchRequest_16000025 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.HeroBattleUpLevelBatchRequest_16000025)
+      HeroBattleUpLevelBatchRequest_16000025OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use HeroBattleUpLevelBatchRequest_16000025.newBuilder() to construct.
+    private HeroBattleUpLevelBatchRequest_16000025(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private HeroBattleUpLevelBatchRequest_16000025() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new HeroBattleUpLevelBatchRequest_16000025();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private HeroBattleUpLevelBatchRequest_16000025(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.class, cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 other = (cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *批量升级上阵的英雄，按照品质和星级的顺序
+     * </pre>
+     *
+     * Protobuf type {@code Protos.HeroBattleUpLevelBatchRequest_16000025}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.HeroBattleUpLevelBatchRequest_16000025)
+        cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.class, cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 build() {
+        cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 buildPartial() {
+        cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 result = new cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025) {
+          return mergeFrom((cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 other) {
+        if (other == cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.HeroBattleUpLevelBatchRequest_16000025)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.HeroBattleUpLevelBatchRequest_16000025)
+    private static final cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025();
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<HeroBattleUpLevelBatchRequest_16000025>
+        PARSER = new com.google.protobuf.AbstractParser<HeroBattleUpLevelBatchRequest_16000025>() {
+      @java.lang.Override
+      public HeroBattleUpLevelBatchRequest_16000025 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new HeroBattleUpLevelBatchRequest_16000025(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<HeroBattleUpLevelBatchRequest_16000025> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<HeroBattleUpLevelBatchRequest_16000025> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface HeroBattleUpLevelBatchResponse_16000026OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.HeroBattleUpLevelBatchResponse_16000026)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> 
+        getHerosList();
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index);
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    int getHerosCount();
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+        getHerosOrBuilderList();
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code Protos.HeroBattleUpLevelBatchResponse_16000026}
+   */
+  public static final class HeroBattleUpLevelBatchResponse_16000026 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.HeroBattleUpLevelBatchResponse_16000026)
+      HeroBattleUpLevelBatchResponse_16000026OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use HeroBattleUpLevelBatchResponse_16000026.newBuilder() to construct.
+    private HeroBattleUpLevelBatchResponse_16000026(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private HeroBattleUpLevelBatchResponse_16000026() {
+      heros_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new HeroBattleUpLevelBatchResponse_16000026();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private HeroBattleUpLevelBatchResponse_16000026(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HeroInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              heros_.add(
+                  input.readMessage(cn.game.protocol.protobuf.BaseMsg.HeroInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          heros_ = java.util.Collections.unmodifiableList(heros_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026.class, cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026.Builder.class);
+    }
+
+    public static final int HEROS_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_;
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> getHerosList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+        getHerosOrBuilderList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public int getHerosCount() {
+      return heros_.size();
+    }
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index) {
+      return heros_.get(index);
+    }
+    /**
+     * <pre>
+     * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+        int index) {
+      return heros_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < heros_.size(); i++) {
+        output.writeMessage(1, heros_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < heros_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, heros_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 other = (cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026) obj;
+
+      if (!getHerosList()
+          .equals(other.getHerosList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getHerosCount() > 0) {
+        hash = (37 * hash) + HEROS_FIELD_NUMBER;
+        hash = (53 * hash) + getHerosList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.HeroBattleUpLevelBatchResponse_16000026}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.HeroBattleUpLevelBatchResponse_16000026)
+        cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026.class, cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getHerosFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          herosBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.HeroMsg.internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 build() {
+        cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 buildPartial() {
+        cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 result = new cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026(this);
+        int from_bitField0_ = bitField0_;
+        if (herosBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            heros_ = java.util.Collections.unmodifiableList(heros_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.heros_ = heros_;
+        } else {
+          result.heros_ = herosBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026) {
+          return mergeFrom((cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 other) {
+        if (other == cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026.getDefaultInstance()) return this;
+        if (herosBuilder_ == null) {
+          if (!other.heros_.isEmpty()) {
+            if (heros_.isEmpty()) {
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureHerosIsMutable();
+              heros_.addAll(other.heros_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.heros_.isEmpty()) {
+            if (herosBuilder_.isEmpty()) {
+              herosBuilder_.dispose();
+              herosBuilder_ = null;
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              herosBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getHerosFieldBuilder() : null;
+            } else {
+              herosBuilder_.addAllMessages(other.heros_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_ =
+        java.util.Collections.emptyList();
+      private void ensureHerosIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HeroInfo>(heros_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> herosBuilder_;
+
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> getHerosList() {
+        if (herosBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(heros_);
+        } else {
+          return herosBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public int getHerosCount() {
+        if (herosBuilder_ == null) {
+          return heros_.size();
+        } else {
+          return herosBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);
+        } else {
+          return herosBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.set(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addHeros(cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addHeros(
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder addAllHeros(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfo> values) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, heros_);
+          onChanged();
+        } else {
+          herosBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder clearHeros() {
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          herosBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public Builder removeHeros(int index) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.remove(index);
+          onChanged();
+        } else {
+          herosBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder getHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+          int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);  } else {
+          return herosBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+           getHerosOrBuilderList() {
+        if (herosBuilder_ != null) {
+          return herosBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(heros_);
+        }
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder addHerosBuilder() {
+        return getHerosFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder addHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 1;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder> 
+           getHerosBuilderList() {
+        return getHerosFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+          getHerosFieldBuilder() {
+        if (herosBuilder_ == null) {
+          herosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder>(
+                  heros_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          heros_ = null;
+        }
+        return herosBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.HeroBattleUpLevelBatchResponse_16000026)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.HeroBattleUpLevelBatchResponse_16000026)
+    private static final cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026();
+    }
+
+    public static cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<HeroBattleUpLevelBatchResponse_16000026>
+        PARSER = new com.google.protobuf.AbstractParser<HeroBattleUpLevelBatchResponse_16000026>() {
+      @java.lang.Override
+      public HeroBattleUpLevelBatchResponse_16000026 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new HeroBattleUpLevelBatchResponse_16000026(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<HeroBattleUpLevelBatchResponse_16000026> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<HeroBattleUpLevelBatchResponse_16000026> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -15856,6 +17187,16 @@ public final class HeroMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_HeroUpLevelBatchResponse_16000024_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_HeroConflateRequest_16000003_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -15967,34 +17308,37 @@ public final class HeroMsg {
       "onse_16000022\022\r\n\005level\030\001 \001(\005\"\"\n HeroUpLe" +
       "velBatchRequest_16000023\"D\n!HeroUpLevelB" +
       "atchResponse_16000024\022\037\n\005heros\030\001 \003(\0132\020.P" +
-      "rotos.HeroInfo\"@\n\034HeroConflateRequest_16" +
-      "000003\022\013\n\003uid\030\001 \001(\t\022\023\n\013consumedUid\030\002 \003(\t" +
-      "\"?\n\035HeroConflateResponse_16000004\022\036\n\004her" +
-      "o\030\001 \001(\0132\020.Protos.HeroInfo\"6\n\032HeroBattleR" +
-      "equest_16000005\022\013\n\003uid\030\001 \001(\t\022\013\n\003pos\030\002 \001(" +
-      "\005\"\035\n\033HeroBattleResponse_16000006\"0\n!Hero" +
-      "BattleDismissRequest_16000009\022\013\n\003uid\030\001 \001" +
-      "(\t\"$\n\"HeroBattleDismissResponse_1600000a" +
-      "\"-\n\036HeroLevelResetRequest_16000007\022\013\n\003ui" +
-      "d\030\001 \001(\t\"!\n\037HeroLevelResetResponse_160000" +
-      "08\"/\n HeroQualityResetRequest_16000011\022\013" +
-      "\n\003uid\030\001 \001(\t\"D\n!HeroQualityResetResponse_" +
-      "16000012\022\037\n\005items\030\002 \003(\0132\020.Protos.ItemInf" +
-      "o\"!\n\037HeroFreeDayRentRequest_16000030\"C\n " +
-      "HeroFreeDayRentResponse_16000031\022\037\n\005hero" +
-      "s\030\001 \003(\0132\020.Protos.HeroInfo\"4\n%HeroFreeDay" +
-      "RentChooseRequest_16000032\022\013\n\003uid\030\001 \001(\t\"" +
-      "(\n&HeroFreeDayRentChooseResponse_1600003" +
-      "3\"\'\n%HeroIllustrationsListRequest_160000" +
-      "40\"g\n&HeroIllustrationsListResponse_1600" +
-      "0041\022\017\n\007heroIds\030\001 \003(\005\022,\n\005heros\030\002 \003(\0132\035.P" +
-      "rotos.HeroIllustrationsInfo\"8\n\025HeroIllus" +
-      "trationsInfo\022\016\n\006heroId\030\001 \001(\005\022\017\n\007quality\030" +
-      "\002 \003(\005\")\n\'HeroIllustrationsRewardRequest_" +
-      "16000042\"N\n(HeroIllustrationsRewardRespo" +
-      "nse_16000043\022\"\n\006reward\030\002 \003(\0132\022.Protos.Re" +
-      "wardInfoB\033\n\031cn.game.protocol.protobufb\006p" +
-      "roto3"
+      "rotos.HeroInfo\"(\n&HeroBattleUpLevelBatch" +
+      "Request_16000025\"J\n\'HeroBattleUpLevelBat" +
+      "chResponse_16000026\022\037\n\005heros\030\001 \003(\0132\020.Pro" +
+      "tos.HeroInfo\"@\n\034HeroConflateRequest_1600" +
+      "0003\022\013\n\003uid\030\001 \001(\t\022\023\n\013consumedUid\030\002 \003(\t\"?" +
+      "\n\035HeroConflateResponse_16000004\022\036\n\004hero\030" +
+      "\001 \001(\0132\020.Protos.HeroInfo\"6\n\032HeroBattleReq" +
+      "uest_16000005\022\013\n\003uid\030\001 \001(\t\022\013\n\003pos\030\002 \001(\005\"" +
+      "\035\n\033HeroBattleResponse_16000006\"0\n!HeroBa" +
+      "ttleDismissRequest_16000009\022\013\n\003uid\030\001 \001(\t" +
+      "\"$\n\"HeroBattleDismissResponse_1600000a\"-" +
+      "\n\036HeroLevelResetRequest_16000007\022\013\n\003uid\030" +
+      "\001 \001(\t\"!\n\037HeroLevelResetResponse_16000008" +
+      "\"/\n HeroQualityResetRequest_16000011\022\013\n\003" +
+      "uid\030\001 \001(\t\"D\n!HeroQualityResetResponse_16" +
+      "000012\022\037\n\005items\030\002 \003(\0132\020.Protos.ItemInfo\"" +
+      "!\n\037HeroFreeDayRentRequest_16000030\"C\n He" +
+      "roFreeDayRentResponse_16000031\022\037\n\005heros\030" +
+      "\001 \003(\0132\020.Protos.HeroInfo\"4\n%HeroFreeDayRe" +
+      "ntChooseRequest_16000032\022\013\n\003uid\030\001 \001(\t\"(\n" +
+      "&HeroFreeDayRentChooseResponse_16000033\"" +
+      "\'\n%HeroIllustrationsListRequest_16000040" +
+      "\"g\n&HeroIllustrationsListResponse_160000" +
+      "41\022\017\n\007heroIds\030\001 \003(\005\022,\n\005heros\030\002 \003(\0132\035.Pro" +
+      "tos.HeroIllustrationsInfo\"8\n\025HeroIllustr" +
+      "ationsInfo\022\016\n\006heroId\030\001 \001(\005\022\017\n\007quality\030\002 " +
+      "\003(\005\")\n\'HeroIllustrationsRewardRequest_16" +
+      "000042\"N\n(HeroIllustrationsRewardRespons" +
+      "e_16000043\022\"\n\006reward\030\002 \003(\0132\022.Protos.Rewa" +
+      "rdInfoB\033\n\031cn.game.protocol.protobufb\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -16038,116 +17382,128 @@ public final class HeroMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroUpLevelBatchResponse_16000024_descriptor,
         new java.lang.String[] { "Heros", });
-    internal_static_Protos_HeroConflateRequest_16000003_descriptor =
+    internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_descriptor =
       getDescriptor().getMessageTypes().get(6);
+    internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_HeroBattleUpLevelBatchRequest_16000025_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_HeroBattleUpLevelBatchResponse_16000026_descriptor,
+        new java.lang.String[] { "Heros", });
+    internal_static_Protos_HeroConflateRequest_16000003_descriptor =
+      getDescriptor().getMessageTypes().get(8);
     internal_static_Protos_HeroConflateRequest_16000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroConflateRequest_16000003_descriptor,
         new java.lang.String[] { "Uid", "ConsumedUid", });
     internal_static_Protos_HeroConflateResponse_16000004_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_HeroConflateResponse_16000004_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroConflateResponse_16000004_descriptor,
         new java.lang.String[] { "Hero", });
     internal_static_Protos_HeroBattleRequest_16000005_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_Protos_HeroBattleRequest_16000005_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroBattleRequest_16000005_descriptor,
         new java.lang.String[] { "Uid", "Pos", });
     internal_static_Protos_HeroBattleResponse_16000006_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_Protos_HeroBattleResponse_16000006_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroBattleResponse_16000006_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_HeroBattleDismissRequest_16000009_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_Protos_HeroBattleDismissRequest_16000009_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroBattleDismissRequest_16000009_descriptor,
         new java.lang.String[] { "Uid", });
     internal_static_Protos_HeroBattleDismissResponse_1600000a_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_Protos_HeroBattleDismissResponse_1600000a_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroBattleDismissResponse_1600000a_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_HeroLevelResetRequest_16000007_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_HeroLevelResetRequest_16000007_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroLevelResetRequest_16000007_descriptor,
         new java.lang.String[] { "Uid", });
     internal_static_Protos_HeroLevelResetResponse_16000008_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_HeroLevelResetResponse_16000008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroLevelResetResponse_16000008_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_HeroQualityResetRequest_16000011_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_Protos_HeroQualityResetRequest_16000011_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroQualityResetRequest_16000011_descriptor,
         new java.lang.String[] { "Uid", });
     internal_static_Protos_HeroQualityResetResponse_16000012_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_Protos_HeroQualityResetResponse_16000012_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroQualityResetResponse_16000012_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_Protos_HeroFreeDayRentRequest_16000030_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroFreeDayRentRequest_16000030_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_HeroFreeDayRentResponse_16000031_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_HeroFreeDayRentResponse_16000031_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroFreeDayRentResponse_16000031_descriptor,
         new java.lang.String[] { "Heros", });
     internal_static_Protos_HeroFreeDayRentChooseRequest_16000032_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_HeroFreeDayRentChooseRequest_16000032_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroFreeDayRentChooseRequest_16000032_descriptor,
         new java.lang.String[] { "Uid", });
     internal_static_Protos_HeroFreeDayRentChooseResponse_16000033_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_HeroFreeDayRentChooseResponse_16000033_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroFreeDayRentChooseResponse_16000033_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_HeroIllustrationsListRequest_16000040_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Protos_HeroIllustrationsListRequest_16000040_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroIllustrationsListRequest_16000040_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_HeroIllustrationsListResponse_16000041_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_Protos_HeroIllustrationsListResponse_16000041_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroIllustrationsListResponse_16000041_descriptor,
         new java.lang.String[] { "HeroIds", "Heros", });
     internal_static_Protos_HeroIllustrationsInfo_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_Protos_HeroIllustrationsInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroIllustrationsInfo_descriptor,
         new java.lang.String[] { "HeroId", "Quality", });
     internal_static_Protos_HeroIllustrationsRewardRequest_16000042_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_Protos_HeroIllustrationsRewardRequest_16000042_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroIllustrationsRewardRequest_16000042_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_HeroIllustrationsRewardResponse_16000043_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_Protos_HeroIllustrationsRewardResponse_16000043_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroIllustrationsRewardResponse_16000043_descriptor,

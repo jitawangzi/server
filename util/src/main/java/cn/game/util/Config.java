@@ -169,7 +169,7 @@ public final class Config {
 			wechat_midas_env = Byte.parseByte(initialProp.getProperty("wechat_midas_env", ""));
 			wechat_midas_AppKey = initialProp.getProperty("wechat_midas_AppKey", "");
 			
-			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "1"));
+			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
 
 			APP_KEY = initialProp.getProperty("APP_KEY", "");
 
