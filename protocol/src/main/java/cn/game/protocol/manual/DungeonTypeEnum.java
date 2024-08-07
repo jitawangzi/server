@@ -21,6 +21,9 @@ public enum DungeonTypeEnum{
 	/** 灵魄之战 */
 	LingPo(10, "灵魄之战"),
 
+	/** 失落真经 */
+	ShiLuoZhenJing(20, "失落真经"),
+
 	/** 突发事件 */
 	BattleEvent(33, "突发事件"),
 	/** 探索战斗 */

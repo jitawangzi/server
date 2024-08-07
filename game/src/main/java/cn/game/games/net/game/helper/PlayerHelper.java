@@ -331,10 +331,6 @@ public class PlayerHelper {
 //			return false;
 //		}
 		GoodsModule goodsModule = player.getGoodsModule(id);
-		long maxCount = goodsModule.getCount(id);
-		if (value > maxCount) {
-			value = (int) maxCount;
-		}
 		boolean ret = goodsModule.del(id, value, consumeType);
 
 		if (ret) {

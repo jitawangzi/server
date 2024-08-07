@@ -181,7 +181,7 @@ public class ChapterModule extends BasePlayerModule  {
 		int battleType = battleConfig.BattleType;
 		if (battleType == DungeonTypeEnum.BattleChapter.getId()) {
 			Chapter chapter = this.chapters.get(battleId);
-			return chapter != null && chapter.getPass();
+			return chapter != null && chapter.getPass() != null && chapter.getPass();
 		}
 		if (battleType == DungeonTypeEnum.DaoHeart.getId() || battleType == DungeonTypeEnum.XinMo.getId() || battleType == DungeonTypeEnum.YaoWang.getId()) {
 			DaoHeartBattle daoHeartBattle = getDaoHeartBattle(battleType);

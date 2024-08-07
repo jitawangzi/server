@@ -1,11 +1,15 @@
 package cn.game.games.net.game.module.battle;
 
+import java.util.List;
+
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
  * HCBattle表的战斗
@@ -29,5 +33,10 @@ public abstract class HCBattleHandler implements IBattleHandler {
 			return ErrorMsgEnum.resource_not_enough.getId();
 		}
 		return 0;
+	}
+
+	@Override
+	public ResultObject<List<RewardInfo>> quickEnd(long playerId, int typeId) {
+		return null;
 	}
 }

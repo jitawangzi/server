@@ -45,6 +45,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
 	public final static int BattleFieldEndRequest_13000003 = 0x13000003;    //结束关卡战斗请求  
 	public final static int BattleFieldEndResponse_13000004 = 0x13000004;    //结束关卡战斗  
+	public final static int BattleFieldQuickEndRequest_13000005 = 0x13000005;    //关卡快速战斗请求  
+	public final static int BattleFieldQuickEndResponse_13000006 = 0x13000006;    //关卡快速战斗响应  
 	public final static int BattleShareRequest_13000007 = 0x13000007;    //看广告并分享之后额外获得xx倍奖励  
 	public final static int BattleShareResponse_13000008 = 0x13000008;    //看广告并分享之后额外获得xx倍奖励  
 	public final static int BattleReliveRequest_13000010 = 0x13000010;    //复活  
@@ -93,8 +95,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleSpiritualGetPointResponse_13000097 = 0x13000097;    
 	public final static int BattleSpiritualChangeBattleRequest_13000098 = 0x13000098;    //提升或者降低难度  
 	public final static int BattleSpiritualChangeBattleResponse_13000099 = 0x13000099;    
-	public final static int BattleRougeRefreshRequest_13000005 = 0x13000005;    //肉鸽刷新,每天前3次免费，第四次看广告。  
-	public final static int BattleRougeRefreshResponse_13000006 = 0x13000006;    //肉鸽刷新  
+	public final static int BattleRougeRefreshRequest_13000052 = 0x13000052;    //肉鸽刷新,每天前3次免费，第四次看广告。  
+	public final static int BattleRougeRefreshResponse_13000053 = 0x13000053;    //肉鸽刷新  
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    //领取体力  
 	public final static int BattleStaminaResponse_13000051 = 0x13000051;    
 	public final static int ChatRequest_31000001 = 0x31000001;    //请求聊天  
@@ -410,6 +412,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(BattleFieldEndResponse_13000004, cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(BattleFieldQuickEndRequest_13000005, cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleFieldQuickEndResponse_13000006, cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndResponse_13000006.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(BattleShareRequest_13000007, cn.game.protocol.protobuf.BattleMsg.BattleShareRequest_13000007.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleShareResponse_13000008, cn.game.protocol.protobuf.BattleMsg.BattleShareResponse_13000008.getDefaultInstance()
@@ -506,9 +512,9 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(BattleSpiritualChangeBattleResponse_13000099, cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleResponse_13000099.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(BattleRougeRefreshRequest_13000005, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005.getDefaultInstance()
+		parsersMap.put(BattleRougeRefreshRequest_13000052, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000052.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(BattleRougeRefreshResponse_13000006, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006.getDefaultInstance()
+		parsersMap.put(BattleRougeRefreshResponse_13000053, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000053.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleStaminaRequest_13000050, cn.game.protocol.protobuf.BattleMsg.BattleStaminaRequest_13000050.getDefaultInstance()
 				.getParserForType());
@@ -1080,6 +1086,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleFieldStartResponse_13000002", 0x13000002);
 		nameIdMap.put("BattleFieldEndRequest_13000003", 0x13000003);
 		nameIdMap.put("BattleFieldEndResponse_13000004", 0x13000004);
+		nameIdMap.put("BattleFieldQuickEndRequest_13000005", 0x13000005);
+		nameIdMap.put("BattleFieldQuickEndResponse_13000006", 0x13000006);
 		nameIdMap.put("BattleShareRequest_13000007", 0x13000007);
 		nameIdMap.put("BattleShareResponse_13000008", 0x13000008);
 		nameIdMap.put("BattleReliveRequest_13000010", 0x13000010);
@@ -1128,8 +1136,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleSpiritualGetPointResponse_13000097", 0x13000097);
 		nameIdMap.put("BattleSpiritualChangeBattleRequest_13000098", 0x13000098);
 		nameIdMap.put("BattleSpiritualChangeBattleResponse_13000099", 0x13000099);
-		nameIdMap.put("BattleRougeRefreshRequest_13000005", 0x13000005);
-		nameIdMap.put("BattleRougeRefreshResponse_13000006", 0x13000006);
+		nameIdMap.put("BattleRougeRefreshRequest_13000052", 0x13000052);
+		nameIdMap.put("BattleRougeRefreshResponse_13000053", 0x13000053);
 		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);
 		nameIdMap.put("BattleStaminaResponse_13000051", 0x13000051);
 		nameIdMap.put("ChatRequest_31000001", 0x31000001);

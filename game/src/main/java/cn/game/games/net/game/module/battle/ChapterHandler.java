@@ -31,6 +31,7 @@ import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055;
@@ -47,6 +48,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointR
 import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointResponse_13000071;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndResponse_13000006;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartResponse_13000002;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048;
@@ -63,8 +66,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010;
 import cn.game.protocol.protobuf.BattleMsg.BattleReliveResponse_13000011;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
-import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000005;
-import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000006;
+import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000052;
+import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000053;
 import cn.game.protocol.protobuf.BattleMsg.BattleShareRequest_13000007;
 import cn.game.protocol.protobuf.BattleMsg.BattleShareResponse_13000008;
 import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098;
@@ -102,13 +105,14 @@ public class ChapterHandler extends BaseHandler {
 
 		putInvoker(PbProtocol.BattleFieldStartRequest_13000001, (client, message) -> start(client, message));
 		putInvoker(PbProtocol.BattleFieldEndRequest_13000003, (client, message) -> end(client, message));
+		putInvoker(PbProtocol.BattleFieldQuickEndRequest_13000005, (client, message) -> quickeEnd(client, message));
 		putInvoker(PbProtocol.BattleShareRequest_13000007, (client, message) -> rewardMultiple(client, message));
 //		putInvoker(PbProtocol.BattleFieldSweepRequest_13000005, (client, message) -> sweep(client, message));
 //		putInvoker(PbProtocol.BattleChapterRewardRequest_13000022, (client, message) -> reward(client, message));
 //		putInvoker(PbProtocol.ExploreActRewardRequest_13000020, (client, message) -> exploreActReward(client, message));
 		putInvoker(PbProtocol.BattleRewardRequest_13000022, (client, message) -> chapterReward(client, message));
 		putInvoker(PbProtocol.HCBattleRewardRequest_13000027, (client, message) -> hcChapterReward(client, message));
-		putInvoker(PbProtocol.BattleRougeRefreshRequest_13000005, (client, message) -> rougeRefresh(client, message));
+		putInvoker(PbProtocol.BattleRougeRefreshRequest_13000052, (client, message) -> rougeRefresh(client, message));
 		putInvoker(PbProtocol.BattlePatrolRewardRequest_13000044, this::patrolReward);
 		putInvoker(PbProtocol.BattleStaminaRequest_13000050, this::stamina);
 		putInvoker(PbProtocol.BattleSweepRequest_13000024, this::sweep);
@@ -836,8 +840,8 @@ public class ChapterHandler extends BaseHandler {
 	}
 
 	protected void rougeRefresh(NetClient client, Object message) {
-		BattleRougeRefreshRequest_13000005 req = (BattleRougeRefreshRequest_13000005) message;
-		BattleRougeRefreshResponse_13000006.Builder resp = BattleRougeRefreshResponse_13000006.newBuilder();
+		BattleRougeRefreshRequest_13000052 req = (BattleRougeRefreshRequest_13000052) message;
+		BattleRougeRefreshResponse_13000053.Builder resp = BattleRougeRefreshResponse_13000053.newBuilder();
 
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
@@ -1117,6 +1121,33 @@ public class ChapterHandler extends BaseHandler {
 		resp.addAllRewards(multipleRewards);
 		client.sendProtocol(resp);
 
+	}
+
+	protected void quickeEnd(NetClient client, Object message) {
+		BattleFieldQuickEndRequest_13000005 req = (BattleFieldQuickEndRequest_13000005) message;
+		BattleFieldQuickEndResponse_13000006.Builder resp = BattleFieldQuickEndResponse_13000006.newBuilder();
+		int type = req.getType();
+		int typeId = req.getTypeId();
+		boolean win = req.getWin();
+		long playerId = client.getPlayerId();
+
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		if (type != DungeonTypeEnum.ShiLuoZhenJing.getId()) {
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+
+		IBattleHandler battleHandler = BattleFactory.getBattleHandler(type);
+		ResultObject<List<RewardInfo>> result = battleHandler.quickEnd(playerId, typeId);
+		if (result.getErrorCode() > 0) {
+			client.sendProtocol(resp, result.getErrorCode());
+			return;
+		}
+		if (result.getValue() != null) {
+			resp.addAllRewards(result.getValue());
+		}
+		client.sendProtocol(resp);
 	}
 	protected void end(NetClient client, Object message) {
 		BattleFieldEndRequest_13000003 req = (BattleFieldEndRequest_13000003) message;

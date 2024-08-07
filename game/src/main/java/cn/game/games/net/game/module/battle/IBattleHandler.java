@@ -1,8 +1,12 @@
 package cn.game.games.net.game.module.battle;
 
+import java.util.List;
+
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.ResultObject;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**
  * 战斗接口
@@ -24,6 +28,13 @@ public interface IBattleHandler {
 	int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid);
 	
 	int battleEnd(long playerId, BattleFieldEndRequest_13000003 request, BattleFieldEndResponse_13000004.Builder resp);
+
+	/** 
+	 * 有些战斗可以直接结束
+	 * @param playerId
+	 * @return
+	 */
+	ResultObject<List<RewardInfo>> quickEnd(long playerId, int typeId);
 
 	int getType();
 

@@ -167,10 +167,13 @@ public class Chapter implements Serializable, DbEntity {
 	public BattleInfo toBattleInfo() {
 		Builder builder = BattleInfo.newBuilder();
 		builder.setId(battleId);
-		builder.setHpPercent(hpPercent);
-		builder.setFinish(pass) ; 
+		if (hpPercent != null) {
+			builder.setHpPercent(hpPercent);
+		}
+		if (pass != null) {
+			builder.setFinish(pass);
+		}
 		builder.addAllRewardIndex(rewards);
-//		builder.setRewardIndex(rewards) ; 
 		builder.setBattleTime(battleTime);
 
 		return builder.build();

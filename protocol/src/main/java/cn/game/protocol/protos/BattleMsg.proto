@@ -44,6 +44,19 @@ message BattleFieldEndResponse_13000004{
 	repeated RewardInfo rewards = 1;		// 获得的奖励
 }
 
+
+// 关卡快速战斗请求
+message BattleFieldQuickEndRequest_13000005{
+	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战
+	uint32 typeId = 2; // 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，例如1、2、3是Battle表id， 11 、12 是HCBattle表id;
+	bool win = 3;	   // 战斗是否成功，看具体玩法需要，如果失败了什么也不处理，则失败时不用发这个快速战斗的请求。
+}
+
+// 关卡快速战斗响应
+message BattleFieldQuickEndResponse_13000006{
+	repeated RewardInfo rewards = 1;		// 获得的奖励
+}
+
 // 看广告并分享之后额外获得xx倍奖励
 message BattleShareRequest_13000007{
 }
@@ -330,11 +343,11 @@ message BattleSpiritualChangeBattleResponse_13000099
 //@NotUseStart
 
 // 肉鸽刷新,每天前3次免费，第四次看广告。
-message BattleRougeRefreshRequest_13000005{
+message BattleRougeRefreshRequest_13000052{
 }
 
 // 肉鸽刷新
-message BattleRougeRefreshResponse_13000006{
+message BattleRougeRefreshResponse_13000053{
 }
 
 
