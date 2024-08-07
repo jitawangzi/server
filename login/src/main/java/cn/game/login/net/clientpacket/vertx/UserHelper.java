@@ -51,7 +51,7 @@ public class UserHelper {
 	 */
 	public static long genPlayerId() {
 		RAtomicLong atomicId = RedissonUtil.getRedis().getAtomicLong(CacheType.Player_MAX_ID.key());
-		return atomicId.addAndGet(GlobalConst.CreateUID[1]);
+		return atomicId.addAndGet((long)GlobalConst.CreateUID[1]);
 	}
 	
 	public static void setUserNewCache(User user) {

@@ -40,11 +40,11 @@ public class IpUtil {
 		InetAddress result = null;
 		loop: while (nets.hasMoreElements()) {
 			netinf = nets.nextElement();
+//			System.err.println(netinf.getName());
 			// 筛选网卡
 			if (defaultNetworkInterface != null && !defaultNetworkInterface.equalsIgnoreCase(netinf.getName())) {
 				continue;
 			}
-//			System.err.println(netinf.getName());
 			Enumeration<InetAddress> addresses = netinf.getInetAddresses();
 			while (addresses.hasMoreElements()) {
 				InetAddress address = addresses.nextElement();

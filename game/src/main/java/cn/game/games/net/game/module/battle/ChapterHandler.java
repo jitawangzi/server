@@ -159,7 +159,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
+		LingPoBattle lingPoBattle = chapterModule.getBattle(DungeonTypeEnum.LingPo);
 		if (lingPoBattle == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
 			return;
@@ -203,7 +203,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
+		LingPoBattle lingPoBattle = chapterModule.getBattle(DungeonTypeEnum.LingPo);
 		if (lingPoBattle == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
 			return;
@@ -239,7 +239,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
+		LingPoBattle lingPoBattle = chapterModule.getBattle(DungeonTypeEnum.LingPo);
 		if (lingPoBattle == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
 			return;
@@ -282,7 +282,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
+		LingPoBattle lingPoBattle = chapterModule.getBattle(DungeonTypeEnum.LingPo);
 		if (lingPoBattle == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
 			return;
@@ -343,7 +343,7 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getMengYanMiJingBattle();
+		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
 		List<Integer> rewardBattleIds = mengYanMiJingBattle.getRewardBattleIds();
 		int maxSweepBattle = mengYanMiJingBattle.maxSweepBattle();
 		List<RewardInfo> rewardsList = new ArrayList<>(); 
@@ -374,7 +374,7 @@ public class ChapterHandler extends BaseHandler {
 		}
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getMengYanMiJingBattle();
+		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
 		int buffRefreshTimes = mengYanMiJingBattle.getBuffRefreshTimes();
 		if (buffRefreshTimes < 0) {
 			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
@@ -420,7 +420,7 @@ public class ChapterHandler extends BaseHandler {
 				resp.addLineups(lineup);
 			});
 		}
-		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getMengYanMiJingBattle();
+		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
 		resp.setBuffRefreshTimes(mengYanMiJingBattle.getBuffRefreshTimes());
 		resp.setStartBattle(mengYanMiJingBattle.getStartBattleId());
 		resp.putAllBuffIds(mengYanMiJingBattle.getBuffIdsMap());
@@ -471,7 +471,7 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 		if (daoHeartBattle != null) {
 			resp.addAllId(daoHeartBattle.getRewardBattleIds());
 		}
@@ -488,7 +488,7 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 		if (daoHeartBattle == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
 			return;
@@ -526,7 +526,7 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 		if (daoHeartBattle == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 			return;
@@ -587,7 +587,7 @@ public class ChapterHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 		if (daoHeartBattle == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 			return;
@@ -644,7 +644,7 @@ public class ChapterHandler extends BaseHandler {
 			}
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 		if (daoHeartBattle == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 			return;

@@ -203,10 +203,7 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 		if (!player.isFuncOpen(InitialUI.NightmareRealm)) {
 			return ErrorMsgEnum.func_not_open.getId();
 		}
-
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		MengYanMiJingBattle battle = chapterModule.getMengYanMiJingBattle();
-		if (id != battle.getStartBattleId()) {
+		if (id != getStartBattleId()) {
 			return ErrorMsgEnum.request_parameter_error.getId();
 		}
 		return 0;
@@ -218,12 +215,10 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 		if (!request.getWin()) {
 			return ResultObject.success();
 		}
-
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		int attackingType = chapterModule.getAttackingType();
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
-		MengYanMiJingBattle battle = chapterModule.getMengYanMiJingBattle();
-		boolean newRecord = battle.battleCompleted();
+		boolean newRecord = this.battleCompleted();
 		if (newRecord) {
 			OpType opType = OpType.MengYanMiJingFirstFinish;
 			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);

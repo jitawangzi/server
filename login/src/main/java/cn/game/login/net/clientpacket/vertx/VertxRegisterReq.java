@@ -1,19 +1,18 @@
 package cn.game.login.net.clientpacket.vertx;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.util.IdUtil;
-import cn.game.login.cache.entity.User;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountRegister;
 import cn.game.protocol.protobuf.Account.AccountRegisterResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.util.RedissonUtil;
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
@@ -26,6 +25,7 @@ import io.vertx.ext.web.RoutingContext;
  * @author SYQ
  */
 public class VertxRegisterReq implements Handler<RoutingContext> {
+	protected static final Logger log = LoggerFactory.getLogger(VertxRegisterReq.class);
 
 	@Override
 	public void handle(RoutingContext context) {
@@ -67,7 +67,7 @@ public class VertxRegisterReq implements Handler<RoutingContext> {
 					UserHelper.createUser(account, pwd, "official", account, "");
 					response.end(Buffer.buffer(resp.build().toByteArray()));
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.error("createUser error ", e);
 					HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("账号已经存在")
 							.setErrorCode(AccountErrorCode.ACCOUNT_EXIST).build();
 					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));

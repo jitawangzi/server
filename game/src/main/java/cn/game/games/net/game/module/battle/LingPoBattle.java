@@ -55,14 +55,14 @@ public class LingPoBattle extends XiYouBattleHandler {
 		adsGetBattleTimes = false;
 		changeBattleTimes = 0;
 		if (battleId == 0) {
-			initBattleId(player);
+			initBattleId();
 		}
 		this.randomBuff.clear();
 		randomBuff.addAll(BattleHelper.randomBuffs(battleId, 3));
 	}
 
-	public void updateBattleId(Player player) {
-		initBattleId(player);
+	public void updateBattleId() {
+		initBattleId();
 		if (randomBuff.isEmpty()) {
 			randomBuff.addAll(BattleHelper.randomBuffs(battleId, 3));
 		}
@@ -73,7 +73,7 @@ public class LingPoBattle extends XiYouBattleHandler {
 	 * @param type  {@link BattleConfig#BattleType} 
 	 * @return
 	 */
-	private void initBattleId(Player player) {
+	private void initBattleId() {
 
 		int mainBattleId = player.getChapterModule().getMainBattleHighest();
 		if (mainBattleId == 0) {
@@ -154,9 +154,7 @@ public class LingPoBattle extends XiYouBattleHandler {
 
 	@Override
 	public int battleStart(int id) {
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
-		if (id != lingPoBattle.getBattleId()) {
+		if (id != this.getBattleId()) {
 			return ErrorMsgEnum.request_parameter_error.getId();
 		}
 		LocalTime now = LocalTime.now();
@@ -165,10 +163,10 @@ public class LingPoBattle extends XiYouBattleHandler {
 		if (now.isAfter(start)) {
 			return ErrorMsgEnum.not_open.getId();
 		}
-		if (lingPoBattle.isAdsGetBattleTimes()) {
+		if (this.isAdsGetBattleTimes()) {
 			return ErrorMsgEnum.not_watch_ads.getId();
 		}
-		if (lingPoBattle.getBattleTimes() >= 2) {
+		if (this.getBattleTimes() >= 2) {
 			return ErrorMsgEnum.times_limit.getId();
 		}
 		return 0;
@@ -179,7 +177,6 @@ public class LingPoBattle extends XiYouBattleHandler {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		int attackingType = chapterModule.getAttackingType();
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
-		LingPoBattle lingPoBattle = chapterModule.getLingPoBattle();
 		int pointAdd = 0;
 		if (request.getWin()) {
 			pointAdd = GlobalConst.SpiritBattleVicpoint;
@@ -194,7 +191,7 @@ public class LingPoBattle extends XiYouBattleHandler {
 		}
 
 		List<RewardInfo> reward = PlayerHelper.addResources(player, Asset.SpiritBattlePoint.ID, pointAdd, OpType.LingPoBattle);
-		lingPoBattle.battleEnd();
+		battleEnd();
 		return ResultObject.success(reward);
 	}
 

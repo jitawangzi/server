@@ -5,7 +5,7 @@ import "RewardMsg.proto" ;
 // 章节关卡协议
 // 开始关卡战斗请求
 message BattleFieldStartRequest_13000001{
-	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战
+	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
 	uint32 typeId = 2; // 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，例如1、2、3是Battle表id， 11 、12 是HCBattle表id;
 
 	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。不一定有。
@@ -47,7 +47,7 @@ message BattleFieldEndResponse_13000004{
 
 // 关卡快速战斗请求
 message BattleFieldQuickEndRequest_13000005{
-	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战
+	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
 	uint32 typeId = 2; // 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，例如1、2、3是Battle表id， 11 、12 是HCBattle表id;
 	uint32 subId = 3; // 某些typeId类型的，可能需要额外的子id或者进度之类的数据
 	bool win = 4;	   // 战斗是否成功，看具体玩法需要，如果失败了什么也不处理，则失败时不用发这个快速战斗的请求。

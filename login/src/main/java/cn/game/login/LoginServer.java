@@ -147,7 +147,7 @@ public class LoginServer {
 			} else {
 				selectMaxId += 1;
 			}
-			RedissonUtil.getRedis().getBucket(key).compareAndSet(null, selectMaxId);
+			RedissonUtil.getRedis().getBucket(key).compareAndSet(null, selectMaxId.intValue());
 		}
 	}
 

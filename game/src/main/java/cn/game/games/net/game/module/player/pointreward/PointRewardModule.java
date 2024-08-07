@@ -10,6 +10,7 @@ import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.battle.LingPoBattle;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.config.QuestPointRewardConfig;
@@ -17,6 +18,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -89,7 +91,8 @@ public class PointRewardModule extends BasePlayerModule {
 			randomRewardStage = battleConfig.DailyInBoxRandomId;
 			opType = OpType.DayChallengeReward; 
 		} else if (type == PointRewardType.LingPo) {
-			BattleConfig battleConfig = BattleManager.instance().get(player.getChapterModule().getLingPoBattle().getBattleId());
+			LingPoBattle lingPoBattle = player.getChapterModule().getBattle(DungeonTypeEnum.LingPo);
+			BattleConfig battleConfig = BattleManager.instance().get(lingPoBattle.getBattleId());
 			pointType = Asset.SpiritBattlePoint.ID;
 
 			conditionStage = battleConfig.BattleBoxTrigger;

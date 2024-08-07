@@ -109,16 +109,22 @@ public class ChapterModule extends BasePlayerModule  {
 
 	/** 每日挑战数据 */
 	@JsonIgnore
+	@Deprecated
 	private BattleDayChallenge dayChallenge = new BattleDayChallenge();
-
+	@Deprecated
+	@JsonIgnore
 	private Map<Integer, DaoHeartBattle> daoBattleMap = new HashMap<Integer, DaoHeartBattle>();
-	/** 阵容数据，玩法-> 阵容顺序->阵容里面的角色 */
-	private Map<Integer, Map<Integer, List<String>>> lineupMaps = new HashMap<Integer, Map<Integer, List<String>>>();
-
+	@Deprecated
+	@JsonIgnore
 	/** 梦魇秘境 */
 	private MengYanMiJingBattle mengYanMiJingBattle;
+	@JsonIgnore
+	@Deprecated
 	/** 灵魄之战 */
 	private LingPoBattle lingPoBattle;
+
+	/** 阵容数据，玩法-> 阵容顺序->阵容里面的角色 */
+	private Map<Integer, Map<Integer, List<String>>> lineupMaps = new HashMap<Integer, Map<Integer, List<String>>>();
 
 	/** 所有的战斗相关玩法数据 */
 	private Map<Integer, IBattleHandler> battlesMap = new HashMap<Integer, IBattleHandler>();
@@ -548,10 +554,6 @@ public class ChapterModule extends BasePlayerModule  {
 		this.battleRewardMultipleTimes = battleRewardMultipleTimes;
 	}
 
-	public MengYanMiJingBattle getMengYanMiJingBattle() {
-		return mengYanMiJingBattle;
-	}
-
 	public int getShareReliveCount() {
 		return shareReliveCount;
 	}
@@ -575,10 +577,6 @@ public class ChapterModule extends BasePlayerModule  {
 		this.reliveCountPerBattle = reliveCountPerBattle;
 	}
 
-	public LingPoBattle getLingPoBattle() {
-		return lingPoBattle;
-	}
-
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -592,13 +590,6 @@ public class ChapterModule extends BasePlayerModule  {
 		this.shareReliveCount = 0;
 		this.adReliveCount = 0;
 		this.battleRewardMultipleTimes = 0;
-
-		if (mengYanMiJingBattle != null) {
-			mengYanMiJingBattle.setCanQuick(true);
-		}
-		if (lingPoBattle != null) {
-			lingPoBattle.reset();
-		}
 	}
 	@Override
 	public void handleEvent(GameEvent event) {
@@ -615,8 +606,9 @@ public class ChapterModule extends BasePlayerModule  {
 			break;
 		}
 		case ChapterFirstWin: {
+			LingPoBattle lingPoBattle = getBattle(DungeonTypeEnum.LingPo);
 			if (lingPoBattle != null) {
-				lingPoBattle.updateBattleId(player);
+				lingPoBattle.updateBattleId();
 			}
 			break;
 		}
@@ -677,13 +669,10 @@ public class ChapterModule extends BasePlayerModule  {
 		return (T) battlesMap.get(type);
 	}
 
-	private void initDaoXin(int type) {
-		daoBattleMap.put(type, new DaoHeartBattle(type));
-	}
 
-	public DaoHeartBattle getDaoHeartBattle(int type) {
-		return daoBattleMap.get(type);
-	}
+//	public DaoHeartBattle getDaoHeartBattle(int type) {
+//		return daoBattleMap.get(type);
+//	}
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {

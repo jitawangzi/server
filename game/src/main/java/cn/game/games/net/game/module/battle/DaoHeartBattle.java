@@ -181,7 +181,7 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 		int attackingType = chapterModule.getAttackingType();
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
 
-		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(attackingType);
+		DaoHeartBattle daoHeartBattle = chapterModule.getBattle(attackingType);
 		daoHeartBattle.battleCompleted();
 		OpType opType = attackingType == 2 ? OpType.DaoXinFirstFinish : attackingType == 3 ? OpType.XinMoFirstFinish : OpType.YaoWangComplete;
 
@@ -208,9 +208,7 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 			return ErrorMsgEnum.player_check_error.getId();
 		}
 
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
-		if (id != daoHeartBattle.getNextBattleId()) {
+		if (id != this.getNextBattleId()) {
 			return ErrorMsgEnum.request_parameter_error.getId();
 		}
 		return 0;
