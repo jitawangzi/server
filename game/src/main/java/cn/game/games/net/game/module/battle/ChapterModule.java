@@ -108,6 +108,7 @@ public class ChapterModule extends BasePlayerModule  {
 	private int reliveCountPerBattle;
 
 	/** 每日挑战数据 */
+	@JsonIgnore
 	private BattleDayChallenge dayChallenge = new BattleDayChallenge();
 
 	private Map<Integer, DaoHeartBattle> daoBattleMap = new HashMap<Integer, DaoHeartBattle>();
@@ -118,6 +119,9 @@ public class ChapterModule extends BasePlayerModule  {
 	private MengYanMiJingBattle mengYanMiJingBattle;
 	/** 灵魄之战 */
 	private LingPoBattle lingPoBattle;
+
+	/** 所有的战斗相关玩法数据 */
+	private Map<Integer, IBattleHandler> battlesMap = new HashMap<Integer, IBattleHandler>();
 
 	/** 
 	 * 
@@ -184,11 +188,12 @@ public class ChapterModule extends BasePlayerModule  {
 			return chapter != null && chapter.getPass() != null && chapter.getPass();
 		}
 		if (battleType == DungeonTypeEnum.DaoHeart.getId() || battleType == DungeonTypeEnum.XinMo.getId() || battleType == DungeonTypeEnum.YaoWang.getId()) {
-			DaoHeartBattle daoHeartBattle = getDaoHeartBattle(battleType);
+			DaoHeartBattle daoHeartBattle = getBattle(battleType);
 			return daoHeartBattle != null && BattleHelper.isComplete(daoHeartBattle.getCompleteBattleId(), battleId);
 		}
 		if (battleType == DungeonTypeEnum.MengYanMiJing.getId()) {
-			return mengYanMiJingBattle.getCompleteBattleId() >= battleId;
+			MengYanMiJingBattle battle = getBattle(battleType);
+			return battle != null && battle.getCompleteBattleId() >= battleId;
 		}
 		return false;
 	}
@@ -343,14 +348,6 @@ public class ChapterModule extends BasePlayerModule  {
 			ret += ByteHelp.binary1Count(level.getStar());
 		}
 		return ret;
-	}
-
-	public BattleDayChallenge getDayChallenge() {
-		return dayChallenge;
-	}
-
-	public void setDayChallenge(BattleDayChallenge dayChallenge) {
-		this.dayChallenge = dayChallenge;
 	}
 
 	public int getAttackingId() {
@@ -596,12 +593,11 @@ public class ChapterModule extends BasePlayerModule  {
 		this.adReliveCount = 0;
 		this.battleRewardMultipleTimes = 0;
 
-		dayChallenge.reset();
 		if (mengYanMiJingBattle != null) {
 			mengYanMiJingBattle.setCanQuick(true);
 		}
 		if (lingPoBattle != null) {
-			lingPoBattle.reset(player);
+			lingPoBattle.reset();
 		}
 	}
 	@Override
@@ -626,31 +622,59 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		case FuncOpen: {
 			InitialUI func = event.getParameter(0);
-			if (func == InitialUI.DaoXinLLiLian) {
-				initDaoXin(DungeonTypeEnum.DaoHeart.getId());
-			}
-			if (func == InitialUI.XinMoShiLian) {
-				initDaoXin(DungeonTypeEnum.XinMo.getId());
-			}
-			if (func == InitialUI.YaoWangBiePao) {
-				initDaoXin(DungeonTypeEnum.YaoWang.getId());
-			}
 			if (func == InitialUI.HangingUpp) {
 				setPatrolRewardTime();
 			}
+
+			if (func == InitialUI.DaoXinLLiLian) {
+//				initDaoXin(DungeonTypeEnum.DaoHeart.getId());
+				DaoHeartBattle daoHeartBattle = new DaoHeartBattle(DungeonTypeEnum.DaoHeart.getId());
+				daoHeartBattle.setPlayer(player);
+				battlesMap.put(DungeonTypeEnum.DaoHeart.getId(), daoHeartBattle);
+			}
+			if (func == InitialUI.XinMoShiLian) {
+//				initDaoXin(DungeonTypeEnum.XinMo.getId());
+				DaoHeartBattle daoHeartBattle = new DaoHeartBattle(DungeonTypeEnum.XinMo.getId());
+				daoHeartBattle.setPlayer(player);
+				battlesMap.put(DungeonTypeEnum.XinMo.getId(), daoHeartBattle);
+			}
+			if (func == InitialUI.YaoWangBiePao) {
+//				initDaoXin(DungeonTypeEnum.YaoWang.getId());
+				DaoHeartBattle daoHeartBattle = new DaoHeartBattle(DungeonTypeEnum.YaoWang.getId());
+				daoHeartBattle.setPlayer(player);
+				battlesMap.put(DungeonTypeEnum.YaoWang.getId(), daoHeartBattle);
+			}
 			if (func == InitialUI.NightmareRealm) {
-				mengYanMiJingBattle = new MengYanMiJingBattle();
+				MengYanMiJingBattle mengYanMiJingBattle = new MengYanMiJingBattle();
 				mengYanMiJingBattle.init();
+				mengYanMiJingBattle.setPlayer(player);
+				battlesMap.put(DungeonTypeEnum.MengYanMiJing.getId(), mengYanMiJingBattle);
+
 			}
 			if (func == InitialUI.SpiritBattle) {
-				lingPoBattle = new LingPoBattle();
-				lingPoBattle.init(player);
+				LingPoBattle lingPoBattle = new LingPoBattle();
+				lingPoBattle.setPlayer(player);
+				battlesMap.put(DungeonTypeEnum.LingPo.getId(), lingPoBattle);
+
+			}
+			if (func == InitialUI.ShiLuoZhenJing) {
+				ShiLuoZhenJingBattle battle = new ShiLuoZhenJingBattle();
+				battle.setPlayer(player);
+				battlesMap.put(DungeonTypeEnum.ShiLuoZhenJing.getId(), battle);
 			}
 			break;
 		}
 		default:
 			break;
 		}
+	}
+
+	public <T extends IBattleHandler> T getBattle(DungeonTypeEnum type) {
+		return (T) battlesMap.get(type.getId());
+	}
+
+	public <T extends IBattleHandler> T getBattle(int type) {
+		return (T) battlesMap.get(type);
 	}
 
 	private void initDaoXin(int type) {
@@ -702,12 +726,15 @@ public class ChapterModule extends BasePlayerModule  {
 		builder.setShareReliveCount(shareReliveCount);
 		builder.setAdReliveCount(adReliveCount);
 
-		DayChallengeInfo.Builder dayBuilder = DayChallengeInfo.newBuilder();
-		dayBuilder.setBattleId(dayChallenge.getBattleId());
-		dayBuilder.setBattleTimes(dayChallenge.getBattleTimes());
-		dayBuilder.addAllRandomBuff(dayChallenge.getRandomBuff());
-		dayBuilder.addAllRewardIndex(dayChallenge.getRewardIndex());
-		builder.setMergeDayChallenge(dayBuilder.build());
+		BattleDayChallenge dayChallenge = getBattle(DungeonTypeEnum.DayChallenge);
+		if (dayChallenge != null) {
+			DayChallengeInfo.Builder dayBuilder = DayChallengeInfo.newBuilder();
+			dayBuilder.setBattleId(dayChallenge.getBattleId());
+			dayBuilder.setBattleTimes(dayChallenge.getBattleTimes());
+			dayBuilder.addAllRandomBuff(dayChallenge.getRandomBuff());
+			dayBuilder.addAllRewardIndex(dayChallenge.getRewardIndex());
+			builder.setMergeDayChallenge(dayBuilder.build());
+		}
 		builder.setBattleType(type) ; 
 		builder.setBattleId(dungeonId);
 

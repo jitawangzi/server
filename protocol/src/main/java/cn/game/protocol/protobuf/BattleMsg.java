@@ -6117,10 +6117,20 @@ public final class BattleMsg {
 
     /**
      * <pre>
+     * 某些typeId类型的，可能需要额外的子id或者进度之类的数据
+     * </pre>
+     *
+     * <code>uint32 subId = 3;</code>
+     * @return The subId.
+     */
+    int getSubId();
+
+    /**
+     * <pre>
      * 战斗是否成功，看具体玩法需要，如果失败了什么也不处理，则失败时不用发这个快速战斗的请求。
      * </pre>
      *
-     * <code>bool win = 3;</code>
+     * <code>bool win = 4;</code>
      * @return The win.
      */
     boolean getWin();
@@ -6185,6 +6195,11 @@ public final class BattleMsg {
               break;
             }
             case 24: {
+
+              subId_ = input.readUInt32();
+              break;
+            }
+            case 32: {
 
               win_ = input.readBool();
               break;
@@ -6251,14 +6266,29 @@ public final class BattleMsg {
       return typeId_;
     }
 
-    public static final int WIN_FIELD_NUMBER = 3;
+    public static final int SUBID_FIELD_NUMBER = 3;
+    private int subId_;
+    /**
+     * <pre>
+     * 某些typeId类型的，可能需要额外的子id或者进度之类的数据
+     * </pre>
+     *
+     * <code>uint32 subId = 3;</code>
+     * @return The subId.
+     */
+    @java.lang.Override
+    public int getSubId() {
+      return subId_;
+    }
+
+    public static final int WIN_FIELD_NUMBER = 4;
     private boolean win_;
     /**
      * <pre>
      * 战斗是否成功，看具体玩法需要，如果失败了什么也不处理，则失败时不用发这个快速战斗的请求。
      * </pre>
      *
-     * <code>bool win = 3;</code>
+     * <code>bool win = 4;</code>
      * @return The win.
      */
     @java.lang.Override
@@ -6286,8 +6316,11 @@ public final class BattleMsg {
       if (typeId_ != 0) {
         output.writeUInt32(2, typeId_);
       }
+      if (subId_ != 0) {
+        output.writeUInt32(3, subId_);
+      }
       if (win_ != false) {
-        output.writeBool(3, win_);
+        output.writeBool(4, win_);
       }
       unknownFields.writeTo(output);
     }
@@ -6306,9 +6339,13 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(2, typeId_);
       }
+      if (subId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, subId_);
+      }
       if (win_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, win_);
+          .computeBoolSize(4, win_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -6329,6 +6366,8 @@ public final class BattleMsg {
           != other.getType()) return false;
       if (getTypeId()
           != other.getTypeId()) return false;
+      if (getSubId()
+          != other.getSubId()) return false;
       if (getWin()
           != other.getWin()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -6346,6 +6385,8 @@ public final class BattleMsg {
       hash = (53 * hash) + getType();
       hash = (37 * hash) + TYPEID_FIELD_NUMBER;
       hash = (53 * hash) + getTypeId();
+      hash = (37 * hash) + SUBID_FIELD_NUMBER;
+      hash = (53 * hash) + getSubId();
       hash = (37 * hash) + WIN_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getWin());
@@ -6490,6 +6531,8 @@ public final class BattleMsg {
 
         typeId_ = 0;
 
+        subId_ = 0;
+
         win_ = false;
 
         return this;
@@ -6520,6 +6563,7 @@ public final class BattleMsg {
         cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005 result = new cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005(this);
         result.type_ = type_;
         result.typeId_ = typeId_;
+        result.subId_ = subId_;
         result.win_ = win_;
         onBuilt();
         return result;
@@ -6574,6 +6618,9 @@ public final class BattleMsg {
         }
         if (other.getTypeId() != 0) {
           setTypeId(other.getTypeId());
+        }
+        if (other.getSubId() != 0) {
+          setSubId(other.getSubId());
         }
         if (other.getWin() != false) {
           setWin(other.getWin());
@@ -6693,13 +6740,56 @@ public final class BattleMsg {
         return this;
       }
 
+      private int subId_ ;
+      /**
+       * <pre>
+       * 某些typeId类型的，可能需要额外的子id或者进度之类的数据
+       * </pre>
+       *
+       * <code>uint32 subId = 3;</code>
+       * @return The subId.
+       */
+      @java.lang.Override
+      public int getSubId() {
+        return subId_;
+      }
+      /**
+       * <pre>
+       * 某些typeId类型的，可能需要额外的子id或者进度之类的数据
+       * </pre>
+       *
+       * <code>uint32 subId = 3;</code>
+       * @param value The subId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSubId(int value) {
+        
+        subId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 某些typeId类型的，可能需要额外的子id或者进度之类的数据
+       * </pre>
+       *
+       * <code>uint32 subId = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSubId() {
+        
+        subId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private boolean win_ ;
       /**
        * <pre>
        * 战斗是否成功，看具体玩法需要，如果失败了什么也不处理，则失败时不用发这个快速战斗的请求。
        * </pre>
        *
-       * <code>bool win = 3;</code>
+       * <code>bool win = 4;</code>
        * @return The win.
        */
       @java.lang.Override
@@ -6711,7 +6801,7 @@ public final class BattleMsg {
        * 战斗是否成功，看具体玩法需要，如果失败了什么也不处理，则失败时不用发这个快速战斗的请求。
        * </pre>
        *
-       * <code>bool win = 3;</code>
+       * <code>bool win = 4;</code>
        * @param value The win to set.
        * @return This builder for chaining.
        */
@@ -6726,7 +6816,7 @@ public final class BattleMsg {
        * 战斗是否成功，看具体玩法需要，如果失败了什么也不处理，则失败时不用发这个快速战斗的请求。
        * </pre>
        *
-       * <code>bool win = 3;</code>
+       * <code>bool win = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearWin() {
@@ -44635,6 +44725,1370 @@ public final class BattleMsg {
 
   }
 
+  public interface BattleLostInfoRequest_13000201OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleLostInfoRequest_13000201)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * 请求失落真经数据
+   * </pre>
+   *
+   * Protobuf type {@code Protos.BattleLostInfoRequest_13000201}
+   */
+  public static final class BattleLostInfoRequest_13000201 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleLostInfoRequest_13000201)
+      BattleLostInfoRequest_13000201OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleLostInfoRequest_13000201.newBuilder() to construct.
+    private BattleLostInfoRequest_13000201(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleLostInfoRequest_13000201() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleLostInfoRequest_13000201();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleLostInfoRequest_13000201(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoRequest_13000201_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoRequest_13000201_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201.class, cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 other = (cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 请求失落真经数据
+     * </pre>
+     *
+     * Protobuf type {@code Protos.BattleLostInfoRequest_13000201}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleLostInfoRequest_13000201)
+        cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoRequest_13000201_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoRequest_13000201_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201.class, cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoRequest_13000201_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 result = new cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleLostInfoRequest_13000201)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleLostInfoRequest_13000201)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleLostInfoRequest_13000201>
+        PARSER = new com.google.protobuf.AbstractParser<BattleLostInfoRequest_13000201>() {
+      @java.lang.Override
+      public BattleLostInfoRequest_13000201 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleLostInfoRequest_13000201(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleLostInfoRequest_13000201> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleLostInfoRequest_13000201> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BattleLostInfoResponse_13000202OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleLostInfoResponse_13000202)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *当前可打的战役id（还没通关的）战斗关卡。
+     * </pre>
+     *
+     * <code>int32 battleId = 1;</code>
+     * @return The battleId.
+     */
+    int getBattleId();
+
+    /**
+     * <pre>
+     *当前可打的失落真经非战斗关卡，从1开始，如果为0表示打战斗关卡
+     * </pre>
+     *
+     * <code>int32 battleStage = 2;</code>
+     * @return The battleStage.
+     */
+    int getBattleStage();
+
+    /**
+     * <pre>
+     * 每日奖励是否已经领取了。
+     * </pre>
+     *
+     * <code>bool dayReward = 3;</code>
+     * @return The dayReward.
+     */
+    boolean getDayReward();
+
+    /**
+     * <pre>
+     * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return A list containing the randomBuff.
+     */
+    java.util.List<java.lang.Integer> getRandomBuffList();
+    /**
+     * <pre>
+     * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return The count of randomBuff.
+     */
+    int getRandomBuffCount();
+    /**
+     * <pre>
+     * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @param index The index of the element to return.
+     * @return The randomBuff at the given index.
+     */
+    int getRandomBuff(int index);
+  }
+  /**
+   * Protobuf type {@code Protos.BattleLostInfoResponse_13000202}
+   */
+  public static final class BattleLostInfoResponse_13000202 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleLostInfoResponse_13000202)
+      BattleLostInfoResponse_13000202OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleLostInfoResponse_13000202.newBuilder() to construct.
+    private BattleLostInfoResponse_13000202(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleLostInfoResponse_13000202() {
+      randomBuff_ = emptyIntList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleLostInfoResponse_13000202();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleLostInfoResponse_13000202(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              battleId_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              battleStage_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              dayReward_ = input.readBool();
+              break;
+            }
+            case 32: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                randomBuff_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              randomBuff_.addInt(input.readInt32());
+              break;
+            }
+            case 34: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                randomBuff_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                randomBuff_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          randomBuff_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoResponse_13000202_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoResponse_13000202_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202.class, cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202.Builder.class);
+    }
+
+    public static final int BATTLEID_FIELD_NUMBER = 1;
+    private int battleId_;
+    /**
+     * <pre>
+     *当前可打的战役id（还没通关的）战斗关卡。
+     * </pre>
+     *
+     * <code>int32 battleId = 1;</code>
+     * @return The battleId.
+     */
+    @java.lang.Override
+    public int getBattleId() {
+      return battleId_;
+    }
+
+    public static final int BATTLESTAGE_FIELD_NUMBER = 2;
+    private int battleStage_;
+    /**
+     * <pre>
+     *当前可打的失落真经非战斗关卡，从1开始，如果为0表示打战斗关卡
+     * </pre>
+     *
+     * <code>int32 battleStage = 2;</code>
+     * @return The battleStage.
+     */
+    @java.lang.Override
+    public int getBattleStage() {
+      return battleStage_;
+    }
+
+    public static final int DAYREWARD_FIELD_NUMBER = 3;
+    private boolean dayReward_;
+    /**
+     * <pre>
+     * 每日奖励是否已经领取了。
+     * </pre>
+     *
+     * <code>bool dayReward = 3;</code>
+     * @return The dayReward.
+     */
+    @java.lang.Override
+    public boolean getDayReward() {
+      return dayReward_;
+    }
+
+    public static final int RANDOMBUFF_FIELD_NUMBER = 4;
+    private com.google.protobuf.Internal.IntList randomBuff_;
+    /**
+     * <pre>
+     * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return A list containing the randomBuff.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getRandomBuffList() {
+      return randomBuff_;
+    }
+    /**
+     * <pre>
+     * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @return The count of randomBuff.
+     */
+    public int getRandomBuffCount() {
+      return randomBuff_.size();
+    }
+    /**
+     * <pre>
+     * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+     * </pre>
+     *
+     * <code>repeated int32 randomBuff = 4;</code>
+     * @param index The index of the element to return.
+     * @return The randomBuff at the given index.
+     */
+    public int getRandomBuff(int index) {
+      return randomBuff_.getInt(index);
+    }
+    private int randomBuffMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (battleId_ != 0) {
+        output.writeInt32(1, battleId_);
+      }
+      if (battleStage_ != 0) {
+        output.writeInt32(2, battleStage_);
+      }
+      if (dayReward_ != false) {
+        output.writeBool(3, dayReward_);
+      }
+      if (getRandomBuffList().size() > 0) {
+        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(randomBuffMemoizedSerializedSize);
+      }
+      for (int i = 0; i < randomBuff_.size(); i++) {
+        output.writeInt32NoTag(randomBuff_.getInt(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (battleId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, battleId_);
+      }
+      if (battleStage_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, battleStage_);
+      }
+      if (dayReward_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, dayReward_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < randomBuff_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(randomBuff_.getInt(i));
+        }
+        size += dataSize;
+        if (!getRandomBuffList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        randomBuffMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 other = (cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202) obj;
+
+      if (getBattleId()
+          != other.getBattleId()) return false;
+      if (getBattleStage()
+          != other.getBattleStage()) return false;
+      if (getDayReward()
+          != other.getDayReward()) return false;
+      if (!getRandomBuffList()
+          .equals(other.getRandomBuffList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + BATTLEID_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleId();
+      hash = (37 * hash) + BATTLESTAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleStage();
+      hash = (37 * hash) + DAYREWARD_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getDayReward());
+      if (getRandomBuffCount() > 0) {
+        hash = (37 * hash) + RANDOMBUFF_FIELD_NUMBER;
+        hash = (53 * hash) + getRandomBuffList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.BattleLostInfoResponse_13000202}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleLostInfoResponse_13000202)
+        cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoResponse_13000202_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoResponse_13000202_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202.class, cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        battleId_ = 0;
+
+        battleStage_ = 0;
+
+        dayReward_ = false;
+
+        randomBuff_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleLostInfoResponse_13000202_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 result = new cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202(this);
+        int from_bitField0_ = bitField0_;
+        result.battleId_ = battleId_;
+        result.battleStage_ = battleStage_;
+        result.dayReward_ = dayReward_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          randomBuff_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.randomBuff_ = randomBuff_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202.getDefaultInstance()) return this;
+        if (other.getBattleId() != 0) {
+          setBattleId(other.getBattleId());
+        }
+        if (other.getBattleStage() != 0) {
+          setBattleStage(other.getBattleStage());
+        }
+        if (other.getDayReward() != false) {
+          setDayReward(other.getDayReward());
+        }
+        if (!other.randomBuff_.isEmpty()) {
+          if (randomBuff_.isEmpty()) {
+            randomBuff_ = other.randomBuff_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureRandomBuffIsMutable();
+            randomBuff_.addAll(other.randomBuff_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int battleId_ ;
+      /**
+       * <pre>
+       *当前可打的战役id（还没通关的）战斗关卡。
+       * </pre>
+       *
+       * <code>int32 battleId = 1;</code>
+       * @return The battleId.
+       */
+      @java.lang.Override
+      public int getBattleId() {
+        return battleId_;
+      }
+      /**
+       * <pre>
+       *当前可打的战役id（还没通关的）战斗关卡。
+       * </pre>
+       *
+       * <code>int32 battleId = 1;</code>
+       * @param value The battleId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleId(int value) {
+        
+        battleId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *当前可打的战役id（还没通关的）战斗关卡。
+       * </pre>
+       *
+       * <code>int32 battleId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleId() {
+        
+        battleId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int battleStage_ ;
+      /**
+       * <pre>
+       *当前可打的失落真经非战斗关卡，从1开始，如果为0表示打战斗关卡
+       * </pre>
+       *
+       * <code>int32 battleStage = 2;</code>
+       * @return The battleStage.
+       */
+      @java.lang.Override
+      public int getBattleStage() {
+        return battleStage_;
+      }
+      /**
+       * <pre>
+       *当前可打的失落真经非战斗关卡，从1开始，如果为0表示打战斗关卡
+       * </pre>
+       *
+       * <code>int32 battleStage = 2;</code>
+       * @param value The battleStage to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleStage(int value) {
+        
+        battleStage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *当前可打的失落真经非战斗关卡，从1开始，如果为0表示打战斗关卡
+       * </pre>
+       *
+       * <code>int32 battleStage = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleStage() {
+        
+        battleStage_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean dayReward_ ;
+      /**
+       * <pre>
+       * 每日奖励是否已经领取了。
+       * </pre>
+       *
+       * <code>bool dayReward = 3;</code>
+       * @return The dayReward.
+       */
+      @java.lang.Override
+      public boolean getDayReward() {
+        return dayReward_;
+      }
+      /**
+       * <pre>
+       * 每日奖励是否已经领取了。
+       * </pre>
+       *
+       * <code>bool dayReward = 3;</code>
+       * @param value The dayReward to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDayReward(boolean value) {
+        
+        dayReward_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 每日奖励是否已经领取了。
+       * </pre>
+       *
+       * <code>bool dayReward = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDayReward() {
+        
+        dayReward_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList randomBuff_ = emptyIntList();
+      private void ensureRandomBuffIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          randomBuff_ = mutableCopy(randomBuff_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return A list containing the randomBuff.
+       */
+      public java.util.List<java.lang.Integer>
+          getRandomBuffList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(randomBuff_) : randomBuff_;
+      }
+      /**
+       * <pre>
+       * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return The count of randomBuff.
+       */
+      public int getRandomBuffCount() {
+        return randomBuff_.size();
+      }
+      /**
+       * <pre>
+       * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param index The index of the element to return.
+       * @return The randomBuff at the given index.
+       */
+      public int getRandomBuff(int index) {
+        return randomBuff_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param index The index to set the value at.
+       * @param value The randomBuff to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRandomBuff(
+          int index, int value) {
+        ensureRandomBuffIsMutable();
+        randomBuff_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param value The randomBuff to add.
+       * @return This builder for chaining.
+       */
+      public Builder addRandomBuff(int value) {
+        ensureRandomBuffIsMutable();
+        randomBuff_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @param values The randomBuff to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllRandomBuff(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureRandomBuffIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, randomBuff_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+       * </pre>
+       *
+       * <code>repeated int32 randomBuff = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRandomBuff() {
+        randomBuff_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleLostInfoResponse_13000202)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleLostInfoResponse_13000202)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleLostInfoResponse_13000202>
+        PARSER = new com.google.protobuf.AbstractParser<BattleLostInfoResponse_13000202>() {
+      @java.lang.Override
+      public BattleLostInfoResponse_13000202 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleLostInfoResponse_13000202(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleLostInfoResponse_13000202> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleLostInfoResponse_13000202> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface BattleRougeRefreshRequest_13000052OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.BattleRougeRefreshRequest_13000052)
       com.google.protobuf.MessageOrBuilder {
@@ -46757,6 +48211,16 @@ public final class BattleMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_BattleSpiritualChangeBattleResponse_13000099_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleLostInfoRequest_13000201_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleLostInfoRequest_13000201_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleLostInfoResponse_13000202_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleLostInfoResponse_13000202_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_BattleRougeRefreshRequest_13000052_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -46808,112 +48272,116 @@ public final class BattleMsg {
       "\r\022\034\n\024killMonsterBossCount\030\006 \001(\r\022\021\n\thpPer" +
       "cent\030\002 \001(\r\022\013\n\003win\030\003 \001(\010\022\022\n\nbattleTime\030\004 " +
       "\001(\r\"F\n\037BattleFieldEndResponse_13000004\022#" +
-      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"P\n#B" +
+      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"_\n#B" +
       "attleFieldQuickEndRequest_13000005\022\014\n\004ty" +
-      "pe\030\001 \001(\r\022\016\n\006typeId\030\002 \001(\r\022\013\n\003win\030\003 \001(\010\"K\n" +
-      "$BattleFieldQuickEndResponse_13000006\022#\n" +
-      "\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"\035\n\033Ba" +
-      "ttleShareRequest_13000007\"C\n\034BattleShare" +
-      "Response_13000008\022#\n\007rewards\030\001 \003(\0132\022.Pro" +
-      "tos.RewardInfo\",\n\034BattleReliveRequest_13" +
-      "000010\022\014\n\004type\030\001 \001(\005\"\037\n\035BattleReliveResp" +
-      "onse_13000011\"9\n\034BattleRewardRequest_130" +
-      "00022\022\n\n\002id\030\001 \003(\r\022\r\n\005index\030\002 \003(\r\"C\n\035Batt" +
-      "leRewardResponse_13000023\022\"\n\006reward\030\001 \003(" +
-      "\0132\022.Protos.RewardInfo\";\n\036HCBattleRewardR" +
-      "equest_13000027\022\n\n\002id\030\001 \003(\r\022\r\n\005index\030\002 \003" +
-      "(\r\"E\n\037HCBattleRewardResponse_13000028\022\"\n" +
-      "\006reward\030\001 \003(\0132\022.Protos.RewardInfo\")\n\033Bat" +
-      "tleSweepRequest_13000024\022\n\n\002id\030\001 \001(\r\"B\n\034" +
-      "BattleSweepResponse_13000025\022\"\n\006reward\030\001" +
-      " \003(\0132\022.Protos.RewardInfo\"+\n\035HCBattleSwee" +
-      "pRequest_13000040\022\n\n\002id\030\001 \001(\r\"D\n\036HCBattl" +
-      "eSweepResponse_13000041\022\"\n\006reward\030\001 \003(\0132" +
-      "\022.Protos.RewardInfo\"I\n\"BattlePatrolRewar" +
-      "dRequest_13000044\022\016\n\006isFast\030\001 \001(\010\022\023\n\013adv" +
-      "ertising\030\002 \001(\010\"e\n#BattlePatrolRewardResp" +
-      "onse_13000045\022#\n\007rewards\030\001 \003(\0132\022.Protos." +
-      "RewardInfo\022\013\n\003exp\030\002 \001(\005\022\014\n\004gold\030\003 \001(\005\"d\n" +
-      "\nBattleInfo\022\n\n\002id\030\001 \001(\005\022\021\n\thpPercent\030\002 \001" +
-      "(\r\022\023\n\013rewardIndex\030\003 \003(\005\022\016\n\006finish\030\004 \001(\010\022" +
-      "\022\n\nbattleTime\030\005 \001(\r\"Q\n\nPatrolInfo\022\022\n\nrew" +
-      "ardTime\030\001 \001(\005\022\030\n\020quickPatrolCount\030\002 \001(\005\022" +
-      "\025\n\radPatrolCount\030\003 \001(\005\"V\n\034BattleLineupRe" +
-      "quest_13000048\022\022\n\nbattleType\030\001 \001(\005\022\"\n\006li" +
-      "neup\030\002 \001(\0132\022.Protos.LineupInfo\"\037\n\035Battle" +
-      "LineupResponse_13000049\"0\n HCBattleDataS" +
-      "aveRequest_13000100\022\014\n\004data\030\001 \001(\t\"#\n!HCB" +
-      "attleDataSaveResponse_13000101\"\036\n\034HCBatt" +
-      "leDataRequest_13000102\"-\n\035HCBattleDataRe" +
-      "sponse_13000103\022\014\n\004data\030\001 \001(\t\".\n\036BattleD" +
-      "aoHeartRequest_13000055\022\014\n\004type\030\001 \001(\005\"\217\001" +
-      "\n\037BattleDaoHeartResponse_13000056\022\023\n\013com" +
-      "pletedId\030\001 \001(\005\022\016\n\006nextId\030\002 \001(\005\022\022\n\nrandom" +
-      "Buff\030\003 \003(\005\022\031\n\021freeSweepRemaning\030\004 \001(\005\022\030\n" +
-      "\020paySweepRemaning\030\005 \001(\005\"?\n#BattleDaoHear" +
-      "tSweepRequest_13000060\022\014\n\004type\030\001 \001(\005\022\n\n\002" +
-      "id\030\002 \001(\005\"K\n$BattleDaoHeartSweepResponse_" +
-      "13000061\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rewar" +
-      "dInfo\"Q\n(BattleDaoHeartSweepBatchRequest" +
-      "_13000062\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\022\013\n\003p" +
-      "ay\030\003 \001(\010\"P\n)BattleDaoHeartSweepBatchResp" +
-      "onse_13000063\022#\n\007rewards\030\001 \003(\0132\022.Protos." +
-      "RewardInfo\"3\n#BattleDaoHeartSweepRequest" +
-      "_13000064\022\014\n\004type\030\001 \001(\005\"2\n$BattleDaoHear" +
-      "tSweepResponse_13000065\022\n\n\002id\030\002 \003(\005\"?\n#B" +
-      "attleDaoHeartSweepRequest_13000066\022\014\n\004ty" +
-      "pe\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDaoHeartSw" +
-      "eepResponse_13000067\022#\n\007rewards\030\001 \003(\0132\022." +
-      "Protos.RewardInfo\"&\n$BattleNightmareReal" +
-      "mRequest_13000080\"\273\002\n%BattleNightmareRea" +
-      "lmResponse_13000081\022#\n\007lineups\030\001 \003(\0132\022.P" +
-      "rotos.LineupInfo\022\022\n\nrandomBuff\030\003 \003(\005\022\030\n\020" +
-      "buffRefreshTimes\030\004 \001(\005\022\025\n\rquickRewardId\030" +
-      "\005 \003(\005\022K\n\007buffIds\030\006 \003(\0132:.Protos.BattleNi" +
-      "ghtmareRealmResponse_13000081.BuffIdsEnt" +
-      "ry\022\023\n\013startBattle\030\010 \001(\005\022\026\n\016canQuickRewar" +
-      "d\030\t \001(\010\032.\n\014BuffIdsEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005" +
-      "value\030\002 \001(\005:\0028\001\"\266\001\n.BattleNightmareRealm" +
-      "BuffUpdateRequest_13000082\022T\n\007buffIds\030\001 " +
-      "\003(\0132C.Protos.BattleNightmareRealmBuffUpd" +
-      "ateRequest_13000082.BuffIdsEntry\032.\n\014Buff" +
-      "IdsEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001" +
-      "\"1\n/BattleNightmareRealmBuffUpdateRespon" +
-      "se_13000083\"+\n)BattleNightmareRealmQuick" +
-      "Request_13000084\"Q\n*BattleNightmareRealm" +
-      "QuickResponse_13000085\022#\n\007rewards\030\001 \003(\0132" +
-      "\022.Protos.RewardInfo\"*\n\nLineupInfo\022\013\n\003seq" +
-      "\030\001 \001(\005\022\017\n\007heroUid\030\002 \003(\t\"E\n4BattleDayChal" +
-      "lengeReceiveActivePointRequest_13000070\022" +
-      "\r\n\005index\030\001 \001(\005\"\\\n5BattleDayChallengeRece" +
-      "iveActivePointResponse_13000071\022#\n\007rewar" +
-      "ds\030\001 \003(\0132\022.Protos.RewardInfo\"b\n\020DayChall" +
-      "engeInfo\022\023\n\013battleTimes\030\001 \001(\005\022\020\n\010battleI" +
-      "d\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(\005\022\023\n\013rewardInd" +
-      "ex\030\004 \003(\005\"%\n#BattleSpiritualInfoRequest_1" +
-      "3000090\"`\n$BattleSpiritualInfoResponse_1" +
-      "3000091\0228\n\023battleSpiritualInfo\030\001 \001(\0132\033.P" +
-      "rotos.BattleSpiritualInfo\"B\n1BattleSpiri" +
-      "tualReceiveActivePointRequest_13000092\022\r" +
-      "\n\005index\030\001 \001(\005\"Y\n2BattleSpiritualReceiveA" +
-      "ctivePointResponse_13000093\022#\n\007rewards\030\001" +
-      " \003(\0132\022.Protos.RewardInfo\"\233\001\n\023BattleSpiri" +
-      "tualInfo\022\023\n\013battleTimes\030\001 \001(\005\022\020\n\010battleI" +
-      "d\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(\005\022\023\n\013rewardInd" +
-      "ex\030\004 \003(\005\022\031\n\021changeBattleTimes\030\006 \001(\005\022\031\n\021a" +
-      "dsGetBattleTimes\030\007 \001(\010\")\n\'BattleSpiritua" +
-      "lGetTimesRequest_13000094\"*\n(BattleSpiri" +
-      "tualGetTimesResponse_13000095\")\n\'BattleS" +
-      "piritualGetPointRequest_13000096\"*\n(Batt" +
-      "leSpiritualGetPointResponse_13000097\"?\n+" +
-      "BattleSpiritualChangeBattleRequest_13000" +
-      "098\022\020\n\010battleId\030\002 \001(\005\".\n,BattleSpiritual" +
-      "ChangeBattleResponse_13000099\"$\n\"BattleR" +
-      "ougeRefreshRequest_13000052\"%\n#BattleRou" +
-      "geRefreshResponse_13000053\"-\n\035BattleStam" +
-      "inaRequest_13000050\022\014\n\004time\030\001 \001(\005\" \n\036Bat" +
-      "tleStaminaResponse_13000051B\033\n\031cn.game.p" +
-      "rotocol.protobufb\006proto3"
+      "pe\030\001 \001(\r\022\016\n\006typeId\030\002 \001(\r\022\r\n\005subId\030\003 \001(\r\022" +
+      "\013\n\003win\030\004 \001(\010\"K\n$BattleFieldQuickEndRespo" +
+      "nse_13000006\022#\n\007rewards\030\001 \003(\0132\022.Protos.R" +
+      "ewardInfo\"\035\n\033BattleShareRequest_13000007" +
+      "\"C\n\034BattleShareResponse_13000008\022#\n\007rewa" +
+      "rds\030\001 \003(\0132\022.Protos.RewardInfo\",\n\034BattleR" +
+      "eliveRequest_13000010\022\014\n\004type\030\001 \001(\005\"\037\n\035B" +
+      "attleReliveResponse_13000011\"9\n\034BattleRe" +
+      "wardRequest_13000022\022\n\n\002id\030\001 \003(\r\022\r\n\005inde" +
+      "x\030\002 \003(\r\"C\n\035BattleRewardResponse_13000023" +
+      "\022\"\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo\";\n\036" +
+      "HCBattleRewardRequest_13000027\022\n\n\002id\030\001 \003" +
+      "(\r\022\r\n\005index\030\002 \003(\r\"E\n\037HCBattleRewardRespo" +
+      "nse_13000028\022\"\n\006reward\030\001 \003(\0132\022.Protos.Re" +
+      "wardInfo\")\n\033BattleSweepRequest_13000024\022" +
+      "\n\n\002id\030\001 \001(\r\"B\n\034BattleSweepResponse_13000" +
+      "025\022\"\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo\"" +
+      "+\n\035HCBattleSweepRequest_13000040\022\n\n\002id\030\001" +
+      " \001(\r\"D\n\036HCBattleSweepResponse_13000041\022\"" +
+      "\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo\"I\n\"Ba" +
+      "ttlePatrolRewardRequest_13000044\022\016\n\006isFa" +
+      "st\030\001 \001(\010\022\023\n\013advertising\030\002 \001(\010\"e\n#BattleP" +
+      "atrolRewardResponse_13000045\022#\n\007rewards\030" +
+      "\001 \003(\0132\022.Protos.RewardInfo\022\013\n\003exp\030\002 \001(\005\022\014" +
+      "\n\004gold\030\003 \001(\005\"d\n\nBattleInfo\022\n\n\002id\030\001 \001(\005\022\021" +
+      "\n\thpPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003 \003(\005\022\016" +
+      "\n\006finish\030\004 \001(\010\022\022\n\nbattleTime\030\005 \001(\r\"Q\n\nPa" +
+      "trolInfo\022\022\n\nrewardTime\030\001 \001(\005\022\030\n\020quickPat" +
+      "rolCount\030\002 \001(\005\022\025\n\radPatrolCount\030\003 \001(\005\"V\n" +
+      "\034BattleLineupRequest_13000048\022\022\n\nbattleT" +
+      "ype\030\001 \001(\005\022\"\n\006lineup\030\002 \001(\0132\022.Protos.Lineu" +
+      "pInfo\"\037\n\035BattleLineupResponse_13000049\"0" +
+      "\n HCBattleDataSaveRequest_13000100\022\014\n\004da" +
+      "ta\030\001 \001(\t\"#\n!HCBattleDataSaveResponse_130" +
+      "00101\"\036\n\034HCBattleDataRequest_13000102\"-\n" +
+      "\035HCBattleDataResponse_13000103\022\014\n\004data\030\001" +
+      " \001(\t\".\n\036BattleDaoHeartRequest_13000055\022\014" +
+      "\n\004type\030\001 \001(\005\"\217\001\n\037BattleDaoHeartResponse_" +
+      "13000056\022\023\n\013completedId\030\001 \001(\005\022\016\n\006nextId\030" +
+      "\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(\005\022\031\n\021freeSweepRe" +
+      "maning\030\004 \001(\005\022\030\n\020paySweepRemaning\030\005 \001(\005\"?" +
+      "\n#BattleDaoHeartSweepRequest_13000060\022\014\n" +
+      "\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDaoHear" +
+      "tSweepResponse_13000061\022#\n\007rewards\030\001 \003(\013" +
+      "2\022.Protos.RewardInfo\"Q\n(BattleDaoHeartSw" +
+      "eepBatchRequest_13000062\022\014\n\004type\030\001 \001(\005\022\n" +
+      "\n\002id\030\002 \001(\005\022\013\n\003pay\030\003 \001(\010\"P\n)BattleDaoHear" +
+      "tSweepBatchResponse_13000063\022#\n\007rewards\030" +
+      "\001 \003(\0132\022.Protos.RewardInfo\"3\n#BattleDaoHe" +
+      "artSweepRequest_13000064\022\014\n\004type\030\001 \001(\005\"2" +
+      "\n$BattleDaoHeartSweepResponse_13000065\022\n" +
+      "\n\002id\030\002 \003(\005\"?\n#BattleDaoHeartSweepRequest" +
+      "_13000066\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$B" +
+      "attleDaoHeartSweepResponse_13000067\022#\n\007r" +
+      "ewards\030\001 \003(\0132\022.Protos.RewardInfo\"&\n$Batt" +
+      "leNightmareRealmRequest_13000080\"\273\002\n%Bat" +
+      "tleNightmareRealmResponse_13000081\022#\n\007li" +
+      "neups\030\001 \003(\0132\022.Protos.LineupInfo\022\022\n\nrando" +
+      "mBuff\030\003 \003(\005\022\030\n\020buffRefreshTimes\030\004 \001(\005\022\025\n" +
+      "\rquickRewardId\030\005 \003(\005\022K\n\007buffIds\030\006 \003(\0132:." +
+      "Protos.BattleNightmareRealmResponse_1300" +
+      "0081.BuffIdsEntry\022\023\n\013startBattle\030\010 \001(\005\022\026" +
+      "\n\016canQuickReward\030\t \001(\010\032.\n\014BuffIdsEntry\022\013" +
+      "\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"\266\001\n.Battl" +
+      "eNightmareRealmBuffUpdateRequest_1300008" +
+      "2\022T\n\007buffIds\030\001 \003(\0132C.Protos.BattleNightm" +
+      "areRealmBuffUpdateRequest_13000082.BuffI" +
+      "dsEntry\032.\n\014BuffIdsEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005" +
+      "value\030\002 \001(\005:\0028\001\"1\n/BattleNightmareRealmB" +
+      "uffUpdateResponse_13000083\"+\n)BattleNigh" +
+      "tmareRealmQuickRequest_13000084\"Q\n*Battl" +
+      "eNightmareRealmQuickResponse_13000085\022#\n" +
+      "\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"*\n\nLi" +
+      "neupInfo\022\013\n\003seq\030\001 \001(\005\022\017\n\007heroUid\030\002 \003(\t\"E" +
+      "\n4BattleDayChallengeReceiveActivePointRe" +
+      "quest_13000070\022\r\n\005index\030\001 \001(\005\"\\\n5BattleD" +
+      "ayChallengeReceiveActivePointResponse_13" +
+      "000071\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
+      "nfo\"b\n\020DayChallengeInfo\022\023\n\013battleTimes\030\001" +
+      " \001(\005\022\020\n\010battleId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003" +
+      "(\005\022\023\n\013rewardIndex\030\004 \003(\005\"%\n#BattleSpiritu" +
+      "alInfoRequest_13000090\"`\n$BattleSpiritua" +
+      "lInfoResponse_13000091\0228\n\023battleSpiritua" +
+      "lInfo\030\001 \001(\0132\033.Protos.BattleSpiritualInfo" +
+      "\"B\n1BattleSpiritualReceiveActivePointReq" +
+      "uest_13000092\022\r\n\005index\030\001 \001(\005\"Y\n2BattleSp" +
+      "iritualReceiveActivePointResponse_130000" +
+      "93\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"" +
+      "\233\001\n\023BattleSpiritualInfo\022\023\n\013battleTimes\030\001" +
+      " \001(\005\022\020\n\010battleId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003" +
+      "(\005\022\023\n\013rewardIndex\030\004 \003(\005\022\031\n\021changeBattleT" +
+      "imes\030\006 \001(\005\022\031\n\021adsGetBattleTimes\030\007 \001(\010\")\n" +
+      "\'BattleSpiritualGetTimesRequest_13000094" +
+      "\"*\n(BattleSpiritualGetTimesResponse_1300" +
+      "0095\")\n\'BattleSpiritualGetPointRequest_1" +
+      "3000096\"*\n(BattleSpiritualGetPointRespon" +
+      "se_13000097\"?\n+BattleSpiritualChangeBatt" +
+      "leRequest_13000098\022\020\n\010battleId\030\002 \001(\005\".\n," +
+      "BattleSpiritualChangeBattleResponse_1300" +
+      "0099\" \n\036BattleLostInfoRequest_13000201\"o" +
+      "\n\037BattleLostInfoResponse_13000202\022\020\n\010bat" +
+      "tleId\030\001 \001(\005\022\023\n\013battleStage\030\002 \001(\005\022\021\n\tdayR" +
+      "eward\030\003 \001(\010\022\022\n\nrandomBuff\030\004 \003(\005\"$\n\"Battl" +
+      "eRougeRefreshRequest_13000052\"%\n#BattleR" +
+      "ougeRefreshResponse_13000053\"-\n\035BattleSt" +
+      "aminaRequest_13000050\022\014\n\004time\030\001 \001(\005\" \n\036B" +
+      "attleStaminaResponse_13000051B\033\n\031cn.game" +
+      ".protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -46985,7 +48453,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleFieldQuickEndRequest_13000005_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldQuickEndRequest_13000005_descriptor,
-        new java.lang.String[] { "Type", "TypeId", "Win", });
+        new java.lang.String[] { "Type", "TypeId", "SubId", "Win", });
     internal_static_Protos_BattleFieldQuickEndResponse_13000006_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_Protos_BattleFieldQuickEndResponse_13000006_fieldAccessorTable = new
@@ -47322,26 +48790,38 @@ public final class BattleMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleSpiritualChangeBattleResponse_13000099_descriptor,
         new java.lang.String[] { });
-    internal_static_Protos_BattleRougeRefreshRequest_13000052_descriptor =
+    internal_static_Protos_BattleLostInfoRequest_13000201_descriptor =
       getDescriptor().getMessageTypes().get(61);
+    internal_static_Protos_BattleLostInfoRequest_13000201_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleLostInfoRequest_13000201_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_BattleLostInfoResponse_13000202_descriptor =
+      getDescriptor().getMessageTypes().get(62);
+    internal_static_Protos_BattleLostInfoResponse_13000202_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleLostInfoResponse_13000202_descriptor,
+        new java.lang.String[] { "BattleId", "BattleStage", "DayReward", "RandomBuff", });
+    internal_static_Protos_BattleRougeRefreshRequest_13000052_descriptor =
+      getDescriptor().getMessageTypes().get(63);
     internal_static_Protos_BattleRougeRefreshRequest_13000052_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleRougeRefreshRequest_13000052_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_BattleRougeRefreshResponse_13000053_descriptor =
-      getDescriptor().getMessageTypes().get(62);
+      getDescriptor().getMessageTypes().get(64);
     internal_static_Protos_BattleRougeRefreshResponse_13000053_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleRougeRefreshResponse_13000053_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_BattleStaminaRequest_13000050_descriptor =
-      getDescriptor().getMessageTypes().get(63);
+      getDescriptor().getMessageTypes().get(65);
     internal_static_Protos_BattleStaminaRequest_13000050_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleStaminaRequest_13000050_descriptor,
         new java.lang.String[] { "Time", });
     internal_static_Protos_BattleStaminaResponse_13000051_descriptor =
-      getDescriptor().getMessageTypes().get(64);
+      getDescriptor().getMessageTypes().get(66);
     internal_static_Protos_BattleStaminaResponse_13000051_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleStaminaResponse_13000051_descriptor,

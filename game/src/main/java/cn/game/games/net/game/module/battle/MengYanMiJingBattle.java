@@ -7,17 +7,25 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
  * 梦魇秘境
  * 2024年7月15日 下午2:07:37
  * @author SYQ
  */
-public class MengYanMiJingBattle {
+public class MengYanMiJingBattle extends XiYouBattleHandler {
 
 	/** 战役类型 */
 //	private int type;
@@ -63,6 +71,7 @@ public class MengYanMiJingBattle {
 		if (next != null) {
 			randomBuff.addAll(BattleHelper.randomBuffs(startBattleId, 2));
 		}
+		setCanQuick(true);
 	}
 
 	public boolean battleCompleted() {
@@ -187,6 +196,50 @@ public class MengYanMiJingBattle {
 
 	public void setCanQuick(boolean canQuick) {
 		this.canQuick = canQuick;
+	}
+
+	@Override
+	public int battleStart(int id) {
+		if (!player.isFuncOpen(InitialUI.NightmareRealm)) {
+			return ErrorMsgEnum.func_not_open.getId();
+		}
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		MengYanMiJingBattle battle = chapterModule.getMengYanMiJingBattle();
+		if (id != battle.getStartBattleId()) {
+			return ErrorMsgEnum.request_parameter_error.getId();
+		}
+		return 0;
+	}
+
+	@Override
+	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+
+		if (!request.getWin()) {
+			return ResultObject.success();
+		}
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		int attackingType = chapterModule.getAttackingType();
+		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
+		MengYanMiJingBattle battle = chapterModule.getMengYanMiJingBattle();
+		boolean newRecord = battle.battleCompleted();
+		if (newRecord) {
+			OpType opType = OpType.MengYanMiJingFirstFinish;
+			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
+			return ResultObject.success(reward);
+		}
+		return ResultObject.success();
+	}
+
+	@Override
+	public int getType() {
+		return DungeonTypeEnum.MengYanMiJing.getId();
+	}
+
+	@Override
+	void newDay() {
+		reset();
 	}
 
 }

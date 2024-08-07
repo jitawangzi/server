@@ -2,7 +2,6 @@ package cn.game.games.net.game.module.battle;
 
 import java.util.List;
 
-import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.BattleConfig;
@@ -16,12 +15,12 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  * 2024年5月29日 上午10:32:10
  * @author SYQ
  */
-public abstract class XiYouBattleHandler implements IBattleHandler {
+public abstract class XiYouBattleHandler extends IBattleHandler {
 
 	@Override
-	public int check(Player player, int type, int dungeonId) {
+	public int check(int id) {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		BattleConfig battleConfig = BattleManager.instance().get(dungeonId);
+		BattleConfig battleConfig = BattleManager.instance().get(id);
 //		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);
 		/*		if (battleConfig.BattleFieldID != id) {
 					client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
@@ -58,7 +57,7 @@ public abstract class XiYouBattleHandler implements IBattleHandler {
 	}
 
 	@Override
-	public ResultObject<List<RewardInfo>> quickEnd(long playerId, int typeId) {
+	public ResultObject<List<RewardInfo>> quickEnd(int id) {
 		return null;
 	}
 

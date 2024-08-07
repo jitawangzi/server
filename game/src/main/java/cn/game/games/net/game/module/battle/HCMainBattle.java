@@ -1,29 +1,30 @@
-package cn.game.games.net.game.module.battle.impl;
+package cn.game.games.net.game.module.battle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.games.cache.entity.Chapter;
-import cn.game.games.cache.entity.Player;
+import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.ChapterModule;
-import cn.game.games.net.game.module.battle.HCBattleHandler;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
-import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
-public class HCBattleChapterImpl extends HCBattleHandler {
+/**    
+ * 灵魄之战
+ * 2024年7月31日 下午12:02:38
+ * @author SYQ
+ */
+public class HCMainBattle extends XiYouBattleHandler {
+
 
 	@Override
-	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
+	public int battleStart(int id) {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
 		// 检查章节事件开启条件，是否可以进行当前操作
@@ -38,18 +39,16 @@ public class HCBattleChapterImpl extends HCBattleHandler {
 //		}
 
 		// 可以打这个关了
-		chapterModule.addChapter(dungeonId);
+		chapterModule.addChapter(id);
 		return 0;
 	}
 
 	@Override
-	public int battleEnd(long playerId, BattleFieldEndRequest_13000003 request, BattleFieldEndResponse_13000004.Builder resp) {
+	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
 		boolean win = request.getWin();
 		int killMonsterCount = request.getKillMonsterCount();
 		int hpPercent = request.getHpPercent();
 		int battleTime = request.getBattleTime();
-
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		Chapter chapter = chapterModule.getChapter(chapterModule.getAttackingDungeonId());
@@ -78,7 +77,7 @@ public class HCBattleChapterImpl extends HCBattleHandler {
 		} else {
 			int hcFailRewardId = BattleHelper.hcFailRewardId(battleId, battleTime);
 			List<RewardInfo> reward = PlayerHelper.addReward(player, hcFailRewardId, OpType.BattleEnd);
-			resp.addAllRewards(reward);
+			allRewards.addAll(reward);
 		}
 		chapter.setFinishTimes(chapter.getFinishTimes() + 1);
 //		GameLogger.pvefight(player, battleConfig.ID, 1, win, request.getBattleTime(), chapter.getFinishTimes());
@@ -90,13 +89,16 @@ public class HCBattleChapterImpl extends HCBattleHandler {
 		// 增加次数。
 //		chapterModule.addChapterTimes(battleConfig.ID);
 
-		resp.addAllRewards(allRewards);
-		return 0;
+		return ResultObject.success(allRewards);
 	}
 
 	@Override
 	public int getType() {
 		return DungeonTypeEnum.HCBattleChapter.getId();
+	}
+
+	@Override
+	void newDay() {
 	}
 
 }

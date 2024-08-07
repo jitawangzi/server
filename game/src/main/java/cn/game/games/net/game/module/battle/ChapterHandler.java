@@ -665,7 +665,9 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		PointRewardModule pointRewardModule = player.getPointRewardModule();
-		ResultObject reward = pointRewardModule.addReward(PointRewardType.DAY_CHALLENGE, chapterModule.getDayChallenge().getBattleId(), index);
+		BattleDayChallenge battle = chapterModule.getBattle(DungeonTypeEnum.DayChallenge);
+		ResultObject reward = pointRewardModule.addReward(PointRewardType.DAY_CHALLENGE, battle.getBattleId(),
+				index);
 		if (!reward.isOK()) {
 			client.sendProtocol(resp, reward.getErrorCode());
 			return;
@@ -1073,13 +1075,13 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 //		long randomSeed = System.currentTimeMillis() ; 
-		IBattleHandler battleHandler = BattleFactory.getBattleHandler(type);
-		int errorCode = battleHandler.check(player, type, dungeonId);
+		IBattleHandler battleHandler = chapterModule.getBattle(dungeonId);
+		int errorCode = battleHandler.check(dungeonId);
 		if (errorCode > 0) {
 			client.sendProtocol(resp, errorCode);
 			return;
 		}
-		errorCode = battleHandler.battleStart(playerId, type, dungeonId, id, 0, 0);
+		errorCode = battleHandler.battleStart(dungeonId);
 		if (errorCode == 0) {
 			// 设置当前在打的关卡数据
 			chapterModule.setAttackingData(0, type, dungeonId, id, 0, 0);
@@ -1138,8 +1140,8 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 
-		IBattleHandler battleHandler = BattleFactory.getBattleHandler(type);
-		ResultObject<List<RewardInfo>> result = battleHandler.quickEnd(playerId, typeId);
+		IBattleHandler battleHandler = chapterModule.getBattle(type);
+		ResultObject<List<RewardInfo>> result = battleHandler.quickEnd(typeId);
 		if (result.getErrorCode() > 0) {
 			client.sendProtocol(resp, result.getErrorCode());
 			return;
@@ -1172,11 +1174,10 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, killMonsterCount, killMonsterBossCount);
-
-		IBattleHandler battleHandler = BattleFactory.getBattleHandler(attackingType);
-		int errorCode = battleHandler.battleEnd(playerId, req, resp);
-		if (errorCode > 0) {
-			client.sendProtocol(resp, errorCode);
+		IBattleHandler battleHandler = chapterModule.getBattle(attackingType);
+		ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req);
+		if (result.getErrorCode() > 0) {
+			client.sendProtocol(resp, result.getErrorCode());
 			return;
 		}
 
@@ -1184,12 +1185,12 @@ public class ChapterHandler extends BaseHandler {
 			player.handleEvent(EventTypeEnum.ChapterWin, attackingDungeonId);
 		}
 		chapterModule.setAttackingData(0, 0, 0, 0, 0, 0);
-		
-		List<RewardInfo> rewardsList = resp.getRewardsList();
-		chapterModule.setLastBattleRewards(rewardsList);
-
+		List<RewardInfo> rewardsList = result.getValue();
+		if (rewardsList != null) {
+			resp.addAllRewards(rewardsList);
+			chapterModule.setLastBattleRewards(rewardsList);
+		}
 		client.sendProtocol(resp);
-
 	}
 	
 	/*private void addExp(BattleFieldEndResponse_13000004.Builder resp, Player player, int lineupId, int apCost) {

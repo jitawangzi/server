@@ -2,7 +2,6 @@ package cn.game.games.net.game.module.battle;
 
 import java.util.List;
 
-import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.HCBattleConfig;
@@ -16,12 +15,12 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  * 2024年5月29日 上午10:32:23
  * @author SYQ
  */
-public abstract class HCBattleHandler implements IBattleHandler {
+public abstract class HCBattleHandler extends IBattleHandler {
 	@Override
-	public int check(Player player, int type, int dungeonId) {
+	public int check(int id) {
 
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		HCBattleConfig battleConfig = HCBattleManager.instance().get(dungeonId);
+		HCBattleConfig battleConfig = HCBattleManager.instance().get(id);
+		ChapterModule chapterModule = player.getChapterModule();
 		if (battleConfig.preBattle > 0 && !chapterModule.isHCBattlePass(battleConfig.preBattle)) {
 			return ErrorMsgEnum.BattleLevel_pre.getId();
 		}
@@ -36,7 +35,7 @@ public abstract class HCBattleHandler implements IBattleHandler {
 	}
 
 	@Override
-	public ResultObject<List<RewardInfo>> quickEnd(long playerId, int typeId) {
+	public ResultObject<List<RewardInfo>> quickEnd(int id) {
 		return null;
 	}
 }

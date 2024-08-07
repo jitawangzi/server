@@ -1,12 +1,10 @@
-package cn.game.games.net.game.module.battle.impl;
+package cn.game.games.net.game.module.battle;
 
 import cn.game.protocol.manual.DungeonTypeEnum;
 
-public class YaoWangImpl extends DaoHeartImpl {
-
+public class YaoWangBattle extends DaoHeartBattle {
 	@Override
 	public int getType() {
 		return DungeonTypeEnum.YaoWang.getId();
 	}
-
 }

@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.battle.impl;
+package cn.game.games.net.game.module.battle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,26 +6,26 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.game.games.cache.entity.Chapter;
-import cn.game.games.cache.entity.Player;
+import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.ChapterModule;
-import cn.game.games.net.game.module.battle.XiYouBattleHandler;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
-import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
-public class BattleChapterImpl extends XiYouBattleHandler {
+/**    
+ * 灵魄之战
+ * 2024年7月31日 下午12:02:38
+ * @author SYQ
+ */
+public class MainBattle extends XiYouBattleHandler {
 
 	@Override
-	public int battleStart(long playerId, int type, int dungeonId, int id, int lineupId, long uid) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
+	public int battleStart(int id) {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
 		// 检查章节事件开启条件，是否可以进行当前操作
@@ -40,17 +40,15 @@ public class BattleChapterImpl extends XiYouBattleHandler {
 //		}
 
 		// 可以打这个关了
-		chapterModule.addChapter(dungeonId);
+		chapterModule.addChapter(id);
 		return 0;
 	}
 
 	@Override
-	public int battleEnd(long playerId, BattleFieldEndRequest_13000003 request, BattleFieldEndResponse_13000004.Builder resp) {
+	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
 		boolean win = request.getWin();
 		int killMonsterCount = request.getKillMonsterCount();
 		int hpPercent = request.getHpPercent();
-
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		Chapter chapter = chapterModule.getChapter(chapterModule.getAttackingDungeonId());
@@ -83,11 +81,11 @@ public class BattleChapterImpl extends XiYouBattleHandler {
 		if (!StringUtils.isEmpty(convertAwardFUN)) {
 			switch (convertAwardFUN) {
 			case "FunKillConvertAward": {
-				int index = -1 ; 
+				int index = -1;
 				for (int i = 0; i < battleConfig.FUNCondition.length; i++) {
 					int tmp = battleConfig.FUNCondition[i];
 					if (killMonsterCount >= tmp) {
-						index = i ; 
+						index = i;
 						break;
 					}
 				}
@@ -124,8 +122,7 @@ public class BattleChapterImpl extends XiYouBattleHandler {
 		// 增加次数。
 		chapterModule.addChapterTimes(battleConfig.ID);
 
-		resp.addAllRewards(allRewards);
-		return 0;
+		return ResultObject.success(allRewards);
 	}
 
 	@Override
@@ -133,4 +130,7 @@ public class BattleChapterImpl extends XiYouBattleHandler {
 		return DungeonTypeEnum.BattleChapter.getId();
 	}
 
+	@Override
+	void newDay() {
+	}
 }

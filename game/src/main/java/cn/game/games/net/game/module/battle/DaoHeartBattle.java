@@ -3,17 +3,25 @@ package cn.game.games.net.game.module.battle;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
  * 道心磨砺和心魔试炼
  * 2024年5月31日 下午4:56:08
  * @author SYQ
  */
-public class DaoHeartBattle {
+public class DaoHeartBattle extends XiYouBattleHandler {
 
 	/** 战役类型 */
 	private int type;
@@ -37,6 +45,11 @@ public class DaoHeartBattle {
 		nextBattleId = nextBattleId();
 		reset();
 	};
+
+	@Override
+	void newDay() {
+		reset();
+	}
 
 	/** 
 	 * 每天重置数据
@@ -123,14 +136,6 @@ public class DaoHeartBattle {
 		this.randomBuff = randomBuff;
 	}
 
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
 	public int getCompleteBattleId() {
 		return completeBattleId;
 	}
@@ -166,5 +171,55 @@ public class DaoHeartBattle {
 	public void setNextBattleId(int nextBattleId) {
 		this.nextBattleId = nextBattleId;
 	}
+
+	@Override
+	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+		if (!request.getWin()) {
+			return ResultObject.success();
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		int attackingType = chapterModule.getAttackingType();
+		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
+
+		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(attackingType);
+		daoHeartBattle.battleCompleted();
+		OpType opType = attackingType == 2 ? OpType.DaoXinFirstFinish : attackingType == 3 ? OpType.XinMoFirstFinish : OpType.YaoWangComplete;
+
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
+		return ResultObject.success(reward);
+	}
+
+	@Override
+	public int battleStart(int id) {
+
+		if (type == 2) {
+			if (!player.isFuncOpen(InitialUI.DaoXinLLiLian)) {
+				return ErrorMsgEnum.func_not_open.getId();
+			}
+		} else if (type == 3) {
+			if (!player.isFuncOpen(InitialUI.XinMoShiLian)) {
+				return ErrorMsgEnum.func_not_open.getId();
+			}
+		} else if (type == 4) {
+			if (!player.isFuncOpen(InitialUI.YaoWangBiePao)) {
+				return ErrorMsgEnum.func_not_open.getId();
+			}
+		} else {
+			return ErrorMsgEnum.player_check_error.getId();
+		}
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		DaoHeartBattle daoHeartBattle = chapterModule.getDaoHeartBattle(type);
+		if (id != daoHeartBattle.getNextBattleId()) {
+			return ErrorMsgEnum.request_parameter_error.getId();
+		}
+		return 0;
+	}
+
+	@Override
+	public int getType() {
+		return DungeonTypeEnum.DaoHeart.getId();
+	}
+
 
 }
