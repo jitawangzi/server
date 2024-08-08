@@ -243,6 +243,7 @@ public class HeroHandler extends BaseHandler {
 //				break loop;
 //			}
 			boolean isAllHeroMaxLevel = true;
+			boolean isAllHeroItemNotEnough = true;
 			for (Hero hero : heros) {
 				int heroMaxLevel = HeroHelper.getHeroMaxLevel(hero);
 				int curLevel = hero.getLevel();
@@ -252,7 +253,7 @@ public class HeroHandler extends BaseHandler {
 				}
 				HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
 				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
-					break loop;
+					continue;
 				}
 				HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
 				if (nextHeroLvConfig == null) {
@@ -265,8 +266,12 @@ public class HeroHandler extends BaseHandler {
 //				upCount++;
 				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
 				isAllHeroMaxLevel = false;
+				isAllHeroItemNotEnough = false;
 			}
 			if (isAllHeroMaxLevel) {
+				break;
+			}
+			if (isAllHeroItemNotEnough) {
 				break;
 			}
 			loopCount++;

@@ -27,11 +27,11 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
 	@Override
 	void newDay() {
-		dayReward = false;
 		reset();
 	}
 
 	public void reset() {
+		dayReward = false;
 		if (startBattleId == 0) {
 			nextBattleId();
 		}
