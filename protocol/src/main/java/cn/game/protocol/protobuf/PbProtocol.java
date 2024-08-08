@@ -97,6 +97,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleSpiritualChangeBattleResponse_13000099 = 0x13000099;    
 	public final static int BattleLostInfoRequest_13000201 = 0x13000201;    //请求失落真经数据  
 	public final static int BattleLostInfoResponse_13000202 = 0x13000202;    
+	public final static int BattleLostDayRewardRequest_13000203 = 0x13000203;    //领取失落真经每日奖励  
+	public final static int BattleLostDayRewardResponse_13000204 = 0x13000204;    
 	public final static int BattleRougeRefreshRequest_13000052 = 0x13000052;    //肉鸽刷新,每天前3次免费，第四次看广告。  
 	public final static int BattleRougeRefreshResponse_13000053 = 0x13000053;    //肉鸽刷新  
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    //领取体力  
@@ -517,6 +519,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleLostInfoRequest_13000201, cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleLostInfoResponse_13000202, cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleLostDayRewardRequest_13000203, cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleLostDayRewardResponse_13000204, cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardResponse_13000204.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleRougeRefreshRequest_13000052, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000052.getDefaultInstance()
 				.getParserForType());
@@ -1144,6 +1150,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleSpiritualChangeBattleResponse_13000099", 0x13000099);
 		nameIdMap.put("BattleLostInfoRequest_13000201", 0x13000201);
 		nameIdMap.put("BattleLostInfoResponse_13000202", 0x13000202);
+		nameIdMap.put("BattleLostDayRewardRequest_13000203", 0x13000203);
+		nameIdMap.put("BattleLostDayRewardResponse_13000204", 0x13000204);
 		nameIdMap.put("BattleRougeRefreshRequest_13000052", 0x13000052);
 		nameIdMap.put("BattleRougeRefreshResponse_13000053", 0x13000053);
 		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);

@@ -213,8 +213,8 @@ public class GameClient extends AbstractNetClient {
 	
 	@Override
 	public String toString() {
-//		return "GameClient [playerId=" + playerId + ", sessionId=" + sessionId + ", connectionId=" + channel.binaryHandlerID() + "]";
-		return toDetailString();
+		return "PlayerId[" + playerId + "]";
+//		return toDetailString();
 	}
 	public String toDetailString() {
 		

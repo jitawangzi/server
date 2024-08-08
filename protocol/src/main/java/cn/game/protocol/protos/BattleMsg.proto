@@ -357,6 +357,16 @@ message BattleLostInfoResponse_13000202
 	repeated int32 randomBuff = 4;	// 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
 }
 
+// 领取失落真经每日奖励
+message BattleLostDayRewardRequest_13000203
+{
+}
+
+message BattleLostDayRewardResponse_13000204
+{
+	repeated RewardInfo rewards = 1;//
+}
+
 //@NotUseStart
 
 // 肉鸽刷新,每天前3次免费，第四次看广告。

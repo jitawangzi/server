@@ -42,7 +42,7 @@ public class JsonUtil {
 		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		objectMapper.disable(SerializationFeature.FAIL_ON_SELF_REFERENCES);
 		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+//		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 		// 忽略不存在的属性
 //		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 

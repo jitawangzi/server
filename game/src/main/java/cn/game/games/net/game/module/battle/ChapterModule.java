@@ -201,6 +201,11 @@ public class ChapterModule extends BasePlayerModule  {
 			MengYanMiJingBattle battle = getBattle(battleType);
 			return battle != null && battle.getCompleteBattleId() >= battleId;
 		}
+		if (battleType == DungeonTypeEnum.ShiLuoZhenJing.getId()) {
+			ShiLuoZhenJingBattle battle = getBattle(battleType);
+//			return battle != null && battle.getCompleteBattleId() >= battleId;
+			return false;
+		}
 		return false;
 	}
 
@@ -603,6 +608,9 @@ public class ChapterModule extends BasePlayerModule  {
 			break;
 		}
 		case PLAYER_CREATE: {
+			MainBattle battle = new MainBattle();
+			battle.setPlayer(player);
+			battlesMap.put(DungeonTypeEnum.BattleChapter.getId(), battle);
 			break;
 		}
 		case ChapterFirstWin: {
@@ -616,42 +624,34 @@ public class ChapterModule extends BasePlayerModule  {
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.HangingUpp) {
 				setPatrolRewardTime();
-			}
-
-			if (func == InitialUI.DaoXinLLiLian) {
-//				initDaoXin(DungeonTypeEnum.DaoHeart.getId());
+			} else if (func == InitialUI.DaoXinLLiLian) {
 				DaoHeartBattle daoHeartBattle = new DaoHeartBattle(DungeonTypeEnum.DaoHeart.getId());
 				daoHeartBattle.setPlayer(player);
 				battlesMap.put(DungeonTypeEnum.DaoHeart.getId(), daoHeartBattle);
-			}
-			if (func == InitialUI.XinMoShiLian) {
-//				initDaoXin(DungeonTypeEnum.XinMo.getId());
+			} else if (func == InitialUI.XinMoShiLian) {
 				DaoHeartBattle daoHeartBattle = new DaoHeartBattle(DungeonTypeEnum.XinMo.getId());
 				daoHeartBattle.setPlayer(player);
 				battlesMap.put(DungeonTypeEnum.XinMo.getId(), daoHeartBattle);
-			}
-			if (func == InitialUI.YaoWangBiePao) {
-//				initDaoXin(DungeonTypeEnum.YaoWang.getId());
+			} else if (func == InitialUI.YaoWangBiePao) {
 				DaoHeartBattle daoHeartBattle = new DaoHeartBattle(DungeonTypeEnum.YaoWang.getId());
 				daoHeartBattle.setPlayer(player);
 				battlesMap.put(DungeonTypeEnum.YaoWang.getId(), daoHeartBattle);
-			}
-			if (func == InitialUI.NightmareRealm) {
+			} else if (func == InitialUI.NightmareRealm) {
 				MengYanMiJingBattle mengYanMiJingBattle = new MengYanMiJingBattle();
 				mengYanMiJingBattle.init();
 				mengYanMiJingBattle.setPlayer(player);
 				battlesMap.put(DungeonTypeEnum.MengYanMiJing.getId(), mengYanMiJingBattle);
 
-			}
-			if (func == InitialUI.SpiritBattle) {
+			} else if (func == InitialUI.SpiritBattle) {
 				LingPoBattle lingPoBattle = new LingPoBattle();
 				lingPoBattle.setPlayer(player);
+				lingPoBattle.reset();
 				battlesMap.put(DungeonTypeEnum.LingPo.getId(), lingPoBattle);
 
-			}
-			if (func == InitialUI.ShiLuoZhenJing) {
+			} else if (func == InitialUI.ShiLuoZhenJing) {
 				ShiLuoZhenJingBattle battle = new ShiLuoZhenJingBattle();
 				battle.setPlayer(player);
+				battle.reset();
 				battlesMap.put(DungeonTypeEnum.ShiLuoZhenJing.getId(), battle);
 			}
 			break;
@@ -668,11 +668,6 @@ public class ChapterModule extends BasePlayerModule  {
 	public <T extends IBattleHandler> T getBattle(int type) {
 		return (T) battlesMap.get(type);
 	}
-
-
-//	public DaoHeartBattle getDaoHeartBattle(int type) {
-//		return daoBattleMap.get(type);
-//	}
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -693,6 +688,9 @@ public class ChapterModule extends BasePlayerModule  {
 				iterator.remove();
 			}
 		}
+		this.battlesMap.forEach((k, v) -> {
+			v.setPlayer(player);
+		});
 	};
 
 	public boolean isStaminaExpire(int now, int time) {

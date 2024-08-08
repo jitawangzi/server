@@ -1,15 +1,12 @@
 package cn.game.games.net.game.helper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.EventTriggerConfig;
 import cn.game.protocol.generated.config.GamePlayRandomBuffConfig;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
-import cn.game.protocol.generated.manager.EventTriggerManager;
 import cn.game.protocol.generated.manager.GamePlayRandomBuffManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.util.Rnd;
@@ -18,37 +15,6 @@ public class BattleHelper {
 
 	public static int getBattleLevelType(int id) {
 		return id / 10000;
-	}
-	/**
-	 * 随机出来一个事件类型，去除指定的类型
-	 * @param excludeIds
-	 * @return
-	 */
-	public static int randomBattleEventType(List<Integer> excludeIds) {
-		Collection<EventTriggerConfig> list = EventTriggerManager.getInstance().list();
-		int total = 0;
-		for (EventTriggerConfig config : list) {
-			if (excludeIds != null && excludeIds.contains(config.getId())) {
-				continue;
-			}
-			total += config.getProportion();
-		}
-
-		int rand = Rnd.nextInt(total);
-		int current = 0;
-
-		for (EventTriggerConfig config : list) {
-
-			if (excludeIds != null && excludeIds.contains(config.getId())) {
-				continue;
-			}
-
-			current += config.getProportion();
-			if (rand < current) { 
-				return config.getType();
-			}
-		}
-		return -1;
 	}
 
 	public static int roundUpLevel(int level) {

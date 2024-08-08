@@ -35,7 +35,7 @@ public abstract class HCBattleHandler extends IBattleHandler {
 	}
 
 	@Override
-	public ResultObject<List<RewardInfo>> quickEnd(int id) {
+	public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
 		return null;
 	}
 }

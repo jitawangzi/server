@@ -2,6 +2,8 @@ package cn.game.games.net.game.module.battle;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
@@ -13,6 +15,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  * @author SYQ
  */
 public abstract class IBattleHandler {
+	@JsonIgnore
 	protected Player player;
 	public void setPlayer(Player player) {
 		this.player = player;
@@ -24,12 +27,19 @@ public abstract class IBattleHandler {
 	/** 
 	 * 有些战斗可以直接结束
 	 * @param id  看战斗类型，通常是battle表id
+	 * @param subId 
+	 * @param isWin 
 	 * @return
 	 */
-	abstract ResultObject<List<RewardInfo>> quickEnd(int id);
+	abstract ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin);
 
 	abstract int getType();
 
+	/** 
+	 * 战斗前关卡检查
+	 * @param id
+	 * @return
+	 */
 	abstract int check(int id);
 
 	abstract void newDay();
