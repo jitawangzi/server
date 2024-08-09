@@ -1340,8 +1340,9 @@ public class PlayerHelper {
 					for (BasePlayerModule module : player.getModuleSorted()) {
 						if (module.alwaysStoreDataInStandaloneTable()) {
 							module.loadFromDb(listIterator);
+						} else {
+							module.initFromDbAfter();
 						}
-						module.initFromDbAfter();
 					}
 				} else {
 					for (BasePlayerModule module : player.getModuleSorted()) {

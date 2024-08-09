@@ -133,4 +133,29 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		this.dayReward = dayReward;
 	}
 
+	private int calcRewardCount() {
+
+		int a = 2; // 替换为你的实际值
+		int b = 3; // 替换为你的实际值
+		double c = 1.5; // 替换为你的实际值
+		int K = 100; // 替换为你的实际值
+		int m = 5; // 替换为你的实际值
+		int n = 10; // 替换为你的实际值
+		int ID = 123; // 替换为你的实际值
+
+		int initial = 40010;
+		int stage = 2; // 替换为你的实际值
+
+		// 计算关卡的值
+		int battle = ID + stage - initial;
+
+		// 计算整体公式的值
+		double result = (a * Math.pow((battle + b), c) + K) / m + 1;
+
+		// 向下取整并乘以 n
+		int finalResult = (int) Math.floor(result) * n;
+		return finalResult;
+
+	}
+
 }
