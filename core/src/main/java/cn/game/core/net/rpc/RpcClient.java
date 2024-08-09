@@ -1,5 +1,6 @@
 package cn.game.core.net.rpc;
 
+import java.text.MessageFormat;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -7,8 +8,6 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
 
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.transport.Result;
@@ -78,33 +77,21 @@ public interface RpcClient {
 	 * 是否允许同步请求
 	 * @return
 	 */
-	public boolean allowSync();
+	public boolean checkAllowSync();
 
 	private Object send(Command command, Consumer callBackTask, Class<?> returnType, boolean sync, String serverId) {
 
 		byte[] datas = KryoUtils.serialize(command);
-
+		// Future方式异步
 		if (Future.class.isAssignableFrom(returnType)) {
-
-			Long startLong = System.currentTimeMillis();
+			long startLong = System.currentTimeMillis();
 			Future<Message<byte[]>> request = request(datas, serverId);
-			request.onFailure(t -> {
-				log.error("request message to serverId[{}] failed ,command[{}]exception[{}]times[{}]", serverId,
-						command, t, (System.currentTimeMillis() - startLong) / 1000);
-			});
-//			return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult());
-			return request.map(r -> {
-				Object obj = null;
-//				try {
-					obj = KryoUtils.deserialize(r.body(), Result.class).getResult();
-//				} catch (Exception e) {
-//					log.error("request message to serverId[{}] failed ,command[{}]exception[{}]", serverId, command, e);
-//				}
-//				if (obj == null || obj instanceof Throwable)
-//					throw new RuntimeException((Throwable) obj);
-				return obj;
+			return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult()).onFailure(t -> {
+				log.error(MessageFormat.format("request message to serverId[{0}] failed ,command[{1}]usetime[{2}]", serverId, command,
+						(System.currentTimeMillis() - startLong) / 1000), t);
 			});
 		}
+		// callBack方式异步。
 		if (callBackTask != null || !sync) {
 			request(datas, serverId, r -> {
 				if (r instanceof Throwable) {
@@ -117,8 +104,8 @@ public interface RpcClient {
 			});
 			return null;
 		}
-
-		allowSync();
+		// 同步方式
+		checkAllowSync();
 
 		Future<Message<byte[]>> request = request(datas, serverId);
 		byte[] result = null;
@@ -130,10 +117,11 @@ public interface RpcClient {
 			log.error("sync request message to serverId[{}] failed ,command[{}]exception[{}]", serverId, command, e);
 		}
 		if (result == null) {
-			log.error("远程调用无返回结果：  command[{}] thread[{}]", JSON.toJSONString(command), Thread.currentThread().getName());
+			String errorMsg = MessageFormat.format("远程调用无返回结果：  command[{0}] toServerId[{1}] thread[{2}]", command, serverId, Thread.currentThread().getName());
+			log.error(errorMsg);
 			TaskManager.getInstance().addBlockTask(() -> {
 				try {
-					MailUtil.reportException("远程调用无返回结果 :  command[{}]", JSON.toJSONString(command));
+					MailUtil.reportException("远程调用无返回结果", errorMsg);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

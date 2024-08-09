@@ -32,7 +32,7 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 	}
 
 	@Override
-	public boolean allowSync() {
+	public boolean checkAllowSync() {
 		Thread currentThread = Thread.currentThread();
 		if (currentThread instanceof VertxThread) {
 			if (!((VertxThread) currentThread).isWorker()) {

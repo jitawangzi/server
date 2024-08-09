@@ -226,7 +226,7 @@ public class ZeroMQRpcClient implements Runnable, RpcClient {
 	public <ZMsg> void send(ZMsg message) {
 	}
 	@Override
-	public boolean allowSync() {
+	public boolean checkAllowSync() {
 		// TODO Auto-generated method stub
 		return false;
 	}

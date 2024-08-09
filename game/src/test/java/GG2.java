@@ -1,29 +1,23 @@
-import java.util.ArrayList;
-import java.util.List;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 public class GG2 {
 
 	public static void main(String[] args) throws Exception {
 		
-		List<Integer> list = new ArrayList<>();
+		Promise<Object> promise = Promise.promise();
+		Future<Object> future = promise.future();
+		
+		future.onSuccess(result -> {
+			System.out.println("The result is: " + result);
+			System.out.println(1 / 0);
 
-		list.add(3);
-		list.add(8);
-		list.add(1);
-		list.add(2);
-
-		list.sort((a, b) -> a - b);
-
-		for (Integer integer : list) {
-			System.out.println(integer);
-		}
-
+		}).onFailure(r -> {
+			System.out.println("The error is: " + r.getMessage());
+			System.err.println("error occurred");
+        });
+		promise.fail(new RuntimeException());
 	}
 
-	static class JSTest {
-		public String str;
-		public int i;
-		public int i2;
-	}
 
 }

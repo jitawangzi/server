@@ -160,7 +160,7 @@ public class RocketMQRpcClient implements RpcClient {
 
 	}
 	@Override
-	public boolean allowSync() {
+	public boolean checkAllowSync() {
 		return true;
 	}
 }

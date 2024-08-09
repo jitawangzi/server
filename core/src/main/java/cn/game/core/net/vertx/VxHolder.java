@@ -97,7 +97,9 @@ public class VxHolder {
 
 		Future<Vertx> clusteredVertxFuture = Vertx.clusteredVertx(options);
 		vertx = clusteredVertxFuture.toCompletionStage().toCompletableFuture().get(3000, TimeUnit.SECONDS);
-
+		vertx.exceptionHandler(e -> {
+			log.error("vertx uncaptured exception： ", e);
+		});
 		httpClient = WebClient.create(vertx, webClientOption);
 
 		vertx.eventBus().registerDefaultCodec(ServiceException.class, new ServiceExceptionMessageCodec());

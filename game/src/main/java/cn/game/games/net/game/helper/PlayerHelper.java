@@ -1228,6 +1228,43 @@ public class PlayerHelper {
 		return promise.future();
 	}
 
+	public static Future<Player> login(GameClient gameClient, PlayerData dbPlayer, Account account) {
+		Promise<Player> promise = Promise.promise();
+		promise.complete(null);
+		Long playerId = dbPlayer.getPlayerId();
+		BiConsumer<Boolean, ? super Throwable> action = (v, throwable) -> {
+			GameClientManager.getInstance().addGameClientPlayer(gameClient);
+			GameClientManager.getInstance().addGameClientSession(gameClient);
+
+			Player player = new Player(dbPlayer);
+			player.setGameClient(gameClient);
+			player.setAccount(account);
+			// load from db
+			PlayerHelper.selectPlayerData(player);
+
+		};
+//		获取分布式锁之后再load
+		RFuture<Boolean> playerLockFuture = PlayerHelper.trySetServerId(playerId);
+		playerLockFuture.onComplete((v, throwable) -> {
+			if (v) {
+				action.accept(v, throwable);
+			} else {
+				String serverId = ServerContext.getInstance().getServerId();
+				// 看看是不是自己服务器
+				RFuture<String> setAsync = RedissonUtil.getAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+				setAsync.onComplete((vv, tt) -> {
+					if (vv != null && vv.equals(serverId)) {
+						action.accept(v, throwable);
+					} else {
+						log.error(playerId + " getPlayerLock failed", throwable);
+						gameClient.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
+					}
+				});
+			}
+		});
+		return promise.future();
+	}
+
 	public static RFuture<Boolean> trySetServerId(long playerId) {
 		RFuture<Boolean> playerLockFuture = RedissonUtil.trySetAsync(CacheType.PLAYER_SERVER_ID.key(playerId),
 				ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
