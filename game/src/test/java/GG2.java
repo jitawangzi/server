@@ -1,22 +1,21 @@
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 
 public class GG2 {
 
 	public static void main(String[] args) throws Exception {
-		
-		Promise<Object> promise = Promise.promise();
-		Future<Object> future = promise.future();
-		
-		future.onSuccess(result -> {
-			System.out.println("The result is: " + result);
-			System.out.println(1 / 0);
+		Vertx vertx = Vertx.vertx();
+		Future<String> futureWithTimeout = Future.future(promise -> {
+			long setTimer = vertx.setTimer(5000, id -> promise.fail("Operation timed out"));
+			promise.future().onComplete(ar -> vertx.cancelTimer(setTimer));
+			promise.complete("the result");
+		});
 
-		}).onFailure(r -> {
-			System.out.println("The error is: " + r.getMessage());
-			System.err.println("error occurred");
-        });
-		promise.fail(new RuntimeException());
+		futureWithTimeout.onSuccess(r -> {
+			System.out.println("The result is: " + r);
+		}).onFailure(e -> {
+			System.err.println("Error caught in onFailure: " + e.getMessage());
+		});
 	}
 
 

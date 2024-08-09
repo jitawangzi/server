@@ -133,7 +133,7 @@ public class DAO {
 		return future;
 	}
 
-	public static Future<@Nullable Object> execute(Class<?> mapperClass, String method, Object... args) {
+	public static <T> Future<@Nullable T> execute(Class<?> mapperClass, String method, Object... args) {
 //		if (pauseUpdateDb) {
 //			dbTasksQueue.add(new DbTask(mapperClass, method, args));
 //			return Future.succeededFuture();
@@ -142,11 +142,11 @@ public class DAO {
 //
 //			}
 //		}
-		Future<@Nullable Object> future = VxHolder.vertx.executeBlocking(promise -> {
+		Future<@Nullable T> future = VxHolder.vertx.executeBlocking(promise -> {
 			Object result;
 			try {
 				result = invoke(mapperClass, method, args);
-				promise.complete(result);
+				promise.complete((T) result);
 			} catch (Throwable e) {
 				promise.fail(e);
 				log.error("db execute error", e);
