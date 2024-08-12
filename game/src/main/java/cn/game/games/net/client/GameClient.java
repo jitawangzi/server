@@ -217,7 +217,6 @@ public class GameClient extends AbstractNetClient {
 //		return toDetailString();
 	}
 	public String toDetailString() {
-		
 		return MessageFormat.format("GameClient:playerId[{0,number,#}]sessionId[{1}]connectionId[{2}]", playerId,
 				sessionId,
 				channel.binaryHandlerID());

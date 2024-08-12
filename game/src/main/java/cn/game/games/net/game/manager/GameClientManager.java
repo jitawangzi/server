@@ -93,10 +93,11 @@ public class GameClientManager {
 	}
 
 	public void addGameClientPlayer(GameClient gameClient) {
-
 		if (gameClient.getPlayerId() > 0) {
 			players.put(gameClient.getPlayerId(), gameClient);
 			log.info("addGameClientPlayer " + gameClient.toDetailString());
+		}else {
+            log.warn("addGameClientPlayer playerId is 0, gameClient: " + gameClient.toDetailString());
 		}
 	}
 

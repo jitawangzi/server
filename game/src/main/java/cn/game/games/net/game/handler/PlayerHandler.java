@@ -574,7 +574,6 @@ public class PlayerHandler extends BaseHandler {
 //		String serverId = req.getServerId();
 		boolean reconnect = req.getReconnect();
 		log.info("passportSessionId : " + passportSessionId + " start login");
-		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
 //		if (true) {
 //			client.sendProtocol(PlayerLoginResponse_01000002.newBuilder()
 //					.setTime(System.currentTimeMillis() + "张三*#@sd+李四"));
@@ -589,10 +588,10 @@ public class PlayerHandler extends BaseHandler {
 //			failHandler.handle(canLogin);
 //			return;
 		}
-		
+		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
 		GameClient newGameClient = (GameClient) client;
 		newGameClient.setSessionId(passportSessionId);
-		boolean isReconnect = PlayerHelper.reconnect(oldGameClient, newGameClient, reconnect, 0);
+		boolean isReconnect = PlayerHelper.reconnect(newGameClient, reconnect, oldGameClient == null ? 0 : oldGameClient.getPlayerId());
 		if (isReconnect) {
 			return;
 		}
@@ -647,8 +646,7 @@ public class PlayerHandler extends BaseHandler {
 				return;
 			}
 
-			GameClient oldGameClient2 = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-			if (PlayerHelper.reconnect(oldGameClient2, newGameClient, reconnect, playerId)) {
+			if (PlayerHelper.reconnect(newGameClient, reconnect, playerId)) {
 				return;
 			}
 
@@ -729,23 +727,10 @@ public class PlayerHandler extends BaseHandler {
 				});
 			}
 		
-	//		private Future<PlayerData> createNewPlayer(LoginPlayerUidResponse_7d000019 uidResponse, PlayerLoginRequest_01000001 req, GameClient client) {
-	//			return toVertxFuture(PlayerHelper.trySetServerId(uidResponse.getUid())).compose(locked -> {
-	//				if (!locked) {
-	//					return Future.failedFuture(new LoginException(ErrorMsgEnum.player_lock.getId()));
-	//				}
-	//				Account account = new Account(req);
-	//				account.accountId = uidResponse.getAccountId();
-	//				account.deviceId = uidResponse.getDeviceId();
-	//				return createPlayer(account, client, uidResponse.getUid(), null, true, 0, false, true);
-	//			});
-	//		}
-	
-	
 			private Future<PlayerData> createNewPlayer(LoginPlayerUidResponse_7d000019 uidResponse, PlayerLoginRequest_01000001 req, GameClient client) {
 				return toVertxFuture(PlayerHelper.trySetServerId(uidResponse.getUid())).compose(locked -> {
 					if (!locked) {
-						return Future.failedFuture(new LoginException(ErrorMsgEnum.player_lock.getId()));
+						return Future.failedFuture(new LogicException(ErrorMsgEnum.player_lock.getId()));
 					}
 					Account account = new Account(req);
 					account.accountId = uidResponse.getAccountId();
@@ -771,8 +756,8 @@ public class PlayerHandler extends BaseHandler {
 			}
 		
 			private Future<Void> checkReconnect(GameClient client, boolean reconnect, long playerId) {
-				GameClient oldGameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-				if (PlayerHelper.reconnect(oldGameClient, client, reconnect, playerId)) {
+	//				GameClient oldGameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+				if (PlayerHelper.reconnect(client, reconnect, playerId)) {
 					return Future.failedFuture(new LogicException(ErrorMsgEnum.reconnect_fail.getId()));
 				}
 				return Future.succeededFuture();
@@ -792,7 +777,7 @@ public class PlayerHandler extends BaseHandler {
 			}
 		
 			private Future<Void> loadPlayerFromDb(PlayerData player, Account account, GameClient client) {
-				return Future.fromCompletionStage(PlayerHelper.startLoadPlayerFromDb(client, player, account));
+				return Future.fromCompletionStage(PlayerHelper.startLoadPlayerFromDb(client, player, account)).mapEmpty();
 			}
 		
 			private void handleLoginFailure(Throwable throwable, GameClient client) {

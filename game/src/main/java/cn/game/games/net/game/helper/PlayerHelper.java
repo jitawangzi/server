@@ -69,7 +69,6 @@ import cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
-import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutPush_01100030;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501;
@@ -1158,26 +1157,28 @@ public class PlayerHelper {
 	 * @param reconnect
 	 * @return  是否重连了 
 	 */
-	public static boolean reconnect(GameClient oldGameClient, GameClient newGameClient, boolean reconnect, long playerId) {
-		if (oldGameClient != null && oldGameClient.getPlayerId() > 0) { // 可能不同设备登录同一账号,应该退出老的GameClient
-			if (oldGameClient != newGameClient) {
-				if (reconnect) {
-					newGameClient.copy(oldGameClient);
-				} else {
-					newGameClient.copyClintLoign(oldGameClient);
-				}
-				oldGameClient.sendProtocol(PlayerLogoutPush_01100030.getDefaultInstance());
-				GameClientManager.getInstance().removeGameClient(oldGameClient);
-
-				GameClientManager.getInstance().addGameClientSession(newGameClient);
-				GameClientManager.getInstance().addGameClientPlayer(newGameClient);
-			}
+	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId) {
+		if (playerId == 0) {
+			return false;
 		}
-
-		Player player = PlayerManager.getInstance().getPlayer(playerId > 0 ? playerId : oldGameClient == null ? 0 : oldGameClient.getPlayerId());
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player == null) {
 			return false;
 		}
+		GameClient oldGameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+
+		if (oldGameClient != null && oldGameClient != newGameClient) {
+			// 可能不同设备登录同一账号,应该退出老的GameClient
+			if (reconnect) {
+				newGameClient.copy(oldGameClient);
+			} else {
+				newGameClient.copyClintLoign(oldGameClient);
+			}
+			GameClientManager.getInstance().removeGameClient(oldGameClient);
+		}
+		GameClientManager.getInstance().addGameClientSession(newGameClient);
+		GameClientManager.getInstance().addGameClientPlayer(newGameClient);
+
 		player.setGameClient((GameClient) newGameClient);
 
 		PlayerHelper.refresh(player);
