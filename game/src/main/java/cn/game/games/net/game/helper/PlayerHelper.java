@@ -1152,9 +1152,9 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @param oldGameClient
 	 * @param newGameClient
 	 * @param reconnect
+	 * @param playerId
 	 * @return  是否重连了 
 	 */
 	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId) {

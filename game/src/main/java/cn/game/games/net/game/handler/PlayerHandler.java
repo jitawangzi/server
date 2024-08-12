@@ -25,6 +25,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -686,12 +687,12 @@ public class PlayerHandler extends BaseHandler {
 		});
 	}
 
-	/**
+//	/**
 			public void handleLogin(PlayerLoginRequest_01000001 req, GameClient client) {
 				String passportSessionId = req.getSessionId();
 			    boolean reconnect = req.getReconnect();
 		
-			    checkLoginStatus(req, client)
+				checkLoginStatus(req.getVerstion(), client)
 			        .compose(v -> getPlayerUid(passportSessionId))
 			        .compose(uidResponse -> loadOrCreatePlayer(uidResponse, req, client))
 			        .compose(player -> handleExistingPlayer(player, req, client, reconnect))
@@ -702,11 +703,11 @@ public class PlayerHandler extends BaseHandler {
 			        });
 			}
 		
-			private Future<Void> checkLoginStatus(PlayerLoginRequest_01000001 req, GameClient client) {
-				int canLogin = GameServerStatus.getInstance().canLogin(req.getVerstion());
-				if (canLogin > 0) {
-					return Future.failedFuture(new LogicException(canLogin));
-				}
+			private Future<Void> checkLoginStatus(String version, GameClient client) {
+				int canLogin = GameServerStatus.getInstance().canLogin(version);
+//				if (canLogin > 0) {
+//					return Future.failedFuture(canLogin + "");
+//				}
 				return Future.succeededFuture();
 			}
 		
@@ -777,7 +778,7 @@ public class PlayerHandler extends BaseHandler {
 			}
 		
 			private Future<Void> loadPlayerFromDb(PlayerData player, Account account, GameClient client) {
-				return Future.fromCompletionStage(PlayerHelper.startLoadPlayerFromDb(client, player, account)).mapEmpty();
+				return PlayerHelper.startLoadPlayerFromDb(client, player, account).mapEmpty();
 			}
 		
 			private void handleLoginFailure(Throwable throwable, GameClient client) {
@@ -798,7 +799,7 @@ public class PlayerHandler extends BaseHandler {
 				return promise.future();
 			}
 			
-			**/
+//			**/
 
 	protected void logout(NetClient client, Object message) {
 //		PlayerMsg.PlayerLogoutRequest_01000003 req = (PlayerLogoutRequest_01000003) message;
