@@ -67,11 +67,12 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		}
 	}
 
-	public int check(int id) {
-		if (id != this.startBattleId || this.battleStage != 0) {
+	@Override
+	public int check(int id, int subId) {
+		if (id != startBattleId || subId != battleStage) {
 			return ErrorMsgEnum.request_parameter_error.ID;
 		}
-		return super.check(id);
+		return super.check(id, subId);
 	}
 
 	@Override
@@ -94,9 +95,6 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
 	@Override
 	public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
-		if (id != startBattleId || subId != battleStage) {
-			return ResultObject.fail(ErrorMsgEnum.request_parameter_error.ID);
-		}
 		if (!isWin) {
 			return ResultObject.success();
 		}

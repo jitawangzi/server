@@ -85,6 +85,7 @@ import cn.game.util.ServerType;
 import cn.game.util.TreeWordFilter;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.ReplyException;
 
@@ -987,7 +988,9 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setModules("[]");
 
 		ObjUtil.setDefaultValue(playerData);
-		return DAO.<PlayerData>execute(PlayerDataMapper.class, MapperConstant.insert, playerData).onSuccess(r -> {
+
+		Promise<PlayerData> promise = Promise.promise();
+		DAO.execute(PlayerDataMapper.class, MapperConstant.insert, playerData).onSuccess(r -> {
 			try {
 //				User user = (User) list.get(0);
 //				List<UserTag> tags = (List<UserTag>) list.get(1);
@@ -1034,16 +1037,20 @@ public class PlayerHandler extends BaseHandler {
 						playerData.getLevel());
 				loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]",
 						playerData.getPlayerId(), true, true, 0);
+				promise.complete(playerData);
 			} catch (Exception e) {
 				log.error(uid + " 初始化失败", e);
 				PlayerManager.getInstance().deletePlayer(id);
 				client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
+				promise.fail(e);
 			}
 
-		}).onFailure(r -> {
+		}).onFailure(e -> {
 			client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
-			log.error("", r);
+			log.error("", e);
+			promise.fail(e);
 		});
+		return promise.future();
 	}
 
 	private String randomName() {

@@ -439,6 +439,15 @@ public class Player  {
 	}
 
 	/** 
+	 * 是否有某种福利
+	 * @param type
+	 * @return
+	 */
+	public boolean hasWelfare(WelfareTypeEnum type) {
+		return getWelfareValue(type) > 0;
+	}
+
+	/** 
 	 * 某个功能是否开启了
 	 * @param type
 	 * @return

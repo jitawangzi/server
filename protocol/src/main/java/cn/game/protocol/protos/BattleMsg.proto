@@ -5,7 +5,7 @@ import "RewardMsg.proto" ;
 // 章节关卡协议
 // 开始关卡战斗请求
 message BattleFieldStartRequest_13000001{
-	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
+	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经 6世界boss
 	uint32 typeId = 2; // 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，例如1、2、3是Battle表id， 11 、12 是HCBattle表id;
 
 	uint32 fieldId = 3;	// BattleField关卡id，有的玩法可能包含多个关卡，做一下区分。不一定有。
@@ -37,6 +37,7 @@ message BattleFieldEndRequest_13000003{
 	uint32 hpPercent = 2;	// 城池剩余血量百分比，如剩余40%血量，则为40
 	bool win = 3;	        // 战斗是否成功，用血量百分比可能有误差。
 	uint32 battleTime = 4;	        // 战斗时长（秒）
+	uint32 damage = 8;	        // 战斗伤害，例如世界boss战斗需要这个数值。
 }
 
 // 结束关卡战斗
@@ -365,6 +366,32 @@ message BattleLostDayRewardRequest_13000203
 message BattleLostDayRewardResponse_13000204
 {
 	repeated RewardInfo rewards = 1;//
+}
+
+// ****************************************世界boss********************************************
+
+// 请求世界boss数据
+message BattleWorldBossInfoRequest_13000301
+{
+}
+
+message BattleWorldBossInfoResponse_13000302
+{
+	int32 cumulativeDamage = 1 ;  //今日累计伤害
+	int32 maxDamageToday = 2 ;  //今日最高伤害
+	int32 rank  = 3 ;  // 我的排名，暂时没有。
+	int32 battleTimes  = 4 ;  // 今日已经挑战次数。每天第一次免费，以后需要付费购买。
+	int32 buyTimes  = 5 ;  // 今日付费购买次数
+	bool canSweep  = 6 ;  // 是否可以扫荡，只有打过一次之后，才可以扫荡。
+}
+
+// 购买世界boss次数
+message BattleWorldBossBuyTimesRequest_13000303
+{
+}
+
+message BattleWorldBossBuyTimesResponse_13000304
+{
 }
 
 //@NotUseStart

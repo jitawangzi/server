@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.battle;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,10 +156,7 @@ public class LingPoBattle extends XiYouBattleHandler {
 		if (id != this.getBattleId()) {
 			return ErrorMsgEnum.request_parameter_error.getId();
 		}
-		LocalTime now = LocalTime.now();
-		LocalTime start = LocalTime.of(23, 30);
-
-		if (now.isAfter(start)) {
+		if (BattleHelper.isNowAfter2330()) {
 			return ErrorMsgEnum.not_open.getId();
 		}
 		if (this.isAdsGetBattleTimes()) {

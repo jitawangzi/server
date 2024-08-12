@@ -63,13 +63,15 @@ public enum ErrorMsgEnum {
 	level_limit(64, "等级已经到上限，可能是等级，星级等"),
 	player_not_exist(65, "玩家不存在"),
 	player_not_online(66, "玩家不在线"),
-	operation_too_fast(67, "操作太快，太频繁了"),
+	operation_too_fast(67, "请求太快，太频繁了"),
 	/** 非法请求，一般是客户端不够条件进行当前操作 */
 	illegal_request(68, "非法请求，一般是客户端不够条件进行当前操作，例如功能未开启，等级不足等等"),
 	not_watch_ads(69, "需要先看广告才能进行该操作"),
 
 	/** 前置条件校验错误 */
 	pre_condition_check_error(70, "前置条件校验错误"),
+	/** 没有该福利/特权，不能进行此项操作。 */
+	welfare_check_error(71, "没有该福利/特权，不能进行此项操作。"),
 	// 100+ 业务错误。
 
 	/** 创建角色名字重复 */

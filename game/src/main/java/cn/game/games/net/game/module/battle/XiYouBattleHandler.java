@@ -18,7 +18,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 public abstract class XiYouBattleHandler extends IBattleHandler {
 
 	@Override
-	public int check(int id) {
+	public int check(int id, int subId) {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		BattleConfig battleConfig = BattleManager.instance().get(id);
 //		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);

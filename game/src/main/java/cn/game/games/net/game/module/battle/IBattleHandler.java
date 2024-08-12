@@ -38,9 +38,13 @@ public abstract class IBattleHandler {
 	/** 
 	 * 战斗前关卡检查
 	 * @param id
+	 * @param subId TODO
 	 * @return
 	 */
-	abstract int check(int id);
+	abstract int check(int id, int subId);
 
+	/** 
+	 * 跨天重置数据
+	 */
 	abstract void newDay();
 }

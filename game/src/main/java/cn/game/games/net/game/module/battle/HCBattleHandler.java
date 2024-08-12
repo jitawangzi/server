@@ -17,7 +17,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  */
 public abstract class HCBattleHandler extends IBattleHandler {
 	@Override
-	public int check(int id) {
+	public int check(int id, int subId) {
 
 		HCBattleConfig battleConfig = HCBattleManager.instance().get(id);
 		ChapterModule chapterModule = player.getChapterModule();

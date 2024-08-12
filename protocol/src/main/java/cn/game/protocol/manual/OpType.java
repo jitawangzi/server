@@ -99,6 +99,8 @@ public enum OpType{
 
 	ShiLuoZhenJing(170, "失落真经"),
 
+	WorldBoss(171, "世界boss"),
+
 	BoxOpen(200, "合并开宝箱"),
 	MergeEquipLvUp(201, "合并装备升级"),
 	HCHeroPieceAds(203, "看广告获得觉醒合成英雄碎片"),

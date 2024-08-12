@@ -20,7 +20,7 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
+     * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经 6世界boss
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -149,7 +149,7 @@ public final class BattleMsg {
     private int type_;
     /**
      * <pre>
-     * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
+     * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经 6世界boss
      * </pre>
      *
      * <code>uint32 type = 1;</code>
@@ -534,7 +534,7 @@ public final class BattleMsg {
       private int type_ ;
       /**
        * <pre>
-       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
+       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经 6世界boss
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -546,7 +546,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
+       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经 6世界boss
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -561,7 +561,7 @@ public final class BattleMsg {
       }
       /**
        * <pre>
-       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
+       * 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经 6世界boss
        * </pre>
        *
        * <code>uint32 type = 1;</code>
@@ -4354,6 +4354,16 @@ public final class BattleMsg {
      * @return The battleTime.
      */
     int getBattleTime();
+
+    /**
+     * <pre>
+     * 战斗伤害，例如世界boss战斗需要这个数值。
+     * </pre>
+     *
+     * <code>uint32 damage = 8;</code>
+     * @return The damage.
+     */
+    int getDamage();
   }
   /**
    * <pre>
@@ -4427,6 +4437,11 @@ public final class BattleMsg {
             case 48: {
 
               killMonsterBossCount_ = input.readUInt32();
+              break;
+            }
+            case 64: {
+
+              damage_ = input.readUInt32();
               break;
             }
             default: {
@@ -4536,6 +4551,21 @@ public final class BattleMsg {
       return battleTime_;
     }
 
+    public static final int DAMAGE_FIELD_NUMBER = 8;
+    private int damage_;
+    /**
+     * <pre>
+     * 战斗伤害，例如世界boss战斗需要这个数值。
+     * </pre>
+     *
+     * <code>uint32 damage = 8;</code>
+     * @return The damage.
+     */
+    @java.lang.Override
+    public int getDamage() {
+      return damage_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4564,6 +4594,9 @@ public final class BattleMsg {
       }
       if (killMonsterBossCount_ != 0) {
         output.writeUInt32(6, killMonsterBossCount_);
+      }
+      if (damage_ != 0) {
+        output.writeUInt32(8, damage_);
       }
       unknownFields.writeTo(output);
     }
@@ -4594,6 +4627,10 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(6, killMonsterBossCount_);
       }
+      if (damage_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(8, damage_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -4619,6 +4656,8 @@ public final class BattleMsg {
           != other.getWin()) return false;
       if (getBattleTime()
           != other.getBattleTime()) return false;
+      if (getDamage()
+          != other.getDamage()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4641,6 +4680,8 @@ public final class BattleMsg {
           getWin());
       hash = (37 * hash) + BATTLETIME_FIELD_NUMBER;
       hash = (53 * hash) + getBattleTime();
+      hash = (37 * hash) + DAMAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getDamage();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4788,6 +4829,8 @@ public final class BattleMsg {
 
         battleTime_ = 0;
 
+        damage_ = 0;
+
         return this;
       }
 
@@ -4819,6 +4862,7 @@ public final class BattleMsg {
         result.hpPercent_ = hpPercent_;
         result.win_ = win_;
         result.battleTime_ = battleTime_;
+        result.damage_ = damage_;
         onBuilt();
         return result;
       }
@@ -4881,6 +4925,9 @@ public final class BattleMsg {
         }
         if (other.getBattleTime() != 0) {
           setBattleTime(other.getBattleTime());
+        }
+        if (other.getDamage() != 0) {
+          setDamage(other.getDamage());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5122,6 +5169,49 @@ public final class BattleMsg {
       public Builder clearBattleTime() {
         
         battleTime_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int damage_ ;
+      /**
+       * <pre>
+       * 战斗伤害，例如世界boss战斗需要这个数值。
+       * </pre>
+       *
+       * <code>uint32 damage = 8;</code>
+       * @return The damage.
+       */
+      @java.lang.Override
+      public int getDamage() {
+        return damage_;
+      }
+      /**
+       * <pre>
+       * 战斗伤害，例如世界boss战斗需要这个数值。
+       * </pre>
+       *
+       * <code>uint32 damage = 8;</code>
+       * @param value The damage to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDamage(int value) {
+        
+        damage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 战斗伤害，例如世界boss战斗需要这个数值。
+       * </pre>
+       *
+       * <code>uint32 damage = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDamage() {
+        
+        damage_ = 0;
         onChanged();
         return this;
       }
@@ -47392,6 +47482,2235 @@ public final class BattleMsg {
 
   }
 
+  public interface BattleWorldBossInfoRequest_13000301OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleWorldBossInfoRequest_13000301)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * 请求世界boss数据
+   * </pre>
+   *
+   * Protobuf type {@code Protos.BattleWorldBossInfoRequest_13000301}
+   */
+  public static final class BattleWorldBossInfoRequest_13000301 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleWorldBossInfoRequest_13000301)
+      BattleWorldBossInfoRequest_13000301OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleWorldBossInfoRequest_13000301.newBuilder() to construct.
+    private BattleWorldBossInfoRequest_13000301(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleWorldBossInfoRequest_13000301() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleWorldBossInfoRequest_13000301();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleWorldBossInfoRequest_13000301(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoRequest_13000301_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoRequest_13000301_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.class, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 other = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 请求世界boss数据
+     * </pre>
+     *
+     * Protobuf type {@code Protos.BattleWorldBossInfoRequest_13000301}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleWorldBossInfoRequest_13000301)
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoRequest_13000301_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoRequest_13000301_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.class, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoRequest_13000301_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 result = new cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleWorldBossInfoRequest_13000301)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleWorldBossInfoRequest_13000301)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleWorldBossInfoRequest_13000301>
+        PARSER = new com.google.protobuf.AbstractParser<BattleWorldBossInfoRequest_13000301>() {
+      @java.lang.Override
+      public BattleWorldBossInfoRequest_13000301 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleWorldBossInfoRequest_13000301(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleWorldBossInfoRequest_13000301> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleWorldBossInfoRequest_13000301> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BattleWorldBossInfoResponse_13000302OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleWorldBossInfoResponse_13000302)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     *今日累计伤害
+     * </pre>
+     *
+     * <code>int32 cumulativeDamage = 1;</code>
+     * @return The cumulativeDamage.
+     */
+    int getCumulativeDamage();
+
+    /**
+     * <pre>
+     *今日最高伤害
+     * </pre>
+     *
+     * <code>int32 maxDamageToday = 2;</code>
+     * @return The maxDamageToday.
+     */
+    int getMaxDamageToday();
+
+    /**
+     * <pre>
+     * 我的排名，暂时没有。
+     * </pre>
+     *
+     * <code>int32 rank = 3;</code>
+     * @return The rank.
+     */
+    int getRank();
+
+    /**
+     * <pre>
+     * 今日已经挑战次数。每天第一次免费，以后需要付费购买。
+     * </pre>
+     *
+     * <code>int32 battleTimes = 4;</code>
+     * @return The battleTimes.
+     */
+    int getBattleTimes();
+
+    /**
+     * <pre>
+     * 今日付费购买次数
+     * </pre>
+     *
+     * <code>int32 buyTimes = 5;</code>
+     * @return The buyTimes.
+     */
+    int getBuyTimes();
+
+    /**
+     * <pre>
+     * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+     * </pre>
+     *
+     * <code>bool canSweep = 6;</code>
+     * @return The canSweep.
+     */
+    boolean getCanSweep();
+  }
+  /**
+   * Protobuf type {@code Protos.BattleWorldBossInfoResponse_13000302}
+   */
+  public static final class BattleWorldBossInfoResponse_13000302 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleWorldBossInfoResponse_13000302)
+      BattleWorldBossInfoResponse_13000302OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleWorldBossInfoResponse_13000302.newBuilder() to construct.
+    private BattleWorldBossInfoResponse_13000302(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleWorldBossInfoResponse_13000302() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleWorldBossInfoResponse_13000302();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleWorldBossInfoResponse_13000302(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              cumulativeDamage_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              maxDamageToday_ = input.readInt32();
+              break;
+            }
+            case 24: {
+
+              rank_ = input.readInt32();
+              break;
+            }
+            case 32: {
+
+              battleTimes_ = input.readInt32();
+              break;
+            }
+            case 40: {
+
+              buyTimes_ = input.readInt32();
+              break;
+            }
+            case 48: {
+
+              canSweep_ = input.readBool();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoResponse_13000302_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoResponse_13000302_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.class, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.Builder.class);
+    }
+
+    public static final int CUMULATIVEDAMAGE_FIELD_NUMBER = 1;
+    private int cumulativeDamage_;
+    /**
+     * <pre>
+     *今日累计伤害
+     * </pre>
+     *
+     * <code>int32 cumulativeDamage = 1;</code>
+     * @return The cumulativeDamage.
+     */
+    @java.lang.Override
+    public int getCumulativeDamage() {
+      return cumulativeDamage_;
+    }
+
+    public static final int MAXDAMAGETODAY_FIELD_NUMBER = 2;
+    private int maxDamageToday_;
+    /**
+     * <pre>
+     *今日最高伤害
+     * </pre>
+     *
+     * <code>int32 maxDamageToday = 2;</code>
+     * @return The maxDamageToday.
+     */
+    @java.lang.Override
+    public int getMaxDamageToday() {
+      return maxDamageToday_;
+    }
+
+    public static final int RANK_FIELD_NUMBER = 3;
+    private int rank_;
+    /**
+     * <pre>
+     * 我的排名，暂时没有。
+     * </pre>
+     *
+     * <code>int32 rank = 3;</code>
+     * @return The rank.
+     */
+    @java.lang.Override
+    public int getRank() {
+      return rank_;
+    }
+
+    public static final int BATTLETIMES_FIELD_NUMBER = 4;
+    private int battleTimes_;
+    /**
+     * <pre>
+     * 今日已经挑战次数。每天第一次免费，以后需要付费购买。
+     * </pre>
+     *
+     * <code>int32 battleTimes = 4;</code>
+     * @return The battleTimes.
+     */
+    @java.lang.Override
+    public int getBattleTimes() {
+      return battleTimes_;
+    }
+
+    public static final int BUYTIMES_FIELD_NUMBER = 5;
+    private int buyTimes_;
+    /**
+     * <pre>
+     * 今日付费购买次数
+     * </pre>
+     *
+     * <code>int32 buyTimes = 5;</code>
+     * @return The buyTimes.
+     */
+    @java.lang.Override
+    public int getBuyTimes() {
+      return buyTimes_;
+    }
+
+    public static final int CANSWEEP_FIELD_NUMBER = 6;
+    private boolean canSweep_;
+    /**
+     * <pre>
+     * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+     * </pre>
+     *
+     * <code>bool canSweep = 6;</code>
+     * @return The canSweep.
+     */
+    @java.lang.Override
+    public boolean getCanSweep() {
+      return canSweep_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (cumulativeDamage_ != 0) {
+        output.writeInt32(1, cumulativeDamage_);
+      }
+      if (maxDamageToday_ != 0) {
+        output.writeInt32(2, maxDamageToday_);
+      }
+      if (rank_ != 0) {
+        output.writeInt32(3, rank_);
+      }
+      if (battleTimes_ != 0) {
+        output.writeInt32(4, battleTimes_);
+      }
+      if (buyTimes_ != 0) {
+        output.writeInt32(5, buyTimes_);
+      }
+      if (canSweep_ != false) {
+        output.writeBool(6, canSweep_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (cumulativeDamage_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, cumulativeDamage_);
+      }
+      if (maxDamageToday_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, maxDamageToday_);
+      }
+      if (rank_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, rank_);
+      }
+      if (battleTimes_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, battleTimes_);
+      }
+      if (buyTimes_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, buyTimes_);
+      }
+      if (canSweep_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, canSweep_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 other = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302) obj;
+
+      if (getCumulativeDamage()
+          != other.getCumulativeDamage()) return false;
+      if (getMaxDamageToday()
+          != other.getMaxDamageToday()) return false;
+      if (getRank()
+          != other.getRank()) return false;
+      if (getBattleTimes()
+          != other.getBattleTimes()) return false;
+      if (getBuyTimes()
+          != other.getBuyTimes()) return false;
+      if (getCanSweep()
+          != other.getCanSweep()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CUMULATIVEDAMAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getCumulativeDamage();
+      hash = (37 * hash) + MAXDAMAGETODAY_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxDamageToday();
+      hash = (37 * hash) + RANK_FIELD_NUMBER;
+      hash = (53 * hash) + getRank();
+      hash = (37 * hash) + BATTLETIMES_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleTimes();
+      hash = (37 * hash) + BUYTIMES_FIELD_NUMBER;
+      hash = (53 * hash) + getBuyTimes();
+      hash = (37 * hash) + CANSWEEP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getCanSweep());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.BattleWorldBossInfoResponse_13000302}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleWorldBossInfoResponse_13000302)
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoResponse_13000302_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoResponse_13000302_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.class, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        cumulativeDamage_ = 0;
+
+        maxDamageToday_ = 0;
+
+        rank_ = 0;
+
+        battleTimes_ = 0;
+
+        buyTimes_ = 0;
+
+        canSweep_ = false;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossInfoResponse_13000302_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 result = new cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302(this);
+        result.cumulativeDamage_ = cumulativeDamage_;
+        result.maxDamageToday_ = maxDamageToday_;
+        result.rank_ = rank_;
+        result.battleTimes_ = battleTimes_;
+        result.buyTimes_ = buyTimes_;
+        result.canSweep_ = canSweep_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.getDefaultInstance()) return this;
+        if (other.getCumulativeDamage() != 0) {
+          setCumulativeDamage(other.getCumulativeDamage());
+        }
+        if (other.getMaxDamageToday() != 0) {
+          setMaxDamageToday(other.getMaxDamageToday());
+        }
+        if (other.getRank() != 0) {
+          setRank(other.getRank());
+        }
+        if (other.getBattleTimes() != 0) {
+          setBattleTimes(other.getBattleTimes());
+        }
+        if (other.getBuyTimes() != 0) {
+          setBuyTimes(other.getBuyTimes());
+        }
+        if (other.getCanSweep() != false) {
+          setCanSweep(other.getCanSweep());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int cumulativeDamage_ ;
+      /**
+       * <pre>
+       *今日累计伤害
+       * </pre>
+       *
+       * <code>int32 cumulativeDamage = 1;</code>
+       * @return The cumulativeDamage.
+       */
+      @java.lang.Override
+      public int getCumulativeDamage() {
+        return cumulativeDamage_;
+      }
+      /**
+       * <pre>
+       *今日累计伤害
+       * </pre>
+       *
+       * <code>int32 cumulativeDamage = 1;</code>
+       * @param value The cumulativeDamage to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCumulativeDamage(int value) {
+        
+        cumulativeDamage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *今日累计伤害
+       * </pre>
+       *
+       * <code>int32 cumulativeDamage = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCumulativeDamage() {
+        
+        cumulativeDamage_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int maxDamageToday_ ;
+      /**
+       * <pre>
+       *今日最高伤害
+       * </pre>
+       *
+       * <code>int32 maxDamageToday = 2;</code>
+       * @return The maxDamageToday.
+       */
+      @java.lang.Override
+      public int getMaxDamageToday() {
+        return maxDamageToday_;
+      }
+      /**
+       * <pre>
+       *今日最高伤害
+       * </pre>
+       *
+       * <code>int32 maxDamageToday = 2;</code>
+       * @param value The maxDamageToday to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxDamageToday(int value) {
+        
+        maxDamageToday_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *今日最高伤害
+       * </pre>
+       *
+       * <code>int32 maxDamageToday = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxDamageToday() {
+        
+        maxDamageToday_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int rank_ ;
+      /**
+       * <pre>
+       * 我的排名，暂时没有。
+       * </pre>
+       *
+       * <code>int32 rank = 3;</code>
+       * @return The rank.
+       */
+      @java.lang.Override
+      public int getRank() {
+        return rank_;
+      }
+      /**
+       * <pre>
+       * 我的排名，暂时没有。
+       * </pre>
+       *
+       * <code>int32 rank = 3;</code>
+       * @param value The rank to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRank(int value) {
+        
+        rank_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 我的排名，暂时没有。
+       * </pre>
+       *
+       * <code>int32 rank = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRank() {
+        
+        rank_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int battleTimes_ ;
+      /**
+       * <pre>
+       * 今日已经挑战次数。每天第一次免费，以后需要付费购买。
+       * </pre>
+       *
+       * <code>int32 battleTimes = 4;</code>
+       * @return The battleTimes.
+       */
+      @java.lang.Override
+      public int getBattleTimes() {
+        return battleTimes_;
+      }
+      /**
+       * <pre>
+       * 今日已经挑战次数。每天第一次免费，以后需要付费购买。
+       * </pre>
+       *
+       * <code>int32 battleTimes = 4;</code>
+       * @param value The battleTimes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleTimes(int value) {
+        
+        battleTimes_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 今日已经挑战次数。每天第一次免费，以后需要付费购买。
+       * </pre>
+       *
+       * <code>int32 battleTimes = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleTimes() {
+        
+        battleTimes_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int buyTimes_ ;
+      /**
+       * <pre>
+       * 今日付费购买次数
+       * </pre>
+       *
+       * <code>int32 buyTimes = 5;</code>
+       * @return The buyTimes.
+       */
+      @java.lang.Override
+      public int getBuyTimes() {
+        return buyTimes_;
+      }
+      /**
+       * <pre>
+       * 今日付费购买次数
+       * </pre>
+       *
+       * <code>int32 buyTimes = 5;</code>
+       * @param value The buyTimes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBuyTimes(int value) {
+        
+        buyTimes_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 今日付费购买次数
+       * </pre>
+       *
+       * <code>int32 buyTimes = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBuyTimes() {
+        
+        buyTimes_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private boolean canSweep_ ;
+      /**
+       * <pre>
+       * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+       * </pre>
+       *
+       * <code>bool canSweep = 6;</code>
+       * @return The canSweep.
+       */
+      @java.lang.Override
+      public boolean getCanSweep() {
+        return canSweep_;
+      }
+      /**
+       * <pre>
+       * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+       * </pre>
+       *
+       * <code>bool canSweep = 6;</code>
+       * @param value The canSweep to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCanSweep(boolean value) {
+        
+        canSweep_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+       * </pre>
+       *
+       * <code>bool canSweep = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCanSweep() {
+        
+        canSweep_ = false;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleWorldBossInfoResponse_13000302)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleWorldBossInfoResponse_13000302)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleWorldBossInfoResponse_13000302>
+        PARSER = new com.google.protobuf.AbstractParser<BattleWorldBossInfoResponse_13000302>() {
+      @java.lang.Override
+      public BattleWorldBossInfoResponse_13000302 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleWorldBossInfoResponse_13000302(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleWorldBossInfoResponse_13000302> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleWorldBossInfoResponse_13000302> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BattleWorldBossBuyTimesRequest_13000303OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleWorldBossBuyTimesRequest_13000303)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   * 购买世界boss次数
+   * </pre>
+   *
+   * Protobuf type {@code Protos.BattleWorldBossBuyTimesRequest_13000303}
+   */
+  public static final class BattleWorldBossBuyTimesRequest_13000303 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleWorldBossBuyTimesRequest_13000303)
+      BattleWorldBossBuyTimesRequest_13000303OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleWorldBossBuyTimesRequest_13000303.newBuilder() to construct.
+    private BattleWorldBossBuyTimesRequest_13000303(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleWorldBossBuyTimesRequest_13000303() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleWorldBossBuyTimesRequest_13000303();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleWorldBossBuyTimesRequest_13000303(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.class, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 other = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 购买世界boss次数
+     * </pre>
+     *
+     * Protobuf type {@code Protos.BattleWorldBossBuyTimesRequest_13000303}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleWorldBossBuyTimesRequest_13000303)
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.class, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 result = new cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleWorldBossBuyTimesRequest_13000303)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleWorldBossBuyTimesRequest_13000303)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleWorldBossBuyTimesRequest_13000303>
+        PARSER = new com.google.protobuf.AbstractParser<BattleWorldBossBuyTimesRequest_13000303>() {
+      @java.lang.Override
+      public BattleWorldBossBuyTimesRequest_13000303 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleWorldBossBuyTimesRequest_13000303(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleWorldBossBuyTimesRequest_13000303> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleWorldBossBuyTimesRequest_13000303> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BattleWorldBossBuyTimesResponse_13000304OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.BattleWorldBossBuyTimesResponse_13000304)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code Protos.BattleWorldBossBuyTimesResponse_13000304}
+   */
+  public static final class BattleWorldBossBuyTimesResponse_13000304 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.BattleWorldBossBuyTimesResponse_13000304)
+      BattleWorldBossBuyTimesResponse_13000304OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BattleWorldBossBuyTimesResponse_13000304.newBuilder() to construct.
+    private BattleWorldBossBuyTimesResponse_13000304(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BattleWorldBossBuyTimesResponse_13000304() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BattleWorldBossBuyTimesResponse_13000304();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BattleWorldBossBuyTimesResponse_13000304(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.class, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 other = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.BattleWorldBossBuyTimesResponse_13000304}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.BattleWorldBossBuyTimesResponse_13000304)
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.class, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.BattleMsg.internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 build() {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 buildPartial() {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 result = new cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304) {
+          return mergeFrom((cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 other) {
+        if (other == cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.BattleWorldBossBuyTimesResponse_13000304)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.BattleWorldBossBuyTimesResponse_13000304)
+    private static final cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304();
+    }
+
+    public static cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BattleWorldBossBuyTimesResponse_13000304>
+        PARSER = new com.google.protobuf.AbstractParser<BattleWorldBossBuyTimesResponse_13000304>() {
+      @java.lang.Override
+      public BattleWorldBossBuyTimesResponse_13000304 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BattleWorldBossBuyTimesResponse_13000304(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BattleWorldBossBuyTimesResponse_13000304> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BattleWorldBossBuyTimesResponse_13000304> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface BattleRougeRefreshRequest_13000052OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.BattleRougeRefreshRequest_13000052)
       com.google.protobuf.MessageOrBuilder {
@@ -49534,6 +51853,26 @@ public final class BattleMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_BattleLostDayRewardResponse_13000204_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleWorldBossInfoRequest_13000301_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleWorldBossInfoRequest_13000301_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleWorldBossInfoResponse_13000302_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleWorldBossInfoResponse_13000302_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_BattleRougeRefreshRequest_13000052_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -49580,124 +51919,132 @@ public final class BattleMsg {
       " \001(\005:\0028\001\"\201\001\n\010HeroAttr\022\017\n\007heroUid\030\001 \001(\t\0222" +
       "\n\theroAttrs\030\002 \003(\0132\037.Protos.HeroAttr.Hero" +
       "AttrsEntry\0320\n\016HeroAttrsEntry\022\013\n\003key\030\001 \001(" +
-      "\005\022\r\n\005value\030\002 \001(\005:\0028\001\"\214\001\n\036BattleFieldEndR" +
+      "\005\022\r\n\005value\030\002 \001(\005:\0028\001\"\234\001\n\036BattleFieldEndR" +
       "equest_13000003\022\030\n\020killMonsterCount\030\001 \001(" +
       "\r\022\034\n\024killMonsterBossCount\030\006 \001(\r\022\021\n\thpPer" +
       "cent\030\002 \001(\r\022\013\n\003win\030\003 \001(\010\022\022\n\nbattleTime\030\004 " +
-      "\001(\r\"F\n\037BattleFieldEndResponse_13000004\022#" +
-      "\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"_\n#B" +
-      "attleFieldQuickEndRequest_13000005\022\014\n\004ty" +
-      "pe\030\001 \001(\r\022\016\n\006typeId\030\002 \001(\r\022\r\n\005subId\030\003 \001(\r\022" +
-      "\013\n\003win\030\004 \001(\010\"K\n$BattleFieldQuickEndRespo" +
-      "nse_13000006\022#\n\007rewards\030\001 \003(\0132\022.Protos.R" +
-      "ewardInfo\"\035\n\033BattleShareRequest_13000007" +
-      "\"C\n\034BattleShareResponse_13000008\022#\n\007rewa" +
-      "rds\030\001 \003(\0132\022.Protos.RewardInfo\",\n\034BattleR" +
-      "eliveRequest_13000010\022\014\n\004type\030\001 \001(\005\"\037\n\035B" +
-      "attleReliveResponse_13000011\"9\n\034BattleRe" +
-      "wardRequest_13000022\022\n\n\002id\030\001 \003(\r\022\r\n\005inde" +
-      "x\030\002 \003(\r\"C\n\035BattleRewardResponse_13000023" +
-      "\022\"\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo\";\n\036" +
-      "HCBattleRewardRequest_13000027\022\n\n\002id\030\001 \003" +
-      "(\r\022\r\n\005index\030\002 \003(\r\"E\n\037HCBattleRewardRespo" +
-      "nse_13000028\022\"\n\006reward\030\001 \003(\0132\022.Protos.Re" +
-      "wardInfo\")\n\033BattleSweepRequest_13000024\022" +
-      "\n\n\002id\030\001 \001(\r\"B\n\034BattleSweepResponse_13000" +
-      "025\022\"\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo\"" +
-      "+\n\035HCBattleSweepRequest_13000040\022\n\n\002id\030\001" +
-      " \001(\r\"D\n\036HCBattleSweepResponse_13000041\022\"" +
-      "\n\006reward\030\001 \003(\0132\022.Protos.RewardInfo\"I\n\"Ba" +
-      "ttlePatrolRewardRequest_13000044\022\016\n\006isFa" +
-      "st\030\001 \001(\010\022\023\n\013advertising\030\002 \001(\010\"e\n#BattleP" +
-      "atrolRewardResponse_13000045\022#\n\007rewards\030" +
-      "\001 \003(\0132\022.Protos.RewardInfo\022\013\n\003exp\030\002 \001(\005\022\014" +
-      "\n\004gold\030\003 \001(\005\"d\n\nBattleInfo\022\n\n\002id\030\001 \001(\005\022\021" +
-      "\n\thpPercent\030\002 \001(\r\022\023\n\013rewardIndex\030\003 \003(\005\022\016" +
-      "\n\006finish\030\004 \001(\010\022\022\n\nbattleTime\030\005 \001(\r\"Q\n\nPa" +
-      "trolInfo\022\022\n\nrewardTime\030\001 \001(\005\022\030\n\020quickPat" +
-      "rolCount\030\002 \001(\005\022\025\n\radPatrolCount\030\003 \001(\005\"V\n" +
-      "\034BattleLineupRequest_13000048\022\022\n\nbattleT" +
-      "ype\030\001 \001(\005\022\"\n\006lineup\030\002 \001(\0132\022.Protos.Lineu" +
-      "pInfo\"\037\n\035BattleLineupResponse_13000049\"0" +
-      "\n HCBattleDataSaveRequest_13000100\022\014\n\004da" +
-      "ta\030\001 \001(\t\"#\n!HCBattleDataSaveResponse_130" +
-      "00101\"\036\n\034HCBattleDataRequest_13000102\"-\n" +
-      "\035HCBattleDataResponse_13000103\022\014\n\004data\030\001" +
-      " \001(\t\".\n\036BattleDaoHeartRequest_13000055\022\014" +
-      "\n\004type\030\001 \001(\005\"\217\001\n\037BattleDaoHeartResponse_" +
-      "13000056\022\023\n\013completedId\030\001 \001(\005\022\016\n\006nextId\030" +
-      "\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(\005\022\031\n\021freeSweepRe" +
-      "maning\030\004 \001(\005\022\030\n\020paySweepRemaning\030\005 \001(\005\"?" +
-      "\n#BattleDaoHeartSweepRequest_13000060\022\014\n" +
-      "\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$BattleDaoHear" +
-      "tSweepResponse_13000061\022#\n\007rewards\030\001 \003(\013" +
-      "2\022.Protos.RewardInfo\"Q\n(BattleDaoHeartSw" +
-      "eepBatchRequest_13000062\022\014\n\004type\030\001 \001(\005\022\n" +
-      "\n\002id\030\002 \001(\005\022\013\n\003pay\030\003 \001(\010\"P\n)BattleDaoHear" +
-      "tSweepBatchResponse_13000063\022#\n\007rewards\030" +
-      "\001 \003(\0132\022.Protos.RewardInfo\"3\n#BattleDaoHe" +
-      "artSweepRequest_13000064\022\014\n\004type\030\001 \001(\005\"2" +
-      "\n$BattleDaoHeartSweepResponse_13000065\022\n" +
-      "\n\002id\030\002 \003(\005\"?\n#BattleDaoHeartSweepRequest" +
-      "_13000066\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"K\n$B" +
-      "attleDaoHeartSweepResponse_13000067\022#\n\007r" +
-      "ewards\030\001 \003(\0132\022.Protos.RewardInfo\"&\n$Batt" +
-      "leNightmareRealmRequest_13000080\"\273\002\n%Bat" +
-      "tleNightmareRealmResponse_13000081\022#\n\007li" +
-      "neups\030\001 \003(\0132\022.Protos.LineupInfo\022\022\n\nrando" +
-      "mBuff\030\003 \003(\005\022\030\n\020buffRefreshTimes\030\004 \001(\005\022\025\n" +
-      "\rquickRewardId\030\005 \003(\005\022K\n\007buffIds\030\006 \003(\0132:." +
-      "Protos.BattleNightmareRealmResponse_1300" +
-      "0081.BuffIdsEntry\022\023\n\013startBattle\030\010 \001(\005\022\026" +
-      "\n\016canQuickReward\030\t \001(\010\032.\n\014BuffIdsEntry\022\013" +
-      "\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"\266\001\n.Battl" +
-      "eNightmareRealmBuffUpdateRequest_1300008" +
-      "2\022T\n\007buffIds\030\001 \003(\0132C.Protos.BattleNightm" +
-      "areRealmBuffUpdateRequest_13000082.BuffI" +
-      "dsEntry\032.\n\014BuffIdsEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005" +
-      "value\030\002 \001(\005:\0028\001\"1\n/BattleNightmareRealmB" +
-      "uffUpdateResponse_13000083\"+\n)BattleNigh" +
-      "tmareRealmQuickRequest_13000084\"Q\n*Battl" +
-      "eNightmareRealmQuickResponse_13000085\022#\n" +
-      "\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"*\n\nLi" +
-      "neupInfo\022\013\n\003seq\030\001 \001(\005\022\017\n\007heroUid\030\002 \003(\t\"E" +
-      "\n4BattleDayChallengeReceiveActivePointRe" +
-      "quest_13000070\022\r\n\005index\030\001 \001(\005\"\\\n5BattleD" +
-      "ayChallengeReceiveActivePointResponse_13" +
-      "000071\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
-      "nfo\"b\n\020DayChallengeInfo\022\023\n\013battleTimes\030\001" +
-      " \001(\005\022\020\n\010battleId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003" +
-      "(\005\022\023\n\013rewardIndex\030\004 \003(\005\"%\n#BattleSpiritu" +
-      "alInfoRequest_13000090\"`\n$BattleSpiritua" +
-      "lInfoResponse_13000091\0228\n\023battleSpiritua" +
-      "lInfo\030\001 \001(\0132\033.Protos.BattleSpiritualInfo" +
-      "\"B\n1BattleSpiritualReceiveActivePointReq" +
-      "uest_13000092\022\r\n\005index\030\001 \001(\005\"Y\n2BattleSp" +
-      "iritualReceiveActivePointResponse_130000" +
-      "93\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"" +
-      "\233\001\n\023BattleSpiritualInfo\022\023\n\013battleTimes\030\001" +
-      " \001(\005\022\020\n\010battleId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003" +
-      "(\005\022\023\n\013rewardIndex\030\004 \003(\005\022\031\n\021changeBattleT" +
-      "imes\030\006 \001(\005\022\031\n\021adsGetBattleTimes\030\007 \001(\010\")\n" +
-      "\'BattleSpiritualGetTimesRequest_13000094" +
-      "\"*\n(BattleSpiritualGetTimesResponse_1300" +
-      "0095\")\n\'BattleSpiritualGetPointRequest_1" +
-      "3000096\"*\n(BattleSpiritualGetPointRespon" +
-      "se_13000097\"?\n+BattleSpiritualChangeBatt" +
-      "leRequest_13000098\022\020\n\010battleId\030\002 \001(\005\".\n," +
-      "BattleSpiritualChangeBattleResponse_1300" +
-      "0099\" \n\036BattleLostInfoRequest_13000201\"o" +
-      "\n\037BattleLostInfoResponse_13000202\022\020\n\010bat" +
-      "tleId\030\001 \001(\005\022\023\n\013battleStage\030\002 \001(\005\022\021\n\tdayR" +
-      "eward\030\003 \001(\010\022\022\n\nrandomBuff\030\004 \003(\005\"%\n#Battl" +
-      "eLostDayRewardRequest_13000203\"K\n$Battle" +
-      "LostDayRewardResponse_13000204\022#\n\007reward" +
-      "s\030\001 \003(\0132\022.Protos.RewardInfo\"$\n\"BattleRou" +
-      "geRefreshRequest_13000052\"%\n#BattleRouge" +
-      "RefreshResponse_13000053\"-\n\035BattleStamin" +
-      "aRequest_13000050\022\014\n\004time\030\001 \001(\005\" \n\036Battl" +
-      "eStaminaResponse_13000051B\033\n\031cn.game.pro" +
-      "tocol.protobufb\006proto3"
+      "\001(\r\022\016\n\006damage\030\010 \001(\r\"F\n\037BattleFieldEndRes" +
+      "ponse_13000004\022#\n\007rewards\030\001 \003(\0132\022.Protos" +
+      ".RewardInfo\"_\n#BattleFieldQuickEndReques" +
+      "t_13000005\022\014\n\004type\030\001 \001(\r\022\016\n\006typeId\030\002 \001(\r" +
+      "\022\r\n\005subId\030\003 \001(\r\022\013\n\003win\030\004 \001(\010\"K\n$BattleFi" +
+      "eldQuickEndResponse_13000006\022#\n\007rewards\030" +
+      "\001 \003(\0132\022.Protos.RewardInfo\"\035\n\033BattleShare" +
+      "Request_13000007\"C\n\034BattleShareResponse_" +
+      "13000008\022#\n\007rewards\030\001 \003(\0132\022.Protos.Rewar" +
+      "dInfo\",\n\034BattleReliveRequest_13000010\022\014\n" +
+      "\004type\030\001 \001(\005\"\037\n\035BattleReliveResponse_1300" +
+      "0011\"9\n\034BattleRewardRequest_13000022\022\n\n\002" +
+      "id\030\001 \003(\r\022\r\n\005index\030\002 \003(\r\"C\n\035BattleRewardR" +
+      "esponse_13000023\022\"\n\006reward\030\001 \003(\0132\022.Proto" +
+      "s.RewardInfo\";\n\036HCBattleRewardRequest_13" +
+      "000027\022\n\n\002id\030\001 \003(\r\022\r\n\005index\030\002 \003(\r\"E\n\037HCB" +
+      "attleRewardResponse_13000028\022\"\n\006reward\030\001" +
+      " \003(\0132\022.Protos.RewardInfo\")\n\033BattleSweepR" +
+      "equest_13000024\022\n\n\002id\030\001 \001(\r\"B\n\034BattleSwe" +
+      "epResponse_13000025\022\"\n\006reward\030\001 \003(\0132\022.Pr" +
+      "otos.RewardInfo\"+\n\035HCBattleSweepRequest_" +
+      "13000040\022\n\n\002id\030\001 \001(\r\"D\n\036HCBattleSweepRes" +
+      "ponse_13000041\022\"\n\006reward\030\001 \003(\0132\022.Protos." +
+      "RewardInfo\"I\n\"BattlePatrolRewardRequest_" +
+      "13000044\022\016\n\006isFast\030\001 \001(\010\022\023\n\013advertising\030" +
+      "\002 \001(\010\"e\n#BattlePatrolRewardResponse_1300" +
+      "0045\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInf" +
+      "o\022\013\n\003exp\030\002 \001(\005\022\014\n\004gold\030\003 \001(\005\"d\n\nBattleIn" +
+      "fo\022\n\n\002id\030\001 \001(\005\022\021\n\thpPercent\030\002 \001(\r\022\023\n\013rew" +
+      "ardIndex\030\003 \003(\005\022\016\n\006finish\030\004 \001(\010\022\022\n\nbattle" +
+      "Time\030\005 \001(\r\"Q\n\nPatrolInfo\022\022\n\nrewardTime\030\001" +
+      " \001(\005\022\030\n\020quickPatrolCount\030\002 \001(\005\022\025\n\radPatr" +
+      "olCount\030\003 \001(\005\"V\n\034BattleLineupRequest_130" +
+      "00048\022\022\n\nbattleType\030\001 \001(\005\022\"\n\006lineup\030\002 \001(" +
+      "\0132\022.Protos.LineupInfo\"\037\n\035BattleLineupRes" +
+      "ponse_13000049\"0\n HCBattleDataSaveReques" +
+      "t_13000100\022\014\n\004data\030\001 \001(\t\"#\n!HCBattleData" +
+      "SaveResponse_13000101\"\036\n\034HCBattleDataReq" +
+      "uest_13000102\"-\n\035HCBattleDataResponse_13" +
+      "000103\022\014\n\004data\030\001 \001(\t\".\n\036BattleDaoHeartRe" +
+      "quest_13000055\022\014\n\004type\030\001 \001(\005\"\217\001\n\037BattleD" +
+      "aoHeartResponse_13000056\022\023\n\013completedId\030" +
+      "\001 \001(\005\022\016\n\006nextId\030\002 \001(\005\022\022\n\nrandomBuff\030\003 \003(" +
+      "\005\022\031\n\021freeSweepRemaning\030\004 \001(\005\022\030\n\020paySweep" +
+      "Remaning\030\005 \001(\005\"?\n#BattleDaoHeartSweepReq" +
+      "uest_13000060\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\"" +
+      "K\n$BattleDaoHeartSweepResponse_13000061\022" +
+      "#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"Q\n(" +
+      "BattleDaoHeartSweepBatchRequest_13000062" +
+      "\022\014\n\004type\030\001 \001(\005\022\n\n\002id\030\002 \001(\005\022\013\n\003pay\030\003 \001(\010\"" +
+      "P\n)BattleDaoHeartSweepBatchResponse_1300" +
+      "0063\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInf" +
+      "o\"3\n#BattleDaoHeartSweepRequest_13000064" +
+      "\022\014\n\004type\030\001 \001(\005\"2\n$BattleDaoHeartSweepRes" +
+      "ponse_13000065\022\n\n\002id\030\002 \003(\005\"?\n#BattleDaoH" +
+      "eartSweepRequest_13000066\022\014\n\004type\030\001 \001(\005\022" +
+      "\n\n\002id\030\002 \001(\005\"K\n$BattleDaoHeartSweepRespon" +
+      "se_13000067\022#\n\007rewards\030\001 \003(\0132\022.Protos.Re" +
+      "wardInfo\"&\n$BattleNightmareRealmRequest_" +
+      "13000080\"\273\002\n%BattleNightmareRealmRespons" +
+      "e_13000081\022#\n\007lineups\030\001 \003(\0132\022.Protos.Lin" +
+      "eupInfo\022\022\n\nrandomBuff\030\003 \003(\005\022\030\n\020buffRefre" +
+      "shTimes\030\004 \001(\005\022\025\n\rquickRewardId\030\005 \003(\005\022K\n\007" +
+      "buffIds\030\006 \003(\0132:.Protos.BattleNightmareRe" +
+      "almResponse_13000081.BuffIdsEntry\022\023\n\013sta" +
+      "rtBattle\030\010 \001(\005\022\026\n\016canQuickReward\030\t \001(\010\032." +
+      "\n\014BuffIdsEntry\022\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001" +
+      "(\005:\0028\001\"\266\001\n.BattleNightmareRealmBuffUpdat" +
+      "eRequest_13000082\022T\n\007buffIds\030\001 \003(\0132C.Pro" +
+      "tos.BattleNightmareRealmBuffUpdateReques" +
+      "t_13000082.BuffIdsEntry\032.\n\014BuffIdsEntry\022" +
+      "\013\n\003key\030\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001\"1\n/Battl" +
+      "eNightmareRealmBuffUpdateResponse_130000" +
+      "83\"+\n)BattleNightmareRealmQuickRequest_1" +
+      "3000084\"Q\n*BattleNightmareRealmQuickResp" +
+      "onse_13000085\022#\n\007rewards\030\001 \003(\0132\022.Protos." +
+      "RewardInfo\"*\n\nLineupInfo\022\013\n\003seq\030\001 \001(\005\022\017\n" +
+      "\007heroUid\030\002 \003(\t\"E\n4BattleDayChallengeRece" +
+      "iveActivePointRequest_13000070\022\r\n\005index\030" +
+      "\001 \001(\005\"\\\n5BattleDayChallengeReceiveActive" +
+      "PointResponse_13000071\022#\n\007rewards\030\001 \003(\0132" +
+      "\022.Protos.RewardInfo\"b\n\020DayChallengeInfo\022" +
+      "\023\n\013battleTimes\030\001 \001(\005\022\020\n\010battleId\030\002 \001(\005\022\022" +
+      "\n\nrandomBuff\030\003 \003(\005\022\023\n\013rewardIndex\030\004 \003(\005\"" +
+      "%\n#BattleSpiritualInfoRequest_13000090\"`" +
+      "\n$BattleSpiritualInfoResponse_13000091\0228" +
+      "\n\023battleSpiritualInfo\030\001 \001(\0132\033.Protos.Bat" +
+      "tleSpiritualInfo\"B\n1BattleSpiritualRecei" +
+      "veActivePointRequest_13000092\022\r\n\005index\030\001" +
+      " \001(\005\"Y\n2BattleSpiritualReceiveActivePoin" +
+      "tResponse_13000093\022#\n\007rewards\030\001 \003(\0132\022.Pr" +
+      "otos.RewardInfo\"\233\001\n\023BattleSpiritualInfo\022" +
+      "\023\n\013battleTimes\030\001 \001(\005\022\020\n\010battleId\030\002 \001(\005\022\022" +
+      "\n\nrandomBuff\030\003 \003(\005\022\023\n\013rewardIndex\030\004 \003(\005\022" +
+      "\031\n\021changeBattleTimes\030\006 \001(\005\022\031\n\021adsGetBatt" +
+      "leTimes\030\007 \001(\010\")\n\'BattleSpiritualGetTimes" +
+      "Request_13000094\"*\n(BattleSpiritualGetTi" +
+      "mesResponse_13000095\")\n\'BattleSpiritualG" +
+      "etPointRequest_13000096\"*\n(BattleSpiritu" +
+      "alGetPointResponse_13000097\"?\n+BattleSpi" +
+      "ritualChangeBattleRequest_13000098\022\020\n\010ba" +
+      "ttleId\030\002 \001(\005\".\n,BattleSpiritualChangeBat" +
+      "tleResponse_13000099\" \n\036BattleLostInfoRe" +
+      "quest_13000201\"o\n\037BattleLostInfoResponse" +
+      "_13000202\022\020\n\010battleId\030\001 \001(\005\022\023\n\013battleSta" +
+      "ge\030\002 \001(\005\022\021\n\tdayReward\030\003 \001(\010\022\022\n\nrandomBuf" +
+      "f\030\004 \003(\005\"%\n#BattleLostDayRewardRequest_13" +
+      "000203\"K\n$BattleLostDayRewardResponse_13" +
+      "000204\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
+      "nfo\"%\n#BattleWorldBossInfoRequest_130003" +
+      "01\"\237\001\n$BattleWorldBossInfoResponse_13000" +
+      "302\022\030\n\020cumulativeDamage\030\001 \001(\005\022\026\n\016maxDama" +
+      "geToday\030\002 \001(\005\022\014\n\004rank\030\003 \001(\005\022\023\n\013battleTim" +
+      "es\030\004 \001(\005\022\020\n\010buyTimes\030\005 \001(\005\022\020\n\010canSweep\030\006" +
+      " \001(\010\")\n\'BattleWorldBossBuyTimesRequest_1" +
+      "3000303\"*\n(BattleWorldBossBuyTimesRespon" +
+      "se_13000304\"$\n\"BattleRougeRefreshRequest" +
+      "_13000052\"%\n#BattleRougeRefreshResponse_" +
+      "13000053\"-\n\035BattleStaminaRequest_1300005" +
+      "0\022\014\n\004time\030\001 \001(\005\" \n\036BattleStaminaResponse" +
+      "_13000051B\033\n\031cn.game.protocol.protobufb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -49757,7 +52104,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleFieldEndRequest_13000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleFieldEndRequest_13000003_descriptor,
-        new java.lang.String[] { "KillMonsterCount", "KillMonsterBossCount", "HpPercent", "Win", "BattleTime", });
+        new java.lang.String[] { "KillMonsterCount", "KillMonsterBossCount", "HpPercent", "Win", "BattleTime", "Damage", });
     internal_static_Protos_BattleFieldEndResponse_13000004_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_Protos_BattleFieldEndResponse_13000004_fieldAccessorTable = new
@@ -50130,26 +52477,50 @@ public final class BattleMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleLostDayRewardResponse_13000204_descriptor,
         new java.lang.String[] { "Rewards", });
-    internal_static_Protos_BattleRougeRefreshRequest_13000052_descriptor =
+    internal_static_Protos_BattleWorldBossInfoRequest_13000301_descriptor =
       getDescriptor().getMessageTypes().get(65);
+    internal_static_Protos_BattleWorldBossInfoRequest_13000301_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleWorldBossInfoRequest_13000301_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_BattleWorldBossInfoResponse_13000302_descriptor =
+      getDescriptor().getMessageTypes().get(66);
+    internal_static_Protos_BattleWorldBossInfoResponse_13000302_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleWorldBossInfoResponse_13000302_descriptor,
+        new java.lang.String[] { "CumulativeDamage", "MaxDamageToday", "Rank", "BattleTimes", "BuyTimes", "CanSweep", });
+    internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_descriptor =
+      getDescriptor().getMessageTypes().get(67);
+    internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_descriptor =
+      getDescriptor().getMessageTypes().get(68);
+    internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_BattleWorldBossBuyTimesResponse_13000304_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_BattleRougeRefreshRequest_13000052_descriptor =
+      getDescriptor().getMessageTypes().get(69);
     internal_static_Protos_BattleRougeRefreshRequest_13000052_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleRougeRefreshRequest_13000052_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_BattleRougeRefreshResponse_13000053_descriptor =
-      getDescriptor().getMessageTypes().get(66);
+      getDescriptor().getMessageTypes().get(70);
     internal_static_Protos_BattleRougeRefreshResponse_13000053_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleRougeRefreshResponse_13000053_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_BattleStaminaRequest_13000050_descriptor =
-      getDescriptor().getMessageTypes().get(67);
+      getDescriptor().getMessageTypes().get(71);
     internal_static_Protos_BattleStaminaRequest_13000050_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleStaminaRequest_13000050_descriptor,
         new java.lang.String[] { "Time", });
     internal_static_Protos_BattleStaminaResponse_13000051_descriptor =
-      getDescriptor().getMessageTypes().get(68);
+      getDescriptor().getMessageTypes().get(72);
     internal_static_Protos_BattleStaminaResponse_13000051_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleStaminaResponse_13000051_descriptor,

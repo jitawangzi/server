@@ -594,6 +594,10 @@ public class ChapterModule extends BasePlayerModule  {
 		this.shareReliveCount = 0;
 		this.adReliveCount = 0;
 		this.battleRewardMultipleTimes = 0;
+
+		battlesMap.forEach((k, v) -> {
+			v.newDay();
+		});
 	}
 	@Override
 	public void handleEvent(GameEvent event) {
@@ -652,6 +656,10 @@ public class ChapterModule extends BasePlayerModule  {
 				battle.setPlayer(player);
 				battle.reset();
 				battlesMap.put(DungeonTypeEnum.ShiLuoZhenJing.getId(), battle);
+			} else if (func == InitialUI.WorldBoss) {
+				WorldBossBattle battle = new WorldBossBattle();
+				battle.setPlayer(player);
+				battlesMap.put(DungeonTypeEnum.WorldBoss.getId(), battle);
 			}
 			break;
 		}

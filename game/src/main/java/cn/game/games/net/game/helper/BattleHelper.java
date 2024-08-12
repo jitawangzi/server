@@ -1,5 +1,6 @@
 package cn.game.games.net.game.helper;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -158,6 +159,18 @@ public class BattleHelper {
 			}
 		}
 		return null;
+	}
+
+	/** 
+	 * 判断当前时间是否在23:30之后
+	 * @return
+	 */
+	public static boolean isNowAfter2330() {
+
+		LocalTime now = LocalTime.now();
+		LocalTime start = LocalTime.of(23, 30);
+
+		return now.isAfter(start); 
 	}
 
 }

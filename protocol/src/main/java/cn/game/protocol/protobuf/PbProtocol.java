@@ -99,6 +99,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleLostInfoResponse_13000202 = 0x13000202;    
 	public final static int BattleLostDayRewardRequest_13000203 = 0x13000203;    //领取失落真经每日奖励  
 	public final static int BattleLostDayRewardResponse_13000204 = 0x13000204;    
+	public final static int BattleWorldBossInfoRequest_13000301 = 0x13000301;    //请求世界boss数据  
+	public final static int BattleWorldBossInfoResponse_13000302 = 0x13000302;    
+	public final static int BattleWorldBossBuyTimesRequest_13000303 = 0x13000303;    //购买世界boss次数  
+	public final static int BattleWorldBossBuyTimesResponse_13000304 = 0x13000304;    
 	public final static int BattleRougeRefreshRequest_13000052 = 0x13000052;    //肉鸽刷新,每天前3次免费，第四次看广告。  
 	public final static int BattleRougeRefreshResponse_13000053 = 0x13000053;    //肉鸽刷新  
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    //领取体力  
@@ -523,6 +527,14 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleLostDayRewardRequest_13000203, cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleLostDayRewardResponse_13000204, cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardResponse_13000204.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleWorldBossInfoRequest_13000301, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleWorldBossInfoResponse_13000302, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleWorldBossBuyTimesRequest_13000303, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleWorldBossBuyTimesResponse_13000304, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleRougeRefreshRequest_13000052, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000052.getDefaultInstance()
 				.getParserForType());
@@ -1152,6 +1164,10 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("BattleLostInfoResponse_13000202", 0x13000202);
 		nameIdMap.put("BattleLostDayRewardRequest_13000203", 0x13000203);
 		nameIdMap.put("BattleLostDayRewardResponse_13000204", 0x13000204);
+		nameIdMap.put("BattleWorldBossInfoRequest_13000301", 0x13000301);
+		nameIdMap.put("BattleWorldBossInfoResponse_13000302", 0x13000302);
+		nameIdMap.put("BattleWorldBossBuyTimesRequest_13000303", 0x13000303);
+		nameIdMap.put("BattleWorldBossBuyTimesResponse_13000304", 0x13000304);
 		nameIdMap.put("BattleRougeRefreshRequest_13000052", 0x13000052);
 		nameIdMap.put("BattleRougeRefreshResponse_13000053", 0x13000053);
 		nameIdMap.put("BattleStaminaRequest_13000050", 0x13000050);

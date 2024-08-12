@@ -16,6 +16,9 @@ public enum DungeonTypeEnum{
 	/** 妖王别跑战斗 */
 	YaoWang(4, "妖王别跑战斗"),
 
+	/** 世界boss */
+	WorldBoss(6, "世界boss"),
+
 	/** 梦魇秘境战斗 */
 	MengYanMiJing(9, "梦魇秘境战斗"),
 	/** 灵魄之战 */

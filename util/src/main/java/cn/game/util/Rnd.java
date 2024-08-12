@@ -114,6 +114,17 @@ public final class Rnd {
 	}
 
 	/**
+	 * @Title: nextDouble 
+	 * 生成一个双精度值 ,from（包括）到 to（包括）
+	 * @return
+	 *         double 返回类型 
+	 * @throws
+	 */
+	public static final double nextDouble(double from, double to) {
+		return from + random.nextDouble() * (to - from);
+	}
+
+	/**
 	 * @Title: nextGaussian 
 	 * @Description: 生成一个高斯双精度值 
 	 * @return double 返回类型 
