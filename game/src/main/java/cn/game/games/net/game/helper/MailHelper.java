@@ -76,13 +76,25 @@ public class MailHelper {
 
 	public static void sendMail(long receiverId, int mailId) {
 
+		sendMail(receiverId, mailId, null);
+	}
+
+	/** 
+	 * 发送邮件， 手动指定奖励内容，其余数据从配置表中读取。 
+	 * @param receiverId
+	 * @param mailId
+	 * @param goods
+	 */
+	public static void sendMail(long receiverId, int mailId, List<Goods> goods) {
+
 		Mail mail = Mail.valueOfMailId(receiverId, mailId);
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
 			Player player = PlayerManager.getInstance().getPlayer(receiverId);
 			MailModule mailModule = player.getMailModule();
 			mailModule.sendOnline(mail);
 		} else {
-			mail.insert();
+//			mail.insert();
+			DAO.insert(mail);
 		}
 	}
 

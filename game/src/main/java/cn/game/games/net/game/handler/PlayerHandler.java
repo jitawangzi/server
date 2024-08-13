@@ -688,7 +688,10 @@ public class PlayerHandler extends BaseHandler {
 	}
 
 //	/**
-			public void handleLogin(PlayerLoginRequest_01000001 req, GameClient client) {
+	public void handleLogin(NetClient netClient, Object message) {
+		PlayerMsg.PlayerLoginRequest_01000001 req = (PlayerLoginRequest_01000001) message;
+		GameClient client = (GameClient) netClient;
+
 				String passportSessionId = req.getSessionId();
 			    boolean reconnect = req.getReconnect();
 		
@@ -699,6 +702,8 @@ public class PlayerHandler extends BaseHandler {
 			        .onComplete(ar -> {
 			            if (ar.failed()) {
 			                handleLoginFailure(ar.cause(), client);
+							} else {
+								System.out.println("都成功");
 			            }
 			        });
 			}
@@ -971,6 +976,9 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setVipExpTotal(0);
 		playerData.setVipLevel(1); // 好感度默认1级
 		playerData.setRefreshDay(DateUtil.getDay(0));
+		playerData.setRefreshFiveDay(DateUtil.getDay(5));
+		playerData.setRefreshWeek(DateUtil.getWeek());
+		playerData.setRefreshMonth(DateUtil.getMonth());
 		playerData.setModules("[]");
 
 		ObjUtil.setDefaultValue(playerData);

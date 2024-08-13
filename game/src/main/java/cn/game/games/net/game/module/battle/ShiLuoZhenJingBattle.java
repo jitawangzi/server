@@ -5,16 +5,21 @@ import java.util.List;
 
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
+import cn.game.games.net.game.helper.MailHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
-	/** 当前可打的失落真经非战斗关卡，从1开始，如果为0表示打战斗关卡 */
+	/** 当前可打的失落真经非战斗关卡，从1开始，如果为10表示打战斗关卡 */
 	private int battleStage = -1;
 	/** 每日奖励是否已经领取了。 */
 	private boolean dayReward;
@@ -31,6 +36,16 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 	}
 
 	public void reset() {
+		// 跨天重置之前，先结算一下奖励
+		if (startBattleId > 0) {
+			BattleConfig battleConfig = BattleManager.instance().get(startBattleId);
+			List<Goods> goods = new ArrayList<>();
+			for (int randomId : battleConfig.BattleBoxRandomId) {
+				goods.addAll(PlayerHelper.randomReward(player, randomId));
+			}
+			MailHelper.sendMail(player.getPlayerId(), 7, goods);
+		}
+
 		dayReward = false;
 		if (startBattleId == 0) {
 			nextBattleId();
@@ -54,16 +69,16 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
 	public void battleCompleted() {
 		this.completeBattleId = startBattleId;
-		if (this.battleStage == 0) {
+		if (this.battleStage == 10) {
 			nextBattleId();
 			this.randomBuff.clear();
 			List<Integer> randomBuffs = BattleHelper.randomBuffs(startBattleId, DungeonTypeEnum.ShiLuoZhenJing.getId());
 			this.randomBuff.addAll(randomBuffs);
 		}
 		this.battleStage++;
-		// 1打到9，然后0本关
-		if (this.battleStage == 10) {
-			this.battleStage = 0;
+		// 1打到9，然后10本关
+		if (this.battleStage == 11) {
+			this.battleStage = 1;
 		}
 	}
 
@@ -87,10 +102,12 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		if (!request.getWin()) {
 			return ResultObject.success();
 		}
-		// TODO 通关奖励，用公式计算
+		ChapterModule chapterModule = player.getChapterModule();
+		int attackingDungeonId = chapterModule.getAttackingDungeonId();
+		BattleConfig battleConfig = BattleManager.instance().get(attackingDungeonId);
 		battleCompleted();
-		return ResultObject.success();
-
+		// 通关奖励，用公式计算
+		return ResultObject.success(calcRewardInfos(battleConfig.Level, battleStage));
 	}
 
 	@Override
@@ -99,7 +116,10 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 			return ResultObject.success();
 		}
 		battleCompleted();
-		return ResultObject.success();
+
+		BattleConfig battleConfig = BattleManager.instance().get(id);
+		// 通关奖励，用公式计算
+		return ResultObject.success(calcRewardInfos(battleConfig.Level, subId));
 	}
 
 	@Override
@@ -131,29 +151,27 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		this.dayReward = dayReward;
 	}
 
-	private int calcRewardCount() {
+	private List<RewardInfo> calcRewardInfos(int level, int stage) {
+		List<RewardInfo> rewardInfos = new ArrayList<>();
 
-		int a = 2; // 替换为你的实际值
-		int b = 3; // 替换为你的实际值
-		double c = 1.5; // 替换为你的实际值
-		int K = 100; // 替换为你的实际值
-		int m = 5; // 替换为你的实际值
-		int n = 10; // 替换为你的实际值
-		int ID = 123; // 替换为你的实际值
+		for (int i = 0; i < GlobalConst.LostScripturesRewards.length; i++) {
+			int rewardId = GlobalConst.LostScripturesRewards[i];
+			int rewardCount = calcRewardCount(GlobalConst.LostScripturesRewardsNum[i], level, stage);
+			List<RewardInfo> resources = PlayerHelper.addResources(player, rewardId, rewardCount, OpType.ShiLuoZhenJing);
+			rewardInfos.addAll(resources);
+		}
+		return rewardInfos;
+	}
 
-		int initial = 40010;
-		int stage = 2; // 替换为你的实际值
+	private int calcRewardCount(float[] rewardsParam, int level, int stage) {
 
 		// 计算关卡的值
-		int battle = ID + stage - initial;
-
+		int battle = (level - 1) * 10 + stage;
 		// 计算整体公式的值
-		double result = (a * Math.pow((battle + b), c) + K) / m + 1;
-
+		double result = (rewardsParam[0] * Math.pow((battle + rewardsParam[1]), rewardsParam[2]) + rewardsParam[3]) / rewardsParam[4] + 1;
 		// 向下取整并乘以 n
-		int finalResult = (int) Math.floor(result) * n;
+		int finalResult = (int) (Math.floor(result) * rewardsParam[5]);
 		return finalResult;
-
 	}
 
 }
