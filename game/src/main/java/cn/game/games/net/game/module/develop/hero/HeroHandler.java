@@ -369,6 +369,7 @@ public class HeroHandler extends BaseHandler {
 		HeroUpLevelMaxRequest_16000021 req = (HeroUpLevelMaxRequest_16000021) message;
 		HeroUpLevelMaxResponse_16000022.Builder resp = HeroUpLevelMaxResponse_16000022.newBuilder();
 		long uid = Long.parseLong(req.getUid());
+		int upLevelMax = req.getMaxLevel();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		if (!player.isFuncOpen(InitialUI.CardLv)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
@@ -389,7 +390,7 @@ public class HeroHandler extends BaseHandler {
 		int moneyId = Asset.gold.ID;
 		int moneyCount = 0;
 		for (int level = curLevel;; level++) {
-			if (maxLevel >= heroMaxLevel) {
+			if (maxLevel >= heroMaxLevel || upLevelMax > 0 && maxLevel >= upLevelMax) {
 				break;
 			}
 			HeroLvConfig heroLvConfig = HeroLvManager.instance().get(level);

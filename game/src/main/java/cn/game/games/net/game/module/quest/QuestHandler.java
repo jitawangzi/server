@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.google.common.primitives.Ints;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
@@ -174,13 +176,14 @@ public class QuestHandler extends BaseHandler {
 	protected void activeReceive(NetClient client, Object message) {
 		QuestReceiveActivePointRequest_20000008 req = (QuestReceiveActivePointRequest_20000008) message;
 		QuestReceiveActivePointResponse_20000009.Builder resp = QuestReceiveActivePointResponse_20000009.newBuilder();
-		int index = req.getIndex();
+		List<Integer> index = req.getIndexList();
 		QuestTypeEnum type = QuestTypeEnum.get(req.getType());
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 //		QuestModule questModule = player.getModule(QuestModule.class);
 		PointRewardModule pointRewardModule = player.getPointRewardModule(); 
-		ResultObject resultObject = pointRewardModule.addReward(PointRewardType.QUEST, type.ID, index);
+		
+		ResultObject resultObject = pointRewardModule.addReward(PointRewardType.QUEST, type.ID, Ints.toArray(index));
 		if (!resultObject.isOK()) {
 			client.sendProtocol(resp, resultObject.getErrorCode());
 			return;

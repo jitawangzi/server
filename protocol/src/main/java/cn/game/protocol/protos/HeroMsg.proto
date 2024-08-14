@@ -16,6 +16,7 @@ message HeroUpLevelResponse_16000002{
 //英雄一键升级,自动升级到最高级。
 message HeroUpLevelMaxRequest_16000021{
   string uid = 1; // 英雄唯一id
+  int32 maxLevel = 2; // 指定升级到最高多少级，如果为0表示自动升级到最高等级。
 }
 
 message HeroUpLevelMaxResponse_16000022{

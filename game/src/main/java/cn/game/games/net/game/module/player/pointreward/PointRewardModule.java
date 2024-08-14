@@ -71,8 +71,8 @@ public class PointRewardModule extends BasePlayerModule {
 		clearActiveRewardList(type, 0);
 	}
 
-	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, int index) {
-		return addReward(type, subType, index, 0);
+	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, int... index) {
+		return addReward(type, subType, 0, index);
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class PointRewardModule extends BasePlayerModule {
 	 * @param count 积分数值，一般是从player获取，如果没有在Asset里定义的，可以直接从这里传过来。大多用不到这个参数,例如伤害值 
 	 * @return
 	 */
-	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, int index, int count) {
+	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, long count, int... index) {
 
 		int[] conditionStage;
 		int[] randomRewardStage = null;
@@ -124,11 +124,19 @@ public class PointRewardModule extends BasePlayerModule {
 			throw new IllegalArgumentException("没有实现的PointRewardType :" + type);
 		}
 
-		if (fixRewardStage != null && index >= fixRewardStage.length) {
-			return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
+		if (fixRewardStage != null) {
+			for (int ix : index) {
+				if (ix >= fixRewardStage.length) {
+					return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
+				}
+			}
 		}
-		if (randomRewardStage != null && index >= randomRewardStage.length) {
-			return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
+		if (randomRewardStage != null) {
+			for (int ix : index) {
+				if (ix >= randomRewardStage.length) {
+					return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
+				}
+			}
 		}
 
 		List<Integer> activeRewardList = getActiveRewardList(type, subType);
@@ -136,7 +144,7 @@ public class PointRewardModule extends BasePlayerModule {
 		List<RewardInfo> totalRewards = new ArrayList<>();
 
 		// Check if index is -1 to indicate all rewards
-		if (index == -1) {
+		if (index[0] == -1) {
 			for (int i = 0; i < conditionStage.length; i++) {
 				if (!activeRewardList.contains(i)) {
 					long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
@@ -156,26 +164,30 @@ public class PointRewardModule extends BasePlayerModule {
 				}
 			}
 		} else {
-			if (activeRewardList.contains(index)) {
-				return ResultObject.fail(ErrorMsgEnum.repeat_request.getId());
-			}
 
-			long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
-			int needPoint = conditionStage[index];
-			if (point < needPoint) {
-				return ResultObject.fail(ErrorMsgEnum.illegal_request.getId());
-			}
+			for (int ix : index) {
 
-			List<RewardInfo> reward = null;
-			if (randomRewardStage != null) {
-				reward = PlayerHelper.addReward(player, randomRewardStage[index], opType);
-			} else if (fixRewardStage != null) {
-				reward = PlayerHelper.addResources(player, fixRewardStage[index], opType);
-			} else {
-				throw new IllegalArgumentException(MessageFormat.format("Invalid reward type,type[{}]subType[{}]index[{}]", type, subType, index));
+				if (activeRewardList.contains(ix)) {
+					return ResultObject.fail(ErrorMsgEnum.repeat_request.getId());
+				}
+
+				long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
+				int needPoint = conditionStage[ix];
+				if (point < needPoint) {
+					return ResultObject.fail(ErrorMsgEnum.illegal_request.getId());
+				}
+
+				List<RewardInfo> reward = null;
+				if (randomRewardStage != null) {
+					reward = PlayerHelper.addReward(player, randomRewardStage[ix], opType);
+				} else if (fixRewardStage != null) {
+					reward = PlayerHelper.addResources(player, fixRewardStage[ix], opType);
+				} else {
+					throw new IllegalArgumentException(MessageFormat.format("Invalid reward type,type[{}]subType[{}]index[{}]", type, subType, index));
+				}
+				totalRewards.addAll(reward);
+				activeRewardList.add(ix);
 			}
-			totalRewards.addAll(reward);
-			activeRewardList.add(index);
 		}
 
 		return ResultObject.success(totalRewards);

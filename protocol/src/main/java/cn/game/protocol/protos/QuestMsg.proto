@@ -34,7 +34,7 @@ message QuestReceiveResponse_20000005
 message QuestReceiveActivePointRequest_20000008
 {
 	int32 type = 1;		// 任务类型 QuestTypeEnum的id,目前每日任务、每周任务、七日任务有这个积分奖励
-	int32 index = 2 ;  // 0-4，一共5个奖励，领哪个
+	repeated int32 index = 2 ;  // 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
 }
 
 message QuestReceiveActivePointResponse_20000009

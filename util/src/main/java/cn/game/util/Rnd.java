@@ -1,11 +1,15 @@
 package cn.game.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Function;
+
 
 /**
  * @ClassName: Rnd
@@ -299,7 +303,7 @@ public final class Rnd {
 	 * @param list
 	 * @return
 	 */
-	public static int randomWeighableIndex(List<? extends Weightable> list, List<Integer> excludeIndexs) {
+	public static int randomWeighableIndexExcludeIndex(List<? extends Weightable> list, List<Integer> excludeIndexs) {
 		int total = 0;
 		for (int i = 0; i < list.size(); i++) {
 			if (excludeIndexs != null && excludeIndexs.contains(i)) {
@@ -372,7 +376,7 @@ public final class Rnd {
 
 		for (int i = 0; i < count; i++) {
 
-			int index = randomWeighableIndex(list, ret);
+			int index = randomWeighableIndexExcludeIndex(list, ret);
 			if (index != -1) {
 				ret.add(index);
 			}
@@ -614,6 +618,33 @@ public final class Rnd {
 	}
 	public static int randomOne(int[] array) {
 		return array[Rnd.nextInt(array.length)];
+	}
+
+	/** 
+	 * 从一个Set中随机出一个元素，并且这个元素不在排除的集合中
+	 * @param sourceSet
+	 * @param excluded
+	 * @return
+	 */
+	public static <T> T randomElementExcluded(Set<T> sourceSet, Collection<T> excluded) {
+		if (sourceSet == null || sourceSet.isEmpty()) {
+			return null;
+		}
+		Set<T> validElements = new HashSet<>(sourceSet);
+		validElements.removeAll(excluded);
+
+		if (validElements.isEmpty()) {
+			return null;
+		}
+		int randomIndex = nextInt(validElements.size());
+		int i = 0;
+		for (T element : validElements) {
+			if (i == randomIndex) {
+				return element;
+			}
+			i++;
+		}
+		return null;
 	}
 
 	/** 

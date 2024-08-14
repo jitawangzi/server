@@ -1069,6 +1069,16 @@ public final class HeroMsg {
      */
     com.google.protobuf.ByteString
         getUidBytes();
+
+    /**
+     * <pre>
+     * 指定升级到最高多少级，如果为0表示自动升级到最高等级。
+     * </pre>
+     *
+     * <code>int32 maxLevel = 2;</code>
+     * @return The maxLevel.
+     */
+    int getMaxLevel();
   }
   /**
    * <pre>
@@ -1124,6 +1134,11 @@ public final class HeroMsg {
               java.lang.String s = input.readStringRequireUtf8();
 
               uid_ = s;
+              break;
+            }
+            case 16: {
+
+              maxLevel_ = input.readInt32();
               break;
             }
             default: {
@@ -1204,6 +1219,21 @@ public final class HeroMsg {
       }
     }
 
+    public static final int MAXLEVEL_FIELD_NUMBER = 2;
+    private int maxLevel_;
+    /**
+     * <pre>
+     * 指定升级到最高多少级，如果为0表示自动升级到最高等级。
+     * </pre>
+     *
+     * <code>int32 maxLevel = 2;</code>
+     * @return The maxLevel.
+     */
+    @java.lang.Override
+    public int getMaxLevel() {
+      return maxLevel_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1221,6 +1251,9 @@ public final class HeroMsg {
       if (!getUidBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uid_);
       }
+      if (maxLevel_ != 0) {
+        output.writeInt32(2, maxLevel_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -1232,6 +1265,10 @@ public final class HeroMsg {
       size = 0;
       if (!getUidBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uid_);
+      }
+      if (maxLevel_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, maxLevel_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1250,6 +1287,8 @@ public final class HeroMsg {
 
       if (!getUid()
           .equals(other.getUid())) return false;
+      if (getMaxLevel()
+          != other.getMaxLevel()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1263,6 +1302,8 @@ public final class HeroMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + getUid().hashCode();
+      hash = (37 * hash) + MAXLEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxLevel();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1402,6 +1443,8 @@ public final class HeroMsg {
         super.clear();
         uid_ = "";
 
+        maxLevel_ = 0;
+
         return this;
       }
 
@@ -1429,6 +1472,7 @@ public final class HeroMsg {
       public cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021 buildPartial() {
         cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021 result = new cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021(this);
         result.uid_ = uid_;
+        result.maxLevel_ = maxLevel_;
         onBuilt();
         return result;
       }
@@ -1480,6 +1524,9 @@ public final class HeroMsg {
         if (!other.getUid().isEmpty()) {
           uid_ = other.uid_;
           onChanged();
+        }
+        if (other.getMaxLevel() != 0) {
+          setMaxLevel(other.getMaxLevel());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1602,6 +1649,49 @@ public final class HeroMsg {
   checkByteStringIsUtf8(value);
         
         uid_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int maxLevel_ ;
+      /**
+       * <pre>
+       * 指定升级到最高多少级，如果为0表示自动升级到最高等级。
+       * </pre>
+       *
+       * <code>int32 maxLevel = 2;</code>
+       * @return The maxLevel.
+       */
+      @java.lang.Override
+      public int getMaxLevel() {
+        return maxLevel_;
+      }
+      /**
+       * <pre>
+       * 指定升级到最高多少级，如果为0表示自动升级到最高等级。
+       * </pre>
+       *
+       * <code>int32 maxLevel = 2;</code>
+       * @param value The maxLevel to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxLevel(int value) {
+        
+        maxLevel_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 指定升级到最高多少级，如果为0表示自动升级到最高等级。
+       * </pre>
+       *
+       * <code>int32 maxLevel = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxLevel() {
+        
+        maxLevel_ = 0;
         onChanged();
         return this;
       }
@@ -17303,42 +17393,42 @@ public final class HeroMsg {
       "\n\rHeroMsg.proto\022\006Protos\032\rBaseMsg.proto\032\017" +
       "RewardMsg.proto\"*\n\033HeroUpLevelRequest_16" +
       "000001\022\013\n\003uid\030\001 \001(\t\"\036\n\034HeroUpLevelRespon" +
-      "se_16000002\"-\n\036HeroUpLevelMaxRequest_160" +
-      "00021\022\013\n\003uid\030\001 \001(\t\"0\n\037HeroUpLevelMaxResp" +
-      "onse_16000022\022\r\n\005level\030\001 \001(\005\"\"\n HeroUpLe" +
-      "velBatchRequest_16000023\"D\n!HeroUpLevelB" +
-      "atchResponse_16000024\022\037\n\005heros\030\001 \003(\0132\020.P" +
-      "rotos.HeroInfo\"(\n&HeroBattleUpLevelBatch" +
-      "Request_16000025\"J\n\'HeroBattleUpLevelBat" +
-      "chResponse_16000026\022\037\n\005heros\030\001 \003(\0132\020.Pro" +
-      "tos.HeroInfo\"@\n\034HeroConflateRequest_1600" +
-      "0003\022\013\n\003uid\030\001 \001(\t\022\023\n\013consumedUid\030\002 \003(\t\"?" +
-      "\n\035HeroConflateResponse_16000004\022\036\n\004hero\030" +
-      "\001 \001(\0132\020.Protos.HeroInfo\"6\n\032HeroBattleReq" +
-      "uest_16000005\022\013\n\003uid\030\001 \001(\t\022\013\n\003pos\030\002 \001(\005\"" +
-      "\035\n\033HeroBattleResponse_16000006\"0\n!HeroBa" +
-      "ttleDismissRequest_16000009\022\013\n\003uid\030\001 \001(\t" +
-      "\"$\n\"HeroBattleDismissResponse_1600000a\"-" +
-      "\n\036HeroLevelResetRequest_16000007\022\013\n\003uid\030" +
-      "\001 \001(\t\"!\n\037HeroLevelResetResponse_16000008" +
-      "\"/\n HeroQualityResetRequest_16000011\022\013\n\003" +
-      "uid\030\001 \001(\t\"D\n!HeroQualityResetResponse_16" +
-      "000012\022\037\n\005items\030\002 \003(\0132\020.Protos.ItemInfo\"" +
-      "!\n\037HeroFreeDayRentRequest_16000030\"C\n He" +
-      "roFreeDayRentResponse_16000031\022\037\n\005heros\030" +
-      "\001 \003(\0132\020.Protos.HeroInfo\"4\n%HeroFreeDayRe" +
-      "ntChooseRequest_16000032\022\013\n\003uid\030\001 \001(\t\"(\n" +
-      "&HeroFreeDayRentChooseResponse_16000033\"" +
-      "\'\n%HeroIllustrationsListRequest_16000040" +
-      "\"g\n&HeroIllustrationsListResponse_160000" +
-      "41\022\017\n\007heroIds\030\001 \003(\005\022,\n\005heros\030\002 \003(\0132\035.Pro" +
-      "tos.HeroIllustrationsInfo\"8\n\025HeroIllustr" +
-      "ationsInfo\022\016\n\006heroId\030\001 \001(\005\022\017\n\007quality\030\002 " +
-      "\003(\005\")\n\'HeroIllustrationsRewardRequest_16" +
-      "000042\"N\n(HeroIllustrationsRewardRespons" +
-      "e_16000043\022\"\n\006reward\030\002 \003(\0132\022.Protos.Rewa" +
-      "rdInfoB\033\n\031cn.game.protocol.protobufb\006pro" +
-      "to3"
+      "se_16000002\"?\n\036HeroUpLevelMaxRequest_160" +
+      "00021\022\013\n\003uid\030\001 \001(\t\022\020\n\010maxLevel\030\002 \001(\005\"0\n\037" +
+      "HeroUpLevelMaxResponse_16000022\022\r\n\005level" +
+      "\030\001 \001(\005\"\"\n HeroUpLevelBatchRequest_160000" +
+      "23\"D\n!HeroUpLevelBatchResponse_16000024\022" +
+      "\037\n\005heros\030\001 \003(\0132\020.Protos.HeroInfo\"(\n&Hero" +
+      "BattleUpLevelBatchRequest_16000025\"J\n\'He" +
+      "roBattleUpLevelBatchResponse_16000026\022\037\n" +
+      "\005heros\030\001 \003(\0132\020.Protos.HeroInfo\"@\n\034HeroCo" +
+      "nflateRequest_16000003\022\013\n\003uid\030\001 \001(\t\022\023\n\013c" +
+      "onsumedUid\030\002 \003(\t\"?\n\035HeroConflateResponse" +
+      "_16000004\022\036\n\004hero\030\001 \001(\0132\020.Protos.HeroInf" +
+      "o\"6\n\032HeroBattleRequest_16000005\022\013\n\003uid\030\001" +
+      " \001(\t\022\013\n\003pos\030\002 \001(\005\"\035\n\033HeroBattleResponse_" +
+      "16000006\"0\n!HeroBattleDismissRequest_160" +
+      "00009\022\013\n\003uid\030\001 \001(\t\"$\n\"HeroBattleDismissR" +
+      "esponse_1600000a\"-\n\036HeroLevelResetReques" +
+      "t_16000007\022\013\n\003uid\030\001 \001(\t\"!\n\037HeroLevelRese" +
+      "tResponse_16000008\"/\n HeroQualityResetRe" +
+      "quest_16000011\022\013\n\003uid\030\001 \001(\t\"D\n!HeroQuali" +
+      "tyResetResponse_16000012\022\037\n\005items\030\002 \003(\0132" +
+      "\020.Protos.ItemInfo\"!\n\037HeroFreeDayRentRequ" +
+      "est_16000030\"C\n HeroFreeDayRentResponse_" +
+      "16000031\022\037\n\005heros\030\001 \003(\0132\020.Protos.HeroInf" +
+      "o\"4\n%HeroFreeDayRentChooseRequest_160000" +
+      "32\022\013\n\003uid\030\001 \001(\t\"(\n&HeroFreeDayRentChoose" +
+      "Response_16000033\"\'\n%HeroIllustrationsLi" +
+      "stRequest_16000040\"g\n&HeroIllustrationsL" +
+      "istResponse_16000041\022\017\n\007heroIds\030\001 \003(\005\022,\n" +
+      "\005heros\030\002 \003(\0132\035.Protos.HeroIllustrationsI" +
+      "nfo\"8\n\025HeroIllustrationsInfo\022\016\n\006heroId\030\001" +
+      " \001(\005\022\017\n\007quality\030\002 \003(\005\")\n\'HeroIllustratio" +
+      "nsRewardRequest_16000042\"N\n(HeroIllustra" +
+      "tionsRewardResponse_16000043\022\"\n\006reward\030\002" +
+      " \003(\0132\022.Protos.RewardInfoB\033\n\031cn.game.prot" +
+      "ocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -17363,7 +17453,7 @@ public final class HeroMsg {
     internal_static_Protos_HeroUpLevelMaxRequest_16000021_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_HeroUpLevelMaxRequest_16000021_descriptor,
-        new java.lang.String[] { "Uid", });
+        new java.lang.String[] { "Uid", "MaxLevel", });
     internal_static_Protos_HeroUpLevelMaxResponse_16000022_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Protos_HeroUpLevelMaxResponse_16000022_fieldAccessorTable = new

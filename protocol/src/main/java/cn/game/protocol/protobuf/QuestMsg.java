@@ -3039,13 +3039,32 @@ public final class QuestMsg {
 
     /**
      * <pre>
-     * 0-4，一共5个奖励，领哪个
+     * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
      * </pre>
      *
-     * <code>int32 index = 2;</code>
-     * @return The index.
+     * <code>repeated int32 index = 2;</code>
+     * @return A list containing the index.
      */
-    int getIndex();
+    java.util.List<java.lang.Integer> getIndexList();
+    /**
+     * <pre>
+     * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+     * </pre>
+     *
+     * <code>repeated int32 index = 2;</code>
+     * @return The count of index.
+     */
+    int getIndexCount();
+    /**
+     * <pre>
+     * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+     * </pre>
+     *
+     * <code>repeated int32 index = 2;</code>
+     * @param index The index of the element to return.
+     * @return The index at the given index.
+     */
+    int getIndex(int index);
   }
   /**
    * <pre>
@@ -3064,6 +3083,7 @@ public final class QuestMsg {
       super(builder);
     }
     private QuestReceiveActivePointRequest_20000008() {
+      index_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -3086,6 +3106,7 @@ public final class QuestMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -3102,8 +3123,24 @@ public final class QuestMsg {
               break;
             }
             case 16: {
-
-              index_ = input.readInt32();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                index_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              index_.addInt(input.readInt32());
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                index_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                index_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
               break;
             }
             default: {
@@ -3121,6 +3158,9 @@ public final class QuestMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          index_.makeImmutable(); // C
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -3154,19 +3194,44 @@ public final class QuestMsg {
     }
 
     public static final int INDEX_FIELD_NUMBER = 2;
-    private int index_;
+    private com.google.protobuf.Internal.IntList index_;
     /**
      * <pre>
-     * 0-4，一共5个奖励，领哪个
+     * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
      * </pre>
      *
-     * <code>int32 index = 2;</code>
-     * @return The index.
+     * <code>repeated int32 index = 2;</code>
+     * @return A list containing the index.
      */
     @java.lang.Override
-    public int getIndex() {
+    public java.util.List<java.lang.Integer>
+        getIndexList() {
       return index_;
     }
+    /**
+     * <pre>
+     * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+     * </pre>
+     *
+     * <code>repeated int32 index = 2;</code>
+     * @return The count of index.
+     */
+    public int getIndexCount() {
+      return index_.size();
+    }
+    /**
+     * <pre>
+     * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+     * </pre>
+     *
+     * <code>repeated int32 index = 2;</code>
+     * @param index The index of the element to return.
+     * @return The index at the given index.
+     */
+    public int getIndex(int index) {
+      return index_.getInt(index);
+    }
+    private int indexMemoizedSerializedSize = -1;
 
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
@@ -3182,11 +3247,16 @@ public final class QuestMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (type_ != 0) {
         output.writeInt32(1, type_);
       }
-      if (index_ != 0) {
-        output.writeInt32(2, index_);
+      if (getIndexList().size() > 0) {
+        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(indexMemoizedSerializedSize);
+      }
+      for (int i = 0; i < index_.size(); i++) {
+        output.writeInt32NoTag(index_.getInt(i));
       }
       unknownFields.writeTo(output);
     }
@@ -3201,9 +3271,19 @@ public final class QuestMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, type_);
       }
-      if (index_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, index_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < index_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(index_.getInt(i));
+        }
+        size += dataSize;
+        if (!getIndexList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        indexMemoizedSerializedSize = dataSize;
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3222,8 +3302,8 @@ public final class QuestMsg {
 
       if (getType()
           != other.getType()) return false;
-      if (getIndex()
-          != other.getIndex()) return false;
+      if (!getIndexList()
+          .equals(other.getIndexList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3237,8 +3317,10 @@ public final class QuestMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getType();
-      hash = (37 * hash) + INDEX_FIELD_NUMBER;
-      hash = (53 * hash) + getIndex();
+      if (getIndexCount() > 0) {
+        hash = (37 * hash) + INDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getIndexList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3378,8 +3460,8 @@ public final class QuestMsg {
         super.clear();
         type_ = 0;
 
-        index_ = 0;
-
+        index_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -3406,7 +3488,12 @@ public final class QuestMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008 buildPartial() {
         cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008 result = new cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008(this);
+        int from_bitField0_ = bitField0_;
         result.type_ = type_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          index_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
         result.index_ = index_;
         onBuilt();
         return result;
@@ -3459,8 +3546,15 @@ public final class QuestMsg {
         if (other.getType() != 0) {
           setType(other.getType());
         }
-        if (other.getIndex() != 0) {
-          setIndex(other.getIndex());
+        if (!other.index_.isEmpty()) {
+          if (index_.isEmpty()) {
+            index_ = other.index_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureIndexIsMutable();
+            index_.addAll(other.index_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3490,6 +3584,7 @@ public final class QuestMsg {
         }
         return this;
       }
+      private int bitField0_;
 
       private int type_ ;
       /**
@@ -3534,45 +3629,109 @@ public final class QuestMsg {
         return this;
       }
 
-      private int index_ ;
-      /**
-       * <pre>
-       * 0-4，一共5个奖励，领哪个
-       * </pre>
-       *
-       * <code>int32 index = 2;</code>
-       * @return The index.
-       */
-      @java.lang.Override
-      public int getIndex() {
-        return index_;
+      private com.google.protobuf.Internal.IntList index_ = emptyIntList();
+      private void ensureIndexIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          index_ = mutableCopy(index_);
+          bitField0_ |= 0x00000001;
+         }
       }
       /**
        * <pre>
-       * 0-4，一共5个奖励，领哪个
+       * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
        * </pre>
        *
-       * <code>int32 index = 2;</code>
+       * <code>repeated int32 index = 2;</code>
+       * @return A list containing the index.
+       */
+      public java.util.List<java.lang.Integer>
+          getIndexList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(index_) : index_;
+      }
+      /**
+       * <pre>
+       * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+       * </pre>
+       *
+       * <code>repeated int32 index = 2;</code>
+       * @return The count of index.
+       */
+      public int getIndexCount() {
+        return index_.size();
+      }
+      /**
+       * <pre>
+       * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+       * </pre>
+       *
+       * <code>repeated int32 index = 2;</code>
+       * @param index The index of the element to return.
+       * @return The index at the given index.
+       */
+      public int getIndex(int index) {
+        return index_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+       * </pre>
+       *
+       * <code>repeated int32 index = 2;</code>
+       * @param index The index to set the value at.
        * @param value The index to set.
        * @return This builder for chaining.
        */
-      public Builder setIndex(int value) {
-        
-        index_ = value;
+      public Builder setIndex(
+          int index, int value) {
+        ensureIndexIsMutable();
+        index_.setInt(index, value);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 0-4，一共5个奖励，领哪个
+       * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
        * </pre>
        *
-       * <code>int32 index = 2;</code>
+       * <code>repeated int32 index = 2;</code>
+       * @param value The index to add.
+       * @return This builder for chaining.
+       */
+      public Builder addIndex(int value) {
+        ensureIndexIsMutable();
+        index_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+       * </pre>
+       *
+       * <code>repeated int32 index = 2;</code>
+       * @param values The index to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllIndex(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureIndexIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, index_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 例如 5个奖励 ， 0-4，领哪个，也可以同时领多个
+       * </pre>
+       *
+       * <code>repeated int32 index = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearIndex() {
-        
-        index_ = 0;
+        index_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
@@ -20426,7 +20585,7 @@ public final class QuestMsg {
       "ids\030\001 \003(\005\"D\n\035QuestReceiveResponse_200000" +
       "05\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"" +
       "F\n\'QuestReceiveActivePointRequest_200000" +
-      "08\022\014\n\004type\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\"O\n(Quest" +
+      "08\022\014\n\004type\030\001 \001(\005\022\r\n\005index\030\002 \003(\005\"O\n(Quest" +
       "ReceiveActivePointResponse_20000009\022#\n\007r" +
       "ewards\030\001 \003(\0132\022.Protos.RewardInfo\"\'\n\027Ques" +
       "tGroupPush_20100008\022\014\n\004type\030\001 \001(\005\"X\n\022Que" +
