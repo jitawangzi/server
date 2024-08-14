@@ -152,6 +152,9 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	@Override
 	public List<Hero> add(int itemId, int count, OpType opType) {
+		if (count > 100) {
+			throw new IllegalArgumentException("add hero , count > 100 : " + count);
+		}
 //		如果品质小于某品质： 
 //		只是返回一个hero对象，并不真正加入到程序中。只是构建rewardInfo对象。  
 //		同时转成货币，直接加上，push给客户端。 
