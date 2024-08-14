@@ -56,8 +56,9 @@ public enum OpType{
 	SevenDaysSignin(121, "七日签到活动"),
 
 	ItemChoose(130, "自选道具"),
-	FreeHeroDayRent(131, "免费英雄日租卡"),
-	StoreStamina(132, "储存的体力"),
+	ItemOpen(131, "道具开启"),
+	FreeHeroDayRent(132, "免费英雄日租卡"),
+	StoreStamina(133, "储存的体力"),
 
 	BattleSweep(135, "关卡扫荡"),
 
