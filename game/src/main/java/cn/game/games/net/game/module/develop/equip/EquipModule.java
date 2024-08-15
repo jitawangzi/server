@@ -66,6 +66,12 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 		return 0;
 	}
 
+	@Override
+	public void checkConfig(int id) {
+		// TODO Auto-generated method stub
+
+	}
+
 //	public boolean teardown(int roleId, int slot) {
 //		Map<Byte, Equip> byteEquipMap = this.role_equips.get(roleId);
 //		if (byteEquipMap == null) {

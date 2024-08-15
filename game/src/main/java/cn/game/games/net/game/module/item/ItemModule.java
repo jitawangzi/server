@@ -83,7 +83,12 @@ public class ItemModule extends AbstractItemModule<Item> {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		for (Item item : list()) {
-			builder.addItems(item.toProto());
+			builder.addItems(item.toItemInfo());
 		}
+	}
+
+	@Override
+	public void checkConfig(int id) {
+		ItemManager.instance().get(id);
 	}
 }

@@ -21,6 +21,7 @@ import cn.game.protocol.generated.manager.BattlePassPrizeManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.EquipManager;
+import cn.game.protocol.generated.manager.FairyFriendManager;
 import cn.game.protocol.generated.manager.HCHeroManager;
 import cn.game.protocol.generated.manager.HeroFashionManager;
 import cn.game.protocol.generated.manager.HeroManager;
@@ -37,6 +38,7 @@ public class ItemHelper {
 		return (id / 100000);
 	}
 
+	@Deprecated
 	public static void checkConfig(int id) {
 		GoodsTypeEnum goodsTypeEnum = GoodsTypeEnum.get(getGoodsType(id));
 		switch (goodsTypeEnum) {
@@ -74,6 +76,10 @@ public class ItemHelper {
 		}
 		case HCHero: {
 			HCHeroManager.instance().get(id);
+			break;
+		}
+		case FairyFriend: {
+			FairyFriendManager.instance().get(id);
 			break;
 		}
 		default:

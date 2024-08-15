@@ -53,4 +53,10 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 			builder.addGems(obj.toGemInfo());
 		}
 	}
+
+	@Override
+	public void checkConfig(int id) {
+		// TODO Auto-generated method stub
+
+	}
 }

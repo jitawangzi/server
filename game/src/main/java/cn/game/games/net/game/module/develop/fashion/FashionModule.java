@@ -68,4 +68,10 @@ public class FashionModule extends AbstractItemNoStackModule<Fashion> {
 			builder.addFashions(sword.toFashionInfo());
 		}
 	}
+
+	@Override
+	public void checkConfig(int id) {
+		// TODO Auto-generated method stub
+
+	}
 }

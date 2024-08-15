@@ -101,6 +101,7 @@ public enum OpType{
 	ShiLuoZhenJing(170, "失落真经"),
 
 	WorldBoss(171, "世界boss"),
+	FairyFriend(180, "仙友"),
 
 	BoxOpen(200, "合并开宝箱"),
 	MergeEquipLvUp(201, "合并装备升级"),

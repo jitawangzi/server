@@ -14,7 +14,6 @@ import com.google.common.collect.Multimap;
 import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.manual.OpType;
 
 /**    
@@ -69,7 +68,7 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 		if (count <= 0) {
 			return null;
 		}
-		ItemHelper.checkConfig(itemId);
+		checkConfig(itemId);
 		// TODO 检查id，是不是存在，涉及到多个表。
 		List<T> ret = new ArrayList<T>();
 		for (int i = 0; i < count; i++) {

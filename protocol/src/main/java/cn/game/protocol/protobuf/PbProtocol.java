@@ -147,6 +147,14 @@ public class PbProtocol implements ProtocolParser {
 	public final static int SwordStarUpResponse_09000014 = 0x09000014;    
 	public final static int FashionStarUpRequest_09000015 = 0x09000015;    //时装升星  
 	public final static int FashionStarUpResponse_09000016 = 0x09000016;    
+	public final static int FairyFriendGiftRequest_27000001 = 0x27000001;    //仙友 送礼  
+	public final static int FairyFriendGiftResponse_27000002 = 0x27000002;    
+	public final static int FairyFriendFightRequest_27000003 = 0x27000003;    //仙友 切磋  
+	public final static int FairyFriendFightResponse_27000004 = 0x27000004;    
+	public final static int FairyFriendFightRewardRequest_27000005 = 0x27000005;    //领取仙友切磋奖励  
+	public final static int FairyFriendFightRewardResponse_27000006 = 0x27000006;    
+	public final static int FairyFriendTravelRequest_27000007 = 0x27000007;    //仙友寻缘、游历  
+	public final static int FairyFriendTravelResponse_27000008 = 0x27000008;    
 	public final static int GemWearRequest_10000001 = 0x10000001;    //宝石镶嵌 替换  
 	public final static int GemWearResponse_10000002 = 0x10000002;    
 	public final static int GemTeardownRequest_10000003 = 0x10000003;    //宝石卸下  
@@ -623,6 +631,22 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(FashionStarUpRequest_09000015, cn.game.protocol.protobuf.EquipMsg.FashionStarUpRequest_09000015.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(FashionStarUpResponse_09000016, cn.game.protocol.protobuf.EquipMsg.FashionStarUpResponse_09000016.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FairyFriendGiftRequest_27000001, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendGiftRequest_27000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FairyFriendGiftResponse_27000002, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendGiftResponse_27000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FairyFriendFightRequest_27000003, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRequest_27000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FairyFriendFightResponse_27000004, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightResponse_27000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FairyFriendFightRewardRequest_27000005, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRewardRequest_27000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FairyFriendFightRewardResponse_27000006, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRewardResponse_27000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FairyFriendTravelRequest_27000007, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelRequest_27000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FairyFriendTravelResponse_27000008, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelResponse_27000008.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(GemWearRequest_10000001, cn.game.protocol.protobuf.GemMsg.GemWearRequest_10000001.getDefaultInstance()
 				.getParserForType());
@@ -1212,6 +1236,14 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("SwordStarUpResponse_09000014", 0x09000014);
 		nameIdMap.put("FashionStarUpRequest_09000015", 0x09000015);
 		nameIdMap.put("FashionStarUpResponse_09000016", 0x09000016);
+		nameIdMap.put("FairyFriendGiftRequest_27000001", 0x27000001);
+		nameIdMap.put("FairyFriendGiftResponse_27000002", 0x27000002);
+		nameIdMap.put("FairyFriendFightRequest_27000003", 0x27000003);
+		nameIdMap.put("FairyFriendFightResponse_27000004", 0x27000004);
+		nameIdMap.put("FairyFriendFightRewardRequest_27000005", 0x27000005);
+		nameIdMap.put("FairyFriendFightRewardResponse_27000006", 0x27000006);
+		nameIdMap.put("FairyFriendTravelRequest_27000007", 0x27000007);
+		nameIdMap.put("FairyFriendTravelResponse_27000008", 0x27000008);
 		nameIdMap.put("GemWearRequest_10000001", 0x10000001);
 		nameIdMap.put("GemWearResponse_10000002", 0x10000002);
 		nameIdMap.put("GemTeardownRequest_10000003", 0x10000003);

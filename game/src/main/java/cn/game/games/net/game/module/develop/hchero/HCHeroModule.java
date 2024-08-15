@@ -144,4 +144,9 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 	public IntMapWrapper getHeroItemTimesMap() {
 		return heroItemTimesMap;
 	}
+
+	@Override
+	public void checkConfig(int id) {
+		HCHeroManager.instance().get(id);
+	}
 }

@@ -46,18 +46,24 @@ import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.ConsumeConfig;
+import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.config.GameCommandConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RandomGroupConfig;
 import cn.game.protocol.generated.config.RewardConfig;
 import cn.game.protocol.generated.config.versionConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.ConsumeManager;
+import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
+import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.GameCommandManager;
+import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.RewardManager;
+import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -1505,5 +1511,54 @@ public class PlayerHelper {
 			}
 		}
 		return Future.succeededFuture();
+	}
+
+	/** 
+	 * 通用的升级逻辑
+	 * @param expId 经验id
+	 * @param id 	具体升级的配置id，比如仙友id
+	 * @param curLevel 当前等级
+	 * @param curExp	当前经验
+	 * @param count		增加的经验数量
+	 * @return  新的经验、等级
+	 */
+	public static int[] addExp(int expId, int id, int curLevel, int curExp, int count) {
+		int newLevel = curLevel;
+		int newExp = curExp + count;
+		ExpConfig expConfig = getExpConfig(expId, curLevel, id);
+		ExpConfig nextExpConfig = getExpConfig(expId, curLevel + 1, id);
+		while (expConfig != null && curExp >= expConfig.experience && nextExpConfig != null) {
+			newExp -= expConfig.experience;
+			newLevel++;
+			expConfig = getExpConfig(expId, newLevel, id);
+			nextExpConfig = getExpConfig(expId, newLevel, id);
+		}
+		// 不能升了，设置经验为最大
+		if (expConfig != null && curExp > expConfig.experience) {
+			newExp = expConfig.experience;
+		}
+		return new int[] { newExp, newLevel };
+	}
+
+	/** 
+	 * 获取某个升级配置。 
+	 * @param id  经验id
+	 * @param level 等级
+	 * @param subId	子id，如果同一类型下有多个配置，用这个区分。
+	 * @return
+	 */
+	public static ExpConfig getExpConfig(int id, int level, int subId) {
+		if (id == Asset.playerExp.ID) {
+			return UserUpgradeManager.instance().getNullable(level);
+		} else if (id == Asset.FundPass.ID) {
+			return FundPassUpgradeManager.instance().getUIExpTypeLv(id, level);
+		} else if (id == Asset.BrawlPoint.ID) {
+			return FundPassUpgradeManager.instance().getUIExpTypeLv(id, level);
+		} else if (id == Asset.QiankunMirrorExp.ID) {
+			return QiankunMirrorLvManager.instance().getNullable(level);
+		} else if (id == Asset.Favorability.ID) {
+			return FairyFriendFavorabilityManager.instance().getUIFairyListIDLV(subId, level);
+		}
+		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}
 }

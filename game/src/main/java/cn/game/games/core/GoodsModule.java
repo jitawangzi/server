@@ -3,7 +3,6 @@ package cn.game.games.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import cn.game.core.util.IdUtil;
@@ -34,18 +33,28 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	 */
 	public abstract Object add(int configId, int count, OpType opType);
 
+	/** 
+	 * 检查配置表id是否合法。 
+	 * @param id
+	 */
+	public abstract void checkConfig(int id);
+
 	public abstract T newInstance();
+
+	public long genUid() {
+		return IdUtil.getId();
+	}
 
 	public abstract RewardInfo toRewardInfo(E reward);
 
 	protected Item setInstance(T item, int configId, int count) {
 		
 		item.setPlayerId(playerId);
-		item.setId(IdUtil.getId());
+		item.setId(genUid());
 		item.setConfigId(configId);
 		item.setType(ItemHelper.getGoodsType(item.getConfigId()));
 		item.setCount((long) count);
-		item.setCreateTime(new Date());
+		item.setCreateTimeMillis(System.currentTimeMillis());
 		return item;
 	}
 

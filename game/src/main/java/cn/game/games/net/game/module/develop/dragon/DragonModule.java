@@ -73,4 +73,10 @@ public class DragonModule extends AbstractItemNoStackModule<Dragon> {
 			builder.putDragons(hero.getConfigId(), hero.getStar());
 		}
 	}
+
+	@Override
+	public void checkConfig(int id) {
+		// TODO Auto-generated method stub
+
+	}
 }

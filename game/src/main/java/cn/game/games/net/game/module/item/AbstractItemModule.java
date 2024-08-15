@@ -9,11 +9,11 @@ import java.util.Map;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.manual.OpType;
 
 /**    
  * 这里通常处理能重叠的那些东西
+ * 或者说一个配置表id只有一个实例的
  * 2024年2月19日 上午10:55:53
  * @author SYQ
  */
@@ -61,7 +61,7 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 		if (count <= 0) {
 			return null;
 		}
-		ItemHelper.checkConfig(itemId);
+		checkConfig(itemId);
 //		ItemConfig itemConfig = ItemManager.instance().get(itemId);
 		T item = id_items.get(itemId);
 		if (item == null) {

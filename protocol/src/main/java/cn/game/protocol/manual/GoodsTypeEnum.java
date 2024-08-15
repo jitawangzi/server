@@ -28,6 +28,8 @@ public enum GoodsTypeEnum{
 	DragonSkill(12, "龙技能"),
 
 	Sword(36, "武器"),
+	/**  */
+	FairyFriend(100, "仙友"),
 
 	/** 角色 */
 	Role(44, "角色"),

@@ -66,4 +66,10 @@ public class SwordModule extends AbstractItemNoStackModule<Sword> {
 			builder.addSwords(sword.toHeroSwordInfo());
 		}
 	}
+
+	@Override
+	public void checkConfig(int id) {
+		// TODO Auto-generated method stub
+
+	}
 }

@@ -62,4 +62,10 @@ public class DragonSkillModule extends AbstractItemNoStackModule<DragonSkill> {
 			builder.putDragonSkills(hero.getConfigId(), hero.getLevel());
 		}
 	}
+
+	@Override
+	public void checkConfig(int id) {
+		// TODO Auto-generated method stub
+
+	}
 }

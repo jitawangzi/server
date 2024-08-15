@@ -278,4 +278,9 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		return illustrationsHeroQualitysMax;
 	}
 
+	@Override
+	public void checkConfig(int id) {
+		HeroManager.instance().get(id);
+	}
+
 }

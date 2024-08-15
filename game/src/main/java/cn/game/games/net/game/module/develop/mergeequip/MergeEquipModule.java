@@ -112,4 +112,9 @@ public class MergeEquipModule extends AbstractItemModule<MergeEquip> {
 		this.equipList = equipList;
 	}
 
+	@Override
+	public void checkConfig(int id) {
+		EquipManager.instance().get(id);
+	}
+
 }

@@ -7,16 +7,13 @@ import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
-import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.Money;
-import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.ItemManager;
-import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
-import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
@@ -72,7 +69,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		if (count < 0) {
 			return new Currency(configId, 0);
 		}
-		ItemHelper.checkConfig(configId);
+		checkConfig(configId);
 		Asset money = Asset.get(configId);
 		if (money.Type == 2) {
 			addExp(configId, count);
@@ -161,16 +158,16 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 
 		IntMapWrapper levelsMap = player.getPlayerModule().getExpLevelMap();
 
-		ExpConfig expConfig = getExpConfig(id, (int) levelsMap.getValue(id));
-		ExpConfig nextExpConfig = getExpConfig(id, (int) (levelsMap.getValue(id) + 1));
+		ExpConfig expConfig = PlayerHelper.getExpConfig(id, (int) levelsMap.getValue(id), 0);
+		ExpConfig nextExpConfig = PlayerHelper.getExpConfig(id, (int) (levelsMap.getValue(id) + 1), 0);
 		while (expConfig != null && curExp >= expConfig.experience && nextExpConfig != null) {
 			curExp -= expConfig.experience;
 			levelsMap.add(id, 1);
 
 			player.handleEvent(new GameEvent(EventTypeEnum.LevelUp, id, levelsMap.getValue(id)));
 
-			expConfig = getExpConfig(id, (int) levelsMap.getValue(id));
-			nextExpConfig = getExpConfig(id, (int) (levelsMap.getValue(id) + 1));
+			expConfig = PlayerHelper.getExpConfig(id, (int) levelsMap.getValue(id), 0);
+			nextExpConfig = PlayerHelper.getExpConfig(id, (int) (levelsMap.getValue(id) + 1), 0);
 
 //			levellog.info("opType[levelUp]playerId[{}]exp[{}]newLevel[{}]", player.getData().getPlayerId(), id,
 //					levelsMap.getValue(id));
@@ -178,6 +175,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 				GameLogger.levelUp(player);
 			}
 		}
+		// 不能升了，设置经验为最大
 		if (expConfig != null && curExp > expConfig.experience) {
 			curExp = expConfig.experience;
 		}
@@ -188,19 +186,6 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 
 	}
 
-	public ExpConfig getExpConfig(int id, int level) {
-		if (id == Asset.playerExp.ID) {
-			return UserUpgradeManager.instance().getNullable(level);
-		} else if (id == Asset.FundPass.ID) {
-			return FundPassUpgradeManager.instance().getUIExpTypeLv(id,level);
-		} else if (id == Asset.BrawlPoint.ID) {
-			return FundPassUpgradeManager.instance().getUIExpTypeLv(id,level);
-		} else if (id == Asset.QiankunMirrorExp.ID) {
-			return QiankunMirrorLvManager.instance().getNullable(level);
-		}
-		throw new IllegalArgumentException("没有实现的经验id： " + id);
-	}
-
 	@Override
 	public void addCacheStackable(Currency item) {
 		
@@ -209,6 +194,11 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	@Override
 	public void addCacheNoStackable(Currency item) {
 		
+	}
+
+	@Override
+	public void checkConfig(int id) {
+		Asset.get(id);
 	}
 
 	public MapWrapper getCurrencyMap() {

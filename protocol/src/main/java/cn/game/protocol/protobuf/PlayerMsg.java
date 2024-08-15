@@ -28853,6 +28853,104 @@ public final class PlayerMsg {
 
     /**
      * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> 
+        getFairyFriendsList();
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo getFairyFriends(int index);
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    int getFairyFriendsCount();
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> 
+        getFairyFriendsOrBuilderList();
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder getFairyFriendsOrBuilder(
+        int index);
+
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+    int getFairyFriendFightsCount();
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+    boolean containsFairyFriendFights(
+        int key);
+    /**
+     * Use {@link #getFairyFriendFightsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getFairyFriendFights();
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.Integer>
+    getFairyFriendFightsMap();
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+
+    int getFairyFriendFightsOrDefault(
+        int key,
+        int defaultValue);
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+
+    int getFairyFriendFightsOrThrow(
+        int key);
+
+    /**
+     * <pre>
      *︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
      * </pre>
      *
@@ -29897,6 +29995,7 @@ public final class PlayerMsg {
       gems_ = java.util.Collections.emptyList();
       equips_ = java.util.Collections.emptyList();
       equipParts_ = java.util.Collections.emptyList();
+      fairyFriends_ = java.util.Collections.emptyList();
       battles_ = java.util.Collections.emptyList();
       monthCards_ = java.util.Collections.emptyList();
       chapterPacks_ = emptyIntList();
@@ -30118,10 +30217,32 @@ public final class PlayerMsg {
 
               break;
             }
-            case 242: {
+            case 162: {
               if (!((mutable_bitField0_ & 0x00002000) != 0)) {
-                battles_ = new java.util.ArrayList<cn.game.protocol.protobuf.BattleMsg.BattleInfo>();
+                fairyFriends_ = new java.util.ArrayList<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo>();
                 mutable_bitField0_ |= 0x00002000;
+              }
+              fairyFriends_.add(
+                  input.readMessage(cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.parser(), extensionRegistry));
+              break;
+            }
+            case 170: {
+              if (!((mutable_bitField0_ & 0x00004000) != 0)) {
+                fairyFriendFights_ = com.google.protobuf.MapField.newMapField(
+                    FairyFriendFightsDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00004000;
+              }
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+              fairyFriendFights__ = input.readMessage(
+                  FairyFriendFightsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              fairyFriendFights_.getMutableMap().put(
+                  fairyFriendFights__.getKey(), fairyFriendFights__.getValue());
+              break;
+            }
+            case 242: {
+              if (!((mutable_bitField0_ & 0x00008000) != 0)) {
+                battles_ = new java.util.ArrayList<cn.game.protocol.protobuf.BattleMsg.BattleInfo>();
+                mutable_bitField0_ |= 0x00008000;
               }
               battles_.add(
                   input.readMessage(cn.game.protocol.protobuf.BattleMsg.BattleInfo.parser(), extensionRegistry));
@@ -30148,18 +30269,18 @@ public final class PlayerMsg {
               break;
             }
             case 322: {
-              if (!((mutable_bitField0_ & 0x00004000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00010000) != 0)) {
                 monthCards_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.MonthCardProto>();
-                mutable_bitField0_ |= 0x00004000;
+                mutable_bitField0_ |= 0x00010000;
               }
               monthCards_.add(
                   input.readMessage(cn.game.protocol.protobuf.ShopMsg.MonthCardProto.parser(), extensionRegistry));
               break;
             }
             case 328: {
-              if (!((mutable_bitField0_ & 0x00008000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00020000) != 0)) {
                 chapterPacks_ = newIntList();
-                mutable_bitField0_ |= 0x00008000;
+                mutable_bitField0_ |= 0x00020000;
               }
               chapterPacks_.addInt(input.readUInt32());
               break;
@@ -30167,9 +30288,9 @@ public final class PlayerMsg {
             case 330: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00008000) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00020000) != 0) && input.getBytesUntilLimit() > 0) {
                 chapterPacks_ = newIntList();
-                mutable_bitField0_ |= 0x00008000;
+                mutable_bitField0_ |= 0x00020000;
               }
               while (input.getBytesUntilLimit() > 0) {
                 chapterPacks_.addInt(input.readUInt32());
@@ -30183,9 +30304,9 @@ public final class PlayerMsg {
               break;
             }
             case 354: {
-              if (!((mutable_bitField0_ & 0x00010000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00040000) != 0)) {
                 fundPass_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.FundPassInfo>();
-                mutable_bitField0_ |= 0x00010000;
+                mutable_bitField0_ |= 0x00040000;
               }
               fundPass_.add(
                   input.readMessage(cn.game.protocol.protobuf.ShopMsg.FundPassInfo.parser(), extensionRegistry));
@@ -30198,17 +30319,17 @@ public final class PlayerMsg {
             }
             case 378: {
               java.lang.String s = input.readStringRequireUtf8();
-              if (!((mutable_bitField0_ & 0x00020000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00080000) != 0)) {
                 freeDayRentHeros_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00020000;
+                mutable_bitField0_ |= 0x00080000;
               }
               freeDayRentHeros_.add(s);
               break;
             }
             case 384: {
-              if (!((mutable_bitField0_ & 0x00040000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00100000) != 0)) {
                 storeStaminas_ = newIntList();
-                mutable_bitField0_ |= 0x00040000;
+                mutable_bitField0_ |= 0x00100000;
               }
               storeStaminas_.addInt(input.readInt32());
               break;
@@ -30216,9 +30337,9 @@ public final class PlayerMsg {
             case 386: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00040000) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00100000) != 0) && input.getBytesUntilLimit() > 0) {
                 storeStaminas_ = newIntList();
-                mutable_bitField0_ |= 0x00040000;
+                mutable_bitField0_ |= 0x00100000;
               }
               while (input.getBytesUntilLimit() > 0) {
                 storeStaminas_.addInt(input.readInt32());
@@ -30259,18 +30380,18 @@ public final class PlayerMsg {
               break;
             }
             case 442: {
-              if (!((mutable_bitField0_ & 0x00080000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00200000) != 0)) {
                 questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>();
-                mutable_bitField0_ |= 0x00080000;
+                mutable_bitField0_ |= 0x00200000;
               }
               questGroups_.add(
                   input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.parser(), extensionRegistry));
               break;
             }
             case 450: {
-              if (!((mutable_bitField0_ & 0x00100000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00400000) != 0)) {
                 questGroupPointRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo>();
-                mutable_bitField0_ |= 0x00100000;
+                mutable_bitField0_ |= 0x00400000;
               }
               questGroupPointRewards_.add(
                   input.readMessage(cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.parser(), extensionRegistry));
@@ -30282,10 +30403,10 @@ public final class PlayerMsg {
               break;
             }
             case 474: {
-              if (!((mutable_bitField0_ & 0x00200000) != 0)) {
+              if (!((mutable_bitField0_ & 0x00800000) != 0)) {
                 guide_ = com.google.protobuf.MapField.newMapField(
                     GuideDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00200000;
+                mutable_bitField0_ |= 0x00800000;
               }
               com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
               guide__ = input.readMessage(
@@ -30300,10 +30421,10 @@ public final class PlayerMsg {
               break;
             }
             case 498: {
-              if (!((mutable_bitField0_ & 0x00400000) != 0)) {
+              if (!((mutable_bitField0_ & 0x01000000) != 0)) {
                 potentialLvMap_ = com.google.protobuf.MapField.newMapField(
                     PotentialLvMapDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00400000;
+                mutable_bitField0_ |= 0x01000000;
               }
               com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
               potentialLvMap__ = input.readMessage(
@@ -30313,10 +30434,10 @@ public final class PlayerMsg {
               break;
             }
             case 506: {
-              if (!((mutable_bitField0_ & 0x00800000) != 0)) {
+              if (!((mutable_bitField0_ & 0x02000000) != 0)) {
                 potentialBreak_ = com.google.protobuf.MapField.newMapField(
                     PotentialBreakDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00800000;
+                mutable_bitField0_ |= 0x02000000;
               }
               com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Boolean>
               potentialBreak__ = input.readMessage(
@@ -30326,9 +30447,9 @@ public final class PlayerMsg {
               break;
             }
             case 522: {
-              if (!((mutable_bitField0_ & 0x01000000) != 0)) {
+              if (!((mutable_bitField0_ & 0x04000000) != 0)) {
                 guides_ = new java.util.ArrayList<cn.game.protocol.protobuf.PlayerMsg.GuideInfo>();
-                mutable_bitField0_ |= 0x01000000;
+                mutable_bitField0_ |= 0x04000000;
               }
               guides_.add(
                   input.readMessage(cn.game.protocol.protobuf.PlayerMsg.GuideInfo.parser(), extensionRegistry));
@@ -30345,9 +30466,9 @@ public final class PlayerMsg {
               break;
             }
             case 802: {
-              if (!((mutable_bitField0_ & 0x02000000) != 0)) {
+              if (!((mutable_bitField0_ & 0x08000000) != 0)) {
                 shopGroupItems_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo>();
-                mutable_bitField0_ |= 0x02000000;
+                mutable_bitField0_ |= 0x08000000;
               }
               shopGroupItems_.add(
                   input.readMessage(cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.parser(), extensionRegistry));
@@ -30364,18 +30485,18 @@ public final class PlayerMsg {
               break;
             }
             case 826: {
-              if (!((mutable_bitField0_ & 0x04000000) != 0)) {
+              if (!((mutable_bitField0_ & 0x10000000) != 0)) {
                 mergeEquips_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo>();
-                mutable_bitField0_ |= 0x04000000;
+                mutable_bitField0_ |= 0x10000000;
               }
               mergeEquips_.add(
                   input.readMessage(cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.parser(), extensionRegistry));
               break;
             }
             case 832: {
-              if (!((mutable_bitField0_ & 0x08000000) != 0)) {
+              if (!((mutable_bitField0_ & 0x20000000) != 0)) {
                 mergeEquipIds_ = newIntList();
-                mutable_bitField0_ |= 0x08000000;
+                mutable_bitField0_ |= 0x20000000;
               }
               mergeEquipIds_.addInt(input.readInt32());
               break;
@@ -30383,9 +30504,9 @@ public final class PlayerMsg {
             case 834: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x08000000) != 0) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x20000000) != 0) && input.getBytesUntilLimit() > 0) {
                 mergeEquipIds_ = newIntList();
-                mutable_bitField0_ |= 0x08000000;
+                mutable_bitField0_ |= 0x20000000;
               }
               while (input.getBytesUntilLimit() > 0) {
                 mergeEquipIds_.addInt(input.readInt32());
@@ -30407,9 +30528,9 @@ public final class PlayerMsg {
               break;
             }
             case 858: {
-              if (!((mutable_bitField0_ & 0x10000000) != 0)) {
+              if (!((mutable_bitField0_ & 0x40000000) != 0)) {
                 hcHeros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo>();
-                mutable_bitField0_ |= 0x10000000;
+                mutable_bitField0_ |= 0x40000000;
               }
               hcHeros_.add(
                   input.readMessage(cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.parser(), extensionRegistry));
@@ -30432,10 +30553,10 @@ public final class PlayerMsg {
               break;
             }
             case 890: {
-              if (!((mutable_bitField0_ & 0x20000000) != 0)) {
+              if (!((mutable_bitField0_ & 0x80000000) != 0)) {
                 freeHcHeroItemTimesMap_ = com.google.protobuf.MapField.newMapField(
                     FreeHcHeroItemTimesMapDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x20000000;
+                mutable_bitField0_ |= 0x80000000;
               }
               com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
               freeHcHeroItemTimesMap__ = input.readMessage(
@@ -30491,42 +30612,45 @@ public final class PlayerMsg {
           equipParts_ = java.util.Collections.unmodifiableList(equipParts_);
         }
         if (((mutable_bitField0_ & 0x00002000) != 0)) {
-          battles_ = java.util.Collections.unmodifiableList(battles_);
-        }
-        if (((mutable_bitField0_ & 0x00004000) != 0)) {
-          monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
+          fairyFriends_ = java.util.Collections.unmodifiableList(fairyFriends_);
         }
         if (((mutable_bitField0_ & 0x00008000) != 0)) {
-          chapterPacks_.makeImmutable(); // C
+          battles_ = java.util.Collections.unmodifiableList(battles_);
         }
         if (((mutable_bitField0_ & 0x00010000) != 0)) {
-          fundPass_ = java.util.Collections.unmodifiableList(fundPass_);
+          monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
         }
         if (((mutable_bitField0_ & 0x00020000) != 0)) {
-          freeDayRentHeros_ = freeDayRentHeros_.getUnmodifiableView();
+          chapterPacks_.makeImmutable(); // C
         }
         if (((mutable_bitField0_ & 0x00040000) != 0)) {
-          storeStaminas_.makeImmutable(); // C
+          fundPass_ = java.util.Collections.unmodifiableList(fundPass_);
         }
         if (((mutable_bitField0_ & 0x00080000) != 0)) {
-          questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+          freeDayRentHeros_ = freeDayRentHeros_.getUnmodifiableView();
         }
         if (((mutable_bitField0_ & 0x00100000) != 0)) {
+          storeStaminas_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x00200000) != 0)) {
+          questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
+        }
+        if (((mutable_bitField0_ & 0x00400000) != 0)) {
           questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
         }
-        if (((mutable_bitField0_ & 0x01000000) != 0)) {
+        if (((mutable_bitField0_ & 0x04000000) != 0)) {
           guides_ = java.util.Collections.unmodifiableList(guides_);
         }
-        if (((mutable_bitField0_ & 0x02000000) != 0)) {
+        if (((mutable_bitField0_ & 0x08000000) != 0)) {
           shopGroupItems_ = java.util.Collections.unmodifiableList(shopGroupItems_);
         }
-        if (((mutable_bitField0_ & 0x04000000) != 0)) {
+        if (((mutable_bitField0_ & 0x10000000) != 0)) {
           mergeEquips_ = java.util.Collections.unmodifiableList(mergeEquips_);
         }
-        if (((mutable_bitField0_ & 0x08000000) != 0)) {
+        if (((mutable_bitField0_ & 0x20000000) != 0)) {
           mergeEquipIds_.makeImmutable(); // C
         }
-        if (((mutable_bitField0_ & 0x10000000) != 0)) {
+        if (((mutable_bitField0_ & 0x40000000) != 0)) {
           hcHeros_ = java.util.Collections.unmodifiableList(hcHeros_);
         }
         this.unknownFields = unknownFields.build();
@@ -30555,6 +30679,8 @@ public final class PlayerMsg {
           return internalGetDragons();
         case 17:
           return internalGetDragonSkills();
+        case 21:
+          return internalGetFairyFriendFights();
         case 59:
           return internalGetGuide();
         case 62:
@@ -31698,6 +31824,163 @@ public final class PlayerMsg {
     @java.lang.Override
     public cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorInfoOrBuilder getQianKunMirrorInfoOrBuilder() {
       return getQianKunMirrorInfo();
+    }
+
+    public static final int FAIRYFRIENDS_FIELD_NUMBER = 20;
+    private java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> fairyFriends_;
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> getFairyFriendsList() {
+      return fairyFriends_;
+    }
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> 
+        getFairyFriendsOrBuilderList() {
+      return fairyFriends_;
+    }
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    @java.lang.Override
+    public int getFairyFriendsCount() {
+      return fairyFriends_.size();
+    }
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo getFairyFriends(int index) {
+      return fairyFriends_.get(index);
+    }
+    /**
+     * <pre>
+     * 仙友数据
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder getFairyFriendsOrBuilder(
+        int index) {
+      return fairyFriends_.get(index);
+    }
+
+    public static final int FAIRYFRIENDFIGHTS_FIELD_NUMBER = 21;
+    private static final class FairyFriendFightsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.Integer> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.Integer>newDefaultInstance(
+                  cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerAllInfo_FairyFriendFightsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.UINT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.UINT32,
+                  0);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Integer> fairyFriendFights_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+    internalGetFairyFriendFights() {
+      if (fairyFriendFights_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            FairyFriendFightsDefaultEntryHolder.defaultEntry);
+      }
+      return fairyFriendFights_;
+    }
+
+    public int getFairyFriendFightsCount() {
+      return internalGetFairyFriendFights().getMap().size();
+    }
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsFairyFriendFights(
+        int key) {
+      
+      return internalGetFairyFriendFights().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getFairyFriendFightsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getFairyFriendFights() {
+      return getFairyFriendFightsMap();
+    }
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, java.lang.Integer> getFairyFriendFightsMap() {
+      return internalGetFairyFriendFights().getMap();
+    }
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+    @java.lang.Override
+
+    public int getFairyFriendFightsOrDefault(
+        int key,
+        int defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetFairyFriendFights().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+     */
+    @java.lang.Override
+
+    public int getFairyFriendFightsOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+          internalGetFairyFriendFights().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
     }
 
     public static final int BATTLES_FIELD_NUMBER = 30;
@@ -33326,6 +33609,15 @@ public final class PlayerMsg {
       if (qianKunMirrorInfo_ != null) {
         output.writeMessage(19, getQianKunMirrorInfo());
       }
+      for (int i = 0; i < fairyFriends_.size(); i++) {
+        output.writeMessage(20, fairyFriends_.get(i));
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetFairyFriendFights(),
+          FairyFriendFightsDefaultEntryHolder.defaultEntry,
+          21);
       for (int i = 0; i < battles_.size(); i++) {
         output.writeMessage(30, battles_.get(i));
       }
@@ -33571,6 +33863,20 @@ public final class PlayerMsg {
       if (qianKunMirrorInfo_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(19, getQianKunMirrorInfo());
+      }
+      for (int i = 0; i < fairyFriends_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(20, fairyFriends_.get(i));
+      }
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
+           : internalGetFairyFriendFights().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+        fairyFriendFights__ = FairyFriendFightsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(21, fairyFriendFights__);
       }
       for (int i = 0; i < battles_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -33833,6 +34139,10 @@ public final class PlayerMsg {
         if (!getQianKunMirrorInfo()
             .equals(other.getQianKunMirrorInfo())) return false;
       }
+      if (!getFairyFriendsList()
+          .equals(other.getFairyFriendsList())) return false;
+      if (!internalGetFairyFriendFights().equals(
+          other.internalGetFairyFriendFights())) return false;
       if (!getBattlesList()
           .equals(other.getBattlesList())) return false;
       if (getFreeRougeTimes()
@@ -33990,6 +34300,14 @@ public final class PlayerMsg {
       if (hasQianKunMirrorInfo()) {
         hash = (37 * hash) + QIANKUNMIRRORINFO_FIELD_NUMBER;
         hash = (53 * hash) + getQianKunMirrorInfo().hashCode();
+      }
+      if (getFairyFriendsCount() > 0) {
+        hash = (37 * hash) + FAIRYFRIENDS_FIELD_NUMBER;
+        hash = (53 * hash) + getFairyFriendsList().hashCode();
+      }
+      if (!internalGetFairyFriendFights().getMap().isEmpty()) {
+        hash = (37 * hash) + FAIRYFRIENDFIGHTS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetFairyFriendFights().hashCode();
       }
       if (getBattlesCount() > 0) {
         hash = (37 * hash) + BATTLES_FIELD_NUMBER;
@@ -34237,6 +34555,8 @@ public final class PlayerMsg {
             return internalGetDragons();
           case 17:
             return internalGetDragonSkills();
+          case 21:
+            return internalGetFairyFriendFights();
           case 59:
             return internalGetGuide();
           case 62:
@@ -34266,6 +34586,8 @@ public final class PlayerMsg {
             return internalGetMutableDragons();
           case 17:
             return internalGetMutableDragonSkills();
+          case 21:
+            return internalGetMutableFairyFriendFights();
           case 59:
             return internalGetMutableGuide();
           case 62:
@@ -34307,6 +34629,7 @@ public final class PlayerMsg {
           getGemsFieldBuilder();
           getEquipsFieldBuilder();
           getEquipPartsFieldBuilder();
+          getFairyFriendsFieldBuilder();
           getBattlesFieldBuilder();
           getMonthCardsFieldBuilder();
           getFundPassFieldBuilder();
@@ -34383,9 +34706,16 @@ public final class PlayerMsg {
           qianKunMirrorInfo_ = null;
           qianKunMirrorInfoBuilder_ = null;
         }
+        if (fairyFriendsBuilder_ == null) {
+          fairyFriends_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00002000);
+        } else {
+          fairyFriendsBuilder_.clear();
+        }
+        internalGetMutableFairyFriendFights().clear();
         if (battlesBuilder_ == null) {
           battles_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00002000);
+          bitField0_ = (bitField0_ & ~0x00008000);
         } else {
           battlesBuilder_.clear();
         }
@@ -34399,28 +34729,28 @@ public final class PlayerMsg {
 
         if (monthCardsBuilder_ == null) {
           monthCards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00004000);
+          bitField0_ = (bitField0_ & ~0x00010000);
         } else {
           monthCardsBuilder_.clear();
         }
         monthCardDoubleBonus_ = false;
 
         chapterPacks_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         if (fundPassBuilder_ == null) {
           fundPass_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00010000);
+          bitField0_ = (bitField0_ & ~0x00040000);
         } else {
           fundPassBuilder_.clear();
         }
         heishiFreshTimes_ = 0;
 
         freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00080000);
         freeDayRentHeroUid_ = "";
 
         storeStaminas_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00100000);
         if (cloudBoxBuilder_ == null) {
           cloudBox_ = null;
         } else {
@@ -34435,13 +34765,13 @@ public final class PlayerMsg {
         }
         if (questGroupsBuilder_ == null) {
           questGroups_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00080000);
+          bitField0_ = (bitField0_ & ~0x00200000);
         } else {
           questGroupsBuilder_.clear();
         }
         if (questGroupPointRewardsBuilder_ == null) {
           questGroupPointRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00100000);
+          bitField0_ = (bitField0_ & ~0x00400000);
         } else {
           questGroupPointRewardsBuilder_.clear();
         }
@@ -34454,7 +34784,7 @@ public final class PlayerMsg {
         internalGetMutablePotentialBreak().clear();
         if (guidesBuilder_ == null) {
           guides_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x01000000);
+          bitField0_ = (bitField0_ & ~0x04000000);
         } else {
           guidesBuilder_.clear();
         }
@@ -34464,7 +34794,7 @@ public final class PlayerMsg {
 
         if (shopGroupItemsBuilder_ == null) {
           shopGroupItems_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x02000000);
+          bitField0_ = (bitField0_ & ~0x08000000);
         } else {
           shopGroupItemsBuilder_.clear();
         }
@@ -34474,12 +34804,12 @@ public final class PlayerMsg {
 
         if (mergeEquipsBuilder_ == null) {
           mergeEquips_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x04000000);
+          bitField0_ = (bitField0_ & ~0x10000000);
         } else {
           mergeEquipsBuilder_.clear();
         }
         mergeEquipIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x08000000);
+        bitField0_ = (bitField0_ & ~0x20000000);
         if (mergeDayChallengeBuilder_ == null) {
           mergeDayChallenge_ = null;
         } else {
@@ -34488,7 +34818,7 @@ public final class PlayerMsg {
         }
         if (hcHerosBuilder_ == null) {
           hcHeros_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x10000000);
+          bitField0_ = (bitField0_ & ~0x40000000);
         } else {
           hcHerosBuilder_.clear();
         }
@@ -34616,10 +34946,21 @@ public final class PlayerMsg {
         } else {
           result.qianKunMirrorInfo_ = qianKunMirrorInfoBuilder_.build();
         }
-        if (battlesBuilder_ == null) {
+        if (fairyFriendsBuilder_ == null) {
           if (((bitField0_ & 0x00002000) != 0)) {
-            battles_ = java.util.Collections.unmodifiableList(battles_);
+            fairyFriends_ = java.util.Collections.unmodifiableList(fairyFriends_);
             bitField0_ = (bitField0_ & ~0x00002000);
+          }
+          result.fairyFriends_ = fairyFriends_;
+        } else {
+          result.fairyFriends_ = fairyFriendsBuilder_.build();
+        }
+        result.fairyFriendFights_ = internalGetFairyFriendFights();
+        result.fairyFriendFights_.makeImmutable();
+        if (battlesBuilder_ == null) {
+          if (((bitField0_ & 0x00008000) != 0)) {
+            battles_ = java.util.Collections.unmodifiableList(battles_);
+            bitField0_ = (bitField0_ & ~0x00008000);
           }
           result.battles_ = battles_;
         } else {
@@ -34630,39 +34971,39 @@ public final class PlayerMsg {
         result.shareReliveCount_ = shareReliveCount_;
         result.adReliveCount_ = adReliveCount_;
         if (monthCardsBuilder_ == null) {
-          if (((bitField0_ & 0x00004000) != 0)) {
+          if (((bitField0_ & 0x00010000) != 0)) {
             monthCards_ = java.util.Collections.unmodifiableList(monthCards_);
-            bitField0_ = (bitField0_ & ~0x00004000);
+            bitField0_ = (bitField0_ & ~0x00010000);
           }
           result.monthCards_ = monthCards_;
         } else {
           result.monthCards_ = monthCardsBuilder_.build();
         }
         result.monthCardDoubleBonus_ = monthCardDoubleBonus_;
-        if (((bitField0_ & 0x00008000) != 0)) {
+        if (((bitField0_ & 0x00020000) != 0)) {
           chapterPacks_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00008000);
+          bitField0_ = (bitField0_ & ~0x00020000);
         }
         result.chapterPacks_ = chapterPacks_;
         if (fundPassBuilder_ == null) {
-          if (((bitField0_ & 0x00010000) != 0)) {
+          if (((bitField0_ & 0x00040000) != 0)) {
             fundPass_ = java.util.Collections.unmodifiableList(fundPass_);
-            bitField0_ = (bitField0_ & ~0x00010000);
+            bitField0_ = (bitField0_ & ~0x00040000);
           }
           result.fundPass_ = fundPass_;
         } else {
           result.fundPass_ = fundPassBuilder_.build();
         }
         result.heishiFreshTimes_ = heishiFreshTimes_;
-        if (((bitField0_ & 0x00020000) != 0)) {
+        if (((bitField0_ & 0x00080000) != 0)) {
           freeDayRentHeros_ = freeDayRentHeros_.getUnmodifiableView();
-          bitField0_ = (bitField0_ & ~0x00020000);
+          bitField0_ = (bitField0_ & ~0x00080000);
         }
         result.freeDayRentHeros_ = freeDayRentHeros_;
         result.freeDayRentHeroUid_ = freeDayRentHeroUid_;
-        if (((bitField0_ & 0x00040000) != 0)) {
+        if (((bitField0_ & 0x00100000) != 0)) {
           storeStaminas_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x00040000);
+          bitField0_ = (bitField0_ & ~0x00100000);
         }
         result.storeStaminas_ = storeStaminas_;
         if (cloudBoxBuilder_ == null) {
@@ -34676,18 +35017,18 @@ public final class PlayerMsg {
           result.patrol_ = patrolBuilder_.build();
         }
         if (questGroupsBuilder_ == null) {
-          if (((bitField0_ & 0x00080000) != 0)) {
+          if (((bitField0_ & 0x00200000) != 0)) {
             questGroups_ = java.util.Collections.unmodifiableList(questGroups_);
-            bitField0_ = (bitField0_ & ~0x00080000);
+            bitField0_ = (bitField0_ & ~0x00200000);
           }
           result.questGroups_ = questGroups_;
         } else {
           result.questGroups_ = questGroupsBuilder_.build();
         }
         if (questGroupPointRewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00100000) != 0)) {
+          if (((bitField0_ & 0x00400000) != 0)) {
             questGroupPointRewards_ = java.util.Collections.unmodifiableList(questGroupPointRewards_);
-            bitField0_ = (bitField0_ & ~0x00100000);
+            bitField0_ = (bitField0_ & ~0x00400000);
           }
           result.questGroupPointRewards_ = questGroupPointRewards_;
         } else {
@@ -34702,9 +35043,9 @@ public final class PlayerMsg {
         result.potentialBreak_ = internalGetPotentialBreak();
         result.potentialBreak_.makeImmutable();
         if (guidesBuilder_ == null) {
-          if (((bitField0_ & 0x01000000) != 0)) {
+          if (((bitField0_ & 0x04000000) != 0)) {
             guides_ = java.util.Collections.unmodifiableList(guides_);
-            bitField0_ = (bitField0_ & ~0x01000000);
+            bitField0_ = (bitField0_ & ~0x04000000);
           }
           result.guides_ = guides_;
         } else {
@@ -34713,9 +35054,9 @@ public final class PlayerMsg {
         result.battleType_ = battleType_;
         result.battleId_ = battleId_;
         if (shopGroupItemsBuilder_ == null) {
-          if (((bitField0_ & 0x02000000) != 0)) {
+          if (((bitField0_ & 0x08000000) != 0)) {
             shopGroupItems_ = java.util.Collections.unmodifiableList(shopGroupItems_);
-            bitField0_ = (bitField0_ & ~0x02000000);
+            bitField0_ = (bitField0_ & ~0x08000000);
           }
           result.shopGroupItems_ = shopGroupItems_;
         } else {
@@ -34724,17 +35065,17 @@ public final class PlayerMsg {
         result.nextFreeOpenBoxTime_ = nextFreeOpenBoxTime_;
         result.mergeSweepTimes_ = mergeSweepTimes_;
         if (mergeEquipsBuilder_ == null) {
-          if (((bitField0_ & 0x04000000) != 0)) {
+          if (((bitField0_ & 0x10000000) != 0)) {
             mergeEquips_ = java.util.Collections.unmodifiableList(mergeEquips_);
-            bitField0_ = (bitField0_ & ~0x04000000);
+            bitField0_ = (bitField0_ & ~0x10000000);
           }
           result.mergeEquips_ = mergeEquips_;
         } else {
           result.mergeEquips_ = mergeEquipsBuilder_.build();
         }
-        if (((bitField0_ & 0x08000000) != 0)) {
+        if (((bitField0_ & 0x20000000) != 0)) {
           mergeEquipIds_.makeImmutable();
-          bitField0_ = (bitField0_ & ~0x08000000);
+          bitField0_ = (bitField0_ & ~0x20000000);
         }
         result.mergeEquipIds_ = mergeEquipIds_;
         if (mergeDayChallengeBuilder_ == null) {
@@ -34743,9 +35084,9 @@ public final class PlayerMsg {
           result.mergeDayChallenge_ = mergeDayChallengeBuilder_.build();
         }
         if (hcHerosBuilder_ == null) {
-          if (((bitField0_ & 0x10000000) != 0)) {
+          if (((bitField0_ & 0x40000000) != 0)) {
             hcHeros_ = java.util.Collections.unmodifiableList(hcHeros_);
-            bitField0_ = (bitField0_ & ~0x10000000);
+            bitField0_ = (bitField0_ & ~0x40000000);
           }
           result.hcHeros_ = hcHeros_;
         } else {
@@ -35010,11 +35351,39 @@ public final class PlayerMsg {
         if (other.hasQianKunMirrorInfo()) {
           mergeQianKunMirrorInfo(other.getQianKunMirrorInfo());
         }
+        if (fairyFriendsBuilder_ == null) {
+          if (!other.fairyFriends_.isEmpty()) {
+            if (fairyFriends_.isEmpty()) {
+              fairyFriends_ = other.fairyFriends_;
+              bitField0_ = (bitField0_ & ~0x00002000);
+            } else {
+              ensureFairyFriendsIsMutable();
+              fairyFriends_.addAll(other.fairyFriends_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.fairyFriends_.isEmpty()) {
+            if (fairyFriendsBuilder_.isEmpty()) {
+              fairyFriendsBuilder_.dispose();
+              fairyFriendsBuilder_ = null;
+              fairyFriends_ = other.fairyFriends_;
+              bitField0_ = (bitField0_ & ~0x00002000);
+              fairyFriendsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getFairyFriendsFieldBuilder() : null;
+            } else {
+              fairyFriendsBuilder_.addAllMessages(other.fairyFriends_);
+            }
+          }
+        }
+        internalGetMutableFairyFriendFights().mergeFrom(
+            other.internalGetFairyFriendFights());
         if (battlesBuilder_ == null) {
           if (!other.battles_.isEmpty()) {
             if (battles_.isEmpty()) {
               battles_ = other.battles_;
-              bitField0_ = (bitField0_ & ~0x00002000);
+              bitField0_ = (bitField0_ & ~0x00008000);
             } else {
               ensureBattlesIsMutable();
               battles_.addAll(other.battles_);
@@ -35027,7 +35396,7 @@ public final class PlayerMsg {
               battlesBuilder_.dispose();
               battlesBuilder_ = null;
               battles_ = other.battles_;
-              bitField0_ = (bitField0_ & ~0x00002000);
+              bitField0_ = (bitField0_ & ~0x00008000);
               battlesBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getBattlesFieldBuilder() : null;
@@ -35052,7 +35421,7 @@ public final class PlayerMsg {
           if (!other.monthCards_.isEmpty()) {
             if (monthCards_.isEmpty()) {
               monthCards_ = other.monthCards_;
-              bitField0_ = (bitField0_ & ~0x00004000);
+              bitField0_ = (bitField0_ & ~0x00010000);
             } else {
               ensureMonthCardsIsMutable();
               monthCards_.addAll(other.monthCards_);
@@ -35065,7 +35434,7 @@ public final class PlayerMsg {
               monthCardsBuilder_.dispose();
               monthCardsBuilder_ = null;
               monthCards_ = other.monthCards_;
-              bitField0_ = (bitField0_ & ~0x00004000);
+              bitField0_ = (bitField0_ & ~0x00010000);
               monthCardsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getMonthCardsFieldBuilder() : null;
@@ -35080,7 +35449,7 @@ public final class PlayerMsg {
         if (!other.chapterPacks_.isEmpty()) {
           if (chapterPacks_.isEmpty()) {
             chapterPacks_ = other.chapterPacks_;
-            bitField0_ = (bitField0_ & ~0x00008000);
+            bitField0_ = (bitField0_ & ~0x00020000);
           } else {
             ensureChapterPacksIsMutable();
             chapterPacks_.addAll(other.chapterPacks_);
@@ -35091,7 +35460,7 @@ public final class PlayerMsg {
           if (!other.fundPass_.isEmpty()) {
             if (fundPass_.isEmpty()) {
               fundPass_ = other.fundPass_;
-              bitField0_ = (bitField0_ & ~0x00010000);
+              bitField0_ = (bitField0_ & ~0x00040000);
             } else {
               ensureFundPassIsMutable();
               fundPass_.addAll(other.fundPass_);
@@ -35104,7 +35473,7 @@ public final class PlayerMsg {
               fundPassBuilder_.dispose();
               fundPassBuilder_ = null;
               fundPass_ = other.fundPass_;
-              bitField0_ = (bitField0_ & ~0x00010000);
+              bitField0_ = (bitField0_ & ~0x00040000);
               fundPassBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getFundPassFieldBuilder() : null;
@@ -35119,7 +35488,7 @@ public final class PlayerMsg {
         if (!other.freeDayRentHeros_.isEmpty()) {
           if (freeDayRentHeros_.isEmpty()) {
             freeDayRentHeros_ = other.freeDayRentHeros_;
-            bitField0_ = (bitField0_ & ~0x00020000);
+            bitField0_ = (bitField0_ & ~0x00080000);
           } else {
             ensureFreeDayRentHerosIsMutable();
             freeDayRentHeros_.addAll(other.freeDayRentHeros_);
@@ -35133,7 +35502,7 @@ public final class PlayerMsg {
         if (!other.storeStaminas_.isEmpty()) {
           if (storeStaminas_.isEmpty()) {
             storeStaminas_ = other.storeStaminas_;
-            bitField0_ = (bitField0_ & ~0x00040000);
+            bitField0_ = (bitField0_ & ~0x00100000);
           } else {
             ensureStoreStaminasIsMutable();
             storeStaminas_.addAll(other.storeStaminas_);
@@ -35150,7 +35519,7 @@ public final class PlayerMsg {
           if (!other.questGroups_.isEmpty()) {
             if (questGroups_.isEmpty()) {
               questGroups_ = other.questGroups_;
-              bitField0_ = (bitField0_ & ~0x00080000);
+              bitField0_ = (bitField0_ & ~0x00200000);
             } else {
               ensureQuestGroupsIsMutable();
               questGroups_.addAll(other.questGroups_);
@@ -35163,7 +35532,7 @@ public final class PlayerMsg {
               questGroupsBuilder_.dispose();
               questGroupsBuilder_ = null;
               questGroups_ = other.questGroups_;
-              bitField0_ = (bitField0_ & ~0x00080000);
+              bitField0_ = (bitField0_ & ~0x00200000);
               questGroupsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getQuestGroupsFieldBuilder() : null;
@@ -35176,7 +35545,7 @@ public final class PlayerMsg {
           if (!other.questGroupPointRewards_.isEmpty()) {
             if (questGroupPointRewards_.isEmpty()) {
               questGroupPointRewards_ = other.questGroupPointRewards_;
-              bitField0_ = (bitField0_ & ~0x00100000);
+              bitField0_ = (bitField0_ & ~0x00400000);
             } else {
               ensureQuestGroupPointRewardsIsMutable();
               questGroupPointRewards_.addAll(other.questGroupPointRewards_);
@@ -35189,7 +35558,7 @@ public final class PlayerMsg {
               questGroupPointRewardsBuilder_.dispose();
               questGroupPointRewardsBuilder_ = null;
               questGroupPointRewards_ = other.questGroupPointRewards_;
-              bitField0_ = (bitField0_ & ~0x00100000);
+              bitField0_ = (bitField0_ & ~0x00400000);
               questGroupPointRewardsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getQuestGroupPointRewardsFieldBuilder() : null;
@@ -35214,7 +35583,7 @@ public final class PlayerMsg {
           if (!other.guides_.isEmpty()) {
             if (guides_.isEmpty()) {
               guides_ = other.guides_;
-              bitField0_ = (bitField0_ & ~0x01000000);
+              bitField0_ = (bitField0_ & ~0x04000000);
             } else {
               ensureGuidesIsMutable();
               guides_.addAll(other.guides_);
@@ -35227,7 +35596,7 @@ public final class PlayerMsg {
               guidesBuilder_.dispose();
               guidesBuilder_ = null;
               guides_ = other.guides_;
-              bitField0_ = (bitField0_ & ~0x01000000);
+              bitField0_ = (bitField0_ & ~0x04000000);
               guidesBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getGuidesFieldBuilder() : null;
@@ -35246,7 +35615,7 @@ public final class PlayerMsg {
           if (!other.shopGroupItems_.isEmpty()) {
             if (shopGroupItems_.isEmpty()) {
               shopGroupItems_ = other.shopGroupItems_;
-              bitField0_ = (bitField0_ & ~0x02000000);
+              bitField0_ = (bitField0_ & ~0x08000000);
             } else {
               ensureShopGroupItemsIsMutable();
               shopGroupItems_.addAll(other.shopGroupItems_);
@@ -35259,7 +35628,7 @@ public final class PlayerMsg {
               shopGroupItemsBuilder_.dispose();
               shopGroupItemsBuilder_ = null;
               shopGroupItems_ = other.shopGroupItems_;
-              bitField0_ = (bitField0_ & ~0x02000000);
+              bitField0_ = (bitField0_ & ~0x08000000);
               shopGroupItemsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getShopGroupItemsFieldBuilder() : null;
@@ -35278,7 +35647,7 @@ public final class PlayerMsg {
           if (!other.mergeEquips_.isEmpty()) {
             if (mergeEquips_.isEmpty()) {
               mergeEquips_ = other.mergeEquips_;
-              bitField0_ = (bitField0_ & ~0x04000000);
+              bitField0_ = (bitField0_ & ~0x10000000);
             } else {
               ensureMergeEquipsIsMutable();
               mergeEquips_.addAll(other.mergeEquips_);
@@ -35291,7 +35660,7 @@ public final class PlayerMsg {
               mergeEquipsBuilder_.dispose();
               mergeEquipsBuilder_ = null;
               mergeEquips_ = other.mergeEquips_;
-              bitField0_ = (bitField0_ & ~0x04000000);
+              bitField0_ = (bitField0_ & ~0x10000000);
               mergeEquipsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getMergeEquipsFieldBuilder() : null;
@@ -35303,7 +35672,7 @@ public final class PlayerMsg {
         if (!other.mergeEquipIds_.isEmpty()) {
           if (mergeEquipIds_.isEmpty()) {
             mergeEquipIds_ = other.mergeEquipIds_;
-            bitField0_ = (bitField0_ & ~0x08000000);
+            bitField0_ = (bitField0_ & ~0x20000000);
           } else {
             ensureMergeEquipIdsIsMutable();
             mergeEquipIds_.addAll(other.mergeEquipIds_);
@@ -35317,7 +35686,7 @@ public final class PlayerMsg {
           if (!other.hcHeros_.isEmpty()) {
             if (hcHeros_.isEmpty()) {
               hcHeros_ = other.hcHeros_;
-              bitField0_ = (bitField0_ & ~0x10000000);
+              bitField0_ = (bitField0_ & ~0x40000000);
             } else {
               ensureHcHerosIsMutable();
               hcHeros_.addAll(other.hcHeros_);
@@ -35330,7 +35699,7 @@ public final class PlayerMsg {
               hcHerosBuilder_.dispose();
               hcHerosBuilder_ = null;
               hcHeros_ = other.hcHeros_;
-              bitField0_ = (bitField0_ & ~0x10000000);
+              bitField0_ = (bitField0_ & ~0x40000000);
               hcHerosBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getHcHerosFieldBuilder() : null;
@@ -38913,12 +39282,480 @@ public final class PlayerMsg {
         return qianKunMirrorInfoBuilder_;
       }
 
+      private java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> fairyFriends_ =
+        java.util.Collections.emptyList();
+      private void ensureFairyFriendsIsMutable() {
+        if (!((bitField0_ & 0x00002000) != 0)) {
+          fairyFriends_ = new java.util.ArrayList<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo>(fairyFriends_);
+          bitField0_ |= 0x00002000;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> fairyFriendsBuilder_;
+
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> getFairyFriendsList() {
+        if (fairyFriendsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(fairyFriends_);
+        } else {
+          return fairyFriendsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public int getFairyFriendsCount() {
+        if (fairyFriendsBuilder_ == null) {
+          return fairyFriends_.size();
+        } else {
+          return fairyFriendsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo getFairyFriends(int index) {
+        if (fairyFriendsBuilder_ == null) {
+          return fairyFriends_.get(index);
+        } else {
+          return fairyFriendsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder setFairyFriends(
+          int index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo value) {
+        if (fairyFriendsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFairyFriendsIsMutable();
+          fairyFriends_.set(index, value);
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder setFairyFriends(
+          int index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder builderForValue) {
+        if (fairyFriendsBuilder_ == null) {
+          ensureFairyFriendsIsMutable();
+          fairyFriends_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder addFairyFriends(cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo value) {
+        if (fairyFriendsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFairyFriendsIsMutable();
+          fairyFriends_.add(value);
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder addFairyFriends(
+          int index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo value) {
+        if (fairyFriendsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFairyFriendsIsMutable();
+          fairyFriends_.add(index, value);
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder addFairyFriends(
+          cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder builderForValue) {
+        if (fairyFriendsBuilder_ == null) {
+          ensureFairyFriendsIsMutable();
+          fairyFriends_.add(builderForValue.build());
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder addFairyFriends(
+          int index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder builderForValue) {
+        if (fairyFriendsBuilder_ == null) {
+          ensureFairyFriendsIsMutable();
+          fairyFriends_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder addAllFairyFriends(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> values) {
+        if (fairyFriendsBuilder_ == null) {
+          ensureFairyFriendsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, fairyFriends_);
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder clearFairyFriends() {
+        if (fairyFriendsBuilder_ == null) {
+          fairyFriends_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00002000);
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public Builder removeFairyFriends(int index) {
+        if (fairyFriendsBuilder_ == null) {
+          ensureFairyFriendsIsMutable();
+          fairyFriends_.remove(index);
+          onChanged();
+        } else {
+          fairyFriendsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder getFairyFriendsBuilder(
+          int index) {
+        return getFairyFriendsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder getFairyFriendsOrBuilder(
+          int index) {
+        if (fairyFriendsBuilder_ == null) {
+          return fairyFriends_.get(index);  } else {
+          return fairyFriendsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> 
+           getFairyFriendsOrBuilderList() {
+        if (fairyFriendsBuilder_ != null) {
+          return fairyFriendsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(fairyFriends_);
+        }
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder addFairyFriendsBuilder() {
+        return getFairyFriendsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder addFairyFriendsBuilder(
+          int index) {
+        return getFairyFriendsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 仙友数据
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriends = 20;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder> 
+           getFairyFriendsBuilderList() {
+        return getFairyFriendsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> 
+          getFairyFriendsFieldBuilder() {
+        if (fairyFriendsBuilder_ == null) {
+          fairyFriendsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder>(
+                  fairyFriends_,
+                  ((bitField0_ & 0x00002000) != 0),
+                  getParentForChildren(),
+                  isClean());
+          fairyFriends_ = null;
+        }
+        return fairyFriendsBuilder_;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.Integer> fairyFriendFights_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetFairyFriendFights() {
+        if (fairyFriendFights_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              FairyFriendFightsDefaultEntryHolder.defaultEntry);
+        }
+        return fairyFriendFights_;
+      }
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      internalGetMutableFairyFriendFights() {
+        onChanged();;
+        if (fairyFriendFights_ == null) {
+          fairyFriendFights_ = com.google.protobuf.MapField.newMapField(
+              FairyFriendFightsDefaultEntryHolder.defaultEntry);
+        }
+        if (!fairyFriendFights_.isMutable()) {
+          fairyFriendFights_ = fairyFriendFights_.copy();
+        }
+        return fairyFriendFights_;
+      }
+
+      public int getFairyFriendFightsCount() {
+        return internalGetFairyFriendFights().getMap().size();
+      }
+      /**
+       * <pre>
+       *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsFairyFriendFights(
+          int key) {
+        
+        return internalGetFairyFriendFights().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getFairyFriendFightsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getFairyFriendFights() {
+        return getFairyFriendFightsMap();
+      }
+      /**
+       * <pre>
+       *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.Integer, java.lang.Integer> getFairyFriendFightsMap() {
+        return internalGetFairyFriendFights().getMap();
+      }
+      /**
+       * <pre>
+       *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+       */
+      @java.lang.Override
+
+      public int getFairyFriendFightsOrDefault(
+          int key,
+          int defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetFairyFriendFights().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+       */
+      @java.lang.Override
+
+      public int getFairyFriendFightsOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Integer> map =
+            internalGetFairyFriendFights().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearFairyFriendFights() {
+        internalGetMutableFairyFriendFights().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+       */
+
+      public Builder removeFairyFriendFights(
+          int key) {
+        
+        internalGetMutableFairyFriendFights().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Integer>
+      getMutableFairyFriendFights() {
+        return internalGetMutableFairyFriendFights().getMutableMap();
+      }
+      /**
+       * <pre>
+       *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+       */
+      public Builder putFairyFriendFights(
+          int key,
+          int value) {
+        
+        
+        internalGetMutableFairyFriendFights().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       *仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint32&gt; fairyFriendFights = 21;</code>
+       */
+
+      public Builder putAllFairyFriendFights(
+          java.util.Map<java.lang.Integer, java.lang.Integer> values) {
+        internalGetMutableFairyFriendFights().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+
       private java.util.List<cn.game.protocol.protobuf.BattleMsg.BattleInfo> battles_ =
         java.util.Collections.emptyList();
       private void ensureBattlesIsMutable() {
-        if (!((bitField0_ & 0x00002000) != 0)) {
+        if (!((bitField0_ & 0x00008000) != 0)) {
           battles_ = new java.util.ArrayList<cn.game.protocol.protobuf.BattleMsg.BattleInfo>(battles_);
-          bitField0_ |= 0x00002000;
+          bitField0_ |= 0x00008000;
          }
       }
 
@@ -39112,7 +39949,7 @@ public final class PlayerMsg {
       public Builder clearBattles() {
         if (battlesBuilder_ == null) {
           battles_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00002000);
+          bitField0_ = (bitField0_ & ~0x00008000);
           onChanged();
         } else {
           battlesBuilder_.clear();
@@ -39217,7 +40054,7 @@ public final class PlayerMsg {
           battlesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BattleMsg.BattleInfo, cn.game.protocol.protobuf.BattleMsg.BattleInfo.Builder, cn.game.protocol.protobuf.BattleMsg.BattleInfoOrBuilder>(
                   battles_,
-                  ((bitField0_ & 0x00002000) != 0),
+                  ((bitField0_ & 0x00008000) != 0),
                   getParentForChildren(),
                   isClean());
           battles_ = null;
@@ -39400,9 +40237,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.MonthCardProto> monthCards_ =
         java.util.Collections.emptyList();
       private void ensureMonthCardsIsMutable() {
-        if (!((bitField0_ & 0x00004000) != 0)) {
+        if (!((bitField0_ & 0x00010000) != 0)) {
           monthCards_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.MonthCardProto>(monthCards_);
-          bitField0_ |= 0x00004000;
+          bitField0_ |= 0x00010000;
          }
       }
 
@@ -39596,7 +40433,7 @@ public final class PlayerMsg {
       public Builder clearMonthCards() {
         if (monthCardsBuilder_ == null) {
           monthCards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00004000);
+          bitField0_ = (bitField0_ & ~0x00010000);
           onChanged();
         } else {
           monthCardsBuilder_.clear();
@@ -39701,7 +40538,7 @@ public final class PlayerMsg {
           monthCardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.ShopMsg.MonthCardProto, cn.game.protocol.protobuf.ShopMsg.MonthCardProto.Builder, cn.game.protocol.protobuf.ShopMsg.MonthCardProtoOrBuilder>(
                   monthCards_,
-                  ((bitField0_ & 0x00004000) != 0),
+                  ((bitField0_ & 0x00010000) != 0),
                   getParentForChildren(),
                   isClean());
           monthCards_ = null;
@@ -39754,9 +40591,9 @@ public final class PlayerMsg {
 
       private com.google.protobuf.Internal.IntList chapterPacks_ = emptyIntList();
       private void ensureChapterPacksIsMutable() {
-        if (!((bitField0_ & 0x00008000) != 0)) {
+        if (!((bitField0_ & 0x00020000) != 0)) {
           chapterPacks_ = mutableCopy(chapterPacks_);
-          bitField0_ |= 0x00008000;
+          bitField0_ |= 0x00020000;
          }
       }
       /**
@@ -39769,7 +40606,7 @@ public final class PlayerMsg {
        */
       public java.util.List<java.lang.Integer>
           getChapterPacksList() {
-        return ((bitField0_ & 0x00008000) != 0) ?
+        return ((bitField0_ & 0x00020000) != 0) ?
                  java.util.Collections.unmodifiableList(chapterPacks_) : chapterPacks_;
       }
       /**
@@ -39854,7 +40691,7 @@ public final class PlayerMsg {
        */
       public Builder clearChapterPacks() {
         chapterPacks_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         onChanged();
         return this;
       }
@@ -39862,9 +40699,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.FundPassInfo> fundPass_ =
         java.util.Collections.emptyList();
       private void ensureFundPassIsMutable() {
-        if (!((bitField0_ & 0x00010000) != 0)) {
+        if (!((bitField0_ & 0x00040000) != 0)) {
           fundPass_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.FundPassInfo>(fundPass_);
-          bitField0_ |= 0x00010000;
+          bitField0_ |= 0x00040000;
          }
       }
 
@@ -40058,7 +40895,7 @@ public final class PlayerMsg {
       public Builder clearFundPass() {
         if (fundPassBuilder_ == null) {
           fundPass_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00010000);
+          bitField0_ = (bitField0_ & ~0x00040000);
           onChanged();
         } else {
           fundPassBuilder_.clear();
@@ -40163,7 +41000,7 @@ public final class PlayerMsg {
           fundPassBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.ShopMsg.FundPassInfo, cn.game.protocol.protobuf.ShopMsg.FundPassInfo.Builder, cn.game.protocol.protobuf.ShopMsg.FundPassInfoOrBuilder>(
                   fundPass_,
-                  ((bitField0_ & 0x00010000) != 0),
+                  ((bitField0_ & 0x00040000) != 0),
                   getParentForChildren(),
                   isClean());
           fundPass_ = null;
@@ -40216,9 +41053,9 @@ public final class PlayerMsg {
 
       private com.google.protobuf.LazyStringList freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       private void ensureFreeDayRentHerosIsMutable() {
-        if (!((bitField0_ & 0x00020000) != 0)) {
+        if (!((bitField0_ & 0x00080000) != 0)) {
           freeDayRentHeros_ = new com.google.protobuf.LazyStringArrayList(freeDayRentHeros_);
-          bitField0_ |= 0x00020000;
+          bitField0_ |= 0x00080000;
          }
       }
       /**
@@ -40335,7 +41172,7 @@ public final class PlayerMsg {
        */
       public Builder clearFreeDayRentHeros() {
         freeDayRentHeros_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00080000);
         onChanged();
         return this;
       }
@@ -40458,9 +41295,9 @@ public final class PlayerMsg {
 
       private com.google.protobuf.Internal.IntList storeStaminas_ = emptyIntList();
       private void ensureStoreStaminasIsMutable() {
-        if (!((bitField0_ & 0x00040000) != 0)) {
+        if (!((bitField0_ & 0x00100000) != 0)) {
           storeStaminas_ = mutableCopy(storeStaminas_);
-          bitField0_ |= 0x00040000;
+          bitField0_ |= 0x00100000;
          }
       }
       /**
@@ -40473,7 +41310,7 @@ public final class PlayerMsg {
        */
       public java.util.List<java.lang.Integer>
           getStoreStaminasList() {
-        return ((bitField0_ & 0x00040000) != 0) ?
+        return ((bitField0_ & 0x00100000) != 0) ?
                  java.util.Collections.unmodifiableList(storeStaminas_) : storeStaminas_;
       }
       /**
@@ -40558,7 +41395,7 @@ public final class PlayerMsg {
        */
       public Builder clearStoreStaminas() {
         storeStaminas_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00100000);
         onChanged();
         return this;
       }
@@ -40876,9 +41713,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo> questGroups_ =
         java.util.Collections.emptyList();
       private void ensureQuestGroupsIsMutable() {
-        if (!((bitField0_ & 0x00080000) != 0)) {
+        if (!((bitField0_ & 0x00200000) != 0)) {
           questGroups_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo>(questGroups_);
-          bitField0_ |= 0x00080000;
+          bitField0_ |= 0x00200000;
          }
       }
 
@@ -41072,7 +41909,7 @@ public final class PlayerMsg {
       public Builder clearQuestGroups() {
         if (questGroupsBuilder_ == null) {
           questGroups_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00080000);
+          bitField0_ = (bitField0_ & ~0x00200000);
           onChanged();
         } else {
           questGroupsBuilder_.clear();
@@ -41177,7 +42014,7 @@ public final class PlayerMsg {
           questGroupsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupInfoOrBuilder>(
                   questGroups_,
-                  ((bitField0_ & 0x00080000) != 0),
+                  ((bitField0_ & 0x00200000) != 0),
                   getParentForChildren(),
                   isClean());
           questGroups_ = null;
@@ -41188,9 +42025,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo> questGroupPointRewards_ =
         java.util.Collections.emptyList();
       private void ensureQuestGroupPointRewardsIsMutable() {
-        if (!((bitField0_ & 0x00100000) != 0)) {
+        if (!((bitField0_ & 0x00400000) != 0)) {
           questGroupPointRewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo>(questGroupPointRewards_);
-          bitField0_ |= 0x00100000;
+          bitField0_ |= 0x00400000;
          }
       }
 
@@ -41384,7 +42221,7 @@ public final class PlayerMsg {
       public Builder clearQuestGroupPointRewards() {
         if (questGroupPointRewardsBuilder_ == null) {
           questGroupPointRewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00100000);
+          bitField0_ = (bitField0_ & ~0x00400000);
           onChanged();
         } else {
           questGroupPointRewardsBuilder_.clear();
@@ -41489,7 +42326,7 @@ public final class PlayerMsg {
           questGroupPointRewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfo.Builder, cn.game.protocol.protobuf.QuestMsg.QuestGroupPointRewardInfoOrBuilder>(
                   questGroupPointRewards_,
-                  ((bitField0_ & 0x00100000) != 0),
+                  ((bitField0_ & 0x00400000) != 0),
                   getParentForChildren(),
                   isClean());
           questGroupPointRewards_ = null;
@@ -42054,9 +42891,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.PlayerMsg.GuideInfo> guides_ =
         java.util.Collections.emptyList();
       private void ensureGuidesIsMutable() {
-        if (!((bitField0_ & 0x01000000) != 0)) {
+        if (!((bitField0_ & 0x04000000) != 0)) {
           guides_ = new java.util.ArrayList<cn.game.protocol.protobuf.PlayerMsg.GuideInfo>(guides_);
-          bitField0_ |= 0x01000000;
+          bitField0_ |= 0x04000000;
          }
       }
 
@@ -42250,7 +43087,7 @@ public final class PlayerMsg {
       public Builder clearGuides() {
         if (guidesBuilder_ == null) {
           guides_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x01000000);
+          bitField0_ = (bitField0_ & ~0x04000000);
           onChanged();
         } else {
           guidesBuilder_.clear();
@@ -42355,7 +43192,7 @@ public final class PlayerMsg {
           guidesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.PlayerMsg.GuideInfo, cn.game.protocol.protobuf.PlayerMsg.GuideInfo.Builder, cn.game.protocol.protobuf.PlayerMsg.GuideInfoOrBuilder>(
                   guides_,
-                  ((bitField0_ & 0x01000000) != 0),
+                  ((bitField0_ & 0x04000000) != 0),
                   getParentForChildren(),
                   isClean());
           guides_ = null;
@@ -42452,9 +43289,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo> shopGroupItems_ =
         java.util.Collections.emptyList();
       private void ensureShopGroupItemsIsMutable() {
-        if (!((bitField0_ & 0x02000000) != 0)) {
+        if (!((bitField0_ & 0x08000000) != 0)) {
           shopGroupItems_ = new java.util.ArrayList<cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo>(shopGroupItems_);
-          bitField0_ |= 0x02000000;
+          bitField0_ |= 0x08000000;
          }
       }
 
@@ -42648,7 +43485,7 @@ public final class PlayerMsg {
       public Builder clearShopGroupItems() {
         if (shopGroupItemsBuilder_ == null) {
           shopGroupItems_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x02000000);
+          bitField0_ = (bitField0_ & ~0x08000000);
           onChanged();
         } else {
           shopGroupItemsBuilder_.clear();
@@ -42753,7 +43590,7 @@ public final class PlayerMsg {
           shopGroupItemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo, cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.Builder, cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfoOrBuilder>(
                   shopGroupItems_,
-                  ((bitField0_ & 0x02000000) != 0),
+                  ((bitField0_ & 0x08000000) != 0),
                   getParentForChildren(),
                   isClean());
           shopGroupItems_ = null;
@@ -42850,9 +43687,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo> mergeEquips_ =
         java.util.Collections.emptyList();
       private void ensureMergeEquipsIsMutable() {
-        if (!((bitField0_ & 0x04000000) != 0)) {
+        if (!((bitField0_ & 0x10000000) != 0)) {
           mergeEquips_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo>(mergeEquips_);
-          bitField0_ |= 0x04000000;
+          bitField0_ |= 0x10000000;
          }
       }
 
@@ -43046,7 +43883,7 @@ public final class PlayerMsg {
       public Builder clearMergeEquips() {
         if (mergeEquipsBuilder_ == null) {
           mergeEquips_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x04000000);
+          bitField0_ = (bitField0_ & ~0x10000000);
           onChanged();
         } else {
           mergeEquipsBuilder_.clear();
@@ -43151,7 +43988,7 @@ public final class PlayerMsg {
           mergeEquipsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfo.Builder, cn.game.protocol.protobuf.BaseMsg.MergeEquipmentInfoOrBuilder>(
                   mergeEquips_,
-                  ((bitField0_ & 0x04000000) != 0),
+                  ((bitField0_ & 0x10000000) != 0),
                   getParentForChildren(),
                   isClean());
           mergeEquips_ = null;
@@ -43161,9 +43998,9 @@ public final class PlayerMsg {
 
       private com.google.protobuf.Internal.IntList mergeEquipIds_ = emptyIntList();
       private void ensureMergeEquipIdsIsMutable() {
-        if (!((bitField0_ & 0x08000000) != 0)) {
+        if (!((bitField0_ & 0x20000000) != 0)) {
           mergeEquipIds_ = mutableCopy(mergeEquipIds_);
-          bitField0_ |= 0x08000000;
+          bitField0_ |= 0x20000000;
          }
       }
       /**
@@ -43176,7 +44013,7 @@ public final class PlayerMsg {
        */
       public java.util.List<java.lang.Integer>
           getMergeEquipIdsList() {
-        return ((bitField0_ & 0x08000000) != 0) ?
+        return ((bitField0_ & 0x20000000) != 0) ?
                  java.util.Collections.unmodifiableList(mergeEquipIds_) : mergeEquipIds_;
       }
       /**
@@ -43261,7 +44098,7 @@ public final class PlayerMsg {
        */
       public Builder clearMergeEquipIds() {
         mergeEquipIds_ = emptyIntList();
-        bitField0_ = (bitField0_ & ~0x08000000);
+        bitField0_ = (bitField0_ & ~0x20000000);
         onChanged();
         return this;
       }
@@ -43424,9 +44261,9 @@ public final class PlayerMsg {
       private java.util.List<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo> hcHeros_ =
         java.util.Collections.emptyList();
       private void ensureHcHerosIsMutable() {
-        if (!((bitField0_ & 0x10000000) != 0)) {
+        if (!((bitField0_ & 0x40000000) != 0)) {
           hcHeros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HCHeroInfo>(hcHeros_);
-          bitField0_ |= 0x10000000;
+          bitField0_ |= 0x40000000;
          }
       }
 
@@ -43620,7 +44457,7 @@ public final class PlayerMsg {
       public Builder clearHcHeros() {
         if (hcHerosBuilder_ == null) {
           hcHeros_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x10000000);
+          bitField0_ = (bitField0_ & ~0x40000000);
           onChanged();
         } else {
           hcHerosBuilder_.clear();
@@ -43725,7 +44562,7 @@ public final class PlayerMsg {
           hcHerosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BaseMsg.HCHeroInfo, cn.game.protocol.protobuf.BaseMsg.HCHeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder>(
                   hcHeros_,
-                  ((bitField0_ & 0x10000000) != 0),
+                  ((bitField0_ & 0x40000000) != 0),
                   getParentForChildren(),
                   isClean());
           hcHeros_ = null;
@@ -44465,6 +45302,11 @@ public final class PlayerMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_PlayerAllInfo_DragonSkillsEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PlayerAllInfo_FairyFriendFightsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PlayerAllInfo_FairyFriendFightsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_PlayerAllInfo_GuideEntry_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -44496,128 +45338,133 @@ public final class PlayerMsg {
       "\n\017PlayerMsg.proto\022\006Protos\032\017RewardMsg.pro" +
       "to\032\rBaseMsg.proto\032\rShopMsg.proto\032\017Battle" +
       "Msg.proto\032\016QuestMsg.proto\032\020DevelopMsg.pr" +
-      "oto\"\311\001\n\033PlayerLoginRequest_01000001\022\021\n\ts" +
-      "essionId\030\001 \001(\t\022\021\n\treconnect\030\002 \001(\010\022\020\n\010ver" +
-      "stion\030\003 \001(\t\022\020\n\010platform\030\024 \001(\005\022\021\n\tadChann" +
-      "el\030\036 \001(\t\022\025\n\rsdkPayChannel\030\037 \001(\t\022\022\n\nsdkVe" +
-      "rsion\030( \001(\t\022\016\n\006system\030) \001(\t\022\022\n\nclue_toke" +
-      "n\0302 \001(\t\"d\n\034PlayerLoginResponse_01000002\022" +
-      "#\n\004info\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\021\n\t" +
-      "reconnect\030\002 \001(\010\022\014\n\004time\030\003 \001(\t\"\036\n\034PlayerL" +
-      "ogoutRequest_01000003\"\037\n\035PlayerLogoutRes" +
-      "ponse_01000004\"\033\n\031PlayerLogoutPush_01100" +
-      "030\"*\n\032PlayerNameRequest_01000011\022\014\n\004nam" +
-      "e\030\001 \001(\t\"\035\n\033PlayerNameResponse_01000012\"*" +
-      "\n\032PlayerHeadRequest_01000013\022\014\n\004head\030\001 \001" +
-      "(\005\"\035\n\033PlayerHeadResponse_01000014\"4\n\037Pla" +
-      "yerHeadFrameRequest_01000015\022\021\n\theadFram" +
-      "e\030\001 \001(\005\"\"\n PlayerHeadFrameResponse_01000" +
-      "016\"-\n\034PlayerGenderRequest_01000017\022\r\n\005i" +
-      "sMan\030\001 \001(\010\"\037\n\035PlayerGenderResponse_01000" +
-      "018\"E\n\036PlayerReconnecRequest_01000065\022\021\n" +
-      "\tsessionId\030\001 \001(\t\022\020\n\010playerId\030\002 \001(\r\"Z\n\037Pl" +
-      "ayerReconnecResponse_01000066\022)\n\nplayerI" +
-      "nfo\030\001 \001(\0132\025.Protos.PlayerAllInfo\022\014\n\004time" +
-      "\030\002 \001(\t\"!\n\037PlayerHeartbeatRequest_0100000" +
-      "5\"0\n PlayerHeartbeatResponse_01000006\022\014\n" +
-      "\004time\030\001 \001(\t\")\n\030PlayerErrorPush_01000099\022" +
-      "\r\n\005error\030\001 \001(\t\".\n\013AlchemyInfo\022\020\n\010configI" +
-      "d\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"E\n\033PlayerCloudBox" +
-      "Push_01100040\022&\n\010cloudBox\030\001 \001(\0132\024.Protos" +
-      ".CloudBoxInfo\" \n\036PlayerCloudBoxRequest_0" +
-      "1000042\"F\n\037PlayerCloudBoxResponse_010000" +
-      "43\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardInfo\"" +
-      "0\n\014CloudBoxInfo\022 \n\005items\030\005 \003(\0132\021.Protos." +
-      "GoodsInfo\"6\n\014ExpLevelInfo\022\n\n\002id\030\001 \001(\r\022\013\n" +
-      "\003exp\030\002 \001(\r\022\r\n\005level\030\003 \001(\r\"E\n\033PlayerExpLe" +
-      "velPush_01100050\022&\n\010expLevel\030\001 \001(\0132\024.Pro" +
-      "tos.ExpLevelInfo\"9\n\033PlayerGuideRequest_0" +
-      "1000060\022\014\n\004type\030\001 \001(\r\022\014\n\004step\030\002 \001(\r\"\036\n\034P" +
-      "layerGuideResponse_01000061\"\'\n\tGuideInfo" +
-      "\022\014\n\004type\030\001 \001(\r\022\014\n\004step\030\002 \001(\r\"4\n\037PlayerBr" +
-      "iefInfoRequest_01000007\022\021\n\tplayerIds\030\001 \003" +
-      "(\t\"M\n PlayerBriefInfoResponse_01000008\022)" +
-      "\n\007players\030\001 \003(\0132\030.Protos.SimplePlayerInf" +
-      "o\"L\n$PlayerBriefInfoOtherRequest_0100000" +
-      "9\022\021\n\tplayerIds\030\001 \003(\t\022\021\n\tserverIds\030\002 \003(\t\"" +
-      "R\n%PlayerBriefInfoOtherResponse_0100000a" +
-      "\022)\n\007players\030\001 \003(\0132\030.Protos.SimplePlayerI" +
-      "nfo\"@\n\032PlayerShowRequest_01000039\022\020\n\010pla" +
-      "yerId\030\001 \001(\t\022\020\n\010serverId\030\002 \001(\t\"E\n\033PlayerS" +
-      "howResponse_0100003a\022&\n\006player\030\001 \001(\0132\026.P" +
-      "rotos.PlayerShowInfo\"1\n\035PlayerAlchemyReq" +
-      "uest_01000040\022\020\n\010configId\030\001 \001(\r\" \n\036Playe" +
-      "rAlchemyResponse_01000041\"\"\n PlayerPatro" +
-      "lInfoRequest_01000070\"G\n!PlayerPatrolInf" +
-      "oResponse_01000071\022\"\n\006patrol\030\001 \001(\0132\022.Pro" +
-      "tos.PatrolInfo\"(\n\030PlayerResetPush_011000" +
-      "16\022\014\n\004type\030\001 \001(\005\"\030\n\026NoticeRequest_010000" +
-      "50\")\n\027NoticeResponse_01000051\022\016\n\006notice\030" +
-      "\001 \001(\t\"<\n\030PlayerBatchPush_01100100\022 \n\005ite" +
-      "ms\030\001 \003(\0132\021.Protos.BatchItem\"+\n\tBatchItem" +
-      "\022\r\n\005msgId\030\002 \001(\005\022\017\n\007payload\030\004 \001(\014\"k\n\nPlay" +
-      "erInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n\005isMa" +
-      "n\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030\013 \001(\r" +
-      "\022\023\n\013offlineTime\030\026 \001(\t\"\242\024\n\rPlayerAllInfo\022" +
-      "\"\n\006player\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006a" +
-      "ssets\030\002 \003(\0132!.Protos.PlayerAllInfo.Asset" +
-      "sEntry\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.Pl" +
-      "ayerAllInfo.AssetRecoverEntry\0221\n\006levels\030" +
-      "\004 \003(\0132!.Protos.PlayerAllInfo.LevelsEntry" +
-      "\022\037\n\005items\030\005 \003(\0132\020.Protos.ItemInfo\022)\n\010fas" +
-      "hions\030\006 \003(\0132\027.Protos.HeroFashionInfo\022\037\n\005" +
-      "heros\030\007 \003(\0132\020.Protos.HeroInfo\022%\n\006swords\030" +
-      "\010 \003(\0132\025.Protos.HeroSwordInfo\022\024\n\014heroSwor" +
-      "dUid\030\t \001(\t\022\035\n\004gems\030\n \003(\0132\017.Protos.GemInf" +
-      "o\022!\n\006equips\030\013 \003(\0132\021.Protos.EquipInfo\022)\n\n" +
-      "equipParts\030\014 \003(\0132\025.Protos.EquipPartInfo\022" +
-      "5\n\010alchemys\030\016 \003(\0132#.Protos.PlayerAllInfo" +
-      ".AlchemysEntry\0223\n\007dragons\030\020 \003(\0132\".Protos" +
-      ".PlayerAllInfo.DragonsEntry\022=\n\014dragonSki" +
-      "lls\030\021 \003(\0132\'.Protos.PlayerAllInfo.DragonS" +
-      "killsEntry\0224\n\021qianKunMirrorInfo\030\023 \001(\0132\031." +
-      "Protos.QianKunMirrorInfo\022#\n\007battles\030\036 \003(" +
-      "\0132\022.Protos.BattleInfo\022\026\n\016freeRougeTimes\030" +
-      "\037 \001(\005\022!\n\031battleRewardMultipleTimes\030! \001(\005" +
-      "\022\030\n\020shareReliveCount\030\" \001(\005\022\025\n\radReliveCo" +
-      "unt\030# \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos.M" +
-      "onthCardProto\022\034\n\024monthCardDoubleBonus\030* " +
-      "\001(\010\022\024\n\014chapterPacks\030) \003(\r\022&\n\010fundPass\030, " +
-      "\003(\0132\024.Protos.FundPassInfo\022\030\n\020heishiFresh" +
-      "Times\030. \001(\005\022\030\n\020freeDayRentHeros\030/ \003(\t\022\032\n" +
-      "\022freeDayRentHeroUid\0301 \001(\t\022\025\n\rstoreStamin" +
-      "as\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132\024.Protos.Clou" +
-      "dBoxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos.Patrol" +
-      "Info\022+\n\013questGroups\0307 \003(\0132\026.Protos.Quest" +
-      "GroupInfo\022A\n\026questGroupPointRewards\0308 \003(" +
-      "\0132!.Protos.QuestGroupPointRewardInfo\022\022\n\n" +
-      "firstLogin\0309 \001(\010\022/\n\005guide\030; \003(\0132 .Protos" +
-      ".PlayerAllInfo.GuideEntry\022\030\n\020heavenlyDao" +
-      "Level\030< \001(\005\022A\n\016potentialLvMap\030> \003(\0132).Pr" +
-      "otos.PlayerAllInfo.PotentialLvMapEntry\022A" +
-      "\n\016potentialBreak\030? \003(\0132).Protos.PlayerAl" +
-      "lInfo.PotentialBreakEntry\022!\n\006guides\030A \003(" +
-      "\0132\021.Protos.GuideInfo\022\022\n\nbattleType\030D \001(\005" +
-      "\022\020\n\010battleId\030E \001(\005\0221\n\016shopGroupItems\030d \003" +
-      "(\0132\031.Protos.ShopGroupItemInfo\022\033\n\023nextFre" +
-      "eOpenBoxTime\030e \001(\005\022\027\n\017mergeSweepTimes\030f " +
-      "\001(\005\022/\n\013mergeEquips\030g \003(\0132\032.Protos.MergeE" +
-      "quipmentInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021m" +
-      "ergeDayChallenge\030i \001(\0132\030.Protos.DayChall" +
-      "engeInfo\022#\n\007hcHeros\030k \003(\0132\022.Protos.HCHer" +
-      "oInfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHer" +
-      "oUpTimes\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n " +
-      "\001(\005\022Q\n\026freeHcHeroItemTimesMap\030o \003(\01321.Pr" +
-      "otos.PlayerAllInfo.FreeHcHeroItemTimesMa" +
-      "pEntry\022\031\n\021battleSpeedUnlock\030p \001(\010\022\033\n\023bat" +
-      "tleSpeedAdsCount\030q \001(\005\032-\n\013AssetsEntry\022\013\n" +
-      "\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetRe" +
-      "coverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\002" +
-      "8\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030" +
-      "\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022" +
-      "\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003ke" +
-      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkil" +
-      "lsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032" +
+      "oto\032\024FairyFriendMsg.proto\"\311\001\n\033PlayerLogi" +
+      "nRequest_01000001\022\021\n\tsessionId\030\001 \001(\t\022\021\n\t" +
+      "reconnect\030\002 \001(\010\022\020\n\010verstion\030\003 \001(\t\022\020\n\010pla" +
+      "tform\030\024 \001(\005\022\021\n\tadChannel\030\036 \001(\t\022\025\n\rsdkPay" +
+      "Channel\030\037 \001(\t\022\022\n\nsdkVersion\030( \001(\t\022\016\n\006sys" +
+      "tem\030) \001(\t\022\022\n\nclue_token\0302 \001(\t\"d\n\034PlayerL" +
+      "oginResponse_01000002\022#\n\004info\030\001 \001(\0132\025.Pr" +
+      "otos.PlayerAllInfo\022\021\n\treconnect\030\002 \001(\010\022\014\n" +
+      "\004time\030\003 \001(\t\"\036\n\034PlayerLogoutRequest_01000" +
+      "003\"\037\n\035PlayerLogoutResponse_01000004\"\033\n\031" +
+      "PlayerLogoutPush_01100030\"*\n\032PlayerNameR" +
+      "equest_01000011\022\014\n\004name\030\001 \001(\t\"\035\n\033PlayerN" +
+      "ameResponse_01000012\"*\n\032PlayerHeadReques" +
+      "t_01000013\022\014\n\004head\030\001 \001(\005\"\035\n\033PlayerHeadRe" +
+      "sponse_01000014\"4\n\037PlayerHeadFrameReques" +
+      "t_01000015\022\021\n\theadFrame\030\001 \001(\005\"\"\n PlayerH" +
+      "eadFrameResponse_01000016\"-\n\034PlayerGende" +
+      "rRequest_01000017\022\r\n\005isMan\030\001 \001(\010\"\037\n\035Play" +
+      "erGenderResponse_01000018\"E\n\036PlayerRecon" +
+      "necRequest_01000065\022\021\n\tsessionId\030\001 \001(\t\022\020" +
+      "\n\010playerId\030\002 \001(\r\"Z\n\037PlayerReconnecRespon" +
+      "se_01000066\022)\n\nplayerInfo\030\001 \001(\0132\025.Protos" +
+      ".PlayerAllInfo\022\014\n\004time\030\002 \001(\t\"!\n\037PlayerHe" +
+      "artbeatRequest_01000005\"0\n PlayerHeartbe" +
+      "atResponse_01000006\022\014\n\004time\030\001 \001(\t\")\n\030Pla" +
+      "yerErrorPush_01000099\022\r\n\005error\030\001 \001(\t\".\n\013" +
+      "AlchemyInfo\022\020\n\010configId\030\001 \001(\r\022\r\n\005level\030\002" +
+      " \001(\r\"E\n\033PlayerCloudBoxPush_01100040\022&\n\010c" +
+      "loudBox\030\001 \001(\0132\024.Protos.CloudBoxInfo\" \n\036P" +
+      "layerCloudBoxRequest_01000042\"F\n\037PlayerC" +
+      "loudBoxResponse_01000043\022#\n\007rewards\030\001 \003(" +
+      "\0132\022.Protos.RewardInfo\"0\n\014CloudBoxInfo\022 \n" +
+      "\005items\030\005 \003(\0132\021.Protos.GoodsInfo\"6\n\014ExpLe" +
+      "velInfo\022\n\n\002id\030\001 \001(\r\022\013\n\003exp\030\002 \001(\r\022\r\n\005leve" +
+      "l\030\003 \001(\r\"E\n\033PlayerExpLevelPush_01100050\022&" +
+      "\n\010expLevel\030\001 \001(\0132\024.Protos.ExpLevelInfo\"9" +
+      "\n\033PlayerGuideRequest_01000060\022\014\n\004type\030\001 " +
+      "\001(\r\022\014\n\004step\030\002 \001(\r\"\036\n\034PlayerGuideResponse" +
+      "_01000061\"\'\n\tGuideInfo\022\014\n\004type\030\001 \001(\r\022\014\n\004" +
+      "step\030\002 \001(\r\"4\n\037PlayerBriefInfoRequest_010" +
+      "00007\022\021\n\tplayerIds\030\001 \003(\t\"M\n PlayerBriefI" +
+      "nfoResponse_01000008\022)\n\007players\030\001 \003(\0132\030." +
+      "Protos.SimplePlayerInfo\"L\n$PlayerBriefIn" +
+      "foOtherRequest_01000009\022\021\n\tplayerIds\030\001 \003" +
+      "(\t\022\021\n\tserverIds\030\002 \003(\t\"R\n%PlayerBriefInfo" +
+      "OtherResponse_0100000a\022)\n\007players\030\001 \003(\0132" +
+      "\030.Protos.SimplePlayerInfo\"@\n\032PlayerShowR" +
+      "equest_01000039\022\020\n\010playerId\030\001 \001(\t\022\020\n\010ser" +
+      "verId\030\002 \001(\t\"E\n\033PlayerShowResponse_010000" +
+      "3a\022&\n\006player\030\001 \001(\0132\026.Protos.PlayerShowIn" +
+      "fo\"1\n\035PlayerAlchemyRequest_01000040\022\020\n\010c" +
+      "onfigId\030\001 \001(\r\" \n\036PlayerAlchemyResponse_0" +
+      "1000041\"\"\n PlayerPatrolInfoRequest_01000" +
+      "070\"G\n!PlayerPatrolInfoResponse_01000071" +
+      "\022\"\n\006patrol\030\001 \001(\0132\022.Protos.PatrolInfo\"(\n\030" +
+      "PlayerResetPush_01100016\022\014\n\004type\030\001 \001(\005\"\030" +
+      "\n\026NoticeRequest_01000050\")\n\027NoticeRespon" +
+      "se_01000051\022\016\n\006notice\030\001 \001(\t\"<\n\030PlayerBat" +
+      "chPush_01100100\022 \n\005items\030\001 \003(\0132\021.Protos." +
+      "BatchItem\"+\n\tBatchItem\022\r\n\005msgId\030\002 \001(\005\022\017\n" +
+      "\007payload\030\004 \001(\014\"k\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r" +
+      "\022\014\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n " +
+      "\001(\r\022\021\n\theadFrame\030\013 \001(\r\022\023\n\013offlineTime\030\026 " +
+      "\001(\t\"\324\025\n\rPlayerAllInfo\022\"\n\006player\030\001 \001(\0132\022." +
+      "Protos.PlayerInfo\0221\n\006assets\030\002 \003(\0132!.Prot" +
+      "os.PlayerAllInfo.AssetsEntry\022=\n\014assetRec" +
+      "over\030\003 \003(\0132\'.Protos.PlayerAllInfo.AssetR" +
+      "ecoverEntry\0221\n\006levels\030\004 \003(\0132!.Protos.Pla" +
+      "yerAllInfo.LevelsEntry\022\037\n\005items\030\005 \003(\0132\020." +
+      "Protos.ItemInfo\022)\n\010fashions\030\006 \003(\0132\027.Prot" +
+      "os.HeroFashionInfo\022\037\n\005heros\030\007 \003(\0132\020.Prot" +
+      "os.HeroInfo\022%\n\006swords\030\010 \003(\0132\025.Protos.Her" +
+      "oSwordInfo\022\024\n\014heroSwordUid\030\t \001(\t\022\035\n\004gems" +
+      "\030\n \003(\0132\017.Protos.GemInfo\022!\n\006equips\030\013 \003(\0132" +
+      "\021.Protos.EquipInfo\022)\n\nequipParts\030\014 \003(\0132\025" +
+      ".Protos.EquipPartInfo\0225\n\010alchemys\030\016 \003(\0132" +
+      "#.Protos.PlayerAllInfo.AlchemysEntry\0223\n\007" +
+      "dragons\030\020 \003(\0132\".Protos.PlayerAllInfo.Dra" +
+      "gonsEntry\022=\n\014dragonSkills\030\021 \003(\0132\'.Protos" +
+      ".PlayerAllInfo.DragonSkillsEntry\0224\n\021qian" +
+      "KunMirrorInfo\030\023 \001(\0132\031.Protos.QianKunMirr" +
+      "orInfo\022-\n\014fairyFriends\030\024 \003(\0132\027.Protos.Fa" +
+      "iryFriendInfo\022G\n\021fairyFriendFights\030\025 \003(\013" +
+      "2,.Protos.PlayerAllInfo.FairyFriendFight" +
+      "sEntry\022#\n\007battles\030\036 \003(\0132\022.Protos.BattleI" +
+      "nfo\022\026\n\016freeRougeTimes\030\037 \001(\005\022!\n\031battleRew" +
+      "ardMultipleTimes\030! \001(\005\022\030\n\020shareReliveCou" +
+      "nt\030\" \001(\005\022\025\n\radReliveCount\030# \001(\005\022*\n\nmonth" +
+      "Cards\030( \003(\0132\026.Protos.MonthCardProto\022\034\n\024m" +
+      "onthCardDoubleBonus\030* \001(\010\022\024\n\014chapterPack" +
+      "s\030) \003(\r\022&\n\010fundPass\030, \003(\0132\024.Protos.FundP" +
+      "assInfo\022\030\n\020heishiFreshTimes\030. \001(\005\022\030\n\020fre" +
+      "eDayRentHeros\030/ \003(\t\022\032\n\022freeDayRentHeroUi" +
+      "d\0301 \001(\t\022\025\n\rstoreStaminas\0300 \003(\005\022&\n\010cloudB" +
+      "ox\0302 \001(\0132\024.Protos.CloudBoxInfo\022\"\n\006patrol" +
+      "\0303 \001(\0132\022.Protos.PatrolInfo\022+\n\013questGroup" +
+      "s\0307 \003(\0132\026.Protos.QuestGroupInfo\022A\n\026quest" +
+      "GroupPointRewards\0308 \003(\0132!.Protos.QuestGr" +
+      "oupPointRewardInfo\022\022\n\nfirstLogin\0309 \001(\010\022/" +
+      "\n\005guide\030; \003(\0132 .Protos.PlayerAllInfo.Gui" +
+      "deEntry\022\030\n\020heavenlyDaoLevel\030< \001(\005\022A\n\016pot" +
+      "entialLvMap\030> \003(\0132).Protos.PlayerAllInfo" +
+      ".PotentialLvMapEntry\022A\n\016potentialBreak\030?" +
+      " \003(\0132).Protos.PlayerAllInfo.PotentialBre" +
+      "akEntry\022!\n\006guides\030A \003(\0132\021.Protos.GuideIn" +
+      "fo\022\022\n\nbattleType\030D \001(\005\022\020\n\010battleId\030E \001(\005" +
+      "\0221\n\016shopGroupItems\030d \003(\0132\031.Protos.ShopGr" +
+      "oupItemInfo\022\033\n\023nextFreeOpenBoxTime\030e \001(\005" +
+      "\022\027\n\017mergeSweepTimes\030f \001(\005\022/\n\013mergeEquips" +
+      "\030g \003(\0132\032.Protos.MergeEquipmentInfo\022\025\n\rme" +
+      "rgeEquipIds\030h \003(\005\0223\n\021mergeDayChallenge\030i" +
+      " \001(\0132\030.Protos.DayChallengeInfo\022#\n\007hcHero" +
+      "s\030k \003(\0132\022.Protos.HCHeroInfo\022\024\n\014curHcHero" +
+      "Uid\030l \001(\t\022\031\n\021freeHcHeroUpTimes\030m \001(\005\022\033\n\023" +
+      "freeHcHeroItemTimes\030n \001(\005\022Q\n\026freeHcHeroI" +
+      "temTimesMap\030o \003(\01321.Protos.PlayerAllInfo" +
+      ".FreeHcHeroItemTimesMapEntry\022\031\n\021battleSp" +
+      "eedUnlock\030p \001(\010\022\033\n\023battleSpeedAdsCount\030q" +
+      " \001(\005\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
+      "e\030\002 \001(\004:\0028\001\0323\n\021AssetRecoverEntry\022\013\n\003key\030" +
+      "\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032-\n\013LevelsEntry\022" +
+      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlche" +
+      "mysEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001" +
+      "\032.\n\014DragonsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002" +
+      " \001(\r:\0028\001\0323\n\021DragonSkillsEntry\022\013\n\003key\030\001 \001" +
+      "(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0328\n\026FairyFriendFigh" +
+      "tsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032" +
       ",\n\nGuideEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(" +
       "\r:\0028\001\0325\n\023PotentialLvMapEntry\022\013\n\003key\030\001 \001(" +
       "\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023PotentialBreakEn" +
@@ -44635,6 +45482,7 @@ public final class PlayerMsg {
           cn.game.protocol.protobuf.BattleMsg.getDescriptor(),
           cn.game.protocol.protobuf.QuestMsg.getDescriptor(),
           cn.game.protocol.protobuf.DevelopMsg.getDescriptor(),
+          cn.game.protocol.protobuf.FairyFriendMsg.getDescriptor(),
         });
     internal_static_Protos_PlayerLoginRequest_01000001_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -44905,7 +45753,7 @@ public final class PlayerMsg {
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,
-        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "QianKunMirrorInfo", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "ShareReliveCount", "AdReliveCount", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "Guides", "BattleType", "BattleId", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "FreeHcHeroItemTimesMap", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
+        new java.lang.String[] { "Player", "Assets", "AssetRecover", "Levels", "Items", "Fashions", "Heros", "Swords", "HeroSwordUid", "Gems", "Equips", "EquipParts", "Alchemys", "Dragons", "DragonSkills", "QianKunMirrorInfo", "FairyFriends", "FairyFriendFights", "Battles", "FreeRougeTimes", "BattleRewardMultipleTimes", "ShareReliveCount", "AdReliveCount", "MonthCards", "MonthCardDoubleBonus", "ChapterPacks", "FundPass", "HeishiFreshTimes", "FreeDayRentHeros", "FreeDayRentHeroUid", "StoreStaminas", "CloudBox", "Patrol", "QuestGroups", "QuestGroupPointRewards", "FirstLogin", "Guide", "HeavenlyDaoLevel", "PotentialLvMap", "PotentialBreak", "Guides", "BattleType", "BattleId", "ShopGroupItems", "NextFreeOpenBoxTime", "MergeSweepTimes", "MergeEquips", "MergeEquipIds", "MergeDayChallenge", "HcHeros", "CurHcHeroUid", "FreeHcHeroUpTimes", "FreeHcHeroItemTimes", "FreeHcHeroItemTimesMap", "BattleSpeedUnlock", "BattleSpeedAdsCount", });
     internal_static_Protos_PlayerAllInfo_AssetsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(0);
     internal_static_Protos_PlayerAllInfo_AssetsEntry_fieldAccessorTable = new
@@ -44942,26 +45790,32 @@ public final class PlayerMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_DragonSkillsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_Protos_PlayerAllInfo_GuideEntry_descriptor =
+    internal_static_Protos_PlayerAllInfo_FairyFriendFightsEntry_descriptor =
       internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(6);
+    internal_static_Protos_PlayerAllInfo_FairyFriendFightsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PlayerAllInfo_FairyFriendFightsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_Protos_PlayerAllInfo_GuideEntry_descriptor =
+      internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(7);
     internal_static_Protos_PlayerAllInfo_GuideEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_GuideEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_descriptor =
-      internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(7);
+      internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(8);
     internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_PotentialLvMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_PlayerAllInfo_PotentialBreakEntry_descriptor =
-      internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(8);
+      internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(9);
     internal_static_Protos_PlayerAllInfo_PotentialBreakEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_PotentialBreakEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_PlayerAllInfo_FreeHcHeroItemTimesMapEntry_descriptor =
-      internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(9);
+      internal_static_Protos_PlayerAllInfo_descriptor.getNestedTypes().get(10);
     internal_static_Protos_PlayerAllInfo_FreeHcHeroItemTimesMapEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_FreeHcHeroItemTimesMapEntry_descriptor,
@@ -44972,6 +45826,7 @@ public final class PlayerMsg {
     cn.game.protocol.protobuf.BattleMsg.getDescriptor();
     cn.game.protocol.protobuf.QuestMsg.getDescriptor();
     cn.game.protocol.protobuf.DevelopMsg.getDescriptor();
+    cn.game.protocol.protobuf.FairyFriendMsg.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
