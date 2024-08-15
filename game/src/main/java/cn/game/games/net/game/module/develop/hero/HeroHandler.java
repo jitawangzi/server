@@ -220,6 +220,114 @@ public class HeroHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		// 优先升等级最低的。如果等级相同，则升星级的。如果星级相同，则升品质高的。
+//		Collections.sort(heros, (o2, o1) -> {
+//			if (o1.getLevel() == o2.getLevel()) {
+//				if (o1.getQuality() == o2.getQuality()) {
+//					return o2.getStar() - o1.getStar();
+//				}
+//				return o2.getQuality() - o1.getQuality();
+//			}
+//			return o1.getLevel() - o2.getLevel();
+//		});
+
+		int itemId = GlobalConst.HeroLvItem;
+		int itemCount = 0;
+		int moneyId = Asset.gold.ID;
+		int moneyCount = 0;
+
+		Set<Hero> updateHeros = new HashSet<Hero>();
+		int loopCount = 0;
+//		int upCount = 0;
+		loop: while (true) {
+			if (loopCount >= 10000) {
+				throw new RuntimeException("maybe infinite loop，loopCount: " + loopCount);
+			}
+//			if (HeroHelper.isAllHeroMaxLevel(heros)) {
+//				break loop;
+//			}
+			// 优先升等级最低的。如果等级相同，则升星级的。如果星级相同，则升品质高的。
+			Collections.sort(heros, (o1, o2) -> {
+				if (o1.getLevel() == o2.getLevel()) {
+					if (o1.getQuality() == o2.getQuality()) {
+						return o2.getStar() - o1.getStar();
+					}
+					return o2.getQuality() - o1.getQuality();
+				}
+				return o1.getLevel() - o2.getLevel();
+			});
+
+			boolean isAllHeroMaxLevel = true;
+			boolean isAllHeroItemNotEnough = true;
+			for (Hero hero : heros) {
+				int heroMaxLevel = HeroHelper.getHeroMaxLevel(hero);
+				int curLevel = hero.getLevel();
+
+				if (curLevel >= heroMaxLevel) {
+					continue;
+				}
+				HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
+				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+					continue;
+				}
+				HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
+				if (nextHeroLvConfig == null) {
+					continue;
+				}
+				itemCount += heroLvConfig.LvConsumeItem;
+				moneyCount += heroLvConfig.LvConsumeMoney;
+				hero.setLevel(curLevel + 1);
+				updateHeros.add(hero);
+//				upCount++;
+				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+				isAllHeroMaxLevel = false;
+				isAllHeroItemNotEnough = false;
+
+				continue loop;
+			}
+			if (isAllHeroMaxLevel) {
+				break;
+			}
+			if (isAllHeroItemNotEnough) {
+				break;
+			}
+			loopCount++;
+		}
+
+		List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
+		deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
+		deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
+		PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
+
+		for (Hero entry : updateHeros) {
+			resp.addHeros(entry.toHeroLevelInfo());
+		}
+//		if (upCount > 0) {
+//			player.handleEvent(EventTypeEnum.HeroLevelUp, upCount);
+//		}
+		client.sendProtocol(resp.build());
+	}
+
+	/** 
+	 * 挨个升级，升一级换下一个。 
+	 * @param client
+	 * @param message
+	 */
+	@Deprecated
+	private void upLevelBattleBatch2(NetClient client, Object message) {
+		HeroBattleUpLevelBatchRequest_16000025 req = (HeroBattleUpLevelBatchRequest_16000025) message;
+		HeroBattleUpLevelBatchResponse_16000026.Builder resp = HeroBattleUpLevelBatchResponse_16000026.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (!player.isFuncOpen(InitialUI.CardLv)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		HeroModule heroModule = player.getHeroModule();
+		List<Hero> heros = heroModule.getBattleHeroList();
+		if (heros == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
 		Collections.sort(heros, (o2, o1) -> {
 			if (o1.getQuality() == o2.getQuality()) {
 				return o1.getStar() - o2.getStar();

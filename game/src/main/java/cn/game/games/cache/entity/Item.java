@@ -13,7 +13,6 @@ public class Item implements Serializable, DbEntity {
 	// 这里不用mybatis生成了，手动改成基本类型的
 
 	protected long id;
-	@JsonIgnore
 	protected long playerId;
 	protected int configId;
 	/**
