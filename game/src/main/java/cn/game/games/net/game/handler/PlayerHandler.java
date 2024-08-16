@@ -1014,19 +1014,7 @@ public class PlayerHandler extends BaseHandler {
 					client.sendProtocol(builder.build());
 
 				} else {
-//					if (isPc) {
-//						PCPlayerCreateResponse_01000054.Builder builder = PCPlayerCreateResponse_01000054.newBuilder();
-//						builder.setPlayerInfo(PbBuilder.buildPlayerInfo(player));
-//						builder.setTime(System.currentTimeMillis() + "");
-//						client.sendProtocol(builder.build());
-//
-//					} else {
-//						PlayerCreateResponse_01000004.Builder builder = PlayerCreateResponse_01000004.newBuilder();
-//						builder.setInfo(PbBuilder.buildPlayerInfo(player));
-//						client.sendProtocol(builder.build());
-//					}
 				}
-
 				levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", playerData.getPlayerId(),
 						playerData.getLevel());
 				loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]",

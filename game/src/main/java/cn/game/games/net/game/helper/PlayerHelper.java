@@ -1158,8 +1158,8 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @param newGameClient
-	 * @param reconnect
+	 * @param newGameClient  
+	 * @param reconnect 客户端传递的参数，是否是重连
 	 * @param playerId
 	 * @return  是否重连了 
 	 */
