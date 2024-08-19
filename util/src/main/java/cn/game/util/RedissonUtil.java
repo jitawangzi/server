@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+
 /**
  * Redisson操作工具类，封装常用方法
  * 2021年3月11日 下午3:07:23
@@ -272,6 +275,7 @@ public class RedissonUtil {
 		RBucket<V> bucket = redis.getBucket(key);
 		return bucket.getAsync();
 	}
+
 	/**
 	 * 同步方法，等待异步查询结果并消费，如果没有数据，结果是空的ArrayList
 	 * @param action
@@ -308,6 +312,18 @@ public class RedissonUtil {
 	public static <V> V get(String key) {
 		RBucket<V> bucket = redis.getBucket(key);
 		return bucket.get();
+	}
+
+	public static <T> Future<T> toVertxFuture(RFuture<T> rFuture) {
+		Promise<T> promise = Promise.promise();
+		rFuture.onComplete((result, throwable) -> {
+			if (throwable != null) {
+				promise.fail(throwable);
+			} else {
+				promise.complete(result);
+			}
+		});
+		return promise.future();
 	}
 
 	public static void main(String args[]) throws Exception {

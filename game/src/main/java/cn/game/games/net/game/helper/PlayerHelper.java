@@ -99,9 +99,9 @@ import io.vertx.core.Promise;
 public class PlayerHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(PlayerHelper.class);
-//	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
 //	private static final Logger resourceDelLog = LoggerFactory.getLogger("resourceDelLog");
-//	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
+	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
+	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
 
 	public static boolean isEnough(Player player, List<? extends Entry<Integer, Integer>> list) {
 
@@ -593,6 +593,10 @@ public class PlayerHelper {
 		GameLogger.login(player);
 		GameLogger.rolelogin(player);
 		GameLogger.login_wxxcx(player);
+
+		levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", player.getPlayerId(), player.getLevel());
+		loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]", player.getPlayerId(), true, true, 0);
+
 	}
 
 
@@ -1199,38 +1203,23 @@ public class PlayerHelper {
 
 	public static Future<Player> startLoadPlayerFromDb(GameClient gameClient, PlayerData dbPlayer, Account account) {
 		Promise<Player> promise = Promise.promise(); 
-		promise.complete(null);
 		Long playerId = dbPlayer.getPlayerId();
-		BiConsumer<Boolean, ? super Throwable> action = (v, throwable) -> {
-			GameClientManager.getInstance().addGameClientPlayer(gameClient);
-			GameClientManager.getInstance().addGameClientSession(gameClient);
 
-			Player player = new Player(dbPlayer);
-			player.setGameClient(gameClient);
-			player.setAccount(account);
-			// load from db
-			PlayerHelper.selectPlayerData(player);
-
-		};
 //		获取分布式锁之后再load
-		RFuture<Boolean> playerLockFuture = PlayerHelper.trySetServerId(playerId);
-		playerLockFuture.onComplete((v, throwable) -> {
-			if (v) {
-				action.accept(v, throwable);
+		return RedissonUtil.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
+			if (!locked) {
+				promise.fail(ErrorMsgEnum.player_lock.getId() + "");
 			} else {
-				String serverId = ServerContext.getInstance().getServerId();
-				// 看看是不是自己服务器
-				RFuture<String> setAsync = RedissonUtil.getAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
-				setAsync.onComplete((vv, tt) -> {
-					if (vv != null && vv.equals(serverId)) {
-						action.accept(v, throwable);
-					} else {
-						log.error(playerId + " getPlayerLock failed", throwable);
-						gameClient.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(),
-								ErrorMsgEnum.unknown.getId());
-					}
-				});
+				GameClientManager.getInstance().addGameClientPlayer(gameClient);
+				GameClientManager.getInstance().addGameClientSession(gameClient);
+				Player player = new Player(dbPlayer);
+				player.setGameClient(gameClient);
+				player.setAccount(account);
+				// load from db
+				PlayerHelper.selectPlayerData(player);
 			}
+
+
 		});
 		return promise.future();
 	}
