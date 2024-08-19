@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -289,11 +288,6 @@ public class FriendModule extends BasePlayerModule {
 		return null;
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-		// TODO Auto-generated method stub
-
-	}
 	@Override
 	public void initFromDbAfter() {
 

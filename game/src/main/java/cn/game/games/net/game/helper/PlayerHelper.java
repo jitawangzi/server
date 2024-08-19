@@ -8,7 +8,6 @@ import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.RequestCallback;
@@ -48,6 +47,7 @@ import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.ConsumeConfig;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.config.GameCommandConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RandomGroupConfig;
 import cn.game.protocol.generated.config.RewardConfig;
@@ -1210,57 +1210,58 @@ public class PlayerHelper {
 			if (!locked) {
 				promise.fail(ErrorMsgEnum.player_lock.getId() + "");
 			} else {
-				GameClientManager.getInstance().addGameClientPlayer(gameClient);
-				GameClientManager.getInstance().addGameClientSession(gameClient);
-				Player player = new Player(dbPlayer);
-				player.setGameClient(gameClient);
-				player.setAccount(account);
 				// load from db
-				PlayerHelper.selectPlayerData(player);
+				return PlayerHelper.selectPlayerModuleData(player).compose(r -> initPlayerData(dbPlayer, account, gameClient, r));
 			}
-
-
+			return null;
 		});
-		return promise.future();
 	}
 
-	public static Future<Player> login(GameClient gameClient, PlayerData dbPlayer, Account account) {
-		Promise<Player> promise = Promise.promise();
-		promise.complete(null);
-		Long playerId = dbPlayer.getPlayerId();
-		BiConsumer<Boolean, ? super Throwable> action = (v, throwable) -> {
-			GameClientManager.getInstance().addGameClientPlayer(gameClient);
-			GameClientManager.getInstance().addGameClientSession(gameClient);
+	public static Future<Player> initPlayerData(PlayerData playerData, Account account, GameClient client, List<Object> moduleData) {
+		client.setPlayerId(playerData.getPlayerId());
+		GameClientManager.getInstance().addGameClientPlayer((GameClient) client);
+		GameClientManager.getInstance().addGameClientSession((GameClient) client);
 
-			Player player = new Player(dbPlayer);
-			player.setGameClient(gameClient);
-			player.setAccount(account);
-			// load from db
-			PlayerHelper.selectPlayerData(player);
+		Player player = new Player(playerData);
+		player.setGameClient((GameClient) client);
+		player.setAccount(account);
 
-		};
-//		获取分布式锁之后再load
-		RFuture<Boolean> playerLockFuture = PlayerHelper.trySetServerId(playerId);
-		playerLockFuture.onComplete((v, throwable) -> {
-			if (v) {
-				action.accept(v, throwable);
-			} else {
-				String serverId = ServerContext.getInstance().getServerId();
-				// 看看是不是自己服务器
-				RFuture<String> setAsync = RedissonUtil.getAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
-				setAsync.onComplete((vv, tt) -> {
-					if (vv != null && vv.equals(serverId)) {
-						action.accept(v, throwable);
+		PlayerManager.getInstance().initAdd(player);
+
+		if (playerData.isNew()) {
+			// 初始的资源
+			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
+			PlayerHelper.initNewPlayerData(player);
+		} else {
+			// 从数据库加载数据
+			ListIterator<?> listIterator = moduleData.listIterator();
+			if (GameServer.getInstance().isSinglePlayerTable()) {
+				for (BasePlayerModule module : player.getModuleSorted()) {
+					if (module.alwaysStoreDataInStandaloneTable()) {
+						module.loadFromDb(listIterator);
 					} else {
-						log.error(playerId + " getPlayerLock failed", throwable);
-						gameClient.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
+						module.initFromDbAfter();
 					}
-				});
+				}
+			} else {
+				for (BasePlayerModule module : player.getModuleSorted()) {
+					module.loadFromDb(listIterator);
+				}
 			}
-		});
-		return promise.future();
+		}
+
+		player.handleEvent(EventTypeEnum.Login);
+		PlayerHelper.initAfterLogin(player);
+
+		return Future.succeededFuture(player);
 	}
 
+
+	/** 
+	 * 获取某个玩家id的分布式锁
+	 * @param playerId
+	 * @return
+	 */
 	public static RFuture<Boolean> trySetServerId(long playerId) {
 		RFuture<Boolean> playerLockFuture = RedissonUtil.trySetAsync(CacheType.PLAYER_SERVER_ID.key(playerId),
 				ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
@@ -1274,19 +1275,19 @@ public class PlayerHelper {
 	}
 
 	/** 
-	 * 从数据库中查询玩家所有数据
+	 * 从数据库中查询玩家除了PlayerData表的其他表数据
 	 * @param reconnect
 	 * @param player
+	 * @return 
 	 */
-	public static void selectPlayerData(Player player) {
+	public static Future<List<Object>> selectPlayerModuleData(Player player) {
 		List<DbTask> dbTasks = initDbTasks(player);
-		Future<List<Object>> select = DAO.execute(dbTasks);
-		Handler<List<Object>> callBackTask = PlayerHelper.selectPlayerDataSuccess(player);
-		select.onSuccess(callBackTask).onFailure(e -> {
-			selectPlayerDataFail(player, e);
-		});
-//		DataGameServerInterface dataGameCallback = GameServer.getInstance().getDataGameCallback(callBackTask);
-//		dataGameCallback.execMutiTasks(dbTasks);
+//		Future<List<Object>> select = DAO.execute(dbTasks);
+//		Handler<List<Object>> callBackTask = PlayerHelper.selectPlayerDataSuccess(player);
+//		select.onSuccess(callBackTask).onFailure(e -> {
+//			selectPlayerDataFail(player, e);
+//		});
+		return DAO.execute(dbTasks);
 	}
 	public static void selectPlayerDataWithMQ(boolean reconnect, Player dbPlayer) {
 		long playerId = dbPlayer.getData().getPlayerId();
@@ -1330,7 +1331,7 @@ public class PlayerHelper {
 				continue;
 			}
 			Player p = (Player) DAO.executeSync(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, id);
-			PlayerHelper.selectPlayerData(p);
+			PlayerHelper.selectPlayerModuleData(p);
 		}
 	}
 
@@ -1352,7 +1353,6 @@ public class PlayerHelper {
 
 	public static List<DbTask> initDbTasks(Player player) {
 		List<DbTask> dbTasks = new ArrayList<>();
-
 		for (BasePlayerModule module : player.getModuleSorted()) {
 			if (!GameServer.getInstance().isSinglePlayerTable() || module.alwaysStoreDataInStandaloneTable()) {
 				module.initDbTasks(dbTasks);
@@ -1360,7 +1360,6 @@ public class PlayerHelper {
 		}
 		return dbTasks;
 	}
-
 	
 	public static Handler<List<Object>> selectPlayerDataSuccess(Player player) {
 

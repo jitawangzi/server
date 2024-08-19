@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import cn.game.games.cache.entity.MonthCard;
@@ -81,13 +80,13 @@ public class MonthCardModule extends BasePlayerModule {
 		return new Class<?>[] { MonthCardMapper.class };
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-		List<MonthCard> cardList = (List<MonthCard>) iterator.next();
-		for (MonthCard card : cardList) {
-			monthCards.put(card.getMonthCardId(), card);
-		}
-	}
+//	@Override
+//	protected void initFromDb(ListIterator<?> iterator) {
+//		List<MonthCard> cardList = (List<MonthCard>) iterator.next();
+//		for (MonthCard card : cardList) {
+//			monthCards.put(card.getMonthCardId(), card);
+//		}
+//	}
 	
 	@Override
 	public void initFromDbAfter() {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,15 +67,6 @@ public class ShopModule extends BasePlayerModule {
 
 	private void removeCache(int shop, ShopItem item) {
 		shopItemsMap.remove(shop, item);
-	}
-
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-		List<ShopItem> list = (List<ShopItem>) iterator.next();
-		for (ShopItem item : list) {
-//			initAddCache(item);
-//			itemsMap.put(item.getId(), item);
-		}
 	}
 
 

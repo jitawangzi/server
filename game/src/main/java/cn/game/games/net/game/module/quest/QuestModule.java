@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import cn.game.games.cache.entity.ConditionCount;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -78,24 +76,19 @@ public class QuestModule extends BasePlayerModule {
 		return new Class[] { QuestMapper.class, ConditionCountMapper.class };
 	}
 
-	protected void initFromDb(ListIterator<?> iterator) {
-		List<Quest> list = (List<Quest>) iterator.next();
-		List<ConditionCount> conditionList = (List<ConditionCount>) iterator.next();
-		for (Quest e : list) {
-//			if (e.getState() == QuestHelper.RECEIVED) {
-//				competeQuests[e.getQuestGroup()].put(e.getId(), e);
-//			} else {
-//				quests[e.getQuestGroup()].put(e.getId(), e);
-//			}
-			QuestConfig questConfig = QuestHelper.getQuestConfig(e.getId());
-//			quests[QuestTypeEnum.get(questConfig.Type).ordinal()].put(e.getId(), e);
-		}
-
-//		for (ConditionCount conditionCount : conditionList) {
-//			conditionCountMap.put(conditionCount.getConditionType(), conditionCount.getArg1(), conditionCount.getArg2(),
-//					conditionCount.getCount());
-//		}
-	}
+	/*	protected void initFromDb(ListIterator<?> iterator) {
+			List<Quest> list = (List<Quest>) iterator.next();
+			List<ConditionCount> conditionList = (List<ConditionCount>) iterator.next();
+			for (Quest e : list) {
+				QuestConfig questConfig = QuestHelper.getQuestConfig(e.getId());
+	//			quests[QuestTypeEnum.get(questConfig.Type).ordinal()].put(e.getId(), e);
+			}
+	
+	//		for (ConditionCount conditionCount : conditionList) {
+	//			conditionCountMap.put(conditionCount.getConditionType(), conditionCount.getArg1(), conditionCount.getArg2(),
+	//					conditionCount.getCount());
+	//		}
+		}*/
 
 	@Override
 	public void initFromDbAfter() {

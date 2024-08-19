@@ -2,7 +2,6 @@ package cn.game.games.net.game.module.currency;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -143,10 +142,6 @@ public class MoneyRecoverModule extends BasePlayerModule {
 		return null;
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-
-	}
 	@Override
 	public void initFromDbAfter() {
 

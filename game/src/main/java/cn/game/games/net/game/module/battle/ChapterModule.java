@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -681,10 +680,6 @@ public class ChapterModule extends BasePlayerModule  {
 		return null;
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-
-	}
 	@Override
 	public void initFromDbAfter() {
 		int now = DateUtil.currentTimeSeconds();
