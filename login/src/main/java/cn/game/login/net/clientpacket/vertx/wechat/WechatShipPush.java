@@ -44,13 +44,14 @@ public class WechatShipPush implements Handler<RoutingContext> {
 		HttpServerRequest request = context.request();
 		HttpServerResponse response = context.response().putHeader("content-type", "text/json");
 		JSONObject responseObject = new JSONObject();
-
+		log.info("receive wechat push");
 		String signature = request.getParam("signature");
 		String timestamp = request.getParam("timestamp");
 		String nonce = request.getParam("nonce");
 		String echostr = request.getParam("echostr");
 		boolean checkRequest = WechatHelper.checkRequest(signature, timestamp, nonce);
 		if (!StringUtils.isEmpty(echostr)) {
+			log.info("receive wechat push ， echostr");
 			if (checkRequest) {
 				response.end(echostr);
 			} else {
@@ -64,13 +65,9 @@ public class WechatShipPush implements Handler<RoutingContext> {
 			responseObject.put("ErrCode", 99998);
 			responseObject.put("ErrMsg", "not from wechat");
 			response.end(Buffer.buffer(responseObject.toJSONString()));
+			log.error("ErrMsg,not from wechat");
 			return;
 		}
-		String bodyAsString = context.getBodyAsString();
-		WechatPushBean wechatPushBean = WechatHelper.parseWechatPushBean(bodyAsString);
-
-		PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-		PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(wechatPushBean.MiniGame.PayloadObj.OutTradeNo));
 
 		Consumer<?> successConsumer = r -> {
 			responseObject.put("ErrCode", 0);
@@ -82,6 +79,18 @@ public class WechatShipPush implements Handler<RoutingContext> {
 			responseObject.put("ErrMsg", "internal error");
 			response.end(Buffer.buffer(responseObject.toJSONString()));
 		};
+
+		String bodyAsString = context.getBodyAsString();
+		log.info("receive wechat ship push, message body[{}]", bodyAsString);
+		WechatPushBean wechatPushBean = WechatHelper.parseWechatPushBean(bodyAsString);
+
+		if (wechatPushBean.MiniGame.PayloadObj.OutTradeNo.equalsIgnoreCase("example_out_trade_no")) {
+			successConsumer.accept(null);
+			return;
+		}
+
+		PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+		PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(wechatPushBean.MiniGame.PayloadObj.OutTradeNo));
 
 		if (payOrder.getIsDeliver()) {
 			successConsumer.accept(null);
@@ -98,6 +107,7 @@ public class WechatShipPush implements Handler<RoutingContext> {
 			future = VxHolder.requestRemoteServer(serverId, paymentOrderShipRequest_7d000022);
 		}
 		future.onSuccess(r -> {
+			log.info("wechat ship resp from game ret[{}]", r.body().getSuccess());
 			if (r.body().getSuccess()) {
 				successConsumer.accept(null);
 				if (!payOrder.getIsDeliver()) {
@@ -113,6 +123,7 @@ public class WechatShipPush implements Handler<RoutingContext> {
 				mapper.updateByPrimaryKey(payOrder);
 			}
 		}).onFailure(r -> {
+			log.info("wechat ship resp from game fail", r);
 			failConsumer.accept(null);
 			updatePayOrder(wechatPushBean, payOrder);
 			mapper.updateByPrimaryKey(payOrder);

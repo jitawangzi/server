@@ -105,6 +105,7 @@ public class ServerHandler extends BaseHandler {
 		PaymentOrderShipResponse_7d000023.Builder resp = PaymentOrderShipResponse_7d000023.newBuilder();
 		long playerId = request.getPlayerId();
 		long uid = request.getUid(); 
+		log.info("wechat ship push, playerId={}, uid={}", playerId, uid);
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player == null || player.isIslogouting()) {
 			resp.setSuccess(false); 

@@ -397,7 +397,7 @@ public class Player  {
 				return Future.succeededFuture(true);
 			}
 			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId())
-					.setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1] * 100).setItemId("yuanbao001").build();
+					.setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1] * 100).setItemId("yuanbao002").build();
 			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
 			requestRemoteServer.onSuccess(r -> {
 				PaymentOrderCreateResponse_7d000021 body = r.body();
