@@ -53,6 +53,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.MonthCardManager;
+import cn.game.protocol.generated.manager.PayManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -397,7 +398,7 @@ public class Player  {
 				return Future.succeededFuture(true);
 			}
 			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId())
-					.setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1] * 100).setItemId("yuanbao002").build();
+					.setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1] * 100).setItemId(PayManager.instance().get(cost[1]).Name).build();
 			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
 			requestRemoteServer.onSuccess(r -> {
 				PaymentOrderCreateResponse_7d000021 body = r.body();
