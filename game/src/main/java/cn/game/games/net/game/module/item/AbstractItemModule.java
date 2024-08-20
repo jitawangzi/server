@@ -2,8 +2,6 @@ package cn.game.games.net.game.module.item;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import cn.game.games.cache.entity.Item;
@@ -23,13 +21,13 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	// itemId => Item
 	protected Map<Integer, T> id_items = new HashMap<>();
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-		List<T> list = (List<T>) iterator.next();
-		for (T item : list) {
-			initAddCache(item);
-		}
-	}
+	/*	@Override
+		protected void initFromDb(ListIterator<?> iterator) {
+			List<T> list = (List<T>) iterator.next();
+			for (T item : list) {
+				initAddCache(item);
+			}
+		}*/
 	@Override
 	public void initFromDbAfter() {
 

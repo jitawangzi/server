@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,17 +24,17 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 {
 	// uid => T
 	protected Map<Long, T> uid_items = new HashMap<>();
-	// configId => T ,通常用来判断有没有某种东西
+	// configId => List<T> ,通常用来判断有没有某种东西
 	@JsonIgnore
 	protected Multimap<Integer, T> id_items = ArrayListMultimap.create();
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-		List<T> list = (List<T>) iterator.next();
-		for (T item : list) {
-			addCacheNoStackable(item);
-		}
-	}
+	/*	@Override
+		protected void initFromDb(ListIterator<?> iterator) {
+			List<T> list = (List<T>) iterator.next();
+			for (T item : list) {
+				addCacheNoStackable(item);
+			}
+		}*/
 	@Override
 	public void initFromDbAfter() {
 		for (T item : uid_items.values()) {

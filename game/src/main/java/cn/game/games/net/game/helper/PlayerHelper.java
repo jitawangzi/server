@@ -1243,6 +1243,10 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static Future<Void> getPlayerDistributedLock(long playerId) {
+		// 方便测试，强制关闭服务器后快速登陆账号使用
+		if (ServerContext.getInstance().getRunMode().isTest()) {
+			return Future.succeededFuture();
+		}
 		return VxHolder.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
 			if (!locked) {
 				return Future.failedFuture(ErrorMsgEnum.player_lock.getId() + "");
