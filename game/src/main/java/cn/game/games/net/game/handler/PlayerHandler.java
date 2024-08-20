@@ -565,7 +565,7 @@ public class PlayerHandler extends BaseHandler {
 		log.info("passportSessionId : " + passportSessionId + " start login");
 		int canLogin = GameServerStatus.getInstance().canLogin(req.getVerstion());
 		if (canLogin > 0) {
-//			failHandler.handle(canLogin);
+//			handleLoginFailure(null, ErrorMsgEnum.version_mismatch.ID, (GameClient) client, passportSessionId);
 //			return;
 		}
 		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
@@ -590,23 +590,25 @@ public class PlayerHandler extends BaseHandler {
 			}).onSuccess(uid -> {
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid);
 				if (!isReallyReconnect) {
-					loadOrCreatePlayerData(uid, account, newGameClient).compose(playerData -> handlePlayerData(playerData, account, newGameClient))
-							.onSuccess(r -> handleLoginSuccess(newGameClient, r)).onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
+					loadOrCreatePlayerData(uid, account, newGameClient)
+							.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
+							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
+							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
-			}).onFailure(t -> {
-				handleLoginFailure(t, ErrorMsgEnum.request_remote_server.getId(), newGameClient, passportSessionId);
-			});
-
+			}).onFailure(t -> handleLoginFailure(t, ErrorMsgEnum.request_remote_server.getId(), newGameClient, passportSessionId));
 		}
 	}
 
 	private Future<LoginPlayerUidResponse_7d000019> getPlayerUid(String passportSessionId) {
-		return VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build())
+		return VxHolder
+				.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build())
 				.map(message -> (LoginPlayerUidResponse_7d000019) message.body());
 	}
 
 	private Future<PlayerData> loadOrCreatePlayerData(long playerId, Account account, GameClient client) {
-		return PlayerHelper.getPlayerDistributedLock(playerId).compose(r -> DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId))
+		return PlayerHelper
+				.getPlayerDistributedLock(playerId)
+				.compose(r -> DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId))
 				.compose(playerData -> {
 					if (playerData == null) {
 						return createNewPlayer(playerId, account, client);

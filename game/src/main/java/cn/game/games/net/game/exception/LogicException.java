@@ -6,6 +6,7 @@ public class LogicException extends Throwable {
 	private int errorCode;
 
 	public LogicException() {
+		super(null, null, false, false);
 	}
 
 	public LogicException(int errorCode) {
