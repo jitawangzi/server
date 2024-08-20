@@ -202,6 +202,17 @@ public final class Rnd {
 		}
 		return -1;
 	}
+
+	/** 
+	 * 按照一个集合里面元素的权重随机。 
+	 * @param <T>
+	 * @param list
+	 * @param function
+	 * @return
+	 */
+	public static <T> T randomElement(List<T> list, Function<T, Integer> function) {
+		return list.get(randomIndex(list, function));
+	}
 	
 	/**
 	 * 根据奖励的类别获取命中索引

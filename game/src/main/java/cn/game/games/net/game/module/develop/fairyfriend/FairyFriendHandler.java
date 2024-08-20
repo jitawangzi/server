@@ -1,7 +1,9 @@
 package cn.game.games.net.game.module.develop.fairyfriend;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -11,10 +13,12 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.FairyFriendFightConfig;
+import cn.game.protocol.generated.config.FairyFriendFightTravelingConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.FairyFriendFightManager;
+import cn.game.protocol.generated.manager.FairyFriendFightTravelingManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRequest_27000003;
@@ -27,6 +31,7 @@ import cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelRequest_2700000
 import cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelResponse_27000008;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.Rnd;
 
 @Component
 public class FairyFriendHandler extends BaseHandler {
@@ -55,8 +60,36 @@ public class FairyFriendHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
 			return;
 		}
-
+		int count = req.getCount();
+		if (count <= 0 || count > 10) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		boolean delResources = PlayerHelper.delResources(player, Asset.TravelStamina.ID, GlobalConst.FairyFriendConsume * count, OpType.FairyFriend);
+		if (!delResources) {
+			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
 		FairyFriendModule module = player.getModule(FairyFriendModule.class);
+		Set<FairyFriend> updateFairyFriends = new HashSet<FairyFriend>(); 
+		for (int i = 0; i < count; i++) {
+			FairyFriendFightTravelingConfig config = Rnd.randomElement(FairyFriendFightTravelingManager.instance().list(), r -> r.PositionWeight);
+
+			// 经验奖励
+			int randomIndex = Rnd.randomIndex(config.FairyListIDWeight);
+			int fairyId = config.FairyListID[randomIndex];
+			FairyFriend fairyFriend = module.get(fairyId);
+			int[] exp = PlayerHelper.addExp(Asset.Favorability.ID, fairyId, fairyFriend.getLevel(), fairyFriend.getExp(), config.Favorability[1]);
+			fairyFriend.setExp(exp[0]);
+			fairyFriend.setLevel(exp[1]);
+			updateFairyFriends.add(fairyFriend);
+			// 通用奖励
+			List<RewardInfo> reward = PlayerHelper.addReward(player, config.RandomID, OpType.FairyFriend);
+			resp.addAllReward(reward);
+			resp.addFavorabilityCount(config.Favorability[1]);
+			resp.addTravelId(config.ID);
+		}
+		updateFairyFriends.stream().forEach(f -> resp.addFairyFriend(f.toProto()));
 		client.sendProtocol(resp.build());
 	}
 

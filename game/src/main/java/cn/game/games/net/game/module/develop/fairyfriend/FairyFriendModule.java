@@ -6,6 +6,7 @@ import java.util.Map;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.AbstractItemModule;
 import cn.game.protocol.generated.config.FairyFriendConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -41,6 +42,9 @@ public class FairyFriendModule extends AbstractItemModule<FairyFriend> {
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.FairyFriends) {
 				addFairyFriend();
+				// 初始化游历体力
+				PlayerHelper.addResources(player, Asset.TravelStamina.ID, 1, OpType.FairyFriend, true);
+				player.handleEvent(EventTypeEnum.ResourceAdd, Asset.TravelStamina.ID);
 			}
 			break;
 		}

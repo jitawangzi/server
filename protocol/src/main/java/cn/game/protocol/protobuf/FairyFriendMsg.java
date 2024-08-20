@@ -5005,6 +5005,108 @@ public final class FairyFriendMsg {
      */
     cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+     * </pre>
+     *
+     * <code>repeated int32 travelId = 2;</code>
+     * @return A list containing the travelId.
+     */
+    java.util.List<java.lang.Integer> getTravelIdList();
+    /**
+     * <pre>
+     * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+     * </pre>
+     *
+     * <code>repeated int32 travelId = 2;</code>
+     * @return The count of travelId.
+     */
+    int getTravelIdCount();
+    /**
+     * <pre>
+     * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+     * </pre>
+     *
+     * <code>repeated int32 travelId = 2;</code>
+     * @param index The index of the element to return.
+     * @return The travelId at the given index.
+     */
+    int getTravelId(int index);
+
+    /**
+     * <pre>
+     * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated int32 favorabilityCount = 3;</code>
+     * @return A list containing the favorabilityCount.
+     */
+    java.util.List<java.lang.Integer> getFavorabilityCountList();
+    /**
+     * <pre>
+     * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated int32 favorabilityCount = 3;</code>
+     * @return The count of favorabilityCount.
+     */
+    int getFavorabilityCountCount();
+    /**
+     * <pre>
+     * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated int32 favorabilityCount = 3;</code>
+     * @param index The index of the element to return.
+     * @return The favorabilityCount at the given index.
+     */
+    int getFavorabilityCount(int index);
+
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> 
+        getFairyFriendList();
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo getFairyFriend(int index);
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    int getFairyFriendCount();
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> 
+        getFairyFriendOrBuilderList();
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder getFairyFriendOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code Protos.FairyFriendTravelResponse_27000008}
@@ -5020,6 +5122,9 @@ public final class FairyFriendMsg {
     }
     private FairyFriendTravelResponse_27000008() {
       reward_ = java.util.Collections.emptyList();
+      travelId_ = emptyIntList();
+      favorabilityCount_ = emptyIntList();
+      fairyFriend_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -5062,6 +5167,57 @@ public final class FairyFriendMsg {
                   input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
               break;
             }
+            case 16: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                travelId_ = newIntList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              travelId_.addInt(input.readInt32());
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
+                travelId_ = newIntList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                travelId_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 24: {
+              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
+                favorabilityCount_ = newIntList();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              favorabilityCount_.addInt(input.readInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000004) != 0) && input.getBytesUntilLimit() > 0) {
+                favorabilityCount_ = newIntList();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                favorabilityCount_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 34: {
+              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
+                fairyFriend_ = new java.util.ArrayList<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              fairyFriend_.add(
+                  input.readMessage(cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -5079,6 +5235,15 @@ public final class FairyFriendMsg {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           reward_ = java.util.Collections.unmodifiableList(reward_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          travelId_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x00000004) != 0)) {
+          favorabilityCount_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x00000008) != 0)) {
+          fairyFriend_ = java.util.Collections.unmodifiableList(fairyFriend_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -5157,6 +5322,146 @@ public final class FairyFriendMsg {
       return reward_.get(index);
     }
 
+    public static final int TRAVELID_FIELD_NUMBER = 2;
+    private com.google.protobuf.Internal.IntList travelId_;
+    /**
+     * <pre>
+     * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+     * </pre>
+     *
+     * <code>repeated int32 travelId = 2;</code>
+     * @return A list containing the travelId.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getTravelIdList() {
+      return travelId_;
+    }
+    /**
+     * <pre>
+     * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+     * </pre>
+     *
+     * <code>repeated int32 travelId = 2;</code>
+     * @return The count of travelId.
+     */
+    public int getTravelIdCount() {
+      return travelId_.size();
+    }
+    /**
+     * <pre>
+     * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+     * </pre>
+     *
+     * <code>repeated int32 travelId = 2;</code>
+     * @param index The index of the element to return.
+     * @return The travelId at the given index.
+     */
+    public int getTravelId(int index) {
+      return travelId_.getInt(index);
+    }
+    private int travelIdMemoizedSerializedSize = -1;
+
+    public static final int FAVORABILITYCOUNT_FIELD_NUMBER = 3;
+    private com.google.protobuf.Internal.IntList favorabilityCount_;
+    /**
+     * <pre>
+     * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated int32 favorabilityCount = 3;</code>
+     * @return A list containing the favorabilityCount.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getFavorabilityCountList() {
+      return favorabilityCount_;
+    }
+    /**
+     * <pre>
+     * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated int32 favorabilityCount = 3;</code>
+     * @return The count of favorabilityCount.
+     */
+    public int getFavorabilityCountCount() {
+      return favorabilityCount_.size();
+    }
+    /**
+     * <pre>
+     * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated int32 favorabilityCount = 3;</code>
+     * @param index The index of the element to return.
+     * @return The favorabilityCount at the given index.
+     */
+    public int getFavorabilityCount(int index) {
+      return favorabilityCount_.getInt(index);
+    }
+    private int favorabilityCountMemoizedSerializedSize = -1;
+
+    public static final int FAIRYFRIEND_FIELD_NUMBER = 4;
+    private java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> fairyFriend_;
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> getFairyFriendList() {
+      return fairyFriend_;
+    }
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> 
+        getFairyFriendOrBuilderList() {
+      return fairyFriend_;
+    }
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    @java.lang.Override
+    public int getFairyFriendCount() {
+      return fairyFriend_.size();
+    }
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo getFairyFriend(int index) {
+      return fairyFriend_.get(index);
+    }
+    /**
+     * <pre>
+     * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+     * </pre>
+     *
+     * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder getFairyFriendOrBuilder(
+        int index) {
+      return fairyFriend_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5171,8 +5476,26 @@ public final class FairyFriendMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       for (int i = 0; i < reward_.size(); i++) {
         output.writeMessage(1, reward_.get(i));
+      }
+      if (getTravelIdList().size() > 0) {
+        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(travelIdMemoizedSerializedSize);
+      }
+      for (int i = 0; i < travelId_.size(); i++) {
+        output.writeInt32NoTag(travelId_.getInt(i));
+      }
+      if (getFavorabilityCountList().size() > 0) {
+        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(favorabilityCountMemoizedSerializedSize);
+      }
+      for (int i = 0; i < favorabilityCount_.size(); i++) {
+        output.writeInt32NoTag(favorabilityCount_.getInt(i));
+      }
+      for (int i = 0; i < fairyFriend_.size(); i++) {
+        output.writeMessage(4, fairyFriend_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -5186,6 +5509,38 @@ public final class FairyFriendMsg {
       for (int i = 0; i < reward_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, reward_.get(i));
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < travelId_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(travelId_.getInt(i));
+        }
+        size += dataSize;
+        if (!getTravelIdList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        travelIdMemoizedSerializedSize = dataSize;
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < favorabilityCount_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(favorabilityCount_.getInt(i));
+        }
+        size += dataSize;
+        if (!getFavorabilityCountList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        favorabilityCountMemoizedSerializedSize = dataSize;
+      }
+      for (int i = 0; i < fairyFriend_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, fairyFriend_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5204,6 +5559,12 @@ public final class FairyFriendMsg {
 
       if (!getRewardList()
           .equals(other.getRewardList())) return false;
+      if (!getTravelIdList()
+          .equals(other.getTravelIdList())) return false;
+      if (!getFavorabilityCountList()
+          .equals(other.getFavorabilityCountList())) return false;
+      if (!getFairyFriendList()
+          .equals(other.getFairyFriendList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -5218,6 +5579,18 @@ public final class FairyFriendMsg {
       if (getRewardCount() > 0) {
         hash = (37 * hash) + REWARD_FIELD_NUMBER;
         hash = (53 * hash) + getRewardList().hashCode();
+      }
+      if (getTravelIdCount() > 0) {
+        hash = (37 * hash) + TRAVELID_FIELD_NUMBER;
+        hash = (53 * hash) + getTravelIdList().hashCode();
+      }
+      if (getFavorabilityCountCount() > 0) {
+        hash = (37 * hash) + FAVORABILITYCOUNT_FIELD_NUMBER;
+        hash = (53 * hash) + getFavorabilityCountList().hashCode();
+      }
+      if (getFairyFriendCount() > 0) {
+        hash = (37 * hash) + FAIRYFRIEND_FIELD_NUMBER;
+        hash = (53 * hash) + getFairyFriendList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -5348,6 +5721,7 @@ public final class FairyFriendMsg {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getRewardFieldBuilder();
+          getFairyFriendFieldBuilder();
         }
       }
       @java.lang.Override
@@ -5358,6 +5732,16 @@ public final class FairyFriendMsg {
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           rewardBuilder_.clear();
+        }
+        travelId_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        favorabilityCount_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        if (fairyFriendBuilder_ == null) {
+          fairyFriend_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        } else {
+          fairyFriendBuilder_.clear();
         }
         return this;
       }
@@ -5394,6 +5778,25 @@ public final class FairyFriendMsg {
           result.reward_ = reward_;
         } else {
           result.reward_ = rewardBuilder_.build();
+        }
+        if (((bitField0_ & 0x00000002) != 0)) {
+          travelId_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.travelId_ = travelId_;
+        if (((bitField0_ & 0x00000004) != 0)) {
+          favorabilityCount_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.favorabilityCount_ = favorabilityCount_;
+        if (fairyFriendBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0)) {
+            fairyFriend_ = java.util.Collections.unmodifiableList(fairyFriend_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.fairyFriend_ = fairyFriend_;
+        } else {
+          result.fairyFriend_ = fairyFriendBuilder_.build();
         }
         onBuilt();
         return result;
@@ -5466,6 +5869,52 @@ public final class FairyFriendMsg {
                    getRewardFieldBuilder() : null;
             } else {
               rewardBuilder_.addAllMessages(other.reward_);
+            }
+          }
+        }
+        if (!other.travelId_.isEmpty()) {
+          if (travelId_.isEmpty()) {
+            travelId_ = other.travelId_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureTravelIdIsMutable();
+            travelId_.addAll(other.travelId_);
+          }
+          onChanged();
+        }
+        if (!other.favorabilityCount_.isEmpty()) {
+          if (favorabilityCount_.isEmpty()) {
+            favorabilityCount_ = other.favorabilityCount_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureFavorabilityCountIsMutable();
+            favorabilityCount_.addAll(other.favorabilityCount_);
+          }
+          onChanged();
+        }
+        if (fairyFriendBuilder_ == null) {
+          if (!other.fairyFriend_.isEmpty()) {
+            if (fairyFriend_.isEmpty()) {
+              fairyFriend_ = other.fairyFriend_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureFairyFriendIsMutable();
+              fairyFriend_.addAll(other.fairyFriend_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.fairyFriend_.isEmpty()) {
+            if (fairyFriendBuilder_.isEmpty()) {
+              fairyFriendBuilder_.dispose();
+              fairyFriendBuilder_ = null;
+              fairyFriend_ = other.fairyFriend_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+              fairyFriendBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getFairyFriendFieldBuilder() : null;
+            } else {
+              fairyFriendBuilder_.addAllMessages(other.fairyFriend_);
             }
           }
         }
@@ -5810,6 +6259,532 @@ public final class FairyFriendMsg {
         }
         return rewardBuilder_;
       }
+
+      private com.google.protobuf.Internal.IntList travelId_ = emptyIntList();
+      private void ensureTravelIdIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          travelId_ = mutableCopy(travelId_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <pre>
+       * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+       * </pre>
+       *
+       * <code>repeated int32 travelId = 2;</code>
+       * @return A list containing the travelId.
+       */
+      public java.util.List<java.lang.Integer>
+          getTravelIdList() {
+        return ((bitField0_ & 0x00000002) != 0) ?
+                 java.util.Collections.unmodifiableList(travelId_) : travelId_;
+      }
+      /**
+       * <pre>
+       * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+       * </pre>
+       *
+       * <code>repeated int32 travelId = 2;</code>
+       * @return The count of travelId.
+       */
+      public int getTravelIdCount() {
+        return travelId_.size();
+      }
+      /**
+       * <pre>
+       * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+       * </pre>
+       *
+       * <code>repeated int32 travelId = 2;</code>
+       * @param index The index of the element to return.
+       * @return The travelId at the given index.
+       */
+      public int getTravelId(int index) {
+        return travelId_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+       * </pre>
+       *
+       * <code>repeated int32 travelId = 2;</code>
+       * @param index The index to set the value at.
+       * @param value The travelId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTravelId(
+          int index, int value) {
+        ensureTravelIdIsMutable();
+        travelId_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+       * </pre>
+       *
+       * <code>repeated int32 travelId = 2;</code>
+       * @param value The travelId to add.
+       * @return This builder for chaining.
+       */
+      public Builder addTravelId(int value) {
+        ensureTravelIdIsMutable();
+        travelId_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+       * </pre>
+       *
+       * <code>repeated int32 travelId = 2;</code>
+       * @param values The travelId to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllTravelId(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureTravelIdIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, travelId_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+       * </pre>
+       *
+       * <code>repeated int32 travelId = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTravelId() {
+        travelId_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList favorabilityCount_ = emptyIntList();
+      private void ensureFavorabilityCountIsMutable() {
+        if (!((bitField0_ & 0x00000004) != 0)) {
+          favorabilityCount_ = mutableCopy(favorabilityCount_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      /**
+       * <pre>
+       * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated int32 favorabilityCount = 3;</code>
+       * @return A list containing the favorabilityCount.
+       */
+      public java.util.List<java.lang.Integer>
+          getFavorabilityCountList() {
+        return ((bitField0_ & 0x00000004) != 0) ?
+                 java.util.Collections.unmodifiableList(favorabilityCount_) : favorabilityCount_;
+      }
+      /**
+       * <pre>
+       * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated int32 favorabilityCount = 3;</code>
+       * @return The count of favorabilityCount.
+       */
+      public int getFavorabilityCountCount() {
+        return favorabilityCount_.size();
+      }
+      /**
+       * <pre>
+       * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated int32 favorabilityCount = 3;</code>
+       * @param index The index of the element to return.
+       * @return The favorabilityCount at the given index.
+       */
+      public int getFavorabilityCount(int index) {
+        return favorabilityCount_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated int32 favorabilityCount = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The favorabilityCount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFavorabilityCount(
+          int index, int value) {
+        ensureFavorabilityCountIsMutable();
+        favorabilityCount_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated int32 favorabilityCount = 3;</code>
+       * @param value The favorabilityCount to add.
+       * @return This builder for chaining.
+       */
+      public Builder addFavorabilityCount(int value) {
+        ensureFavorabilityCountIsMutable();
+        favorabilityCount_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated int32 favorabilityCount = 3;</code>
+       * @param values The favorabilityCount to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllFavorabilityCount(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureFavorabilityCountIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, favorabilityCount_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 额外增加的仙友好感度数量,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated int32 favorabilityCount = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFavorabilityCount() {
+        favorabilityCount_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> fairyFriend_ =
+        java.util.Collections.emptyList();
+      private void ensureFairyFriendIsMutable() {
+        if (!((bitField0_ & 0x00000008) != 0)) {
+          fairyFriend_ = new java.util.ArrayList<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo>(fairyFriend_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> fairyFriendBuilder_;
+
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> getFairyFriendList() {
+        if (fairyFriendBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(fairyFriend_);
+        } else {
+          return fairyFriendBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public int getFairyFriendCount() {
+        if (fairyFriendBuilder_ == null) {
+          return fairyFriend_.size();
+        } else {
+          return fairyFriendBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo getFairyFriend(int index) {
+        if (fairyFriendBuilder_ == null) {
+          return fairyFriend_.get(index);
+        } else {
+          return fairyFriendBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder setFairyFriend(
+          int index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo value) {
+        if (fairyFriendBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFairyFriendIsMutable();
+          fairyFriend_.set(index, value);
+          onChanged();
+        } else {
+          fairyFriendBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder setFairyFriend(
+          int index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder builderForValue) {
+        if (fairyFriendBuilder_ == null) {
+          ensureFairyFriendIsMutable();
+          fairyFriend_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          fairyFriendBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder addFairyFriend(cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo value) {
+        if (fairyFriendBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFairyFriendIsMutable();
+          fairyFriend_.add(value);
+          onChanged();
+        } else {
+          fairyFriendBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder addFairyFriend(
+          int index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo value) {
+        if (fairyFriendBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFairyFriendIsMutable();
+          fairyFriend_.add(index, value);
+          onChanged();
+        } else {
+          fairyFriendBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder addFairyFriend(
+          cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder builderForValue) {
+        if (fairyFriendBuilder_ == null) {
+          ensureFairyFriendIsMutable();
+          fairyFriend_.add(builderForValue.build());
+          onChanged();
+        } else {
+          fairyFriendBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder addFairyFriend(
+          int index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder builderForValue) {
+        if (fairyFriendBuilder_ == null) {
+          ensureFairyFriendIsMutable();
+          fairyFriend_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          fairyFriendBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder addAllFairyFriend(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo> values) {
+        if (fairyFriendBuilder_ == null) {
+          ensureFairyFriendIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, fairyFriend_);
+          onChanged();
+        } else {
+          fairyFriendBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder clearFairyFriend() {
+        if (fairyFriendBuilder_ == null) {
+          fairyFriend_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+        } else {
+          fairyFriendBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public Builder removeFairyFriend(int index) {
+        if (fairyFriendBuilder_ == null) {
+          ensureFairyFriendIsMutable();
+          fairyFriend_.remove(index);
+          onChanged();
+        } else {
+          fairyFriendBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder getFairyFriendBuilder(
+          int index) {
+        return getFairyFriendFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder getFairyFriendOrBuilder(
+          int index) {
+        if (fairyFriendBuilder_ == null) {
+          return fairyFriend_.get(index);  } else {
+          return fairyFriendBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> 
+           getFairyFriendOrBuilderList() {
+        if (fairyFriendBuilder_ != null) {
+          return fairyFriendBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(fairyFriend_);
+        }
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder addFairyFriendBuilder() {
+        return getFairyFriendFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder addFairyFriendBuilder(
+          int index) {
+        return getFairyFriendFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+       * </pre>
+       *
+       * <code>repeated .Protos.FairyFriendInfo fairyFriend = 4;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder> 
+           getFairyFriendBuilderList() {
+        return getFairyFriendFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder> 
+          getFairyFriendFieldBuilder() {
+        if (fairyFriendBuilder_ == null) {
+          fairyFriendBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfo.Builder, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendInfoOrBuilder>(
+                  fairyFriend_,
+                  ((bitField0_ & 0x00000008) != 0),
+                  getParentForChildren(),
+                  isClean());
+          fairyFriend_ = null;
+        }
+        return fairyFriendBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -5930,10 +6905,12 @@ public final class FairyFriendMsg {
       "\002id\030\001 \001(\005\"M\n\'FairyFriendFightRewardRespo" +
       "nse_27000006\022\"\n\006reward\030\001 \003(\0132\022.Protos.Re" +
       "wardInfo\"2\n!FairyFriendTravelRequest_270" +
-      "00007\022\r\n\005count\030\001 \001(\005\"H\n\"FairyFriendTrave" +
-      "lResponse_27000008\022\"\n\006reward\030\001 \003(\0132\022.Pro" +
-      "tos.RewardInfoB\033\n\031cn.game.protocol.proto" +
-      "bufb\006proto3"
+      "00007\022\r\n\005count\030\001 \001(\005\"\243\001\n\"FairyFriendTrav" +
+      "elResponse_27000008\022\"\n\006reward\030\001 \003(\0132\022.Pr" +
+      "otos.RewardInfo\022\020\n\010travelId\030\002 \003(\005\022\031\n\021fav" +
+      "orabilityCount\030\003 \003(\005\022,\n\013fairyFriend\030\004 \003(" +
+      "\0132\027.Protos.FairyFriendInfoB\033\n\031cn.game.pr" +
+      "otocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5993,7 +6970,7 @@ public final class FairyFriendMsg {
     internal_static_Protos_FairyFriendTravelResponse_27000008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FairyFriendTravelResponse_27000008_descriptor,
-        new java.lang.String[] { "Reward", });
+        new java.lang.String[] { "Reward", "TravelId", "FavorabilityCount", "FairyFriend", });
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }
 

@@ -47,5 +47,9 @@ message FairyFriendTravelRequest_27000007{
 
 message FairyFriendTravelResponse_27000008{
 	repeated RewardInfo reward = 1;	// 获得的奖励
+	repeated int32 travelId = 2;  // 寻缘到了哪个地方 FairyFriendFightTraveling 表id,一次游历到一个地方
+	repeated int32 favorabilityCount = 3;  // 额外增加的仙友好感度数量,一次增加一个仙友好感度
+	repeated FairyFriendInfo fairyFriend = 4; // 增加好感度的仙友，增加后的数据。,一次增加一个仙友好感度
+
 }
 
