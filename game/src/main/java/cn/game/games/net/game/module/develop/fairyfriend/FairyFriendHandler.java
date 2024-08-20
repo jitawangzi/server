@@ -1,9 +1,8 @@
 package cn.game.games.net.game.module.develop.fairyfriend;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -71,25 +70,27 @@ public class FairyFriendHandler extends BaseHandler {
 			return;
 		}
 		FairyFriendModule module = player.getModule(FairyFriendModule.class);
-		Set<FairyFriend> updateFairyFriends = new HashSet<FairyFriend>(); 
+		Map<FairyFriend, Integer> updateFairyFriends = new HashMap<FairyFriend, Integer>();
 		for (int i = 0; i < count; i++) {
 			FairyFriendFightTravelingConfig config = Rnd.randomElement(FairyFriendFightTravelingManager.instance().list(), r -> r.PositionWeight);
-
+			int expAdd = config.Favorability[1];
 			// 经验奖励
 			int randomIndex = Rnd.randomIndex(config.FairyListIDWeight);
 			int fairyId = config.FairyListID[randomIndex];
 			FairyFriend fairyFriend = module.get(fairyId);
-			int[] exp = PlayerHelper.addExp(Asset.Favorability.ID, fairyId, fairyFriend.getLevel(), fairyFriend.getExp(), config.Favorability[1]);
+			int[] exp = PlayerHelper.addExp(Asset.Favorability.ID, fairyId, fairyFriend.getLevel(), fairyFriend.getExp(), expAdd);
 			fairyFriend.setExp(exp[0]);
 			fairyFriend.setLevel(exp[1]);
-			updateFairyFriends.add(fairyFriend);
+			updateFairyFriends.compute(fairyFriend, (k, v) -> v == null ? expAdd : v + expAdd);
 			// 通用奖励
 			List<RewardInfo> reward = PlayerHelper.addReward(player, config.RandomID, OpType.FairyFriend);
 			resp.addAllReward(reward);
-			resp.addFavorabilityCount(config.Favorability[1]);
 			resp.addTravelId(config.ID);
 		}
-		updateFairyFriends.stream().forEach(f -> resp.addFairyFriend(f.toProto()));
+		updateFairyFriends.forEach((k, v) -> {
+			resp.addFavorabilityCount(v);
+			resp.addFairyFriend(k.toProto());
+		});
 		client.sendProtocol(resp.build());
 	}
 

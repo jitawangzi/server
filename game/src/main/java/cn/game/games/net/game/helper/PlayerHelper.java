@@ -1527,14 +1527,14 @@ public class PlayerHelper {
 		int newExp = curExp + count;
 		ExpConfig expConfig = getExpConfig(expId, curLevel, id);
 		ExpConfig nextExpConfig = getExpConfig(expId, curLevel + 1, id);
-		while (expConfig != null && curExp >= expConfig.experience && nextExpConfig != null) {
+		while (expConfig != null && newExp >= expConfig.experience && nextExpConfig != null) {
 			newExp -= expConfig.experience;
 			newLevel++;
 			expConfig = getExpConfig(expId, newLevel, id);
 			nextExpConfig = getExpConfig(expId, newLevel, id);
 		}
 		// 不能升了，设置经验为最大
-		if (expConfig != null && curExp > expConfig.experience) {
+		if (expConfig != null && newExp > expConfig.experience) {
 			newExp = expConfig.experience;
 		}
 		return new int[] { newExp, newLevel };
