@@ -79,7 +79,6 @@ public class Player  {
 
 	private long playerId;
 	private transient static Set<Class<? extends BasePlayerModule>> allModuleClass;
-	private transient static List<BasePlayerModule> allModuleInstance = new ArrayList<>();
 	static {
 		allModuleClass = ClassHelper.findSubclasses("cn.game.games", BasePlayerModule.class);
 		Iterator<Class<? extends BasePlayerModule>> iterator = allModuleClass.iterator();
@@ -100,10 +99,7 @@ public class Player  {
 				iterator.remove();
 				continue;
 			}
-			allModuleInstance.add(instance);
 		}
-		Collections.sort(allModuleInstance);
-
 	}
 	private Map<String, BasePlayerModule> modules = new HashMap<>();
 	private transient Map<Integer, GoodsModule<? extends Item, ? extends Item>> goodsModules = new HashMap<>();
@@ -269,10 +265,6 @@ public class Player  {
 		initPlayerModule() ; 
 	}
 
-//	public void initFromDb(PlayerData data, List<Object> moduleData) {
-//
-//	}
-
 	@SuppressWarnings("unchecked")
 	public void initPlayerModule() {
 		if (GameServer.getInstance().isSinglePlayerTable()) {
@@ -319,10 +311,6 @@ public class Player  {
 			}
 		}
 		return clazz.getDeclaredConstructor().newInstance();
-	}
-
-	public static List<BasePlayerModule> getAllModuleSorted() {
-		return allModuleInstance;
 	}
 
 	public List<BasePlayerModule> getModuleSorted() {

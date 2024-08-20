@@ -600,8 +600,7 @@ public class PlayerHandler extends BaseHandler {
 	}
 
 	private Future<LoginPlayerUidResponse_7d000019> getPlayerUid(String passportSessionId) {
-		return VxHolder
-				.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build())
+		return VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build())
 				.map(message -> (LoginPlayerUidResponse_7d000019) message.body());
 	}
 
@@ -691,117 +690,6 @@ public class PlayerHandler extends BaseHandler {
 			client.sendProtocol(PlayerLogoutResponse_01000004.getDefaultInstance());
 		});
 	}
-
-	/*public void createPlayer(NetClient client, Object message) {
-		PlayerCreateRequest_01000053 create = (PlayerCreateRequest_01000053) message;
-		PlayerCreateResponse_01000054.Builder builder = PlayerCreateResponse_01000054.newBuilder();
-	
-	//		String name = create.getName();
-		String sessionId = create.getSessionId();
-		Player player = new Player();
-		PlayerExt playerExt = new PlayerExt();
-	
-		long id = GameServer.getInstance().nextPlayerId();
-		if (id == 0) {
-			log.error("创建角色数量到达限制：" + sessionId);
-			client.sendProtocol(builder, ErrorMsgEnum.unknown.getId());
-			return;
-		}
-		// TODO check 敏感词
-		// if (!TreeWordFilter.check(create.getName())) {
-		// log.error("名字包含敏感词：" + create.getName());
-		// builder.setResult(false);
-		// client.sendProtocol(builder);
-		// return;
-		// }
-	
-	//		Player ofName = PlayerManager.getInstance().getOfName(create.getName());
-	//		if (ofName != null) {
-	//			log.error(" 名字重复了：" + create.getName());
-	//			client.sendProtocol(builder, ErrorMsgEnum.player_name_repeat.getId());
-	//			return;
-	//		}
-		// player.getData().setSeq(seq) ;
-		player.getData().setPlayerId(id);
-	//		player.getData().setGender(create.getIsMan());
-		player.getData().setCreateDate(DateUtil.getStringDate());
-		player.getData().setLevel(1);
-		player.getData().setName(create.getName());
-	//		player.getData().setName(id + "");
-		player.getData().setFirstEnterGame((byte) 1);
-		player.getData().setLoginDate(DateUtil.getStringDate());
-		player.getData().setTrainingRewardTimes(GlobalConst.routineTrainingRewardNum);
-		player.getData().setVipExpTotal(0);
-		player.getData().setVipLevel(1); // 好感度默认1级
-		player.getData().setPowerRecoverTime(System.currentTimeMillis());
-		player.getData().setRefreshDay(DateUtil.getDay(0));
-		player.getData().setPower(PlayerHelper.energyMax(player));// 根据配表确定初始好感度
-		playerExt.setPlayerId(id);
-		player.getData().setExploreEquipInherit(false);
-		player.getData().setDay(1);
-	
-		ObjUtil.setDefaultValue(player);
-		ObjUtil.setDefaultValue(playerExt);
-	
-	//		User user = null;
-	//		List<UserTag> tags = null;
-		Future<Long> uidFuture = GameServer.getInstance().getLoginGameServerInterface()
-				.getUid2(sessionId);
-		uidFuture.compose(uid -> {
-			player.getData().setUid(uid);
-			return GameServer.getInstance().getDataGameServerInterface().execAsync(PlayerMapper.class,
-					MapperConstant.insert, player);
-		}).compose(r -> GameServer.getInstance().getDataGameServerInterface().execAsync(PlayerExtMapper.class,
-				MapperConstant.insert, playerExt)).compose(r -> {
-					List<DbTask> dbTasks = new ArrayList<>();
-					dbTasks.add(new DbTask(UserMapper.class, MapperConstant.selectByPrimaryKey, player.getData().getUid()));
-					dbTasks.add(new DbTask(UserTagMapper.class, MapperConstant.selectByUid, player.getData().getUid()));
-					return GameServer.getInstance().getDataGameServerInterface().execAsync(dbTasks);
-				}).onSuccess(list -> {
-					try {
-						User user = (User) list.get(0);
-						List<UserTag> tags = (List<UserTag>) list.get(1);
-						UserOp userOp = PlayerCacheFactory.getCache(player.getData().getPlayerId(), UserOp.class);
-						userOp.initLoadData(player.getData().getUid(), user, tags);
-						// 成功
-						client.setPlayerId(id);
-						GameClientManager.getInstance().addGameClientPlayer((GameClient) client);
-	//				GameClientManager.getInstance().addGameClientSession((GameClient) client);
-	
-						PlayerManager.getInstance().initAdd(player);
-						PlayerManager.getInstance().initAdd(playerExt);
-	
-						PlayerHelper.initPlayerData(player);
-						EventOp eventOp = PlayerCacheFactory.getCache(player.getData().getPlayerId(), EventOp.class);
-						player.handleEvent(new GameEvent(EventTypeEnum.Login));
-	
-						PlayerHelper.initAfterLogin(player);
-						// 初始的资源
-						PlayerHelper.addResources(player.getData().getPlayerId(), GlobalConst.initItems);
-	
-						// 插入storeData表
-						StoreOp storeOp = PlayerCacheFactory.getCache(player.getData().getPlayerId(), StoreOp.class);
-						storeOp.insertStoreData();
-	
-						builder.setPlayerInfo(PbBuilder.buildPlayerInfo(player));
-						//						builder.setArchive(PbBuilder.buildPlayerArchiveInfo(player));
-						builder.setTime(System.currentTimeMillis() + "");
-						builder.setConfigFileVersion(PlayerHelper.getServerConfigVersion());
-						client.sendProtocol(builder.build());
-	
-						levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", player.getData().getPlayerId(),
-								player.getData().getLevel());
-						loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]",
-								player.getData().getPlayerId(), true, true, 0);
-					} catch (Exception e) {
-						log.error("", e);
-					}
-	
-				}).onFailure(r -> {
-					client.sendProtocol(builder, ErrorMsgEnum.unknown.getId());
-					log.error("", r);
-				});
-	}*/
 
 	public Future<PlayerData> createPlayer(Account account, NetClient client, long uid, String name, boolean isMan, int head, boolean isPc,
 			boolean autoCreate) {
