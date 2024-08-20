@@ -568,6 +568,8 @@ public class PlayerHelper {
 	 * @param player
 	 */
 	public static void initAfterLogin(Player player) {
+		player.handleEvent(EventTypeEnum.Login);
+
 		long playerId = player.getData().getPlayerId();
 		player.getData().setLoginDate(DateUtil.getStringDate());
 
@@ -1204,55 +1206,33 @@ public class PlayerHelper {
 	public static Future<Player> startLoadPlayerFromDb(GameClient gameClient, PlayerData dbPlayer, Account account) {
 		Promise<Player> promise = Promise.promise(); 
 		Long playerId = dbPlayer.getPlayerId();
+		return newPlayerData(dbPlayer, account, gameClient).compose(player -> selectPlayerModuleData(player))
+				.compose(r -> initPlayerData(r));
 
-//		获取分布式锁之后再load
-		return RedissonUtil.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
-			if (!locked) {
-				promise.fail(ErrorMsgEnum.player_lock.getId() + "");
-			} else {
-				// load from db
-				return PlayerHelper.selectPlayerModuleData(player).compose(r -> initPlayerData(dbPlayer, account, gameClient, r));
-			}
-			return null;
-		});
 	}
 
-	public static Future<Player> initPlayerData(PlayerData playerData, Account account, GameClient client, List<Object> moduleData) {
-		client.setPlayerId(playerData.getPlayerId());
+	public static Future<Player> newPlayerData(PlayerData playerData, Account account, GameClient client) {
 		GameClientManager.getInstance().addGameClientPlayer((GameClient) client);
 		GameClientManager.getInstance().addGameClientSession((GameClient) client);
 
 		Player player = new Player(playerData);
 		player.setGameClient((GameClient) client);
 		player.setAccount(account);
+		client.setPlayerId(playerData.getPlayerId());
 
 		PlayerManager.getInstance().initAdd(player);
+		return Future.succeededFuture(player);
+	}
 
-		if (playerData.isNew()) {
+	public static Future<Player> initPlayerData(Player player) {
+
+		if (player.getData().isNew()) {
 			// 初始的资源
 			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 			PlayerHelper.initNewPlayerData(player);
-		} else {
-			// 从数据库加载数据
-			ListIterator<?> listIterator = moduleData.listIterator();
-			if (GameServer.getInstance().isSinglePlayerTable()) {
-				for (BasePlayerModule module : player.getModuleSorted()) {
-					if (module.alwaysStoreDataInStandaloneTable()) {
-						module.loadFromDb(listIterator);
-					} else {
-						module.initFromDbAfter();
-					}
-				}
-			} else {
-				for (BasePlayerModule module : player.getModuleSorted()) {
-					module.loadFromDb(listIterator);
-				}
-			}
 		}
 
-		player.handleEvent(EventTypeEnum.Login);
 		PlayerHelper.initAfterLogin(player);
-
 		return Future.succeededFuture(player);
 	}
 
@@ -1280,14 +1260,14 @@ public class PlayerHelper {
 	 * @param player
 	 * @return 
 	 */
-	public static Future<List<Object>> selectPlayerModuleData(Player player) {
+	public static Future<Player> selectPlayerModuleData(Player player) {
 		List<DbTask> dbTasks = initDbTasks(player);
 //		Future<List<Object>> select = DAO.execute(dbTasks);
 //		Handler<List<Object>> callBackTask = PlayerHelper.selectPlayerDataSuccess(player);
 //		select.onSuccess(callBackTask).onFailure(e -> {
 //			selectPlayerDataFail(player, e);
 //		});
-		return DAO.execute(dbTasks);
+		return DAO.execute(dbTasks).compose(r -> initPlayerDataFromDb(player, r));
 	}
 	public static void selectPlayerDataWithMQ(boolean reconnect, Player dbPlayer) {
 		long playerId = dbPlayer.getData().getPlayerId();
@@ -1398,6 +1378,25 @@ public class PlayerHelper {
 		};
 	}
 
+	public static Future<Player> initPlayerDataFromDb(Player player, List<Object> list) {
+
+		ListIterator<?> listIterator = list.listIterator();
+		if (GameServer.getInstance().isSinglePlayerTable()) {
+			for (BasePlayerModule module : player.getModuleSorted()) {
+				if (module.alwaysStoreDataInStandaloneTable()) {
+					module.loadFromDb(listIterator);
+				} else {
+					module.initFromDbAfter();
+				}
+			}
+		} else {
+			for (BasePlayerModule module : player.getModuleSorted()) {
+				module.loadFromDb(listIterator);
+			}
+		}
+		return Future.succeededFuture(player);
+	}
+
 	private static void selectPlayerDataFail(Player player, Throwable e) {
 		log.error("player " + player.getData().getPlayerId() + " login error ", e);
 		PlayerManager.getInstance().deletePlayer(player.getPlayerId());
@@ -1450,10 +1449,9 @@ public class PlayerHelper {
 		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
 
 		return saveClientCache(playerId).onSuccess(r -> {
-			player.cancelAllTimer();
+			clearPlayer(playerId);
 			GameLogger.logout(player);
 			// TODO 异步保存SimplePlayer 到redis。
-			PlayerManager.getInstance().deletePlayer(playerId);
 //			log.info("GameClient[{}] Player[{}] logout finished[{}]", player.getGameClient() == null ? "" : player.getGameClient().toDetailString(), playerId);
 		}).compose(v -> {
 			RFuture<Boolean> deleteAsync = RedissonUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
@@ -1462,6 +1460,18 @@ public class PlayerHelper {
 			log.error("Error during logout cache process for playerId: " + playerId, e);
 			return null;
 		});
+	}
+
+	/** 
+	 * 清除玩家缓存数据
+	 * @param player
+	 */
+	public static void clearPlayer(long playerId) {
+		Player player = PlayerManager.getInstance().deletePlayer(playerId);
+		if (player == null) {
+			return;
+		}
+		player.cancelAllTimer();
 	}
 
 	/**

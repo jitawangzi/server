@@ -568,10 +568,6 @@ public class PlayerHandler extends BaseHandler {
 //			failHandler.handle(canLogin);
 //			return;
 		}
-		Handler<Integer> failHandler = errorCode -> {
-			log.error("player session  " + passportSessionId + " login error ");
-			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), errorCode);
-		} ; 
 		Handler<Player> successHandler = player -> {
 			PlayerLoginResponse_01000002.Builder builder = PlayerLoginResponse_01000002.newBuilder();
 			builder.setInfo(PbBuilder.buildPlayerInfo(player));
@@ -599,19 +595,12 @@ public class PlayerHandler extends BaseHandler {
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid);
 				if (!isReallyReconnect) {
 					loadOrCreatePlayerData(uid, account, newGameClient)
-							.compose(player -> handlePlayerData(player, account, newGameClient))
-							.onComplete(ar -> {
-								if (ar.failed()) {
-									handleLoginFailure(ar.cause(), newGameClient);
-								} else {
-									System.out.println("都成功");
-								}
-							});
-				} else {
-
+							.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
+							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
+							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
 			}).onFailure(t -> {
-				failHandler.handle(ErrorMsgEnum.request_remote_server.getId());
+				handleLoginFailure(t, ErrorMsgEnum.request_remote_server.getId(), newGameClient, passportSessionId);
 			});
 			
 		}
@@ -739,16 +728,7 @@ public class PlayerHandler extends BaseHandler {
 			}
 		
 			private Future<PlayerData> createNewPlayer(long playerId, Account account, GameClient client) {
-				return RedissonUtil.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
-					if (!locked) {
-						return Future.failedFuture(ErrorMsgEnum.player_lock.getId() + "");
-					}
-//					Account account = new Account(req);
-//					account.accountId = uidResponse.getAccountId();
-//					account.deviceId = uidResponse.getDeviceId();
-					// 确保这个方法返回 Future<PlayerData>
-					return createPlayer(account, client, playerId, null, true, 0, false, true);
-				});
+				return createPlayer(account, client, playerId, null, true, 0, false, true);
 			}
 		
 			private Future<Player> handleExistingPlayer(PlayerData player, Account account, GameClient client) {
@@ -756,14 +736,12 @@ public class PlayerHandler extends BaseHandler {
 //				client.setPlayerId(playerId);
 		
 				return checkOtherServer(player.getPlayerId())
-//						.compose(() -> PlayerHelper.selectPlayerModuleData(new Player()))
-//						.compose(() -> PlayerHelper.selectPlayerModuleData(new Player()))
 						.compose(r -> loadPlayerFromDb(player, account, client));
 			}
 
 			private Future<Player> handlePlayerData(PlayerData player, Account account, GameClient client) {
 				if (player.isNew()) {
-					return PlayerHelper.initPlayerData(player, account, client, null);
+					return PlayerHelper.newPlayerData(player, account, client).compose(r -> PlayerHelper.initPlayerData(r));
 				}
 				return handleExistingPlayer(player, account, client);
 			}
@@ -801,10 +779,23 @@ public class PlayerHandler extends BaseHandler {
 				return PlayerHelper.startLoadPlayerFromDb(client, player, account);
 			}
 		
-			private void handleLoginFailure(Throwable throwable, GameClient client) {
-				int errorCode = (throwable instanceof LogicException) ? ((LogicException) throwable).getErrorCode() : ErrorMsgEnum.unknown.getId();
-				log.error("Player login error", throwable);
+			private void handleLoginFailure(Throwable throwable, int errorCode, GameClient client, String passportSessionId) {
+
+				log.error("player session  " + passportSessionId + " login error ", throwable);
+				if (errorCode <= 0 && StringUtils.isNumeric(throwable.getMessage())) {
+					errorCode = Integer.parseInt(throwable.getMessage());
+				}
 				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), errorCode);
+				GameClientManager.getInstance().removeGameClient((GameClient) client);
+				if (client.getPlayerId() > 0) {
+					PlayerHelper.clearPlayer(client.getPlayerId());
+				}
+			}
+			private void handleLoginSuccess(GameClient client, Player player) {
+				PlayerLoginResponse_01000002.Builder builder = PlayerLoginResponse_01000002.newBuilder();
+				builder.setInfo(PbBuilder.buildPlayerInfo(player));
+				client.sendProtocol(builder.build());
+				GameClientManager.getInstance().broadcastOnlineToOtherServer(player.getPlayerId(), true, null);
 			}
 		
 //			**/
