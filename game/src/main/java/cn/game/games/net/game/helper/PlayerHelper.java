@@ -10,14 +10,11 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.rocketmq.client.producer.RequestCallback;
-import org.apache.rocketmq.common.message.Message;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.MessageLite.Builder;
-import com.google.protobuf.UnsafeByteOperations;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
@@ -30,8 +27,6 @@ import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
-import cn.game.games.net.data.mapper.ItemMapper;
-import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
@@ -78,9 +73,6 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501;
-import cn.game.protocol.protobuf.ServerMsg.DbTaskProto;
-import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch2_7d00000c;
-import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch_7d00000b;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
@@ -88,20 +80,18 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
-import cn.game.util.KryoUtils;
 import cn.game.util.Pair;
 import cn.game.util.RedissonUtil;
 import cn.game.util.Rnd;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
-import io.vertx.core.Promise;
 
 public class PlayerHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(PlayerHelper.class);
 //	private static final Logger resourceDelLog = LoggerFactory.getLogger("resourceDelLog");
-	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
-	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
+//	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
+//	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
 
 	public static boolean isEnough(Player player, List<? extends Entry<Integer, Integer>> list) {
 
@@ -324,17 +314,6 @@ public class PlayerHelper {
 		if (value <= 0) {
 			return true;
 		}
-//		if (!PlayerManager.getInstance().hasCache(player)) {
-//			OfflineResourceAdd add = new OfflineResourceAdd();
-//			add.setItemId(id);
-//			add.setCount(value);
-//			add.setPlayerId(playerId);
-//			add.setType(false);
-//			DAO.insert(OfflineResourceAddMapper.class, add);
-//			return true;
-			// 不在线不能扣资源
-//			return false;
-//		}
 		GoodsModule goodsModule = player.getGoodsModule(id);
 		boolean ret = goodsModule.del(id, value, consumeType);
 
@@ -596,9 +575,8 @@ public class PlayerHelper {
 		GameLogger.rolelogin(player);
 		GameLogger.login_wxxcx(player);
 
-		levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", player.getPlayerId(), player.getLevel());
-		loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]", player.getPlayerId(), true, true, 0);
-
+//		levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", player.getPlayerId(), player.getLevel());
+//		loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]", player.getPlayerId(), true, true, 0);
 	}
 
 
@@ -1204,24 +1182,21 @@ public class PlayerHelper {
 	}
 
 	public static Future<Player> startLoadPlayerFromDb(GameClient gameClient, PlayerData dbPlayer, Account account) {
-		Promise<Player> promise = Promise.promise(); 
-		Long playerId = dbPlayer.getPlayerId();
-		return newPlayerData(dbPlayer, account, gameClient).compose(player -> selectPlayerModuleData(player))
-				.compose(r -> initPlayerData(r));
-
+		Player player = createPlayer(dbPlayer, account, gameClient);
+		return selectPlayerModuleData(player).compose(PlayerHelper::initPlayerData);
 	}
 
-	public static Future<Player> newPlayerData(PlayerData playerData, Account account, GameClient client) {
+	public static Player createPlayer(PlayerData playerData, Account account, GameClient client) {
+		client.setPlayerId(playerData.getPlayerId());
 		GameClientManager.getInstance().addGameClientPlayer((GameClient) client);
 		GameClientManager.getInstance().addGameClientSession((GameClient) client);
 
 		Player player = new Player(playerData);
 		player.setGameClient((GameClient) client);
 		player.setAccount(account);
-		client.setPlayerId(playerData.getPlayerId());
 
 		PlayerManager.getInstance().initAdd(player);
-		return Future.succeededFuture(player);
+		return player;
 	}
 
 	public static Future<Player> initPlayerData(Player player) {
@@ -1231,7 +1206,6 @@ public class PlayerHelper {
 			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 			PlayerHelper.initNewPlayerData(player);
 		}
-
 		PlayerHelper.initAfterLogin(player);
 		return Future.succeededFuture(player);
 	}
@@ -1255,30 +1229,39 @@ public class PlayerHelper {
 	}
 
 	/** 
+	 * 获取某玩家分布式锁
+	 * @param playerId
+	 * @return
+	 */
+	public static Future<Void> getPlayerDistributedLock(long playerId) {
+		return RedissonUtil.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
+			if (!locked) {
+				return Future.failedFuture(ErrorMsgEnum.player_lock.getId() + "");
+			}
+			return Future.succeededFuture();
+		});
+	}
+
+	/** 
 	 * 从数据库中查询玩家除了PlayerData表的其他表数据
-	 * @param reconnect
+	 * 独立的表存储的玩家模块数据
 	 * @param player
 	 * @return 
 	 */
 	public static Future<Player> selectPlayerModuleData(Player player) {
 		List<DbTask> dbTasks = initDbTasks(player);
-//		Future<List<Object>> select = DAO.execute(dbTasks);
-//		Handler<List<Object>> callBackTask = PlayerHelper.selectPlayerDataSuccess(player);
-//		select.onSuccess(callBackTask).onFailure(e -> {
-//			selectPlayerDataFail(player, e);
-//		});
-		return DAO.execute(dbTasks).compose(r -> initPlayerDataFromDb(player, r));
+		return DAO.execute(dbTasks).compose(r -> initPlayerModuleFromDb(player, r));
 	}
 	public static void selectPlayerDataWithMQ(boolean reconnect, Player dbPlayer) {
 		long playerId = dbPlayer.getData().getPlayerId();
-
+		/*
 		List<DbTask> dbTasks = PlayerHelper.initDbTasks(dbPlayer.getData().getUid(), playerId);
-
+		
 		Handler<List<Object>> callBackTask = PlayerHelper.selectPlayerDataSuccess(dbPlayer);
-
+		
 		GameDataPushBatch_7d00000b.Builder builder = GameDataPushBatch_7d00000b.newBuilder();
 		GameDataPushBatch2_7d00000c.Builder builder2 = GameDataPushBatch2_7d00000c.newBuilder();
-
+		
 		for (DbTask dbTask : dbTasks) {
 			DbTaskProto proto = DbTaskProto.newBuilder().setMapperClass(dbTask.getMapper().getName()).setMethod(dbTask.getMethod())
 					.setArg(UnsafeByteOperations.unsafeWrap(KryoUtils.serializeClassAndObject(dbTask.getArg()))).build();
@@ -1286,7 +1269,7 @@ public class PlayerHelper {
 		}
 		builder2.setArg(UnsafeByteOperations.unsafeWrap(KryoUtils.serializeClassAndObject(dbTasks)));
 		GameServer.getInstance().requestDataServer(builder2.build(), new RequestCallback() {
-
+		
 			@Override
 			public void onSuccess(Message message) {
 				byte[] body = message.getBody();
@@ -1297,38 +1280,9 @@ public class PlayerHelper {
 			public void onException(Throwable e) {
 				e.printStackTrace();
 			}
-		});
+		});*/
 
 
-	}
-	/** 
-	 * 从数据库载入玩家数据，同步调用，一般测试时使用。
-	 * @param playerIds
-	 */
-	public static void loadPlayerTest(long... playerIds) {
-		for (long id : playerIds) {
-			if (PlayerManager.getInstance().hasCache(id)) {
-				continue;
-			}
-			Player p = (Player) DAO.executeSync(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, id);
-			PlayerHelper.selectPlayerModuleData(p);
-		}
-	}
-
-	/** 
-	 * 玩家所有的数据库查询任务
-	 * @param uid
-	 * @param playerId
-	 * @return
-	 */
-	@Deprecated
-	public static List<DbTask> initDbTasks(long uid, long playerId) {
-		List<DbTask> dbTasks = new ArrayList<>();
-
-//		dbTasks.add(new DbTask(PlayerExtMapper.class, MapperConstant.selectByPrimaryKey, playerId));
-//		dbTasks.add(new DbTask(RoleMapper.class, MapperConstant.selectByPlayerId, playerId));
-		dbTasks.add(new DbTask(ItemMapper.class, MapperConstant.selectByPrimaryKey, playerId));
-		return dbTasks;
 	}
 
 	public static List<DbTask> initDbTasks(Player player) {
@@ -1340,45 +1294,8 @@ public class PlayerHelper {
 		}
 		return dbTasks;
 	}
-	
-	public static Handler<List<Object>> selectPlayerDataSuccess(Player player) {
 
-		return list -> {
-			try {
-				PlayerManager.getInstance().initAdd(player);
-				long playerId = player.getData().getPlayerId();
-				ListIterator<?> listIterator = list.listIterator();
-				if (GameServer.getInstance().isSinglePlayerTable()) {
-					for (BasePlayerModule module : player.getModuleSorted()) {
-						if (module.alwaysStoreDataInStandaloneTable()) {
-							module.loadFromDb(listIterator);
-						} else {
-							module.initFromDbAfter();
-						}
-					}
-				} else {
-					for (BasePlayerModule module : player.getModuleSorted()) {
-						module.loadFromDb(listIterator);
-					}
-				}
-				initAfterLogin(player);
-
-				PlayerLoginResponse_01000002.Builder resp = PlayerLoginResponse_01000002.newBuilder();
-				resp.setInfo(PbBuilder.buildPlayerInfo(player));
-//				resp.setConfigFileVersion(PlayerHelper.getServerConfigVersion());
-
-				PlayerHelper.sendProtocol(playerId, resp);
-
-				GameClientManager.getInstance().broadcastOnlineToOtherServer(playerId, true, null);
-
-//				loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]", playerId, false, true, 0);
-			} catch (Exception e) {
-				selectPlayerDataFail(player, e);
-			}
-		};
-	}
-
-	public static Future<Player> initPlayerDataFromDb(Player player, List<Object> list) {
+	public static Future<Player> initPlayerModuleFromDb(Player player, List<Object> list) {
 
 		ListIterator<?> listIterator = list.listIterator();
 		if (GameServer.getInstance().isSinglePlayerTable()) {
@@ -1395,12 +1312,6 @@ public class PlayerHelper {
 			}
 		}
 		return Future.succeededFuture(player);
-	}
-
-	private static void selectPlayerDataFail(Player player, Throwable e) {
-		log.error("player " + player.getData().getPlayerId() + " login error ", e);
-		PlayerManager.getInstance().deletePlayer(player.getPlayerId());
-		PlayerHelper.sendErrorProtocol(player.getData().getPlayerId(), ErrorMsgEnum.unknown.getId());
 	}
 
 	public static String getServerConfigVersion() {
