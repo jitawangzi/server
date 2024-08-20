@@ -1,7 +1,6 @@
 package cn.game.games.net.game.module.develop;
 
 import java.util.HashMap;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -241,11 +240,6 @@ public class AttrModule extends BasePlayerModule {
 		return null;
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void initFromDbAfter() {

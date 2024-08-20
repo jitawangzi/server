@@ -49,7 +49,6 @@ import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.UnionMsg;
 import cn.game.util.Pair;
 
-@Deprecated
 public class PbBuilder {
 
 	public static PlayerAllInfo buildPlayerInfo(Player player) {

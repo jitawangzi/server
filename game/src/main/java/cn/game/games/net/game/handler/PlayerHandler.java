@@ -3,12 +3,8 @@ package cn.game.games.net.game.handler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
-import org.redisson.api.RFuture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.base.ServerContext;
@@ -21,11 +17,9 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
-import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -37,7 +31,6 @@ import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RandomNameConfig;
 import cn.game.protocol.generated.manager.HeadBoxManager;
 import cn.game.protocol.generated.manager.HeadPortraitManager;
@@ -52,7 +45,6 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoResponse_01000008;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043;
-import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderResponse_01000018;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060;
@@ -85,19 +77,13 @@ import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import cn.game.util.TreeWordFilter;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Promise;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.eventbus.ReplyException;
 
 /**
  * 用户处理器
  */
 @Component
 public class PlayerHandler extends BaseHandler {
-
-	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
-	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
 
 	@Override
 	protected int getModule() {
@@ -151,6 +137,7 @@ public class PlayerHandler extends BaseHandler {
 		resp.setPatrol(chapterModule.buildPatrolInfo());
 		client.sendProtocol(resp);
 	}
+
 	private void cloudBox(NetClient client, Object message) {
 		PlayerCloudBoxRequest_01000042 request = (PlayerCloudBoxRequest_01000042) message;
 		PlayerCloudBoxResponse_01000043.Builder resp = PlayerCloudBoxResponse_01000043.newBuilder();
@@ -396,45 +383,45 @@ public class PlayerHandler extends BaseHandler {
 	
 		netClient.sendProtocol(resp);
 	}*/
-/**
-	private void spiritReceive(NetClient client, Object message) {
-		PlayerSpiritReceiveResponse_01000025.Builder resp = PlayerSpiritReceiveResponse_01000025.newBuilder();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		// 体力领取时间段
-		List<String> spiritReceiveTime = GlobalConst.spiritReceiveTime;
-		boolean ret = false;
-		for (int i = 0; i < spiritReceiveTime.size(); i++) {
-			String[] split = spiritReceiveTime.get(i).split("~");
-			if (split == null || split.length < 2) {
-				client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
-				return;
-			}
-			LocalTime localDate = LocalTime.now();
-			LocalTime start = LocalTime.of(Integer.parseInt(split[0].split(":")[0]),
-					Integer.parseInt(split[0].split(":")[1]), 0);
-			LocalTime end = LocalTime.of(Integer.parseInt(split[1].split(":")[0]),
-					Integer.parseInt(split[1].split(":")[1]), 0);
-			if (localDate.isAfter(start) && localDate.isBefore(end)) {
-				ret = true;
-				boolean one = ByteHelp.isOne(player.getData().getSpiritReceiveInfo(), i);
-				if (one) {
-					client.sendProtocol(resp, ErrorMsgEnum.reward_have_received.getId());
+	/**
+		private void spiritReceive(NetClient client, Object message) {
+			PlayerSpiritReceiveResponse_01000025.Builder resp = PlayerSpiritReceiveResponse_01000025.newBuilder();
+			long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+			Player player = PlayerManager.getInstance().getPlayer(playerId);
+			// 体力领取时间段
+			List<String> spiritReceiveTime = GlobalConst.spiritReceiveTime;
+			boolean ret = false;
+			for (int i = 0; i < spiritReceiveTime.size(); i++) {
+				String[] split = spiritReceiveTime.get(i).split("~");
+				if (split == null || split.length < 2) {
+					client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
 					return;
 				}
-				// 领取体力
-				player.getData().setSpiritReceiveInfo((byte) ByteHelp.modifyBit(player.getData().getSpiritReceiveInfo(), i));
-				PlayerHelper.addResources(player.getData().getPlayerId(), ResourceEnum.Brawn.getId(), GlobalConst.spiritReceive);
-				client.sendProtocol(resp);
+				LocalTime localDate = LocalTime.now();
+				LocalTime start = LocalTime.of(Integer.parseInt(split[0].split(":")[0]),
+						Integer.parseInt(split[0].split(":")[1]), 0);
+				LocalTime end = LocalTime.of(Integer.parseInt(split[1].split(":")[0]),
+						Integer.parseInt(split[1].split(":")[1]), 0);
+				if (localDate.isAfter(start) && localDate.isBefore(end)) {
+					ret = true;
+					boolean one = ByteHelp.isOne(player.getData().getSpiritReceiveInfo(), i);
+					if (one) {
+						client.sendProtocol(resp, ErrorMsgEnum.reward_have_received.getId());
+						return;
+					}
+					// 领取体力
+					player.getData().setSpiritReceiveInfo((byte) ByteHelp.modifyBit(player.getData().getSpiritReceiveInfo(), i));
+					PlayerHelper.addResources(player.getData().getPlayerId(), ResourceEnum.Brawn.getId(), GlobalConst.spiritReceive);
+					client.sendProtocol(resp);
+				}
+	
 			}
-
+			if (!ret) {
+				client.sendProtocol(resp, ErrorMsgEnum.spirit_receivetime_notfit.getId());
+				return;
+			}
 		}
-		if (!ret) {
-			client.sendProtocol(resp, ErrorMsgEnum.spirit_receivetime_notfit.getId());
-			return;
-		}
-	}
-	*/
+		*/
 
 	protected void heartbeat(NetClient client, Object message) {
 
@@ -465,8 +452,7 @@ public class PlayerHandler extends BaseHandler {
 			PlayerBriefInfoOtherResponse_0100000a.Builder response = PlayerBriefInfoOtherResponse_0100000a.newBuilder();
 			int error = 0;
 			try {
-				List<SimplePlayer> sPlayerInfos = PlayerManager.getInstance().getAndLoadSimplePlayers(playerIds,
-						servers);
+				List<SimplePlayer> sPlayerInfos = PlayerManager.getInstance().getAndLoadSimplePlayers(playerIds, servers);
 				response.addAllPlayers(PbBuilder.buildSimplePlayerInfos(sPlayerInfos));
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -515,6 +501,7 @@ public class PlayerHandler extends BaseHandler {
 		player.getData().setHeadFrame(headFrame);
 		client.sendProtocol(resp);
 	}
+
 	protected void rename(NetClient client, Object message) {
 
 		PlayerNameRequest_01000011 request = (PlayerNameRequest_01000011) message;
@@ -568,6 +555,7 @@ public class PlayerHandler extends BaseHandler {
 		player.getData().setGender(isMan);
 		client.sendProtocol(resp);
 	}
+
 	protected void login(NetClient client, Object message) {
 
 		PlayerMsg.PlayerLoginRequest_01000001 req = (PlayerLoginRequest_01000001) message;
@@ -575,236 +563,124 @@ public class PlayerHandler extends BaseHandler {
 //		String serverId = req.getServerId();
 		boolean reconnect = req.getReconnect();
 		log.info("passportSessionId : " + passportSessionId + " start login");
-//		if (true) {
-//			client.sendProtocol(PlayerLoginResponse_01000002.newBuilder()
-//					.setTime(System.currentTimeMillis() + "张三*#@sd+李四"));
-//			return;
-//		}
-		Handler<Integer> failHandler = errorCode -> {
-			log.error("player session  " + passportSessionId + " login error ");
-			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), errorCode);
-		} ; 
 		int canLogin = GameServerStatus.getInstance().canLogin(req.getVerstion());
 		if (canLogin > 0) {
-//			failHandler.handle(canLogin);
+//			handleLoginFailure(null, ErrorMsgEnum.version_mismatch.ID, (GameClient) client, passportSessionId);
 //			return;
 		}
 		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
 		GameClient newGameClient = (GameClient) client;
 		newGameClient.setSessionId(passportSessionId);
-		boolean isReconnect = PlayerHelper.reconnect(newGameClient, reconnect, oldGameClient == null ? 0 : oldGameClient.getPlayerId());
-		if (isReconnect) {
-			return;
-		}
-		if (reconnect) {
-			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
-			GameClientManager.getInstance().removeGameClient(newGameClient);
-			return;
-		}
-		// 新session,重新登陆
-		final AtomicLong uid = new AtomicLong();
-		StringBuffer accountId = new StringBuffer();
-		StringBuffer deviceId = new StringBuffer();
-		Future<Message<LoginPlayerUidResponse_7d000019>> uidFuture = VxHolder.requestRemoteServer(
-				ServerType.Login,
-				LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build());
-		uidFuture.compose(r -> {
-			uid.set(r.body().getUid());
-			accountId.append(r.body().getAccountId());
-			deviceId.append(r.body().getDeviceId());
-			return DAO.execute(PlayerDataMapper.class,
-					MapperConstant.selectByPrimaryKey, uid.get());
 
-		}).onSuccess(p -> {
-			if (p == null) {
-				// 创建角色
-				RFuture<Boolean> playerLockFuture = PlayerHelper.trySetServerId(uid.get());
-				playerLockFuture.onComplete((v,throwable) -> {
-					if (v) {
-						Account account = new Account(req);
-						account.accountId = accountId.toString();
-						account.deviceId = deviceId.toString();
-
-						createPlayer(account, client, uid.longValue(), null, true, 0, false, true);
-					}else {
-						failHandler.handle(ErrorMsgEnum.player_lock.getId());
-						log.error("create player error  ", throwable);
-					}
-				});
-				return;
-
-			} // 老账号登陆
-			PlayerData dbPlayer = (PlayerData) p;
-			long playerId = dbPlayer.getPlayerId();
-			client.setPlayerId(playerId);
-
-			// 被封账号,限制登录
-			boolean checkUnlock = PlayerManager.getInstance().checkUnlock(playerId);
-			if (!checkUnlock) {
-				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(),
-						ErrorMsgEnum.login_forbidden.getId());
+		if (reconnect) { // 客户端主动重连
+			boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, oldGameClient == null ? 0 : oldGameClient.getPlayerId());
+			if (!isReallyReconnect) {
+				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
 				GameClientManager.getInstance().removeGameClient(newGameClient);
 				return;
 			}
-
-			if (PlayerHelper.reconnect(newGameClient, reconnect, playerId)) {
-				return;
-			}
-
-			// 看看在没在其他服务器
-			RFuture<String> serverIdFutrue = RedissonUtil.getAsync(CacheType.PLAYER_SERVER_ID.key(uid.get()));
-			serverIdFutrue.onComplete((serverId, e) -> {
-				if (e != null) {
-					failHandler.handle(ErrorMsgEnum.redis_fail.getId());
-					return;
+		} else {
+			// 客户端新登陆
+			Account account = new Account(req);
+			Future<LoginPlayerUidResponse_7d000019> playerUid = getPlayerUid(passportSessionId);
+			playerUid.compose(r -> checkPlayerUnlock(r)).map(r -> {
+				account.accountId = r.getAccountId();
+				account.deviceId = r.getDeviceId();
+				return r.getUid();
+			}).onSuccess(uid -> {
+				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid);
+				if (!isReallyReconnect) {
+					loadOrCreatePlayerData(uid, account, newGameClient)
+							.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
+							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
+							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
-				// 在其他服务器，通知其他服务器退出
-				if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
-					Future<Message<Object>> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
-							GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(uid.get()).build());
-					requestRemoteServer.onFailure(ee -> {
-						log.error("player login , request to server : " + serverId + " failed ", ee);
-						failHandler.handle(ErrorMsgEnum.request_remote_server.getId());
-					}).onSuccess(r -> {
-						Account account = new Account(req);
-						// load from db
-						PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer, account);
-					});
-				} else {
-					// 玩家没在其他服务器，在本服务器加载数据
-					Account account = new Account(req);
-					// load from db
-					PlayerHelper.startLoadPlayerFromDb(newGameClient, dbPlayer, account);
-				}
-			});
-		}).onFailure(p -> {
-			int failCode = 1;
-			if (p instanceof ReplyException) {
-				failCode = ((ReplyException) p).failureCode();
+			}).onFailure(t -> handleLoginFailure(t, ErrorMsgEnum.request_remote_server.getId(), newGameClient, passportSessionId));
+		}
+	}
+
+	private Future<LoginPlayerUidResponse_7d000019> getPlayerUid(String passportSessionId) {
+		return VxHolder
+				.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build())
+				.map(message -> (LoginPlayerUidResponse_7d000019) message.body());
+	}
+
+	private Future<PlayerData> loadOrCreatePlayerData(long playerId, Account account, GameClient client) {
+		return PlayerHelper
+				.getPlayerDistributedLock(playerId)
+				.compose(r -> DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId))
+				.compose(playerData -> {
+					if (playerData == null) {
+						return createNewPlayer(playerId, account, client);
+					}
+					return Future.succeededFuture((PlayerData) playerData);
+				});
+	}
+
+	private Future<PlayerData> createNewPlayer(long playerId, Account account, GameClient client) {
+		return createPlayer(account, client, playerId, null, true, 0, false, true);
+	}
+
+	private Future<Player> handleExistingPlayer(PlayerData player, Account account, GameClient client) {
+		return checkOtherServer(player.getPlayerId()).compose(r -> loadPlayerFromDb(player, account, client));
+	}
+
+	private Future<Player> handlePlayerData(PlayerData playerData, Account account, GameClient client) {
+		if (playerData.isNew()) {
+			return PlayerHelper.initPlayerData(PlayerHelper.createPlayer(playerData, account, client));
+		}
+		return handleExistingPlayer(playerData, account, client);
+	}
+
+	private Future<LoginPlayerUidResponse_7d000019> checkPlayerUnlock(LoginPlayerUidResponse_7d000019 uidResponse) {
+		boolean checkUnlock = PlayerManager.getInstance().checkUnlock(uidResponse.getUid());
+		if (!checkUnlock) {
+			return Future.failedFuture(ErrorMsgEnum.login_forbidden.getId() + "");
+		}
+		return Future.succeededFuture(uidResponse);
+	}
+
+	/** 
+	 * 如果玩家在其他服务器，先通知其他服务器退出该玩家。 
+	 * @param playerId
+	 * @return
+	 */
+	private Future<Void> checkOtherServer(long playerId) {
+		return RedissonUtil.toVertxFuture(RedissonUtil.<String>getAsync(CacheType.PLAYER_SERVER_ID.key(playerId))).compose(serverId -> {
+			if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
+				return notifyOtherServerLogout(serverId, playerId);
 			}
-			failHandler.handle(failCode);
-			log.error(" get uid or select player error ", p);
+			return Future.succeededFuture();
 		});
 	}
 
-//	/**
-	public void handleLogin(NetClient netClient, Object message) {
-		PlayerMsg.PlayerLoginRequest_01000001 req = (PlayerLoginRequest_01000001) message;
-		GameClient client = (GameClient) netClient;
+	private Future<Void> notifyOtherServerLogout(String serverId, long playerId) {
+		return VxHolder.requestRemoteServer(serverId, GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(playerId).build()).mapEmpty();
+	}
 
-				String passportSessionId = req.getSessionId();
-			    boolean reconnect = req.getReconnect();
-		
-				checkLoginStatus(req.getVerstion(), client)
-			        .compose(v -> getPlayerUid(passportSessionId))
-			        .compose(uidResponse -> loadOrCreatePlayer(uidResponse, req, client))
-			        .compose(player -> handleExistingPlayer(player, req, client, reconnect))
-			        .onComplete(ar -> {
-			            if (ar.failed()) {
-			                handleLoginFailure(ar.cause(), client);
-							} else {
-								System.out.println("都成功");
-			            }
-			        });
-			}
-		
-			private Future<Void> checkLoginStatus(String version, GameClient client) {
-				int canLogin = GameServerStatus.getInstance().canLogin(version);
-//				if (canLogin > 0) {
-//					return Future.failedFuture(canLogin + "");
-//				}
-				return Future.succeededFuture();
-			}
-		
-			private Future<LoginPlayerUidResponse_7d000019> getPlayerUid(String passportSessionId) {
-				return VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build())
-						.map(message -> (LoginPlayerUidResponse_7d000019) message.body());
-			}
-		
-			private Future<PlayerData> loadOrCreatePlayer(LoginPlayerUidResponse_7d000019 uidResponse, PlayerLoginRequest_01000001 req, GameClient client) {
-				long uid = uidResponse.getUid();
-				client.setPlayerId(uid);
-		
-				return DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, uid).compose(result -> {
-					if (result == null) {
-						return createNewPlayer(uidResponse, req, client);
-					}
-					return Future.succeededFuture((PlayerData) result);
-				});
-			}
-		
-			private Future<PlayerData> createNewPlayer(LoginPlayerUidResponse_7d000019 uidResponse, PlayerLoginRequest_01000001 req, GameClient client) {
-				return toVertxFuture(PlayerHelper.trySetServerId(uidResponse.getUid())).compose(locked -> {
-					if (!locked) {
-						return Future.failedFuture(new LogicException(ErrorMsgEnum.player_lock.getId()));
-					}
-					Account account = new Account(req);
-					account.accountId = uidResponse.getAccountId();
-					account.deviceId = uidResponse.getDeviceId();
-					// 确保这个方法返回 Future<PlayerData>
-					return createPlayer(account, client, uidResponse.getUid(), null, true, 0, false, true);
-				});
-			}
-		
-			private Future<Void> handleExistingPlayer(PlayerData player, PlayerLoginRequest_01000001 req, GameClient client, boolean reconnect) {
-				long playerId = player.getPlayerId();
-				client.setPlayerId(playerId);
-		
-				return checkPlayerUnlock(playerId).compose(v -> checkReconnect(client, reconnect, playerId)).compose(v -> checkOtherServer(player, req, client));
-			}
-		
-			private Future<Void> checkPlayerUnlock(long playerId) {
-				boolean checkUnlock = PlayerManager.getInstance().checkUnlock(playerId);
-				if (!checkUnlock) {
-					return Future.failedFuture(new LogicException(ErrorMsgEnum.login_forbidden.getId()));
-				}
-				return Future.succeededFuture();
-			}
-		
-			private Future<Void> checkReconnect(GameClient client, boolean reconnect, long playerId) {
-	//				GameClient oldGameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-				if (PlayerHelper.reconnect(client, reconnect, playerId)) {
-					return Future.failedFuture(new LogicException(ErrorMsgEnum.reconnect_fail.getId()));
-				}
-				return Future.succeededFuture();
-			}
-		
-			private Future<Void> checkOtherServer(PlayerData player, PlayerLoginRequest_01000001 req, GameClient client) {
-				return toVertxFuture(RedissonUtil.<String>getAsync(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()))).compose(serverId -> {
-					if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
-						return notifyOtherServerLogout(serverId, player.getPlayerId()).compose(v -> loadPlayerFromDb(player, new Account(req), client));
-					}
-					return loadPlayerFromDb(player, new Account(req), client);
-				});
-			}
-		
-			private Future<Void> notifyOtherServerLogout(String serverId, long playerId) {
-				return VxHolder.requestRemoteServer(serverId, GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(playerId).build()).mapEmpty();
-			}
-		
-			private Future<Void> loadPlayerFromDb(PlayerData player, Account account, GameClient client) {
-				return PlayerHelper.startLoadPlayerFromDb(client, player, account).mapEmpty();
-			}
-		
-			private void handleLoginFailure(Throwable throwable, GameClient client) {
-				int errorCode = (throwable instanceof LogicException) ? ((LogicException) throwable).getErrorCode() : ErrorMsgEnum.unknown.getId();
-				log.error("Player login error", throwable);
-				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), errorCode);
-			}
-		
-			private <T> Future<T> toVertxFuture(RFuture<T> rFuture) {
-				Promise<T> promise = Promise.promise();
-				rFuture.onComplete((result, throwable) -> {
-					if (throwable != null) {
-						promise.fail(throwable);
-					} else {
-						promise.complete(result);
-					}
-				});
-				return promise.future();
-			}
-			
-//			**/
+	private Future<Player> loadPlayerFromDb(PlayerData player, Account account, GameClient client) {
+		return PlayerHelper.startLoadPlayerFromDb(client, player, account);
+	}
+
+	private void handleLoginFailure(Throwable throwable, int errorCode, GameClient client, String passportSessionId) {
+
+		log.error("player session  " + passportSessionId + " login error ", throwable);
+		if (errorCode <= 0 && StringUtils.isNumeric(throwable.getMessage())) {
+			errorCode = Integer.parseInt(throwable.getMessage());
+		}
+		client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), errorCode);
+		GameClientManager.getInstance().removeGameClient((GameClient) client);
+		if (client.getPlayerId() > 0) {
+			PlayerHelper.clearPlayer(client.getPlayerId());
+		}
+	}
+
+	private void handleLoginSuccess(GameClient client, Player player) {
+		PlayerLoginResponse_01000002.Builder builder = PlayerLoginResponse_01000002.newBuilder();
+		builder.setInfo(PbBuilder.buildPlayerInfo(player));
+		client.sendProtocol(builder.build());
+		GameClientManager.getInstance().broadcastOnlineToOtherServer(player.getPlayerId(), true, null);
+	}
 
 	protected void logout(NetClient client, Object message) {
 //		PlayerMsg.PlayerLogoutRequest_01000003 req = (PlayerLogoutRequest_01000003) message;
@@ -927,8 +803,8 @@ public class PlayerHandler extends BaseHandler {
 				});
 	}*/
 
-	public Future<PlayerData> createPlayer(Account account, NetClient client, long uid, String name, boolean isMan, int head,
-			boolean isPc, boolean autoCreate) {
+	public Future<PlayerData> createPlayer(Account account, NetClient client, long uid, String name, boolean isMan, int head, boolean isPc,
+			boolean autoCreate) {
 		PlayerData playerData = new PlayerData();
 
 		long id = uid;
@@ -956,8 +832,6 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setUid(uid);
 		playerData.setGender(isMan);
 		playerData.setCreateDate(DateUtil.getStringDate());
-//		playerData.setLevel(1);
-//		playerData.getHotData().getLevelMap().setValue(Asset.playerExp.ID, 1);
 //		player.getData().setName(create.getName());
 		// 随机一个名字
 		name = randomName();
@@ -979,59 +853,13 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setRefreshFiveDay(DateUtil.getDay(5));
 		playerData.setRefreshWeek(DateUtil.getWeek());
 		playerData.setRefreshMonth(DateUtil.getMonth());
+		playerData.setNew(true);
 		playerData.setModules("[]");
 
 		ObjUtil.setDefaultValue(playerData);
 
 		Promise<PlayerData> promise = Promise.promise();
-		DAO.execute(PlayerDataMapper.class, MapperConstant.insert, playerData).onSuccess(r -> {
-			try {
-//				User user = (User) list.get(0);
-//				List<UserTag> tags = (List<UserTag>) list.get(1);
-				// 成功
-				client.setPlayerId(id);
-				GameClientManager.getInstance().addGameClientPlayer((GameClient) client);
-				GameClientManager.getInstance().addGameClientSession((GameClient) client);
-
-				Player player = new Player(playerData);
-				player.setGameClient((GameClient) client);
-				player.setAccount(account);
-
-				PlayerManager.getInstance().initAdd(player);
-
-				// 初始的资源
-				PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
-
-				PlayerHelper.initNewPlayerData(player);
-
-				player.handleEvent(EventTypeEnum.Login);
-
-				PlayerHelper.initAfterLogin(player);
-
-				if (autoCreate) {
-					PlayerLoginResponse_01000002.Builder builder = PlayerLoginResponse_01000002.newBuilder();
-					builder.setInfo(PbBuilder.buildPlayerInfo(player));
-					client.sendProtocol(builder.build());
-
-				} else {
-				}
-				levellog.info("opType[levelUp]playerId[{}]newLevel[{}]", playerData.getPlayerId(),
-						playerData.getLevel());
-				loginlog.info("opType[gameLogin]playerId[{}]isCreate[{}]isLogin[{}]onlineTime[{}]",
-						playerData.getPlayerId(), true, true, 0);
-				promise.complete(playerData);
-			} catch (Exception e) {
-				log.error(uid + " 初始化失败", e);
-				PlayerManager.getInstance().deletePlayer(id);
-				client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
-				promise.fail(e);
-			}
-
-		}).onFailure(e -> {
-			client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
-			log.error("", e);
-			promise.fail(e);
-		});
+		DAO.execute(PlayerDataMapper.class, MapperConstant.insert, playerData).onSuccess(r -> promise.complete(playerData)).onFailure(t -> promise.fail(t));
 		return promise.future();
 	}
 

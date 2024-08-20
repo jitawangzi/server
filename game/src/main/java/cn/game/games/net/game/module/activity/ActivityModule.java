@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -345,39 +344,6 @@ public class ActivityModule extends BasePlayerModule {
 
 			DAO.updateWithBLOBs(activity);
 		}
-	}
-
-	@Deprecated
-	protected void initFromDb(ListIterator<?> iterator) {
-
-		List<Activity> list = iterator == null ? null : (List<Activity>) iterator.next();
-//		Player player = PlayerManager.getInstance().getPlayer(playerId);
-
-		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
-		Set<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
-		// 这里注意一个活动，多开启时间的
-		if (list != null) {
-			for (Activity activity : list) {
-				ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
-				// 活动已经彻底关闭了
-				if (!showList.contains(activity.getId())) // 活动已经彻底关闭了
-				{
-					delete(activity.getId());
-				} else { // init from db
-					ActivityBase activityBase = ActivityFactory.initActivityBase(activityConfig, activity.getParams(), player);
-					if (activityBase != null) {
-						this.activities.put(activityConfig.ID, activityBase);
-					}
-				}
-			}
-		}
-		for (Integer integer : openList) {
-			if (!activities.containsKey(integer)) {
-				open(integer);
-			}
-		}
-		// 重载已开启过的爬塔活动数据
-//		reloadClimbingTowerData();
 	}
 
 	@Override

@@ -24,9 +24,9 @@ public class Account {
 
 	public Account(PlayerLoginRequest_01000001 req) {
 //        this.accountType = req.getAccountType();
-//        this.accountId = req.getAccountId();
+//		this.accountId = req.getAccountId();
 		this.payChannel = req.getSdkPayChannel();
-//        this.deviceId = req.getDeviceId();
+//		this.deviceId = req.getDeviceId();
 
 		this.version = req.getVerstion();
         this.adChannel = req.getAdChannel();

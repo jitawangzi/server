@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -78,13 +77,13 @@ public class PlayerModule extends BasePlayerModule {
 		return new Class[] { PlayerIdsMapper.class };
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-		List<PlayerIds> ids = (List<PlayerIds>) iterator.next();
-		for (PlayerIds playerIds : ids) {
-			idsMap.computeIfAbsent(playerIds.getType(), key -> new HashMap<>()).put(playerIds.getConfigId(), playerIds);
-		}
-	}
+//	@Override
+//	protected void initFromDb(ListIterator<?> iterator) {
+//		List<PlayerIds> ids = (List<PlayerIds>) iterator.next();
+//		for (PlayerIds playerIds : ids) {
+//			idsMap.computeIfAbsent(playerIds.getType(), key -> new HashMap<>()).put(playerIds.getConfigId(), playerIds);
+//		}
+//	}
 	@Override
 	public void initFromDbAfter() {
 	};

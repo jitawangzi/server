@@ -1,7 +1,5 @@
 package cn.game.games.net.game.module.player;
 
-import java.util.ListIterator;
-
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -91,13 +89,13 @@ public class VarModule extends BasePlayerModule {
 		return null;
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
+//	@Override
+//	protected void initFromDb(ListIterator<?> iterator) {
 //		List<Variable> list = (List<Variable>) iterator.next();
 //		for (Variable variable : list) {
 //			varMap.put(variable.getType(), variable.getValue());
 //		}
-	}
+//	}
 	@Override
 	public void initFromDbAfter() {
 

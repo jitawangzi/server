@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,8 +79,31 @@ public class Player  {
 
 	private long playerId;
 	private transient static Set<Class<? extends BasePlayerModule>> allModuleClass;
+	private transient static List<BasePlayerModule> allModuleInstance = new ArrayList<>();
 	static {
 		allModuleClass = ClassHelper.findSubclasses("cn.game.games", BasePlayerModule.class);
+		Iterator<Class<? extends BasePlayerModule>> iterator = allModuleClass.iterator();
+		while (iterator.hasNext()) {
+			Class<? extends cn.game.games.core.BasePlayerModule> c = (Class<? extends cn.game.games.core.BasePlayerModule>) iterator.next();
+			if (Modifier.isAbstract(c.getModifiers())) {
+				iterator.remove();
+				continue;
+			}
+			BasePlayerModule instance = null;
+			try {
+				instance = c.getDeclaredConstructor().newInstance();
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+					| SecurityException e) {
+				e.printStackTrace();
+			}
+			if (!instance.isComplete()) {
+				iterator.remove();
+				continue;
+			}
+			allModuleInstance.add(instance);
+		}
+		Collections.sort(allModuleInstance);
+
 	}
 	private Map<String, BasePlayerModule> modules = new HashMap<>();
 	private transient Map<Integer, GoodsModule<? extends Item, ? extends Item>> goodsModules = new HashMap<>();
@@ -245,6 +269,10 @@ public class Player  {
 		initPlayerModule() ; 
 	}
 
+//	public void initFromDb(PlayerData data, List<Object> moduleData) {
+//
+//	}
+
 	@SuppressWarnings("unchecked")
 	public void initPlayerModule() {
 		if (GameServer.getInstance().isSinglePlayerTable()) {
@@ -262,13 +290,13 @@ public class Player  {
 	public void initModule(HashMap<String, BasePlayerModule> modulesFromDb) {
 		for (Class<? extends BasePlayerModule> clazz : allModuleClass) {
 			try {
-				if (Modifier.isAbstract(clazz.getModifiers())) {
-					continue;
-				}
-				BasePlayerModule instance = createBasePlayerModuleInstance(clazz, modulesFromDb)  ; 
-				if (!instance.isComplete()) {
-					continue;
-				}
+//				if (Modifier.isAbstract(clazz.getModifiers())) {
+//					continue;
+//				}
+				BasePlayerModule instance = createBasePlayerModuleInstance(clazz, modulesFromDb);
+//				if (!instance.isComplete()) {
+//					continue;
+//				}
 				instance.initDefault(this);
 				modules.put(clazz.getName(), instance);
 				if (instance instanceof GoodsModule) {
@@ -293,9 +321,12 @@ public class Player  {
 		return clazz.getDeclaredConstructor().newInstance();
 	}
 
+	public static List<BasePlayerModule> getAllModuleSorted() {
+		return allModuleInstance;
+	}
+
 	public List<BasePlayerModule> getModuleSorted() {
-		List<BasePlayerModule> ret = new ArrayList<BasePlayerModule>();
-		ret.addAll(modules.values());
+		List<BasePlayerModule> ret = new ArrayList<BasePlayerModule>(modules.values());
 		Collections.sort(ret);
 		return ret;
 	}

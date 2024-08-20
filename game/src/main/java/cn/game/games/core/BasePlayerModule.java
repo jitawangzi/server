@@ -124,7 +124,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	public void defaultDbTasks(List<DbTask> dbTasks) {
 		if (defaultDbMapperClass != null) {
 			for (int i = 0; i < defaultDbMapperClass.length; i++) {
-				dbTasks.add(new DbTask(defaultDbMapperClass[i], MapperConstant.selectByPlayerId, player.getData().getPlayerId()));
+				dbTasks.add(new DbTask(defaultDbMapperClass[i], MapperConstant.selectByPlayerId, player.getPlayerId()));
 			}
 		}
 	}

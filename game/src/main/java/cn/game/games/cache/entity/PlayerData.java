@@ -2,6 +2,8 @@ package cn.game.games.cache.entity;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.cache.base.DbEntity;
 
 public class PlayerData implements Serializable, DbEntity {
@@ -166,6 +168,10 @@ public class PlayerData implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private String modules;
+
+	/** 是否是新注册的玩家 */
+	@JsonIgnore
+	private boolean isNew;
 	/**
 	 * @mbg.generated
 	 */
@@ -631,6 +637,14 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	public void setModules(String modules) {
 		this.modules = modules;
+	}
+
+	public boolean isNew() {
+		return isNew;
+	}
+
+	public void setNew(boolean isNew) {
+		this.isNew = isNew;
 	}
 
 	/**

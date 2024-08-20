@@ -1,7 +1,6 @@
 package cn.game.games.net.game.module.currency;
 
 import java.util.Collection;
-import java.util.ListIterator;
 
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
@@ -107,10 +106,6 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		return null;
 	}
 
-	@Override
-	protected void initFromDb(ListIterator<?> iterator) {
-
-	}
 	@Override
 	public void initFromDbAfter() {
 
