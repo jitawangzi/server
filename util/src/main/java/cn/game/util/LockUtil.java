@@ -21,7 +21,7 @@ public class LockUtil {
 	private static final Logger log = LoggerFactory.getLogger(LockUtil.class);
 	/** 获取锁时的等待时间 */
 	public static final int waitTime = 5;
-	/** 锁最长持有时间 */
+	/** 锁最长持有时间,到时间后，无论任何情况都会释放锁，防止锁不被释放 */
 	public static final int leaseTime = 30;
 
 	/**
@@ -147,7 +147,7 @@ public class LockUtil {
 	 * @return
 	 */
 	public static String getLockKey(String key) {
-		return "lock_" + key;
+		return "LOCK_" + key;
 	}
 	/**
 	 * 把key转化为对应的锁字符串
@@ -177,28 +177,28 @@ public class LockUtil {
 		});
 	}
 
-	private static RLock initLock(String... locks) {
-		if (locks == null || locks.length == 0) { 
-			throw new NullPointerException(" locks is null");
+	public static RLock initLock(String... locks) {
+		if (locks == null || locks.length == 0) {
+			throw new IllegalArgumentException("locks cannot be null or empty");
 		}
+		locks = getLockKey(locks);
 		RLock lock;
 		if (locks.length == 1) {
 			lock = RedissonUtil.getRedis().getLock(locks[0]);
 		} else {
 			RLock[] lockArray = new RLock[locks.length];
 			Arrays.sort(locks);
-
 			for (int i = 0; i < locks.length; i++) {
 				lockArray[i] = RedissonUtil.getRedis().getLock(locks[i]);
 			}
-
 			lock = new RedissonMultiLock(lockArray);
 		}
-
 		return lock;
 	}
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws Exception {
 
+		RedissonUtil.getInstance().init();
+		
 		RedissonUtil.set("a", "a");
 		RedissonUtil.set("b", "b");
 		RedissonUtil.set("c", "c");

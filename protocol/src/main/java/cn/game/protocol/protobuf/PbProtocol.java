@@ -269,6 +269,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerHeadFrameResponse_01000016 = 0x01000016;    //修改头像框返回  
 	public final static int PlayerGenderRequest_01000017 = 0x01000017;    //修改性别  
 	public final static int PlayerGenderResponse_01000018 = 0x01000018;    //修改性别返回  
+	public final static int PlayerImageRequest_01000019 = 0x01000019;    //修改形象  
+	public final static int PlayerImageResponse_0100001a = 0x0100001a;    //修改形象返回  
 	public final static int PlayerReconnecRequest_01000065 = 0x01000065;    //断线重连，和手机端通用  
 	public final static int PlayerReconnecResponse_01000066 = 0x01000066;    //断线重连，和手机端通用  
 	public final static int PlayerHeartbeatRequest_01000005 = 0x01000005;    //心跳  
@@ -876,6 +878,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PlayerGenderResponse_01000018, cn.game.protocol.protobuf.PlayerMsg.PlayerGenderResponse_01000018.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PlayerImageRequest_01000019, cn.game.protocol.protobuf.PlayerMsg.PlayerImageRequest_01000019.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerImageResponse_0100001a, cn.game.protocol.protobuf.PlayerMsg.PlayerImageResponse_0100001a.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(PlayerReconnecRequest_01000065, cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerReconnecResponse_01000066, cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecResponse_01000066.getDefaultInstance()
@@ -1358,6 +1364,8 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("PlayerHeadFrameResponse_01000016", 0x01000016);
 		nameIdMap.put("PlayerGenderRequest_01000017", 0x01000017);
 		nameIdMap.put("PlayerGenderResponse_01000018", 0x01000018);
+		nameIdMap.put("PlayerImageRequest_01000019", 0x01000019);
+		nameIdMap.put("PlayerImageResponse_0100001a", 0x0100001a);
 		nameIdMap.put("PlayerReconnecRequest_01000065", 0x01000065);
 		nameIdMap.put("PlayerReconnecResponse_01000066", 0x01000066);
 		nameIdMap.put("PlayerHeartbeatRequest_01000005", 0x01000005);

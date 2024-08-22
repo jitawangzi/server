@@ -54,6 +54,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameResponse_01000016;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadResponse_01000014;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatResponse_01000006;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerImageRequest_01000019;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerImageResponse_0100001a;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
@@ -110,6 +112,7 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerReconnecRequest_01000065, this::reconnect);
 		putInvoker(PbProtocol.PlayerNameRequest_01000011, this::rename);
 		putInvoker(PbProtocol.PlayerHeadRequest_01000013, this::head);
+		putInvoker(PbProtocol.PlayerImageRequest_01000019, this::image);
 		putInvoker(PbProtocol.PlayerHeadFrameRequest_01000015, this::headFrame);
 		putInvoker(PbProtocol.PlayerGenderRequest_01000017, this::gender);
 //		putInvoker(PbProtocol.ItemUseRequest_01000050, this::useItem);
@@ -502,6 +505,17 @@ public class PlayerHandler extends BaseHandler {
 		client.sendProtocol(resp);
 	}
 
+	protected void image(NetClient client, Object message) {
+
+		PlayerImageRequest_01000019 request = (PlayerImageRequest_01000019) message;
+		PlayerImageResponse_0100001a resp = PlayerImageResponse_0100001a.getDefaultInstance();
+		int image = request.getImage();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		player.getData().setImage(image);
+		client.sendProtocol(resp);
+	}
+
 	protected void rename(NetClient client, Object message) {
 
 		PlayerNameRequest_01000011 request = (PlayerNameRequest_01000011) message;
@@ -573,11 +587,14 @@ public class PlayerHandler extends BaseHandler {
 		newGameClient.setSessionId(passportSessionId);
 
 		if (reconnect) { // 客户端主动重连
-			boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, oldGameClient == null ? 0 : oldGameClient.getPlayerId());
-			if (!isReallyReconnect) {
-				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
-				GameClientManager.getInstance().removeGameClient(newGameClient);
-				return;
+			try {
+				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, oldGameClient == null ? 0 : oldGameClient.getPlayerId());
+				if (!isReallyReconnect) {
+					client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
+					GameClientManager.getInstance().removeGameClient(newGameClient);
+				}
+			} catch (Exception e) {
+				handleLoginFailure(e, 0, newGameClient, passportSessionId);
 			}
 		} else {
 			// 客户端新登陆
@@ -587,7 +604,7 @@ public class PlayerHandler extends BaseHandler {
 				account.accountId = r.getAccountId();
 				account.deviceId = r.getDeviceId();
 				return r.getUid();
-			}).onSuccess(uid -> {
+			}).map(uid -> {
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid);
 				if (!isReallyReconnect) {
 					loadOrCreatePlayerData(uid, account, newGameClient)
@@ -595,6 +612,7 @@ public class PlayerHandler extends BaseHandler {
 							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
+				return uid;
 			}).onFailure(t -> handleLoginFailure(t, ErrorMsgEnum.request_remote_server.getId(), newGameClient, passportSessionId));
 		}
 	}

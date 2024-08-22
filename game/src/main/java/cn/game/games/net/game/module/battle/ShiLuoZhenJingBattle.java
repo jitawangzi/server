@@ -3,13 +3,9 @@ package cn.game.games.net.game.module.battle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
-import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.manager.BattleManager;
@@ -24,7 +20,6 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 	/** 当前可打的失落真经非战斗关卡，从1开始，如果为10表示打战斗关卡 */
 	private int battleStage = -1;
 	/** 每日奖励是否已经领取了。 */
-	@JsonIgnore
 	private boolean dayReward;
 	/** 最新通关的battleId */
 	private int completeBattleId;
@@ -40,14 +35,14 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
 	public void reset() {
 		// 跨天重置之前，先结算一下奖励
-		if (startBattleId > 0) {
-			BattleConfig battleConfig = BattleManager.instance().get(startBattleId);
-			List<Goods> goods = new ArrayList<>();
-			for (int randomId : battleConfig.BattleBoxRandomId) {
-				goods.addAll(PlayerHelper.randomReward(player, randomId));
-			}
-			MailHelper.sendMail(player.getPlayerId(), 7, goods);
-		}
+//		if (startBattleId > 0) {
+//			BattleConfig battleConfig = BattleManager.instance().get(startBattleId);
+//			List<Goods> goods = new ArrayList<>();
+//			for (int randomId : battleConfig.BattleBoxRandomId) {
+//				goods.addAll(PlayerHelper.randomReward(player, randomId));
+//			}
+//			MailHelper.sendMail(player.getPlayerId(), 7, goods);
+//		}
 
 		dayReward = false;
 		if (startBattleId == 0) {
@@ -148,6 +143,10 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
 	public List<Integer> getRandomBuff() {
 		return randomBuff;
+	}
+
+	public void setDayReward(boolean dayReward) {
+		this.dayReward = dayReward;
 	}
 
 	private List<RewardInfo> calcRewardInfos(int level, int stage) {

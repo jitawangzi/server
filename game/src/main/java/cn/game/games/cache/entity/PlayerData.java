@@ -76,16 +76,6 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	private Integer vipLevel;
 	/**
-	 * 累积充值元宝
-	 * @mbg.generated
-	 */
-	private Integer goldTotal;
-	/**
-	 * 累积消费元宝
-	 * @mbg.generated
-	 */
-	private Integer costGoldTotal;
-	/**
 	 * 战力
 	 * @mbg.generated
 	 */
@@ -100,6 +90,11 @@ public class PlayerData implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private Integer headFrame;
+	/**
+	 * 形象
+	 * @mbg.generated
+	 */
+	private Integer image;
 	/**
 	 * 创建日期
 	 * @mbg.generated
@@ -168,15 +163,10 @@ public class PlayerData implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private String modules;
-
-	/** 是否是新注册的玩家 */
-	@JsonIgnore
-	private boolean isNew;
 	/**
 	 * @mbg.generated
 	 */
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * @mbg.generated
 	 */
@@ -376,34 +366,6 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getGoldTotal() {
-		return goldTotal;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setGoldTotal(Integer goldTotal) {
-		this.goldTotal = goldTotal;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public Integer getCostGoldTotal() {
-		return costGoldTotal;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setCostGoldTotal(Integer costGoldTotal) {
-		this.costGoldTotal = costGoldTotal;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
 	public Integer getFightPower() {
 		return fightPower;
 	}
@@ -441,6 +403,20 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	public void setHeadFrame(Integer headFrame) {
 		this.headFrame = headFrame;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public Integer getImage() {
+		return image;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setImage(Integer image) {
+		this.image = image;
 	}
 
 	/**
@@ -639,14 +615,6 @@ public class PlayerData implements Serializable, DbEntity {
 		this.modules = modules;
 	}
 
-	public boolean isNew() {
-		return isNew;
-	}
-
-	public void setNew(boolean isNew) {
-		this.isNew = isNew;
-	}
-
 	/**
 	 * @mbg.generated
 	 */
@@ -661,5 +629,16 @@ public class PlayerData implements Serializable, DbEntity {
 	@Override
 	public Object primaryKey() {
 		return playerId;
+	}
+
+	/** 是否是新注册的玩家 */
+	@JsonIgnore
+	private boolean isNew;
+	public boolean isNew() {
+		return isNew;
+	}
+
+	public void setNew(boolean isNew) {
+		this.isNew = isNew;
 	}
 }

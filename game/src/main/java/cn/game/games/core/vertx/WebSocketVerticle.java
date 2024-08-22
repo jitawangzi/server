@@ -39,7 +39,6 @@ public class WebSocketVerticle extends AbstractVerticle {
 //			System.out.println("client connected: " + ws.textHandlerID());
 //			System.out.println("client connected: " + ws.binaryHandlerID());
 			ws.binaryMessageHandler(r -> {
-
 				try {
 					ContextInternal context = (ContextInternal) VxHolder.vertx.getOrCreateContext();
 
@@ -75,7 +74,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 					processor.process(client, protocol);
 				} catch (Exception e) {
 					log.warn("{} message parse failed ", ws.binaryHandlerID());
-					ws.close();
+//					ws.close();
 				}
 //				handlerState.addTotalPacketReceived();
 
@@ -83,7 +82,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 				log.error("not support ws text message " + r);
 			}).closeHandler(v -> GameClientManager.getInstance().removeGameClientConnection(ws.binaryHandlerID()))
 					.exceptionHandler(r -> {
-						r.printStackTrace();
+						log.error("ws error", r);
 						ws.close();
 					});
 		}).connectionHandler(r -> {

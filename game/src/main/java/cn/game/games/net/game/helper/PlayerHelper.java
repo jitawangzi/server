@@ -1181,7 +1181,6 @@ public class PlayerHelper {
 		GameClientManager.getInstance().addGameClientPlayer(newGameClient);
 
 		player.setGameClient((GameClient) newGameClient);
-
 		PlayerHelper.refresh(player);
 		player.handleEvent(EventTypeEnum.Reconnect);
 		PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();

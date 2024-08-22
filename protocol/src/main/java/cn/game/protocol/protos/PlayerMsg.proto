@@ -85,6 +85,14 @@ message PlayerGenderRequest_01000017{
 message PlayerGenderResponse_01000018{
 }
 
+/*** 修改形象 **/
+message PlayerImageRequest_01000019{
+    int32 image = 1;
+}
+/*** 修改形象返回 **/
+message PlayerImageResponse_0100001a{
+}
+
 
 /*** 断线重连，和手机端通用 **/
 message PlayerReconnecRequest_01000065{
@@ -242,6 +250,7 @@ message PlayerInfo{
     bool isMan = 3;//性别，是否是男的
     uint32 head = 10;//头像id
     uint32 headFrame = 11;//头像框id
+    uint32 image = 12;//形象
 	string offlineTime	= 	22;	//上次下线时间的时间戳（毫秒）
 }
 /*** 玩家所有数据，一般在创建用户后，或者登陆后下发 ***/

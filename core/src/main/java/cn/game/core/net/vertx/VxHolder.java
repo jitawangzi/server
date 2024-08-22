@@ -1,10 +1,13 @@
 package cn.game.core.net.vertx;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
+import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +21,18 @@ import cn.game.core.net.vertx.codec.CustomMessageCodec;
 import cn.game.core.net.vertx.codec.ProtobufMessageCodec;
 import cn.game.core.net.vertx.codec.ProtobufProtocolCodec;
 import cn.game.util.IpUtil;
+import cn.game.util.LockUtil;
 import cn.game.util.ServerType;
 import cn.game.util.ZkHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Context;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -316,4 +322,84 @@ public class VxHolder {
 	public static ZookeeperClusterManager getZookeeperClusterManager() {
 		return zookeeperClusterManager;
 	}
+
+	/** 
+	 * 获取Redisson分布式锁，进行后续的逻辑，可以用compose方法组合多个Future
+	 * 如果是在eventloop线程调用方法，则逻辑运行在当前eventloop线程。 
+	 * 如果是在其他线程调用方法，则逻辑运行在某个eventloop线程。
+	 * @param <T>
+	 * @param waitTime 获取锁的等待时间
+	 * @param leaseTime	锁最大持有时间
+	 * @param unit
+	 * @param operations  获取锁后的一些操作
+	 * @param lockKeys 锁的key，支持多个key。
+	 * @return
+	 */
+	public static <T> Future<T> runWithLock(long waitTime, long leaseTime, TimeUnit unit, Supplier<Future<T>> operations, String... lockKeys) {
+		Promise<T> promise = Promise.promise();
+		RLock lock = LockUtil.initLock(lockKeys);
+		Context context = VxHolder.vertx.getOrCreateContext();
+		long threadId = Thread.currentThread().getId();
+
+		lock.tryLockAsync(waitTime, leaseTime, unit).whenComplete((locked, throwable) -> {
+			if (throwable != null) {
+				log.error("Error acquiring lock for keys: " + Arrays.toString(lockKeys), throwable);
+				promise.fail(throwable);
+				return;
+			}
+			if (!locked) {
+	            log.warn("Failed to acquire lock for keys: " + Arrays.toString(lockKeys));
+	            promise.fail("Failed to acquire lock");
+				return;
+			}
+			context.runOnContext(v -> {
+				Future<T> operationFuture;
+				try {
+					operationFuture = operations.get();
+				} catch (Exception e) {
+					log.error("Error getting operation future for keys: " + Arrays.toString(lockKeys), e);
+					promise.fail(e);
+					releaseLock(lock, threadId, lockKeys);
+					return;
+				}
+				operationFuture.onComplete(result -> {
+					if (result.succeeded()) {
+						promise.complete(result.result());
+					} else {
+						promise.fail(result.cause());
+					}
+					releaseLock(lock, threadId, lockKeys);
+				});
+				// 使用 leaseTime 作为业务逻辑的最大执行时间
+				VxHolder.vertx.setTimer(unit.toMillis(leaseTime), id -> {
+					if (!promise.future().isComplete()) {
+						log.warn("Operation timed out for keys: " + Arrays.toString(lockKeys));
+						promise.fail("Operation timed out");
+						// 注意：这里不需要手动释放锁，因为 leaseTime 到期后锁会自动释放
+					}
+				});
+			});
+		});
+		return promise.future();
+	}
+
+	/** 
+	 * 重载方法，使用默认的等待时间和租约时间
+	 * @param <T>
+	 * @param operations
+	 * @param lockKey
+	 * @return
+	 */
+	public static <T> Future<T> runWithLock(Supplier<Future<T>> operations, String... lockKey) {
+		return runWithLock(5, 30, TimeUnit.SECONDS, operations, lockKey);
+	}
+
+	private static void releaseLock(RLock lock, long threadId, String... lockKeys) {
+		lock.unlockAsync(threadId).whenComplete((unlocked, unlockThrowable) -> {
+			if (unlockThrowable != null) {
+				log.error("Error unlocking for keys: " + Arrays.toString(lockKeys), unlockThrowable);
+			}
+		});
+	}
+
 }

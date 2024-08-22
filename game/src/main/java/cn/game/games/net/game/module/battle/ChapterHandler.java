@@ -208,21 +208,29 @@ public class ChapterHandler extends BaseHandler {
 		BattleLostDayRewardRequest_13000203 req = (BattleLostDayRewardRequest_13000203) message;
 		BattleLostDayRewardResponse_13000204.Builder resp = BattleLostDayRewardResponse_13000204.newBuilder();
 
-//		long playerId = client.getPlayerId();
-//		Player player = PlayerManager.getInstance().getPlayer(playerId);
-//		if (!player.isFuncOpen(InitialUI.ShiLuoZhenJing)) {
-//			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
-//			return;
-//		}
-//		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-//		ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
-//		if (battle.isDayReward()) {
-//			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-//			return;
-//
-//		}
-//		// TODO 给奖励
-//		battle.setDayReward(true);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (!player.isFuncOpen(InitialUI.ShiLuoZhenJing)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+		if (battle.isDayReward()) {
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		int startBattleId = battle.getStartBattleId();
+
+		if (startBattleId == 0) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		BattleConfig battleConfig = BattleManager.instance().get(startBattleId);
+		for (int randomId : battleConfig.BattleBoxRandomId) {
+			resp.addAllRewards(PlayerHelper.addReward(player, randomId, OpType.ShiLuoZhenJing));
+		}
+		battle.setDayReward(true);
 		client.sendProtocol(resp);
 	}
 
