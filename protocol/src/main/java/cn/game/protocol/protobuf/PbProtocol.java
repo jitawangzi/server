@@ -256,6 +256,20 @@ public class PbProtocol implements ProtocolParser {
 	public final static int MergeEquipmentTeardownResponse_23000004 = 0x23000004;    
 	public final static int MergeEquipmentPartStrengthRequest_23000007 = 0x23000007;    //装备升级  
 	public final static int MergeEquipmentPartStrengthResponse_23000008 = 0x23000008;    
+	public final static int PerCompositeRequest_19000001 = 0x19000001;    //碎片合成宠物  
+	public final static int PerCompositeResponse_19000002 = 0x19000002;    
+	public final static int PerUpLevelRequest_19000003 = 0x19000003;    //宠物升级  
+	public final static int PerUpLevelResponse_19000004 = 0x19000004;    
+	public final static int PerBreakRequest_19000005 = 0x19000005;    //宠物突破  
+	public final static int PerBreakResponse_19000006 = 0x19000006;    
+	public final static int PerRefineRequest_19000007 = 0x19000007;    //宠物洗练  
+	public final static int PerRefineResponse_19000008 = 0x19000008;    
+	public final static int PerBattleRequest_19000011 = 0x19000011;    //宠物上阵  
+	public final static int PerRefineResponse_19000012 = 0x19000012;    
+	public final static int PerBondsActivateRequest_19000013 = 0x19000013;    //激活宠物羁绊  
+	public final static int PerBondsActivateResponse_19000014 = 0x19000014;    
+	public final static int PerBondsUpLevelRequest_19000015 = 0x19000015;    //升级宠物羁绊  
+	public final static int PerBondsUpLevelResponse_19000016 = 0x19000016;    
 	public final static int PlayerLoginRequest_01000001 = 0x01000001;    //登陆  
 	public final static int PlayerLoginResponse_01000002 = 0x01000002;    //用户登陆,返回游戏数据  
 	public final static int PlayerLogoutRequest_01000003 = 0x01000003;    //退出登陆  
@@ -852,6 +866,34 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(MergeEquipmentPartStrengthResponse_23000008, cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentPartStrengthResponse_23000008.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PerCompositeRequest_19000001, cn.game.protocol.protobuf.PetMsg.PerCompositeRequest_19000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerCompositeResponse_19000002, cn.game.protocol.protobuf.PetMsg.PerCompositeResponse_19000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerUpLevelRequest_19000003, cn.game.protocol.protobuf.PetMsg.PerUpLevelRequest_19000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerUpLevelResponse_19000004, cn.game.protocol.protobuf.PetMsg.PerUpLevelResponse_19000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerBreakRequest_19000005, cn.game.protocol.protobuf.PetMsg.PerBreakRequest_19000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerBreakResponse_19000006, cn.game.protocol.protobuf.PetMsg.PerBreakResponse_19000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerRefineRequest_19000007, cn.game.protocol.protobuf.PetMsg.PerRefineRequest_19000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerRefineResponse_19000008, cn.game.protocol.protobuf.PetMsg.PerRefineResponse_19000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerBattleRequest_19000011, cn.game.protocol.protobuf.PetMsg.PerBattleRequest_19000011.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerRefineResponse_19000012, cn.game.protocol.protobuf.PetMsg.PerRefineResponse_19000012.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerBondsActivateRequest_19000013, cn.game.protocol.protobuf.PetMsg.PerBondsActivateRequest_19000013.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerBondsActivateResponse_19000014, cn.game.protocol.protobuf.PetMsg.PerBondsActivateResponse_19000014.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerBondsUpLevelRequest_19000015, cn.game.protocol.protobuf.PetMsg.PerBondsUpLevelRequest_19000015.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PerBondsUpLevelResponse_19000016, cn.game.protocol.protobuf.PetMsg.PerBondsUpLevelResponse_19000016.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(PlayerLoginRequest_01000001, cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerLoginResponse_01000002, cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002.getDefaultInstance()
@@ -1351,6 +1393,20 @@ public class PbProtocol implements ProtocolParser {
 		nameIdMap.put("MergeEquipmentTeardownResponse_23000004", 0x23000004);
 		nameIdMap.put("MergeEquipmentPartStrengthRequest_23000007", 0x23000007);
 		nameIdMap.put("MergeEquipmentPartStrengthResponse_23000008", 0x23000008);
+		nameIdMap.put("PerCompositeRequest_19000001", 0x19000001);
+		nameIdMap.put("PerCompositeResponse_19000002", 0x19000002);
+		nameIdMap.put("PerUpLevelRequest_19000003", 0x19000003);
+		nameIdMap.put("PerUpLevelResponse_19000004", 0x19000004);
+		nameIdMap.put("PerBreakRequest_19000005", 0x19000005);
+		nameIdMap.put("PerBreakResponse_19000006", 0x19000006);
+		nameIdMap.put("PerRefineRequest_19000007", 0x19000007);
+		nameIdMap.put("PerRefineResponse_19000008", 0x19000008);
+		nameIdMap.put("PerBattleRequest_19000011", 0x19000011);
+		nameIdMap.put("PerRefineResponse_19000012", 0x19000012);
+		nameIdMap.put("PerBondsActivateRequest_19000013", 0x19000013);
+		nameIdMap.put("PerBondsActivateResponse_19000014", 0x19000014);
+		nameIdMap.put("PerBondsUpLevelRequest_19000015", 0x19000015);
+		nameIdMap.put("PerBondsUpLevelResponse_19000016", 0x19000016);
 		nameIdMap.put("PlayerLoginRequest_01000001", 0x01000001);
 		nameIdMap.put("PlayerLoginResponse_01000002", 0x01000002);
 		nameIdMap.put("PlayerLogoutRequest_01000003", 0x01000003);

@@ -15,9 +15,11 @@ public enum GoodsTypeEnum{
 	Item(2, "道具"),
 	/** 英雄*/
 	Hero(3, "英雄"),
+	/** 头像框*/
+	HeadBox(4, "头像框"),
 	/** 合成英雄*/
 	HCHero(9, "合成英雄"),
-	/** 装备 */
+	/** 装备，这个暂时没用到 */
 	Equipment(7, "装备"),
 	/** 英雄时装 */
 	Fashion(8, "英雄时装"),
