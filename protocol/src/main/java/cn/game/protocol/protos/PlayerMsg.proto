@@ -257,7 +257,7 @@ message PlayerInfo{
 message PlayerAllInfo{
    PlayerInfo player = 1;    	// 用户基本信息。
    map<uint32, uint64> assets = 2;   // 主要是货币，附带一些经验体力等数据。   key:Asset表id
-   map<uint32, uint32> assetRecover = 3;    	// key:Asset表id。一些定时恢复的资源，例如体力，value：上次恢复的时间戳（秒）
+   map<uint32, uint64> assetRecover = 3;  // key:Asset表id。一些定时恢复的资源，例如体力，value：上次恢复的时间戳（毫秒）
    map<uint32, uint32> levels = 4;    	//key:Asset表id。 各种等级，比如key要是玩家经验，那value就是玩家等级；如果key是捕鱼玩法的经验，则value是捕鱼玩法的等级。
    repeated ItemInfo items  = 5;        //道具  Item表
 
@@ -277,6 +277,8 @@ message PlayerAllInfo{
    map<uint32, uint32> fairyFriendFights = 21;   //仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+
+   repeated int32 headboxs = 29;  // 玩家拥有的头像框。
    repeated BattleInfo battles = 30;        //打过的战役，包括通关的和非通关的。
    int32 freeRougeTimes = 31; 				// 每日免费肉鸽刷新次数。
 //   int32 daoHeartId = 32;					// 当前通关最新的道心磨砺关卡id（DaoHeart）表id

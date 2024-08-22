@@ -2,18 +2,16 @@ package cn.game.games.net.game.module.currency;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import cn.game.games.cache.entity.PlayerIds;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.protocol.generated.config.AssetRestoreConfig;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.AssetRestoreManager;
@@ -33,6 +31,9 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	@JsonIgnore
 	private Map<Integer, Long> timerTask = new HashMap<Integer, Long>();
 	
+	/** 资源恢复时间 */
+	private Map<Integer, Long> idUpdateTimeMap = new HashMap<Integer, Long>();
+
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
@@ -40,25 +41,28 @@ public class MoneyRecoverModule extends BasePlayerModule {
 			break;
 		}
 		case LoginFinish: {
-
-			Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.MONEY_RECOVERY);
-			idsSet.stream().filter(id -> !player.getCurrencyModule().has(id)).collect(Collectors.toList())
-					.forEach(id -> player.getPlayerModule().removeId(IdConstant.MONEY_RECOVERY, id));
+			Set<Integer> idsSet = idUpdateTimeMap.keySet();
+			Iterator<Integer> iterator = idsSet.iterator();
+			while (iterator.hasNext()) {
+				Integer id = (Integer) iterator.next();
+				if (!player.getCurrencyModule().has(id)) {
+					iterator.remove();
+				}
+			}
 
 			for (Integer id : idsSet) {
-				PlayerIds ids = player.getPlayerModule().getIds(IdConstant.MONEY_RECOVERY, id);
+				long updateTime = idUpdateTimeMap.get(id);
 				AssetRestoreConfig recoveryConfig = AssetRestoreManager.instance().get(id);
 				int interval = recoveryConfig.interval * 60 * 1000;
 				if (isRecoverMax(id)) {
 					continue;
 				}
 				int max = getRecoverMax(id);
-				long recoveryTimes = (System.currentTimeMillis() - ids.getUpdateTime()) / interval;
+				long recoveryTimes = (System.currentTimeMillis() - updateTime) / interval;
 				if (recoveryTimes > 0) {
 					long newValue = Math.min(player.getCurrencyModule().getCount(id) + recoveryTimes, max);
 					player.getCurrencyModule().setCount(id, newValue);
-					ids.setUpdateTime(ids.getUpdateTime() + recoveryTimes * interval);
-					ids.update();
+					idUpdateTimeMap.put(id, updateTime + recoveryTimes * interval);
 				}
 			}
 			startAllRecoveryTask();
@@ -92,7 +96,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 				if (isRecoverMax(id)) {
 					return;
 				}
-				player.getPlayerModule().updateTime(IdConstant.MONEY_RECOVERY, id);
+				idUpdateTimeMap.put(id, System.currentTimeMillis());
 				PlayerHelper.addResources(player, id, 1, OpType.TimerRecovery);
 			});
 			timerTask.put(id, timer);
@@ -148,11 +152,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	};
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-
-		Collection<PlayerIds> ids = player.getPlayerModule().getIds(IdConstant.MONEY_RECOVERY);
-		for (PlayerIds playerIds : ids) {
-			builder.putAssetRecover(playerIds.getConfigId(), (int) (playerIds.getUpdateTime() / 1000));
-		}
+		builder.putAllAssetRecover(idUpdateTimeMap);
 	}
 
 	@Override

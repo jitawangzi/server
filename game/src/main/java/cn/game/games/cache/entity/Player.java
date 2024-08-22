@@ -358,6 +358,7 @@ public class Player  {
 //		builder.setExp(getData().getExp());
 		builder.setHead(getData().getHead());
 		builder.setHeadFrame(getData().getHeadFrame());
+		builder.setImage(getData().getImage());
 		builder.setIsMan(getData().getGender());
 //		builder.setVipLevel(getData().getVipLevel());
 //		builder.setVipExp(getData().getVipExpTotal());

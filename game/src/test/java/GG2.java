@@ -1,21 +1,29 @@
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class GG2 {
 
 	public static void main(String[] args) throws Exception {
-		Vertx vertx = Vertx.vertx();
-		Future<String> futureWithTimeout = Future.future(promise -> {
-			long setTimer = vertx.setTimer(5000, id -> promise.fail("Operation timed out"));
-			promise.future().onComplete(ar -> vertx.cancelTimer(setTimer));
-			promise.complete("the result");
-		});
 
-		futureWithTimeout.onSuccess(r -> {
-			System.out.println("The result is: " + r);
-		}).onFailure(e -> {
-			System.err.println("Error caught in onFailure: " + e.getMessage());
-		});
+		Map<Integer, Long> idUpdateTimeMap = new HashMap<Integer, Long>();
+		idUpdateTimeMap.put(1, 333L);
+		idUpdateTimeMap.put(2, 333L);
+
+		Set<Integer> idsSet = idUpdateTimeMap.keySet();
+		Iterator<Integer> iterator = idsSet.iterator();
+		while (iterator.hasNext()) {
+			Integer id = (Integer) iterator.next();
+			if (id == 1) {
+				iterator.remove();
+			}
+		}
+
+		for (Integer integer : idsSet) {
+			System.out.println(integer);
+		}
+
 	}
 
 

@@ -314,6 +314,16 @@ public final class RewardMsg {
      * <code>.Protos.HCHeroInfo hcHero = 21;</code>
      */
     cn.game.protocol.protobuf.BaseMsg.HCHeroInfoOrBuilder getHcHeroOrBuilder();
+
+    /**
+     * <pre>
+     * 头像框
+     * </pre>
+     *
+     * <code>int32 head = 22;</code>
+     * @return The head.
+     */
+    int getHead();
   }
   /**
    * <pre>
@@ -507,6 +517,11 @@ public final class RewardMsg {
                 hcHero_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 176: {
+
+              head_ = input.readInt32();
               break;
             }
             default: {
@@ -959,6 +974,21 @@ public final class RewardMsg {
       return getHcHero();
     }
 
+    public static final int HEAD_FIELD_NUMBER = 22;
+    private int head_;
+    /**
+     * <pre>
+     * 头像框
+     * </pre>
+     *
+     * <code>int32 head = 22;</code>
+     * @return The head.
+     */
+    @java.lang.Override
+    public int getHead() {
+      return head_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1005,6 +1035,9 @@ public final class RewardMsg {
       }
       if (hcHero_ != null) {
         output.writeMessage(21, getHcHero());
+      }
+      if (head_ != 0) {
+        output.writeInt32(22, head_);
       }
       unknownFields.writeTo(output);
     }
@@ -1058,6 +1091,10 @@ public final class RewardMsg {
       if (hcHero_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(21, getHcHero());
+      }
+      if (head_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(22, head_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1129,6 +1166,8 @@ public final class RewardMsg {
         if (!getHcHero()
             .equals(other.getHcHero())) return false;
       }
+      if (getHead()
+          != other.getHead()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -1184,6 +1223,8 @@ public final class RewardMsg {
         hash = (37 * hash) + HCHERO_FIELD_NUMBER;
         hash = (53 * hash) + getHcHero().hashCode();
       }
+      hash = (37 * hash) + HEAD_FIELD_NUMBER;
+      hash = (53 * hash) + getHead();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1389,6 +1430,8 @@ public final class RewardMsg {
           hcHero_ = null;
           hcHeroBuilder_ = null;
         }
+        head_ = 0;
+
         return this;
       }
 
@@ -1470,6 +1513,7 @@ public final class RewardMsg {
         } else {
           result.hcHero_ = hcHeroBuilder_.build();
         }
+        result.head_ = head_;
         onBuilt();
         return result;
       }
@@ -1550,6 +1594,9 @@ public final class RewardMsg {
         }
         if (other.hasHcHero()) {
           mergeHcHero(other.getHcHero());
+        }
+        if (other.getHead() != 0) {
+          setHead(other.getHead());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3283,6 +3330,49 @@ public final class RewardMsg {
           hcHero_ = null;
         }
         return hcHeroBuilder_;
+      }
+
+      private int head_ ;
+      /**
+       * <pre>
+       * 头像框
+       * </pre>
+       *
+       * <code>int32 head = 22;</code>
+       * @return The head.
+       */
+      @java.lang.Override
+      public int getHead() {
+        return head_;
+      }
+      /**
+       * <pre>
+       * 头像框
+       * </pre>
+       *
+       * <code>int32 head = 22;</code>
+       * @param value The head to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHead(int value) {
+        
+        head_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 头像框
+       * </pre>
+       *
+       * <code>int32 head = 22;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHead() {
+        
+        head_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -6108,7 +6198,7 @@ public final class RewardMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017RewardMsg.proto\022\006Protos\032\rBaseMsg.proto" +
-      "\"\244\003\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
+      "\"\262\003\n\nRewardInfo\022 \n\005asset\030\001 \001(\0132\021.Protos." +
       "AssetInfo\022\036\n\004item\030\002 \001(\0132\020.Protos.ItemInf" +
       "o\022\036\n\004role\030\003 \001(\0132\020.Protos.HeroInfo\022 \n\005equ" +
       "ip\030\007 \001(\0132\021.Protos.EquipInfo\022(\n\007fashion\030\010" +
@@ -6118,12 +6208,13 @@ public final class RewardMsg {
       "rotos.DragonSkillInfo\022$\n\005sword\030\014 \001(\0132\025.P" +
       "rotos.HeroSwordInfo\022.\n\nmergeEquip\030\024 \001(\0132" +
       "\032.Protos.MergeEquipmentInfo\022\"\n\006hcHero\030\025 " +
-      "\001(\0132\022.Protos.HCHeroInfo\":\n\023RewardPush_55" +
-      "000501\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
-      "nfo\"6\n\022SpendPush_55001501\022 \n\005spend\030\001 \003(\013" +
-      "2\021.Protos.GoodsInfo\">\n\027RewardShowPush_55" +
-      "002501\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
-      "nfoB\033\n\031cn.game.protocol.protobufb\006proto3"
+      "\001(\0132\022.Protos.HCHeroInfo\022\014\n\004head\030\026 \001(\005\":\n" +
+      "\023RewardPush_55000501\022#\n\007rewards\030\001 \003(\0132\022." +
+      "Protos.RewardInfo\"6\n\022SpendPush_55001501\022" +
+      " \n\005spend\030\001 \003(\0132\021.Protos.GoodsInfo\">\n\027Rew" +
+      "ardShowPush_55002501\022#\n\007rewards\030\001 \003(\0132\022." +
+      "Protos.RewardInfoB\033\n\031cn.game.protocol.pr" +
+      "otobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6135,7 +6226,7 @@ public final class RewardMsg {
     internal_static_Protos_RewardInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_RewardInfo_descriptor,
-        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", "DragonSkill", "Sword", "MergeEquip", "HcHero", });
+        new java.lang.String[] { "Asset", "Item", "Role", "Equip", "Fashion", "Gem", "Dragon", "DragonSkill", "Sword", "MergeEquip", "HcHero", "Head", });
     internal_static_Protos_RewardPush_55000501_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_RewardPush_55000501_fieldAccessorTable = new

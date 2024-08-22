@@ -11,6 +11,7 @@ import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.module.currency.Currency;
 import cn.game.games.net.game.module.develop.mergeequip.MergeEquip;
+import cn.game.games.net.game.module.player.headbox.HeadBox;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -23,6 +24,15 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 public abstract class GoodsModule<E extends Item, T extends Item> extends BasePlayerModule {
 
 	public abstract long getCount(int configId);
+
+	/** 
+	 * 是否有某种东西
+	 * @param configId
+	 * @return
+	 */
+	public boolean has(int configId) {
+		return getCount(configId) > 0;
+	}
 
 	/** 
 	 * 返回新增的物品，注意可重叠的物品。 
@@ -73,7 +83,7 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 			if (object instanceof ItemNoStack) {
 				list.add(toRewardInfo((E) object));
 			} else {
-				if (object instanceof Currency || object instanceof MergeEquip) {
+				if (object instanceof Currency || object instanceof MergeEquip || object instanceof HeadBox) {
 					list.add(toRewardInfo((E) object));
 				} else {
 					long newCount = getCount(configId);

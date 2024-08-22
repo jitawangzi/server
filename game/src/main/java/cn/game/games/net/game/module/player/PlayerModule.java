@@ -1,8 +1,7 @@
 package cn.game.games.net.game.module.player;
 
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,10 +19,13 @@ import cn.game.games.net.data.mapper.PlayerIdsMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeadPortraitConfig;
 import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.HeadPortraitManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
@@ -46,8 +48,11 @@ public class PlayerModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
 			EventTypeEnum.LoginFinish, EventTypeEnum.Reconnect, EventTypeEnum.LevelUp, EventTypeEnum.ResourceRemove, EventTypeEnum.FuncOpen };
 
-	/** 玩家拥有的各种id集合，通常是只增加新id，并且id不能重复。 key1:type ,key2:configId*/
+	@JsonIgnore
+	@Deprecated
 	private Map<Integer, Map<Integer, PlayerIds>> idsMap = new HashMap<Integer, Map<Integer, PlayerIds>>();
+	/** 玩家拥有的各种单纯的id集合，通常是只增加新id，并且id不能重复。 key:type {@link IdConstant}*/
+	private Map<Integer, Set<Integer>> idsSet = new HashMap<Integer, Set<Integer>>();
 	/** 等级数据，key: {@link Asset} 这里是经验升的等级*/
 	private IntMapWrapper expLevelMap = new IntMapWrapper();
 	/** 炼金等级 */
@@ -87,66 +92,57 @@ public class PlayerModule extends BasePlayerModule {
 	@Override
 	public void initFromDbAfter() {
 	};
-	public void addId(int type, int configId) {
-		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
-		if (map.containsKey(configId)) {
-			return;
-		}
-		PlayerIds add = new PlayerIds();
-		add.setPlayerId(playerId);
-		add.setType(type);
-		add.setConfigId(configId);
-		add.setCreateTime(new Date());
-		add.setUpdateTime(System.currentTimeMillis());
-		add.insert();
-		map.put(add.getConfigId(), add);
+
+	public boolean addId(int type, int configId) {
+		return getOrCreateIdSet(type).add(configId);
+//		Map<Integer, PlayerIds> map = getOrCreateIdSet(type);
+//		if (map.containsKey(configId)) {
+//			return;
+//		}
+//		PlayerIds add = new PlayerIds();
+//		add.setPlayerId(playerId);
+//		add.setType(type);
+//		add.setConfigId(configId);
+//		add.setCreateTime(new Date());
+//		add.setUpdateTime(System.currentTimeMillis());
+//		add.insert();
+//		map.put(add.getConfigId(), add);
 	}
 
-	public void removeId(int type, int configId) {
-		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
-		PlayerIds playerIds = map.remove(configId);
-		if (playerIds != null) {
-			playerIds.delete();
-		}
+	public boolean removeId(int type, int configId) {
+//		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
+//		PlayerIds playerIds = map.remove(configId);
+//		if (playerIds != null) {
+//			playerIds.delete();
+//		}
+		return getOrCreateIdSet(type).remove(configId);
 	}
 
-	public void updateTime(int type, int configId) {
-		PlayerIds ids = getIds(type, configId);
-		if (ids != null) {
-			ids.setUpdateTime(System.currentTimeMillis());
-			ids.update();
-		} else {
-			addId(type, configId);
-		}
-	}
+//	public void updateTime(int type, int configId) {
+//		PlayerIds ids = getIds(type, configId);
+//		if (ids != null) {
+//			ids.setUpdateTime(System.currentTimeMillis());
+//			ids.update();
+//		} else {
+//			addId(type, configId);
+//		}
+//	}
 
 	public boolean hasId(int type, int configId) {
-		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
-		return map.containsKey(configId);
+		return getOrCreateIdSet(type).contains(configId);
 	}
 
 	public Set<Integer> getIdsSet(int type) {
-		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
-		return map.keySet();
+		return getOrCreateIdSet(type);
 	}
 
-	public PlayerIds getIds(int type, int configId) {
-		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
-		return map.get(configId);
-	}
-
-	public Collection<PlayerIds> getIds(int type) {
-		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
-		return map.values();
-	}
-
-	public Map<Integer, PlayerIds> getOrCreateIdMap(int type) {
-		Map<Integer, PlayerIds> map = idsMap.get(type);
-		if (map == null) {
-			map = new HashMap<Integer, PlayerIds>();
-			idsMap.put(type, map);
+	public Set<Integer> getOrCreateIdSet(int type) {
+		Set<Integer> set = idsSet.get(type);
+		if (set == null) {
+			set = new HashSet<Integer>();
+			idsSet.put(type, set);
 		}
-		return map;
+		return set;
 	}
 
 	public IntMapWrapper getExpLevelMap() {
@@ -232,10 +228,7 @@ public class PlayerModule extends BasePlayerModule {
 		builder.putAllLevels(expLevelMap.getMap());
 
 		// 礼包
-		Map<Integer, PlayerIds> map = idsMap.get(IdConstant.CHAPTER_PACK);
-		if (map != null) {
-			builder.addAllChapterPacks(map.keySet());
-		}
+		builder.addAllChapterPacks(getOrCreateIdSet(IdConstant.CHAPTER_PACK));
 		
 		if (cloudBox != null && !cloudBox.isEmpty()) {
 			List<GoodsInfo> collect = cloudBox.stream().map(Goods::toGoodsInfo).collect(Collectors.toList());
@@ -244,7 +237,8 @@ public class PlayerModule extends BasePlayerModule {
 		builder.setFirstLogin(isFirstLoign);
 		isFirstLoign = false;
 		builder.putAllGuide(guideMap);
-
+		
+		builder.addAllHeadboxs(getOrCreateIdSet(IdConstant.HEAD_BOX));
 	}
 	@Override
 	public void handleEvent(GameEvent event) {
@@ -259,6 +253,26 @@ public class PlayerModule extends BasePlayerModule {
 		}
 		case PLAYER_CREATE: {
 			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
+			// 初始化头像框
+			List<HeadPortraitConfig> list = HeadPortraitManager.instance().list();
+			HeroModule heroModule = player.getHeroModule();
+			int headPortrait = 0;
+			for (HeadPortraitConfig headPortraitConfig : list) {
+				if (heroModule.has(headPortraitConfig.ConditionHero)) {
+					headPortrait = headPortraitConfig.ID;
+					break;
+				}
+			}
+			player.getData().setHead(headPortrait);
+			int headBox = 0;
+			Set<Integer> headBoxSet = player.getPlayerModule().getIdsSet(IdConstant.HEAD_BOX);
+			for (Integer integer : headBoxSet) {
+				headBox = integer;
+				break;
+			}
+			player.getData().setHeadFrame(headBox);
+			player.getData().setImage(headBox);
+
 			break;
 		}
 		case Reconnect: {
