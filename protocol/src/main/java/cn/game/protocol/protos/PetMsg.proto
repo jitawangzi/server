@@ -6,6 +6,10 @@ import "BaseMsg.proto" ;
 import "RewardMsg.proto" ;
 //@File 宠物相关协议
 
+//@HandlerPackage cn.game.games.net.game.module.develop.pet
+//@Function SoulPets
+//@MessageModule 19
+
 //碎片合成宠物
 message PetCompositeRequest_19000001{
   int32 id = 1; // Pet表id
@@ -24,11 +28,11 @@ message PetUpLevelResponse_19000004{
 }
 
 //宠物突破
-message PetBreakRequest_19000005{
+message PetBreakUpRequest_19000005{
   int32 id = 1; // Pet表id
 }
 
-message PetBreakResponse_19000006{
+message PetBreakUpResponse_19000006{
 }
 
 

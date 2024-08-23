@@ -1882,8 +1882,8 @@ public final class PetMsg {
 
   }
 
-  public interface PetBreakRequest_19000005OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.PetBreakRequest_19000005)
+  public interface PetBreakUpRequest_19000005OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PetBreakUpRequest_19000005)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1901,25 +1901,25 @@ public final class PetMsg {
    *宠物突破
    * </pre>
    *
-   * Protobuf type {@code Protos.PetBreakRequest_19000005}
+   * Protobuf type {@code Protos.PetBreakUpRequest_19000005}
    */
-  public static final class PetBreakRequest_19000005 extends
+  public static final class PetBreakUpRequest_19000005 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.PetBreakRequest_19000005)
-      PetBreakRequest_19000005OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.PetBreakUpRequest_19000005)
+      PetBreakUpRequest_19000005OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use PetBreakRequest_19000005.newBuilder() to construct.
-    private PetBreakRequest_19000005(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use PetBreakUpRequest_19000005.newBuilder() to construct.
+    private PetBreakUpRequest_19000005(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private PetBreakRequest_19000005() {
+    private PetBreakUpRequest_19000005() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new PetBreakRequest_19000005();
+      return new PetBreakUpRequest_19000005();
     }
 
     @java.lang.Override
@@ -1927,7 +1927,7 @@ public final class PetMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private PetBreakRequest_19000005(
+    private PetBreakUpRequest_19000005(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1971,15 +1971,15 @@ public final class PetMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakRequest_19000005_descriptor;
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpRequest_19000005_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakRequest_19000005_fieldAccessorTable
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpRequest_19000005_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005.class, cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005.Builder.class);
+              cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.class, cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.Builder.class);
     }
 
     public static final int ID_FIELD_NUMBER = 1;
@@ -2037,10 +2037,10 @@ public final class PetMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 other = (cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005) obj;
+      cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 other = (cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005) obj;
 
       if (getId()
           != other.getId()) return false;
@@ -2062,69 +2062,69 @@ public final class PetMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2137,7 +2137,7 @@ public final class PetMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2157,26 +2157,26 @@ public final class PetMsg {
      *宠物突破
      * </pre>
      *
-     * Protobuf type {@code Protos.PetBreakRequest_19000005}
+     * Protobuf type {@code Protos.PetBreakUpRequest_19000005}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.PetBreakRequest_19000005)
-        cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.PetBreakUpRequest_19000005)
+        cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakRequest_19000005_descriptor;
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpRequest_19000005_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakRequest_19000005_fieldAccessorTable
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpRequest_19000005_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005.class, cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005.Builder.class);
+                cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.class, cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005.newBuilder()
+      // Construct using cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2202,17 +2202,17 @@ public final class PetMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakRequest_19000005_descriptor;
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpRequest_19000005_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005.getDefaultInstance();
+      public cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 build() {
-        cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 result = buildPartial();
+      public cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 build() {
+        cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2220,8 +2220,8 @@ public final class PetMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 buildPartial() {
-        cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 result = new cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005(this);
+      public cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 buildPartial() {
+        cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 result = new cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005(this);
         result.id_ = id_;
         onBuilt();
         return result;
@@ -2261,16 +2261,16 @@ public final class PetMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005) {
-          return mergeFrom((cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005)other);
+        if (other instanceof cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005) {
+          return mergeFrom((cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 other) {
-        if (other == cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 other) {
+        if (other == cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.getDefaultInstance()) return this;
         if (other.getId() != 0) {
           setId(other.getId());
         }
@@ -2289,11 +2289,11 @@ public final class PetMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 parsedMessage = null;
+        cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2358,70 +2358,70 @@ public final class PetMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.PetBreakRequest_19000005)
+      // @@protoc_insertion_point(builder_scope:Protos.PetBreakUpRequest_19000005)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.PetBreakRequest_19000005)
-    private static final cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.PetBreakUpRequest_19000005)
+    private static final cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005();
     }
 
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<PetBreakRequest_19000005>
-        PARSER = new com.google.protobuf.AbstractParser<PetBreakRequest_19000005>() {
+    private static final com.google.protobuf.Parser<PetBreakUpRequest_19000005>
+        PARSER = new com.google.protobuf.AbstractParser<PetBreakUpRequest_19000005>() {
       @java.lang.Override
-      public PetBreakRequest_19000005 parsePartialFrom(
+      public PetBreakUpRequest_19000005 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new PetBreakRequest_19000005(input, extensionRegistry);
+        return new PetBreakUpRequest_19000005(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<PetBreakRequest_19000005> parser() {
+    public static com.google.protobuf.Parser<PetBreakUpRequest_19000005> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<PetBreakRequest_19000005> getParserForType() {
+    public com.google.protobuf.Parser<PetBreakUpRequest_19000005> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface PetBreakResponse_19000006OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.PetBreakResponse_19000006)
+  public interface PetBreakUpResponse_19000006OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PetBreakUpResponse_19000006)
       com.google.protobuf.MessageOrBuilder {
   }
   /**
-   * Protobuf type {@code Protos.PetBreakResponse_19000006}
+   * Protobuf type {@code Protos.PetBreakUpResponse_19000006}
    */
-  public static final class PetBreakResponse_19000006 extends
+  public static final class PetBreakUpResponse_19000006 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.PetBreakResponse_19000006)
-      PetBreakResponse_19000006OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.PetBreakUpResponse_19000006)
+      PetBreakUpResponse_19000006OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use PetBreakResponse_19000006.newBuilder() to construct.
-    private PetBreakResponse_19000006(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use PetBreakUpResponse_19000006.newBuilder() to construct.
+    private PetBreakUpResponse_19000006(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private PetBreakResponse_19000006() {
+    private PetBreakUpResponse_19000006() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new PetBreakResponse_19000006();
+      return new PetBreakUpResponse_19000006();
     }
 
     @java.lang.Override
@@ -2429,7 +2429,7 @@ public final class PetMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private PetBreakResponse_19000006(
+    private PetBreakUpResponse_19000006(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2468,15 +2468,15 @@ public final class PetMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakResponse_19000006_descriptor;
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpResponse_19000006_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakResponse_19000006_fieldAccessorTable
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpResponse_19000006_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006.class, cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006.Builder.class);
+              cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.class, cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2512,10 +2512,10 @@ public final class PetMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 other = (cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006) obj;
+      cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 other = (cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006) obj;
 
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -2533,69 +2533,69 @@ public final class PetMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parseFrom(
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2608,7 +2608,7 @@ public final class PetMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2624,26 +2624,26 @@ public final class PetMsg {
       return builder;
     }
     /**
-     * Protobuf type {@code Protos.PetBreakResponse_19000006}
+     * Protobuf type {@code Protos.PetBreakUpResponse_19000006}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.PetBreakResponse_19000006)
-        cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.PetBreakUpResponse_19000006)
+        cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakResponse_19000006_descriptor;
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpResponse_19000006_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakResponse_19000006_fieldAccessorTable
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpResponse_19000006_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006.class, cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006.Builder.class);
+                cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.class, cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006.newBuilder()
+      // Construct using cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2667,17 +2667,17 @@ public final class PetMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakResponse_19000006_descriptor;
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetBreakUpResponse_19000006_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006.getDefaultInstance();
+      public cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 build() {
-        cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 result = buildPartial();
+      public cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 build() {
+        cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2685,8 +2685,8 @@ public final class PetMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 buildPartial() {
-        cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 result = new cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006(this);
+      public cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 buildPartial() {
+        cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 result = new cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006(this);
         onBuilt();
         return result;
       }
@@ -2725,16 +2725,16 @@ public final class PetMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006) {
-          return mergeFrom((cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006)other);
+        if (other instanceof cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006) {
+          return mergeFrom((cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 other) {
-        if (other == cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 other) {
+        if (other == cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -2750,11 +2750,11 @@ public final class PetMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 parsedMessage = null;
+        cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2776,41 +2776,41 @@ public final class PetMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.PetBreakResponse_19000006)
+      // @@protoc_insertion_point(builder_scope:Protos.PetBreakUpResponse_19000006)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.PetBreakResponse_19000006)
-    private static final cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.PetBreakUpResponse_19000006)
+    private static final cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006();
     }
 
-    public static cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<PetBreakResponse_19000006>
-        PARSER = new com.google.protobuf.AbstractParser<PetBreakResponse_19000006>() {
+    private static final com.google.protobuf.Parser<PetBreakUpResponse_19000006>
+        PARSER = new com.google.protobuf.AbstractParser<PetBreakUpResponse_19000006>() {
       @java.lang.Override
-      public PetBreakResponse_19000006 parsePartialFrom(
+      public PetBreakUpResponse_19000006 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new PetBreakResponse_19000006(input, extensionRegistry);
+        return new PetBreakUpResponse_19000006(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<PetBreakResponse_19000006> parser() {
+    public static com.google.protobuf.Parser<PetBreakUpResponse_19000006> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<PetBreakResponse_19000006> getParserForType() {
+    public com.google.protobuf.Parser<PetBreakUpResponse_19000006> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -6573,15 +6573,15 @@ public final class PetMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_PetUpLevelResponse_19000004_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_PetBreakRequest_19000005_descriptor;
+    internal_static_Protos_PetBreakUpRequest_19000005_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_PetBreakRequest_19000005_fieldAccessorTable;
+      internal_static_Protos_PetBreakUpRequest_19000005_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_PetBreakResponse_19000006_descriptor;
+    internal_static_Protos_PetBreakUpResponse_19000006_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_PetBreakResponse_19000006_fieldAccessorTable;
+      internal_static_Protos_PetBreakUpResponse_19000006_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_PetRefineRequest_19000007_descriptor;
   private static final 
@@ -6636,17 +6636,17 @@ public final class PetMsg {
       "000001\022\n\n\002id\030\001 \001(\005\"\037\n\035PetCompositeRespon" +
       "se_19000002\"(\n\032PetUpLevelRequest_1900000" +
       "3\022\n\n\002id\030\001 \001(\005\"\035\n\033PetUpLevelResponse_1900" +
-      "0004\"&\n\030PetBreakRequest_19000005\022\n\n\002id\030\001" +
-      " \001(\005\"\033\n\031PetBreakResponse_19000006\"\'\n\031Pet" +
-      "RefineRequest_19000007\022\n\n\002id\030\001 \001(\005\"\034\n\032Pe" +
-      "tRefineResponse_19000008\"\'\n\031PetBattleReq" +
-      "uest_19000011\022\n\n\002id\030\001 \001(\005\"\034\n\032PetBattleRe" +
-      "sponse_19000012\".\n PetBondsActivateReque" +
-      "st_19000013\022\n\n\002id\030\001 \001(\005\"#\n!PetBondsActiv" +
-      "ateResponse_19000014\"-\n\037PetBondsUpLevelR" +
-      "equest_19000015\022\n\n\002id\030\001 \001(\005\"\"\n PetBondsU" +
-      "pLevelResponse_19000016B\033\n\031cn.game.proto" +
-      "col.protobufb\006proto3"
+      "0004\"(\n\032PetBreakUpRequest_19000005\022\n\n\002id" +
+      "\030\001 \001(\005\"\035\n\033PetBreakUpResponse_19000006\"\'\n" +
+      "\031PetRefineRequest_19000007\022\n\n\002id\030\001 \001(\005\"\034" +
+      "\n\032PetRefineResponse_19000008\"\'\n\031PetBattl" +
+      "eRequest_19000011\022\n\n\002id\030\001 \001(\005\"\034\n\032PetBatt" +
+      "leResponse_19000012\".\n PetBondsActivateR" +
+      "equest_19000013\022\n\n\002id\030\001 \001(\005\"#\n!PetBondsA" +
+      "ctivateResponse_19000014\"-\n\037PetBondsUpLe" +
+      "velRequest_19000015\022\n\n\002id\030\001 \001(\005\"\"\n PetBo" +
+      "ndsUpLevelResponse_19000016B\033\n\031cn.game.p" +
+      "rotocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6678,17 +6678,17 @@ public final class PetMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetUpLevelResponse_19000004_descriptor,
         new java.lang.String[] { });
-    internal_static_Protos_PetBreakRequest_19000005_descriptor =
+    internal_static_Protos_PetBreakUpRequest_19000005_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_Protos_PetBreakRequest_19000005_fieldAccessorTable = new
+    internal_static_Protos_PetBreakUpRequest_19000005_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_PetBreakRequest_19000005_descriptor,
+        internal_static_Protos_PetBreakUpRequest_19000005_descriptor,
         new java.lang.String[] { "Id", });
-    internal_static_Protos_PetBreakResponse_19000006_descriptor =
+    internal_static_Protos_PetBreakUpResponse_19000006_descriptor =
       getDescriptor().getMessageTypes().get(5);
-    internal_static_Protos_PetBreakResponse_19000006_fieldAccessorTable = new
+    internal_static_Protos_PetBreakUpResponse_19000006_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_PetBreakResponse_19000006_descriptor,
+        internal_static_Protos_PetBreakUpResponse_19000006_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_PetRefineRequest_19000007_descriptor =
       getDescriptor().getMessageTypes().get(6);

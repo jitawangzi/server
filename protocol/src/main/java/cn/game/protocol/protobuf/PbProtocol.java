@@ -261,8 +261,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PetCompositeResponse_19000002 = 0x19000002;    
 	public final static int PetUpLevelRequest_19000003 = 0x19000003;    //宠物升级  
 	public final static int PetUpLevelResponse_19000004 = 0x19000004;    
-	public final static int PetBreakRequest_19000005 = 0x19000005;    //宠物突破  
-	public final static int PetBreakResponse_19000006 = 0x19000006;    
+	public final static int PetBreakUpRequest_19000005 = 0x19000005;    //宠物突破  
+	public final static int PetBreakUpResponse_19000006 = 0x19000006;    
 	public final static int PetRefineRequest_19000007 = 0x19000007;    //宠物洗练  
 	public final static int PetRefineResponse_19000008 = 0x19000008;    
 	public final static int PetBattleRequest_19000011 = 0x19000011;    //宠物上阵  
@@ -271,20 +271,6 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PetBondsActivateResponse_19000014 = 0x19000014;    
 	public final static int PetBondsUpLevelRequest_19000015 = 0x19000015;    //升级宠物羁绊  
 	public final static int PetBondsUpLevelResponse_19000016 = 0x19000016;    
-	public final static int PetCompositeRequest_30000001 = 0x30000001;    //碎片合成宠物  
-	public final static int PetCompositeResponse_30000002 = 0x30000002;    
-	public final static int PetUpLevelRequest_30000003 = 0x30000003;    //宠物升级  
-	public final static int PetUpLevelResponse_30000004 = 0x30000004;    
-	public final static int PetBreakRequest_30000005 = 0x30000005;    //宠物突破  
-	public final static int PetBreakResponse_30000006 = 0x30000006;    
-	public final static int PetRefineRequest_30000007 = 0x30000007;    //宠物洗练  
-	public final static int PetRefineResponse_30000008 = 0x30000008;    
-	public final static int PetBattleRequest_30000011 = 0x30000011;    //宠物上阵  
-	public final static int PetBattleResponse_30000012 = 0x30000012;    
-	public final static int PetBondsActivateRequest_30000013 = 0x30000013;    //激活宠物羁绊  
-	public final static int PetBondsActivateResponse_30000014 = 0x30000014;    
-	public final static int PetBondsUpLevelRequest_30000015 = 0x30000015;    //升级宠物羁绊  
-	public final static int PetBondsUpLevelResponse_30000016 = 0x30000016;    
 	public final static int PlayerLoginRequest_01000001 = 0x01000001;    //登陆  
 	public final static int PlayerLoginResponse_01000002 = 0x01000002;    //用户登陆,返回游戏数据  
 	public final static int PlayerLogoutRequest_01000003 = 0x01000003;    //退出登陆  
@@ -889,9 +875,9 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PetUpLevelResponse_19000004, cn.game.protocol.protobuf.PetMsg.PetUpLevelResponse_19000004.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(PetBreakRequest_19000005, cn.game.protocol.protobuf.PetMsg.PetBreakRequest_19000005.getDefaultInstance()
+		parsersMap.put(PetBreakUpRequest_19000005, cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(PetBreakResponse_19000006, cn.game.protocol.protobuf.PetMsg.PetBreakResponse_19000006.getDefaultInstance()
+		parsersMap.put(PetBreakUpResponse_19000006, cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PetRefineRequest_19000007, cn.game.protocol.protobuf.PetMsg.PetRefineRequest_19000007.getDefaultInstance()
 				.getParserForType());
@@ -908,34 +894,6 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(PetBondsUpLevelRequest_19000015, cn.game.protocol.protobuf.PetMsg.PetBondsUpLevelRequest_19000015.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PetBondsUpLevelResponse_19000016, cn.game.protocol.protobuf.PetMsg.PetBondsUpLevelResponse_19000016.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetCompositeRequest_30000001, cn.game.protocol.protobuf.PetTestMsg.PetCompositeRequest_30000001.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetCompositeResponse_30000002, cn.game.protocol.protobuf.PetTestMsg.PetCompositeResponse_30000002.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetUpLevelRequest_30000003, cn.game.protocol.protobuf.PetTestMsg.PetUpLevelRequest_30000003.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetUpLevelResponse_30000004, cn.game.protocol.protobuf.PetTestMsg.PetUpLevelResponse_30000004.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetBreakRequest_30000005, cn.game.protocol.protobuf.PetTestMsg.PetBreakRequest_30000005.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetBreakResponse_30000006, cn.game.protocol.protobuf.PetTestMsg.PetBreakResponse_30000006.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetRefineRequest_30000007, cn.game.protocol.protobuf.PetTestMsg.PetRefineRequest_30000007.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetRefineResponse_30000008, cn.game.protocol.protobuf.PetTestMsg.PetRefineResponse_30000008.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetBattleRequest_30000011, cn.game.protocol.protobuf.PetTestMsg.PetBattleRequest_30000011.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetBattleResponse_30000012, cn.game.protocol.protobuf.PetTestMsg.PetBattleResponse_30000012.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetBondsActivateRequest_30000013, cn.game.protocol.protobuf.PetTestMsg.PetBondsActivateRequest_30000013.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetBondsActivateResponse_30000014, cn.game.protocol.protobuf.PetTestMsg.PetBondsActivateResponse_30000014.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetBondsUpLevelRequest_30000015, cn.game.protocol.protobuf.PetTestMsg.PetBondsUpLevelRequest_30000015.getDefaultInstance()
-				.getParserForType());
-		parsersMap.put(PetBondsUpLevelResponse_30000016, cn.game.protocol.protobuf.PetTestMsg.PetBondsUpLevelResponse_30000016.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerLoginRequest_01000001, cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001.getDefaultInstance()
 				.getParserForType());
@@ -1674,10 +1632,10 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x19000003,"PetUpLevelRequest_19000003");
 		nameIdMap.put("PetUpLevelResponse_19000004", 0x19000004);
 		idNameMap.put(0x19000004,"PetUpLevelResponse_19000004");
-		nameIdMap.put("PetBreakRequest_19000005", 0x19000005);
-		idNameMap.put(0x19000005,"PetBreakRequest_19000005");
-		nameIdMap.put("PetBreakResponse_19000006", 0x19000006);
-		idNameMap.put(0x19000006,"PetBreakResponse_19000006");
+		nameIdMap.put("PetBreakUpRequest_19000005", 0x19000005);
+		idNameMap.put(0x19000005,"PetBreakUpRequest_19000005");
+		nameIdMap.put("PetBreakUpResponse_19000006", 0x19000006);
+		idNameMap.put(0x19000006,"PetBreakUpResponse_19000006");
 		nameIdMap.put("PetRefineRequest_19000007", 0x19000007);
 		idNameMap.put(0x19000007,"PetRefineRequest_19000007");
 		nameIdMap.put("PetRefineResponse_19000008", 0x19000008);
@@ -1694,34 +1652,6 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x19000015,"PetBondsUpLevelRequest_19000015");
 		nameIdMap.put("PetBondsUpLevelResponse_19000016", 0x19000016);
 		idNameMap.put(0x19000016,"PetBondsUpLevelResponse_19000016");
-		nameIdMap.put("PetCompositeRequest_30000001", 0x30000001);
-		idNameMap.put(0x30000001,"PetCompositeRequest_30000001");
-		nameIdMap.put("PetCompositeResponse_30000002", 0x30000002);
-		idNameMap.put(0x30000002,"PetCompositeResponse_30000002");
-		nameIdMap.put("PetUpLevelRequest_30000003", 0x30000003);
-		idNameMap.put(0x30000003,"PetUpLevelRequest_30000003");
-		nameIdMap.put("PetUpLevelResponse_30000004", 0x30000004);
-		idNameMap.put(0x30000004,"PetUpLevelResponse_30000004");
-		nameIdMap.put("PetBreakRequest_30000005", 0x30000005);
-		idNameMap.put(0x30000005,"PetBreakRequest_30000005");
-		nameIdMap.put("PetBreakResponse_30000006", 0x30000006);
-		idNameMap.put(0x30000006,"PetBreakResponse_30000006");
-		nameIdMap.put("PetRefineRequest_30000007", 0x30000007);
-		idNameMap.put(0x30000007,"PetRefineRequest_30000007");
-		nameIdMap.put("PetRefineResponse_30000008", 0x30000008);
-		idNameMap.put(0x30000008,"PetRefineResponse_30000008");
-		nameIdMap.put("PetBattleRequest_30000011", 0x30000011);
-		idNameMap.put(0x30000011,"PetBattleRequest_30000011");
-		nameIdMap.put("PetBattleResponse_30000012", 0x30000012);
-		idNameMap.put(0x30000012,"PetBattleResponse_30000012");
-		nameIdMap.put("PetBondsActivateRequest_30000013", 0x30000013);
-		idNameMap.put(0x30000013,"PetBondsActivateRequest_30000013");
-		nameIdMap.put("PetBondsActivateResponse_30000014", 0x30000014);
-		idNameMap.put(0x30000014,"PetBondsActivateResponse_30000014");
-		nameIdMap.put("PetBondsUpLevelRequest_30000015", 0x30000015);
-		idNameMap.put(0x30000015,"PetBondsUpLevelRequest_30000015");
-		nameIdMap.put("PetBondsUpLevelResponse_30000016", 0x30000016);
-		idNameMap.put(0x30000016,"PetBondsUpLevelResponse_30000016");
 		nameIdMap.put("PlayerLoginRequest_01000001", 0x01000001);
 		idNameMap.put(0x01000001,"PlayerLoginRequest_01000001");
 		nameIdMap.put("PlayerLoginResponse_01000002", 0x01000002);

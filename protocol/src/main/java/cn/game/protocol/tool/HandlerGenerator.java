@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,39 +29,38 @@ public class HandlerGenerator {
 		requestMessages.add("PetRefineRequest_19000007");
 		requestMessages.add("PetCompositeRequest_19000001");
 
-		updateFile("Pet", initFile, requestMessages);
+		updateFile("d:/handler.java", "Pet", initFile, requestMessages, null);
 	}
 
-	private static List<String> initFile(String pkg, String module, String message) throws IOException {
+	public static List<String> initFile(String pkg, String module, String message) throws IOException {
 
 		List<String> content = new ArrayList<>();
-		content.add("package " + pkg + ";\n");
-		content.add("\n");
-		content.add("import org.springframework.stereotype.Component;\n");
-		content.add("\n");
-		content.add("import cn.game.core.net.client.NetClient;\n");
-		content.add("import cn.game.core.net.socket.handler.BaseHandler;\n");
-		content.add("import cn.game.games.cache.entity.Player;\n");
-		content.add("import cn.game.games.net.game.manager.PlayerManager;\n");
-		content.add("import cn.game.protocol.generated.enume.InitialUI;\n");
-		content.add("import cn.game.protocol.manual.ErrorMsgEnum;\n");
-		content.add("import cn.game.protocol.protobuf.PbProtocol;\n");
-		content.add("\n");
+		content.add("package " + pkg + ";");
+		content.add("");
+		content.add("import org.springframework.stereotype.Component;");
+		content.add("");
+		content.add("import cn.game.core.net.client.NetClient;");
+		content.add("import cn.game.core.net.socket.handler.BaseHandler;");
+		content.add("import cn.game.games.cache.entity.Player;");
+		content.add("import cn.game.games.net.game.manager.PlayerManager;");
+		content.add("import cn.game.protocol.generated.enume.InitialUI;");
+		content.add("import cn.game.protocol.manual.ErrorMsgEnum;");
+		content.add("import cn.game.protocol.protobuf.PbProtocol;");
+		content.add("");
 		
-		content.add("@Component\n");
-		content.add("public class " + module + "Handler extends BaseHandler {\n");
-		content.add("\n");
-		content.add("\t@Override\n");
-		content.add("\tprotected int getModule() {\n");
-		content.add("\t\treturn " + message + ";\n");
-		content.add("\t}\n");
-		content.add("\n");
-		content.add("\t@Override\n");
-		content.add("\tprotected void inititialize() {\n");
-//		content.add("\n");
+		content.add("@Component");
+		content.add("public class " + module + "Handler extends BaseHandler {");
+		content.add("");
+		content.add("\t@Override");
+		content.add("\tprotected int getModule() {");
+		content.add("\t\treturn " + message + ";");
+		content.add("\t}");
+		content.add("");
+		content.add("\t@Override");
+		content.add("\tprotected void inititialize() {");
 		content.add("\t}\n");
 
-		content.add("\n");
+		content.add("");
 		content.add("}");
 
 		Writer write = new FileWriter(new File("d:/handler.java"));
@@ -70,13 +72,15 @@ public class HandlerGenerator {
 		return content;
 	}
 
-	private static void updateFile(String module, List<String> contentList, List<String> requestMessages) throws IOException {
+	public static void updateFile(String handlerPath, String module, List<String> contentList, List<String> requestMessages, String function)
+			throws IOException {
+		System.err.println("更新前文本行数： " + contentList.size());
 		for (String line : contentList) {
 			line = line.trim();
 			if (line.startsWith("putInvoker")) {
 				int lastIndexOf = line.lastIndexOf("PbProtocol.");
 				int indexOf = line.indexOf(",");
-				String reqMessage = line.substring(lastIndexOf, indexOf);
+				String reqMessage = line.substring(lastIndexOf + "PbProtocol.".length(), indexOf);
 				requestMessages.remove(reqMessage);
 			}
 		}
@@ -101,19 +105,19 @@ public class HandlerGenerator {
 			if (line.indexOf("import cn.game.protocol.protobuf.PbProtocol") > -1) {
 				// 导入
 				for (String req : requestMessages) {
-					contentList.add(i + 1, "import cn.game.protocol.protobuf." + module + "Msg." + req + ";\n");
-					contentList.add(i + 2, "import cn.game.protocol.protobuf." + module + "Msg." + getRespMessage(req) + ";\n");
+					contentList.add(i + 1, "import cn.game.protocol.protobuf." + module + "Msg." + req + ";");
+					contentList.add(i + 2, "import cn.game.protocol.protobuf." + module + "Msg." + getRespMessage(req) + ";");
 				}
 			} else if (line.indexOf("protected void inititialize") > -1) {
 				inititializeStart = true;
 				// 初始化
 				for (String req : requestMessages) {
-					contentList.add(i + 1, "\t\tputInvoker(PbProtocol." + req + ", this::" + getReqMethod(req, module) + ");\n");
+					contentList.add(i + 1, "\t\tputInvoker(PbProtocol." + req + ", this::" + getReqMethod(req, module) + ");");
 				}
 			} else if (inititializeEnd) {
 				// 新增方法
 				for (String reqString : requestMessages) {
-					List<String> methodBody = genMethodBody(reqString, module, null);
+					List<String> methodBody = genMethodBody(reqString, module, function);
 					for (int j = 0; j < methodBody.size(); j++) {
 						contentList.add(i + j, methodBody.get(j));
 					}
@@ -121,12 +125,14 @@ public class HandlerGenerator {
 				break;
 			}
 		}
-
-		Writer write = new FileWriter(new File("d:/handler.java"));
-		for (String string : contentList) {
-			write.write(string);
-		}
-		write.close();
+		System.err.println("更新后文本行数： " + contentList.size());
+//		Writer write = new FileWriter(new File(handlerPath));
+//		for (String string : contentList) {
+//			write.write(string);
+//		}
+//		write.close();
+		Path filePath = Paths.get(handlerPath);
+		Files.write(filePath, contentList);
 	}
 
 	public static String getRespMessage(String reqMessage) {
@@ -143,20 +149,50 @@ public class HandlerGenerator {
 
 	public static List<String> genMethodBody(String reqMessage, String module,String function) {
 		List<String> content = new ArrayList<>();
-		content.add("\t" + "private void " + getReqMethod(reqMessage, module) + "(NetClient client, Object message) {\n");
-		content.add("\t\t" + reqMessage + " req = (" + reqMessage + ") message;\n");
-		content.add("\t\t" + getRespMessage(reqMessage) + ".Builder resp = " + getRespMessage(reqMessage) + ".newBuilder();\n");
-		content.add("\t\t" + "Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());\n");
+		content.add("\t" + "private void " + getReqMethod(reqMessage, module) + "(NetClient client, Object message) {");
+		content.add("\t\t" + reqMessage + " req = (" + reqMessage + ") message;");
+		content.add("\t\t" + getRespMessage(reqMessage) + ".Builder resp = " + getRespMessage(reqMessage) + ".newBuilder();");
+		content.add("\t\t" + "Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());");
 		if (function!=null) {
-			content.add("\t\t" + "if (!player.isFuncOpen(" + function + ")) {\n");
-			content.add("\t\t" + "\tclient.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());\n");
-			content.add("\t\t" + "\treturn;\n");
-			content.add("\t\t" + "}\n");
+			content.add("\t\t" + "if (!player.isFuncOpen(InitialUI." + function + ")) {");
+			content.add("\t\t" + "\tclient.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());");
+			content.add("\t\t" + "\treturn;");
+			content.add("\t\t" + "}");
 		}
-		content.add("\t\t" + "\n");
-		content.add("\t\t" + "client.sendProtocol(resp.build());\n");
-		content.add("\t" + "}\n");
-
+		content.add("");
+		content.add("\t\t" + "client.sendProtocol(resp.build());");
+		content.add("\t" + "}");
 		return content;
+	}
+
+	public static class HandlerParam {
+		public String HandlerPackage;
+		public String Function;
+		public String MessageModule;
+
+		public String getHandlerPackage() {
+			return HandlerPackage;
+		}
+
+		public void setHandlerPackage(String handlerPackage) {
+			HandlerPackage = handlerPackage;
+		}
+
+		public String getFunction() {
+			return Function;
+		}
+
+		public void setFunction(String function) {
+			Function = function;
+		}
+
+		public String getMessageModule() {
+			return MessageModule;
+		}
+
+		public void setMessageModule(String messageModule) {
+			MessageModule = messageModule;
+		}
+
 	}
 }
