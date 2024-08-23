@@ -352,6 +352,7 @@ public class VxHolder {
 	            promise.fail("Failed to acquire lock");
 				return;
 			}
+			log.debug("Lock acquired for keys: {}", Arrays.toString(lockKeys));
 			context.runOnContext(v -> {
 				Future<T> operationFuture;
 				try {

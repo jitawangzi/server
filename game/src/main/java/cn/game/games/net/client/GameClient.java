@@ -273,7 +273,7 @@ public class GameClient extends AbstractNetClient {
 			return true;
 		}
 		List<IProtocol<byte[]>> list = this.recentMessages.get(seq);
-		// 这个seq的消息处理过了,也可能是正在处理中。
+		// 这个seq的消息处理过了
 		if (list != null && !list.isEmpty()) {
 			for (IProtocol<byte[]> send : list) {
 				sendProtocol(send.getMsgID(), send.getSeq(), send.getData(), send.getErrorCode(), false);
