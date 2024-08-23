@@ -629,7 +629,11 @@ public class ChapterHandler extends BaseHandler {
 		int id = req.getId();
 		int type = req.getType();
 		boolean pay = req.getPay();
-
+		BattleConfig battleConfig = BattleManager.instance().get(id);
+        if (battleConfig == null) {
+            client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+        }; 
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
@@ -664,11 +668,12 @@ public class ChapterHandler extends BaseHandler {
 		if (pay) {
 			List<Integer> payList = new ArrayList<>();
 			int[][] paySweepCostAll = daoHeartBattle.getPaySweepCostAll();
-			for (int i = daoHeartBattle.getPaySweep(); i < paySweepCostAll.length; i++) {
-				payList.add(paySweepCostAll[i][0], paySweepCostAll[i][1]);
+			for (int i = 0; i < paySweepCostAll.length; i++) {
+				payList.add(paySweepCostAll[i][0]);
+				payList.add(paySweepCostAll[i][1]);
 			}
 			int[] payArray = new int[payList.size()];
-			for (int i : payArray) {
+			for (int i = 0; i < payArray.length; i++) {
 				payArray[i] = payList.get(i);
 			}
 			if (!PlayerHelper.delResources(player, payArray, opType)) {
@@ -676,9 +681,6 @@ public class ChapterHandler extends BaseHandler {
 				return;
 			}
 		}
-
-		BattleConfig battleConfig = BattleManager.instance().get(id);
-
 		for (int i = 0; i < allCount; i++) {
 			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
 			resp.addAllRewards(reward);
