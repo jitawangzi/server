@@ -1,0 +1,71 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+import "BaseMsg.proto" ;
+import "RewardMsg.proto" ;
+//@File 宠物相关协议
+
+//@HandlerPackage  cn.game.games.net.game.module.develop.pet
+//@FunctionOpen SoulPets
+
+//碎片合成宠物
+message PetCompositeRequest_30000001{
+  int32 id = 1; // Pet表id
+}
+
+message PetCompositeResponse_30000002{
+}
+
+
+//宠物升级
+message PetUpLevelRequest_30000003{
+  int32 id = 1; // Pet表id
+}
+
+message PetUpLevelResponse_30000004{
+}
+
+//宠物突破
+message PetBreakRequest_30000005{
+  int32 id = 1; // Pet表id
+}
+
+message PetBreakResponse_30000006{
+}
+
+
+//宠物洗练
+message PetRefineRequest_30000007{
+  int32 id = 1; // Pet表id
+}
+
+message PetRefineResponse_30000008{
+}
+
+
+//宠物上阵
+message PetBattleRequest_30000011{
+  int32 id = 1; // Pet表id
+}
+
+message PetBattleResponse_30000012{
+}
+
+//激活宠物羁绊
+message PetBondsActivateRequest_30000013{
+  int32 id = 1; //   羁绊表id
+}
+
+message PetBondsActivateResponse_30000014{
+}
+
+//升级宠物羁绊
+message PetBondsUpLevelRequest_30000015{
+  int32 id = 1; //   羁绊表id
+}
+
+message PetBondsUpLevelResponse_30000016{
+}
+
+

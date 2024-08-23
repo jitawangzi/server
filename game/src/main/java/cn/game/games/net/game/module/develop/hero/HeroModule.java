@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.develop.pet;
+package cn.game.games.net.game.module.develop.hero;
 
 import java.util.ArrayList;
 import java.util.Collection;

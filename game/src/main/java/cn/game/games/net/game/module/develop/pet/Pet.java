@@ -27,4 +27,12 @@ public class Pet extends Item implements Serializable, DbEntity {
 		return builder.build();
 	}
 
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
 }

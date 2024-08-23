@@ -36,6 +36,7 @@ import cn.game.games.net.game.module.develop.dragon.DragonModule;
 import cn.game.games.net.game.module.develop.hccommon.HCCommonModule;
 import cn.game.games.net.game.module.develop.hchero.HCHeroModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
+import cn.game.games.net.game.module.develop.pet.PetModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
 import cn.game.games.net.game.module.event.EventModule;
 import cn.game.games.net.game.module.func.FuncModule;
@@ -250,6 +251,10 @@ public class Player  {
 
 	public PointRewardModule getPointRewardModule() {
 		return getModule(PointRewardModule.class);
+	}
+
+	public PetModule getPetModule() {
+		return getModule(PetModule.class);
 	}
 
 	public DevelopModule getDevelopModule() {

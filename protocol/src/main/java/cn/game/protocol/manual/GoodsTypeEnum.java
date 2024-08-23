@@ -32,6 +32,7 @@ public enum GoodsTypeEnum{
 	Sword(36, "武器"),
 	/**  */
 	FairyFriend(100, "仙友"),
+	Pet(101, "仙友"),
 
 	/** 角色 */
 	Role(44, "角色"),

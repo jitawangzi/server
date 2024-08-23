@@ -6,63 +6,64 @@ import "BaseMsg.proto" ;
 import "RewardMsg.proto" ;
 //@File 宠物相关协议
 
+
 //碎片合成宠物
-message PerCompositeRequest_19000001{
+message PetCompositeRequest_19000001{
   int32 id = 1; // Pet表id
 }
 
-message PerCompositeResponse_19000002{
+message PetCompositeResponse_19000002{
 }
 
 
 //宠物升级
-message PerUpLevelRequest_19000003{
+message PetUpLevelRequest_19000003{
   int32 id = 1; // Pet表id
 }
 
-message PerUpLevelResponse_19000004{
+message PetUpLevelResponse_19000004{
 }
 
 //宠物突破
-message PerBreakRequest_19000005{
+message PetBreakRequest_19000005{
   int32 id = 1; // Pet表id
 }
 
-message PerBreakResponse_19000006{
+message PetBreakResponse_19000006{
 }
 
 
 //宠物洗练
-message PerRefineRequest_19000007{
+message PetRefineRequest_19000007{
   int32 id = 1; // Pet表id
 }
 
-message PerRefineResponse_19000008{
+message PetRefineResponse_19000008{
 }
 
 
 //宠物上阵
-message PerBattleRequest_19000011{
+message PetBattleRequest_19000011{
   int32 id = 1; // Pet表id
 }
 
-message PerRefineResponse_19000012{
+message PetBattleResponse_19000012{
 }
 
 //激活宠物羁绊
-message PerBondsActivateRequest_19000013{
+message PetBondsActivateRequest_19000013{
   int32 id = 1; //   羁绊表id
 }
 
-message PerBondsActivateResponse_19000014{
+message PetBondsActivateResponse_19000014{
 }
 
 //升级宠物羁绊
-message PerBondsUpLevelRequest_19000015{
+message PetBondsUpLevelRequest_19000015{
   int32 id = 1; //   羁绊表id
 }
 
-message PerBondsUpLevelResponse_19000016{
+message PetBondsUpLevelResponse_19000016{
 }
 
 
