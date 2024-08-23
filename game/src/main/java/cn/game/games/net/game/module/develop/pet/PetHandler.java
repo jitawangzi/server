@@ -57,6 +57,7 @@ public class PetHandler extends BaseHandler {
 
 		client.sendProtocol(resp.build());
 	}
+
 	private void refine(NetClient client, Object message) {
 		PetRefineRequest_19000007 req = (PetRefineRequest_19000007) message;
 		PetRefineResponse_19000008.Builder resp = PetRefineResponse_19000008.newBuilder();
@@ -69,6 +70,7 @@ public class PetHandler extends BaseHandler {
 
 		client.sendProtocol(resp.build());
 	}
+
 	private void composite(NetClient client, Object message) {
 		PetCompositeRequest_19000001 req = (PetCompositeRequest_19000001) message;
 		PetCompositeResponse_19000002.Builder resp = PetCompositeResponse_19000002.newBuilder();
@@ -81,6 +83,7 @@ public class PetHandler extends BaseHandler {
 
 		client.sendProtocol(resp.build());
 	}
+
 	private void breakpet(NetClient client, Object message) {
 		PetBreakRequest_19000005 req = (PetBreakRequest_19000005) message;
 		PetBreakResponse_19000006.Builder resp = PetBreakResponse_19000006.newBuilder();
@@ -93,6 +96,7 @@ public class PetHandler extends BaseHandler {
 
 		client.sendProtocol(resp.build());
 	}
+
 	private void bondsUpLevel(NetClient client, Object message) {
 		PetBondsUpLevelRequest_19000015 req = (PetBondsUpLevelRequest_19000015) message;
 		PetBondsUpLevelResponse_19000016.Builder resp = PetBondsUpLevelResponse_19000016.newBuilder();
