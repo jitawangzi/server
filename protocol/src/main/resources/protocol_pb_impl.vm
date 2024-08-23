@@ -17,6 +17,7 @@ public class PbProtocol implements ProtocolParser {
 
 	public static Map<Integer, Parser<?>> parsersMap = new HashMap<Integer, Parser<?>>();
 	public static Map<String, Integer> nameIdMap = new HashMap<String, Integer>();
+	public static Map<Integer, String> idNameMap = new HashMap<Integer, String>();
 	
 	private static PbProtocol instance = new PbProtocol();
 
@@ -39,6 +40,7 @@ public class PbProtocol implements ProtocolParser {
 
 #foreach($m in $messages)
 		nameIdMap.put("${m.shortName}", ${m.id});
+		idNameMap.put(${m.id},"${m.shortName}");
 #end	
 	}	
 	@Override
@@ -62,5 +64,14 @@ public class PbProtocol implements ProtocolParser {
 			throw new IllegalArgumentException("message id not found : " + name);
 		}
 		return id ;
+	}
+	
+	@Override
+	public String getMsgName(int id) {
+		String name = idNameMap.get(id);
+		if (name == null) {
+			throw new IllegalArgumentException("message name not found : " + id);
+		}
+		return name;
 	}
 }

@@ -11,10 +11,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -27,6 +33,10 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
+import cn.game.protocol.tool.HandlerGenerator.HandlerParam;
 import cn.game.protocol.tool.MessageObject.MessageField;
 import cn.game.util.ExcelUtil;
 
@@ -49,6 +59,10 @@ public class PbProtocolGenerator {
 
 	public static void readProtos(String protoPath, String inputTemplate, String outputFile, String chareset) throws Exception {
 
+		// 生成XXXHandler类的参数
+		Map<String, HandlerParam> handlerMap = new HashMap<String, HandlerGenerator.HandlerParam>();
+		Multimap<String, String> classNameRequestMessageMap = ArrayListMultimap.create();
+		
 		List<String> outClass = new ArrayList<>();
 		List<MessageObject> messages = new ArrayList<>();
 		List<String> packages = new ArrayList<>();
@@ -83,7 +97,7 @@ public class PbProtocolGenerator {
 			boolean notUesd = false;
 			while ((str = reader.readLine()) != null) {
 				String clientStr = str.trim();
-
+				// 把所有的message，单独生成到一个文件里
 				if (clientStr.length() > 0 && !clientStr.startsWith("syntax") && !clientStr.startsWith("option")
 //						&& !clientStr.startsWith("//") 
 						&& !clientStr.startsWith("package") && !clientStr.startsWith("import")) {
@@ -91,6 +105,15 @@ public class PbProtocolGenerator {
 				}
 				if (str.trim().startsWith("//") && str.trim().toLowerCase().contains("@notuseend")) {
 					notUesd = false;
+				}
+				if (str.trim().startsWith("//") && str.trim().toLowerCase().contains("@handlerpackage")) {
+					handlerMap.computeIfAbsent(out, k -> new HandlerParam()).setHandlerPackage(str.split(" ")[1].trim());
+				}
+				if (str.trim().startsWith("//") && str.trim().toLowerCase().contains("@function")) {
+					handlerMap.computeIfAbsent(out, k -> new HandlerParam()).setFunction(str.split(" ")[1].trim());
+				}
+				if (str.trim().startsWith("//") && str.trim().toLowerCase().contains("@messagemodule")) {
+					handlerMap.computeIfAbsent(out, k -> new HandlerParam()).setMessageModule(str.split(" ")[1].trim());
 				}
 
 				lines.add(str);
@@ -130,6 +153,9 @@ public class PbProtocolGenerator {
 					}
 
 					messages.add(message);
+					if (message.isRequest()) {
+						classNameRequestMessageMap.put(out, message.getShortName());
+					}
 					if (notParseProtos.contains(out) || notUesd) {
 						notGenRequestMessages.add(message.getShortName());
 					}
@@ -158,6 +184,8 @@ public class PbProtocolGenerator {
 		Collections.sort(messages);
 		// 生成协议列表，压测使用。
 		genMessageDescCSV(messages);
+		// 生成服务器的Handler类
+		updateHandler(handlerMap, classNameRequestMessageMap);
 
 		// 注意把MessageObject 的值修改了
 		for (MessageObject messageObject : messages) {
@@ -179,6 +207,11 @@ public class PbProtocolGenerator {
 //		generateClient(messages, "ProtosEnum.ts.vm", jsPath + File.separator + "ProtosEnum.ts", chareset);
 
 		// 所有proto，生成到一个文件里给客户端使用
+		mergeAllProto4Client(clientProtoLines, jsPath);
+
+	}
+
+	private static void mergeAllProto4Client(List<String> clientProtoLines, String jsPath) throws IOException {
 		File clientAllProto = new File(jsPath + File.separator + "all.proto");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(clientAllProto));
 
@@ -192,7 +225,6 @@ public class PbProtocolGenerator {
 			writer.write(string + "\n");
 		}
 		writer.close();
-
 	}
 
 	private static void genMessageDesc(List<MessageObject> messages) throws FileNotFoundException {
@@ -484,6 +516,32 @@ public class PbProtocolGenerator {
 		writer.close();
 	}
 
+	private static void updateHandler(Map<String, HandlerParam> handlerMap, Multimap<String, String> classNameRequestMessageMap) throws Exception {
+		Set<Entry<String, HandlerParam>> entrySet = handlerMap.entrySet();
+		for (Entry<String, HandlerParam> entry : entrySet) {
+			String k = entry.getKey();
+			HandlerParam v = entry.getValue();
+			String handlerPackage = v.getHandlerPackage();
+			String function = v.getFunction();
+			String messageModule = v.getMessageModule();
+			String className = k;
+			List<String> messages = (List<String>) classNameRequestMessageMap.get(className);
+			String module = className.replace("Msg", "");
+			String handlerPath = workspace + "/game/src/main/java/" + handlerPackage.replace(".", "/") + "/" + module + "Handler.java";
+			File file = new File(handlerPath);
+			if (!file.exists()) {
+				List<String> contentList = HandlerGenerator.initFile(handlerPackage, module, "0x" + messageModule);
+				HandlerGenerator.updateFile(handlerPath, module, contentList, messages, function);
+			} else {
+				Path filePath = Paths.get(handlerPath);
+				List<String> contentList = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+//				List<String> contentList = FileUtils.readLines(file);
+				HandlerGenerator.updateFile(handlerPath, module, contentList, messages, function);
+			}
+		}
+
+	}
+
 	public static void main(String[] args) throws Exception {
 
 		// 可以加vm参数改变workspace 和 metafolder 路径。
@@ -533,13 +591,15 @@ public class PbProtocolGenerator {
 //		generateClient(messages, "protos.d.ts.vm", jsPath + File.separator + "protos.d.ts", "utf-8");
 //		generateClient(messages, "ProtosEnum.ts.vm", jsPath + File.separator + "ProtosEnum.ts", "utf-8");
 
+		if (protoToJava) {
+			Proto2Java.main(new String[] { protoPath, javaSrc });
+		}
+
 		readProtos(protoPath, inputTemplate, output + "/PbProtocol.java", charset);
 
 		System.out.println("PbProtocol.java gen complete !");
 
-		if (protoToJava) {
-			Proto2Java.main(new String[] { protoPath, javaSrc });
-		}
+
 
 		// 手写枚举，生成excel，给客户端用。
 		EnumToExcel.main(args);

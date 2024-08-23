@@ -3249,7 +3249,7 @@ public final class DrawMsg {
 
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3258,7 +3258,7 @@ public final class DrawMsg {
         getHerosList();
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3266,7 +3266,7 @@ public final class DrawMsg {
     cn.game.protocol.protobuf.RewardMsg.RewardInfo getHeros(int index);
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3274,7 +3274,7 @@ public final class DrawMsg {
     int getHerosCount();
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3283,7 +3283,7 @@ public final class DrawMsg {
         getHerosOrBuilderList();
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3534,7 +3534,7 @@ public final class DrawMsg {
     private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> heros_;
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3545,7 +3545,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3557,7 +3557,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3568,7 +3568,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -3579,7 +3579,7 @@ public final class DrawMsg {
     }
     /**
      * <pre>
-     * 额外赠送的英雄
+     * 额外赠送的英雄，废弃了
      * </pre>
      *
      * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4562,7 +4562,7 @@ public final class DrawMsg {
 
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4576,7 +4576,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4590,7 +4590,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4604,7 +4604,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4625,7 +4625,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4643,7 +4643,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4663,7 +4663,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4684,7 +4684,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4702,7 +4702,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4720,7 +4720,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4739,7 +4739,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4756,7 +4756,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4773,7 +4773,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4784,7 +4784,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4798,7 +4798,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4813,7 +4813,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4824,7 +4824,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
@@ -4836,7 +4836,7 @@ public final class DrawMsg {
       }
       /**
        * <pre>
-       * 额外赠送的英雄
+       * 额外赠送的英雄，废弃了
        * </pre>
        *
        * <code>repeated .Protos.RewardInfo heros = 4;</code>
