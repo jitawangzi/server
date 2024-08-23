@@ -83,7 +83,7 @@ public class PbProtocolGenerator {
 			boolean notUesd = false;
 			while ((str = reader.readLine()) != null) {
 				String clientStr = str.trim();
-
+				// 把所有的message，单独生成到一个文件里
 				if (clientStr.length() > 0 && !clientStr.startsWith("syntax") && !clientStr.startsWith("option")
 //						&& !clientStr.startsWith("//") 
 						&& !clientStr.startsWith("package") && !clientStr.startsWith("import")) {
@@ -179,6 +179,11 @@ public class PbProtocolGenerator {
 //		generateClient(messages, "ProtosEnum.ts.vm", jsPath + File.separator + "ProtosEnum.ts", chareset);
 
 		// 所有proto，生成到一个文件里给客户端使用
+		mergeAllProto4Client(clientProtoLines, jsPath);
+
+	}
+
+	private static void mergeAllProto4Client(List<String> clientProtoLines, String jsPath) throws IOException {
 		File clientAllProto = new File(jsPath + File.separator + "all.proto");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(clientAllProto));
 
@@ -192,7 +197,6 @@ public class PbProtocolGenerator {
 			writer.write(string + "\n");
 		}
 		writer.close();
-
 	}
 
 	private static void genMessageDesc(List<MessageObject> messages) throws FileNotFoundException {

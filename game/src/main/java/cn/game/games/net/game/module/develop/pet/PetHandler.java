@@ -26,7 +26,6 @@ import cn.game.protocol.protobuf.PetMsg.PetUpLevelResponse_19000004;
 
 @Component
 public class PetHandler extends BaseHandler {
-
 	@Override
 	protected int getModule() {
 		return 0x19;
@@ -34,7 +33,6 @@ public class PetHandler extends BaseHandler {
 
 	@Override
 	protected void inititialize() {
-
 		putInvoker(PbProtocol.PetBattleRequest_19000011, this::battle);
 		putInvoker(PbProtocol.PetBondsActivateRequest_19000013, this::bondsActivate);
 		putInvoker(PbProtocol.PetBondsUpLevelRequest_19000015, this::bondsUpLevel);
@@ -122,6 +120,7 @@ public class PetHandler extends BaseHandler {
 
 		client.sendProtocol(resp.build());
 	}
+
 	private void battle(NetClient client, Object message) {
 		PetBattleRequest_19000011 req = (PetBattleRequest_19000011) message;
 		PetBattleResponse_19000012.Builder resp = PetBattleResponse_19000012.newBuilder();

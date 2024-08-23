@@ -6,7 +6,6 @@ import "BaseMsg.proto" ;
 import "RewardMsg.proto" ;
 //@File 宠物相关协议
 
-
 //碎片合成宠物
 message PetCompositeRequest_19000001{
   int32 id = 1; // Pet表id
