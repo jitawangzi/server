@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,8 +33,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import cn.game.protocol.tool.HandlerGenerator.HandlerParam;
 import cn.game.protocol.tool.MessageObject.MessageField;
+import cn.game.protocol.tool.obj.HandlerParam;
 import cn.game.util.ExcelUtil;
 
 /**
@@ -60,7 +57,7 @@ public class PbProtocolGenerator {
 	public static void readProtos(String protoPath, String inputTemplate, String outputFile, String chareset) throws Exception {
 
 		// 生成XXXHandler类的参数
-		Map<String, HandlerParam> handlerMap = new HashMap<String, HandlerGenerator.HandlerParam>();
+		Map<String, HandlerParam> handlerMap = new HashMap<String, HandlerParam>();
 		Multimap<String, String> classNameRequestMessageMap = ArrayListMultimap.create();
 		
 		List<String> outClass = new ArrayList<>();
@@ -530,13 +527,15 @@ public class PbProtocolGenerator {
 			String handlerPath = workspace + "/game/src/main/java/" + handlerPackage.replace(".", "/") + "/" + module + "Handler.java";
 			File file = new File(handlerPath);
 			if (!file.exists()) {
-				List<String> contentList = HandlerGenerator.initFile(handlerPackage, module, "0x" + messageModule);
-				HandlerGenerator.updateFile(handlerPath, module, contentList, messages, function);
+				ClassGenerator.createHandlerJavaFile(handlerPath, handlerPackage, module + "Handler", "0x" + messageModule);
+//				List<String> contentList = HandlerGenerator.initFile(handlerPackage, module, "0x" + messageModule);
+//				HandlerGenerator.updateFile(handlerPath, module, contentList, messages, function);
 			} else {
-				Path filePath = Paths.get(handlerPath);
-				List<String> contentList = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+//				Path filePath = Paths.get(handlerPath);
+//				List<String> contentList = Files.readAllLines(filePath, StandardCharsets.UTF_8);
 //				List<String> contentList = FileUtils.readLines(file);
-				HandlerGenerator.updateFile(handlerPath, module, contentList, messages, function);
+//				HandlerGenerator.updateFile(handlerPath, module, contentList, messages, function);
+				ClassGenerator.updateHandlerJavaFile(handlerPath, module + "Handler", module, messages, function);
 			}
 		}
 

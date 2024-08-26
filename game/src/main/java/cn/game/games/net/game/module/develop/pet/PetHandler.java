@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.develop.pet;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -23,102 +25,110 @@ import cn.game.protocol.protobuf.PetMsg.PetRefineRequest_19000007;
 import cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008;
 import cn.game.protocol.protobuf.PetMsg.PetUpLevelRequest_19000003;
 import cn.game.protocol.protobuf.PetMsg.PetUpLevelResponse_19000004;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @Component
 public class PetHandler extends BaseHandler {
 
-	@Override
-	protected int getModule() {
-		return 0x19;
-	}
+    @Override
+    protected int getModule() {
+        return 0x19;
+    }
 
-	@Override
-	protected void inititialize() {
-		putInvoker(PbProtocol.PetBondsUpLevelRequest_19000015, this::bondsUpLevel);
-		putInvoker(PbProtocol.PetBondsActivateRequest_19000013, this::bondsActivate);
-		putInvoker(PbProtocol.PetBattleRequest_19000011, this::battle);
-		putInvoker(PbProtocol.PetRefineRequest_19000007, this::refine);
-		putInvoker(PbProtocol.PetBreakUpRequest_19000005, this::breakUp);
-		putInvoker(PbProtocol.PetUpLevelRequest_19000003, this::upLevel);
-		putInvoker(PbProtocol.PetCompositeRequest_19000001, this::composite);
-	}
+    @Override
+    protected void inititialize() {
+        putInvoker(PbProtocol.PetCompositeRequest_19000001, this::composite);
+        putInvoker(PbProtocol.PetUpLevelRequest_19000003, this::upLevel);
+        putInvoker(PbProtocol.PetBreakUpRequest_19000005, this::breakUp);
+        putInvoker(PbProtocol.PetRefineRequest_19000007, this::refine);
+        putInvoker(PbProtocol.PetBattleRequest_19000011, this::battle);
+        putInvoker(PbProtocol.PetBondsActivateRequest_19000013, this::bondsActivate);
+        putInvoker(PbProtocol.PetBondsUpLevelRequest_19000015, this::bondsUpLevel);
+    }
 
+    private void composite(NetClient client, Object message) {
+        PetCompositeRequest_19000001 req = (PetCompositeRequest_19000001) message;
+        int id = req.getId();
+        PetCompositeResponse_19000002 defaultInstance = PetCompositeResponse_19000002.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        client.sendProtocol(defaultInstance);
+    }
 
-	private void bondsUpLevel(NetClient client, Object message) {
-		PetBondsUpLevelRequest_19000015 req = (PetBondsUpLevelRequest_19000015) message;
-		PetBondsUpLevelResponse_19000016.Builder resp = PetBondsUpLevelResponse_19000016.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.SoulPets)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
+    private void upLevel(NetClient client, Object message) {
+        PetUpLevelRequest_19000003 req = (PetUpLevelRequest_19000003) message;
+        int id = req.getId();
+        PetUpLevelResponse_19000004 defaultInstance = PetUpLevelResponse_19000004.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        client.sendProtocol(defaultInstance);
+    }
 
-		client.sendProtocol(resp.build());
-	}
-	private void bondsActivate(NetClient client, Object message) {
-		PetBondsActivateRequest_19000013 req = (PetBondsActivateRequest_19000013) message;
-		PetBondsActivateResponse_19000014.Builder resp = PetBondsActivateResponse_19000014.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.SoulPets)) {
-			// 有些我写的代码
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		client.sendProtocol(resp.build());
-	}
-	private void battle(NetClient client, Object message) {
-		PetBattleRequest_19000011 req = (PetBattleRequest_19000011) message;
-		PetBattleResponse_19000012.Builder resp = PetBattleResponse_19000012.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.SoulPets)) {
+    private void breakUp(NetClient client, Object message) {
+        PetBreakUpRequest_19000005 req = (PetBreakUpRequest_19000005) message;
+        int id = req.getId();
+        List<RewardInfo> rewardsList = req.getRewardsList();
+        PetBreakUpResponse_19000006 defaultInstance = PetBreakUpResponse_19000006.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        PetBreakUpResponse_19000006.Builder resp = PetBreakUpResponse_19000006.newBuilder();
+        client.sendProtocol(resp.build());
+    }
 
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		client.sendProtocol(resp.build());
-	}
-	private void refine(NetClient client, Object message) {
-		PetRefineRequest_19000007 req = (PetRefineRequest_19000007) message;
-		PetRefineResponse_19000008.Builder resp = PetRefineResponse_19000008.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.SoulPets)) {
+    private void refine(NetClient client, Object message) {
+        PetRefineRequest_19000007 req = (PetRefineRequest_19000007) message;
+        int id = req.getId();
+        PetRefineResponse_19000008 defaultInstance = PetRefineResponse_19000008.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        client.sendProtocol(defaultInstance);
+    }
 
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		client.sendProtocol(resp.build());
-	}
-	private void breakUp(NetClient client, Object message) {
-		PetBreakUpRequest_19000005 req = (PetBreakUpRequest_19000005) message;
-		PetBreakUpResponse_19000006.Builder resp = PetBreakUpResponse_19000006.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.SoulPets)) {
+    private void battle(NetClient client, Object message) {
+        PetBattleRequest_19000011 req = (PetBattleRequest_19000011) message;
+        int id = req.getId();
+        PetBattleResponse_19000012 defaultInstance = PetBattleResponse_19000012.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        client.sendProtocol(defaultInstance);
+    }
 
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		client.sendProtocol(resp.build());
-	}
-	private void upLevel(NetClient client, Object message) {
-		PetUpLevelRequest_19000003 req = (PetUpLevelRequest_19000003) message;
-		PetUpLevelResponse_19000004.Builder resp = PetUpLevelResponse_19000004.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.SoulPets)) {
+    private void bondsActivate(NetClient client, Object message) {
+        PetBondsActivateRequest_19000013 req = (PetBondsActivateRequest_19000013) message;
+        int id = req.getId();
+        PetBondsActivateResponse_19000014 defaultInstance = PetBondsActivateResponse_19000014.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        client.sendProtocol(defaultInstance);
+    }
 
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		client.sendProtocol(resp.build());
-	}
-	private void composite(NetClient client, Object message) {
-		PetCompositeRequest_19000001 req = (PetCompositeRequest_19000001) message;
-		PetCompositeResponse_19000002.Builder resp = PetCompositeResponse_19000002.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.SoulPets)) {
-
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		client.sendProtocol(resp.build());
-	}
+    private void bondsUpLevel(NetClient client, Object message) {
+        PetBondsUpLevelRequest_19000015 req = (PetBondsUpLevelRequest_19000015) message;
+        int id = req.getId();
+        PetBondsUpLevelResponse_19000016 defaultInstance = PetBondsUpLevelResponse_19000016.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        client.sendProtocol(defaultInstance);
+    }
 }

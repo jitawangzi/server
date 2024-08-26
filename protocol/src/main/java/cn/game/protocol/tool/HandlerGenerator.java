@@ -20,6 +20,7 @@ import cn.game.protocol.protobuf.PbProtocol;
  * 2024年8月23日 下午6:37:18
  * @author SYQ
  */
+@Deprecated
 public class HandlerGenerator {
 
 	public static void main(String[] args) throws Exception {
@@ -163,36 +164,5 @@ public class HandlerGenerator {
 		content.add("\t\t" + "client.sendProtocol(resp.build());");
 		content.add("\t" + "}");
 		return content;
-	}
-
-	public static class HandlerParam {
-		public String HandlerPackage;
-		public String Function;
-		public String MessageModule;
-
-		public String getHandlerPackage() {
-			return HandlerPackage;
-		}
-
-		public void setHandlerPackage(String handlerPackage) {
-			HandlerPackage = handlerPackage;
-		}
-
-		public String getFunction() {
-			return Function;
-		}
-
-		public void setFunction(String function) {
-			Function = function;
-		}
-
-		public String getMessageModule() {
-			return MessageModule;
-		}
-
-		public void setMessageModule(String messageModule) {
-			MessageModule = messageModule;
-		}
-
 	}
 }

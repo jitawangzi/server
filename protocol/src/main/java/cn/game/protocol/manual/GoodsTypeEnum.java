@@ -17,12 +17,13 @@ public enum GoodsTypeEnum{
 	Hero(3, "英雄"),
 	/** 头像框*/
 	HeadBox(4, "头像框"),
-	/** 合成英雄*/
-	HCHero(9, "合成英雄"),
+	Pet(6, "宠物"),
 	/** 装备，这个暂时没用到 */
 	Equipment(7, "装备"),
 	/** 英雄时装 */
 	Fashion(8, "英雄时装"),
+	/** 合成英雄*/
+	HCHero(9, "合成英雄"),
 
 	/** 龙 */
 	Dragon(11, "龙"),
@@ -32,7 +33,6 @@ public enum GoodsTypeEnum{
 	Sword(36, "武器"),
 	/**  */
 	FairyFriend(100, "仙友"),
-	Pet(101, "仙友"),
 
 	/** 角色 */
 	Role(44, "角色"),
