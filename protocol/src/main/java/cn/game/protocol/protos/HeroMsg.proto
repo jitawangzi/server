@@ -38,18 +38,19 @@ message HeroBattleUpLevelBatchResponse_16000026{
 	repeated HeroInfo heros = 1;	// 升级后的英雄等级数据，注意这里只取uid和等级数据,其他数据可能没有设置
 }
 
-
 //英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。
 message HeroConflateRequest_16000003{
-  string uid = 1; // 本体英雄唯一id
-  // 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
-  repeated string consumedUid = 2;
+  repeated HeroConflateInfo heroConflateInfo = 2;
 }
 // 合成返回,客户端这里自己把相关的英雄、万能耗材扣掉。
 message HeroConflateResponse_16000004{
-	HeroInfo hero = 1;	// 本体英雄，不删除，保留uid，只改变品质和星级。
+  repeated HeroInfo hero = 1;	// 本体英雄，不删除，保留uid，只改变品质和星级。
 }
-
+message HeroConflateInfo{
+	  string uid = 1; // 本体英雄唯一id
+  	// 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
+  	repeated string consumedUid = 2;
+}
 
 //英雄上阵
 message HeroBattleRequest_16000005{
@@ -74,7 +75,7 @@ message HeroBattleDismissResponse_1600000a{
 
 //英雄等级重置,返还升级材料
 message HeroLevelResetRequest_16000007{
-  string uid = 1; // 英雄唯一id
+  repeated string uid = 1; // 英雄唯一id
 }
 
 //客户端看看自己读表返还升级的材料

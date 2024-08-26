@@ -1897,28 +1897,19 @@ public final class PetMsg {
     int getId();
 
     /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     * <code>.Protos.RewardInfo rewards = 2;</code>
+     * @return Whether the rewards field is set.
      */
-    java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> 
-        getRewardsList();
+    boolean hasRewards();
     /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     * <code>.Protos.RewardInfo rewards = 2;</code>
+     * @return The rewards.
      */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index);
+    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards();
     /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     * <code>.Protos.RewardInfo rewards = 2;</code>
      */
-    int getRewardsCount();
-    /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getRewardsOrBuilderList();
-    /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
-        int index);
+    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder();
   }
   /**
    * <pre>
@@ -1937,7 +1928,6 @@ public final class PetMsg {
       super(builder);
     }
     private PetBreakUpRequest_19000005() {
-      rewards_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -1960,7 +1950,6 @@ public final class PetMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -1977,12 +1966,16 @@ public final class PetMsg {
               break;
             }
             case 18: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>();
-                mutable_bitField0_ |= 0x00000001;
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder subBuilder = null;
+              if (rewards_ != null) {
+                subBuilder = rewards_.toBuilder();
               }
-              rewards_.add(
-                  input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry));
+              rewards_ = input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rewards_);
+                rewards_ = subBuilder.buildPartial();
+              }
+
               break;
             }
             default: {
@@ -2000,9 +1993,6 @@ public final class PetMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          rewards_ = java.util.Collections.unmodifiableList(rewards_);
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -2036,43 +2026,29 @@ public final class PetMsg {
     }
 
     public static final int REWARDS_FIELD_NUMBER = 2;
-    private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_;
+    private cn.game.protocol.protobuf.RewardMsg.RewardInfo rewards_;
     /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     * <code>.Protos.RewardInfo rewards = 2;</code>
+     * @return Whether the rewards field is set.
      */
     @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
-      return rewards_;
+    public boolean hasRewards() {
+      return rewards_ != null;
     }
     /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     * <code>.Protos.RewardInfo rewards = 2;</code>
+     * @return The rewards.
      */
     @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-        getRewardsOrBuilderList() {
-      return rewards_;
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards() {
+      return rewards_ == null ? cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance() : rewards_;
     }
     /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+     * <code>.Protos.RewardInfo rewards = 2;</code>
      */
     @java.lang.Override
-    public int getRewardsCount() {
-      return rewards_.size();
-    }
-    /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
-      return rewards_.get(index);
-    }
-    /**
-     * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
-        int index) {
-      return rewards_.get(index);
+    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder() {
+      return getRewards();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2092,8 +2068,8 @@ public final class PetMsg {
       if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      for (int i = 0; i < rewards_.size(); i++) {
-        output.writeMessage(2, rewards_.get(i));
+      if (rewards_ != null) {
+        output.writeMessage(2, getRewards());
       }
       unknownFields.writeTo(output);
     }
@@ -2108,9 +2084,9 @@ public final class PetMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      for (int i = 0; i < rewards_.size(); i++) {
+      if (rewards_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, rewards_.get(i));
+          .computeMessageSize(2, getRewards());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2129,8 +2105,11 @@ public final class PetMsg {
 
       if (getId()
           != other.getId()) return false;
-      if (!getRewardsList()
-          .equals(other.getRewardsList())) return false;
+      if (hasRewards() != other.hasRewards()) return false;
+      if (hasRewards()) {
+        if (!getRewards()
+            .equals(other.getRewards())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2144,9 +2123,9 @@ public final class PetMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
-      if (getRewardsCount() > 0) {
+      if (hasRewards()) {
         hash = (37 * hash) + REWARDS_FIELD_NUMBER;
-        hash = (53 * hash) + getRewardsList().hashCode();
+        hash = (53 * hash) + getRewards().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -2280,7 +2259,6 @@ public final class PetMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getRewardsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -2289,10 +2267,10 @@ public final class PetMsg {
         id_ = 0;
 
         if (rewardsBuilder_ == null) {
-          rewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
+          rewards_ = null;
         } else {
-          rewardsBuilder_.clear();
+          rewards_ = null;
+          rewardsBuilder_ = null;
         }
         return this;
       }
@@ -2320,13 +2298,8 @@ public final class PetMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 buildPartial() {
         cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 result = new cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005(this);
-        int from_bitField0_ = bitField0_;
         result.id_ = id_;
         if (rewardsBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            rewards_ = java.util.Collections.unmodifiableList(rewards_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
           result.rewards_ = rewards_;
         } else {
           result.rewards_ = rewardsBuilder_.build();
@@ -2382,31 +2355,8 @@ public final class PetMsg {
         if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (rewardsBuilder_ == null) {
-          if (!other.rewards_.isEmpty()) {
-            if (rewards_.isEmpty()) {
-              rewards_ = other.rewards_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureRewardsIsMutable();
-              rewards_.addAll(other.rewards_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.rewards_.isEmpty()) {
-            if (rewardsBuilder_.isEmpty()) {
-              rewardsBuilder_.dispose();
-              rewardsBuilder_ = null;
-              rewards_ = other.rewards_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              rewardsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getRewardsFieldBuilder() : null;
-            } else {
-              rewardsBuilder_.addAllMessages(other.rewards_);
-            }
-          }
+        if (other.hasRewards()) {
+          mergeRewards(other.getRewards());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2436,7 +2386,6 @@ public final class PetMsg {
         }
         return this;
       }
-      private int bitField0_;
 
       private int id_ ;
       /**
@@ -2481,239 +2430,118 @@ public final class PetMsg {
         return this;
       }
 
-      private java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> rewards_ =
-        java.util.Collections.emptyList();
-      private void ensureRewardsIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          rewards_ = new java.util.ArrayList<cn.game.protocol.protobuf.RewardMsg.RewardInfo>(rewards_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private cn.game.protocol.protobuf.RewardMsg.RewardInfo rewards_;
+      private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
+      /**
+       * <code>.Protos.RewardInfo rewards = 2;</code>
+       * @return Whether the rewards field is set.
+       */
+      public boolean hasRewards() {
+        return rewardsBuilder_ != null || rewards_ != null;
+      }
+      /**
+       * <code>.Protos.RewardInfo rewards = 2;</code>
+       * @return The rewards.
+       */
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards() {
+        if (rewardsBuilder_ == null) {
+          return rewards_ == null ? cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance() : rewards_;
+        } else {
+          return rewardsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.Protos.RewardInfo rewards = 2;</code>
+       */
+      public Builder setRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
+        if (rewardsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rewards_ = value;
+          onChanged();
+        } else {
+          rewardsBuilder_.setMessage(value);
+        }
 
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo> getRewardsList() {
-        if (rewardsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(rewards_);
-        } else {
-          return rewardsBuilder_.getMessageList();
-        }
+        return this;
       }
       /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public int getRewardsCount() {
-        if (rewardsBuilder_ == null) {
-          return rewards_.size();
-        } else {
-          return rewardsBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards(int index) {
-        if (rewardsBuilder_ == null) {
-          return rewards_.get(index);
-        } else {
-          return rewardsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.RewardInfo rewards = 2;</code>
        */
       public Builder setRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (rewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRewardsIsMutable();
-          rewards_.set(index, value);
-          onChanged();
-        } else {
-          rewardsBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder setRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          rewards_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          rewardsBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder addRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (rewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRewardsIsMutable();
-          rewards_.add(value);
-          onChanged();
-        } else {
-          rewardsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder addRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (rewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureRewardsIsMutable();
-          rewards_.add(index, value);
-          onChanged();
-        } else {
-          rewardsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder addRewards(
           cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
         if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          rewards_.add(builderForValue.build());
+          rewards_ = builderForValue.build();
           onChanged();
         } else {
-          rewardsBuilder_.addMessage(builderForValue.build());
+          rewardsBuilder_.setMessage(builderForValue.build());
         }
+
         return this;
       }
       /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.RewardInfo rewards = 2;</code>
        */
-      public Builder addRewards(
-          int index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
+      public Builder mergeRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
         if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          rewards_.add(index, builderForValue.build());
+          if (rewards_ != null) {
+            rewards_ =
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo.newBuilder(rewards_).mergeFrom(value).buildPartial();
+          } else {
+            rewards_ = value;
+          }
           onChanged();
         } else {
-          rewardsBuilder_.addMessage(index, builderForValue.build());
+          rewardsBuilder_.mergeFrom(value);
         }
+
         return this;
       }
       /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder addAllRewards(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfo> values) {
-        if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, rewards_);
-          onChanged();
-        } else {
-          rewardsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.RewardInfo rewards = 2;</code>
        */
       public Builder clearRewards() {
         if (rewardsBuilder_ == null) {
-          rewards_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
+          rewards_ = null;
           onChanged();
         } else {
-          rewardsBuilder_.clear();
+          rewards_ = null;
+          rewardsBuilder_ = null;
         }
+
         return this;
       }
       /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.RewardInfo rewards = 2;</code>
        */
-      public Builder removeRewards(int index) {
-        if (rewardsBuilder_ == null) {
-          ensureRewardsIsMutable();
-          rewards_.remove(index);
-          onChanged();
-        } else {
-          rewardsBuilder_.remove(index);
-        }
-        return this;
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder() {
+        
+        onChanged();
+        return getRewardsFieldBuilder().getBuilder();
       }
       /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.RewardInfo rewards = 2;</code>
        */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder(
-          int index) {
-        return getRewardsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder(
-          int index) {
-        if (rewardsBuilder_ == null) {
-          return rewards_.get(index);  } else {
-          return rewardsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public java.util.List<? extends cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-           getRewardsOrBuilderList() {
+      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder() {
         if (rewardsBuilder_ != null) {
-          return rewardsBuilder_.getMessageOrBuilderList();
+          return rewardsBuilder_.getMessageOrBuilder();
         } else {
-          return java.util.Collections.unmodifiableList(rewards_);
+          return rewards_ == null ?
+              cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance() : rewards_;
         }
       }
       /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
+       * <code>.Protos.RewardInfo rewards = 2;</code>
        */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder() {
-        return getRewardsFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder addRewardsBuilder(
-          int index) {
-        return getRewardsFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .Protos.RewardInfo rewards = 2;</code>
-       */
-      public java.util.List<cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder> 
-           getRewardsBuilderList() {
-        return getRewardsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilderV3<
           cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
           getRewardsFieldBuilder() {
         if (rewardsBuilder_ == null) {
-          rewardsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          rewardsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
-                  rewards_,
-                  ((bitField0_ & 0x00000001) != 0),
+                  getRewards(),
                   getParentForChildren(),
                   isClean());
           rewards_ = null;
@@ -7102,7 +6930,7 @@ public final class PetMsg {
       "se_19000002\"(\n\032PetUpLevelRequest_1900000" +
       "3\022\n\n\002id\030\001 \001(\005\"\035\n\033PetUpLevelResponse_1900" +
       "0004\"M\n\032PetBreakUpRequest_19000005\022\n\n\002id" +
-      "\030\001 \001(\005\022#\n\007rewards\030\002 \003(\0132\022.Protos.RewardI" +
+      "\030\001 \001(\005\022#\n\007rewards\030\002 \001(\0132\022.Protos.RewardI" +
       "nfo\")\n\033PetBreakUpResponse_19000006\022\n\n\002id" +
       "\030\001 \001(\005\"\'\n\031PetRefineRequest_19000007\022\n\n\002i" +
       "d\030\001 \001(\005\"\034\n\032PetRefineResponse_19000008\"\'\n" +

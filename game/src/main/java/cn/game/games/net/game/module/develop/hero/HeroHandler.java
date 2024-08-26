@@ -14,6 +14,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.google.protobuf.ProtocolStringList;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Hero;
@@ -39,6 +41,7 @@ import cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleResponse_16000006;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchResponse_16000026;
+import cn.game.protocol.protobuf.HeroMsg.HeroConflateInfo;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateResponse_16000004;
 import cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032;
@@ -206,6 +209,7 @@ public class HeroHandler extends BaseHandler {
 		client.sendProtocol(resp.build());
 	}
 
+	// 一键给上阵的英雄升级。优先升等级最低的。
 	private void upLevelBattleBatch(NetClient client, Object message) {
 		HeroBattleUpLevelBatchRequest_16000025 req = (HeroBattleUpLevelBatchRequest_16000025) message;
 		HeroBattleUpLevelBatchResponse_16000026.Builder resp = HeroBattleUpLevelBatchResponse_16000026.newBuilder();
@@ -533,28 +537,32 @@ public class HeroHandler extends BaseHandler {
 	private void levelReset(NetClient client, Object message) {
 		HeroLevelResetRequest_16000007 req = (HeroLevelResetRequest_16000007) message;
 		HeroLevelResetResponse_16000008.Builder resp = HeroLevelResetResponse_16000008.newBuilder();
-		long uid = Long.parseLong(req.getUid());
+		ProtocolStringList uidList = req.getUidList();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		HeroModule heroModule = player.getHeroModule();
-		Hero hero = heroModule.get(uid);
-		if (hero == null) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		int level = hero.getLevel();
+		for (String string : uidList) {
+			long uid = Long.parseLong(string);
+			HeroModule heroModule = player.getHeroModule();
+			Hero hero = heroModule.get(uid);
+			if (hero == null) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+				return;
+			}
+			int level = hero.getLevel();
 
-		int itemCount = 0;
-		int money = 0;
-		HeroLvConfig heroLvConfig;
-		for (int i = 1; i < level; i++) {
-			heroLvConfig = HeroLvManager.instance().get(i);
-			itemCount += heroLvConfig.LvConsumeItem;
-			money += heroLvConfig.LvConsumeMoney;
-		}
-		PlayerHelper.addResources(player, GlobalConst.HeroLvItem, itemCount, OpType.HeroLvReset);
-		PlayerHelper.addResources(player, Asset.gold.ID, money, OpType.HeroLvReset);
+			int itemCount = 0;
+			int money = 0;
+			HeroLvConfig heroLvConfig;
+			for (int i = 1; i < level; i++) {
+				heroLvConfig = HeroLvManager.instance().get(i);
+				itemCount += heroLvConfig.LvConsumeItem;
+				money += heroLvConfig.LvConsumeMoney;
+			}
+			PlayerHelper.addResources(player, GlobalConst.HeroLvItem, itemCount, OpType.HeroLvReset);
+			PlayerHelper.addResources(player, Asset.gold.ID, money, OpType.HeroLvReset);
 
-		hero.setLevel(1);
+			hero.setLevel(1);
+		}
+
 		client.sendProtocol(resp.build());
 	}
 
@@ -679,64 +687,65 @@ public class HeroHandler extends BaseHandler {
 	private void conflate(NetClient client, Object message) {
 		HeroConflateRequest_16000003 req = (HeroConflateRequest_16000003) message;
 		HeroConflateResponse_16000004.Builder resp = HeroConflateResponse_16000004.newBuilder();
-		String uid = req.getUid();
-		List<String> consumedUidList = req.getConsumedUidList();
+		List<HeroConflateInfo> heroConflateInfoList = req.getHeroConflateInfoList();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		if (!player.isFuncOpen(InitialUI.CardBreak)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
 			return;
 		}
 
-		HeroModule heroModule = player.getHeroModule();
-		Hero hero = heroModule.get(Long.parseLong(uid));
-		if (hero == null) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		for (String string : consumedUidList) {
-			if (string.equals(uid)) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+		for (HeroConflateInfo heroConflateInfo : heroConflateInfoList) {
+			String uid = heroConflateInfo.getUid();
+			List<String> consumedUidList = heroConflateInfo.getConsumedUidList();
+
+			HeroModule heroModule = player.getHeroModule();
+			Hero hero = heroModule.get(Long.parseLong(uid));
+			if (hero == null) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 				return;
 			}
+			for (String string : consumedUidList) {
+				if (string.equals(uid)) {
+					client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+					return;
+				}
+			}
+
+			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+			// 先检查能不能往下突破
+			HeroBreakConfig nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar() + 1);
+			if (nextQualityStarConfig == null) {
+				nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality() + 1, 1);
+			}
+			if (nextQualityStarConfig == null) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.hero_break_max.getId());
+				return;
+			}
+			if (nextQualityStarConfig.InitialQuality > heroConfig.BreakQuality) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.hero_break_max.getId());
+				return;
+			}
+			// 检查资源
+			HeroBreakConfig qualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
+
+			boolean check = checkStarConsume(player, hero, consumedUidList, qualityStarConfig);
+			if (!check) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
+				return;
+			}
+			for (String string : consumedUidList) {
+				player.getHeroModule().del(Long.parseLong(string), OpType.HeroConflate);
+			}
+			hero.setStar(nextQualityStarConfig.Star);
+			hero.setQuality(nextQualityStarConfig.InitialQuality);
+			player.handleEvent(EventTypeEnum.HeroQuality, hero);
+
+			player.handleEvent(EventTypeEnum.HeroBreak, hero.getStar(), hero.getQuality());
+
+			resp.addHero(hero.toHeroInfo());
+
 		}
 
-		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-		// 先检查能不能往下突破
-		HeroBreakConfig nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar() + 1);
-		if (nextQualityStarConfig == null) {
-			nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality() + 1, 1);
-		}
-		if (nextQualityStarConfig == null) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.hero_break_max.getId());
-			return;
-		}
-		if (nextQualityStarConfig.InitialQuality > heroConfig.BreakQuality) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.hero_break_max.getId());
-			return;
-		}
-		// 检查资源
-		HeroBreakConfig qualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
-
-//		HeroQualityConfig heroQualityConfig = HeroQualityManager.instance().get(heroConfig.Quality);
-//		HeroConflateConfig heroConflateConfig = HeroConflateManager.instance().get(heroConfig.ID);
-		boolean check = checkStarConsume(player, hero, consumedUidList, qualityStarConfig);
-		if (!check) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		for (String string : consumedUidList) {
-			player.getHeroModule().del(Long.parseLong(string), OpType.HeroConflate);
-		}
-		hero.setStar(nextQualityStarConfig.Star);
-		hero.setQuality(nextQualityStarConfig.InitialQuality);
-		player.handleEvent(EventTypeEnum.HeroQuality, hero);
-
-		// 英雄突破，奖励固定元宝
-//		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HeroBookAward, OpType.HeroConflate);
-
-		player.handleEvent(EventTypeEnum.HeroBreak, hero.getStar(), hero.getQuality());
-
-		resp.setHero(hero.toHeroInfo());
 		client.sendProtocol(resp.build());
 	}
 

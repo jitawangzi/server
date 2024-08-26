@@ -36,6 +36,14 @@ import cn.game.protocol.protobuf.PbProtocol;
  */
 public class ClassGenerator {
 
+	/** 
+	 * 根据xxxMsg.proto,创建处理请求消息的 xxxHandler类
+	 * @param handlerPath Handler文件路径
+	 * @param pkg Handler所在包名  msg中定义 /@HandlerPackage cn.game.games.net.game.module.develop.pet
+	 * @param className xxxHandler
+	 * @param moduleCode  模块号， msg中定义 //@MessageModule 19
+	 * @throws IOException
+	 */
 	public static void createHandlerJavaFile(String handlerPath, String pkg, String className, String moduleCode) throws IOException {
 		CompilationUnit cu = new CompilationUnit();
 		cu.setPackageDeclaration(pkg);
@@ -51,7 +59,7 @@ public class ClassGenerator {
 		methodGetModule.addMarkerAnnotation("Override");
 		methodGetModule.setType(com.github.javaparser.ast.type.PrimitiveType.intType());
 		methodGetModule.setBody(StaticJavaParser.parseBlock(String.format("{ return %s; }", moduleCode)));
-
+		// 添加inititialize方法
 		MethodDeclaration methodInititialize = classDeclaration.addMethod("inititialize", Modifier.Keyword.PROTECTED);
 		methodInititialize.addMarkerAnnotation("Override");
 		methodInititialize.setType(new com.github.javaparser.ast.type.VoidType());
@@ -60,6 +68,15 @@ public class ClassGenerator {
 		Files.write(Paths.get(handlerPath), cu.toString().getBytes());
 	}
 
+	/** 
+	 * 在处理请求消息的 xxxHandler类存在时，增加请求消息的处理代码
+	 * @param handlerPath
+	 * @param className
+	 * @param module
+	 * @param requestMessages xxxMsg.proto中定义的所有请求消息名
+	 * @param function  功能开启的枚举名，msg中定义  //@Function SoulPets
+	 * @throws Exception
+	 */
 	public static void updateHandlerJavaFile(String handlerPath, String className, String module, List<String> requestMessages,
 			String function) throws Exception {
 
@@ -70,6 +87,7 @@ public class ClassGenerator {
 
 		ClassOrInterfaceDeclaration classDeclaration = cu.getClassByName(className).orElseThrow(() -> new RuntimeException("Class not found in file"));
 
+		// 在inititialize方法中，根据putInvoker，找到存在的请求消息名并排除。
 		MethodDeclaration inititializeMethod = classDeclaration.getMethodsByName("inititialize").get(0);
 		BlockStmt blockStmt = inititializeMethod.getBody().get();
 		List<Node> childNodes = blockStmt.getChildNodes();
@@ -94,7 +112,7 @@ public class ClassGenerator {
 			// 增加putInvoker
 			blockStmt.addStatement(String.format("putInvoker(PbProtocol.%s, this::%s);", reqMessage, getReqMethod(reqMessage, module)));
 
-			// 新增方法
+			// 新增处理消息的方法
 			MethodDeclaration messageMethod = classDeclaration.addMethod(getReqMethod(reqMessage, module), com.github.javaparser.ast.Modifier.Keyword.PRIVATE);
 			messageMethod.setType(new com.github.javaparser.ast.type.VoidType());
 			messageMethod.addParameter("NetClient", "client");
@@ -109,11 +127,10 @@ public class ClassGenerator {
 			Message respMessageInstance = (Message) respMessageClass.getDeclaredMethod("getDefaultInstance").invoke(null);
 			Descriptors.Descriptor reqDescriptor = reqMessageInstance.getDescriptorForType();
 			Descriptors.Descriptor respDescriptor = respMessageInstance.getDescriptorForType();
-
+			// 生成请求消息的 数据 get方法。
 			if (!reqDescriptor.getFields().isEmpty()) {
 				for (FieldDescriptor field : reqDescriptor.getFields()) {
 					String fieldName = field.getName();
-					Descriptors.FieldDescriptor.Type fieldType = field.getType();
 					if (field.isMapField()) {
 						hasMap = true;
 					} else if (field.isRepeated()) {
@@ -123,7 +140,7 @@ public class ClassGenerator {
 					if (field.isRepeated() || field.isMapField()) {
 						fieldGetCode = generateRepeatedOrMapFieldCode(fieldName, field);
 					} else {
-						fieldGetCode = generateSingleFieldCode(fieldName, fieldType);
+						fieldGetCode = generateSingleFieldCode(fieldName, field);
 					}
 					blockStmtMessage.addStatement(fieldGetCode);
 				}
@@ -143,8 +160,8 @@ public class ClassGenerator {
 //						.addStatement("return;")
 //						.addStatement("}");
 //			}
-			// 创建 if 语句
 			if (function != null) {
+				// 生成功能开启检查代码
 				// 创建 if 条件
 				Expression condition = new MethodCallExpr(new NameExpr("player"), "isFuncOpen",
 						new NodeList<>(new FieldAccessExpr(new NameExpr("InitialUI"), function)));
@@ -214,6 +231,11 @@ public class ClassGenerator {
 		checkImport(packageName, className, cu);
 	}
 
+	/** 
+	 * 根据请求消息名，获取响应消息名
+	 * @param reqMessage
+	 * @return
+	 */
 	public static String getRespMessage(String reqMessage) {
 		int msgId = PbProtocol.getInstance().getMsgId(reqMessage);
 		return PbProtocol.getInstance().getMsgName(msgId + 1);
@@ -237,7 +259,6 @@ public class ClassGenerator {
 		String capitalizedFieldName = capitalize(fieldName);
 
 		if (fieldDescriptor.isMapField()) {
-			// Get the map key and value types
 			Descriptors.FieldDescriptor keyDescriptor = fieldDescriptor.getMessageType().findFieldByName("key");
 			Descriptors.FieldDescriptor valueDescriptor = fieldDescriptor.getMessageType().findFieldByName("value");
 			String keyType = getJavaType(keyDescriptor);
@@ -245,7 +266,6 @@ public class ClassGenerator {
 
 			return "Map<" + keyType + ", " + valueType + "> " + fieldName + "Map = req.get" + capitalizedFieldName + "Map();";
 		} else if (fieldDescriptor.isRepeated()) {
-			// Handle repeated types
 			switch (fieldType) {
 			case INT32:
 			case UINT32:
@@ -283,7 +303,6 @@ public class ClassGenerator {
 		}
 	}
 
-	// Helper method to get Java type for a Protobuf field descriptor
 	private static String getJavaType(Descriptors.FieldDescriptor descriptor) {
 		switch (descriptor.getType()) {
 		case INT32:
@@ -317,8 +336,8 @@ public class ClassGenerator {
 		}
 	}
 
-	private static String generateSingleFieldCode(String fieldName, Descriptors.FieldDescriptor.Type fieldType) {
-		switch (fieldType) {
+	private static String generateSingleFieldCode(String fieldName, Descriptors.FieldDescriptor fieldDescriptor) {
+		switch (fieldDescriptor.getType()) {
 		case INT32:
 		case UINT32:
 		case SINT32:
@@ -342,11 +361,11 @@ public class ClassGenerator {
 		case BYTES:
 			return "ByteString " + fieldName + " = req.get" + capitalize(fieldName) + "();";
 		case ENUM:
-			return "YourEnumType " + fieldName + " = req.get" + capitalize(fieldName) + "();";
+			return fieldDescriptor.getEnumType().getName() + " " + fieldName + " = req.get" + capitalize(fieldName) + "();";
 		case MESSAGE:
-			return "YourMessageType " + fieldName + " = req.get" + capitalize(fieldName) + "();";
+			return fieldDescriptor.getMessageType().getName() + " " + fieldName + " = req.get" + capitalize(fieldName) + "();";
 		default:
-			return "// Unsupported field type: " + fieldType.name();
+			return "// Unsupported field type: " + fieldDescriptor.getType().name();
 		}
 	}
 

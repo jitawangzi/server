@@ -30,7 +30,7 @@ message PetUpLevelResponse_19000004{
 //宠物突破
 message PetBreakUpRequest_19000005{
   int32 id = 1; // Pet表id
-  repeated RewardInfo rewards= 2;
+  RewardInfo rewards= 2;
 }
 
 message PetBreakUpResponse_19000006{
