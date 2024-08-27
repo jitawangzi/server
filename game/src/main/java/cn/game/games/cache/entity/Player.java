@@ -130,10 +130,21 @@ public class Player  {
 	}
 
 	public long setTimerTask(long delay, Handler<Long> handler) {
-		long timer = gameClient.getContext().setTimer(delay, handler);
-		timerTask.add(timer);
-		return timer;
+		if (delay <= 0) {
+			gameClient.getContext().runOnContext(v -> handler.handle(0L));
+		} else {
+			long timer = gameClient.getContext().setTimer(delay, handler);
+			timerTask.add(timer);
+			return timer;
+		}
+		return 0;
 	}
+
+//	public long setPeriodicTaskAfter(long delay, Handler<Long> handler, long period) {
+//		return setTimerTask(delay, r -> {
+//			setPeriodicTask(period, handler);
+//		});
+//	}
 
 	public void cancelTimer(long id) {
 		timerTask.remove(id);

@@ -72,7 +72,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 			// 活动开始，增加新资源，增加恢复任务
 			// 值满，取消定时任务， 如果消耗了值，变成不满了，则需要重新启动恢复任务。或者先不处理，做个上限的判断
 			int id = event.getIntParameter(0);
-			startRecoveryTask(id);
+			startRecoveryTask(id, 0);
 			break;
 		}
 		case ResourceRemove: {
@@ -88,26 +88,48 @@ public class MoneyRecoverModule extends BasePlayerModule {
 		}
 	}
 
-	private void startRecoveryTask(int id) {
+	private void startRecoveryTask(int id, int nextUpdataTime) {
 		AssetRestoreConfig recoveryConfig = AssetRestoreManager.instance().getNullable(id);
 		if (recoveryConfig != null) {
-			long timer = player.setPeriodicTask(recoveryConfig.interval * 60 * 1000, r -> {
-				// 是否到达上限
-				if (isRecoverMax(id)) {
-					return;
-				}
+			if (nextUpdataTime == 0) {
 				idUpdateTimeMap.put(id, System.currentTimeMillis());
-				PlayerHelper.addResources(player, id, 1, OpType.TimerRecovery);
-			});
-			timerTask.put(id, timer);
+				player.setPeriodicTask(recoveryConfig.interval * 60 * 1000, r -> {
+					timeToRecovery(id);
+				});
+
+			} else {
+				player.setTimerTask(nextUpdataTime, l -> {
+					timeToRecovery(id);
+					long timer = player.setPeriodicTask(recoveryConfig.interval * 60 * 1000, r -> {
+						timeToRecovery(id);
+					});
+					timerTask.put(id, timer);
+				});
+			}
+
 		}
+	}
+
+	private void timeToRecovery(int id) {
+		// 是否到达上限
+		if (isRecoverMax(id)) {
+			return;
+		}
+		idUpdateTimeMap.put(id, System.currentTimeMillis());
+		PlayerHelper.addResources(player, id, 1, OpType.TimerRecovery);
 	}
 
 	private void startAllRecoveryTask() {
 		Collection<AssetRestoreConfig> list = AssetRestoreManager.instance().list();
 		for (AssetRestoreConfig moneyRecoveryConfig : list) {
 			if (player.getCurrencyModule().has(moneyRecoveryConfig.ID)) {
-				startRecoveryTask(moneyRecoveryConfig.ID);
+				if (idUpdateTimeMap.containsKey(moneyRecoveryConfig.ID)) {
+					continue; 
+				}
+				if (timerTask.containsKey(moneyRecoveryConfig.ID)) {
+					continue;
+				}
+				startRecoveryTask(moneyRecoveryConfig.ID, 0);
 			}
 		}
 	}

@@ -401,6 +401,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int TestAddItemResponse_6f000009 = 0x6f000009;    
 	public final static int TestMissionFinishRequest_6f000022 = 0x6f000022;    //直接完成任务  
 	public final static int TestMissionFinishResponse_6f000023 = 0x6f000023;    
+	public final static int TestPlayerAssetDataRequest_01000028 = 0x01000028;    //请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  
+	public final static int TestPlayerAssetDataResponse_01000029 = 0x01000029;    //  
 	public final static int TestRequest_6f000020 = 0x6f000020;    //只是测试  
 	public final static int TestResponse_6f000021 = 0x6f000021;    
 	public final static int TestMessageRequest_6f000080 = 0x6f000080;    //模拟测试某玩家发送协议  
@@ -1154,6 +1156,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(TestMissionFinishRequest_6f000022, cn.game.protocol.protobuf.TestMsg.TestMissionFinishRequest_6f000022.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(TestMissionFinishResponse_6f000023, cn.game.protocol.protobuf.TestMsg.TestMissionFinishResponse_6f000023.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(TestPlayerAssetDataRequest_01000028, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(TestPlayerAssetDataResponse_01000029, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(TestRequest_6f000020, cn.game.protocol.protobuf.TestMsg.TestRequest_6f000020.getDefaultInstance()
 				.getParserForType());
@@ -1912,6 +1918,10 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x6f000022,"TestMissionFinishRequest_6f000022");
 		nameIdMap.put("TestMissionFinishResponse_6f000023", 0x6f000023);
 		idNameMap.put(0x6f000023,"TestMissionFinishResponse_6f000023");
+		nameIdMap.put("TestPlayerAssetDataRequest_01000028", 0x01000028);
+		idNameMap.put(0x01000028,"TestPlayerAssetDataRequest_01000028");
+		nameIdMap.put("TestPlayerAssetDataResponse_01000029", 0x01000029);
+		idNameMap.put(0x01000029,"TestPlayerAssetDataResponse_01000029");
 		nameIdMap.put("TestRequest_6f000020", 0x6f000020);
 		idNameMap.put(0x6f000020,"TestRequest_6f000020");
 		nameIdMap.put("TestResponse_6f000021", 0x6f000021);

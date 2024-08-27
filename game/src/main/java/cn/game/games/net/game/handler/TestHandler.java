@@ -21,6 +21,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.client.GameClient;
@@ -54,6 +55,8 @@ import cn.game.protocol.protobuf.TestMsg.TestAddItemResponse_6f000009;
 import cn.game.protocol.protobuf.TestMsg.TestMessageRequest_6f000080;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishRequest_6f000022;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishResponse_6f000023;
+import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028;
+import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
@@ -93,6 +96,7 @@ public class TestHandler extends BaseHandler {
 		putInvoker(PbProtocol.TestRequest_6f000020, this::test);
 //		putInvoker(PbProtocol.TestDbRequest_6f000041, this::testDBinsert);
 		putInvoker(PbProtocol.TestMissionFinishRequest_6f000022, this::finishMission);
+		putInvoker(PbProtocol.TestPlayerAssetDataRequest_01000028, this::assetData);
 //		putInvoker(PbProtocol.TestStoryFinishRequest_6f000024, this::finishStory);
 
 //		putInvoker(PbProtocol.TestAddOrDelBagItemRequest_6f000032, this::bagTest);
@@ -225,6 +229,19 @@ public class TestHandler extends BaseHandler {
 			client.sendProtocol(response.build());
 	
 		}*/
+	private void assetData(NetClient client, Object message) {
+		TestPlayerAssetDataRequest_01000028 request = (TestPlayerAssetDataRequest_01000028) message;
+		TestPlayerAssetDataResponse_01000029.Builder response = TestPlayerAssetDataResponse_01000029.newBuilder();
+
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		response.putAllAssets(player.getCurrencyModule().getCurrencyMap().getMap()) ; 
+		
+		for (Item item : player.getItemModule().list()) {
+			response.addItems(item.toItemInfo());
+		}
+		client.sendProtocol(response.build());
+	}
 	private void finishMission(NetClient client, Object message) {
 		TestMissionFinishRequest_6f000022 request = (TestMissionFinishRequest_6f000022) message;
 		TestMissionFinishResponse_6f000023.Builder response = TestMissionFinishResponse_6f000023.newBuilder();

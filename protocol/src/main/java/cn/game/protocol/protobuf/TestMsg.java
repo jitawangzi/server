@@ -4135,6 +4135,1726 @@ public final class TestMsg {
 
   }
 
+  public interface TestPlayerAssetDataRequest_01000028OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.TestPlayerAssetDataRequest_01000028)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   *** 请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  *
+   * </pre>
+   *
+   * Protobuf type {@code Protos.TestPlayerAssetDataRequest_01000028}
+   */
+  public static final class TestPlayerAssetDataRequest_01000028 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.TestPlayerAssetDataRequest_01000028)
+      TestPlayerAssetDataRequest_01000028OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TestPlayerAssetDataRequest_01000028.newBuilder() to construct.
+    private TestPlayerAssetDataRequest_01000028(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TestPlayerAssetDataRequest_01000028() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TestPlayerAssetDataRequest_01000028();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private TestPlayerAssetDataRequest_01000028(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 other = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *** 请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  *
+     * </pre>
+     *
+     * Protobuf type {@code Protos.TestPlayerAssetDataRequest_01000028}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.TestPlayerAssetDataRequest_01000028)
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 build() {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 buildPartial() {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 result = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028) {
+          return mergeFrom((cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 other) {
+        if (other == cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.TestPlayerAssetDataRequest_01000028)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.TestPlayerAssetDataRequest_01000028)
+    private static final cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028();
+    }
+
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TestPlayerAssetDataRequest_01000028>
+        PARSER = new com.google.protobuf.AbstractParser<TestPlayerAssetDataRequest_01000028>() {
+      @java.lang.Override
+      public TestPlayerAssetDataRequest_01000028 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new TestPlayerAssetDataRequest_01000028(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<TestPlayerAssetDataRequest_01000028> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TestPlayerAssetDataRequest_01000028> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface TestPlayerAssetDataResponse_01000029OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.TestPlayerAssetDataResponse_01000029)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+    int getAssetsCount();
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+    boolean containsAssets(
+        int key);
+    /**
+     * Use {@link #getAssetsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.Integer, java.lang.Long>
+    getAssets();
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.Long>
+    getAssetsMap();
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+
+    long getAssetsOrDefault(
+        int key,
+        long defaultValue);
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+
+    long getAssetsOrThrow(
+        int key);
+
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    java.util.List<cn.game.protocol.protobuf.BaseMsg.ItemInfo> 
+        getItemsList();
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.ItemInfo getItems(int index);
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    int getItemsCount();
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> 
+        getItemsOrBuilderList();
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getItemsOrBuilder(
+        int index);
+  }
+  /**
+   * <pre>
+   ***  *
+   * </pre>
+   *
+   * Protobuf type {@code Protos.TestPlayerAssetDataResponse_01000029}
+   */
+  public static final class TestPlayerAssetDataResponse_01000029 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.TestPlayerAssetDataResponse_01000029)
+      TestPlayerAssetDataResponse_01000029OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TestPlayerAssetDataResponse_01000029.newBuilder() to construct.
+    private TestPlayerAssetDataResponse_01000029(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TestPlayerAssetDataResponse_01000029() {
+      items_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TestPlayerAssetDataResponse_01000029();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private TestPlayerAssetDataResponse_01000029(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                assets_ = com.google.protobuf.MapField.newMapField(
+                    AssetsDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000001;
+              }
+              com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Long>
+              assets__ = input.readMessage(
+                  AssetsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              assets_.getMutableMap().put(
+                  assets__.getKey(), assets__.getValue());
+              break;
+            }
+            case 42: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                items_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.ItemInfo>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              items_.add(
+                  input.readMessage(cn.game.protocol.protobuf.BaseMsg.ItemInfo.parser(), extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          items_ = java.util.Collections.unmodifiableList(items_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetAssets();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.Builder.class);
+    }
+
+    public static final int ASSETS_FIELD_NUMBER = 2;
+    private static final class AssetsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.Integer, java.lang.Long> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.Integer, java.lang.Long>newDefaultInstance(
+                  cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.UINT32,
+                  0,
+                  com.google.protobuf.WireFormat.FieldType.UINT64,
+                  0L);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.Integer, java.lang.Long> assets_;
+    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Long>
+    internalGetAssets() {
+      if (assets_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            AssetsDefaultEntryHolder.defaultEntry);
+      }
+      return assets_;
+    }
+
+    public int getAssetsCount() {
+      return internalGetAssets().getMap().size();
+    }
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsAssets(
+        int key) {
+      
+      return internalGetAssets().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getAssetsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.Integer, java.lang.Long> getAssets() {
+      return getAssetsMap();
+    }
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.Integer, java.lang.Long> getAssetsMap() {
+      return internalGetAssets().getMap();
+    }
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+    @java.lang.Override
+
+    public long getAssetsOrDefault(
+        int key,
+        long defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Long> map =
+          internalGetAssets().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+     * </pre>
+     *
+     * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+     */
+    @java.lang.Override
+
+    public long getAssetsOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.Long> map =
+          internalGetAssets().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public static final int ITEMS_FIELD_NUMBER = 5;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.ItemInfo> items_;
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    @java.lang.Override
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.ItemInfo> getItemsList() {
+      return items_;
+    }
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> 
+        getItemsOrBuilderList() {
+      return items_;
+    }
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    @java.lang.Override
+    public int getItemsCount() {
+      return items_.size();
+    }
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.ItemInfo getItems(int index) {
+      return items_.get(index);
+    }
+    /**
+     * <pre>
+     *道具  Item表
+     * </pre>
+     *
+     * <code>repeated .Protos.ItemInfo items = 5;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getItemsOrBuilder(
+        int index) {
+      return items_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetAssets(),
+          AssetsDefaultEntryHolder.defaultEntry,
+          2);
+      for (int i = 0; i < items_.size(); i++) {
+        output.writeMessage(5, items_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (java.util.Map.Entry<java.lang.Integer, java.lang.Long> entry
+           : internalGetAssets().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Long>
+        assets__ = AssetsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, assets__);
+      }
+      for (int i = 0; i < items_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, items_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 other = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029) obj;
+
+      if (!internalGetAssets().equals(
+          other.internalGetAssets())) return false;
+      if (!getItemsList()
+          .equals(other.getItemsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (!internalGetAssets().getMap().isEmpty()) {
+        hash = (37 * hash) + ASSETS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetAssets().hashCode();
+      }
+      if (getItemsCount() > 0) {
+        hash = (37 * hash) + ITEMS_FIELD_NUMBER;
+        hash = (53 * hash) + getItemsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     ***  *
+     * </pre>
+     *
+     * Protobuf type {@code Protos.TestPlayerAssetDataResponse_01000029}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.TestPlayerAssetDataResponse_01000029)
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetAssets();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMutableAssets();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getItemsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        internalGetMutableAssets().clear();
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 build() {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 buildPartial() {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 result = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029(this);
+        int from_bitField0_ = bitField0_;
+        result.assets_ = internalGetAssets();
+        result.assets_.makeImmutable();
+        if (itemsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0)) {
+            items_ = java.util.Collections.unmodifiableList(items_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.items_ = items_;
+        } else {
+          result.items_ = itemsBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029) {
+          return mergeFrom((cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 other) {
+        if (other == cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.getDefaultInstance()) return this;
+        internalGetMutableAssets().mergeFrom(
+            other.internalGetAssets());
+        if (itemsBuilder_ == null) {
+          if (!other.items_.isEmpty()) {
+            if (items_.isEmpty()) {
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureItemsIsMutable();
+              items_.addAll(other.items_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.items_.isEmpty()) {
+            if (itemsBuilder_.isEmpty()) {
+              itemsBuilder_.dispose();
+              itemsBuilder_ = null;
+              items_ = other.items_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              itemsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getItemsFieldBuilder() : null;
+            } else {
+              itemsBuilder_.addAllMessages(other.items_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.MapField<
+          java.lang.Integer, java.lang.Long> assets_;
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Long>
+      internalGetAssets() {
+        if (assets_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              AssetsDefaultEntryHolder.defaultEntry);
+        }
+        return assets_;
+      }
+      private com.google.protobuf.MapField<java.lang.Integer, java.lang.Long>
+      internalGetMutableAssets() {
+        onChanged();;
+        if (assets_ == null) {
+          assets_ = com.google.protobuf.MapField.newMapField(
+              AssetsDefaultEntryHolder.defaultEntry);
+        }
+        if (!assets_.isMutable()) {
+          assets_ = assets_.copy();
+        }
+        return assets_;
+      }
+
+      public int getAssetsCount() {
+        return internalGetAssets().getMap().size();
+      }
+      /**
+       * <pre>
+       * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsAssets(
+          int key) {
+        
+        return internalGetAssets().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getAssetsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Long> getAssets() {
+        return getAssetsMap();
+      }
+      /**
+       * <pre>
+       * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.Integer, java.lang.Long> getAssetsMap() {
+        return internalGetAssets().getMap();
+      }
+      /**
+       * <pre>
+       * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+       */
+      @java.lang.Override
+
+      public long getAssetsOrDefault(
+          int key,
+          long defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Long> map =
+            internalGetAssets().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+       */
+      @java.lang.Override
+
+      public long getAssetsOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.Long> map =
+            internalGetAssets().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearAssets() {
+        internalGetMutableAssets().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+       */
+
+      public Builder removeAssets(
+          int key) {
+        
+        internalGetMutableAssets().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.Integer, java.lang.Long>
+      getMutableAssets() {
+        return internalGetMutableAssets().getMutableMap();
+      }
+      /**
+       * <pre>
+       * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+       */
+      public Builder putAssets(
+          int key,
+          long value) {
+        
+        
+        internalGetMutableAssets().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <pre>
+       * 主要是货币，附带一些经验体力等数据。   key:Asset表id
+       * </pre>
+       *
+       * <code>map&lt;uint32, uint64&gt; assets = 2;</code>
+       */
+
+      public Builder putAllAssets(
+          java.util.Map<java.lang.Integer, java.lang.Long> values) {
+        internalGetMutableAssets().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.ItemInfo> items_ =
+        java.util.Collections.emptyList();
+      private void ensureItemsIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          items_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.ItemInfo>(items_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> itemsBuilder_;
+
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.ItemInfo> getItemsList() {
+        if (itemsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(items_);
+        } else {
+          return itemsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public int getItemsCount() {
+        if (itemsBuilder_ == null) {
+          return items_.size();
+        } else {
+          return itemsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.ItemInfo getItems(int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);
+        } else {
+          return itemsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder setItems(
+          int index, cn.game.protocol.protobuf.BaseMsg.ItemInfo value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.set(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder setItems(
+          int index, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder addItems(cn.game.protocol.protobuf.BaseMsg.ItemInfo value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder addItems(
+          int index, cn.game.protocol.protobuf.BaseMsg.ItemInfo value) {
+        if (itemsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureItemsIsMutable();
+          items_.add(index, value);
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder addItems(
+          cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder addItems(
+          int index, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder builderForValue) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          itemsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder addAllItems(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.ItemInfo> values) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, items_);
+          onChanged();
+        } else {
+          itemsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder clearItems() {
+        if (itemsBuilder_ == null) {
+          items_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          itemsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public Builder removeItems(int index) {
+        if (itemsBuilder_ == null) {
+          ensureItemsIsMutable();
+          items_.remove(index);
+          onChanged();
+        } else {
+          itemsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder getItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getItemsOrBuilder(
+          int index) {
+        if (itemsBuilder_ == null) {
+          return items_.get(index);  } else {
+          return itemsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> 
+           getItemsOrBuilderList() {
+        if (itemsBuilder_ != null) {
+          return itemsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(items_);
+        }
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder addItemsBuilder() {
+        return getItemsFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.BaseMsg.ItemInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder addItemsBuilder(
+          int index) {
+        return getItemsFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.BaseMsg.ItemInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *道具  Item表
+       * </pre>
+       *
+       * <code>repeated .Protos.ItemInfo items = 5;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder> 
+           getItemsBuilderList() {
+        return getItemsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> 
+          getItemsFieldBuilder() {
+        if (itemsBuilder_ == null) {
+          itemsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder>(
+                  items_,
+                  ((bitField0_ & 0x00000002) != 0),
+                  getParentForChildren(),
+                  isClean());
+          items_ = null;
+        }
+        return itemsBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.TestPlayerAssetDataResponse_01000029)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.TestPlayerAssetDataResponse_01000029)
+    private static final cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029();
+    }
+
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TestPlayerAssetDataResponse_01000029>
+        PARSER = new com.google.protobuf.AbstractParser<TestPlayerAssetDataResponse_01000029>() {
+      @java.lang.Override
+      public TestPlayerAssetDataResponse_01000029 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new TestPlayerAssetDataResponse_01000029(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<TestPlayerAssetDataResponse_01000029> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TestPlayerAssetDataResponse_01000029> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface TestRequest_6f000020OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.TestRequest_6f000020)
       com.google.protobuf.MessageOrBuilder {
@@ -6299,6 +8019,21 @@ public final class TestMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_TestMissionFinishResponse_6f000023_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_TestPlayerAssetDataRequest_01000028_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_TestPlayerAssetDataResponse_01000029_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_TestRequest_6f000020_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -6327,25 +8062,32 @@ public final class TestMsg {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rTestMsg.proto\022\006Protos\032\017RewardMsg.proto" +
-      "\"(\n\031TestGmCmdRequest_6f000001\022\013\n\003cmd\030\001 \001" +
-      "(\t\"\034\n\032TestGmCmdResponse_6f000002\"8\n\033Test" +
-      "AddItemRequest_6f000008\022\n\n\002id\030\001 \001(\r\022\r\n\005c" +
-      "ount\030\002 \001(\r\"D\n\034TestAddItemResponse_6f0000" +
-      "09\022$\n\010resource\030\001 \003(\0132\022.Protos.RewardInfo" +
-      "\"/\n!TestMissionFinishRequest_6f000022\022\n\n" +
-      "\002id\030\001 \003(\r\"J\n\"TestMissionFinishResponse_6" +
-      "f000023\022$\n\010resource\030\001 \003(\0132\022.Protos.Rewar" +
-      "dInfo\"\"\n\024TestRequest_6f000020\022\n\n\002id\030\001 \001(" +
-      "\r\"%\n\025TestResponse_6f000021\022\014\n\004data\030\001 \001(\r" +
-      "\"I\n\033TestMessageRequest_6f000080\022\020\n\010playe" +
-      "rId\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004 \001(\014\"\036\n\034T" +
-      "estMessageResponse_6f000081B\033\n\031cn.game.p" +
-      "rotocol.protobufb\006proto3"
+      "\n\rTestMsg.proto\022\006Protos\032\rBaseMsg.proto\032\017" +
+      "RewardMsg.proto\"(\n\031TestGmCmdRequest_6f00" +
+      "0001\022\013\n\003cmd\030\001 \001(\t\"\034\n\032TestGmCmdResponse_6" +
+      "f000002\"8\n\033TestAddItemRequest_6f000008\022\n" +
+      "\n\002id\030\001 \001(\r\022\r\n\005count\030\002 \001(\r\"D\n\034TestAddItem" +
+      "Response_6f000009\022$\n\010resource\030\001 \003(\0132\022.Pr" +
+      "otos.RewardInfo\"/\n!TestMissionFinishRequ" +
+      "est_6f000022\022\n\n\002id\030\001 \003(\r\"J\n\"TestMissionF" +
+      "inishResponse_6f000023\022$\n\010resource\030\001 \003(\013" +
+      "2\022.Protos.RewardInfo\"%\n#TestPlayerAssetD" +
+      "ataRequest_01000028\"\300\001\n$TestPlayerAssetD" +
+      "ataResponse_01000029\022H\n\006assets\030\002 \003(\01328.P" +
+      "rotos.TestPlayerAssetDataResponse_010000" +
+      "29.AssetsEntry\022\037\n\005items\030\005 \003(\0132\020.Protos.I" +
+      "temInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
+      "alue\030\002 \001(\004:\0028\001\"\"\n\024TestRequest_6f000020\022\n" +
+      "\n\002id\030\001 \001(\r\"%\n\025TestResponse_6f000021\022\014\n\004d" +
+      "ata\030\001 \001(\r\"I\n\033TestMessageRequest_6f000080" +
+      "\022\020\n\010playerId\030\002 \001(\004\022\n\n\002id\030\003 \001(\r\022\014\n\004data\030\004" +
+      " \001(\014\"\036\n\034TestMessageResponse_6f000081B\033\n\031" +
+      "cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          cn.game.protocol.protobuf.BaseMsg.getDescriptor(),
           cn.game.protocol.protobuf.RewardMsg.getDescriptor(),
         });
     internal_static_Protos_TestGmCmdRequest_6f000001_descriptor =
@@ -6384,30 +8126,49 @@ public final class TestMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_TestMissionFinishResponse_6f000023_descriptor,
         new java.lang.String[] { "Resource", });
-    internal_static_Protos_TestRequest_6f000020_descriptor =
+    internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor =
       getDescriptor().getMessageTypes().get(6);
+    internal_static_Protos_TestPlayerAssetDataRequest_01000028_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_Protos_TestPlayerAssetDataResponse_01000029_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor,
+        new java.lang.String[] { "Assets", "Items", });
+    internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_descriptor =
+      internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor.getNestedTypes().get(0);
+    internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_Protos_TestRequest_6f000020_descriptor =
+      getDescriptor().getMessageTypes().get(8);
     internal_static_Protos_TestRequest_6f000020_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_TestRequest_6f000020_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_TestResponse_6f000021_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_TestResponse_6f000021_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_TestResponse_6f000021_descriptor,
         new java.lang.String[] { "Data", });
     internal_static_Protos_TestMessageRequest_6f000080_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_Protos_TestMessageRequest_6f000080_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_TestMessageRequest_6f000080_descriptor,
         new java.lang.String[] { "PlayerId", "Id", "Data", });
     internal_static_Protos_TestMessageResponse_6f000081_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_Protos_TestMessageResponse_6f000081_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_TestMessageResponse_6f000081_descriptor,
         new java.lang.String[] { });
+    cn.game.protocol.protobuf.BaseMsg.getDescriptor();
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }
 

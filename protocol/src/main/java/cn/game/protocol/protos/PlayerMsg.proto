@@ -233,6 +233,8 @@ message NoticeResponse_01000051{
 	string notice = 1;
 }
 
+
+
 // 一次推送多个消息
 message PlayerBatchPush_01100100 {
   repeated BatchItem items = 1;
