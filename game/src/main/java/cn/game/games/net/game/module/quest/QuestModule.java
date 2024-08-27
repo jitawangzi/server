@@ -899,6 +899,10 @@ public class QuestModule extends BasePlayerModule {
 			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}
+		case PLAYER_CREATE: {
+			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
+			break;
+		}
 		case WatchAds: {
 
 			addCumulativeCount(ConditionTypeEnum.WatchAdsCumulation, 1);
