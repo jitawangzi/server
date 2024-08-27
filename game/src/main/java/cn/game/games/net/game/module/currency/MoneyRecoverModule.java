@@ -63,6 +63,8 @@ public class MoneyRecoverModule extends BasePlayerModule {
 					long newValue = Math.min(player.getCurrencyModule().getCount(id) + recoveryTimes, max);
 					player.getCurrencyModule().setCount(id, newValue);
 					idUpdateTimeMap.put(id, updateTime + recoveryTimes * interval);
+				} else {
+					startRecoveryTask(id, (int) (interval - (System.currentTimeMillis() - updateTime)));
 				}
 			}
 			startAllRecoveryTask();
