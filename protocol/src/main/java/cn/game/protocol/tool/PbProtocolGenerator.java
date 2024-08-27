@@ -528,17 +528,9 @@ public class PbProtocolGenerator {
 			File file = new File(handlerPath);
 			if (!file.exists()) {
 				ClassGenerator.createHandlerJavaFile(handlerPath, handlerPackage, module + "Handler", "0x" + messageModule);
-//				List<String> contentList = HandlerGenerator.initFile(handlerPackage, module, "0x" + messageModule);
-//				HandlerGenerator.updateFile(handlerPath, module, contentList, messages, function);
-			} else {
-//				Path filePath = Paths.get(handlerPath);
-//				List<String> contentList = Files.readAllLines(filePath, StandardCharsets.UTF_8);
-//				List<String> contentList = FileUtils.readLines(file);
-//				HandlerGenerator.updateFile(handlerPath, module, contentList, messages, function);
-				ClassGenerator.updateHandlerJavaFile(handlerPath, module + "Handler", module, messages, function);
 			}
+			ClassGenerator.updateHandlerJavaFile(handlerPath, module + "Handler", module, messages, function);
 		}
-
 	}
 
 	public static void main(String[] args) throws Exception {

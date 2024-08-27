@@ -271,7 +271,7 @@ public class PlayerModule extends BasePlayerModule {
 				break;
 			}
 			player.getData().setHeadFrame(headBox);
-			player.getData().setImage(headBox);
+			player.getData().setImage(headPortrait);
 
 			break;
 		}
