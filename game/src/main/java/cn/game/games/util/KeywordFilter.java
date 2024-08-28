@@ -74,6 +74,17 @@ public class KeywordFilter {
         return modified ? result.toString() : text;
     }
 
+	/** 
+	 * 检查文本是否合法。 
+	 * @param text
+	 * @return  true 不包含违禁词，false 包含违禁词
+	 */
+	public boolean check(String text) {
+
+		String filter = filter(text);
+		return filter.equals(text);
+	}
+
 	public static KeywordFilter getInstance() {
 		return INSTANCE.get();
 	}

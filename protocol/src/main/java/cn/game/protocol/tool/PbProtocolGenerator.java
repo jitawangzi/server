@@ -150,7 +150,7 @@ public class PbProtocolGenerator {
 					}
 
 					messages.add(message);
-					if (message.isRequest()) {
+					if (message.isRequest() || message.isPush()) {
 						classNameRequestMessageMap.put(out, message.getShortName());
 					}
 					if (notParseProtos.contains(out) || notUesd) {

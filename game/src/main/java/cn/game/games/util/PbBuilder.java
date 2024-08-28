@@ -37,7 +37,6 @@ import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
-import cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo;
 import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
@@ -84,12 +83,12 @@ public class PbBuilder {
 		SimplePlayerInfo simplePlayerInfo = buildSimplePlayerInfo(friend.getFriendId(), friend.getServerId());
 		friendBuilder.setPlayer(simplePlayerInfo);
 
-		FriendRelationInfo.Builder relationBuilder = FriendRelationInfo.newBuilder();
-		relationBuilder.setIntimate(friend.getIntimate());
-		relationBuilder.setIntimateLevel(friend.getIntimateLevel());
-		relationBuilder.setRelation(friend.getRelation());
-
-		friendBuilder.setRelation(relationBuilder.build());
+//		FriendRelationInfo.Builder relationBuilder = FriendRelationInfo.newBuilder();
+//		relationBuilder.setIntimate(friend.getIntimate());
+//		relationBuilder.setIntimateLevel(friend.getIntimateLevel());
+//		relationBuilder.setRelation(friend.getRelation());
+//
+//		friendBuilder.setRelation(relationBuilder.build());
 
 //		FriendGiftInfo.Builder giftBuilder = FriendGiftInfo.newBuilder();
 //		giftBuilder.setGift(friend.getGift());

@@ -30,6 +30,7 @@ import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
+import cn.game.games.util.KeywordFilter;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.RandomNameConfig;
 import cn.game.protocol.generated.manager.RandomNameManager;
@@ -75,7 +76,6 @@ import cn.game.util.ObjUtil;
 import cn.game.util.RedissonUtil;
 import cn.game.util.Rnd;
 import cn.game.util.ServerType;
-import cn.game.util.TreeWordFilter;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -532,7 +532,7 @@ public class PlayerHandler extends BaseHandler {
 //			player.isEnough(var, var); 
 		}
 
-		boolean check = TreeWordFilter.check(newName);
+		boolean check = KeywordFilter.getInstance().check(newName);
 		if (!check) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
 			return;

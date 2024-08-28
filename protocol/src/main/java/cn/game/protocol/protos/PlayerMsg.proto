@@ -193,6 +193,19 @@ message PlayerBriefInfoOtherResponse_0100000a{
 }
 
 
+// 搜索玩家
+message PlayerSearchRequest_0100000b{
+	// 有id按照id搜，没有id按照name搜
+	 string playerId = 1;
+	 string playerName = 2;
+}
+
+//  搜索出来的玩家
+message PlayerSearchResponse_0100000c{
+   SimplePlayerInfo player = 1;
+}
+
+
 /*** 获取一个玩家的名片 ***/
 message PlayerShowRequest_01000039{
 	string playerId = 1;

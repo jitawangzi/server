@@ -39,6 +39,11 @@ public class MessageObject implements Comparable<MessageObject> {
 
 		return shortName.indexOf("Request") >= 0;
 	}
+
+	public boolean isPush() {
+
+		return shortName.indexOf("Push") >= 0;
+	}
 	/**   
 	 * 
 	 * 2021年9月1日 下午12:33:03

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
@@ -22,26 +24,25 @@ import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
-/**
- * 好友
- * 
- * @author syq
- *
- */
 public class FriendModule extends BasePlayerModule {
 
 	/** 好友数据 */
+	@JsonIgnore
 	private Map<Long, Friend> friends;
 
 	/** 申请成为我的好友的玩家 */
+	@JsonIgnore
 	private Map<Long, FriendApplication> applications;
 	
 	/** 我申请的玩家id，推荐好友时不能包含我申请过的玩家id */
+	@JsonIgnore
 	private Set<Long> myApplications;
 
 	/** 上次推荐好友换一批时间 */
+	@JsonIgnore
 	private long lastRefreshTime;
 
+	@JsonIgnore
 	private List<SimplePlayer> lastRefreshPlayers;
 
 	public static final int maxFriends = 100;
@@ -296,5 +297,15 @@ public class FriendModule extends BasePlayerModule {
 	public void buildPlayerAllInfo(Builder builder) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean alwaysStoreDataInStandaloneTable() {
+		return true;
+	}
+
+	@Override
+	public boolean isComplete() {
+		return false;
 	}
 }

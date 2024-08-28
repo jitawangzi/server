@@ -21599,6 +21599,1397 @@ public final class PlayerMsg {
 
   }
 
+  public interface PlayerSearchRequest_0100000bOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PlayerSearchRequest_0100000b)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 有id按照id搜，没有id按照name搜
+     * </pre>
+     *
+     * <code>string playerId = 1;</code>
+     * @return The playerId.
+     */
+    java.lang.String getPlayerId();
+    /**
+     * <pre>
+     * 有id按照id搜，没有id按照name搜
+     * </pre>
+     *
+     * <code>string playerId = 1;</code>
+     * @return The bytes for playerId.
+     */
+    com.google.protobuf.ByteString
+        getPlayerIdBytes();
+
+    /**
+     * <code>string playerName = 2;</code>
+     * @return The playerName.
+     */
+    java.lang.String getPlayerName();
+    /**
+     * <code>string playerName = 2;</code>
+     * @return The bytes for playerName.
+     */
+    com.google.protobuf.ByteString
+        getPlayerNameBytes();
+  }
+  /**
+   * <pre>
+   * 搜索玩家
+   * </pre>
+   *
+   * Protobuf type {@code Protos.PlayerSearchRequest_0100000b}
+   */
+  public static final class PlayerSearchRequest_0100000b extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PlayerSearchRequest_0100000b)
+      PlayerSearchRequest_0100000bOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PlayerSearchRequest_0100000b.newBuilder() to construct.
+    private PlayerSearchRequest_0100000b(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PlayerSearchRequest_0100000b() {
+      playerId_ = "";
+      playerName_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PlayerSearchRequest_0100000b();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PlayerSearchRequest_0100000b(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              playerId_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              playerName_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchRequest_0100000b_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchRequest_0100000b_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.class, cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.Builder.class);
+    }
+
+    public static final int PLAYERID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object playerId_;
+    /**
+     * <pre>
+     * 有id按照id搜，没有id按照name搜
+     * </pre>
+     *
+     * <code>string playerId = 1;</code>
+     * @return The playerId.
+     */
+    @java.lang.Override
+    public java.lang.String getPlayerId() {
+      java.lang.Object ref = playerId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        playerId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 有id按照id搜，没有id按照name搜
+     * </pre>
+     *
+     * <code>string playerId = 1;</code>
+     * @return The bytes for playerId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPlayerIdBytes() {
+      java.lang.Object ref = playerId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        playerId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PLAYERNAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object playerName_;
+    /**
+     * <code>string playerName = 2;</code>
+     * @return The playerName.
+     */
+    @java.lang.Override
+    public java.lang.String getPlayerName() {
+      java.lang.Object ref = playerName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        playerName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string playerName = 2;</code>
+     * @return The bytes for playerName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPlayerNameBytes() {
+      java.lang.Object ref = playerName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        playerName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getPlayerIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, playerId_);
+      }
+      if (!getPlayerNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, playerName_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getPlayerIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, playerId_);
+      }
+      if (!getPlayerNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, playerName_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b other = (cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b) obj;
+
+      if (!getPlayerId()
+          .equals(other.getPlayerId())) return false;
+      if (!getPlayerName()
+          .equals(other.getPlayerName())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
+      hash = (53 * hash) + getPlayerId().hashCode();
+      hash = (37 * hash) + PLAYERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getPlayerName().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * 搜索玩家
+     * </pre>
+     *
+     * Protobuf type {@code Protos.PlayerSearchRequest_0100000b}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PlayerSearchRequest_0100000b)
+        cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000bOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchRequest_0100000b_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchRequest_0100000b_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.class, cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        playerId_ = "";
+
+        playerName_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchRequest_0100000b_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b build() {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b buildPartial() {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b result = new cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b(this);
+        result.playerId_ = playerId_;
+        result.playerName_ = playerName_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b) {
+          return mergeFrom((cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b other) {
+        if (other == cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.getDefaultInstance()) return this;
+        if (!other.getPlayerId().isEmpty()) {
+          playerId_ = other.playerId_;
+          onChanged();
+        }
+        if (!other.getPlayerName().isEmpty()) {
+          playerName_ = other.playerName_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object playerId_ = "";
+      /**
+       * <pre>
+       * 有id按照id搜，没有id按照name搜
+       * </pre>
+       *
+       * <code>string playerId = 1;</code>
+       * @return The playerId.
+       */
+      public java.lang.String getPlayerId() {
+        java.lang.Object ref = playerId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          playerId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 有id按照id搜，没有id按照name搜
+       * </pre>
+       *
+       * <code>string playerId = 1;</code>
+       * @return The bytes for playerId.
+       */
+      public com.google.protobuf.ByteString
+          getPlayerIdBytes() {
+        java.lang.Object ref = playerId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          playerId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 有id按照id搜，没有id按照name搜
+       * </pre>
+       *
+       * <code>string playerId = 1;</code>
+       * @param value The playerId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        playerId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 有id按照id搜，没有id按照name搜
+       * </pre>
+       *
+       * <code>string playerId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlayerId() {
+        
+        playerId_ = getDefaultInstance().getPlayerId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 有id按照id搜，没有id按照name搜
+       * </pre>
+       *
+       * <code>string playerId = 1;</code>
+       * @param value The bytes for playerId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        playerId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object playerName_ = "";
+      /**
+       * <code>string playerName = 2;</code>
+       * @return The playerName.
+       */
+      public java.lang.String getPlayerName() {
+        java.lang.Object ref = playerName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          playerName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string playerName = 2;</code>
+       * @return The bytes for playerName.
+       */
+      public com.google.protobuf.ByteString
+          getPlayerNameBytes() {
+        java.lang.Object ref = playerName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          playerName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string playerName = 2;</code>
+       * @param value The playerName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        playerName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string playerName = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPlayerName() {
+        
+        playerName_ = getDefaultInstance().getPlayerName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string playerName = 2;</code>
+       * @param value The bytes for playerName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPlayerNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        playerName_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PlayerSearchRequest_0100000b)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PlayerSearchRequest_0100000b)
+    private static final cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b();
+    }
+
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PlayerSearchRequest_0100000b>
+        PARSER = new com.google.protobuf.AbstractParser<PlayerSearchRequest_0100000b>() {
+      @java.lang.Override
+      public PlayerSearchRequest_0100000b parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PlayerSearchRequest_0100000b(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PlayerSearchRequest_0100000b> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PlayerSearchRequest_0100000b> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PlayerSearchResponse_0100000cOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PlayerSearchResponse_0100000c)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.Protos.SimplePlayerInfo player = 1;</code>
+     * @return Whether the player field is set.
+     */
+    boolean hasPlayer();
+    /**
+     * <code>.Protos.SimplePlayerInfo player = 1;</code>
+     * @return The player.
+     */
+    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayer();
+    /**
+     * <code>.Protos.SimplePlayerInfo player = 1;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayerOrBuilder();
+  }
+  /**
+   * <pre>
+   *  搜索出来的玩家
+   * </pre>
+   *
+   * Protobuf type {@code Protos.PlayerSearchResponse_0100000c}
+   */
+  public static final class PlayerSearchResponse_0100000c extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PlayerSearchResponse_0100000c)
+      PlayerSearchResponse_0100000cOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PlayerSearchResponse_0100000c.newBuilder() to construct.
+    private PlayerSearchResponse_0100000c(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PlayerSearchResponse_0100000c() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PlayerSearchResponse_0100000c();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PlayerSearchResponse_0100000c(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder subBuilder = null;
+              if (player_ != null) {
+                subBuilder = player_.toBuilder();
+              }
+              player_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(player_);
+                player_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchResponse_0100000c_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchResponse_0100000c_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c.class, cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c.Builder.class);
+    }
+
+    public static final int PLAYER_FIELD_NUMBER = 1;
+    private cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo player_;
+    /**
+     * <code>.Protos.SimplePlayerInfo player = 1;</code>
+     * @return Whether the player field is set.
+     */
+    @java.lang.Override
+    public boolean hasPlayer() {
+      return player_ != null;
+    }
+    /**
+     * <code>.Protos.SimplePlayerInfo player = 1;</code>
+     * @return The player.
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayer() {
+      return player_ == null ? cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance() : player_;
+    }
+    /**
+     * <code>.Protos.SimplePlayerInfo player = 1;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayerOrBuilder() {
+      return getPlayer();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (player_ != null) {
+        output.writeMessage(1, getPlayer());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (player_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPlayer());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c other = (cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c) obj;
+
+      if (hasPlayer() != other.hasPlayer()) return false;
+      if (hasPlayer()) {
+        if (!getPlayer()
+            .equals(other.getPlayer())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasPlayer()) {
+        hash = (37 * hash) + PLAYER_FIELD_NUMBER;
+        hash = (53 * hash) + getPlayer().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *  搜索出来的玩家
+     * </pre>
+     *
+     * Protobuf type {@code Protos.PlayerSearchResponse_0100000c}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PlayerSearchResponse_0100000c)
+        cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000cOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchResponse_0100000c_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchResponse_0100000c_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c.class, cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (playerBuilder_ == null) {
+          player_ = null;
+        } else {
+          player_ = null;
+          playerBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.PlayerMsg.internal_static_Protos_PlayerSearchResponse_0100000c_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c build() {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c buildPartial() {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c result = new cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c(this);
+        if (playerBuilder_ == null) {
+          result.player_ = player_;
+        } else {
+          result.player_ = playerBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c) {
+          return mergeFrom((cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c other) {
+        if (other == cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c.getDefaultInstance()) return this;
+        if (other.hasPlayer()) {
+          mergePlayer(other.getPlayer());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo player_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> playerBuilder_;
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       * @return Whether the player field is set.
+       */
+      public boolean hasPlayer() {
+        return playerBuilder_ != null || player_ != null;
+      }
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       * @return The player.
+       */
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayer() {
+        if (playerBuilder_ == null) {
+          return player_ == null ? cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance() : player_;
+        } else {
+          return playerBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       */
+      public Builder setPlayer(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
+        if (playerBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          player_ = value;
+          onChanged();
+        } else {
+          playerBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       */
+      public Builder setPlayer(
+          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder builderForValue) {
+        if (playerBuilder_ == null) {
+          player_ = builderForValue.build();
+          onChanged();
+        } else {
+          playerBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       */
+      public Builder mergePlayer(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
+        if (playerBuilder_ == null) {
+          if (player_ != null) {
+            player_ =
+              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.newBuilder(player_).mergeFrom(value).buildPartial();
+          } else {
+            player_ = value;
+          }
+          onChanged();
+        } else {
+          playerBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       */
+      public Builder clearPlayer() {
+        if (playerBuilder_ == null) {
+          player_ = null;
+          onChanged();
+        } else {
+          player_ = null;
+          playerBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder getPlayerBuilder() {
+        
+        onChanged();
+        return getPlayerFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayerOrBuilder() {
+        if (playerBuilder_ != null) {
+          return playerBuilder_.getMessageOrBuilder();
+        } else {
+          return player_ == null ?
+              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance() : player_;
+        }
+      }
+      /**
+       * <code>.Protos.SimplePlayerInfo player = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
+          getPlayerFieldBuilder() {
+        if (playerBuilder_ == null) {
+          playerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder>(
+                  getPlayer(),
+                  getParentForChildren(),
+                  isClean());
+          player_ = null;
+        }
+        return playerBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PlayerSearchResponse_0100000c)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PlayerSearchResponse_0100000c)
+    private static final cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c();
+    }
+
+    public static cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PlayerSearchResponse_0100000c>
+        PARSER = new com.google.protobuf.AbstractParser<PlayerSearchResponse_0100000c>() {
+      @java.lang.Override
+      public PlayerSearchResponse_0100000c parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PlayerSearchResponse_0100000c(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PlayerSearchResponse_0100000c> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PlayerSearchResponse_0100000c> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface PlayerShowRequest_01000039OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.PlayerShowRequest_01000039)
       com.google.protobuf.MessageOrBuilder {
@@ -46477,6 +47868,16 @@ public final class PlayerMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_PlayerBriefInfoOtherResponse_0100000a_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PlayerSearchRequest_0100000b_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PlayerSearchRequest_0100000b_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PlayerSearchResponse_0100000c_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PlayerSearchResponse_0100000c_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_PlayerShowRequest_01000039_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -46656,95 +48057,98 @@ public final class PlayerMsg {
       "OtherRequest_01000009\022\021\n\tplayerIds\030\001 \003(\t" +
       "\022\021\n\tserverIds\030\002 \003(\t\"R\n%PlayerBriefInfoOt" +
       "herResponse_0100000a\022)\n\007players\030\001 \003(\0132\030." +
-      "Protos.SimplePlayerInfo\"@\n\032PlayerShowReq" +
-      "uest_01000039\022\020\n\010playerId\030\001 \001(\t\022\020\n\010serve" +
-      "rId\030\002 \001(\t\"E\n\033PlayerShowResponse_0100003a" +
-      "\022&\n\006player\030\001 \001(\0132\026.Protos.PlayerShowInfo" +
-      "\"1\n\035PlayerAlchemyRequest_01000040\022\020\n\010con" +
-      "figId\030\001 \001(\r\" \n\036PlayerAlchemyResponse_010" +
-      "00041\"\"\n PlayerPatrolInfoRequest_0100007" +
-      "0\"G\n!PlayerPatrolInfoResponse_01000071\022\"" +
-      "\n\006patrol\030\001 \001(\0132\022.Protos.PatrolInfo\"(\n\030Pl" +
-      "ayerResetPush_01100016\022\014\n\004type\030\001 \001(\005\"\030\n\026" +
-      "NoticeRequest_01000050\")\n\027NoticeResponse" +
-      "_01000051\022\016\n\006notice\030\001 \001(\t\"<\n\030PlayerBatch" +
-      "Push_01100100\022 \n\005items\030\001 \003(\0132\021.Protos.Ba" +
-      "tchItem\"+\n\tBatchItem\022\r\n\005msgId\030\002 \001(\005\022\017\n\007p" +
-      "ayload\030\004 \001(\014\"z\n\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014" +
-      "\n\004name\030\002 \001(\t\022\r\n\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(" +
-      "\r\022\021\n\theadFrame\030\013 \001(\r\022\r\n\005image\030\014 \001(\r\022\023\n\013o" +
-      "fflineTime\030\026 \001(\t\"\346\025\n\rPlayerAllInfo\022\"\n\006pl" +
-      "ayer\030\001 \001(\0132\022.Protos.PlayerInfo\0221\n\006assets" +
-      "\030\002 \003(\0132!.Protos.PlayerAllInfo.AssetsEntr" +
-      "y\022=\n\014assetRecover\030\003 \003(\0132\'.Protos.PlayerA" +
-      "llInfo.AssetRecoverEntry\0221\n\006levels\030\004 \003(\013" +
-      "2!.Protos.PlayerAllInfo.LevelsEntry\022\037\n\005i" +
-      "tems\030\005 \003(\0132\020.Protos.ItemInfo\022)\n\010fashions" +
-      "\030\006 \003(\0132\027.Protos.HeroFashionInfo\022\037\n\005heros" +
-      "\030\007 \003(\0132\020.Protos.HeroInfo\022%\n\006swords\030\010 \003(\013" +
-      "2\025.Protos.HeroSwordInfo\022\024\n\014heroSwordUid\030" +
-      "\t \001(\t\022\035\n\004gems\030\n \003(\0132\017.Protos.GemInfo\022!\n\006" +
-      "equips\030\013 \003(\0132\021.Protos.EquipInfo\022)\n\nequip" +
-      "Parts\030\014 \003(\0132\025.Protos.EquipPartInfo\0225\n\010al" +
-      "chemys\030\016 \003(\0132#.Protos.PlayerAllInfo.Alch" +
-      "emysEntry\0223\n\007dragons\030\020 \003(\0132\".Protos.Play" +
-      "erAllInfo.DragonsEntry\022=\n\014dragonSkills\030\021" +
-      " \003(\0132\'.Protos.PlayerAllInfo.DragonSkills" +
-      "Entry\0224\n\021qianKunMirrorInfo\030\023 \001(\0132\031.Proto" +
-      "s.QianKunMirrorInfo\022-\n\014fairyFriends\030\024 \003(" +
-      "\0132\027.Protos.FairyFriendInfo\022G\n\021fairyFrien" +
-      "dFights\030\025 \003(\0132,.Protos.PlayerAllInfo.Fai" +
-      "ryFriendFightsEntry\022\020\n\010headboxs\030\035 \003(\005\022#\n" +
-      "\007battles\030\036 \003(\0132\022.Protos.BattleInfo\022\026\n\016fr" +
-      "eeRougeTimes\030\037 \001(\005\022!\n\031battleRewardMultip" +
-      "leTimes\030! \001(\005\022\030\n\020shareReliveCount\030\" \001(\005\022" +
-      "\025\n\radReliveCount\030# \001(\005\022*\n\nmonthCards\030( \003" +
-      "(\0132\026.Protos.MonthCardProto\022\034\n\024monthCardD" +
-      "oubleBonus\030* \001(\010\022\024\n\014chapterPacks\030) \003(\r\022&" +
-      "\n\010fundPass\030, \003(\0132\024.Protos.FundPassInfo\022\030" +
-      "\n\020heishiFreshTimes\030. \001(\005\022\030\n\020freeDayRentH" +
-      "eros\030/ \003(\t\022\032\n\022freeDayRentHeroUid\0301 \001(\t\022\025" +
-      "\n\rstoreStaminas\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132" +
-      "\024.Protos.CloudBoxInfo\022\"\n\006patrol\0303 \001(\0132\022." +
-      "Protos.PatrolInfo\022+\n\013questGroups\0307 \003(\0132\026" +
-      ".Protos.QuestGroupInfo\022A\n\026questGroupPoin" +
-      "tRewards\0308 \003(\0132!.Protos.QuestGroupPointR" +
-      "ewardInfo\022\022\n\nfirstLogin\0309 \001(\010\022/\n\005guide\030;" +
-      " \003(\0132 .Protos.PlayerAllInfo.GuideEntry\022\030" +
-      "\n\020heavenlyDaoLevel\030< \001(\005\022A\n\016potentialLvM" +
-      "ap\030> \003(\0132).Protos.PlayerAllInfo.Potentia" +
-      "lLvMapEntry\022A\n\016potentialBreak\030? \003(\0132).Pr" +
-      "otos.PlayerAllInfo.PotentialBreakEntry\022!" +
-      "\n\006guides\030A \003(\0132\021.Protos.GuideInfo\022\022\n\nbat" +
-      "tleType\030D \001(\005\022\020\n\010battleId\030E \001(\005\0221\n\016shopG" +
-      "roupItems\030d \003(\0132\031.Protos.ShopGroupItemIn" +
-      "fo\022\033\n\023nextFreeOpenBoxTime\030e \001(\005\022\027\n\017merge" +
-      "SweepTimes\030f \001(\005\022/\n\013mergeEquips\030g \003(\0132\032." +
-      "Protos.MergeEquipmentInfo\022\025\n\rmergeEquipI" +
-      "ds\030h \003(\005\0223\n\021mergeDayChallenge\030i \001(\0132\030.Pr" +
-      "otos.DayChallengeInfo\022#\n\007hcHeros\030k \003(\0132\022" +
-      ".Protos.HCHeroInfo\022\024\n\014curHcHeroUid\030l \001(\t" +
-      "\022\031\n\021freeHcHeroUpTimes\030m \001(\005\022\033\n\023freeHcHer" +
-      "oItemTimes\030n \001(\005\022Q\n\026freeHcHeroItemTimesM" +
-      "ap\030o \003(\01321.Protos.PlayerAllInfo.FreeHcHe" +
-      "roItemTimesMapEntry\022\031\n\021battleSpeedUnlock" +
-      "\030p \001(\010\022\033\n\023battleSpeedAdsCount\030q \001(\005\032-\n\013A" +
-      "ssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\002" +
-      "8\001\0323\n\021AssetRecoverEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
-      "value\030\002 \001(\004:\0028\001\032-\n\013LevelsEntry\022\013\n\003key\030\001 " +
-      "\001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032/\n\rAlchemysEntry\022" +
-      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032.\n\014Drago" +
-      "nsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032" +
-      "3\n\021DragonSkillsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005val" +
-      "ue\030\002 \001(\r:\0028\001\0328\n\026FairyFriendFightsEntry\022\013" +
-      "\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032,\n\nGuideE" +
+      "Protos.SimplePlayerInfo\"D\n\034PlayerSearchR" +
+      "equest_0100000b\022\020\n\010playerId\030\001 \001(\t\022\022\n\npla" +
+      "yerName\030\002 \001(\t\"I\n\035PlayerSearchResponse_01" +
+      "00000c\022(\n\006player\030\001 \001(\0132\030.Protos.SimplePl" +
+      "ayerInfo\"@\n\032PlayerShowRequest_01000039\022\020" +
+      "\n\010playerId\030\001 \001(\t\022\020\n\010serverId\030\002 \001(\t\"E\n\033Pl" +
+      "ayerShowResponse_0100003a\022&\n\006player\030\001 \001(" +
+      "\0132\026.Protos.PlayerShowInfo\"1\n\035PlayerAlche" +
+      "myRequest_01000040\022\020\n\010configId\030\001 \001(\r\" \n\036" +
+      "PlayerAlchemyResponse_01000041\"\"\n Player" +
+      "PatrolInfoRequest_01000070\"G\n!PlayerPatr" +
+      "olInfoResponse_01000071\022\"\n\006patrol\030\001 \001(\0132" +
+      "\022.Protos.PatrolInfo\"(\n\030PlayerResetPush_0" +
+      "1100016\022\014\n\004type\030\001 \001(\005\"\030\n\026NoticeRequest_0" +
+      "1000050\")\n\027NoticeResponse_01000051\022\016\n\006no" +
+      "tice\030\001 \001(\t\"<\n\030PlayerBatchPush_01100100\022 " +
+      "\n\005items\030\001 \003(\0132\021.Protos.BatchItem\"+\n\tBatc" +
+      "hItem\022\r\n\005msgId\030\002 \001(\005\022\017\n\007payload\030\004 \001(\014\"z\n" +
+      "\nPlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\r\n" +
+      "\005isMan\030\003 \001(\010\022\014\n\004head\030\n \001(\r\022\021\n\theadFrame\030" +
+      "\013 \001(\r\022\r\n\005image\030\014 \001(\r\022\023\n\013offlineTime\030\026 \001(" +
+      "\t\"\346\025\n\rPlayerAllInfo\022\"\n\006player\030\001 \001(\0132\022.Pr" +
+      "otos.PlayerInfo\0221\n\006assets\030\002 \003(\0132!.Protos" +
+      ".PlayerAllInfo.AssetsEntry\022=\n\014assetRecov" +
+      "er\030\003 \003(\0132\'.Protos.PlayerAllInfo.AssetRec" +
+      "overEntry\0221\n\006levels\030\004 \003(\0132!.Protos.Playe" +
+      "rAllInfo.LevelsEntry\022\037\n\005items\030\005 \003(\0132\020.Pr" +
+      "otos.ItemInfo\022)\n\010fashions\030\006 \003(\0132\027.Protos" +
+      ".HeroFashionInfo\022\037\n\005heros\030\007 \003(\0132\020.Protos" +
+      ".HeroInfo\022%\n\006swords\030\010 \003(\0132\025.Protos.HeroS" +
+      "wordInfo\022\024\n\014heroSwordUid\030\t \001(\t\022\035\n\004gems\030\n" +
+      " \003(\0132\017.Protos.GemInfo\022!\n\006equips\030\013 \003(\0132\021." +
+      "Protos.EquipInfo\022)\n\nequipParts\030\014 \003(\0132\025.P" +
+      "rotos.EquipPartInfo\0225\n\010alchemys\030\016 \003(\0132#." +
+      "Protos.PlayerAllInfo.AlchemysEntry\0223\n\007dr" +
+      "agons\030\020 \003(\0132\".Protos.PlayerAllInfo.Drago" +
+      "nsEntry\022=\n\014dragonSkills\030\021 \003(\0132\'.Protos.P" +
+      "layerAllInfo.DragonSkillsEntry\0224\n\021qianKu" +
+      "nMirrorInfo\030\023 \001(\0132\031.Protos.QianKunMirror" +
+      "Info\022-\n\014fairyFriends\030\024 \003(\0132\027.Protos.Fair" +
+      "yFriendInfo\022G\n\021fairyFriendFights\030\025 \003(\0132," +
+      ".Protos.PlayerAllInfo.FairyFriendFightsE" +
+      "ntry\022\020\n\010headboxs\030\035 \003(\005\022#\n\007battles\030\036 \003(\0132" +
+      "\022.Protos.BattleInfo\022\026\n\016freeRougeTimes\030\037 " +
+      "\001(\005\022!\n\031battleRewardMultipleTimes\030! \001(\005\022\030" +
+      "\n\020shareReliveCount\030\" \001(\005\022\025\n\radReliveCoun" +
+      "t\030# \001(\005\022*\n\nmonthCards\030( \003(\0132\026.Protos.Mon" +
+      "thCardProto\022\034\n\024monthCardDoubleBonus\030* \001(" +
+      "\010\022\024\n\014chapterPacks\030) \003(\r\022&\n\010fundPass\030, \003(" +
+      "\0132\024.Protos.FundPassInfo\022\030\n\020heishiFreshTi" +
+      "mes\030. \001(\005\022\030\n\020freeDayRentHeros\030/ \003(\t\022\032\n\022f" +
+      "reeDayRentHeroUid\0301 \001(\t\022\025\n\rstoreStaminas" +
+      "\0300 \003(\005\022&\n\010cloudBox\0302 \001(\0132\024.Protos.CloudB" +
+      "oxInfo\022\"\n\006patrol\0303 \001(\0132\022.Protos.PatrolIn" +
+      "fo\022+\n\013questGroups\0307 \003(\0132\026.Protos.QuestGr" +
+      "oupInfo\022A\n\026questGroupPointRewards\0308 \003(\0132" +
+      "!.Protos.QuestGroupPointRewardInfo\022\022\n\nfi" +
+      "rstLogin\0309 \001(\010\022/\n\005guide\030; \003(\0132 .Protos.P" +
+      "layerAllInfo.GuideEntry\022\030\n\020heavenlyDaoLe" +
+      "vel\030< \001(\005\022A\n\016potentialLvMap\030> \003(\0132).Prot" +
+      "os.PlayerAllInfo.PotentialLvMapEntry\022A\n\016" +
+      "potentialBreak\030? \003(\0132).Protos.PlayerAllI" +
+      "nfo.PotentialBreakEntry\022!\n\006guides\030A \003(\0132" +
+      "\021.Protos.GuideInfo\022\022\n\nbattleType\030D \001(\005\022\020" +
+      "\n\010battleId\030E \001(\005\0221\n\016shopGroupItems\030d \003(\013" +
+      "2\031.Protos.ShopGroupItemInfo\022\033\n\023nextFreeO" +
+      "penBoxTime\030e \001(\005\022\027\n\017mergeSweepTimes\030f \001(" +
+      "\005\022/\n\013mergeEquips\030g \003(\0132\032.Protos.MergeEqu" +
+      "ipmentInfo\022\025\n\rmergeEquipIds\030h \003(\005\0223\n\021mer" +
+      "geDayChallenge\030i \001(\0132\030.Protos.DayChallen" +
+      "geInfo\022#\n\007hcHeros\030k \003(\0132\022.Protos.HCHeroI" +
+      "nfo\022\024\n\014curHcHeroUid\030l \001(\t\022\031\n\021freeHcHeroU" +
+      "pTimes\030m \001(\005\022\033\n\023freeHcHeroItemTimes\030n \001(" +
+      "\005\022Q\n\026freeHcHeroItemTimesMap\030o \003(\01321.Prot" +
+      "os.PlayerAllInfo.FreeHcHeroItemTimesMapE" +
+      "ntry\022\031\n\021battleSpeedUnlock\030p \001(\010\022\033\n\023battl" +
+      "eSpeedAdsCount\030q \001(\005\032-\n\013AssetsEntry\022\013\n\003k" +
+      "ey\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001\0323\n\021AssetReco" +
+      "verEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\004:\0028\001" +
+      "\032-\n\013LevelsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 " +
+      "\001(\r:\0028\001\032/\n\rAlchemysEntry\022\013\n\003key\030\001 \001(\r\022\r\n" +
+      "\005value\030\002 \001(\r:\0028\001\032.\n\014DragonsEntry\022\013\n\003key\030" +
+      "\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021DragonSkills" +
+      "Entry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0328\n" +
+      "\026FairyFriendFightsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005" +
+      "value\030\002 \001(\r:\0028\001\032,\n\nGuideEntry\022\013\n\003key\030\001 \001" +
+      "(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023PotentialLvMapE" +
       "ntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\0325\n\023" +
-      "PotentialLvMapEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
-      "e\030\002 \001(\r:\0028\001\0325\n\023PotentialBreakEntry\022\013\n\003ke" +
-      "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\010:\0028\001\032=\n\033FreeHcHero" +
-      "ItemTimesMapEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030" +
-      "\002 \001(\r:\0028\001B\033\n\031cn.game.protocol.protobufb\006" +
-      "proto3"
+      "PotentialBreakEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005valu" +
+      "e\030\002 \001(\010:\0028\001\032=\n\033FreeHcHeroItemTimesMapEnt" +
+      "ry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031cn" +
+      ".game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -46961,80 +48365,92 @@ public final class PlayerMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerBriefInfoOtherResponse_0100000a_descriptor,
         new java.lang.String[] { "Players", });
-    internal_static_Protos_PlayerShowRequest_01000039_descriptor =
+    internal_static_Protos_PlayerSearchRequest_0100000b_descriptor =
       getDescriptor().getMessageTypes().get(34);
+    internal_static_Protos_PlayerSearchRequest_0100000b_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PlayerSearchRequest_0100000b_descriptor,
+        new java.lang.String[] { "PlayerId", "PlayerName", });
+    internal_static_Protos_PlayerSearchResponse_0100000c_descriptor =
+      getDescriptor().getMessageTypes().get(35);
+    internal_static_Protos_PlayerSearchResponse_0100000c_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PlayerSearchResponse_0100000c_descriptor,
+        new java.lang.String[] { "Player", });
+    internal_static_Protos_PlayerShowRequest_01000039_descriptor =
+      getDescriptor().getMessageTypes().get(36);
     internal_static_Protos_PlayerShowRequest_01000039_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerShowRequest_01000039_descriptor,
         new java.lang.String[] { "PlayerId", "ServerId", });
     internal_static_Protos_PlayerShowResponse_0100003a_descriptor =
-      getDescriptor().getMessageTypes().get(35);
+      getDescriptor().getMessageTypes().get(37);
     internal_static_Protos_PlayerShowResponse_0100003a_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerShowResponse_0100003a_descriptor,
         new java.lang.String[] { "Player", });
     internal_static_Protos_PlayerAlchemyRequest_01000040_descriptor =
-      getDescriptor().getMessageTypes().get(36);
+      getDescriptor().getMessageTypes().get(38);
     internal_static_Protos_PlayerAlchemyRequest_01000040_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAlchemyRequest_01000040_descriptor,
         new java.lang.String[] { "ConfigId", });
     internal_static_Protos_PlayerAlchemyResponse_01000041_descriptor =
-      getDescriptor().getMessageTypes().get(37);
+      getDescriptor().getMessageTypes().get(39);
     internal_static_Protos_PlayerAlchemyResponse_01000041_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAlchemyResponse_01000041_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_PlayerPatrolInfoRequest_01000070_descriptor =
-      getDescriptor().getMessageTypes().get(38);
+      getDescriptor().getMessageTypes().get(40);
     internal_static_Protos_PlayerPatrolInfoRequest_01000070_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerPatrolInfoRequest_01000070_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_PlayerPatrolInfoResponse_01000071_descriptor =
-      getDescriptor().getMessageTypes().get(39);
+      getDescriptor().getMessageTypes().get(41);
     internal_static_Protos_PlayerPatrolInfoResponse_01000071_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerPatrolInfoResponse_01000071_descriptor,
         new java.lang.String[] { "Patrol", });
     internal_static_Protos_PlayerResetPush_01100016_descriptor =
-      getDescriptor().getMessageTypes().get(40);
+      getDescriptor().getMessageTypes().get(42);
     internal_static_Protos_PlayerResetPush_01100016_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerResetPush_01100016_descriptor,
         new java.lang.String[] { "Type", });
     internal_static_Protos_NoticeRequest_01000050_descriptor =
-      getDescriptor().getMessageTypes().get(41);
+      getDescriptor().getMessageTypes().get(43);
     internal_static_Protos_NoticeRequest_01000050_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_NoticeRequest_01000050_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_NoticeResponse_01000051_descriptor =
-      getDescriptor().getMessageTypes().get(42);
+      getDescriptor().getMessageTypes().get(44);
     internal_static_Protos_NoticeResponse_01000051_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_NoticeResponse_01000051_descriptor,
         new java.lang.String[] { "Notice", });
     internal_static_Protos_PlayerBatchPush_01100100_descriptor =
-      getDescriptor().getMessageTypes().get(43);
+      getDescriptor().getMessageTypes().get(45);
     internal_static_Protos_PlayerBatchPush_01100100_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerBatchPush_01100100_descriptor,
         new java.lang.String[] { "Items", });
     internal_static_Protos_BatchItem_descriptor =
-      getDescriptor().getMessageTypes().get(44);
+      getDescriptor().getMessageTypes().get(46);
     internal_static_Protos_BatchItem_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BatchItem_descriptor,
         new java.lang.String[] { "MsgId", "Payload", });
     internal_static_Protos_PlayerInfo_descriptor =
-      getDescriptor().getMessageTypes().get(45);
+      getDescriptor().getMessageTypes().get(47);
     internal_static_Protos_PlayerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerInfo_descriptor,
         new java.lang.String[] { "Id", "Name", "IsMan", "Head", "HeadFrame", "Image", "OfflineTime", });
     internal_static_Protos_PlayerAllInfo_descriptor =
-      getDescriptor().getMessageTypes().get(46);
+      getDescriptor().getMessageTypes().get(48);
     internal_static_Protos_PlayerAllInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerAllInfo_descriptor,

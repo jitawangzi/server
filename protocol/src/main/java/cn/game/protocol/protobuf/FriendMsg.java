@@ -17,16 +17,6 @@ public final class FriendMsg {
   public interface FriendListRequest_30000001OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.FriendListRequest_30000001)
       com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * true，本服好友，false 跨服好友。 
-     * </pre>
-     *
-     * <code>bool local = 1;</code>
-     * @return The local.
-     */
-    boolean getLocal();
   }
   /**
    * <pre>
@@ -77,11 +67,6 @@ public final class FriendMsg {
             case 0:
               done = true;
               break;
-            case 8: {
-
-              local_ = input.readBool();
-              break;
-            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -114,21 +99,6 @@ public final class FriendMsg {
               cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.class, cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.Builder.class);
     }
 
-    public static final int LOCAL_FIELD_NUMBER = 1;
-    private boolean local_;
-    /**
-     * <pre>
-     * true，本服好友，false 跨服好友。 
-     * </pre>
-     *
-     * <code>bool local = 1;</code>
-     * @return The local.
-     */
-    @java.lang.Override
-    public boolean getLocal() {
-      return local_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -143,9 +113,6 @@ public final class FriendMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (local_ != false) {
-        output.writeBool(1, local_);
-      }
       unknownFields.writeTo(output);
     }
 
@@ -155,10 +122,6 @@ public final class FriendMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (local_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, local_);
-      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -174,8 +137,6 @@ public final class FriendMsg {
       }
       cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001 other = (cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001) obj;
 
-      if (getLocal()
-          != other.getLocal()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -187,9 +148,6 @@ public final class FriendMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + LOCAL_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getLocal());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -327,8 +285,6 @@ public final class FriendMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        local_ = false;
-
         return this;
       }
 
@@ -355,7 +311,6 @@ public final class FriendMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001 buildPartial() {
         cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001 result = new cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001(this);
-        result.local_ = local_;
         onBuilt();
         return result;
       }
@@ -404,9 +359,6 @@ public final class FriendMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001 other) {
         if (other == cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.getDefaultInstance()) return this;
-        if (other.getLocal() != false) {
-          setLocal(other.getLocal());
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -433,49 +385,6 @@ public final class FriendMsg {
             mergeFrom(parsedMessage);
           }
         }
-        return this;
-      }
-
-      private boolean local_ ;
-      /**
-       * <pre>
-       * true，本服好友，false 跨服好友。 
-       * </pre>
-       *
-       * <code>bool local = 1;</code>
-       * @return The local.
-       */
-      @java.lang.Override
-      public boolean getLocal() {
-        return local_;
-      }
-      /**
-       * <pre>
-       * true，本服好友，false 跨服好友。 
-       * </pre>
-       *
-       * <code>bool local = 1;</code>
-       * @param value The local to set.
-       * @return This builder for chaining.
-       */
-      public Builder setLocal(boolean value) {
-        
-        local_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * true，本服好友，false 跨服好友。 
-       * </pre>
-       *
-       * <code>bool local = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearLocal() {
-        
-        local_ = false;
-        onChanged();
         return this;
       }
       @java.lang.Override
@@ -1876,49 +1785,48 @@ public final class FriendMsg {
 
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
-    java.util.List<cn.game.protocol.protobuf.FriendMsg.FriendInfo> 
+    java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> 
         getPlayersList();
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
-    cn.game.protocol.protobuf.FriendMsg.FriendInfo getPlayers(int index);
+    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayers(int index);
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     int getPlayersCount();
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
-    java.util.List<? extends cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder> 
+    java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
         getPlayersOrBuilderList();
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
-    cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder getPlayersOrBuilder(
+    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayersOrBuilder(
         int index);
   }
   /**
+   * <pre>
+   *  黑名单数据
+   * </pre>
+   *
    * Protobuf type {@code Protos.FriendBlackListResponse_30000052}
    */
   public static final class FriendBlackListResponse_30000052 extends
@@ -1967,11 +1875,11 @@ public final class FriendMsg {
               break;
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                players_ = new java.util.ArrayList<cn.game.protocol.protobuf.FriendMsg.FriendInfo>();
+                players_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo>();
                 mutable_bitField0_ |= 0x00000001;
               }
               players_.add(
-                  input.readMessage(cn.game.protocol.protobuf.FriendMsg.FriendInfo.parser(), extensionRegistry));
+                  input.readMessage(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -2010,36 +1918,33 @@ public final class FriendMsg {
     }
 
     public static final int PLAYERS_FIELD_NUMBER = 1;
-    private java.util.List<cn.game.protocol.protobuf.FriendMsg.FriendInfo> players_;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> players_;
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.FriendMsg.FriendInfo> getPlayersList() {
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> getPlayersList() {
       return players_;
     }
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder> 
+    public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
         getPlayersOrBuilderList() {
       return players_;
     }
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
     public int getPlayersCount() {
@@ -2047,24 +1952,22 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendInfo getPlayers(int index) {
+    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayers(int index) {
       return players_.get(index);
     }
     /**
      * <pre>
-     * 黑名单列表
      * </pre>
      *
-     * <code>repeated .Protos.FriendInfo players = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder getPlayersOrBuilder(
+    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayersOrBuilder(
         int index) {
       return players_.get(index);
     }
@@ -2227,6 +2130,10 @@ public final class FriendMsg {
       return builder;
     }
     /**
+     * <pre>
+     *  黑名单数据
+     * </pre>
+     *
      * Protobuf type {@code Protos.FriendBlackListResponse_30000052}
      */
     public static final class Builder extends
@@ -2411,26 +2318,25 @@ public final class FriendMsg {
       }
       private int bitField0_;
 
-      private java.util.List<cn.game.protocol.protobuf.FriendMsg.FriendInfo> players_ =
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> players_ =
         java.util.Collections.emptyList();
       private void ensurePlayersIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          players_ = new java.util.ArrayList<cn.game.protocol.protobuf.FriendMsg.FriendInfo>(players_);
+          players_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo>(players_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.FriendMsg.FriendInfo, cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder> playersBuilder_;
+          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> playersBuilder_;
 
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public java.util.List<cn.game.protocol.protobuf.FriendMsg.FriendInfo> getPlayersList() {
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> getPlayersList() {
         if (playersBuilder_ == null) {
           return java.util.Collections.unmodifiableList(players_);
         } else {
@@ -2439,10 +2345,9 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public int getPlayersCount() {
         if (playersBuilder_ == null) {
@@ -2453,12 +2358,11 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.FriendMsg.FriendInfo getPlayers(int index) {
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayers(int index) {
         if (playersBuilder_ == null) {
           return players_.get(index);
         } else {
@@ -2467,13 +2371,12 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public Builder setPlayers(
-          int index, cn.game.protocol.protobuf.FriendMsg.FriendInfo value) {
+          int index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
         if (playersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2488,13 +2391,12 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public Builder setPlayers(
-          int index, cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder builderForValue) {
+          int index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder builderForValue) {
         if (playersBuilder_ == null) {
           ensurePlayersIsMutable();
           players_.set(index, builderForValue.build());
@@ -2506,12 +2408,11 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder addPlayers(cn.game.protocol.protobuf.FriendMsg.FriendInfo value) {
+      public Builder addPlayers(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
         if (playersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2526,13 +2427,12 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public Builder addPlayers(
-          int index, cn.game.protocol.protobuf.FriendMsg.FriendInfo value) {
+          int index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
         if (playersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2547,13 +2447,12 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public Builder addPlayers(
-          cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder builderForValue) {
+          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder builderForValue) {
         if (playersBuilder_ == null) {
           ensurePlayersIsMutable();
           players_.add(builderForValue.build());
@@ -2565,13 +2464,12 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public Builder addPlayers(
-          int index, cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder builderForValue) {
+          int index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder builderForValue) {
         if (playersBuilder_ == null) {
           ensurePlayersIsMutable();
           players_.add(index, builderForValue.build());
@@ -2583,13 +2481,12 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public Builder addAllPlayers(
-          java.lang.Iterable<? extends cn.game.protocol.protobuf.FriendMsg.FriendInfo> values) {
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> values) {
         if (playersBuilder_ == null) {
           ensurePlayersIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -2602,10 +2499,9 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public Builder clearPlayers() {
         if (playersBuilder_ == null) {
@@ -2619,10 +2515,9 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public Builder removePlayers(int index) {
         if (playersBuilder_ == null) {
@@ -2636,23 +2531,21 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder getPlayersBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder getPlayersBuilder(
           int index) {
         return getPlayersFieldBuilder().getBuilder(index);
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder getPlayersOrBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayersOrBuilder(
           int index) {
         if (playersBuilder_ == null) {
           return players_.get(index);  } else {
@@ -2661,12 +2554,11 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public java.util.List<? extends cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder> 
+      public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
            getPlayersOrBuilderList() {
         if (playersBuilder_ != null) {
           return playersBuilder_.getMessageOrBuilderList();
@@ -2676,44 +2568,41 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder addPlayersBuilder() {
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder addPlayersBuilder() {
         return getPlayersFieldBuilder().addBuilder(
-            cn.game.protocol.protobuf.FriendMsg.FriendInfo.getDefaultInstance());
+            cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance());
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder addPlayersBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder addPlayersBuilder(
           int index) {
         return getPlayersFieldBuilder().addBuilder(
-            index, cn.game.protocol.protobuf.FriendMsg.FriendInfo.getDefaultInstance());
+            index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance());
       }
       /**
        * <pre>
-       * 黑名单列表
        * </pre>
        *
-       * <code>repeated .Protos.FriendInfo players = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public java.util.List<cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder> 
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder> 
            getPlayersBuilderList() {
         return getPlayersFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.FriendMsg.FriendInfo, cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder> 
+          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
           getPlayersFieldBuilder() {
         if (playersBuilder_ == null) {
           playersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              cn.game.protocol.protobuf.FriendMsg.FriendInfo, cn.game.protocol.protobuf.FriendMsg.FriendInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendInfoOrBuilder>(
+              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder>(
                   players_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
@@ -4109,20 +3998,10 @@ public final class FriendMsg {
   public interface FriendRecommendRequest_30000003OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.FriendRecommendRequest_30000003)
       com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     *  true，点击换一批； false 打开页面请求，如果没有到刷新时间，则返回上次刷新结果。 
-     * </pre>
-     *
-     * <code>bool refresh = 1;</code>
-     * @return The refresh.
-     */
-    boolean getRefresh();
   }
   /**
    * <pre>
-   * 搜索符合条件的推荐好友，换一批也是此条协议,刷新有时间间隔限制
+   * 搜索符合条件的推荐好友
    * </pre>
    *
    * Protobuf type {@code Protos.FriendRecommendRequest_30000003}
@@ -4169,11 +4048,6 @@ public final class FriendMsg {
             case 0:
               done = true;
               break;
-            case 8: {
-
-              refresh_ = input.readBool();
-              break;
-            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -4206,21 +4080,6 @@ public final class FriendMsg {
               cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003.class, cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003.Builder.class);
     }
 
-    public static final int REFRESH_FIELD_NUMBER = 1;
-    private boolean refresh_;
-    /**
-     * <pre>
-     *  true，点击换一批； false 打开页面请求，如果没有到刷新时间，则返回上次刷新结果。 
-     * </pre>
-     *
-     * <code>bool refresh = 1;</code>
-     * @return The refresh.
-     */
-    @java.lang.Override
-    public boolean getRefresh() {
-      return refresh_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4235,9 +4094,6 @@ public final class FriendMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (refresh_ != false) {
-        output.writeBool(1, refresh_);
-      }
       unknownFields.writeTo(output);
     }
 
@@ -4247,10 +4103,6 @@ public final class FriendMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (refresh_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, refresh_);
-      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -4266,8 +4118,6 @@ public final class FriendMsg {
       }
       cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003 other = (cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003) obj;
 
-      if (getRefresh()
-          != other.getRefresh()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4279,9 +4129,6 @@ public final class FriendMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + REFRESH_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getRefresh());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4379,7 +4226,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     * 搜索符合条件的推荐好友，换一批也是此条协议,刷新有时间间隔限制
+     * 搜索符合条件的推荐好友
      * </pre>
      *
      * Protobuf type {@code Protos.FriendRecommendRequest_30000003}
@@ -4419,8 +4266,6 @@ public final class FriendMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        refresh_ = false;
-
         return this;
       }
 
@@ -4447,7 +4292,6 @@ public final class FriendMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003 buildPartial() {
         cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003 result = new cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003(this);
-        result.refresh_ = refresh_;
         onBuilt();
         return result;
       }
@@ -4496,9 +4340,6 @@ public final class FriendMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003 other) {
         if (other == cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003.getDefaultInstance()) return this;
-        if (other.getRefresh() != false) {
-          setRefresh(other.getRefresh());
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -4525,49 +4366,6 @@ public final class FriendMsg {
             mergeFrom(parsedMessage);
           }
         }
-        return this;
-      }
-
-      private boolean refresh_ ;
-      /**
-       * <pre>
-       *  true，点击换一批； false 打开页面请求，如果没有到刷新时间，则返回上次刷新结果。 
-       * </pre>
-       *
-       * <code>bool refresh = 1;</code>
-       * @return The refresh.
-       */
-      @java.lang.Override
-      public boolean getRefresh() {
-        return refresh_;
-      }
-      /**
-       * <pre>
-       *  true，点击换一批； false 打开页面请求，如果没有到刷新时间，则返回上次刷新结果。 
-       * </pre>
-       *
-       * <code>bool refresh = 1;</code>
-       * @param value The refresh to set.
-       * @return This builder for chaining.
-       */
-      public Builder setRefresh(boolean value) {
-        
-        refresh_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *  true，点击换一批； false 打开页面请求，如果没有到刷新时间，则返回上次刷新结果。 
-       * </pre>
-       *
-       * <code>bool refresh = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearRefresh() {
-        
-        refresh_ = false;
-        onChanged();
         return this;
       }
       @java.lang.Override
@@ -4628,38 +4426,28 @@ public final class FriendMsg {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> 
-        getFriendsList();
+        getPlayersList();
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
-    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getFriends(int index);
+    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayers(int index);
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
-    int getFriendsCount();
+    int getPlayersCount();
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
-        getFriendsOrBuilderList();
+        getPlayersOrBuilderList();
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
-    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getFriendsOrBuilder(
+    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayersOrBuilder(
         int index);
-
-    /**
-     * <pre>
-     * 当没有到刷新时间点刷新时，返回可以刷新的时间戳（秒）
-     * </pre>
-     *
-     * <code>int32 nextFreshTime = 2;</code>
-     * @return The nextFreshTime.
-     */
-    int getNextFreshTime();
   }
   /**
    * <pre>
@@ -4678,7 +4466,7 @@ public final class FriendMsg {
       super(builder);
     }
     private FriendRecommendResponse_30000004() {
-      friends_ = java.util.Collections.emptyList();
+      players_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -4714,16 +4502,11 @@ public final class FriendMsg {
               break;
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                friends_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo>();
+                players_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              friends_.add(
+              players_.add(
                   input.readMessage(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.parser(), extensionRegistry));
-              break;
-            }
-            case 16: {
-
-              nextFreshTime_ = input.readInt32();
               break;
             }
             default: {
@@ -4742,7 +4525,7 @@ public final class FriendMsg {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          friends_ = java.util.Collections.unmodifiableList(friends_);
+          players_ = java.util.Collections.unmodifiableList(players_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -4761,59 +4544,44 @@ public final class FriendMsg {
               cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004.class, cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004.Builder.class);
     }
 
-    public static final int FRIENDS_FIELD_NUMBER = 1;
-    private java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> friends_;
+    public static final int PLAYERS_FIELD_NUMBER = 1;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> players_;
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> getFriendsList() {
-      return friends_;
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> getPlayersList() {
+      return players_;
     }
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
     public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
-        getFriendsOrBuilderList() {
-      return friends_;
+        getPlayersOrBuilderList() {
+      return players_;
     }
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
-    public int getFriendsCount() {
-      return friends_.size();
+    public int getPlayersCount() {
+      return players_.size();
     }
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getFriends(int index) {
-      return friends_.get(index);
+    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayers(int index) {
+      return players_.get(index);
     }
     /**
-     * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+     * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getFriendsOrBuilder(
+    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayersOrBuilder(
         int index) {
-      return friends_.get(index);
-    }
-
-    public static final int NEXTFRESHTIME_FIELD_NUMBER = 2;
-    private int nextFreshTime_;
-    /**
-     * <pre>
-     * 当没有到刷新时间点刷新时，返回可以刷新的时间戳（秒）
-     * </pre>
-     *
-     * <code>int32 nextFreshTime = 2;</code>
-     * @return The nextFreshTime.
-     */
-    @java.lang.Override
-    public int getNextFreshTime() {
-      return nextFreshTime_;
+      return players_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4830,11 +4598,8 @@ public final class FriendMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < friends_.size(); i++) {
-        output.writeMessage(1, friends_.get(i));
-      }
-      if (nextFreshTime_ != 0) {
-        output.writeInt32(2, nextFreshTime_);
+      for (int i = 0; i < players_.size(); i++) {
+        output.writeMessage(1, players_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -4845,13 +4610,9 @@ public final class FriendMsg {
       if (size != -1) return size;
 
       size = 0;
-      for (int i = 0; i < friends_.size(); i++) {
+      for (int i = 0; i < players_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, friends_.get(i));
-      }
-      if (nextFreshTime_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, nextFreshTime_);
+          .computeMessageSize(1, players_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4868,10 +4629,8 @@ public final class FriendMsg {
       }
       cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004 other = (cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004) obj;
 
-      if (!getFriendsList()
-          .equals(other.getFriendsList())) return false;
-      if (getNextFreshTime()
-          != other.getNextFreshTime()) return false;
+      if (!getPlayersList()
+          .equals(other.getPlayersList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4883,12 +4642,10 @@ public final class FriendMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getFriendsCount() > 0) {
-        hash = (37 * hash) + FRIENDS_FIELD_NUMBER;
-        hash = (53 * hash) + getFriendsList().hashCode();
+      if (getPlayersCount() > 0) {
+        hash = (37 * hash) + PLAYERS_FIELD_NUMBER;
+        hash = (53 * hash) + getPlayersList().hashCode();
       }
-      hash = (37 * hash) + NEXTFRESHTIME_FIELD_NUMBER;
-      hash = (53 * hash) + getNextFreshTime();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -5021,20 +4778,18 @@ public final class FriendMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getFriendsFieldBuilder();
+          getPlayersFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (friendsBuilder_ == null) {
-          friends_ = java.util.Collections.emptyList();
+        if (playersBuilder_ == null) {
+          players_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          friendsBuilder_.clear();
+          playersBuilder_.clear();
         }
-        nextFreshTime_ = 0;
-
         return this;
       }
 
@@ -5062,16 +4817,15 @@ public final class FriendMsg {
       public cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004 buildPartial() {
         cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004 result = new cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004(this);
         int from_bitField0_ = bitField0_;
-        if (friendsBuilder_ == null) {
+        if (playersBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
-            friends_ = java.util.Collections.unmodifiableList(friends_);
+            players_ = java.util.Collections.unmodifiableList(players_);
             bitField0_ = (bitField0_ & ~0x00000001);
           }
-          result.friends_ = friends_;
+          result.players_ = players_;
         } else {
-          result.friends_ = friendsBuilder_.build();
+          result.players_ = playersBuilder_.build();
         }
-        result.nextFreshTime_ = nextFreshTime_;
         onBuilt();
         return result;
       }
@@ -5120,34 +4874,31 @@ public final class FriendMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004 other) {
         if (other == cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004.getDefaultInstance()) return this;
-        if (friendsBuilder_ == null) {
-          if (!other.friends_.isEmpty()) {
-            if (friends_.isEmpty()) {
-              friends_ = other.friends_;
+        if (playersBuilder_ == null) {
+          if (!other.players_.isEmpty()) {
+            if (players_.isEmpty()) {
+              players_ = other.players_;
               bitField0_ = (bitField0_ & ~0x00000001);
             } else {
-              ensureFriendsIsMutable();
-              friends_.addAll(other.friends_);
+              ensurePlayersIsMutable();
+              players_.addAll(other.players_);
             }
             onChanged();
           }
         } else {
-          if (!other.friends_.isEmpty()) {
-            if (friendsBuilder_.isEmpty()) {
-              friendsBuilder_.dispose();
-              friendsBuilder_ = null;
-              friends_ = other.friends_;
+          if (!other.players_.isEmpty()) {
+            if (playersBuilder_.isEmpty()) {
+              playersBuilder_.dispose();
+              playersBuilder_ = null;
+              players_ = other.players_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              friendsBuilder_ = 
+              playersBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getFriendsFieldBuilder() : null;
+                   getPlayersFieldBuilder() : null;
             } else {
-              friendsBuilder_.addAllMessages(other.friends_);
+              playersBuilder_.addAllMessages(other.players_);
             }
           }
-        }
-        if (other.getNextFreshTime() != 0) {
-          setNextFreshTime(other.getNextFreshTime());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5179,287 +4930,244 @@ public final class FriendMsg {
       }
       private int bitField0_;
 
-      private java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> friends_ =
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> players_ =
         java.util.Collections.emptyList();
-      private void ensureFriendsIsMutable() {
+      private void ensurePlayersIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          friends_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo>(friends_);
+          players_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo>(players_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> friendsBuilder_;
+          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> playersBuilder_;
 
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> getFriendsList() {
-        if (friendsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(friends_);
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> getPlayersList() {
+        if (playersBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(players_);
         } else {
-          return friendsBuilder_.getMessageList();
+          return playersBuilder_.getMessageList();
         }
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public int getFriendsCount() {
-        if (friendsBuilder_ == null) {
-          return friends_.size();
+      public int getPlayersCount() {
+        if (playersBuilder_ == null) {
+          return players_.size();
         } else {
-          return friendsBuilder_.getCount();
+          return playersBuilder_.getCount();
         }
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getFriends(int index) {
-        if (friendsBuilder_ == null) {
-          return friends_.get(index);
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayers(int index) {
+        if (playersBuilder_ == null) {
+          return players_.get(index);
         } else {
-          return friendsBuilder_.getMessage(index);
+          return playersBuilder_.getMessage(index);
         }
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder setFriends(
+      public Builder setPlayers(
           int index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
-        if (friendsBuilder_ == null) {
+        if (playersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureFriendsIsMutable();
-          friends_.set(index, value);
+          ensurePlayersIsMutable();
+          players_.set(index, value);
           onChanged();
         } else {
-          friendsBuilder_.setMessage(index, value);
+          playersBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder setFriends(
+      public Builder setPlayers(
           int index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder builderForValue) {
-        if (friendsBuilder_ == null) {
-          ensureFriendsIsMutable();
-          friends_.set(index, builderForValue.build());
+        if (playersBuilder_ == null) {
+          ensurePlayersIsMutable();
+          players_.set(index, builderForValue.build());
           onChanged();
         } else {
-          friendsBuilder_.setMessage(index, builderForValue.build());
+          playersBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder addFriends(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
-        if (friendsBuilder_ == null) {
+      public Builder addPlayers(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
+        if (playersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureFriendsIsMutable();
-          friends_.add(value);
+          ensurePlayersIsMutable();
+          players_.add(value);
           onChanged();
         } else {
-          friendsBuilder_.addMessage(value);
+          playersBuilder_.addMessage(value);
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder addFriends(
+      public Builder addPlayers(
           int index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
-        if (friendsBuilder_ == null) {
+        if (playersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureFriendsIsMutable();
-          friends_.add(index, value);
+          ensurePlayersIsMutable();
+          players_.add(index, value);
           onChanged();
         } else {
-          friendsBuilder_.addMessage(index, value);
+          playersBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder addFriends(
+      public Builder addPlayers(
           cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder builderForValue) {
-        if (friendsBuilder_ == null) {
-          ensureFriendsIsMutable();
-          friends_.add(builderForValue.build());
+        if (playersBuilder_ == null) {
+          ensurePlayersIsMutable();
+          players_.add(builderForValue.build());
           onChanged();
         } else {
-          friendsBuilder_.addMessage(builderForValue.build());
+          playersBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder addFriends(
+      public Builder addPlayers(
           int index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder builderForValue) {
-        if (friendsBuilder_ == null) {
-          ensureFriendsIsMutable();
-          friends_.add(index, builderForValue.build());
+        if (playersBuilder_ == null) {
+          ensurePlayersIsMutable();
+          players_.add(index, builderForValue.build());
           onChanged();
         } else {
-          friendsBuilder_.addMessage(index, builderForValue.build());
+          playersBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder addAllFriends(
+      public Builder addAllPlayers(
           java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo> values) {
-        if (friendsBuilder_ == null) {
-          ensureFriendsIsMutable();
+        if (playersBuilder_ == null) {
+          ensurePlayersIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, friends_);
+              values, players_);
           onChanged();
         } else {
-          friendsBuilder_.addAllMessages(values);
+          playersBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder clearFriends() {
-        if (friendsBuilder_ == null) {
-          friends_ = java.util.Collections.emptyList();
+      public Builder clearPlayers() {
+        if (playersBuilder_ == null) {
+          players_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          friendsBuilder_.clear();
+          playersBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public Builder removeFriends(int index) {
-        if (friendsBuilder_ == null) {
-          ensureFriendsIsMutable();
-          friends_.remove(index);
+      public Builder removePlayers(int index) {
+        if (playersBuilder_ == null) {
+          ensurePlayersIsMutable();
+          players_.remove(index);
           onChanged();
         } else {
-          friendsBuilder_.remove(index);
+          playersBuilder_.remove(index);
         }
         return this;
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder getFriendsBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder getPlayersBuilder(
           int index) {
-        return getFriendsFieldBuilder().getBuilder(index);
+        return getPlayersFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getFriendsOrBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayersOrBuilder(
           int index) {
-        if (friendsBuilder_ == null) {
-          return friends_.get(index);  } else {
-          return friendsBuilder_.getMessageOrBuilder(index);
+        if (playersBuilder_ == null) {
+          return players_.get(index);  } else {
+          return playersBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
-           getFriendsOrBuilderList() {
-        if (friendsBuilder_ != null) {
-          return friendsBuilder_.getMessageOrBuilderList();
+           getPlayersOrBuilderList() {
+        if (playersBuilder_ != null) {
+          return playersBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(friends_);
+          return java.util.Collections.unmodifiableList(players_);
         }
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder addFriendsBuilder() {
-        return getFriendsFieldBuilder().addBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder addPlayersBuilder() {
+        return getPlayersFieldBuilder().addBuilder(
             cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance());
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
-      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder addFriendsBuilder(
+      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder addPlayersBuilder(
           int index) {
-        return getFriendsFieldBuilder().addBuilder(
+        return getPlayersFieldBuilder().addBuilder(
             index, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance());
       }
       /**
-       * <code>repeated .Protos.SimplePlayerInfo friends = 1;</code>
+       * <code>repeated .Protos.SimplePlayerInfo players = 1;</code>
        */
       public java.util.List<cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder> 
-           getFriendsBuilderList() {
-        return getFriendsFieldBuilder().getBuilderList();
+           getPlayersBuilderList() {
+        return getPlayersFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
           cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
-          getFriendsFieldBuilder() {
-        if (friendsBuilder_ == null) {
-          friendsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          getPlayersFieldBuilder() {
+        if (playersBuilder_ == null) {
+          playersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder>(
-                  friends_,
+                  players_,
                   ((bitField0_ & 0x00000001) != 0),
                   getParentForChildren(),
                   isClean());
-          friends_ = null;
+          players_ = null;
         }
-        return friendsBuilder_;
-      }
-
-      private int nextFreshTime_ ;
-      /**
-       * <pre>
-       * 当没有到刷新时间点刷新时，返回可以刷新的时间戳（秒）
-       * </pre>
-       *
-       * <code>int32 nextFreshTime = 2;</code>
-       * @return The nextFreshTime.
-       */
-      @java.lang.Override
-      public int getNextFreshTime() {
-        return nextFreshTime_;
-      }
-      /**
-       * <pre>
-       * 当没有到刷新时间点刷新时，返回可以刷新的时间戳（秒）
-       * </pre>
-       *
-       * <code>int32 nextFreshTime = 2;</code>
-       * @param value The nextFreshTime to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNextFreshTime(int value) {
-        
-        nextFreshTime_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 当没有到刷新时间点刷新时，返回可以刷新的时间戳（秒）
-       * </pre>
-       *
-       * <code>int32 nextFreshTime = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearNextFreshTime() {
-        
-        nextFreshTime_ = 0;
-        onChanged();
-        return this;
+        return playersBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -5514,1482 +5222,50 @@ public final class FriendMsg {
 
   }
 
-  public interface FriendSearchRequest_30000020OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendSearchRequest_30000020)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string playerId = 1;</code>
-     * @return The playerId.
-     */
-    java.lang.String getPlayerId();
-    /**
-     * <code>string playerId = 1;</code>
-     * @return The bytes for playerId.
-     */
-    com.google.protobuf.ByteString
-        getPlayerIdBytes();
-
-    /**
-     * <pre>
-     * 服id
-     * </pre>
-     *
-     * <code>string serverId = 2;</code>
-     * @return The serverId.
-     */
-    java.lang.String getServerId();
-    /**
-     * <pre>
-     * 服id
-     * </pre>
-     *
-     * <code>string serverId = 2;</code>
-     * @return The bytes for serverId.
-     */
-    com.google.protobuf.ByteString
-        getServerIdBytes();
-  }
-  /**
-   * <pre>
-   * 按账号id搜索玩家
-   * </pre>
-   *
-   * Protobuf type {@code Protos.FriendSearchRequest_30000020}
-   */
-  public static final class FriendSearchRequest_30000020 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendSearchRequest_30000020)
-      FriendSearchRequest_30000020OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use FriendSearchRequest_30000020.newBuilder() to construct.
-    private FriendSearchRequest_30000020(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private FriendSearchRequest_30000020() {
-      playerId_ = "";
-      serverId_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new FriendSearchRequest_30000020();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private FriendSearchRequest_30000020(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              playerId_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              serverId_ = s;
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchRequest_30000020_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchRequest_30000020_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020.class, cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020.Builder.class);
-    }
-
-    public static final int PLAYERID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object playerId_;
-    /**
-     * <code>string playerId = 1;</code>
-     * @return The playerId.
-     */
-    @java.lang.Override
-    public java.lang.String getPlayerId() {
-      java.lang.Object ref = playerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        playerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string playerId = 1;</code>
-     * @return The bytes for playerId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPlayerIdBytes() {
-      java.lang.Object ref = playerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        playerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int SERVERID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object serverId_;
-    /**
-     * <pre>
-     * 服id
-     * </pre>
-     *
-     * <code>string serverId = 2;</code>
-     * @return The serverId.
-     */
-    @java.lang.Override
-    public java.lang.String getServerId() {
-      java.lang.Object ref = serverId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        serverId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 服id
-     * </pre>
-     *
-     * <code>string serverId = 2;</code>
-     * @return The bytes for serverId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getServerIdBytes() {
-      java.lang.Object ref = serverId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        serverId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getPlayerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, playerId_);
-      }
-      if (!getServerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, serverId_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getPlayerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, playerId_);
-      }
-      if (!getServerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, serverId_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 other = (cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020) obj;
-
-      if (!getPlayerId()
-          .equals(other.getPlayerId())) return false;
-      if (!getServerId()
-          .equals(other.getServerId())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + PLAYERID_FIELD_NUMBER;
-      hash = (53 * hash) + getPlayerId().hashCode();
-      hash = (37 * hash) + SERVERID_FIELD_NUMBER;
-      hash = (53 * hash) + getServerId().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 按账号id搜索玩家
-     * </pre>
-     *
-     * Protobuf type {@code Protos.FriendSearchRequest_30000020}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendSearchRequest_30000020)
-        cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchRequest_30000020_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchRequest_30000020_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020.class, cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        playerId_ = "";
-
-        serverId_ = "";
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchRequest_30000020_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 result = new cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020(this);
-        result.playerId_ = playerId_;
-        result.serverId_ = serverId_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020.getDefaultInstance()) return this;
-        if (!other.getPlayerId().isEmpty()) {
-          playerId_ = other.playerId_;
-          onChanged();
-        }
-        if (!other.getServerId().isEmpty()) {
-          serverId_ = other.serverId_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object playerId_ = "";
-      /**
-       * <code>string playerId = 1;</code>
-       * @return The playerId.
-       */
-      public java.lang.String getPlayerId() {
-        java.lang.Object ref = playerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          playerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string playerId = 1;</code>
-       * @return The bytes for playerId.
-       */
-      public com.google.protobuf.ByteString
-          getPlayerIdBytes() {
-        java.lang.Object ref = playerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          playerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string playerId = 1;</code>
-       * @param value The playerId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPlayerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        playerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string playerId = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPlayerId() {
-        
-        playerId_ = getDefaultInstance().getPlayerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string playerId = 1;</code>
-       * @param value The bytes for playerId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPlayerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        playerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object serverId_ = "";
-      /**
-       * <pre>
-       * 服id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @return The serverId.
-       */
-      public java.lang.String getServerId() {
-        java.lang.Object ref = serverId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          serverId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 服id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @return The bytes for serverId.
-       */
-      public com.google.protobuf.ByteString
-          getServerIdBytes() {
-        java.lang.Object ref = serverId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          serverId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 服id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @param value The serverId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setServerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        serverId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 服id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearServerId() {
-        
-        serverId_ = getDefaultInstance().getServerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 服id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @param value The bytes for serverId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setServerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        serverId_ = value;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.FriendSearchRequest_30000020)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.FriendSearchRequest_30000020)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020();
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<FriendSearchRequest_30000020>
-        PARSER = new com.google.protobuf.AbstractParser<FriendSearchRequest_30000020>() {
-      @java.lang.Override
-      public FriendSearchRequest_30000020 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendSearchRequest_30000020(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<FriendSearchRequest_30000020> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<FriendSearchRequest_30000020> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendSearchRequest_30000020 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface FriendSearchResponse_30000021OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendSearchResponse_30000021)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>.Protos.SimplePlayerInfo player = 1;</code>
-     * @return Whether the player field is set.
-     */
-    boolean hasPlayer();
-    /**
-     * <code>.Protos.SimplePlayerInfo player = 1;</code>
-     * @return The player.
-     */
-    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayer();
-    /**
-     * <code>.Protos.SimplePlayerInfo player = 1;</code>
-     */
-    cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayerOrBuilder();
-  }
-  /**
-   * <pre>
-   *  搜索出来的玩家
-   * </pre>
-   *
-   * Protobuf type {@code Protos.FriendSearchResponse_30000021}
-   */
-  public static final class FriendSearchResponse_30000021 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendSearchResponse_30000021)
-      FriendSearchResponse_30000021OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use FriendSearchResponse_30000021.newBuilder() to construct.
-    private FriendSearchResponse_30000021(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private FriendSearchResponse_30000021() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new FriendSearchResponse_30000021();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private FriendSearchResponse_30000021(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder subBuilder = null;
-              if (player_ != null) {
-                subBuilder = player_.toBuilder();
-              }
-              player_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(player_);
-                player_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchResponse_30000021_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchResponse_30000021_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021.class, cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021.Builder.class);
-    }
-
-    public static final int PLAYER_FIELD_NUMBER = 1;
-    private cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo player_;
-    /**
-     * <code>.Protos.SimplePlayerInfo player = 1;</code>
-     * @return Whether the player field is set.
-     */
-    @java.lang.Override
-    public boolean hasPlayer() {
-      return player_ != null;
-    }
-    /**
-     * <code>.Protos.SimplePlayerInfo player = 1;</code>
-     * @return The player.
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayer() {
-      return player_ == null ? cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance() : player_;
-    }
-    /**
-     * <code>.Protos.SimplePlayerInfo player = 1;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayerOrBuilder() {
-      return getPlayer();
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (player_ != null) {
-        output.writeMessage(1, getPlayer());
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (player_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getPlayer());
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 other = (cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021) obj;
-
-      if (hasPlayer() != other.hasPlayer()) return false;
-      if (hasPlayer()) {
-        if (!getPlayer()
-            .equals(other.getPlayer())) return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasPlayer()) {
-        hash = (37 * hash) + PLAYER_FIELD_NUMBER;
-        hash = (53 * hash) + getPlayer().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     *  搜索出来的玩家
-     * </pre>
-     *
-     * Protobuf type {@code Protos.FriendSearchResponse_30000021}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendSearchResponse_30000021)
-        cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchResponse_30000021_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchResponse_30000021_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021.class, cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        if (playerBuilder_ == null) {
-          player_ = null;
-        } else {
-          player_ = null;
-          playerBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendSearchResponse_30000021_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 result = new cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021(this);
-        if (playerBuilder_ == null) {
-          result.player_ = player_;
-        } else {
-          result.player_ = playerBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021.getDefaultInstance()) return this;
-        if (other.hasPlayer()) {
-          mergePlayer(other.getPlayer());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo player_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> playerBuilder_;
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       * @return Whether the player field is set.
-       */
-      public boolean hasPlayer() {
-        return playerBuilder_ != null || player_ != null;
-      }
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       * @return The player.
-       */
-      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayer() {
-        if (playerBuilder_ == null) {
-          return player_ == null ? cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance() : player_;
-        } else {
-          return playerBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       */
-      public Builder setPlayer(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
-        if (playerBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          player_ = value;
-          onChanged();
-        } else {
-          playerBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       */
-      public Builder setPlayer(
-          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder builderForValue) {
-        if (playerBuilder_ == null) {
-          player_ = builderForValue.build();
-          onChanged();
-        } else {
-          playerBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       */
-      public Builder mergePlayer(cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo value) {
-        if (playerBuilder_ == null) {
-          if (player_ != null) {
-            player_ =
-              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.newBuilder(player_).mergeFrom(value).buildPartial();
-          } else {
-            player_ = value;
-          }
-          onChanged();
-        } else {
-          playerBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       */
-      public Builder clearPlayer() {
-        if (playerBuilder_ == null) {
-          player_ = null;
-          onChanged();
-        } else {
-          player_ = null;
-          playerBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder getPlayerBuilder() {
-        
-        onChanged();
-        return getPlayerFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder getPlayerOrBuilder() {
-        if (playerBuilder_ != null) {
-          return playerBuilder_.getMessageOrBuilder();
-        } else {
-          return player_ == null ?
-              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.getDefaultInstance() : player_;
-        }
-      }
-      /**
-       * <code>.Protos.SimplePlayerInfo player = 1;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> 
-          getPlayerFieldBuilder() {
-        if (playerBuilder_ == null) {
-          playerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder>(
-                  getPlayer(),
-                  getParentForChildren(),
-                  isClean());
-          player_ = null;
-        }
-        return playerBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.FriendSearchResponse_30000021)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.FriendSearchResponse_30000021)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021();
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<FriendSearchResponse_30000021>
-        PARSER = new com.google.protobuf.AbstractParser<FriendSearchResponse_30000021>() {
-      @java.lang.Override
-      public FriendSearchResponse_30000021 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendSearchResponse_30000021(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<FriendSearchResponse_30000021> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<FriendSearchResponse_30000021> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendSearchResponse_30000021 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface FriendApplyRequest_30000005OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.FriendApplyRequest_30000005)
       com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
-     *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+     *向哪些玩家申请
      * </pre>
      *
-     * <code>repeated string friendIds = 1;</code>
-     * @return A list containing the friendIds.
+     * <code>repeated string playerIds = 1;</code>
+     * @return A list containing the playerIds.
      */
     java.util.List<java.lang.String>
-        getFriendIdsList();
+        getPlayerIdsList();
     /**
      * <pre>
-     *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+     *向哪些玩家申请
      * </pre>
      *
-     * <code>repeated string friendIds = 1;</code>
-     * @return The count of friendIds.
+     * <code>repeated string playerIds = 1;</code>
+     * @return The count of playerIds.
      */
-    int getFriendIdsCount();
+    int getPlayerIdsCount();
     /**
      * <pre>
-     *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+     *向哪些玩家申请
      * </pre>
      *
-     * <code>repeated string friendIds = 1;</code>
+     * <code>repeated string playerIds = 1;</code>
      * @param index The index of the element to return.
-     * @return The friendIds at the given index.
+     * @return The playerIds at the given index.
      */
-    java.lang.String getFriendIds(int index);
+    java.lang.String getPlayerIds(int index);
     /**
      * <pre>
-     *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+     *向哪些玩家申请
      * </pre>
      *
-     * <code>repeated string friendIds = 1;</code>
+     * <code>repeated string playerIds = 1;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the friendIds at the given index.
+     * @return The bytes of the playerIds at the given index.
      */
     com.google.protobuf.ByteString
-        getFriendIdsBytes(int index);
-
-    /**
-     * <pre>
-     *玩家所在服务器id，申请跨服好友用到
-     * </pre>
-     *
-     * <code>repeated string serverIds = 2;</code>
-     * @return A list containing the serverIds.
-     */
-    java.util.List<java.lang.String>
-        getServerIdsList();
-    /**
-     * <pre>
-     *玩家所在服务器id，申请跨服好友用到
-     * </pre>
-     *
-     * <code>repeated string serverIds = 2;</code>
-     * @return The count of serverIds.
-     */
-    int getServerIdsCount();
-    /**
-     * <pre>
-     *玩家所在服务器id，申请跨服好友用到
-     * </pre>
-     *
-     * <code>repeated string serverIds = 2;</code>
-     * @param index The index of the element to return.
-     * @return The serverIds at the given index.
-     */
-    java.lang.String getServerIds(int index);
-    /**
-     * <pre>
-     *玩家所在服务器id，申请跨服好友用到
-     * </pre>
-     *
-     * <code>repeated string serverIds = 2;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the serverIds at the given index.
-     */
-    com.google.protobuf.ByteString
-        getServerIdsBytes(int index);
+        getPlayerIdsBytes(int index);
   }
   /**
    * <pre>
@@ -7008,8 +5284,7 @@ public final class FriendMsg {
       super(builder);
     }
     private FriendApplyRequest_30000005() {
-      friendIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      serverIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      playerIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
@@ -7046,19 +5321,10 @@ public final class FriendMsg {
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                friendIds_ = new com.google.protobuf.LazyStringArrayList();
+                playerIds_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000001;
               }
-              friendIds_.add(s);
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                serverIds_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              serverIds_.add(s);
+              playerIds_.add(s);
               break;
             }
             default: {
@@ -7077,10 +5343,7 @@ public final class FriendMsg {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          friendIds_ = friendIds_.getUnmodifiableView();
-        }
-        if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          serverIds_ = serverIds_.getUnmodifiableView();
+          playerIds_ = playerIds_.getUnmodifiableView();
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -7099,106 +5362,55 @@ public final class FriendMsg {
               cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005.class, cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005.Builder.class);
     }
 
-    public static final int FRIENDIDS_FIELD_NUMBER = 1;
-    private com.google.protobuf.LazyStringList friendIds_;
+    public static final int PLAYERIDS_FIELD_NUMBER = 1;
+    private com.google.protobuf.LazyStringList playerIds_;
     /**
      * <pre>
-     *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+     *向哪些玩家申请
      * </pre>
      *
-     * <code>repeated string friendIds = 1;</code>
-     * @return A list containing the friendIds.
+     * <code>repeated string playerIds = 1;</code>
+     * @return A list containing the playerIds.
      */
     public com.google.protobuf.ProtocolStringList
-        getFriendIdsList() {
-      return friendIds_;
+        getPlayerIdsList() {
+      return playerIds_;
     }
     /**
      * <pre>
-     *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+     *向哪些玩家申请
      * </pre>
      *
-     * <code>repeated string friendIds = 1;</code>
-     * @return The count of friendIds.
+     * <code>repeated string playerIds = 1;</code>
+     * @return The count of playerIds.
      */
-    public int getFriendIdsCount() {
-      return friendIds_.size();
+    public int getPlayerIdsCount() {
+      return playerIds_.size();
     }
     /**
      * <pre>
-     *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+     *向哪些玩家申请
      * </pre>
      *
-     * <code>repeated string friendIds = 1;</code>
+     * <code>repeated string playerIds = 1;</code>
      * @param index The index of the element to return.
-     * @return The friendIds at the given index.
+     * @return The playerIds at the given index.
      */
-    public java.lang.String getFriendIds(int index) {
-      return friendIds_.get(index);
+    public java.lang.String getPlayerIds(int index) {
+      return playerIds_.get(index);
     }
     /**
      * <pre>
-     *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+     *向哪些玩家申请
      * </pre>
      *
-     * <code>repeated string friendIds = 1;</code>
+     * <code>repeated string playerIds = 1;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the friendIds at the given index.
+     * @return The bytes of the playerIds at the given index.
      */
     public com.google.protobuf.ByteString
-        getFriendIdsBytes(int index) {
-      return friendIds_.getByteString(index);
-    }
-
-    public static final int SERVERIDS_FIELD_NUMBER = 2;
-    private com.google.protobuf.LazyStringList serverIds_;
-    /**
-     * <pre>
-     *玩家所在服务器id，申请跨服好友用到
-     * </pre>
-     *
-     * <code>repeated string serverIds = 2;</code>
-     * @return A list containing the serverIds.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getServerIdsList() {
-      return serverIds_;
-    }
-    /**
-     * <pre>
-     *玩家所在服务器id，申请跨服好友用到
-     * </pre>
-     *
-     * <code>repeated string serverIds = 2;</code>
-     * @return The count of serverIds.
-     */
-    public int getServerIdsCount() {
-      return serverIds_.size();
-    }
-    /**
-     * <pre>
-     *玩家所在服务器id，申请跨服好友用到
-     * </pre>
-     *
-     * <code>repeated string serverIds = 2;</code>
-     * @param index The index of the element to return.
-     * @return The serverIds at the given index.
-     */
-    public java.lang.String getServerIds(int index) {
-      return serverIds_.get(index);
-    }
-    /**
-     * <pre>
-     *玩家所在服务器id，申请跨服好友用到
-     * </pre>
-     *
-     * <code>repeated string serverIds = 2;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the serverIds at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getServerIdsBytes(int index) {
-      return serverIds_.getByteString(index);
+        getPlayerIdsBytes(int index) {
+      return playerIds_.getByteString(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -7215,11 +5427,8 @@ public final class FriendMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < friendIds_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, friendIds_.getRaw(i));
-      }
-      for (int i = 0; i < serverIds_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, serverIds_.getRaw(i));
+      for (int i = 0; i < playerIds_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, playerIds_.getRaw(i));
       }
       unknownFields.writeTo(output);
     }
@@ -7232,19 +5441,11 @@ public final class FriendMsg {
       size = 0;
       {
         int dataSize = 0;
-        for (int i = 0; i < friendIds_.size(); i++) {
-          dataSize += computeStringSizeNoTag(friendIds_.getRaw(i));
+        for (int i = 0; i < playerIds_.size(); i++) {
+          dataSize += computeStringSizeNoTag(playerIds_.getRaw(i));
         }
         size += dataSize;
-        size += 1 * getFriendIdsList().size();
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < serverIds_.size(); i++) {
-          dataSize += computeStringSizeNoTag(serverIds_.getRaw(i));
-        }
-        size += dataSize;
-        size += 1 * getServerIdsList().size();
+        size += 1 * getPlayerIdsList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -7261,10 +5462,8 @@ public final class FriendMsg {
       }
       cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005 other = (cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005) obj;
 
-      if (!getFriendIdsList()
-          .equals(other.getFriendIdsList())) return false;
-      if (!getServerIdsList()
-          .equals(other.getServerIdsList())) return false;
+      if (!getPlayerIdsList()
+          .equals(other.getPlayerIdsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -7276,13 +5475,9 @@ public final class FriendMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getFriendIdsCount() > 0) {
-        hash = (37 * hash) + FRIENDIDS_FIELD_NUMBER;
-        hash = (53 * hash) + getFriendIdsList().hashCode();
-      }
-      if (getServerIdsCount() > 0) {
-        hash = (37 * hash) + SERVERIDS_FIELD_NUMBER;
-        hash = (53 * hash) + getServerIdsList().hashCode();
+      if (getPlayerIdsCount() > 0) {
+        hash = (37 * hash) + PLAYERIDS_FIELD_NUMBER;
+        hash = (53 * hash) + getPlayerIdsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -7421,10 +5616,8 @@ public final class FriendMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        friendIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        playerIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
-        serverIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -7453,15 +5646,10 @@ public final class FriendMsg {
         cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005 result = new cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005(this);
         int from_bitField0_ = bitField0_;
         if (((bitField0_ & 0x00000001) != 0)) {
-          friendIds_ = friendIds_.getUnmodifiableView();
+          playerIds_ = playerIds_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00000001);
         }
-        result.friendIds_ = friendIds_;
-        if (((bitField0_ & 0x00000002) != 0)) {
-          serverIds_ = serverIds_.getUnmodifiableView();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.serverIds_ = serverIds_;
+        result.playerIds_ = playerIds_;
         onBuilt();
         return result;
       }
@@ -7510,23 +5698,13 @@ public final class FriendMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005 other) {
         if (other == cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005.getDefaultInstance()) return this;
-        if (!other.friendIds_.isEmpty()) {
-          if (friendIds_.isEmpty()) {
-            friendIds_ = other.friendIds_;
+        if (!other.playerIds_.isEmpty()) {
+          if (playerIds_.isEmpty()) {
+            playerIds_ = other.playerIds_;
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            ensureFriendIdsIsMutable();
-            friendIds_.addAll(other.friendIds_);
-          }
-          onChanged();
-        }
-        if (!other.serverIds_.isEmpty()) {
-          if (serverIds_.isEmpty()) {
-            serverIds_ = other.serverIds_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureServerIdsIsMutable();
-            serverIds_.addAll(other.serverIds_);
+            ensurePlayerIdsIsMutable();
+            playerIds_.addAll(other.playerIds_);
           }
           onChanged();
         }
@@ -7560,294 +5738,148 @@ public final class FriendMsg {
       }
       private int bitField0_;
 
-      private com.google.protobuf.LazyStringList friendIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureFriendIdsIsMutable() {
+      private com.google.protobuf.LazyStringList playerIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensurePlayerIdsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          friendIds_ = new com.google.protobuf.LazyStringArrayList(friendIds_);
+          playerIds_ = new com.google.protobuf.LazyStringArrayList(playerIds_);
           bitField0_ |= 0x00000001;
          }
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
-       * @return A list containing the friendIds.
+       * <code>repeated string playerIds = 1;</code>
+       * @return A list containing the playerIds.
        */
       public com.google.protobuf.ProtocolStringList
-          getFriendIdsList() {
-        return friendIds_.getUnmodifiableView();
+          getPlayerIdsList() {
+        return playerIds_.getUnmodifiableView();
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
-       * @return The count of friendIds.
+       * <code>repeated string playerIds = 1;</code>
+       * @return The count of playerIds.
        */
-      public int getFriendIdsCount() {
-        return friendIds_.size();
+      public int getPlayerIdsCount() {
+        return playerIds_.size();
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
+       * <code>repeated string playerIds = 1;</code>
        * @param index The index of the element to return.
-       * @return The friendIds at the given index.
+       * @return The playerIds at the given index.
        */
-      public java.lang.String getFriendIds(int index) {
-        return friendIds_.get(index);
+      public java.lang.String getPlayerIds(int index) {
+        return playerIds_.get(index);
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
+       * <code>repeated string playerIds = 1;</code>
        * @param index The index of the value to return.
-       * @return The bytes of the friendIds at the given index.
+       * @return The bytes of the playerIds at the given index.
        */
       public com.google.protobuf.ByteString
-          getFriendIdsBytes(int index) {
-        return friendIds_.getByteString(index);
+          getPlayerIdsBytes(int index) {
+        return playerIds_.getByteString(index);
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
+       * <code>repeated string playerIds = 1;</code>
        * @param index The index to set the value at.
-       * @param value The friendIds to set.
+       * @param value The playerIds to set.
        * @return This builder for chaining.
        */
-      public Builder setFriendIds(
+      public Builder setPlayerIds(
           int index, java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureFriendIdsIsMutable();
-        friendIds_.set(index, value);
+  ensurePlayerIdsIsMutable();
+        playerIds_.set(index, value);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
-       * @param value The friendIds to add.
+       * <code>repeated string playerIds = 1;</code>
+       * @param value The playerIds to add.
        * @return This builder for chaining.
        */
-      public Builder addFriendIds(
+      public Builder addPlayerIds(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureFriendIdsIsMutable();
-        friendIds_.add(value);
+  ensurePlayerIdsIsMutable();
+        playerIds_.add(value);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
-       * @param values The friendIds to add.
+       * <code>repeated string playerIds = 1;</code>
+       * @param values The playerIds to add.
        * @return This builder for chaining.
        */
-      public Builder addAllFriendIds(
+      public Builder addAllPlayerIds(
           java.lang.Iterable<java.lang.String> values) {
-        ensureFriendIdsIsMutable();
+        ensurePlayerIdsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, friendIds_);
+            values, playerIds_);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
+       * <code>repeated string playerIds = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearFriendIds() {
-        friendIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      public Builder clearPlayerIds() {
+        playerIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
       /**
        * <pre>
-       *向哪些玩家申请，如果申请本服好友可以批量申请，跨服好友时，一般只能申请一个
+       *向哪些玩家申请
        * </pre>
        *
-       * <code>repeated string friendIds = 1;</code>
-       * @param value The bytes of the friendIds to add.
+       * <code>repeated string playerIds = 1;</code>
+       * @param value The bytes of the playerIds to add.
        * @return This builder for chaining.
        */
-      public Builder addFriendIdsBytes(
+      public Builder addPlayerIdsBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-        ensureFriendIdsIsMutable();
-        friendIds_.add(value);
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.LazyStringList serverIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureServerIdsIsMutable() {
-        if (!((bitField0_ & 0x00000002) != 0)) {
-          serverIds_ = new com.google.protobuf.LazyStringArrayList(serverIds_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @return A list containing the serverIds.
-       */
-      public com.google.protobuf.ProtocolStringList
-          getServerIdsList() {
-        return serverIds_.getUnmodifiableView();
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @return The count of serverIds.
-       */
-      public int getServerIdsCount() {
-        return serverIds_.size();
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @param index The index of the element to return.
-       * @return The serverIds at the given index.
-       */
-      public java.lang.String getServerIds(int index) {
-        return serverIds_.get(index);
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @param index The index of the value to return.
-       * @return The bytes of the serverIds at the given index.
-       */
-      public com.google.protobuf.ByteString
-          getServerIdsBytes(int index) {
-        return serverIds_.getByteString(index);
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @param index The index to set the value at.
-       * @param value The serverIds to set.
-       * @return This builder for chaining.
-       */
-      public Builder setServerIds(
-          int index, java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureServerIdsIsMutable();
-        serverIds_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @param value The serverIds to add.
-       * @return This builder for chaining.
-       */
-      public Builder addServerIds(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureServerIdsIsMutable();
-        serverIds_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @param values The serverIds to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllServerIds(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureServerIdsIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, serverIds_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearServerIds() {
-        serverIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *玩家所在服务器id，申请跨服好友用到
-       * </pre>
-       *
-       * <code>repeated string serverIds = 2;</code>
-       * @param value The bytes of the serverIds to add.
-       * @return This builder for chaining.
-       */
-      public Builder addServerIdsBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        ensureServerIdsIsMutable();
-        serverIds_.add(value);
+        ensurePlayerIdsIsMutable();
+        playerIds_.add(value);
         onChanged();
         return this;
       }
@@ -8331,41 +6363,41 @@ public final class FriendMsg {
      *处理申请的玩家id
      * </pre>
      *
-     * <code>repeated string friendId = 1;</code>
-     * @return A list containing the friendId.
+     * <code>repeated string playerIds = 1;</code>
+     * @return A list containing the playerIds.
      */
     java.util.List<java.lang.String>
-        getFriendIdList();
+        getPlayerIdsList();
     /**
      * <pre>
      *处理申请的玩家id
      * </pre>
      *
-     * <code>repeated string friendId = 1;</code>
-     * @return The count of friendId.
+     * <code>repeated string playerIds = 1;</code>
+     * @return The count of playerIds.
      */
-    int getFriendIdCount();
+    int getPlayerIdsCount();
     /**
      * <pre>
      *处理申请的玩家id
      * </pre>
      *
-     * <code>repeated string friendId = 1;</code>
+     * <code>repeated string playerIds = 1;</code>
      * @param index The index of the element to return.
-     * @return The friendId at the given index.
+     * @return The playerIds at the given index.
      */
-    java.lang.String getFriendId(int index);
+    java.lang.String getPlayerIds(int index);
     /**
      * <pre>
      *处理申请的玩家id
      * </pre>
      *
-     * <code>repeated string friendId = 1;</code>
+     * <code>repeated string playerIds = 1;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the friendId at the given index.
+     * @return The bytes of the playerIds at the given index.
      */
     com.google.protobuf.ByteString
-        getFriendIdBytes(int index);
+        getPlayerIdsBytes(int index);
 
     /**
      * <pre>
@@ -8394,7 +6426,7 @@ public final class FriendMsg {
       super(builder);
     }
     private FriendApplicationRequest_30000007() {
-      friendId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      playerIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
@@ -8431,10 +6463,10 @@ public final class FriendMsg {
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                friendId_ = new com.google.protobuf.LazyStringArrayList();
+                playerIds_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000001;
               }
-              friendId_.add(s);
+              playerIds_.add(s);
               break;
             }
             case 16: {
@@ -8458,7 +6490,7 @@ public final class FriendMsg {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          friendId_ = friendId_.getUnmodifiableView();
+          playerIds_ = playerIds_.getUnmodifiableView();
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -8477,55 +6509,55 @@ public final class FriendMsg {
               cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007.class, cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007.Builder.class);
     }
 
-    public static final int FRIENDID_FIELD_NUMBER = 1;
-    private com.google.protobuf.LazyStringList friendId_;
+    public static final int PLAYERIDS_FIELD_NUMBER = 1;
+    private com.google.protobuf.LazyStringList playerIds_;
     /**
      * <pre>
      *处理申请的玩家id
      * </pre>
      *
-     * <code>repeated string friendId = 1;</code>
-     * @return A list containing the friendId.
+     * <code>repeated string playerIds = 1;</code>
+     * @return A list containing the playerIds.
      */
     public com.google.protobuf.ProtocolStringList
-        getFriendIdList() {
-      return friendId_;
+        getPlayerIdsList() {
+      return playerIds_;
     }
     /**
      * <pre>
      *处理申请的玩家id
      * </pre>
      *
-     * <code>repeated string friendId = 1;</code>
-     * @return The count of friendId.
+     * <code>repeated string playerIds = 1;</code>
+     * @return The count of playerIds.
      */
-    public int getFriendIdCount() {
-      return friendId_.size();
+    public int getPlayerIdsCount() {
+      return playerIds_.size();
     }
     /**
      * <pre>
      *处理申请的玩家id
      * </pre>
      *
-     * <code>repeated string friendId = 1;</code>
+     * <code>repeated string playerIds = 1;</code>
      * @param index The index of the element to return.
-     * @return The friendId at the given index.
+     * @return The playerIds at the given index.
      */
-    public java.lang.String getFriendId(int index) {
-      return friendId_.get(index);
+    public java.lang.String getPlayerIds(int index) {
+      return playerIds_.get(index);
     }
     /**
      * <pre>
      *处理申请的玩家id
      * </pre>
      *
-     * <code>repeated string friendId = 1;</code>
+     * <code>repeated string playerIds = 1;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the friendId at the given index.
+     * @return The bytes of the playerIds at the given index.
      */
     public com.google.protobuf.ByteString
-        getFriendIdBytes(int index) {
-      return friendId_.getByteString(index);
+        getPlayerIdsBytes(int index) {
+      return playerIds_.getByteString(index);
     }
 
     public static final int AGREE_FIELD_NUMBER = 2;
@@ -8557,8 +6589,8 @@ public final class FriendMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < friendId_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, friendId_.getRaw(i));
+      for (int i = 0; i < playerIds_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, playerIds_.getRaw(i));
       }
       if (agree_ != false) {
         output.writeBool(2, agree_);
@@ -8574,11 +6606,11 @@ public final class FriendMsg {
       size = 0;
       {
         int dataSize = 0;
-        for (int i = 0; i < friendId_.size(); i++) {
-          dataSize += computeStringSizeNoTag(friendId_.getRaw(i));
+        for (int i = 0; i < playerIds_.size(); i++) {
+          dataSize += computeStringSizeNoTag(playerIds_.getRaw(i));
         }
         size += dataSize;
-        size += 1 * getFriendIdList().size();
+        size += 1 * getPlayerIdsList().size();
       }
       if (agree_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -8599,8 +6631,8 @@ public final class FriendMsg {
       }
       cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007 other = (cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007) obj;
 
-      if (!getFriendIdList()
-          .equals(other.getFriendIdList())) return false;
+      if (!getPlayerIdsList()
+          .equals(other.getPlayerIdsList())) return false;
       if (getAgree()
           != other.getAgree()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -8614,9 +6646,9 @@ public final class FriendMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getFriendIdCount() > 0) {
-        hash = (37 * hash) + FRIENDID_FIELD_NUMBER;
-        hash = (53 * hash) + getFriendIdList().hashCode();
+      if (getPlayerIdsCount() > 0) {
+        hash = (37 * hash) + PLAYERIDS_FIELD_NUMBER;
+        hash = (53 * hash) + getPlayerIdsList().hashCode();
       }
       hash = (37 * hash) + AGREE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
@@ -8758,7 +6790,7 @@ public final class FriendMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        friendId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        playerIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
         agree_ = false;
 
@@ -8790,10 +6822,10 @@ public final class FriendMsg {
         cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007 result = new cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007(this);
         int from_bitField0_ = bitField0_;
         if (((bitField0_ & 0x00000001) != 0)) {
-          friendId_ = friendId_.getUnmodifiableView();
+          playerIds_ = playerIds_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00000001);
         }
-        result.friendId_ = friendId_;
+        result.playerIds_ = playerIds_;
         result.agree_ = agree_;
         onBuilt();
         return result;
@@ -8843,13 +6875,13 @@ public final class FriendMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007 other) {
         if (other == cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007.getDefaultInstance()) return this;
-        if (!other.friendId_.isEmpty()) {
-          if (friendId_.isEmpty()) {
-            friendId_ = other.friendId_;
+        if (!other.playerIds_.isEmpty()) {
+          if (playerIds_.isEmpty()) {
+            playerIds_ = other.playerIds_;
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            ensureFriendIdIsMutable();
-            friendId_.addAll(other.friendId_);
+            ensurePlayerIdsIsMutable();
+            playerIds_.addAll(other.playerIds_);
           }
           onChanged();
         }
@@ -8886,10 +6918,10 @@ public final class FriendMsg {
       }
       private int bitField0_;
 
-      private com.google.protobuf.LazyStringList friendId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureFriendIdIsMutable() {
+      private com.google.protobuf.LazyStringList playerIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensurePlayerIdsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          friendId_ = new com.google.protobuf.LazyStringArrayList(friendId_);
+          playerIds_ = new com.google.protobuf.LazyStringArrayList(playerIds_);
           bitField0_ |= 0x00000001;
          }
       }
@@ -8898,66 +6930,66 @@ public final class FriendMsg {
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
-       * @return A list containing the friendId.
+       * <code>repeated string playerIds = 1;</code>
+       * @return A list containing the playerIds.
        */
       public com.google.protobuf.ProtocolStringList
-          getFriendIdList() {
-        return friendId_.getUnmodifiableView();
+          getPlayerIdsList() {
+        return playerIds_.getUnmodifiableView();
       }
       /**
        * <pre>
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
-       * @return The count of friendId.
+       * <code>repeated string playerIds = 1;</code>
+       * @return The count of playerIds.
        */
-      public int getFriendIdCount() {
-        return friendId_.size();
+      public int getPlayerIdsCount() {
+        return playerIds_.size();
       }
       /**
        * <pre>
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
+       * <code>repeated string playerIds = 1;</code>
        * @param index The index of the element to return.
-       * @return The friendId at the given index.
+       * @return The playerIds at the given index.
        */
-      public java.lang.String getFriendId(int index) {
-        return friendId_.get(index);
+      public java.lang.String getPlayerIds(int index) {
+        return playerIds_.get(index);
       }
       /**
        * <pre>
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
+       * <code>repeated string playerIds = 1;</code>
        * @param index The index of the value to return.
-       * @return The bytes of the friendId at the given index.
+       * @return The bytes of the playerIds at the given index.
        */
       public com.google.protobuf.ByteString
-          getFriendIdBytes(int index) {
-        return friendId_.getByteString(index);
+          getPlayerIdsBytes(int index) {
+        return playerIds_.getByteString(index);
       }
       /**
        * <pre>
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
+       * <code>repeated string playerIds = 1;</code>
        * @param index The index to set the value at.
-       * @param value The friendId to set.
+       * @param value The playerIds to set.
        * @return This builder for chaining.
        */
-      public Builder setFriendId(
+      public Builder setPlayerIds(
           int index, java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureFriendIdIsMutable();
-        friendId_.set(index, value);
+  ensurePlayerIdsIsMutable();
+        playerIds_.set(index, value);
         onChanged();
         return this;
       }
@@ -8966,17 +6998,17 @@ public final class FriendMsg {
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
-       * @param value The friendId to add.
+       * <code>repeated string playerIds = 1;</code>
+       * @param value The playerIds to add.
        * @return This builder for chaining.
        */
-      public Builder addFriendId(
+      public Builder addPlayerIds(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureFriendIdIsMutable();
-        friendId_.add(value);
+  ensurePlayerIdsIsMutable();
+        playerIds_.add(value);
         onChanged();
         return this;
       }
@@ -8985,15 +7017,15 @@ public final class FriendMsg {
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
-       * @param values The friendId to add.
+       * <code>repeated string playerIds = 1;</code>
+       * @param values The playerIds to add.
        * @return This builder for chaining.
        */
-      public Builder addAllFriendId(
+      public Builder addAllPlayerIds(
           java.lang.Iterable<java.lang.String> values) {
-        ensureFriendIdIsMutable();
+        ensurePlayerIdsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, friendId_);
+            values, playerIds_);
         onChanged();
         return this;
       }
@@ -9002,11 +7034,11 @@ public final class FriendMsg {
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
+       * <code>repeated string playerIds = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearFriendId() {
-        friendId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      public Builder clearPlayerIds() {
+        playerIds_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
@@ -9016,18 +7048,18 @@ public final class FriendMsg {
        *处理申请的玩家id
        * </pre>
        *
-       * <code>repeated string friendId = 1;</code>
-       * @param value The bytes of the friendId to add.
+       * <code>repeated string playerIds = 1;</code>
+       * @param value The bytes of the playerIds to add.
        * @return This builder for chaining.
        */
-      public Builder addFriendIdBytes(
+      public Builder addPlayerIdsBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-        ensureFriendIdIsMutable();
-        friendId_.add(value);
+        ensurePlayerIdsIsMutable();
+        playerIds_.add(value);
         onChanged();
         return this;
       }
@@ -9133,7 +7165,7 @@ public final class FriendMsg {
 
     /**
      * <pre>
-     *成功加为好友的玩家id
+     *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
      * </pre>
      *
      * <code>repeated string friendIds = 1;</code>
@@ -9143,7 +7175,7 @@ public final class FriendMsg {
         getFriendIdsList();
     /**
      * <pre>
-     *成功加为好友的玩家id
+     *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
      * </pre>
      *
      * <code>repeated string friendIds = 1;</code>
@@ -9152,7 +7184,7 @@ public final class FriendMsg {
     int getFriendIdsCount();
     /**
      * <pre>
-     *成功加为好友的玩家id
+     *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
      * </pre>
      *
      * <code>repeated string friendIds = 1;</code>
@@ -9162,7 +7194,7 @@ public final class FriendMsg {
     java.lang.String getFriendIds(int index);
     /**
      * <pre>
-     *成功加为好友的玩家id
+     *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
      * </pre>
      *
      * <code>repeated string friendIds = 1;</code>
@@ -9267,7 +7299,7 @@ public final class FriendMsg {
     private com.google.protobuf.LazyStringList friendIds_;
     /**
      * <pre>
-     *成功加为好友的玩家id
+     *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
      * </pre>
      *
      * <code>repeated string friendIds = 1;</code>
@@ -9279,7 +7311,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     *成功加为好友的玩家id
+     *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
      * </pre>
      *
      * <code>repeated string friendIds = 1;</code>
@@ -9290,7 +7322,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     *成功加为好友的玩家id
+     *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
      * </pre>
      *
      * <code>repeated string friendIds = 1;</code>
@@ -9302,7 +7334,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     *成功加为好友的玩家id
+     *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
      * </pre>
      *
      * <code>repeated string friendIds = 1;</code>
@@ -9644,7 +7676,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9656,7 +7688,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9667,7 +7699,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9679,7 +7711,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9692,7 +7724,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9712,7 +7744,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9731,7 +7763,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9748,7 +7780,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9762,7 +7794,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       *成功加为好友的玩家id
+       *成功加为好友的玩家id，可能因为某些原因，有些玩家会添加失败。
        * </pre>
        *
        * <code>repeated string friendIds = 1;</code>
@@ -9859,7 +7891,7 @@ public final class FriendMsg {
   }
   /**
    * <pre>
-   * 删除好友,从黑名单里删除也用这个协议
+   * 删除好友,从黑名单里移除也用这个协议
    * </pre>
    *
    * Protobuf type {@code Protos.FriendDeleteRequest_30000009}
@@ -10147,7 +8179,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     * 删除好友,从黑名单里删除也用这个协议
+     * 删除好友,从黑名单里移除也用这个协议
      * </pre>
      *
      * Protobuf type {@code Protos.FriendDeleteRequest_30000009}
@@ -10886,26 +8918,6 @@ public final class FriendMsg {
      */
     com.google.protobuf.ByteString
         getIdBytes();
-
-    /**
-     * <pre>
-     * 玩家所在服务器id
-     * </pre>
-     *
-     * <code>string serverId = 2;</code>
-     * @return The serverId.
-     */
-    java.lang.String getServerId();
-    /**
-     * <pre>
-     * 玩家所在服务器id
-     * </pre>
-     *
-     * <code>string serverId = 2;</code>
-     * @return The bytes for serverId.
-     */
-    com.google.protobuf.ByteString
-        getServerIdBytes();
   }
   /**
    * <pre>
@@ -10925,7 +8937,6 @@ public final class FriendMsg {
     }
     private FriendBlackRequest_30000010() {
       id_ = "";
-      serverId_ = "";
     }
 
     @java.lang.Override
@@ -10962,12 +8973,6 @@ public final class FriendMsg {
               java.lang.String s = input.readStringRequireUtf8();
 
               id_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              serverId_ = s;
               break;
             }
             default: {
@@ -11048,52 +9053,6 @@ public final class FriendMsg {
       }
     }
 
-    public static final int SERVERID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object serverId_;
-    /**
-     * <pre>
-     * 玩家所在服务器id
-     * </pre>
-     *
-     * <code>string serverId = 2;</code>
-     * @return The serverId.
-     */
-    @java.lang.Override
-    public java.lang.String getServerId() {
-      java.lang.Object ref = serverId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        serverId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 玩家所在服务器id
-     * </pre>
-     *
-     * <code>string serverId = 2;</code>
-     * @return The bytes for serverId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getServerIdBytes() {
-      java.lang.Object ref = serverId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        serverId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -11111,9 +9070,6 @@ public final class FriendMsg {
       if (!getIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
-      if (!getServerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, serverId_);
-      }
       unknownFields.writeTo(output);
     }
 
@@ -11125,9 +9081,6 @@ public final class FriendMsg {
       size = 0;
       if (!getIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
-      }
-      if (!getServerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, serverId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -11146,8 +9099,6 @@ public final class FriendMsg {
 
       if (!getId()
           .equals(other.getId())) return false;
-      if (!getServerId()
-          .equals(other.getServerId())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -11161,8 +9112,6 @@ public final class FriendMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
-      hash = (37 * hash) + SERVERID_FIELD_NUMBER;
-      hash = (53 * hash) + getServerId().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -11302,8 +9251,6 @@ public final class FriendMsg {
         super.clear();
         id_ = "";
 
-        serverId_ = "";
-
         return this;
       }
 
@@ -11331,7 +9278,6 @@ public final class FriendMsg {
       public cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010 buildPartial() {
         cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010 result = new cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010(this);
         result.id_ = id_;
-        result.serverId_ = serverId_;
         onBuilt();
         return result;
       }
@@ -11382,10 +9328,6 @@ public final class FriendMsg {
         if (other == cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010.getDefaultInstance()) return this;
         if (!other.getId().isEmpty()) {
           id_ = other.id_;
-          onChanged();
-        }
-        if (!other.getServerId().isEmpty()) {
-          serverId_ = other.serverId_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -11509,102 +9451,6 @@ public final class FriendMsg {
   checkByteStringIsUtf8(value);
         
         id_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object serverId_ = "";
-      /**
-       * <pre>
-       * 玩家所在服务器id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @return The serverId.
-       */
-      public java.lang.String getServerId() {
-        java.lang.Object ref = serverId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          serverId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 玩家所在服务器id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @return The bytes for serverId.
-       */
-      public com.google.protobuf.ByteString
-          getServerIdBytes() {
-        java.lang.Object ref = serverId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          serverId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 玩家所在服务器id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @param value The serverId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setServerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        serverId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 玩家所在服务器id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearServerId() {
-        
-        serverId_ = getDefaultInstance().getServerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 玩家所在服务器id
-       * </pre>
-       *
-       * <code>string serverId = 2;</code>
-       * @param value The bytes for serverId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setServerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        serverId_ = value;
         onChanged();
         return this;
       }
@@ -12079,1129 +9925,8 @@ public final class FriendMsg {
 
   }
 
-  public interface FriendAttentionRequest_30000030OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendAttentionRequest_30000030)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 好友id
-     * </pre>
-     *
-     * <code>string id = 1;</code>
-     * @return The id.
-     */
-    java.lang.String getId();
-    /**
-     * <pre>
-     * 好友id
-     * </pre>
-     *
-     * <code>string id = 1;</code>
-     * @return The bytes for id.
-     */
-    com.google.protobuf.ByteString
-        getIdBytes();
-
-    /**
-     * <pre>
-     * true 关注，false 取消关注
-     * </pre>
-     *
-     * <code>bool attention = 2;</code>
-     * @return The attention.
-     */
-    boolean getAttention();
-  }
-  /**
-   * <pre>
-   * 关注好友
-   * </pre>
-   *
-   * Protobuf type {@code Protos.FriendAttentionRequest_30000030}
-   */
-  public static final class FriendAttentionRequest_30000030 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendAttentionRequest_30000030)
-      FriendAttentionRequest_30000030OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use FriendAttentionRequest_30000030.newBuilder() to construct.
-    private FriendAttentionRequest_30000030(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private FriendAttentionRequest_30000030() {
-      id_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new FriendAttentionRequest_30000030();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private FriendAttentionRequest_30000030(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              id_ = s;
-              break;
-            }
-            case 16: {
-
-              attention_ = input.readBool();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionRequest_30000030_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionRequest_30000030_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030.class, cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030.Builder.class);
-    }
-
-    public static final int ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object id_;
-    /**
-     * <pre>
-     * 好友id
-     * </pre>
-     *
-     * <code>string id = 1;</code>
-     * @return The id.
-     */
-    @java.lang.Override
-    public java.lang.String getId() {
-      java.lang.Object ref = id_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        id_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * 好友id
-     * </pre>
-     *
-     * <code>string id = 1;</code>
-     * @return The bytes for id.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getIdBytes() {
-      java.lang.Object ref = id_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        id_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int ATTENTION_FIELD_NUMBER = 2;
-    private boolean attention_;
-    /**
-     * <pre>
-     * true 关注，false 取消关注
-     * </pre>
-     *
-     * <code>bool attention = 2;</code>
-     * @return The attention.
-     */
-    @java.lang.Override
-    public boolean getAttention() {
-      return attention_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
-      }
-      if (attention_ != false) {
-        output.writeBool(2, attention_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
-      }
-      if (attention_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, attention_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 other = (cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030) obj;
-
-      if (!getId()
-          .equals(other.getId())) return false;
-      if (getAttention()
-          != other.getAttention()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId().hashCode();
-      hash = (37 * hash) + ATTENTION_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getAttention());
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 关注好友
-     * </pre>
-     *
-     * Protobuf type {@code Protos.FriendAttentionRequest_30000030}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendAttentionRequest_30000030)
-        cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionRequest_30000030_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionRequest_30000030_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030.class, cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        id_ = "";
-
-        attention_ = false;
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionRequest_30000030_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 result = new cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030(this);
-        result.id_ = id_;
-        result.attention_ = attention_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030.getDefaultInstance()) return this;
-        if (!other.getId().isEmpty()) {
-          id_ = other.id_;
-          onChanged();
-        }
-        if (other.getAttention() != false) {
-          setAttention(other.getAttention());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object id_ = "";
-      /**
-       * <pre>
-       * 好友id
-       * </pre>
-       *
-       * <code>string id = 1;</code>
-       * @return The id.
-       */
-      public java.lang.String getId() {
-        java.lang.Object ref = id_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          id_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 好友id
-       * </pre>
-       *
-       * <code>string id = 1;</code>
-       * @return The bytes for id.
-       */
-      public com.google.protobuf.ByteString
-          getIdBytes() {
-        java.lang.Object ref = id_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          id_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * 好友id
-       * </pre>
-       *
-       * <code>string id = 1;</code>
-       * @param value The id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 好友id
-       * </pre>
-       *
-       * <code>string id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearId() {
-        
-        id_ = getDefaultInstance().getId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 好友id
-       * </pre>
-       *
-       * <code>string id = 1;</code>
-       * @param value The bytes for id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        id_ = value;
-        onChanged();
-        return this;
-      }
-
-      private boolean attention_ ;
-      /**
-       * <pre>
-       * true 关注，false 取消关注
-       * </pre>
-       *
-       * <code>bool attention = 2;</code>
-       * @return The attention.
-       */
-      @java.lang.Override
-      public boolean getAttention() {
-        return attention_;
-      }
-      /**
-       * <pre>
-       * true 关注，false 取消关注
-       * </pre>
-       *
-       * <code>bool attention = 2;</code>
-       * @param value The attention to set.
-       * @return This builder for chaining.
-       */
-      public Builder setAttention(boolean value) {
-        
-        attention_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * true 关注，false 取消关注
-       * </pre>
-       *
-       * <code>bool attention = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearAttention() {
-        
-        attention_ = false;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.FriendAttentionRequest_30000030)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.FriendAttentionRequest_30000030)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030();
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<FriendAttentionRequest_30000030>
-        PARSER = new com.google.protobuf.AbstractParser<FriendAttentionRequest_30000030>() {
-      @java.lang.Override
-      public FriendAttentionRequest_30000030 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendAttentionRequest_30000030(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<FriendAttentionRequest_30000030> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<FriendAttentionRequest_30000030> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendAttentionRequest_30000030 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface FriendAttentionResponse_30000031OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendAttentionResponse_30000031)
-      com.google.protobuf.MessageOrBuilder {
-  }
-  /**
-   * Protobuf type {@code Protos.FriendAttentionResponse_30000031}
-   */
-  public static final class FriendAttentionResponse_30000031 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendAttentionResponse_30000031)
-      FriendAttentionResponse_30000031OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use FriendAttentionResponse_30000031.newBuilder() to construct.
-    private FriendAttentionResponse_30000031(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private FriendAttentionResponse_30000031() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new FriendAttentionResponse_30000031();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private FriendAttentionResponse_30000031(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionResponse_30000031_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionResponse_30000031_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031.class, cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031.Builder.class);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 other = (cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031) obj;
-
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code Protos.FriendAttentionResponse_30000031}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendAttentionResponse_30000031)
-        cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionResponse_30000031_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionResponse_30000031_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031.class, cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendAttentionResponse_30000031_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 result = new cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031(this);
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.FriendAttentionResponse_30000031)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.FriendAttentionResponse_30000031)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031();
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<FriendAttentionResponse_30000031>
-        PARSER = new com.google.protobuf.AbstractParser<FriendAttentionResponse_30000031>() {
-      @java.lang.Override
-      public FriendAttentionResponse_30000031 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendAttentionResponse_30000031(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<FriendAttentionResponse_30000031> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<FriendAttentionResponse_30000031> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendAttentionResponse_30000031 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface FriendshipRequest_30000012OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendshipRequest_30000012)
+  public interface FriendGiftRequest_30000012OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.FriendGiftRequest_30000012)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -13250,18 +9975,18 @@ public final class FriendMsg {
    *赠送好友友情点
    * </pre>
    *
-   * Protobuf type {@code Protos.FriendshipRequest_30000012}
+   * Protobuf type {@code Protos.FriendGiftRequest_30000012}
    */
-  public static final class FriendshipRequest_30000012 extends
+  public static final class FriendGiftRequest_30000012 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendshipRequest_30000012)
-      FriendshipRequest_30000012OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.FriendGiftRequest_30000012)
+      FriendGiftRequest_30000012OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use FriendshipRequest_30000012.newBuilder() to construct.
-    private FriendshipRequest_30000012(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use FriendGiftRequest_30000012.newBuilder() to construct.
+    private FriendGiftRequest_30000012(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private FriendshipRequest_30000012() {
+    private FriendGiftRequest_30000012() {
       friendId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
@@ -13269,7 +9994,7 @@ public final class FriendMsg {
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new FriendshipRequest_30000012();
+      return new FriendGiftRequest_30000012();
     }
 
     @java.lang.Override
@@ -13277,7 +10002,7 @@ public final class FriendMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private FriendshipRequest_30000012(
+    private FriendGiftRequest_30000012(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -13329,15 +10054,15 @@ public final class FriendMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipRequest_30000012_descriptor;
+      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000012_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipRequest_30000012_fieldAccessorTable
+      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000012_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012.class, cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012.Builder.class);
+              cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.Builder.class);
     }
 
     public static final int FRIENDID_FIELD_NUMBER = 1;
@@ -13435,10 +10160,10 @@ public final class FriendMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 other = (cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012) obj;
+      cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 other = (cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012) obj;
 
       if (!getFriendIdList()
           .equals(other.getFriendIdList())) return false;
@@ -13462,69 +10187,69 @@ public final class FriendMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -13537,7 +10262,7 @@ public final class FriendMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -13557,26 +10282,26 @@ public final class FriendMsg {
      *赠送好友友情点
      * </pre>
      *
-     * Protobuf type {@code Protos.FriendshipRequest_30000012}
+     * Protobuf type {@code Protos.FriendGiftRequest_30000012}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendshipRequest_30000012)
-        cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.FriendGiftRequest_30000012)
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipRequest_30000012_descriptor;
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000012_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipRequest_30000012_fieldAccessorTable
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000012_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012.class, cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012.Builder.class);
+                cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012.newBuilder()
+      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -13602,17 +10327,17 @@ public final class FriendMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipRequest_30000012_descriptor;
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000012_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012.getDefaultInstance();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 result = buildPartial();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 build() {
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -13620,8 +10345,8 @@ public final class FriendMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 result = new cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012(this);
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 buildPartial() {
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 result = new cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012(this);
         int from_bitField0_ = bitField0_;
         if (((bitField0_ & 0x00000001) != 0)) {
           friendId_ = friendId_.getUnmodifiableView();
@@ -13666,16 +10391,16 @@ public final class FriendMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012)other);
+        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012) {
+          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 other) {
+        if (other == cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.getDefaultInstance()) return this;
         if (!other.friendId_.isEmpty()) {
           if (friendId_.isEmpty()) {
             friendId_ = other.friendId_;
@@ -13701,11 +10426,11 @@ public final class FriendMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 parsedMessage = null;
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -13874,70 +10599,70 @@ public final class FriendMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.FriendshipRequest_30000012)
+      // @@protoc_insertion_point(builder_scope:Protos.FriendGiftRequest_30000012)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.FriendshipRequest_30000012)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.FriendGiftRequest_30000012)
+    private static final cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012();
     }
 
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<FriendshipRequest_30000012>
-        PARSER = new com.google.protobuf.AbstractParser<FriendshipRequest_30000012>() {
+    private static final com.google.protobuf.Parser<FriendGiftRequest_30000012>
+        PARSER = new com.google.protobuf.AbstractParser<FriendGiftRequest_30000012>() {
       @java.lang.Override
-      public FriendshipRequest_30000012 parsePartialFrom(
+      public FriendGiftRequest_30000012 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendshipRequest_30000012(input, extensionRegistry);
+        return new FriendGiftRequest_30000012(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<FriendshipRequest_30000012> parser() {
+    public static com.google.protobuf.Parser<FriendGiftRequest_30000012> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<FriendshipRequest_30000012> getParserForType() {
+    public com.google.protobuf.Parser<FriendGiftRequest_30000012> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendshipRequest_30000012 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface FriendshipResponse_30000013OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendshipResponse_30000013)
+  public interface FriendGiftResponse_30000013OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.FriendGiftResponse_30000013)
       com.google.protobuf.MessageOrBuilder {
   }
   /**
-   * Protobuf type {@code Protos.FriendshipResponse_30000013}
+   * Protobuf type {@code Protos.FriendGiftResponse_30000013}
    */
-  public static final class FriendshipResponse_30000013 extends
+  public static final class FriendGiftResponse_30000013 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendshipResponse_30000013)
-      FriendshipResponse_30000013OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.FriendGiftResponse_30000013)
+      FriendGiftResponse_30000013OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use FriendshipResponse_30000013.newBuilder() to construct.
-    private FriendshipResponse_30000013(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use FriendGiftResponse_30000013.newBuilder() to construct.
+    private FriendGiftResponse_30000013(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private FriendshipResponse_30000013() {
+    private FriendGiftResponse_30000013() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new FriendshipResponse_30000013();
+      return new FriendGiftResponse_30000013();
     }
 
     @java.lang.Override
@@ -13945,7 +10670,7 @@ public final class FriendMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private FriendshipResponse_30000013(
+    private FriendGiftResponse_30000013(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -13984,15 +10709,15 @@ public final class FriendMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipResponse_30000013_descriptor;
+      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000013_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipResponse_30000013_fieldAccessorTable
+      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000013_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013.class, cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013.Builder.class);
+              cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013.Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -14028,10 +10753,10 @@ public final class FriendMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 other = (cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013) obj;
+      cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 other = (cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013) obj;
 
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -14049,69 +10774,69 @@ public final class FriendMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -14124,7 +10849,7 @@ public final class FriendMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -14140,26 +10865,26 @@ public final class FriendMsg {
       return builder;
     }
     /**
-     * Protobuf type {@code Protos.FriendshipResponse_30000013}
+     * Protobuf type {@code Protos.FriendGiftResponse_30000013}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendshipResponse_30000013)
-        cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.FriendGiftResponse_30000013)
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipResponse_30000013_descriptor;
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000013_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipResponse_30000013_fieldAccessorTable
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000013_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013.class, cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013.Builder.class);
+                cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013.newBuilder()
+      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -14183,17 +10908,17 @@ public final class FriendMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipResponse_30000013_descriptor;
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000013_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013.getDefaultInstance();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 result = buildPartial();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 build() {
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -14201,8 +10926,8 @@ public final class FriendMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 result = new cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013(this);
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 buildPartial() {
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 result = new cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013(this);
         onBuilt();
         return result;
       }
@@ -14241,16 +10966,16 @@ public final class FriendMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013)other);
+        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013) {
+          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 other) {
+        if (other == cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -14266,11 +10991,11 @@ public final class FriendMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 parsedMessage = null;
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -14292,48 +11017,48 @@ public final class FriendMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.FriendshipResponse_30000013)
+      // @@protoc_insertion_point(builder_scope:Protos.FriendGiftResponse_30000013)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.FriendshipResponse_30000013)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.FriendGiftResponse_30000013)
+    private static final cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013();
     }
 
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<FriendshipResponse_30000013>
-        PARSER = new com.google.protobuf.AbstractParser<FriendshipResponse_30000013>() {
+    private static final com.google.protobuf.Parser<FriendGiftResponse_30000013>
+        PARSER = new com.google.protobuf.AbstractParser<FriendGiftResponse_30000013>() {
       @java.lang.Override
-      public FriendshipResponse_30000013 parsePartialFrom(
+      public FriendGiftResponse_30000013 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendshipResponse_30000013(input, extensionRegistry);
+        return new FriendGiftResponse_30000013(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<FriendshipResponse_30000013> parser() {
+    public static com.google.protobuf.Parser<FriendGiftResponse_30000013> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<FriendshipResponse_30000013> getParserForType() {
+    public com.google.protobuf.Parser<FriendGiftResponse_30000013> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendshipResponse_30000013 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface FriendshipReceiveRequest_30000014OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendshipReceiveRequest_30000014)
+  public interface FriendGiftReceiveRequest_30000014OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.FriendGiftReceiveRequest_30000014)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -14382,18 +11107,18 @@ public final class FriendMsg {
    *领取好友赠送的友情点，包含一键领取
    * </pre>
    *
-   * Protobuf type {@code Protos.FriendshipReceiveRequest_30000014}
+   * Protobuf type {@code Protos.FriendGiftReceiveRequest_30000014}
    */
-  public static final class FriendshipReceiveRequest_30000014 extends
+  public static final class FriendGiftReceiveRequest_30000014 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendshipReceiveRequest_30000014)
-      FriendshipReceiveRequest_30000014OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.FriendGiftReceiveRequest_30000014)
+      FriendGiftReceiveRequest_30000014OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use FriendshipReceiveRequest_30000014.newBuilder() to construct.
-    private FriendshipReceiveRequest_30000014(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use FriendGiftReceiveRequest_30000014.newBuilder() to construct.
+    private FriendGiftReceiveRequest_30000014(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private FriendshipReceiveRequest_30000014() {
+    private FriendGiftReceiveRequest_30000014() {
       friendId_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
@@ -14401,7 +11126,7 @@ public final class FriendMsg {
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new FriendshipReceiveRequest_30000014();
+      return new FriendGiftReceiveRequest_30000014();
     }
 
     @java.lang.Override
@@ -14409,7 +11134,7 @@ public final class FriendMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private FriendshipReceiveRequest_30000014(
+    private FriendGiftReceiveRequest_30000014(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -14461,15 +11186,15 @@ public final class FriendMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveRequest_30000014_descriptor;
+      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveRequest_30000014_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveRequest_30000014_fieldAccessorTable
+      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveRequest_30000014_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014.class, cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014.Builder.class);
+              cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014.Builder.class);
     }
 
     public static final int FRIENDID_FIELD_NUMBER = 1;
@@ -14567,10 +11292,10 @@ public final class FriendMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 other = (cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014) obj;
+      cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 other = (cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014) obj;
 
       if (!getFriendIdList()
           .equals(other.getFriendIdList())) return false;
@@ -14594,69 +11319,69 @@ public final class FriendMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -14669,7 +11394,7 @@ public final class FriendMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -14689,26 +11414,26 @@ public final class FriendMsg {
      *领取好友赠送的友情点，包含一键领取
      * </pre>
      *
-     * Protobuf type {@code Protos.FriendshipReceiveRequest_30000014}
+     * Protobuf type {@code Protos.FriendGiftReceiveRequest_30000014}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendshipReceiveRequest_30000014)
-        cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.FriendGiftReceiveRequest_30000014)
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveRequest_30000014_descriptor;
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveRequest_30000014_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveRequest_30000014_fieldAccessorTable
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveRequest_30000014_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014.class, cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014.Builder.class);
+                cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014.newBuilder()
+      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -14734,17 +11459,17 @@ public final class FriendMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveRequest_30000014_descriptor;
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveRequest_30000014_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014.getDefaultInstance();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 result = buildPartial();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 build() {
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -14752,8 +11477,8 @@ public final class FriendMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 result = new cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014(this);
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 buildPartial() {
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 result = new cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014(this);
         int from_bitField0_ = bitField0_;
         if (((bitField0_ & 0x00000001) != 0)) {
           friendId_ = friendId_.getUnmodifiableView();
@@ -14798,16 +11523,16 @@ public final class FriendMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014)other);
+        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014) {
+          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 other) {
+        if (other == cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014.getDefaultInstance()) return this;
         if (!other.friendId_.isEmpty()) {
           if (friendId_.isEmpty()) {
             friendId_ = other.friendId_;
@@ -14833,11 +11558,11 @@ public final class FriendMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 parsedMessage = null;
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -15006,70 +11731,70 @@ public final class FriendMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.FriendshipReceiveRequest_30000014)
+      // @@protoc_insertion_point(builder_scope:Protos.FriendGiftReceiveRequest_30000014)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.FriendshipReceiveRequest_30000014)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.FriendGiftReceiveRequest_30000014)
+    private static final cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014();
     }
 
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<FriendshipReceiveRequest_30000014>
-        PARSER = new com.google.protobuf.AbstractParser<FriendshipReceiveRequest_30000014>() {
+    private static final com.google.protobuf.Parser<FriendGiftReceiveRequest_30000014>
+        PARSER = new com.google.protobuf.AbstractParser<FriendGiftReceiveRequest_30000014>() {
       @java.lang.Override
-      public FriendshipReceiveRequest_30000014 parsePartialFrom(
+      public FriendGiftReceiveRequest_30000014 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendshipReceiveRequest_30000014(input, extensionRegistry);
+        return new FriendGiftReceiveRequest_30000014(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<FriendshipReceiveRequest_30000014> parser() {
+    public static com.google.protobuf.Parser<FriendGiftReceiveRequest_30000014> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<FriendshipReceiveRequest_30000014> getParserForType() {
+    public com.google.protobuf.Parser<FriendGiftReceiveRequest_30000014> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveRequest_30000014 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface FriendshipReceiveResponse_30000015OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendshipReceiveResponse_30000015)
+  public interface FriendGiftReceiveResponse_30000015OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.FriendGiftReceiveResponse_30000015)
       com.google.protobuf.MessageOrBuilder {
   }
   /**
-   * Protobuf type {@code Protos.FriendshipReceiveResponse_30000015}
+   * Protobuf type {@code Protos.FriendGiftReceiveResponse_30000015}
    */
-  public static final class FriendshipReceiveResponse_30000015 extends
+  public static final class FriendGiftReceiveResponse_30000015 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendshipReceiveResponse_30000015)
-      FriendshipReceiveResponse_30000015OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.FriendGiftReceiveResponse_30000015)
+      FriendGiftReceiveResponse_30000015OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use FriendshipReceiveResponse_30000015.newBuilder() to construct.
-    private FriendshipReceiveResponse_30000015(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use FriendGiftReceiveResponse_30000015.newBuilder() to construct.
+    private FriendGiftReceiveResponse_30000015(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private FriendshipReceiveResponse_30000015() {
+    private FriendGiftReceiveResponse_30000015() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new FriendshipReceiveResponse_30000015();
+      return new FriendGiftReceiveResponse_30000015();
     }
 
     @java.lang.Override
@@ -15077,7 +11802,7 @@ public final class FriendMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private FriendshipReceiveResponse_30000015(
+    private FriendGiftReceiveResponse_30000015(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -15116,15 +11841,15 @@ public final class FriendMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveResponse_30000015_descriptor;
+      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveResponse_30000015_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveResponse_30000015_fieldAccessorTable
+      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveResponse_30000015_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015.class, cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015.Builder.class);
+              cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015.Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -15160,10 +11885,10 @@ public final class FriendMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 other = (cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015) obj;
+      cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 other = (cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015) obj;
 
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -15181,69 +11906,69 @@ public final class FriendMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parseFrom(
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -15256,7 +11981,7 @@ public final class FriendMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -15272,26 +11997,26 @@ public final class FriendMsg {
       return builder;
     }
     /**
-     * Protobuf type {@code Protos.FriendshipReceiveResponse_30000015}
+     * Protobuf type {@code Protos.FriendGiftReceiveResponse_30000015}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendshipReceiveResponse_30000015)
-        cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.FriendGiftReceiveResponse_30000015)
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveResponse_30000015_descriptor;
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveResponse_30000015_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveResponse_30000015_fieldAccessorTable
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveResponse_30000015_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015.class, cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015.Builder.class);
+                cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015.newBuilder()
+      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -15315,17 +12040,17 @@ public final class FriendMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendshipReceiveResponse_30000015_descriptor;
+        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftReceiveResponse_30000015_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015.getDefaultInstance();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 result = buildPartial();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 build() {
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -15333,8 +12058,8 @@ public final class FriendMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 result = new cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015(this);
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 buildPartial() {
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 result = new cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015(this);
         onBuilt();
         return result;
       }
@@ -15373,16 +12098,16 @@ public final class FriendMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015)other);
+        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015) {
+          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 other) {
+        if (other == cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -15398,11 +12123,11 @@ public final class FriendMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 parsedMessage = null;
+        cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -15424,1334 +12149,41 @@ public final class FriendMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.FriendshipReceiveResponse_30000015)
+      // @@protoc_insertion_point(builder_scope:Protos.FriendGiftReceiveResponse_30000015)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.FriendshipReceiveResponse_30000015)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.FriendGiftReceiveResponse_30000015)
+    private static final cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015();
     }
 
-    public static cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<FriendshipReceiveResponse_30000015>
-        PARSER = new com.google.protobuf.AbstractParser<FriendshipReceiveResponse_30000015>() {
+    private static final com.google.protobuf.Parser<FriendGiftReceiveResponse_30000015>
+        PARSER = new com.google.protobuf.AbstractParser<FriendGiftReceiveResponse_30000015>() {
       @java.lang.Override
-      public FriendshipReceiveResponse_30000015 parsePartialFrom(
+      public FriendGiftReceiveResponse_30000015 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendshipReceiveResponse_30000015(input, extensionRegistry);
+        return new FriendGiftReceiveResponse_30000015(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<FriendshipReceiveResponse_30000015> parser() {
+    public static com.google.protobuf.Parser<FriendGiftReceiveResponse_30000015> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<FriendshipReceiveResponse_30000015> getParserForType() {
+    public com.google.protobuf.Parser<FriendGiftReceiveResponse_30000015> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendshipReceiveResponse_30000015 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface FriendGiftRequest_30000016OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendGiftRequest_30000016)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     *好友id
-     * </pre>
-     *
-     * <code>string friendId = 1;</code>
-     * @return The friendId.
-     */
-    java.lang.String getFriendId();
-    /**
-     * <pre>
-     *好友id
-     * </pre>
-     *
-     * <code>string friendId = 1;</code>
-     * @return The bytes for friendId.
-     */
-    com.google.protobuf.ByteString
-        getFriendIdBytes();
-
-    /**
-     * <pre>
-     *送的礼物
-     * </pre>
-     *
-     * <code>.Protos.ItemInfo gift = 2;</code>
-     * @return Whether the gift field is set.
-     */
-    boolean hasGift();
-    /**
-     * <pre>
-     *送的礼物
-     * </pre>
-     *
-     * <code>.Protos.ItemInfo gift = 2;</code>
-     * @return The gift.
-     */
-    cn.game.protocol.protobuf.BaseMsg.ItemInfo getGift();
-    /**
-     * <pre>
-     *送的礼物
-     * </pre>
-     *
-     * <code>.Protos.ItemInfo gift = 2;</code>
-     */
-    cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getGiftOrBuilder();
-  }
-  /**
-   * <pre>
-   *送好友礼物
-   * </pre>
-   *
-   * Protobuf type {@code Protos.FriendGiftRequest_30000016}
-   */
-  public static final class FriendGiftRequest_30000016 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendGiftRequest_30000016)
-      FriendGiftRequest_30000016OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use FriendGiftRequest_30000016.newBuilder() to construct.
-    private FriendGiftRequest_30000016(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private FriendGiftRequest_30000016() {
-      friendId_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new FriendGiftRequest_30000016();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private FriendGiftRequest_30000016(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              friendId_ = s;
-              break;
-            }
-            case 18: {
-              cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder subBuilder = null;
-              if (gift_ != null) {
-                subBuilder = gift_.toBuilder();
-              }
-              gift_ = input.readMessage(cn.game.protocol.protobuf.BaseMsg.ItemInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(gift_);
-                gift_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000016_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000016_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016.Builder.class);
-    }
-
-    public static final int FRIENDID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object friendId_;
-    /**
-     * <pre>
-     *好友id
-     * </pre>
-     *
-     * <code>string friendId = 1;</code>
-     * @return The friendId.
-     */
-    @java.lang.Override
-    public java.lang.String getFriendId() {
-      java.lang.Object ref = friendId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        friendId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     *好友id
-     * </pre>
-     *
-     * <code>string friendId = 1;</code>
-     * @return The bytes for friendId.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFriendIdBytes() {
-      java.lang.Object ref = friendId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        friendId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int GIFT_FIELD_NUMBER = 2;
-    private cn.game.protocol.protobuf.BaseMsg.ItemInfo gift_;
-    /**
-     * <pre>
-     *送的礼物
-     * </pre>
-     *
-     * <code>.Protos.ItemInfo gift = 2;</code>
-     * @return Whether the gift field is set.
-     */
-    @java.lang.Override
-    public boolean hasGift() {
-      return gift_ != null;
-    }
-    /**
-     * <pre>
-     *送的礼物
-     * </pre>
-     *
-     * <code>.Protos.ItemInfo gift = 2;</code>
-     * @return The gift.
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.ItemInfo getGift() {
-      return gift_ == null ? cn.game.protocol.protobuf.BaseMsg.ItemInfo.getDefaultInstance() : gift_;
-    }
-    /**
-     * <pre>
-     *送的礼物
-     * </pre>
-     *
-     * <code>.Protos.ItemInfo gift = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getGiftOrBuilder() {
-      return getGift();
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getFriendIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, friendId_);
-      }
-      if (gift_ != null) {
-        output.writeMessage(2, getGift());
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getFriendIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, friendId_);
-      }
-      if (gift_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getGift());
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 other = (cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016) obj;
-
-      if (!getFriendId()
-          .equals(other.getFriendId())) return false;
-      if (hasGift() != other.hasGift()) return false;
-      if (hasGift()) {
-        if (!getGift()
-            .equals(other.getGift())) return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + FRIENDID_FIELD_NUMBER;
-      hash = (53 * hash) + getFriendId().hashCode();
-      if (hasGift()) {
-        hash = (37 * hash) + GIFT_FIELD_NUMBER;
-        hash = (53 * hash) + getGift().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     *送好友礼物
-     * </pre>
-     *
-     * Protobuf type {@code Protos.FriendGiftRequest_30000016}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendGiftRequest_30000016)
-        cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000016_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000016_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        friendId_ = "";
-
-        if (giftBuilder_ == null) {
-          gift_ = null;
-        } else {
-          gift_ = null;
-          giftBuilder_ = null;
-        }
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftRequest_30000016_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 result = new cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016(this);
-        result.friendId_ = friendId_;
-        if (giftBuilder_ == null) {
-          result.gift_ = gift_;
-        } else {
-          result.gift_ = giftBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016.getDefaultInstance()) return this;
-        if (!other.getFriendId().isEmpty()) {
-          friendId_ = other.friendId_;
-          onChanged();
-        }
-        if (other.hasGift()) {
-          mergeGift(other.getGift());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object friendId_ = "";
-      /**
-       * <pre>
-       *好友id
-       * </pre>
-       *
-       * <code>string friendId = 1;</code>
-       * @return The friendId.
-       */
-      public java.lang.String getFriendId() {
-        java.lang.Object ref = friendId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          friendId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       *好友id
-       * </pre>
-       *
-       * <code>string friendId = 1;</code>
-       * @return The bytes for friendId.
-       */
-      public com.google.protobuf.ByteString
-          getFriendIdBytes() {
-        java.lang.Object ref = friendId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          friendId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *好友id
-       * </pre>
-       *
-       * <code>string friendId = 1;</code>
-       * @param value The friendId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setFriendId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        friendId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *好友id
-       * </pre>
-       *
-       * <code>string friendId = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearFriendId() {
-        
-        friendId_ = getDefaultInstance().getFriendId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *好友id
-       * </pre>
-       *
-       * <code>string friendId = 1;</code>
-       * @param value The bytes for friendId to set.
-       * @return This builder for chaining.
-       */
-      public Builder setFriendIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        friendId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private cn.game.protocol.protobuf.BaseMsg.ItemInfo gift_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> giftBuilder_;
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       * @return Whether the gift field is set.
-       */
-      public boolean hasGift() {
-        return giftBuilder_ != null || gift_ != null;
-      }
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       * @return The gift.
-       */
-      public cn.game.protocol.protobuf.BaseMsg.ItemInfo getGift() {
-        if (giftBuilder_ == null) {
-          return gift_ == null ? cn.game.protocol.protobuf.BaseMsg.ItemInfo.getDefaultInstance() : gift_;
-        } else {
-          return giftBuilder_.getMessage();
-        }
-      }
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       */
-      public Builder setGift(cn.game.protocol.protobuf.BaseMsg.ItemInfo value) {
-        if (giftBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          gift_ = value;
-          onChanged();
-        } else {
-          giftBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       */
-      public Builder setGift(
-          cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder builderForValue) {
-        if (giftBuilder_ == null) {
-          gift_ = builderForValue.build();
-          onChanged();
-        } else {
-          giftBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       */
-      public Builder mergeGift(cn.game.protocol.protobuf.BaseMsg.ItemInfo value) {
-        if (giftBuilder_ == null) {
-          if (gift_ != null) {
-            gift_ =
-              cn.game.protocol.protobuf.BaseMsg.ItemInfo.newBuilder(gift_).mergeFrom(value).buildPartial();
-          } else {
-            gift_ = value;
-          }
-          onChanged();
-        } else {
-          giftBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       */
-      public Builder clearGift() {
-        if (giftBuilder_ == null) {
-          gift_ = null;
-          onChanged();
-        } else {
-          gift_ = null;
-          giftBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder getGiftBuilder() {
-        
-        onChanged();
-        return getGiftFieldBuilder().getBuilder();
-      }
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       */
-      public cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder getGiftOrBuilder() {
-        if (giftBuilder_ != null) {
-          return giftBuilder_.getMessageOrBuilder();
-        } else {
-          return gift_ == null ?
-              cn.game.protocol.protobuf.BaseMsg.ItemInfo.getDefaultInstance() : gift_;
-        }
-      }
-      /**
-       * <pre>
-       *送的礼物
-       * </pre>
-       *
-       * <code>.Protos.ItemInfo gift = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder> 
-          getGiftFieldBuilder() {
-        if (giftBuilder_ == null) {
-          giftBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.BaseMsg.ItemInfo, cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder, cn.game.protocol.protobuf.BaseMsg.ItemInfoOrBuilder>(
-                  getGift(),
-                  getParentForChildren(),
-                  isClean());
-          gift_ = null;
-        }
-        return giftBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.FriendGiftRequest_30000016)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.FriendGiftRequest_30000016)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016();
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<FriendGiftRequest_30000016>
-        PARSER = new com.google.protobuf.AbstractParser<FriendGiftRequest_30000016>() {
-      @java.lang.Override
-      public FriendGiftRequest_30000016 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendGiftRequest_30000016(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<FriendGiftRequest_30000016> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<FriendGiftRequest_30000016> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000016 getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface FriendGiftResponse_30000017OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendGiftResponse_30000017)
-      com.google.protobuf.MessageOrBuilder {
-  }
-  /**
-   * Protobuf type {@code Protos.FriendGiftResponse_30000017}
-   */
-  public static final class FriendGiftResponse_30000017 extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendGiftResponse_30000017)
-      FriendGiftResponse_30000017OrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use FriendGiftResponse_30000017.newBuilder() to construct.
-    private FriendGiftResponse_30000017(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private FriendGiftResponse_30000017() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new FriendGiftResponse_30000017();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private FriendGiftResponse_30000017(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000017_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000017_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017.Builder.class);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 other = (cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017) obj;
-
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code Protos.FriendGiftResponse_30000017}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendGiftResponse_30000017)
-        cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017OrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000017_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000017_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendGiftResponse_30000017_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 result = new cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017(this);
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.FriendGiftResponse_30000017)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.FriendGiftResponse_30000017)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017();
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<FriendGiftResponse_30000017>
-        PARSER = new com.google.protobuf.AbstractParser<FriendGiftResponse_30000017>() {
-      @java.lang.Override
-      public FriendGiftResponse_30000017 parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendGiftResponse_30000017(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<FriendGiftResponse_30000017> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<FriendGiftResponse_30000017> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000017 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -16790,34 +12222,34 @@ public final class FriendMsg {
 
     /**
      * <pre>
-     * 好友相关数据
+     * 好友送礼数据
      * </pre>
      *
-     * <code>.Protos.FriendRelationInfo relation = 2;</code>
-     * @return Whether the relation field is set.
+     * <code>.Protos.FriendGiftInfo gift = 2;</code>
+     * @return Whether the gift field is set.
      */
-    boolean hasRelation();
+    boolean hasGift();
     /**
      * <pre>
-     * 好友相关数据
+     * 好友送礼数据
      * </pre>
      *
-     * <code>.Protos.FriendRelationInfo relation = 2;</code>
-     * @return The relation.
+     * <code>.Protos.FriendGiftInfo gift = 2;</code>
+     * @return The gift.
      */
-    cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo getRelation();
+    cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo getGift();
     /**
      * <pre>
-     * 好友相关数据
+     * 好友送礼数据
      * </pre>
      *
-     * <code>.Protos.FriendRelationInfo relation = 2;</code>
+     * <code>.Protos.FriendGiftInfo gift = 2;</code>
      */
-    cn.game.protocol.protobuf.FriendMsg.FriendRelationInfoOrBuilder getRelationOrBuilder();
+    cn.game.protocol.protobuf.FriendMsg.FriendGiftInfoOrBuilder getGiftOrBuilder();
   }
   /**
    * <pre>
-   * 好友的信息
+   * 好友的数据
    * </pre>
    *
    * Protobuf type {@code Protos.FriendInfo}
@@ -16878,14 +12310,14 @@ public final class FriendMsg {
               break;
             }
             case 18: {
-              cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.Builder subBuilder = null;
-              if (relation_ != null) {
-                subBuilder = relation_.toBuilder();
+              cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.Builder subBuilder = null;
+              if (gift_ != null) {
+                subBuilder = gift_.toBuilder();
               }
-              relation_ = input.readMessage(cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.parser(), extensionRegistry);
+              gift_ = input.readMessage(cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(relation_);
-                relation_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(gift_);
+                gift_ = subBuilder.buildPartial();
               }
 
               break;
@@ -16960,42 +12392,42 @@ public final class FriendMsg {
       return getPlayer();
     }
 
-    public static final int RELATION_FIELD_NUMBER = 2;
-    private cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo relation_;
+    public static final int GIFT_FIELD_NUMBER = 2;
+    private cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo gift_;
     /**
      * <pre>
-     * 好友相关数据
+     * 好友送礼数据
      * </pre>
      *
-     * <code>.Protos.FriendRelationInfo relation = 2;</code>
-     * @return Whether the relation field is set.
+     * <code>.Protos.FriendGiftInfo gift = 2;</code>
+     * @return Whether the gift field is set.
      */
     @java.lang.Override
-    public boolean hasRelation() {
-      return relation_ != null;
+    public boolean hasGift() {
+      return gift_ != null;
     }
     /**
      * <pre>
-     * 好友相关数据
+     * 好友送礼数据
      * </pre>
      *
-     * <code>.Protos.FriendRelationInfo relation = 2;</code>
-     * @return The relation.
+     * <code>.Protos.FriendGiftInfo gift = 2;</code>
+     * @return The gift.
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo getRelation() {
-      return relation_ == null ? cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.getDefaultInstance() : relation_;
+    public cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo getGift() {
+      return gift_ == null ? cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.getDefaultInstance() : gift_;
     }
     /**
      * <pre>
-     * 好友相关数据
+     * 好友送礼数据
      * </pre>
      *
-     * <code>.Protos.FriendRelationInfo relation = 2;</code>
+     * <code>.Protos.FriendGiftInfo gift = 2;</code>
      */
     @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfoOrBuilder getRelationOrBuilder() {
-      return getRelation();
+    public cn.game.protocol.protobuf.FriendMsg.FriendGiftInfoOrBuilder getGiftOrBuilder() {
+      return getGift();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -17015,8 +12447,8 @@ public final class FriendMsg {
       if (player_ != null) {
         output.writeMessage(1, getPlayer());
       }
-      if (relation_ != null) {
-        output.writeMessage(2, getRelation());
+      if (gift_ != null) {
+        output.writeMessage(2, getGift());
       }
       unknownFields.writeTo(output);
     }
@@ -17031,9 +12463,9 @@ public final class FriendMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getPlayer());
       }
-      if (relation_ != null) {
+      if (gift_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getRelation());
+          .computeMessageSize(2, getGift());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -17055,10 +12487,10 @@ public final class FriendMsg {
         if (!getPlayer()
             .equals(other.getPlayer())) return false;
       }
-      if (hasRelation() != other.hasRelation()) return false;
-      if (hasRelation()) {
-        if (!getRelation()
-            .equals(other.getRelation())) return false;
+      if (hasGift() != other.hasGift()) return false;
+      if (hasGift()) {
+        if (!getGift()
+            .equals(other.getGift())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -17075,9 +12507,9 @@ public final class FriendMsg {
         hash = (37 * hash) + PLAYER_FIELD_NUMBER;
         hash = (53 * hash) + getPlayer().hashCode();
       }
-      if (hasRelation()) {
-        hash = (37 * hash) + RELATION_FIELD_NUMBER;
-        hash = (53 * hash) + getRelation().hashCode();
+      if (hasGift()) {
+        hash = (37 * hash) + GIFT_FIELD_NUMBER;
+        hash = (53 * hash) + getGift().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -17176,7 +12608,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     * 好友的信息
+     * 好友的数据
      * </pre>
      *
      * Protobuf type {@code Protos.FriendInfo}
@@ -17222,11 +12654,11 @@ public final class FriendMsg {
           player_ = null;
           playerBuilder_ = null;
         }
-        if (relationBuilder_ == null) {
-          relation_ = null;
+        if (giftBuilder_ == null) {
+          gift_ = null;
         } else {
-          relation_ = null;
-          relationBuilder_ = null;
+          gift_ = null;
+          giftBuilder_ = null;
         }
         return this;
       }
@@ -17259,10 +12691,10 @@ public final class FriendMsg {
         } else {
           result.player_ = playerBuilder_.build();
         }
-        if (relationBuilder_ == null) {
-          result.relation_ = relation_;
+        if (giftBuilder_ == null) {
+          result.gift_ = gift_;
         } else {
-          result.relation_ = relationBuilder_.build();
+          result.gift_ = giftBuilder_.build();
         }
         onBuilt();
         return result;
@@ -17315,8 +12747,8 @@ public final class FriendMsg {
         if (other.hasPlayer()) {
           mergePlayer(other.getPlayer());
         }
-        if (other.hasRelation()) {
-          mergeRelation(other.getRelation());
+        if (other.hasGift()) {
+          mergeGift(other.getGift());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -17502,159 +12934,159 @@ public final class FriendMsg {
         return playerBuilder_;
       }
 
-      private cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo relation_;
+      private cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo gift_;
       private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo, cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendRelationInfoOrBuilder> relationBuilder_;
+          cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo, cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendGiftInfoOrBuilder> giftBuilder_;
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
-       * @return Whether the relation field is set.
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
+       * @return Whether the gift field is set.
        */
-      public boolean hasRelation() {
-        return relationBuilder_ != null || relation_ != null;
+      public boolean hasGift() {
+        return giftBuilder_ != null || gift_ != null;
       }
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
-       * @return The relation.
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
+       * @return The gift.
        */
-      public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo getRelation() {
-        if (relationBuilder_ == null) {
-          return relation_ == null ? cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.getDefaultInstance() : relation_;
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo getGift() {
+        if (giftBuilder_ == null) {
+          return gift_ == null ? cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.getDefaultInstance() : gift_;
         } else {
-          return relationBuilder_.getMessage();
+          return giftBuilder_.getMessage();
         }
       }
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
        */
-      public Builder setRelation(cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo value) {
-        if (relationBuilder_ == null) {
+      public Builder setGift(cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo value) {
+        if (giftBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          relation_ = value;
+          gift_ = value;
           onChanged();
         } else {
-          relationBuilder_.setMessage(value);
+          giftBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
        */
-      public Builder setRelation(
-          cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.Builder builderForValue) {
-        if (relationBuilder_ == null) {
-          relation_ = builderForValue.build();
+      public Builder setGift(
+          cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.Builder builderForValue) {
+        if (giftBuilder_ == null) {
+          gift_ = builderForValue.build();
           onChanged();
         } else {
-          relationBuilder_.setMessage(builderForValue.build());
+          giftBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
        */
-      public Builder mergeRelation(cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo value) {
-        if (relationBuilder_ == null) {
-          if (relation_ != null) {
-            relation_ =
-              cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.newBuilder(relation_).mergeFrom(value).buildPartial();
+      public Builder mergeGift(cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo value) {
+        if (giftBuilder_ == null) {
+          if (gift_ != null) {
+            gift_ =
+              cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.newBuilder(gift_).mergeFrom(value).buildPartial();
           } else {
-            relation_ = value;
+            gift_ = value;
           }
           onChanged();
         } else {
-          relationBuilder_.mergeFrom(value);
+          giftBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
        */
-      public Builder clearRelation() {
-        if (relationBuilder_ == null) {
-          relation_ = null;
+      public Builder clearGift() {
+        if (giftBuilder_ == null) {
+          gift_ = null;
           onChanged();
         } else {
-          relation_ = null;
-          relationBuilder_ = null;
+          gift_ = null;
+          giftBuilder_ = null;
         }
 
         return this;
       }
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
        */
-      public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.Builder getRelationBuilder() {
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.Builder getGiftBuilder() {
         
         onChanged();
-        return getRelationFieldBuilder().getBuilder();
+        return getGiftFieldBuilder().getBuilder();
       }
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
        */
-      public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfoOrBuilder getRelationOrBuilder() {
-        if (relationBuilder_ != null) {
-          return relationBuilder_.getMessageOrBuilder();
+      public cn.game.protocol.protobuf.FriendMsg.FriendGiftInfoOrBuilder getGiftOrBuilder() {
+        if (giftBuilder_ != null) {
+          return giftBuilder_.getMessageOrBuilder();
         } else {
-          return relation_ == null ?
-              cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.getDefaultInstance() : relation_;
+          return gift_ == null ?
+              cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.getDefaultInstance() : gift_;
         }
       }
       /**
        * <pre>
-       * 好友相关数据
+       * 好友送礼数据
        * </pre>
        *
-       * <code>.Protos.FriendRelationInfo relation = 2;</code>
+       * <code>.Protos.FriendGiftInfo gift = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo, cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendRelationInfoOrBuilder> 
-          getRelationFieldBuilder() {
-        if (relationBuilder_ == null) {
-          relationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo, cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendRelationInfoOrBuilder>(
-                  getRelation(),
+          cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo, cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendGiftInfoOrBuilder> 
+          getGiftFieldBuilder() {
+        if (giftBuilder_ == null) {
+          giftBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo, cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.Builder, cn.game.protocol.protobuf.FriendMsg.FriendGiftInfoOrBuilder>(
+                  getGift(),
                   getParentForChildren(),
                   isClean());
-          relation_ = null;
+          gift_ = null;
         }
-        return relationBuilder_;
+        return giftBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -17718,20 +13150,20 @@ public final class FriendMsg {
      * 是否给这个好友送过友情点
      * </pre>
      *
-     * <code>bool gift = 1;</code>
-     * @return The gift.
+     * <code>bool giftToFriend = 1;</code>
+     * @return The giftToFriend.
      */
-    boolean getGift();
+    boolean getGiftToFriend();
 
     /**
      * <pre>
-     * 好友是否给我送过友情点
+     * 这个好友是否给我送过友情点
      * </pre>
      *
-     * <code>bool gifted = 2;</code>
-     * @return The gifted.
+     * <code>bool giftToMe = 2;</code>
+     * @return The giftToMe.
      */
-    boolean getGifted();
+    boolean getGiftToMe();
 
     /**
      * <pre>
@@ -17794,12 +13226,12 @@ public final class FriendMsg {
               break;
             case 8: {
 
-              gift_ = input.readBool();
+              giftToFriend_ = input.readBool();
               break;
             }
             case 16: {
 
-              gifted_ = input.readBool();
+              giftToMe_ = input.readBool();
               break;
             }
             case 24: {
@@ -17839,34 +13271,34 @@ public final class FriendMsg {
               cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.class, cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.Builder.class);
     }
 
-    public static final int GIFT_FIELD_NUMBER = 1;
-    private boolean gift_;
+    public static final int GIFTTOFRIEND_FIELD_NUMBER = 1;
+    private boolean giftToFriend_;
     /**
      * <pre>
      * 是否给这个好友送过友情点
      * </pre>
      *
-     * <code>bool gift = 1;</code>
-     * @return The gift.
+     * <code>bool giftToFriend = 1;</code>
+     * @return The giftToFriend.
      */
     @java.lang.Override
-    public boolean getGift() {
-      return gift_;
+    public boolean getGiftToFriend() {
+      return giftToFriend_;
     }
 
-    public static final int GIFTED_FIELD_NUMBER = 2;
-    private boolean gifted_;
+    public static final int GIFTTOME_FIELD_NUMBER = 2;
+    private boolean giftToMe_;
     /**
      * <pre>
-     * 好友是否给我送过友情点
+     * 这个好友是否给我送过友情点
      * </pre>
      *
-     * <code>bool gifted = 2;</code>
-     * @return The gifted.
+     * <code>bool giftToMe = 2;</code>
+     * @return The giftToMe.
      */
     @java.lang.Override
-    public boolean getGifted() {
-      return gifted_;
+    public boolean getGiftToMe() {
+      return giftToMe_;
     }
 
     public static final int RECEIVE_FIELD_NUMBER = 3;
@@ -17898,11 +13330,11 @@ public final class FriendMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (gift_ != false) {
-        output.writeBool(1, gift_);
+      if (giftToFriend_ != false) {
+        output.writeBool(1, giftToFriend_);
       }
-      if (gifted_ != false) {
-        output.writeBool(2, gifted_);
+      if (giftToMe_ != false) {
+        output.writeBool(2, giftToMe_);
       }
       if (receive_ != false) {
         output.writeBool(3, receive_);
@@ -17916,13 +13348,13 @@ public final class FriendMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (gift_ != false) {
+      if (giftToFriend_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(1, gift_);
+          .computeBoolSize(1, giftToFriend_);
       }
-      if (gifted_ != false) {
+      if (giftToMe_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, gifted_);
+          .computeBoolSize(2, giftToMe_);
       }
       if (receive_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -17943,10 +13375,10 @@ public final class FriendMsg {
       }
       cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo other = (cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo) obj;
 
-      if (getGift()
-          != other.getGift()) return false;
-      if (getGifted()
-          != other.getGifted()) return false;
+      if (getGiftToFriend()
+          != other.getGiftToFriend()) return false;
+      if (getGiftToMe()
+          != other.getGiftToMe()) return false;
       if (getReceive()
           != other.getReceive()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -17960,12 +13392,12 @@ public final class FriendMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + GIFT_FIELD_NUMBER;
+      hash = (37 * hash) + GIFTTOFRIEND_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getGift());
-      hash = (37 * hash) + GIFTED_FIELD_NUMBER;
+          getGiftToFriend());
+      hash = (37 * hash) + GIFTTOME_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getGifted());
+          getGiftToMe());
       hash = (37 * hash) + RECEIVE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getReceive());
@@ -18106,9 +13538,9 @@ public final class FriendMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        gift_ = false;
+        giftToFriend_ = false;
 
-        gifted_ = false;
+        giftToMe_ = false;
 
         receive_ = false;
 
@@ -18138,8 +13570,8 @@ public final class FriendMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo buildPartial() {
         cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo result = new cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo(this);
-        result.gift_ = gift_;
-        result.gifted_ = gifted_;
+        result.giftToFriend_ = giftToFriend_;
+        result.giftToMe_ = giftToMe_;
         result.receive_ = receive_;
         onBuilt();
         return result;
@@ -18189,11 +13621,11 @@ public final class FriendMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo other) {
         if (other == cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo.getDefaultInstance()) return this;
-        if (other.getGift() != false) {
-          setGift(other.getGift());
+        if (other.getGiftToFriend() != false) {
+          setGiftToFriend(other.getGiftToFriend());
         }
-        if (other.getGifted() != false) {
-          setGifted(other.getGifted());
+        if (other.getGiftToMe() != false) {
+          setGiftToMe(other.getGiftToMe());
         }
         if (other.getReceive() != false) {
           setReceive(other.getReceive());
@@ -18227,31 +13659,31 @@ public final class FriendMsg {
         return this;
       }
 
-      private boolean gift_ ;
+      private boolean giftToFriend_ ;
       /**
        * <pre>
        * 是否给这个好友送过友情点
        * </pre>
        *
-       * <code>bool gift = 1;</code>
-       * @return The gift.
+       * <code>bool giftToFriend = 1;</code>
+       * @return The giftToFriend.
        */
       @java.lang.Override
-      public boolean getGift() {
-        return gift_;
+      public boolean getGiftToFriend() {
+        return giftToFriend_;
       }
       /**
        * <pre>
        * 是否给这个好友送过友情点
        * </pre>
        *
-       * <code>bool gift = 1;</code>
-       * @param value The gift to set.
+       * <code>bool giftToFriend = 1;</code>
+       * @param value The giftToFriend to set.
        * @return This builder for chaining.
        */
-      public Builder setGift(boolean value) {
+      public Builder setGiftToFriend(boolean value) {
         
-        gift_ = value;
+        giftToFriend_ = value;
         onChanged();
         return this;
       }
@@ -18260,55 +13692,55 @@ public final class FriendMsg {
        * 是否给这个好友送过友情点
        * </pre>
        *
-       * <code>bool gift = 1;</code>
+       * <code>bool giftToFriend = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearGift() {
+      public Builder clearGiftToFriend() {
         
-        gift_ = false;
+        giftToFriend_ = false;
         onChanged();
         return this;
       }
 
-      private boolean gifted_ ;
+      private boolean giftToMe_ ;
       /**
        * <pre>
-       * 好友是否给我送过友情点
+       * 这个好友是否给我送过友情点
        * </pre>
        *
-       * <code>bool gifted = 2;</code>
-       * @return The gifted.
+       * <code>bool giftToMe = 2;</code>
+       * @return The giftToMe.
        */
       @java.lang.Override
-      public boolean getGifted() {
-        return gifted_;
+      public boolean getGiftToMe() {
+        return giftToMe_;
       }
       /**
        * <pre>
-       * 好友是否给我送过友情点
+       * 这个好友是否给我送过友情点
        * </pre>
        *
-       * <code>bool gifted = 2;</code>
-       * @param value The gifted to set.
+       * <code>bool giftToMe = 2;</code>
+       * @param value The giftToMe to set.
        * @return This builder for chaining.
        */
-      public Builder setGifted(boolean value) {
+      public Builder setGiftToMe(boolean value) {
         
-        gifted_ = value;
+        giftToMe_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 好友是否给我送过友情点
+       * 这个好友是否给我送过友情点
        * </pre>
        *
-       * <code>bool gifted = 2;</code>
+       * <code>bool giftToMe = 2;</code>
        * @return This builder for chaining.
        */
-      public Builder clearGifted() {
+      public Builder clearGiftToMe() {
         
-        gifted_ = false;
+        giftToMe_ = false;
         onChanged();
         return this;
       }
@@ -18403,702 +13835,6 @@ public final class FriendMsg {
 
     @java.lang.Override
     public cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface FriendRelationInfoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.FriendRelationInfo)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * 与好友的关系  0 好友 1 特别关注，2 黑名单
-     * </pre>
-     *
-     * <code>int32 relation = 1;</code>
-     * @return The relation.
-     */
-    int getRelation();
-
-    /**
-     * <pre>
-     * 亲密度
-     * </pre>
-     *
-     * <code>int32 intimate = 2;</code>
-     * @return The intimate.
-     */
-    int getIntimate();
-
-    /**
-     * <pre>
-     * 亲密度等级
-     * </pre>
-     *
-     * <code>int32 intimateLevel = 3;</code>
-     * @return The intimateLevel.
-     */
-    int getIntimateLevel();
-  }
-  /**
-   * <pre>
-   * 好友相关数据
-   * </pre>
-   *
-   * Protobuf type {@code Protos.FriendRelationInfo}
-   */
-  public static final class FriendRelationInfo extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.FriendRelationInfo)
-      FriendRelationInfoOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use FriendRelationInfo.newBuilder() to construct.
-    private FriendRelationInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private FriendRelationInfo() {
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new FriendRelationInfo();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private FriendRelationInfo(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-
-              relation_ = input.readInt32();
-              break;
-            }
-            case 16: {
-
-              intimate_ = input.readInt32();
-              break;
-            }
-            case 24: {
-
-              intimateLevel_ = input.readInt32();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendRelationInfo_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendRelationInfo_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.class, cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.Builder.class);
-    }
-
-    public static final int RELATION_FIELD_NUMBER = 1;
-    private int relation_;
-    /**
-     * <pre>
-     * 与好友的关系  0 好友 1 特别关注，2 黑名单
-     * </pre>
-     *
-     * <code>int32 relation = 1;</code>
-     * @return The relation.
-     */
-    @java.lang.Override
-    public int getRelation() {
-      return relation_;
-    }
-
-    public static final int INTIMATE_FIELD_NUMBER = 2;
-    private int intimate_;
-    /**
-     * <pre>
-     * 亲密度
-     * </pre>
-     *
-     * <code>int32 intimate = 2;</code>
-     * @return The intimate.
-     */
-    @java.lang.Override
-    public int getIntimate() {
-      return intimate_;
-    }
-
-    public static final int INTIMATELEVEL_FIELD_NUMBER = 3;
-    private int intimateLevel_;
-    /**
-     * <pre>
-     * 亲密度等级
-     * </pre>
-     *
-     * <code>int32 intimateLevel = 3;</code>
-     * @return The intimateLevel.
-     */
-    @java.lang.Override
-    public int getIntimateLevel() {
-      return intimateLevel_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (relation_ != 0) {
-        output.writeInt32(1, relation_);
-      }
-      if (intimate_ != 0) {
-        output.writeInt32(2, intimate_);
-      }
-      if (intimateLevel_ != 0) {
-        output.writeInt32(3, intimateLevel_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (relation_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, relation_);
-      }
-      if (intimate_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, intimate_);
-      }
-      if (intimateLevel_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, intimateLevel_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo)) {
-        return super.equals(obj);
-      }
-      cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo other = (cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo) obj;
-
-      if (getRelation()
-          != other.getRelation()) return false;
-      if (getIntimate()
-          != other.getIntimate()) return false;
-      if (getIntimateLevel()
-          != other.getIntimateLevel()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + RELATION_FIELD_NUMBER;
-      hash = (53 * hash) + getRelation();
-      hash = (37 * hash) + INTIMATE_FIELD_NUMBER;
-      hash = (53 * hash) + getIntimate();
-      hash = (37 * hash) + INTIMATELEVEL_FIELD_NUMBER;
-      hash = (53 * hash) + getIntimateLevel();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * 好友相关数据
-     * </pre>
-     *
-     * Protobuf type {@code Protos.FriendRelationInfo}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.FriendRelationInfo)
-        cn.game.protocol.protobuf.FriendMsg.FriendRelationInfoOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendRelationInfo_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendRelationInfo_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.class, cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.Builder.class);
-      }
-
-      // Construct using cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        relation_ = 0;
-
-        intimate_ = 0;
-
-        intimateLevel_ = 0;
-
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return cn.game.protocol.protobuf.FriendMsg.internal_static_Protos_FriendRelationInfo_descriptor;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo build() {
-        cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo buildPartial() {
-        cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo result = new cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo(this);
-        result.relation_ = relation_;
-        result.intimate_ = intimate_;
-        result.intimateLevel_ = intimateLevel_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo) {
-          return mergeFrom((cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo other) {
-        if (other == cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo.getDefaultInstance()) return this;
-        if (other.getRelation() != 0) {
-          setRelation(other.getRelation());
-        }
-        if (other.getIntimate() != 0) {
-          setIntimate(other.getIntimate());
-        }
-        if (other.getIntimateLevel() != 0) {
-          setIntimateLevel(other.getIntimateLevel());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private int relation_ ;
-      /**
-       * <pre>
-       * 与好友的关系  0 好友 1 特别关注，2 黑名单
-       * </pre>
-       *
-       * <code>int32 relation = 1;</code>
-       * @return The relation.
-       */
-      @java.lang.Override
-      public int getRelation() {
-        return relation_;
-      }
-      /**
-       * <pre>
-       * 与好友的关系  0 好友 1 特别关注，2 黑名单
-       * </pre>
-       *
-       * <code>int32 relation = 1;</code>
-       * @param value The relation to set.
-       * @return This builder for chaining.
-       */
-      public Builder setRelation(int value) {
-        
-        relation_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 与好友的关系  0 好友 1 特别关注，2 黑名单
-       * </pre>
-       *
-       * <code>int32 relation = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearRelation() {
-        
-        relation_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int intimate_ ;
-      /**
-       * <pre>
-       * 亲密度
-       * </pre>
-       *
-       * <code>int32 intimate = 2;</code>
-       * @return The intimate.
-       */
-      @java.lang.Override
-      public int getIntimate() {
-        return intimate_;
-      }
-      /**
-       * <pre>
-       * 亲密度
-       * </pre>
-       *
-       * <code>int32 intimate = 2;</code>
-       * @param value The intimate to set.
-       * @return This builder for chaining.
-       */
-      public Builder setIntimate(int value) {
-        
-        intimate_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 亲密度
-       * </pre>
-       *
-       * <code>int32 intimate = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearIntimate() {
-        
-        intimate_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int intimateLevel_ ;
-      /**
-       * <pre>
-       * 亲密度等级
-       * </pre>
-       *
-       * <code>int32 intimateLevel = 3;</code>
-       * @return The intimateLevel.
-       */
-      @java.lang.Override
-      public int getIntimateLevel() {
-        return intimateLevel_;
-      }
-      /**
-       * <pre>
-       * 亲密度等级
-       * </pre>
-       *
-       * <code>int32 intimateLevel = 3;</code>
-       * @param value The intimateLevel to set.
-       * @return This builder for chaining.
-       */
-      public Builder setIntimateLevel(int value) {
-        
-        intimateLevel_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 亲密度等级
-       * </pre>
-       *
-       * <code>int32 intimateLevel = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearIntimateLevel() {
-        
-        intimateLevel_ = 0;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Protos.FriendRelationInfo)
-    }
-
-    // @@protoc_insertion_point(class_scope:Protos.FriendRelationInfo)
-    private static final cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo();
-    }
-
-    public static cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<FriendRelationInfo>
-        PARSER = new com.google.protobuf.AbstractParser<FriendRelationInfo>() {
-      @java.lang.Override
-      public FriendRelationInfo parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FriendRelationInfo(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<FriendRelationInfo> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<FriendRelationInfo> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public cn.game.protocol.protobuf.FriendMsg.FriendRelationInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -21341,16 +16077,6 @@ public final class FriendMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_FriendRecommendResponse_30000004_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendSearchRequest_30000020_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendSearchRequest_30000020_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendSearchResponse_30000021_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendSearchResponse_30000021_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_FriendApplyRequest_30000005_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -21391,45 +16117,25 @@ public final class FriendMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_FriendBlackResponse_30000011_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendAttentionRequest_30000030_descriptor;
+    internal_static_Protos_FriendGiftRequest_30000012_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendAttentionRequest_30000030_fieldAccessorTable;
+      internal_static_Protos_FriendGiftRequest_30000012_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendAttentionResponse_30000031_descriptor;
+    internal_static_Protos_FriendGiftResponse_30000013_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendAttentionResponse_30000031_fieldAccessorTable;
+      internal_static_Protos_FriendGiftResponse_30000013_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendshipRequest_30000012_descriptor;
+    internal_static_Protos_FriendGiftReceiveRequest_30000014_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendshipRequest_30000012_fieldAccessorTable;
+      internal_static_Protos_FriendGiftReceiveRequest_30000014_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendshipResponse_30000013_descriptor;
+    internal_static_Protos_FriendGiftReceiveResponse_30000015_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendshipResponse_30000013_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendshipReceiveRequest_30000014_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendshipReceiveRequest_30000014_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendshipReceiveResponse_30000015_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendshipReceiveResponse_30000015_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendGiftRequest_30000016_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendGiftRequest_30000016_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendGiftResponse_30000017_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendGiftResponse_30000017_fieldAccessorTable;
+      internal_static_Protos_FriendGiftReceiveResponse_30000015_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_FriendInfo_descriptor;
   private static final 
@@ -21440,11 +16146,6 @@ public final class FriendMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_FriendGiftInfo_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_FriendRelationInfo_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_FriendRelationInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_FriendApplyPush_30000022_descriptor;
   private static final 
@@ -21470,48 +16171,35 @@ public final class FriendMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\017FriendMsg.proto\022\006Protos\032\rBaseMsg.proto" +
-      "\"+\n\032FriendListRequest_30000001\022\r\n\005local\030" +
-      "\001 \001(\010\"B\n\033FriendListResponse_30000002\022#\n\007" +
-      "friends\030\001 \003(\0132\022.Protos.FriendInfo\"!\n\037Fri" +
-      "endBlackListRequest_30000051\"G\n FriendBl" +
-      "ackListResponse_30000052\022#\n\007players\030\001 \003(" +
-      "\0132\022.Protos.FriendInfo\"!\n\037FriendApplyList" +
-      "Request_30000053\"M\n FriendApplyListRespo" +
-      "nse_30000054\022)\n\007players\030\001 \003(\0132\030.Protos.S" +
-      "implePlayerInfo\"2\n\037FriendRecommendReques" +
-      "t_30000003\022\017\n\007refresh\030\001 \001(\010\"d\n FriendRec" +
-      "ommendResponse_30000004\022)\n\007friends\030\001 \003(\013" +
-      "2\030.Protos.SimplePlayerInfo\022\025\n\rnextFreshT" +
-      "ime\030\002 \001(\005\"B\n\034FriendSearchRequest_3000002" +
-      "0\022\020\n\010playerId\030\001 \001(\t\022\020\n\010serverId\030\002 \001(\t\"I\n" +
-      "\035FriendSearchResponse_30000021\022(\n\006player" +
-      "\030\001 \001(\0132\030.Protos.SimplePlayerInfo\"C\n\033Frie" +
-      "ndApplyRequest_30000005\022\021\n\tfriendIds\030\001 \003" +
-      "(\t\022\021\n\tserverIds\030\002 \003(\t\"\036\n\034FriendApplyResp" +
-      "onse_30000006\"D\n!FriendApplicationReques" +
-      "t_30000007\022\020\n\010friendId\030\001 \003(\t\022\r\n\005agree\030\002 " +
-      "\001(\010\"7\n\"FriendApplicationResponse_3000000" +
-      "8\022\021\n\tfriendIds\030\001 \003(\t\"*\n\034FriendDeleteRequ" +
-      "est_30000009\022\n\n\002id\030\001 \001(\t\"\037\n\035FriendDelete" +
-      "Response_3000000a\";\n\033FriendBlackRequest_" +
-      "30000010\022\n\n\002id\030\001 \001(\t\022\020\n\010serverId\030\002 \001(\t\"\036" +
-      "\n\034FriendBlackResponse_30000011\"@\n\037Friend" +
-      "AttentionRequest_30000030\022\n\n\002id\030\001 \001(\t\022\021\n" +
-      "\tattention\030\002 \001(\010\"\"\n FriendAttentionRespo" +
-      "nse_30000031\".\n\032FriendshipRequest_300000" +
-      "12\022\020\n\010friendId\030\001 \003(\t\"\035\n\033FriendshipRespon" +
-      "se_30000013\"5\n!FriendshipReceiveRequest_" +
-      "30000014\022\020\n\010friendId\030\001 \003(\t\"$\n\"Friendship" +
-      "ReceiveResponse_30000015\"N\n\032FriendGiftRe" +
-      "quest_30000016\022\020\n\010friendId\030\001 \001(\t\022\036\n\004gift" +
-      "\030\002 \001(\0132\020.Protos.ItemInfo\"\035\n\033FriendGiftRe" +
-      "sponse_30000017\"d\n\nFriendInfo\022(\n\006player\030" +
-      "\001 \001(\0132\030.Protos.SimplePlayerInfo\022,\n\010relat" +
-      "ion\030\002 \001(\0132\032.Protos.FriendRelationInfo\"?\n" +
-      "\016FriendGiftInfo\022\014\n\004gift\030\001 \001(\010\022\016\n\006gifted\030" +
-      "\002 \001(\010\022\017\n\007receive\030\003 \001(\010\"O\n\022FriendRelation" +
-      "Info\022\020\n\010relation\030\001 \001(\005\022\020\n\010intimate\030\002 \001(\005" +
-      "\022\025\n\rintimateLevel\030\003 \001(\005\"^\n\030FriendApplyPu" +
+      "\"\034\n\032FriendListRequest_30000001\"B\n\033Friend" +
+      "ListResponse_30000002\022#\n\007friends\030\001 \003(\0132\022" +
+      ".Protos.FriendInfo\"!\n\037FriendBlackListReq" +
+      "uest_30000051\"M\n FriendBlackListResponse" +
+      "_30000052\022)\n\007players\030\001 \003(\0132\030.Protos.Simp" +
+      "lePlayerInfo\"!\n\037FriendApplyListRequest_3" +
+      "0000053\"M\n FriendApplyListResponse_30000" +
+      "054\022)\n\007players\030\001 \003(\0132\030.Protos.SimplePlay" +
+      "erInfo\"!\n\037FriendRecommendRequest_3000000" +
+      "3\"M\n FriendRecommendResponse_30000004\022)\n" +
+      "\007players\030\001 \003(\0132\030.Protos.SimplePlayerInfo" +
+      "\"0\n\033FriendApplyRequest_30000005\022\021\n\tplaye" +
+      "rIds\030\001 \003(\t\"\036\n\034FriendApplyResponse_300000" +
+      "06\"E\n!FriendApplicationRequest_30000007\022" +
+      "\021\n\tplayerIds\030\001 \003(\t\022\r\n\005agree\030\002 \001(\010\"7\n\"Fri" +
+      "endApplicationResponse_30000008\022\021\n\tfrien" +
+      "dIds\030\001 \003(\t\"*\n\034FriendDeleteRequest_300000" +
+      "09\022\n\n\002id\030\001 \001(\t\"\037\n\035FriendDeleteResponse_3" +
+      "000000a\")\n\033FriendBlackRequest_30000010\022\n" +
+      "\n\002id\030\001 \001(\t\"\036\n\034FriendBlackResponse_300000" +
+      "11\".\n\032FriendGiftRequest_30000012\022\020\n\010frie" +
+      "ndId\030\001 \003(\t\"\035\n\033FriendGiftResponse_3000001" +
+      "3\"5\n!FriendGiftReceiveRequest_30000014\022\020" +
+      "\n\010friendId\030\001 \003(\t\"$\n\"FriendGiftReceiveRes" +
+      "ponse_30000015\"\\\n\nFriendInfo\022(\n\006player\030\001" +
+      " \001(\0132\030.Protos.SimplePlayerInfo\022$\n\004gift\030\002" +
+      " \001(\0132\026.Protos.FriendGiftInfo\"I\n\016FriendGi" +
+      "ftInfo\022\024\n\014giftToFriend\030\001 \001(\010\022\020\n\010giftToMe" +
+      "\030\002 \001(\010\022\017\n\007receive\030\003 \001(\010\"^\n\030FriendApplyPu" +
       "sh_30000022\022\020\n\010playerId\030\001 \001(\003\022\025\n\rapplyPl" +
       "ayerId\030\002 \001(\003\022\031\n\021applyPlayerServer\030\003 \001(\t\"" +
       "R\n\026FriendAddPush_30000023\022\020\n\010playerId\030\001 " +
@@ -21530,7 +16218,7 @@ public final class FriendMsg {
     internal_static_Protos_FriendListRequest_30000001_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendListRequest_30000001_descriptor,
-        new java.lang.String[] { "Local", });
+        new java.lang.String[] { });
     internal_static_Protos_FriendListResponse_30000002_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_FriendListResponse_30000002_fieldAccessorTable = new
@@ -21566,153 +16254,111 @@ public final class FriendMsg {
     internal_static_Protos_FriendRecommendRequest_30000003_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendRecommendRequest_30000003_descriptor,
-        new java.lang.String[] { "Refresh", });
+        new java.lang.String[] { });
     internal_static_Protos_FriendRecommendResponse_30000004_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_Protos_FriendRecommendResponse_30000004_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendRecommendResponse_30000004_descriptor,
-        new java.lang.String[] { "Friends", "NextFreshTime", });
-    internal_static_Protos_FriendSearchRequest_30000020_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_Protos_FriendSearchRequest_30000020_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendSearchRequest_30000020_descriptor,
-        new java.lang.String[] { "PlayerId", "ServerId", });
-    internal_static_Protos_FriendSearchResponse_30000021_descriptor =
-      getDescriptor().getMessageTypes().get(9);
-    internal_static_Protos_FriendSearchResponse_30000021_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendSearchResponse_30000021_descriptor,
-        new java.lang.String[] { "Player", });
+        new java.lang.String[] { "Players", });
     internal_static_Protos_FriendApplyRequest_30000005_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_Protos_FriendApplyRequest_30000005_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendApplyRequest_30000005_descriptor,
-        new java.lang.String[] { "FriendIds", "ServerIds", });
+        new java.lang.String[] { "PlayerIds", });
     internal_static_Protos_FriendApplyResponse_30000006_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_FriendApplyResponse_30000006_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendApplyResponse_30000006_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_FriendApplicationRequest_30000007_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_Protos_FriendApplicationRequest_30000007_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendApplicationRequest_30000007_descriptor,
-        new java.lang.String[] { "FriendId", "Agree", });
+        new java.lang.String[] { "PlayerIds", "Agree", });
     internal_static_Protos_FriendApplicationResponse_30000008_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_Protos_FriendApplicationResponse_30000008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendApplicationResponse_30000008_descriptor,
         new java.lang.String[] { "FriendIds", });
     internal_static_Protos_FriendDeleteRequest_30000009_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_Protos_FriendDeleteRequest_30000009_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendDeleteRequest_30000009_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_FriendDeleteResponse_3000000a_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_Protos_FriendDeleteResponse_3000000a_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendDeleteResponse_3000000a_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_FriendBlackRequest_30000010_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_FriendBlackRequest_30000010_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendBlackRequest_30000010_descriptor,
-        new java.lang.String[] { "Id", "ServerId", });
+        new java.lang.String[] { "Id", });
     internal_static_Protos_FriendBlackResponse_30000011_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_FriendBlackResponse_30000011_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendBlackResponse_30000011_descriptor,
         new java.lang.String[] { });
-    internal_static_Protos_FriendAttentionRequest_30000030_descriptor =
+    internal_static_Protos_FriendGiftRequest_30000012_descriptor =
+      getDescriptor().getMessageTypes().get(16);
+    internal_static_Protos_FriendGiftRequest_30000012_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_FriendGiftRequest_30000012_descriptor,
+        new java.lang.String[] { "FriendId", });
+    internal_static_Protos_FriendGiftResponse_30000013_descriptor =
+      getDescriptor().getMessageTypes().get(17);
+    internal_static_Protos_FriendGiftResponse_30000013_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_FriendGiftResponse_30000013_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_FriendGiftReceiveRequest_30000014_descriptor =
       getDescriptor().getMessageTypes().get(18);
-    internal_static_Protos_FriendAttentionRequest_30000030_fieldAccessorTable = new
+    internal_static_Protos_FriendGiftReceiveRequest_30000014_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendAttentionRequest_30000030_descriptor,
-        new java.lang.String[] { "Id", "Attention", });
-    internal_static_Protos_FriendAttentionResponse_30000031_descriptor =
+        internal_static_Protos_FriendGiftReceiveRequest_30000014_descriptor,
+        new java.lang.String[] { "FriendId", });
+    internal_static_Protos_FriendGiftReceiveResponse_30000015_descriptor =
       getDescriptor().getMessageTypes().get(19);
-    internal_static_Protos_FriendAttentionResponse_30000031_fieldAccessorTable = new
+    internal_static_Protos_FriendGiftReceiveResponse_30000015_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendAttentionResponse_30000031_descriptor,
-        new java.lang.String[] { });
-    internal_static_Protos_FriendshipRequest_30000012_descriptor =
-      getDescriptor().getMessageTypes().get(20);
-    internal_static_Protos_FriendshipRequest_30000012_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendshipRequest_30000012_descriptor,
-        new java.lang.String[] { "FriendId", });
-    internal_static_Protos_FriendshipResponse_30000013_descriptor =
-      getDescriptor().getMessageTypes().get(21);
-    internal_static_Protos_FriendshipResponse_30000013_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendshipResponse_30000013_descriptor,
-        new java.lang.String[] { });
-    internal_static_Protos_FriendshipReceiveRequest_30000014_descriptor =
-      getDescriptor().getMessageTypes().get(22);
-    internal_static_Protos_FriendshipReceiveRequest_30000014_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendshipReceiveRequest_30000014_descriptor,
-        new java.lang.String[] { "FriendId", });
-    internal_static_Protos_FriendshipReceiveResponse_30000015_descriptor =
-      getDescriptor().getMessageTypes().get(23);
-    internal_static_Protos_FriendshipReceiveResponse_30000015_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendshipReceiveResponse_30000015_descriptor,
-        new java.lang.String[] { });
-    internal_static_Protos_FriendGiftRequest_30000016_descriptor =
-      getDescriptor().getMessageTypes().get(24);
-    internal_static_Protos_FriendGiftRequest_30000016_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendGiftRequest_30000016_descriptor,
-        new java.lang.String[] { "FriendId", "Gift", });
-    internal_static_Protos_FriendGiftResponse_30000017_descriptor =
-      getDescriptor().getMessageTypes().get(25);
-    internal_static_Protos_FriendGiftResponse_30000017_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendGiftResponse_30000017_descriptor,
+        internal_static_Protos_FriendGiftReceiveResponse_30000015_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_FriendInfo_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_FriendInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendInfo_descriptor,
-        new java.lang.String[] { "Player", "Relation", });
+        new java.lang.String[] { "Player", "Gift", });
     internal_static_Protos_FriendGiftInfo_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_Protos_FriendGiftInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendGiftInfo_descriptor,
-        new java.lang.String[] { "Gift", "Gifted", "Receive", });
-    internal_static_Protos_FriendRelationInfo_descriptor =
-      getDescriptor().getMessageTypes().get(28);
-    internal_static_Protos_FriendRelationInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_FriendRelationInfo_descriptor,
-        new java.lang.String[] { "Relation", "Intimate", "IntimateLevel", });
+        new java.lang.String[] { "GiftToFriend", "GiftToMe", "Receive", });
     internal_static_Protos_FriendApplyPush_30000022_descriptor =
-      getDescriptor().getMessageTypes().get(29);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_Protos_FriendApplyPush_30000022_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendApplyPush_30000022_descriptor,
         new java.lang.String[] { "PlayerId", "ApplyPlayerId", "ApplyPlayerServer", });
     internal_static_Protos_FriendAddPush_30000023_descriptor =
-      getDescriptor().getMessageTypes().get(30);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_Protos_FriendAddPush_30000023_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendAddPush_30000023_descriptor,
         new java.lang.String[] { "PlayerId", "FriendId", "FriendServer", });
     internal_static_Protos_FriendDelPush_30000024_descriptor =
-      getDescriptor().getMessageTypes().get(31);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_Protos_FriendDelPush_30000024_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_FriendDelPush_30000024_descriptor,

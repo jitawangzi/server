@@ -126,7 +126,6 @@ message SkillInfo{
 
 // 玩家的简单信息
 message SimplePlayerInfo{
-
 	string id = 1; 			// id
 	string name = 2; 		//名称
 	uint32 level = 3; 		// 等级
@@ -135,8 +134,9 @@ message SimplePlayerInfo{
 	uint32 headFrame = 7; 		// 头像框
 	bool online = 8  ;      // 是否在线
 	uint32 offlineTime = 9  ; // 如果离线，此值表示最近的下线时间，秒的时间戳
-	string serverId = 10; // 玩家所在服务器id，显示用
-	string serverName = 11; // 玩家所在服务器名，显示用
+	string serverId = 10; // 玩家所在服务器id，暂时用不到
+	string serverName = 11; // 玩家所在服务器名，暂时用不到
+	uint32 tiandaoLevel = 12; // 天道修为等级。
 }
 
 // 玩家展示的名片数据

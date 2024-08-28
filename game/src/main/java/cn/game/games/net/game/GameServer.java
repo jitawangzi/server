@@ -52,7 +52,6 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
-import cn.game.util.TreeWordFilter;
 import cn.game.util.ZkHelper;
 import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.CommonLogger;
@@ -149,7 +148,7 @@ public class GameServer implements GameServerMBean {
 		initVerticle();
 		initRemoteInterface();
 //		DAO.listenPauseUpdateDb();
-		TreeWordFilter.init("filterWord.txt");
+//		TreeWordFilter.init("filterWord.txt");
 //		this.maxPlayerId = initialProp.getIntProperty("player.max.id", 0);
 //		this.minPlayerId = initialProp.getIntProperty("player.min.id", 0);
 //		int port = initialProp.getIntProperty("netty.port", 0);
@@ -191,64 +190,6 @@ public class GameServer implements GameServerMBean {
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
 //		producer.start();
 //		testUpdateBatch();
-
-//		System.out.println(Thread.currentThread().getName() + "起始任务线程");
-//
-//		Future<String> retFuture = VxHolder.runWithLock(() -> {
-//			System.err.println(Thread.currentThread().getName() + "执行任务");
-//			// 这里模拟异常， 则operations.get().onComplete不会被调用
-//			System.err.println(2 / 0);
-//
-//			return Future.succeededFuture("result 1 ").compose(r -> {
-//				System.err.println(Thread.currentThread().getName() + "执行任务2");
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//				return Future.succeededFuture(Thread.currentThread().getName() + " result 2 ");
-//			}).compose(r -> {
-//				System.err.println(Thread.currentThread().getName() + "执行任务3");
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//				// 这里模拟异常， 则operations.get().onComplete会被调用
-//				System.out.println(1 / 0);
-//				return Future.succeededFuture(Thread.currentThread().getName() + " result 3 ");
-//			});
-//		}, "lockkey1", "lockkey2");
-//
-//		retFuture.onComplete(r -> {
-//			System.err.println(Thread.currentThread().getName() + "执行完毕，结果： " + r.result());
-//		});
-
-//		Future<String> retFuture2 = VxHolder.withLock(() -> {
-//			System.err.println(Thread.currentThread().getName() + "执行任务");
-//			return Future.succeededFuture("result 1 ").compose(r -> {
-//				System.err.println(Thread.currentThread().getName() + "执行任务2");
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				return Future.succeededFuture(Thread.currentThread().getName() + " result 2 ");
-//			}).compose(r -> {
-//				System.err.println(Thread.currentThread().getName() + "执行任务3");
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-////				return Future.failedFuture(new RuntimeException("error"));
-//				return Future.succeededFuture(Thread.currentThread().getName() + " result 3 ");
-//			});
-//		}, "dbc", "fksld");
-
-
 	}
 
 	/** 

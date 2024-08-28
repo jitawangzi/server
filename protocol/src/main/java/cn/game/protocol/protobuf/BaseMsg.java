@@ -14311,7 +14311,7 @@ public final class BaseMsg {
 
     /**
      * <pre>
-     * 玩家所在服务器id，显示用
+     * 玩家所在服务器id，暂时用不到
      * </pre>
      *
      * <code>string serverId = 10;</code>
@@ -14320,7 +14320,7 @@ public final class BaseMsg {
     java.lang.String getServerId();
     /**
      * <pre>
-     * 玩家所在服务器id，显示用
+     * 玩家所在服务器id，暂时用不到
      * </pre>
      *
      * <code>string serverId = 10;</code>
@@ -14331,7 +14331,7 @@ public final class BaseMsg {
 
     /**
      * <pre>
-     * 玩家所在服务器名，显示用
+     * 玩家所在服务器名，暂时用不到
      * </pre>
      *
      * <code>string serverName = 11;</code>
@@ -14340,7 +14340,7 @@ public final class BaseMsg {
     java.lang.String getServerName();
     /**
      * <pre>
-     * 玩家所在服务器名，显示用
+     * 玩家所在服务器名，暂时用不到
      * </pre>
      *
      * <code>string serverName = 11;</code>
@@ -14674,7 +14674,7 @@ public final class BaseMsg {
     private volatile java.lang.Object serverId_;
     /**
      * <pre>
-     * 玩家所在服务器id，显示用
+     * 玩家所在服务器id，暂时用不到
      * </pre>
      *
      * <code>string serverId = 10;</code>
@@ -14695,7 +14695,7 @@ public final class BaseMsg {
     }
     /**
      * <pre>
-     * 玩家所在服务器id，显示用
+     * 玩家所在服务器id，暂时用不到
      * </pre>
      *
      * <code>string serverId = 10;</code>
@@ -14720,7 +14720,7 @@ public final class BaseMsg {
     private volatile java.lang.Object serverName_;
     /**
      * <pre>
-     * 玩家所在服务器名，显示用
+     * 玩家所在服务器名，暂时用不到
      * </pre>
      *
      * <code>string serverName = 11;</code>
@@ -14741,7 +14741,7 @@ public final class BaseMsg {
     }
     /**
      * <pre>
-     * 玩家所在服务器名，显示用
+     * 玩家所在服务器名，暂时用不到
      * </pre>
      *
      * <code>string serverName = 11;</code>
@@ -15675,7 +15675,7 @@ public final class BaseMsg {
       private java.lang.Object serverId_ = "";
       /**
        * <pre>
-       * 玩家所在服务器id，显示用
+       * 玩家所在服务器id，暂时用不到
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -15695,7 +15695,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器id，显示用
+       * 玩家所在服务器id，暂时用不到
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -15716,7 +15716,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器id，显示用
+       * 玩家所在服务器id，暂时用不到
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -15735,7 +15735,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器id，显示用
+       * 玩家所在服务器id，暂时用不到
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -15749,7 +15749,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器id，显示用
+       * 玩家所在服务器id，暂时用不到
        * </pre>
        *
        * <code>string serverId = 10;</code>
@@ -15771,7 +15771,7 @@ public final class BaseMsg {
       private java.lang.Object serverName_ = "";
       /**
        * <pre>
-       * 玩家所在服务器名，显示用
+       * 玩家所在服务器名，暂时用不到
        * </pre>
        *
        * <code>string serverName = 11;</code>
@@ -15791,7 +15791,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器名，显示用
+       * 玩家所在服务器名，暂时用不到
        * </pre>
        *
        * <code>string serverName = 11;</code>
@@ -15812,7 +15812,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器名，显示用
+       * 玩家所在服务器名，暂时用不到
        * </pre>
        *
        * <code>string serverName = 11;</code>
@@ -15831,7 +15831,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器名，显示用
+       * 玩家所在服务器名，暂时用不到
        * </pre>
        *
        * <code>string serverName = 11;</code>
@@ -15845,7 +15845,7 @@ public final class BaseMsg {
       }
       /**
        * <pre>
-       * 玩家所在服务器名，显示用
+       * 玩家所在服务器名，暂时用不到
        * </pre>
        *
        * <code>string serverName = 11;</code>

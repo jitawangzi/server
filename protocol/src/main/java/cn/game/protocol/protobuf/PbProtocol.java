@@ -156,6 +156,29 @@ public class PbProtocol implements ProtocolParser {
 	public final static int FairyFriendFightRewardResponse_27000006 = 0x27000006;    
 	public final static int FairyFriendTravelRequest_27000007 = 0x27000007;    //仙友寻缘、游历  
 	public final static int FairyFriendTravelResponse_27000008 = 0x27000008;    
+	public final static int FriendListRequest_30000001 = 0x30000001;    //请求好友列表  
+	public final static int FriendListResponse_30000002 = 0x30000002;    //好友数据  
+	public final static int FriendBlackListRequest_30000051 = 0x30000051;    //请求黑名单列表  
+	public final static int FriendBlackListResponse_30000052 = 0x30000052;    //黑名单数据  
+	public final static int FriendApplyListRequest_30000053 = 0x30000053;    //请求好友申请列表  
+	public final static int FriendApplyListResponse_30000054 = 0x30000054;    
+	public final static int FriendRecommendRequest_30000003 = 0x30000003;    //搜索符合条件的推荐好友  
+	public final static int FriendRecommendResponse_30000004 = 0x30000004;    //推荐好友列表  
+	public final static int FriendApplyRequest_30000005 = 0x30000005;    //申请成为对方好友或者批量申请好友，从黑名单里加好友也用这个协议  
+	public final static int FriendApplyResponse_30000006 = 0x30000006;    
+	public final static int FriendApplicationRequest_30000007 = 0x30000007;    //处理好友申请,包含批量处理  
+	public final static int FriendApplicationResponse_30000008 = 0x30000008;    
+	public final static int FriendDeleteRequest_30000009 = 0x30000009;    //删除好友,从黑名单里移除也用这个协议  
+	public final static int FriendDeleteResponse_3000000a = 0x3000000a;    
+	public final static int FriendBlackRequest_30000010 = 0x30000010;    //将玩家加入到黑名单  
+	public final static int FriendBlackResponse_30000011 = 0x30000011;    
+	public final static int FriendGiftRequest_30000012 = 0x30000012;    //赠送好友友情点  
+	public final static int FriendGiftResponse_30000013 = 0x30000013;    
+	public final static int FriendGiftReceiveRequest_30000014 = 0x30000014;    //领取好友赠送的友情点，包含一键领取  
+	public final static int FriendGiftReceiveResponse_30000015 = 0x30000015;    
+	public final static int FriendApplyPush_30000022 = 0x30000022;    //玩家收到其他服务器的好友申请  
+	public final static int FriendAddPush_30000023 = 0x30000023;    //增加其他服务器的好友  
+	public final static int FriendDelPush_30000024 = 0x30000024;    //删除其他服务器的好友  
 	public final static int GemWearRequest_10000001 = 0x10000001;    //宝石镶嵌 替换  
 	public final static int GemWearResponse_10000002 = 0x10000002;    
 	public final static int GemTeardownRequest_10000003 = 0x10000003;    //宝石卸下  
@@ -301,6 +324,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerBriefInfoResponse_01000008 = 0x01000008;    
 	public final static int PlayerBriefInfoOtherRequest_01000009 = 0x01000009;    //获取一组玩家简略信息 查询本服和跨服  
 	public final static int PlayerBriefInfoOtherResponse_0100000a = 0x0100000a;    
+	public final static int PlayerSearchRequest_0100000b = 0x0100000b;    //搜索玩家  
+	public final static int PlayerSearchResponse_0100000c = 0x0100000c;    //搜索出来的玩家  
 	public final static int PlayerShowRequest_01000039 = 0x01000039;    //获取一个玩家的名片  
 	public final static int PlayerShowResponse_0100003a = 0x0100003a;    
 	public final static int PlayerAlchemyRequest_01000040 = 0x01000040;    //炼金请求  
@@ -667,6 +692,52 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(FairyFriendTravelResponse_27000008, cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelResponse_27000008.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(FriendListRequest_30000001, cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendListResponse_30000002, cn.game.protocol.protobuf.FriendMsg.FriendListResponse_30000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendBlackListRequest_30000051, cn.game.protocol.protobuf.FriendMsg.FriendBlackListRequest_30000051.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendBlackListResponse_30000052, cn.game.protocol.protobuf.FriendMsg.FriendBlackListResponse_30000052.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendApplyListRequest_30000053, cn.game.protocol.protobuf.FriendMsg.FriendApplyListRequest_30000053.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendApplyListResponse_30000054, cn.game.protocol.protobuf.FriendMsg.FriendApplyListResponse_30000054.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendRecommendRequest_30000003, cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendRecommendResponse_30000004, cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendApplyRequest_30000005, cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendApplyResponse_30000006, cn.game.protocol.protobuf.FriendMsg.FriendApplyResponse_30000006.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendApplicationRequest_30000007, cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendApplicationResponse_30000008, cn.game.protocol.protobuf.FriendMsg.FriendApplicationResponse_30000008.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendDeleteRequest_30000009, cn.game.protocol.protobuf.FriendMsg.FriendDeleteRequest_30000009.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendDeleteResponse_3000000a, cn.game.protocol.protobuf.FriendMsg.FriendDeleteResponse_3000000a.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendBlackRequest_30000010, cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendBlackResponse_30000011, cn.game.protocol.protobuf.FriendMsg.FriendBlackResponse_30000011.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendGiftRequest_30000012, cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendGiftResponse_30000013, cn.game.protocol.protobuf.FriendMsg.FriendGiftResponse_30000013.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendGiftReceiveRequest_30000014, cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendGiftReceiveResponse_30000015, cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendApplyPush_30000022, cn.game.protocol.protobuf.FriendMsg.FriendApplyPush_30000022.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendAddPush_30000023, cn.game.protocol.protobuf.FriendMsg.FriendAddPush_30000023.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(FriendDelPush_30000024, cn.game.protocol.protobuf.FriendMsg.FriendDelPush_30000024.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(GemWearRequest_10000001, cn.game.protocol.protobuf.GemMsg.GemWearRequest_10000001.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(GemWearResponse_10000002, cn.game.protocol.protobuf.GemMsg.GemWearResponse_10000002.getDefaultInstance()
@@ -956,6 +1027,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(PlayerBriefInfoOtherRequest_01000009, cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerBriefInfoOtherResponse_0100000a, cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherResponse_0100000a.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerSearchRequest_0100000b, cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerSearchResponse_0100000c, cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerShowRequest_01000039, cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.getDefaultInstance()
 				.getParserForType());
@@ -1428,6 +1503,52 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x27000007,"FairyFriendTravelRequest_27000007");
 		nameIdMap.put("FairyFriendTravelResponse_27000008", 0x27000008);
 		idNameMap.put(0x27000008,"FairyFriendTravelResponse_27000008");
+		nameIdMap.put("FriendListRequest_30000001", 0x30000001);
+		idNameMap.put(0x30000001,"FriendListRequest_30000001");
+		nameIdMap.put("FriendListResponse_30000002", 0x30000002);
+		idNameMap.put(0x30000002,"FriendListResponse_30000002");
+		nameIdMap.put("FriendBlackListRequest_30000051", 0x30000051);
+		idNameMap.put(0x30000051,"FriendBlackListRequest_30000051");
+		nameIdMap.put("FriendBlackListResponse_30000052", 0x30000052);
+		idNameMap.put(0x30000052,"FriendBlackListResponse_30000052");
+		nameIdMap.put("FriendApplyListRequest_30000053", 0x30000053);
+		idNameMap.put(0x30000053,"FriendApplyListRequest_30000053");
+		nameIdMap.put("FriendApplyListResponse_30000054", 0x30000054);
+		idNameMap.put(0x30000054,"FriendApplyListResponse_30000054");
+		nameIdMap.put("FriendRecommendRequest_30000003", 0x30000003);
+		idNameMap.put(0x30000003,"FriendRecommendRequest_30000003");
+		nameIdMap.put("FriendRecommendResponse_30000004", 0x30000004);
+		idNameMap.put(0x30000004,"FriendRecommendResponse_30000004");
+		nameIdMap.put("FriendApplyRequest_30000005", 0x30000005);
+		idNameMap.put(0x30000005,"FriendApplyRequest_30000005");
+		nameIdMap.put("FriendApplyResponse_30000006", 0x30000006);
+		idNameMap.put(0x30000006,"FriendApplyResponse_30000006");
+		nameIdMap.put("FriendApplicationRequest_30000007", 0x30000007);
+		idNameMap.put(0x30000007,"FriendApplicationRequest_30000007");
+		nameIdMap.put("FriendApplicationResponse_30000008", 0x30000008);
+		idNameMap.put(0x30000008,"FriendApplicationResponse_30000008");
+		nameIdMap.put("FriendDeleteRequest_30000009", 0x30000009);
+		idNameMap.put(0x30000009,"FriendDeleteRequest_30000009");
+		nameIdMap.put("FriendDeleteResponse_3000000a", 0x3000000a);
+		idNameMap.put(0x3000000a,"FriendDeleteResponse_3000000a");
+		nameIdMap.put("FriendBlackRequest_30000010", 0x30000010);
+		idNameMap.put(0x30000010,"FriendBlackRequest_30000010");
+		nameIdMap.put("FriendBlackResponse_30000011", 0x30000011);
+		idNameMap.put(0x30000011,"FriendBlackResponse_30000011");
+		nameIdMap.put("FriendGiftRequest_30000012", 0x30000012);
+		idNameMap.put(0x30000012,"FriendGiftRequest_30000012");
+		nameIdMap.put("FriendGiftResponse_30000013", 0x30000013);
+		idNameMap.put(0x30000013,"FriendGiftResponse_30000013");
+		nameIdMap.put("FriendGiftReceiveRequest_30000014", 0x30000014);
+		idNameMap.put(0x30000014,"FriendGiftReceiveRequest_30000014");
+		nameIdMap.put("FriendGiftReceiveResponse_30000015", 0x30000015);
+		idNameMap.put(0x30000015,"FriendGiftReceiveResponse_30000015");
+		nameIdMap.put("FriendApplyPush_30000022", 0x30000022);
+		idNameMap.put(0x30000022,"FriendApplyPush_30000022");
+		nameIdMap.put("FriendAddPush_30000023", 0x30000023);
+		idNameMap.put(0x30000023,"FriendAddPush_30000023");
+		nameIdMap.put("FriendDelPush_30000024", 0x30000024);
+		idNameMap.put(0x30000024,"FriendDelPush_30000024");
 		nameIdMap.put("GemWearRequest_10000001", 0x10000001);
 		idNameMap.put(0x10000001,"GemWearRequest_10000001");
 		nameIdMap.put("GemWearResponse_10000002", 0x10000002);
@@ -1718,6 +1839,10 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x01000009,"PlayerBriefInfoOtherRequest_01000009");
 		nameIdMap.put("PlayerBriefInfoOtherResponse_0100000a", 0x0100000a);
 		idNameMap.put(0x0100000a,"PlayerBriefInfoOtherResponse_0100000a");
+		nameIdMap.put("PlayerSearchRequest_0100000b", 0x0100000b);
+		idNameMap.put(0x0100000b,"PlayerSearchRequest_0100000b");
+		nameIdMap.put("PlayerSearchResponse_0100000c", 0x0100000c);
+		idNameMap.put(0x0100000c,"PlayerSearchResponse_0100000c");
 		nameIdMap.put("PlayerShowRequest_01000039", 0x01000039);
 		idNameMap.put(0x01000039,"PlayerShowRequest_01000039");
 		nameIdMap.put("PlayerShowResponse_0100003a", 0x0100003a);
