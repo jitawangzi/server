@@ -293,19 +293,7 @@ public final class Rnd {
 	 * @return
 	 */
 	public static int randomWeighableIndex(List<? extends Weightable> list) {
-		int total = 0;
-		for (Weightable i : list) {
-			total += i.weight();
-		}
-
-		int rand = Rnd.nextInt(total);
-		int current = 0;
-		for (int i = 0; i < list.size(); i++) {
-			current += list.get(i).weight();
-			if (rand < current) { return i; }
-		}
-
-		return -1;
+		return randomIndex(list, Weightable::weight);
 	}
 	/**
 	 * 从带权重的对象集合里随机一个下标，排除指定索引的元素
@@ -315,12 +303,23 @@ public final class Rnd {
 	 * @return
 	 */
 	public static int randomWeighableIndexExcludeIndex(List<? extends Weightable> list, List<Integer> excludeIndexs) {
+		return randomIndexExcludeIndex(list, Weightable::weight, excludeIndexs);
+	}
+	
+	/**
+	 * 从带权重的对象集合里随机一个下标，排除指定索引的元素
+	 * @param excludeIndexs
+	 *            排除的索引
+	 * @param list
+	 * @return
+	 */
+	public static <T> int randomIndexExcludeIndex(List<T> list, Function<T, Integer> function, List<Integer> excludeIndexs) {
 		int total = 0;
 		for (int i = 0; i < list.size(); i++) {
 			if (excludeIndexs != null && excludeIndexs.contains(i)) {
 				continue;
 			}
-			total += list.get(i).weight();
+			total += function.apply(list.get(i));
 		}
 
 		int rand = Rnd.nextInt(total);
@@ -329,13 +328,14 @@ public final class Rnd {
 			if (excludeIndexs != null && excludeIndexs.contains(i)) {
 				continue;
 			}
-			current += list.get(i).weight();
+			current += function.apply(list.get(i));
 			if (rand < current)
 				return i;
 		}
 
 		return -1;
 	}
+
 	/**
 	 * 从多个集合中，按权重随机出来一个元素
 	 * 
@@ -394,6 +394,20 @@ public final class Rnd {
 		}
 		return ret;
 	}
+
+	public static <T> List<Integer> randomIndexsNonRepeating(List<T> list, Function<T, Integer> function, int count) {
+
+		List<Integer> ret = new ArrayList<Integer>();
+
+		for (int i = 0; i < count; i++) {
+
+			int index = randomIndexExcludeIndex(list, function, ret);
+			if (index != -1) {
+				ret.add(index);
+			}
+		}
+		return ret;
+	}
 	public static int[] getRandomNumbers(int[] array, int count) {
 		if (count > array.length) {
 			throw new IllegalArgumentException("Count cannot be greater than the array length.");
@@ -426,6 +440,23 @@ public final class Rnd {
 	public static <T extends Weightable> List<T> randomWeighableElementsNonRepeating(List<T> list, int count) {
 		List<T> ret = new ArrayList<>();
 		List<Integer> indexs = randomWeighableIndexsNonRepeating(list, count);
+		for (int i = 0; i < indexs.size(); i++) {
+			T weightable = list.get(indexs.get(i));
+			ret.add(weightable);
+		}
+		return ret;
+	}
+
+	/**
+	 * 按权重随机出指定数量的不重复的元素索引
+	 * 
+	 * @param list
+	 * @param count
+	 * @return
+	 */
+	public static <T> List<T> randomElementsNonRepeating(List<T> list, Function<T, Integer> function, int count) {
+		List<T> ret = new ArrayList<>();
+		List<Integer> indexs = randomIndexsNonRepeating(list, function, count);
 		for (int i = 0; i < indexs.size(); i++) {
 			T weightable = list.get(indexs.get(i));
 			ret.add(weightable);

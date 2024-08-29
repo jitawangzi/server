@@ -465,13 +465,13 @@ public class PlayerHandler extends BaseHandler {
 
 	protected void show(NetClient client, Object message) {
 		PlayerShowRequest_01000039 request = (PlayerShowRequest_01000039) message;
-		String serverId = request.getServerId();
+//		String serverId = request.getServerId();
 		long id = Long.parseLong(request.getPlayerId());
 		TaskManager.getInstance().addWorkerTask(() -> {
 			PlayerShowResponse_0100003a.Builder response = PlayerShowResponse_0100003a.newBuilder();
 			int error = 0;
 			try {
-				SimplePlayer simplePlayer = PlayerManager.getInstance().getAndLoadSimplePlayer(id, serverId);
+				SimplePlayer simplePlayer = PlayerManager.getInstance().getAndLoadSimplePlayer(id, "");
 				response.setPlayer(PbBuilder.buildPlayerShowInfo(simplePlayer));
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -179,8 +179,6 @@ public class PbBuilder {
 		PlayerShowInfo.Builder showInfo = PlayerShowInfo.newBuilder() ; 
 		
 		showInfo.setGuild(player.getUnionName() == null ? "" : player.getUnionName());
-		showInfo.setCombat(player.getCombat());
-		showInfo.setPraisedCount(player.getPraisedCount());
 		
 		return showInfo.build();
 

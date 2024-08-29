@@ -1185,7 +1185,7 @@ public class ChapterHandler extends BaseHandler {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 //		long randomSeed = System.currentTimeMillis() ; 
 		IBattleHandler battleHandler = chapterModule.getBattle(type);
-		int errorCode = battleHandler.check(dungeonId, 0);
+		int errorCode = battleHandler.check(dungeonId, id);
 		if (errorCode > 0) {
 			client.sendProtocol(resp, errorCode);
 			return;

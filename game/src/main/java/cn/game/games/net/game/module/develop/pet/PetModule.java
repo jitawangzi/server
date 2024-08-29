@@ -1,5 +1,8 @@
 package cn.game.games.net.game.module.develop.pet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -14,10 +17,21 @@ public class PetModule extends AbstractItemModule<Pet> {
 
 	/** 当前上阵的宠物id */
 	private int battlePetId;
+	/** 图鉴等级 */
+	private Map<Integer, Integer> petBookMap = new HashMap<Integer, Integer>();
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
+	}
+
+
+	public void setBattlePetId(int battlePetId) {
+		this.battlePetId = battlePetId;
+	}
+
+	public Map<Integer, Integer> getPetBookMap() {
+		return petBookMap;
 	}
 
 	@Override
@@ -54,6 +68,11 @@ public class PetModule extends AbstractItemModule<Pet> {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
+		for (Pet pet : list()) {
+			builder.addPets(pet.toPetInfo());
+		}
+		builder.putAllPetBook(petBookMap);
+		builder.setPetBattleId(battlePetId);
 
 	}
 

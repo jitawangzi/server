@@ -7813,6 +7813,35 @@ public final class PetMsg {
      * @return The skills at the given index.
      */
     int getSkills(int index);
+
+    /**
+     * <pre>
+     * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+     * </pre>
+     *
+     * <code>repeated int32 petSkillsToSave = 24;</code>
+     * @return A list containing the petSkillsToSave.
+     */
+    java.util.List<java.lang.Integer> getPetSkillsToSaveList();
+    /**
+     * <pre>
+     * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+     * </pre>
+     *
+     * <code>repeated int32 petSkillsToSave = 24;</code>
+     * @return The count of petSkillsToSave.
+     */
+    int getPetSkillsToSaveCount();
+    /**
+     * <pre>
+     * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+     * </pre>
+     *
+     * <code>repeated int32 petSkillsToSave = 24;</code>
+     * @param index The index of the element to return.
+     * @return The petSkillsToSave at the given index.
+     */
+    int getPetSkillsToSave(int index);
   }
   /**
    * Protobuf type {@code Protos.PetInfo}
@@ -7828,6 +7857,7 @@ public final class PetMsg {
     }
     private PetInfo() {
       skills_ = emptyIntList();
+      petSkillsToSave_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -7897,6 +7927,27 @@ public final class PetMsg {
               input.popLimit(limit);
               break;
             }
+            case 192: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                petSkillsToSave_ = newIntList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              petSkillsToSave_.addInt(input.readInt32());
+              break;
+            }
+            case 194: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
+                petSkillsToSave_ = newIntList();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                petSkillsToSave_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -7914,6 +7965,9 @@ public final class PetMsg {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           skills_.makeImmutable(); // C
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          petSkillsToSave_.makeImmutable(); // C
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -8017,6 +8071,46 @@ public final class PetMsg {
     }
     private int skillsMemoizedSerializedSize = -1;
 
+    public static final int PETSKILLSTOSAVE_FIELD_NUMBER = 24;
+    private com.google.protobuf.Internal.IntList petSkillsToSave_;
+    /**
+     * <pre>
+     * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+     * </pre>
+     *
+     * <code>repeated int32 petSkillsToSave = 24;</code>
+     * @return A list containing the petSkillsToSave.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getPetSkillsToSaveList() {
+      return petSkillsToSave_;
+    }
+    /**
+     * <pre>
+     * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+     * </pre>
+     *
+     * <code>repeated int32 petSkillsToSave = 24;</code>
+     * @return The count of petSkillsToSave.
+     */
+    public int getPetSkillsToSaveCount() {
+      return petSkillsToSave_.size();
+    }
+    /**
+     * <pre>
+     * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+     * </pre>
+     *
+     * <code>repeated int32 petSkillsToSave = 24;</code>
+     * @param index The index of the element to return.
+     * @return The petSkillsToSave at the given index.
+     */
+    public int getPetSkillsToSave(int index) {
+      return petSkillsToSave_.getInt(index);
+    }
+    private int petSkillsToSaveMemoizedSerializedSize = -1;
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -8047,6 +8141,13 @@ public final class PetMsg {
       }
       for (int i = 0; i < skills_.size(); i++) {
         output.writeInt32NoTag(skills_.getInt(i));
+      }
+      if (getPetSkillsToSaveList().size() > 0) {
+        output.writeUInt32NoTag(194);
+        output.writeUInt32NoTag(petSkillsToSaveMemoizedSerializedSize);
+      }
+      for (int i = 0; i < petSkillsToSave_.size(); i++) {
+        output.writeInt32NoTag(petSkillsToSave_.getInt(i));
       }
       unknownFields.writeTo(output);
     }
@@ -8083,6 +8184,20 @@ public final class PetMsg {
         }
         skillsMemoizedSerializedSize = dataSize;
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < petSkillsToSave_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(petSkillsToSave_.getInt(i));
+        }
+        size += dataSize;
+        if (!getPetSkillsToSaveList().isEmpty()) {
+          size += 2;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        petSkillsToSaveMemoizedSerializedSize = dataSize;
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -8106,6 +8221,8 @@ public final class PetMsg {
           != other.getBreakLevelMax()) return false;
       if (!getSkillsList()
           .equals(other.getSkillsList())) return false;
+      if (!getPetSkillsToSaveList()
+          .equals(other.getPetSkillsToSaveList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -8126,6 +8243,10 @@ public final class PetMsg {
       if (getSkillsCount() > 0) {
         hash = (37 * hash) + SKILLS_FIELD_NUMBER;
         hash = (53 * hash) + getSkillsList().hashCode();
+      }
+      if (getPetSkillsToSaveCount() > 0) {
+        hash = (37 * hash) + PETSKILLSTOSAVE_FIELD_NUMBER;
+        hash = (53 * hash) + getPetSkillsToSaveList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -8268,6 +8389,8 @@ public final class PetMsg {
 
         skills_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000001);
+        petSkillsToSave_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -8303,6 +8426,11 @@ public final class PetMsg {
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.skills_ = skills_;
+        if (((bitField0_ & 0x00000002) != 0)) {
+          petSkillsToSave_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.petSkillsToSave_ = petSkillsToSave_;
         onBuilt();
         return result;
       }
@@ -8367,6 +8495,16 @@ public final class PetMsg {
           } else {
             ensureSkillsIsMutable();
             skills_.addAll(other.skills_);
+          }
+          onChanged();
+        }
+        if (!other.petSkillsToSave_.isEmpty()) {
+          if (petSkillsToSave_.isEmpty()) {
+            petSkillsToSave_ = other.petSkillsToSave_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensurePetSkillsToSaveIsMutable();
+            petSkillsToSave_.addAll(other.petSkillsToSave_);
           }
           onChanged();
         }
@@ -8635,6 +8773,113 @@ public final class PetMsg {
         onChanged();
         return this;
       }
+
+      private com.google.protobuf.Internal.IntList petSkillsToSave_ = emptyIntList();
+      private void ensurePetSkillsToSaveIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          petSkillsToSave_ = mutableCopy(petSkillsToSave_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <pre>
+       * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+       * </pre>
+       *
+       * <code>repeated int32 petSkillsToSave = 24;</code>
+       * @return A list containing the petSkillsToSave.
+       */
+      public java.util.List<java.lang.Integer>
+          getPetSkillsToSaveList() {
+        return ((bitField0_ & 0x00000002) != 0) ?
+                 java.util.Collections.unmodifiableList(petSkillsToSave_) : petSkillsToSave_;
+      }
+      /**
+       * <pre>
+       * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+       * </pre>
+       *
+       * <code>repeated int32 petSkillsToSave = 24;</code>
+       * @return The count of petSkillsToSave.
+       */
+      public int getPetSkillsToSaveCount() {
+        return petSkillsToSave_.size();
+      }
+      /**
+       * <pre>
+       * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+       * </pre>
+       *
+       * <code>repeated int32 petSkillsToSave = 24;</code>
+       * @param index The index of the element to return.
+       * @return The petSkillsToSave at the given index.
+       */
+      public int getPetSkillsToSave(int index) {
+        return petSkillsToSave_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+       * </pre>
+       *
+       * <code>repeated int32 petSkillsToSave = 24;</code>
+       * @param index The index to set the value at.
+       * @param value The petSkillsToSave to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPetSkillsToSave(
+          int index, int value) {
+        ensurePetSkillsToSaveIsMutable();
+        petSkillsToSave_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+       * </pre>
+       *
+       * <code>repeated int32 petSkillsToSave = 24;</code>
+       * @param value The petSkillsToSave to add.
+       * @return This builder for chaining.
+       */
+      public Builder addPetSkillsToSave(int value) {
+        ensurePetSkillsToSaveIsMutable();
+        petSkillsToSave_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+       * </pre>
+       *
+       * <code>repeated int32 petSkillsToSave = 24;</code>
+       * @param values The petSkillsToSave to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllPetSkillsToSave(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensurePetSkillsToSaveIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, petSkillsToSave_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+       * </pre>
+       *
+       * <code>repeated int32 petSkillsToSave = 24;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPetSkillsToSave() {
+        petSkillsToSave_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -8798,10 +9043,10 @@ public final class PetMsg {
       "\n\002id\030\001 \001(\005\"#\n!PetBondsActivateResponse_1" +
       "9000014\"-\n\037PetBondsUpLevelRequest_190000" +
       "15\022\n\n\002id\030\001 \001(\005\"\"\n PetBondsUpLevelRespons" +
-      "e_19000016\"K\n\007PetInfo\022\n\n\002id\030\001 \001(\005\022\r\n\005lev" +
+      "e_19000016\"d\n\007PetInfo\022\n\n\002id\030\001 \001(\005\022\r\n\005lev" +
       "el\030\002 \001(\005\022\025\n\rbreakLevelMax\030\003 \001(\005\022\016\n\006skill" +
-      "s\030\004 \003(\005B\033\n\031cn.game.protocol.protobufb\006pr" +
-      "oto3"
+      "s\030\004 \003(\005\022\027\n\017petSkillsToSave\030\030 \003(\005B\033\n\031cn.g" +
+      "ame.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -8908,7 +9153,7 @@ public final class PetMsg {
     internal_static_Protos_PetInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetInfo_descriptor,
-        new java.lang.String[] { "Id", "Level", "BreakLevelMax", "Skills", });
+        new java.lang.String[] { "Id", "Level", "BreakLevelMax", "Skills", "PetSkillsToSave", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

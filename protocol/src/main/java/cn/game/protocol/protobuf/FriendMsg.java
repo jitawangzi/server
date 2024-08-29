@@ -9972,7 +9972,7 @@ public final class FriendMsg {
   }
   /**
    * <pre>
-   *赠送好友友情点
+   *赠送好友友情点，注意人数不要发多了，超过每日次数限制。
    * </pre>
    *
    * Protobuf type {@code Protos.FriendGiftRequest_30000012}
@@ -10279,7 +10279,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     *赠送好友友情点
+     *赠送好友友情点，注意人数不要发多了，超过每日次数限制。
      * </pre>
      *
      * Protobuf type {@code Protos.FriendGiftRequest_30000012}
@@ -11104,7 +11104,7 @@ public final class FriendMsg {
   }
   /**
    * <pre>
-   *领取好友赠送的友情点，包含一键领取
+   *领取好友赠送的友情点，包含一键领取，注意人数不要领多了，超过每日次数限制。
    * </pre>
    *
    * Protobuf type {@code Protos.FriendGiftReceiveRequest_30000014}
@@ -11411,7 +11411,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     *领取好友赠送的友情点，包含一键领取
+     *领取好友赠送的友情点，包含一键领取，注意人数不要领多了，超过每日次数限制。
      * </pre>
      *
      * Protobuf type {@code Protos.FriendGiftReceiveRequest_30000014}

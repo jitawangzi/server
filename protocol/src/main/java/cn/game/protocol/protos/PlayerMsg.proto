@@ -296,7 +296,6 @@ message PlayerAllInfo{
    map<uint32, uint32> fairyFriendFights = 21;   //仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
    repeated PetInfo pets = 22;   // 宠物数据
    map<uint32, uint32> petBook = 23;   // 宠物羁绊/图鉴数据，key：SoulPetBook表id  value： 图鉴等级
-   repeated int32 petSkillsToSave = 24;  // 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
    int32 petBattleId = 26;  // 上阵的宠物id  SoulPet 表id
 
 

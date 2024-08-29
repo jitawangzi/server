@@ -1,29 +1,46 @@
 package cn.game.games.net.game.module.develop.pet;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
-import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.protocol.protobuf.PetMsg.PetCompositeRequest_19000001;
-import cn.game.protocol.protobuf.PetMsg.PetCompositeResponse_19000002;
+
 import cn.game.core.net.client.NetClient;
+import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.generated.config.SoulPetBookConfig;
+import cn.game.protocol.generated.config.SoulPetConfig;
+import cn.game.protocol.generated.config.SoulPetSkillConfig;
+import cn.game.protocol.generated.config.SoulPetlLvupConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.SoulPetBookManager;
+import cn.game.protocol.generated.manager.SoulPetManager;
+import cn.game.protocol.generated.manager.SoulPetSkillManager;
+import cn.game.protocol.generated.manager.SoulPetlLvupManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.PetMsg.PetUpLevelRequest_19000003;
-import cn.game.protocol.protobuf.PetMsg.PetUpLevelResponse_19000004;
-import cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005;
-import cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006;
-import cn.game.protocol.protobuf.PetMsg.PetRefineRequest_19000007;
-import cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008;
-import cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009;
-import cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a;
 import cn.game.protocol.protobuf.PetMsg.PetBattleRequest_19000011;
 import cn.game.protocol.protobuf.PetMsg.PetBattleResponse_19000012;
 import cn.game.protocol.protobuf.PetMsg.PetBondsActivateRequest_19000013;
 import cn.game.protocol.protobuf.PetMsg.PetBondsActivateResponse_19000014;
 import cn.game.protocol.protobuf.PetMsg.PetBondsUpLevelRequest_19000015;
 import cn.game.protocol.protobuf.PetMsg.PetBondsUpLevelResponse_19000016;
+import cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005;
+import cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006;
+import cn.game.protocol.protobuf.PetMsg.PetCompositeRequest_19000001;
+import cn.game.protocol.protobuf.PetMsg.PetCompositeResponse_19000002;
+import cn.game.protocol.protobuf.PetMsg.PetRefineRequest_19000007;
+import cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008;
+import cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009;
+import cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a;
+import cn.game.protocol.protobuf.PetMsg.PetUpLevelRequest_19000003;
+import cn.game.protocol.protobuf.PetMsg.PetUpLevelResponse_19000004;
+import cn.game.util.Rnd;
 
 @Component
 public class PetHandler extends BaseHandler {
@@ -54,6 +71,20 @@ public class PetHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+		PetModule petModule = player.getPetModule();
+		Pet pet = petModule.get(id);
+		if (pet != null) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		SoulPetlLvupConfig soulPetlLvupConfig = SoulPetlLvupManager.instance().get(0);
+		SoulPetConfig soulPetConfig = SoulPetManager.instance().get(id);
+		if (!PlayerHelper.delResources(player, soulPetConfig.PieceID, soulPetlLvupConfig.LvConsumeItem, OpType.SoulPet)) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		petModule.add(id, OpType.SoulPet);
+
         client.sendProtocol(defaultInstance);
     }
 
@@ -66,6 +97,39 @@ public class PetHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+
+		PetModule petModule = player.getPetModule();
+		Pet pet = petModule.get(id);
+		if (pet == null) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		SoulPetlLvupConfig soulPetlLvupConfig = SoulPetlLvupManager.instance().get(pet.getLevel());
+		SoulPetlLvupConfig soulPetlLvupConfigNext = SoulPetlLvupManager.instance().getNullable(pet.getLevel() + 1);
+		if (soulPetlLvupConfigNext == null) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.level_limit.getId());
+			return;
+		}
+		SoulPetConfig soulPetConfig = SoulPetManager.instance().get(id);
+		int[][] breakConsumeItem = soulPetConfig.BreakConsumeItem;
+		for (int[] is : breakConsumeItem) {
+			if (is[0] == pet.getLevel() && pet.getBreakLevel() != pet.getLevel()) {
+				client.sendProtocol(defaultInstance, ErrorMsgEnum.illegal_request.getId());
+				return;
+			}
+		}
+		int[] cost = new int[4] ; 
+		cost[0] = soulPetConfig.PieceID ;
+		cost[1] = soulPetlLvupConfig.LvConsumeItem ;
+		cost[2] = Asset.gold.ID ;
+		cost[3] = soulPetlLvupConfig.LvConsumeMoney ;
+		
+		if (!PlayerHelper.delResources(player, cost, OpType.SoulPet)) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		pet.setLevel(pet.getLevel() + 1);
+
         client.sendProtocol(defaultInstance);
     }
 
@@ -78,6 +142,37 @@ public class PetHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+		PetModule petModule = player.getPetModule();
+		Pet pet = petModule.get(id);
+		if (pet == null) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		SoulPetConfig soulPetConfig = SoulPetManager.instance().get(id);
+		int[][] breakConsumeItem = soulPetConfig.BreakConsumeItem;
+		boolean canBreak = false ; 
+		int itemCount = 0;
+		for (int[] is : breakConsumeItem) {
+			if (is[0] == pet.getLevel()) {
+				canBreak = true;
+				itemCount = is[1];
+				break;
+			}
+		}
+		if (!canBreak) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		if (pet.getBreakLevel() == pet.getLevel()) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		if (!PlayerHelper.delResources(player, 205060, itemCount, OpType.SoulPet)) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		pet.setBreakLevel(pet.getLevel());
+
         client.sendProtocol(defaultInstance);
     }
 
@@ -90,18 +185,62 @@ public class PetHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+		PetModule petModule = player.getPetModule();
+		Pet pet = petModule.get(id);
+		if (pet == null) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		SoulPetConfig soulPetConfig = SoulPetManager.instance().get(id);
+
+		if (!PlayerHelper.delResources(player, 205030, soulPetConfig.SkillResetConsume, OpType.SoulPet)) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		int randomIndex = Rnd.randomIndex(soulPetConfig.SkillNumProbability);
+		int skillCount = soulPetConfig.SkillNum[randomIndex];
+		List<Integer> skillsList = new ArrayList<>();
+		List<Integer> skillsGroupList = new ArrayList<>();
+		for (int i = 0; i < skillCount; i++) {
+			SoulPetSkillConfig randomElement = Rnd.randomElement(SoulPetSkillManager.instance().list(), r -> r.Probability);
+			if (skillsGroupList.contains(randomElement.IndexId)) {
+				i--;
+				continue;
+			}
+			skillsGroupList.add(randomElement.IndexId);
+			skillsList.add(randomElement.ID);
+		}
+
         PetRefineResponse_19000008.Builder resp = PetRefineResponse_19000008.newBuilder();
+		resp.addAllSkills(skillsList);
+		pet.setSkillsToSaveList(skillsList);
+
         client.sendProtocol(resp.build());
     }
 
     private void refineSave(NetClient client, Object message) {
         PetRefineSaveRequest_19000009 req = (PetRefineSaveRequest_19000009) message;
+		int id = req.getId();
         PetRefineSaveResponse_1900000a defaultInstance = PetRefineSaveResponse_1900000a.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (!player.isFuncOpen(InitialUI.SoulPets)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+		PetModule petModule = player.getPetModule();
+		Pet pet = petModule.get(id);
+		if (pet == null) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		if (pet.getSkillsToSaveList().isEmpty()) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		pet.getSkillsList().clear(); 
+		pet.getSkillsList().addAll(pet.getSkillsToSaveList());
+		pet.getSkillsToSaveList().clear();
+
         client.sendProtocol(defaultInstance);
     }
 
@@ -114,6 +253,16 @@ public class PetHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+		PetModule petModule = player.getPetModule();
+		if (id > 0) {
+			Pet pet = petModule.get(id);
+			if (pet == null) {
+				client.sendProtocol(defaultInstance, ErrorMsgEnum.player_data_not_found.getId());
+				return;
+			}
+		}
+		petModule.setBattlePetId(id);
+
         client.sendProtocol(defaultInstance);
     }
 
@@ -126,6 +275,23 @@ public class PetHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+		PetModule petModule = player.getPetModule();
+		Map<Integer, Integer> petBookMap = petModule.getPetBookMap();
+		if (petBookMap.containsKey(id)) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+        SoulPetBookConfig soulPetBookConfig = SoulPetBookManager.instance().get(id); 
+		int[] soulPetBookCardIdGroup = soulPetBookConfig.SoulPetBookCardIdGroup;
+		for (int i : soulPetBookCardIdGroup) {
+			if (!petModule.has(i)) {
+				client.sendProtocol(defaultInstance, ErrorMsgEnum.illegal_request.getId());
+				return;
+			}
+		}
+		PlayerHelper.addResources(player, Asset.diamond.ID, soulPetBookConfig.SoulPetBookAward);
+
+		petBookMap.put(id, 1);
         client.sendProtocol(defaultInstance);
     }
 
@@ -138,6 +304,28 @@ public class PetHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+
+		PetModule petModule = player.getPetModule();
+		Map<Integer, Integer> petBookMap = petModule.getPetBookMap();
+		if (!petBookMap.containsKey(id)) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+
+		SoulPetBookConfig soulPetBookConfig = SoulPetBookManager.instance().get(id);
+
+		int level = soulPetBookConfig.SoulPetBookLvCondition.get(petBookMap.get(id) + 1);
+		int[] soulPetBookCardIdGroup = soulPetBookConfig.SoulPetBookCardIdGroup;
+		for (int i : soulPetBookCardIdGroup) {
+			Pet pet = petModule.get(i);
+			if (pet == null || pet.getLevel() < level) {
+				client.sendProtocol(defaultInstance, ErrorMsgEnum.level_not_enough.getId());
+				return;
+			}
+		}
+		PlayerHelper.addResources(player, Asset.diamond.ID, soulPetBookConfig.SoulPetBookAward);
+
+		petBookMap.put(id, petBookMap.get(id) + 1);
         client.sendProtocol(defaultInstance);
     }
 }

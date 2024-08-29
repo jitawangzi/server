@@ -231,7 +231,7 @@ public class ShopHandler extends BaseHandler {
 			
 			if (fundPassRewardsConfig.LvCondition > 0
 					&& player.getPlayerModule().getExpLevelMap().getValue(fundPassConfig.ExpType) < fundPassRewardsConfig.LvCondition) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_level_not_enough.getId());
+				client.sendProtocol(resp, ErrorMsgEnum.level_not_enough.getId());
 				return;
 			}
 			boolean checkCondition = PlayerHelper.checkCondition(player, fundPassRewardsConfig.Condition);

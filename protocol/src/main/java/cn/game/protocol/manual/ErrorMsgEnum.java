@@ -49,7 +49,7 @@ public enum ErrorMsgEnum {
 	/** 配置表数据找不到 */
 	config_data_not_found(56, "配置表数据找不到"),
 	/** 等级不足 */
-	player_level_not_enough(57, "等级不足"),
+	level_not_enough(57, "等级不足"),
 	/** 一般是时间未到之类未开启 */
 	not_open(58, "一般是时间未到之类未开启"),
 	/** 功能尚未开启  */

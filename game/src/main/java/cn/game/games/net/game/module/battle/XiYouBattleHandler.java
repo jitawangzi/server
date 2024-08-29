@@ -42,7 +42,7 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 //			return ErrorMsgEnum.times_limit.getId();
 //		}
 		if (battleConfig.BattleCondition > 0 && player.getDevelopModule().getHeavenlyDaoLevel() < battleConfig.BattleCondition) {
-			return ErrorMsgEnum.player_level_not_enough.getId();
+			return ErrorMsgEnum.level_not_enough.getId();
 		}
 
 //		if (!PlayerHelper.checkCondition(playerId, battleConfig.enterCondtion)) {

@@ -12,8 +12,10 @@ public class Pet extends Item implements Serializable, DbEntity {
 
 	private static final long serialVersionUID = 1L;
 	private int level;
+	/** 已经突破的最高等级 */
 	private int breakLevel;
 	private List<Integer> skillsList = new ArrayList<>();;
+	private List<Integer> skillsToSaveList = new ArrayList<>();;
 
 	/**
 	 * @mbg.generated
@@ -30,6 +32,7 @@ public class Pet extends Item implements Serializable, DbEntity {
 		builder.setBreakLevelMax(breakLevel);
 		builder.addAllSkills(skillsList);
 		builder.setId(configId);
+		builder.addAllPetSkillsToSave(skillsToSaveList);
 		return builder.build();
 	}
 
@@ -55,6 +58,14 @@ public class Pet extends Item implements Serializable, DbEntity {
 
 	public void setSkillsList(List<Integer> skillsList) {
 		this.skillsList = skillsList;
+	}
+
+	public List<Integer> getSkillsToSaveList() {
+		return skillsToSaveList;
+	}
+
+	public void setSkillsToSaveList(List<Integer> skillsToSaveList) {
+		this.skillsToSaveList = skillsToSaveList;
 	}
 
 }

@@ -16012,6 +16012,16 @@ public final class BaseMsg {
 
     /**
      * <pre>
+     * 主线关卡进度  Battle表id
+     * </pre>
+     *
+     * <code>int32 battleId = 1;</code>
+     * @return The battleId.
+     */
+    int getBattleId();
+
+    /**
+     * <pre>
      * 公会名称
      * </pre>
      *
@@ -16032,23 +16042,47 @@ public final class BaseMsg {
 
     /**
      * <pre>
-     * 战斗力
+     *当前阵容。
      * </pre>
      *
-     * <code>uint32 combat = 3;</code>
-     * @return The combat.
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
      */
-    int getCombat();
-
+    java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> 
+        getHerosList();
     /**
      * <pre>
-     * 被点赞数量
+     *当前阵容。
      * </pre>
      *
-     * <code>uint32 praisedCount = 4;</code>
-     * @return The praisedCount.
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
      */
-    int getPraisedCount();
+    cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index);
+    /**
+     * <pre>
+     *当前阵容。
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
+     */
+    int getHerosCount();
+    /**
+     * <pre>
+     *当前阵容。
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
+     */
+    java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+        getHerosOrBuilderList();
+    /**
+     * <pre>
+     *当前阵容。
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
+     */
+    cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+        int index);
   }
   /**
    * <pre>
@@ -16068,6 +16102,7 @@ public final class BaseMsg {
     }
     private PlayerShowInfo() {
       guild_ = "";
+      heros_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -16090,6 +16125,7 @@ public final class BaseMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -16100,20 +16136,24 @@ public final class BaseMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              battleId_ = input.readInt32();
+              break;
+            }
             case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
               guild_ = s;
               break;
             }
-            case 24: {
-
-              combat_ = input.readUInt32();
-              break;
-            }
-            case 32: {
-
-              praisedCount_ = input.readUInt32();
+            case 58: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HeroInfo>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              heros_.add(
+                  input.readMessage(cn.game.protocol.protobuf.BaseMsg.HeroInfo.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -16131,6 +16171,9 @@ public final class BaseMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          heros_ = java.util.Collections.unmodifiableList(heros_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -16146,6 +16189,21 @@ public final class BaseMsg {
       return cn.game.protocol.protobuf.BaseMsg.internal_static_Protos_PlayerShowInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo.class, cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo.Builder.class);
+    }
+
+    public static final int BATTLEID_FIELD_NUMBER = 1;
+    private int battleId_;
+    /**
+     * <pre>
+     * 主线关卡进度  Battle表id
+     * </pre>
+     *
+     * <code>int32 battleId = 1;</code>
+     * @return The battleId.
+     */
+    @java.lang.Override
+    public int getBattleId() {
+      return battleId_;
     }
 
     public static final int GUILD_FIELD_NUMBER = 2;
@@ -16194,34 +16252,64 @@ public final class BaseMsg {
       }
     }
 
-    public static final int COMBAT_FIELD_NUMBER = 3;
-    private int combat_;
+    public static final int HEROS_FIELD_NUMBER = 7;
+    private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_;
     /**
      * <pre>
-     * 战斗力
+     *当前阵容。
      * </pre>
      *
-     * <code>uint32 combat = 3;</code>
-     * @return The combat.
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
      */
     @java.lang.Override
-    public int getCombat() {
-      return combat_;
+    public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> getHerosList() {
+      return heros_;
     }
-
-    public static final int PRAISEDCOUNT_FIELD_NUMBER = 4;
-    private int praisedCount_;
     /**
      * <pre>
-     * 被点赞数量
+     *当前阵容。
      * </pre>
      *
-     * <code>uint32 praisedCount = 4;</code>
-     * @return The praisedCount.
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
      */
     @java.lang.Override
-    public int getPraisedCount() {
-      return praisedCount_;
+    public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+        getHerosOrBuilderList() {
+      return heros_;
+    }
+    /**
+     * <pre>
+     *当前阵容。
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
+     */
+    @java.lang.Override
+    public int getHerosCount() {
+      return heros_.size();
+    }
+    /**
+     * <pre>
+     *当前阵容。
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index) {
+      return heros_.get(index);
+    }
+    /**
+     * <pre>
+     *当前阵容。
+     * </pre>
+     *
+     * <code>repeated .Protos.HeroInfo heros = 7;</code>
+     */
+    @java.lang.Override
+    public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+        int index) {
+      return heros_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -16238,14 +16326,14 @@ public final class BaseMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (battleId_ != 0) {
+        output.writeInt32(1, battleId_);
+      }
       if (!getGuildBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, guild_);
       }
-      if (combat_ != 0) {
-        output.writeUInt32(3, combat_);
-      }
-      if (praisedCount_ != 0) {
-        output.writeUInt32(4, praisedCount_);
+      for (int i = 0; i < heros_.size(); i++) {
+        output.writeMessage(7, heros_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -16256,16 +16344,16 @@ public final class BaseMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (battleId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, battleId_);
+      }
       if (!getGuildBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, guild_);
       }
-      if (combat_ != 0) {
+      for (int i = 0; i < heros_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, combat_);
-      }
-      if (praisedCount_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(4, praisedCount_);
+          .computeMessageSize(7, heros_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -16282,12 +16370,12 @@ public final class BaseMsg {
       }
       cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo other = (cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo) obj;
 
+      if (getBattleId()
+          != other.getBattleId()) return false;
       if (!getGuild()
           .equals(other.getGuild())) return false;
-      if (getCombat()
-          != other.getCombat()) return false;
-      if (getPraisedCount()
-          != other.getPraisedCount()) return false;
+      if (!getHerosList()
+          .equals(other.getHerosList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -16299,12 +16387,14 @@ public final class BaseMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + BATTLEID_FIELD_NUMBER;
+      hash = (53 * hash) + getBattleId();
       hash = (37 * hash) + GUILD_FIELD_NUMBER;
       hash = (53 * hash) + getGuild().hashCode();
-      hash = (37 * hash) + COMBAT_FIELD_NUMBER;
-      hash = (53 * hash) + getCombat();
-      hash = (37 * hash) + PRAISEDCOUNT_FIELD_NUMBER;
-      hash = (53 * hash) + getPraisedCount();
+      if (getHerosCount() > 0) {
+        hash = (37 * hash) + HEROS_FIELD_NUMBER;
+        hash = (53 * hash) + getHerosList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -16437,17 +16527,22 @@ public final class BaseMsg {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getHerosFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        battleId_ = 0;
+
         guild_ = "";
 
-        combat_ = 0;
-
-        praisedCount_ = 0;
-
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          herosBuilder_.clear();
+        }
         return this;
       }
 
@@ -16474,9 +16569,18 @@ public final class BaseMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo buildPartial() {
         cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo result = new cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo(this);
+        int from_bitField0_ = bitField0_;
+        result.battleId_ = battleId_;
         result.guild_ = guild_;
-        result.combat_ = combat_;
-        result.praisedCount_ = praisedCount_;
+        if (herosBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            heros_ = java.util.Collections.unmodifiableList(heros_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.heros_ = heros_;
+        } else {
+          result.heros_ = herosBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -16525,15 +16629,38 @@ public final class BaseMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo other) {
         if (other == cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo.getDefaultInstance()) return this;
+        if (other.getBattleId() != 0) {
+          setBattleId(other.getBattleId());
+        }
         if (!other.getGuild().isEmpty()) {
           guild_ = other.guild_;
           onChanged();
         }
-        if (other.getCombat() != 0) {
-          setCombat(other.getCombat());
-        }
-        if (other.getPraisedCount() != 0) {
-          setPraisedCount(other.getPraisedCount());
+        if (herosBuilder_ == null) {
+          if (!other.heros_.isEmpty()) {
+            if (heros_.isEmpty()) {
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureHerosIsMutable();
+              heros_.addAll(other.heros_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.heros_.isEmpty()) {
+            if (herosBuilder_.isEmpty()) {
+              herosBuilder_.dispose();
+              herosBuilder_ = null;
+              heros_ = other.heros_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              herosBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getHerosFieldBuilder() : null;
+            } else {
+              herosBuilder_.addAllMessages(other.heros_);
+            }
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -16561,6 +16688,50 @@ public final class BaseMsg {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+      private int bitField0_;
+
+      private int battleId_ ;
+      /**
+       * <pre>
+       * 主线关卡进度  Battle表id
+       * </pre>
+       *
+       * <code>int32 battleId = 1;</code>
+       * @return The battleId.
+       */
+      @java.lang.Override
+      public int getBattleId() {
+        return battleId_;
+      }
+      /**
+       * <pre>
+       * 主线关卡进度  Battle表id
+       * </pre>
+       *
+       * <code>int32 battleId = 1;</code>
+       * @param value The battleId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBattleId(int value) {
+        
+        battleId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 主线关卡进度  Battle表id
+       * </pre>
+       *
+       * <code>int32 battleId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBattleId() {
+        
+        battleId_ = 0;
+        onChanged();
         return this;
       }
 
@@ -16660,90 +16831,316 @@ public final class BaseMsg {
         return this;
       }
 
-      private int combat_ ;
-      /**
-       * <pre>
-       * 战斗力
-       * </pre>
-       *
-       * <code>uint32 combat = 3;</code>
-       * @return The combat.
-       */
-      @java.lang.Override
-      public int getCombat() {
-        return combat_;
-      }
-      /**
-       * <pre>
-       * 战斗力
-       * </pre>
-       *
-       * <code>uint32 combat = 3;</code>
-       * @param value The combat to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCombat(int value) {
-        
-        combat_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 战斗力
-       * </pre>
-       *
-       * <code>uint32 combat = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearCombat() {
-        
-        combat_ = 0;
-        onChanged();
-        return this;
+      private java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> heros_ =
+        java.util.Collections.emptyList();
+      private void ensureHerosIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          heros_ = new java.util.ArrayList<cn.game.protocol.protobuf.BaseMsg.HeroInfo>(heros_);
+          bitField0_ |= 0x00000001;
+         }
       }
 
-      private int praisedCount_ ;
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> herosBuilder_;
+
       /**
        * <pre>
-       * 被点赞数量
+       *当前阵容。
        * </pre>
        *
-       * <code>uint32 praisedCount = 4;</code>
-       * @return The praisedCount.
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
        */
-      @java.lang.Override
-      public int getPraisedCount() {
-        return praisedCount_;
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo> getHerosList() {
+        if (herosBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(heros_);
+        } else {
+          return herosBuilder_.getMessageList();
+        }
       }
       /**
        * <pre>
-       * 被点赞数量
+       *当前阵容。
        * </pre>
        *
-       * <code>uint32 praisedCount = 4;</code>
-       * @param value The praisedCount to set.
-       * @return This builder for chaining.
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
        */
-      public Builder setPraisedCount(int value) {
-        
-        praisedCount_ = value;
-        onChanged();
+      public int getHerosCount() {
+        if (herosBuilder_ == null) {
+          return heros_.size();
+        } else {
+          return herosBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo getHeros(int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);
+        } else {
+          return herosBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.set(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, value);
+        }
         return this;
       }
       /**
        * <pre>
-       * 被点赞数量
+       *当前阵容。
        * </pre>
        *
-       * <code>uint32 praisedCount = 4;</code>
-       * @return This builder for chaining.
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
        */
-      public Builder clearPraisedCount() {
-        
-        praisedCount_ = 0;
-        onChanged();
+      public Builder setHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public Builder addHeros(cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo value) {
+        if (herosBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureHerosIsMutable();
+          heros_.add(index, value);
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public Builder addHeros(
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public Builder addHeros(
+          int index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder builderForValue) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          herosBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public Builder addAllHeros(
+          java.lang.Iterable<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfo> values) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, heros_);
+          onChanged();
+        } else {
+          herosBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public Builder clearHeros() {
+        if (herosBuilder_ == null) {
+          heros_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          herosBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public Builder removeHeros(int index) {
+        if (herosBuilder_ == null) {
+          ensureHerosIsMutable();
+          heros_.remove(index);
+          onChanged();
+        } else {
+          herosBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder getHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder getHerosOrBuilder(
+          int index) {
+        if (herosBuilder_ == null) {
+          return heros_.get(index);  } else {
+          return herosBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public java.util.List<? extends cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+           getHerosOrBuilderList() {
+        if (herosBuilder_ != null) {
+          return herosBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(heros_);
+        }
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder addHerosBuilder() {
+        return getHerosFieldBuilder().addBuilder(
+            cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder addHerosBuilder(
+          int index) {
+        return getHerosFieldBuilder().addBuilder(
+            index, cn.game.protocol.protobuf.BaseMsg.HeroInfo.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       *当前阵容。
+       * </pre>
+       *
+       * <code>repeated .Protos.HeroInfo heros = 7;</code>
+       */
+      public java.util.List<cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder> 
+           getHerosBuilderList() {
+        return getHerosFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder> 
+          getHerosFieldBuilder() {
+        if (herosBuilder_ == null) {
+          herosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              cn.game.protocol.protobuf.BaseMsg.HeroInfo, cn.game.protocol.protobuf.BaseMsg.HeroInfo.Builder, cn.game.protocol.protobuf.BaseMsg.HeroInfoOrBuilder>(
+                  heros_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          heros_ = null;
+        }
+        return herosBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -17826,13 +18223,13 @@ public final class BaseMsg {
       "ffectiveness\030\004 \001(\r\022\014\n\004head\030\006 \001(\r\022\021\n\thead" +
       "Frame\030\007 \001(\r\022\016\n\006online\030\010 \001(\010\022\023\n\013offlineTi" +
       "me\030\t \001(\r\022\020\n\010serverId\030\n \001(\t\022\022\n\nserverName" +
-      "\030\013 \001(\t\022\024\n\014tiandaoLevel\030\014 \001(\r\"E\n\016PlayerSh" +
-      "owInfo\022\r\n\005guild\030\002 \001(\t\022\016\n\006combat\030\003 \001(\r\022\024\n" +
-      "\014praisedCount\030\004 \001(\r\"H\n\021PaymentOrderProto" +
-      "\022\020\n\010signData\030\001 \001(\t\022\016\n\006paySig\030\002 \001(\t\022\021\n\tsi" +
-      "gnature\030\003 \001(\t*-\n\nUpdateType\022\n\n\006UPDATE\020\000\022" +
-      "\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031cn.game.protocol" +
-      ".protobufb\006proto3"
+      "\030\013 \001(\t\022\024\n\014tiandaoLevel\030\014 \001(\r\"R\n\016PlayerSh" +
+      "owInfo\022\020\n\010battleId\030\001 \001(\005\022\r\n\005guild\030\002 \001(\t\022" +
+      "\037\n\005heros\030\007 \003(\0132\020.Protos.HeroInfo\"H\n\021Paym" +
+      "entOrderProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006paySi" +
+      "g\030\002 \001(\t\022\021\n\tsignature\030\003 \001(\t*-\n\nUpdateType" +
+      "\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031cn." +
+      "game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -17969,7 +18366,7 @@ public final class BaseMsg {
     internal_static_Protos_PlayerShowInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PlayerShowInfo_descriptor,
-        new java.lang.String[] { "Guild", "Combat", "PraisedCount", });
+        new java.lang.String[] { "BattleId", "Guild", "Heros", });
     internal_static_Protos_PaymentOrderProto_descriptor =
       getDescriptor().getMessageTypes().get(20);
     internal_static_Protos_PaymentOrderProto_fieldAccessorTable = new

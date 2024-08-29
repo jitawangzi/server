@@ -172,9 +172,9 @@ public class PbProtocol implements ProtocolParser {
 	public final static int FriendDeleteResponse_3000000a = 0x3000000a;    
 	public final static int FriendBlackRequest_30000010 = 0x30000010;    //将好友加入到黑名单  
 	public final static int FriendBlackResponse_30000011 = 0x30000011;    
-	public final static int FriendGiftRequest_30000012 = 0x30000012;    //赠送好友友情点  
+	public final static int FriendGiftRequest_30000012 = 0x30000012;    //赠送好友友情点，注意人数不要发多了，超过每日次数限制。  
 	public final static int FriendGiftResponse_30000013 = 0x30000013;    
-	public final static int FriendGiftReceiveRequest_30000014 = 0x30000014;    //领取好友赠送的友情点，包含一键领取  
+	public final static int FriendGiftReceiveRequest_30000014 = 0x30000014;    //领取好友赠送的友情点，包含一键领取，注意人数不要领多了，超过每日次数限制。  
 	public final static int FriendGiftReceiveResponse_30000015 = 0x30000015;    
 	public final static int FriendApplyPush_30000022 = 0x30000022;    //玩家收到其他服务器的好友申请  
 	public final static int FriendAddPush_30000023 = 0x30000023;    //增加其他服务器的好友  
@@ -328,7 +328,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerBriefInfoOtherResponse_0100000a = 0x0100000a;    
 	public final static int PlayerSearchRequest_0100000b = 0x0100000b;    //搜索玩家  
 	public final static int PlayerSearchResponse_0100000c = 0x0100000c;    //搜索出来的玩家  
-	public final static int PlayerShowRequest_01000039 = 0x01000039;    //获取一个玩家的名片  
+	public final static int PlayerShowRequest_01000039 = 0x01000039;    //获取一个玩家的展示数据  
 	public final static int PlayerShowResponse_0100003a = 0x0100003a;    
 	public final static int PlayerAlchemyRequest_01000040 = 0x01000040;    //炼金请求  
 	public final static int PlayerAlchemyResponse_01000041 = 0x01000041;    

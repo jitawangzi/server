@@ -56,7 +56,7 @@ message PetRefineSaveResponse_1900000a{
 
 //宠物上阵
 message PetBattleRequest_19000011{
-  int32 id = 1; // SoulPet表id
+  int32 id = 1; // 上阵传SoulPet表id,下阵传0
 }
 
 message PetBattleResponse_19000012{
@@ -84,10 +84,9 @@ message PetInfo{
 	int32 level = 2; // 等级
 	int32 breakLevelMax = 3;  // 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
 	repeated int32 skills = 4;  // 拥有的洗练技能， SoulPetSkill表id
+	repeated int32 petSkillsToSave = 24;  // 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
 }
 
 // 抽宠物
-
-
 
 
