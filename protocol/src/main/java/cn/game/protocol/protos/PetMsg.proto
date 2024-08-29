@@ -2,8 +2,7 @@ syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 //option optimize_for = LITE_RUNTIME;
 package Protos;
-import "BaseMsg.proto" ;
-import "RewardMsg.proto" ;
+//import "RewardMsg.proto" ;
 //@File 宠物相关协议
 
 //@HandlerPackage cn.game.games.net.game.module.develop.pet
@@ -79,11 +78,11 @@ message PetBondsUpLevelRequest_19000015{
 message PetBondsUpLevelResponse_19000016{
 }
 
-
 message PetInfo{
 	int32 id = 1; // SoulSoulPet表id
 	int32 level = 2; // 等级
-	repeated int32 skills = 3;  // 洗练技能， SoulPetSkill表id
+	int32 breakLevelMax = 3;  // 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
+	repeated int32 skills = 4;  // 拥有的洗练技能， SoulPetSkill表id
 }
 
 // 抽宠物
