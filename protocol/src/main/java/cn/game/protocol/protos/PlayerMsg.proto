@@ -196,7 +196,7 @@ message PlayerBriefInfoOtherResponse_0100000a{
 
 // 搜索玩家
 message PlayerSearchRequest_0100000b{
-	// 有id按照id搜，没有id按照name搜
+	// 有id尽量传id，按照id搜，没有id传name按照name搜
 	 string playerId = 1;
 	 string playerName = 2;
 }
@@ -207,13 +207,16 @@ message PlayerSearchResponse_0100000c{
 }
 
 
-/*** 获取一个玩家的名片 ***/
+/*** 获取一个玩家的展示数据 ***/
 message PlayerShowRequest_01000039{
-	string playerId = 1;
-	string serverId = 2; // 服id
+	// 有id尽量传id，按照id搜，没有id传name按照name搜
+	 string playerId = 1;
+	 string playerName = 2;
+
 }
 
 message PlayerShowResponse_0100003a{
+	// 玩家基本信息SimplePlayerInfo在请求之前应该能获取到，这里就不发了。
 	PlayerShowInfo player = 1;
 }
 

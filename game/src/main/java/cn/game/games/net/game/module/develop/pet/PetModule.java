@@ -4,6 +4,7 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.item.AbstractItemModule;
+import cn.game.protocol.generated.manager.SoulPetManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -33,8 +34,7 @@ public class PetModule extends AbstractItemModule<Pet> {
 
 	@Override
 	public void checkConfig(int id) {
-		// TODO Auto-generated method stub
-
+		SoulPetManager.instance().get(id);
 	}
 
 	@Override
@@ -54,7 +54,6 @@ public class PetModule extends AbstractItemModule<Pet> {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-		// TODO Auto-generated method stub
 
 	}
 

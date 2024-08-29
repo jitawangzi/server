@@ -4002,6 +4002,16 @@ public final class PetMsg {
   public interface PetRefineSaveRequest_19000009OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.PetRefineSaveRequest_19000009)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * SoulPet表id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
   }
   /**
    * <pre>
@@ -4052,6 +4062,11 @@ public final class PetMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -4084,6 +4099,21 @@ public final class PetMsg {
               cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.class, cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.Builder.class);
     }
 
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * SoulPet表id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -4098,6 +4128,9 @@ public final class PetMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -4107,6 +4140,10 @@ public final class PetMsg {
       if (size != -1) return size;
 
       size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -4122,6 +4159,8 @@ public final class PetMsg {
       }
       cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 other = (cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009) obj;
 
+      if (getId()
+          != other.getId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4133,6 +4172,8 @@ public final class PetMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4270,6 +4311,8 @@ public final class PetMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        id_ = 0;
+
         return this;
       }
 
@@ -4296,6 +4339,7 @@ public final class PetMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 buildPartial() {
         cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 result = new cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009(this);
+        result.id_ = id_;
         onBuilt();
         return result;
       }
@@ -4344,6 +4388,9 @@ public final class PetMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 other) {
         if (other == cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -4370,6 +4417,49 @@ public final class PetMsg {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+
+      private int id_ ;
+      /**
+       * <pre>
+       * SoulPet表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * SoulPet表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * SoulPet表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
         return this;
       }
       @java.lang.Override
@@ -7687,28 +7777,38 @@ public final class PetMsg {
 
     /**
      * <pre>
-     * 洗练技能， SoulPetSkill表id
+     * 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
      * </pre>
      *
-     * <code>repeated int32 skills = 3;</code>
+     * <code>int32 breakLevelMax = 3;</code>
+     * @return The breakLevelMax.
+     */
+    int getBreakLevelMax();
+
+    /**
+     * <pre>
+     * 拥有的洗练技能， SoulPetSkill表id
+     * </pre>
+     *
+     * <code>repeated int32 skills = 4;</code>
      * @return A list containing the skills.
      */
     java.util.List<java.lang.Integer> getSkillsList();
     /**
      * <pre>
-     * 洗练技能， SoulPetSkill表id
+     * 拥有的洗练技能， SoulPetSkill表id
      * </pre>
      *
-     * <code>repeated int32 skills = 3;</code>
+     * <code>repeated int32 skills = 4;</code>
      * @return The count of skills.
      */
     int getSkillsCount();
     /**
      * <pre>
-     * 洗练技能， SoulPetSkill表id
+     * 拥有的洗练技能， SoulPetSkill表id
      * </pre>
      *
-     * <code>repeated int32 skills = 3;</code>
+     * <code>repeated int32 skills = 4;</code>
      * @param index The index of the element to return.
      * @return The skills at the given index.
      */
@@ -7772,6 +7872,11 @@ public final class PetMsg {
               break;
             }
             case 24: {
+
+              breakLevelMax_ = input.readInt32();
+              break;
+            }
+            case 32: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 skills_ = newIntList();
                 mutable_bitField0_ |= 0x00000001;
@@ -7779,7 +7884,7 @@ public final class PetMsg {
               skills_.addInt(input.readInt32());
               break;
             }
-            case 26: {
+            case 34: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
@@ -7857,14 +7962,29 @@ public final class PetMsg {
       return level_;
     }
 
-    public static final int SKILLS_FIELD_NUMBER = 3;
+    public static final int BREAKLEVELMAX_FIELD_NUMBER = 3;
+    private int breakLevelMax_;
+    /**
+     * <pre>
+     * 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
+     * </pre>
+     *
+     * <code>int32 breakLevelMax = 3;</code>
+     * @return The breakLevelMax.
+     */
+    @java.lang.Override
+    public int getBreakLevelMax() {
+      return breakLevelMax_;
+    }
+
+    public static final int SKILLS_FIELD_NUMBER = 4;
     private com.google.protobuf.Internal.IntList skills_;
     /**
      * <pre>
-     * 洗练技能， SoulPetSkill表id
+     * 拥有的洗练技能， SoulPetSkill表id
      * </pre>
      *
-     * <code>repeated int32 skills = 3;</code>
+     * <code>repeated int32 skills = 4;</code>
      * @return A list containing the skills.
      */
     @java.lang.Override
@@ -7874,10 +7994,10 @@ public final class PetMsg {
     }
     /**
      * <pre>
-     * 洗练技能， SoulPetSkill表id
+     * 拥有的洗练技能， SoulPetSkill表id
      * </pre>
      *
-     * <code>repeated int32 skills = 3;</code>
+     * <code>repeated int32 skills = 4;</code>
      * @return The count of skills.
      */
     public int getSkillsCount() {
@@ -7885,10 +8005,10 @@ public final class PetMsg {
     }
     /**
      * <pre>
-     * 洗练技能， SoulPetSkill表id
+     * 拥有的洗练技能， SoulPetSkill表id
      * </pre>
      *
-     * <code>repeated int32 skills = 3;</code>
+     * <code>repeated int32 skills = 4;</code>
      * @param index The index of the element to return.
      * @return The skills at the given index.
      */
@@ -7918,8 +8038,11 @@ public final class PetMsg {
       if (level_ != 0) {
         output.writeInt32(2, level_);
       }
+      if (breakLevelMax_ != 0) {
+        output.writeInt32(3, breakLevelMax_);
+      }
       if (getSkillsList().size() > 0) {
-        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(34);
         output.writeUInt32NoTag(skillsMemoizedSerializedSize);
       }
       for (int i = 0; i < skills_.size(); i++) {
@@ -7941,6 +8064,10 @@ public final class PetMsg {
       if (level_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, level_);
+      }
+      if (breakLevelMax_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, breakLevelMax_);
       }
       {
         int dataSize = 0;
@@ -7975,6 +8102,8 @@ public final class PetMsg {
           != other.getId()) return false;
       if (getLevel()
           != other.getLevel()) return false;
+      if (getBreakLevelMax()
+          != other.getBreakLevelMax()) return false;
       if (!getSkillsList()
           .equals(other.getSkillsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -7992,6 +8121,8 @@ public final class PetMsg {
       hash = (53 * hash) + getId();
       hash = (37 * hash) + LEVEL_FIELD_NUMBER;
       hash = (53 * hash) + getLevel();
+      hash = (37 * hash) + BREAKLEVELMAX_FIELD_NUMBER;
+      hash = (53 * hash) + getBreakLevelMax();
       if (getSkillsCount() > 0) {
         hash = (37 * hash) + SKILLS_FIELD_NUMBER;
         hash = (53 * hash) + getSkillsList().hashCode();
@@ -8133,6 +8264,8 @@ public final class PetMsg {
 
         level_ = 0;
 
+        breakLevelMax_ = 0;
+
         skills_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
@@ -8164,6 +8297,7 @@ public final class PetMsg {
         int from_bitField0_ = bitField0_;
         result.id_ = id_;
         result.level_ = level_;
+        result.breakLevelMax_ = breakLevelMax_;
         if (((bitField0_ & 0x00000001) != 0)) {
           skills_.makeImmutable();
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -8222,6 +8356,9 @@ public final class PetMsg {
         }
         if (other.getLevel() != 0) {
           setLevel(other.getLevel());
+        }
+        if (other.getBreakLevelMax() != 0) {
+          setBreakLevelMax(other.getBreakLevelMax());
         }
         if (!other.skills_.isEmpty()) {
           if (skills_.isEmpty()) {
@@ -8349,6 +8486,49 @@ public final class PetMsg {
         return this;
       }
 
+      private int breakLevelMax_ ;
+      /**
+       * <pre>
+       * 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
+       * </pre>
+       *
+       * <code>int32 breakLevelMax = 3;</code>
+       * @return The breakLevelMax.
+       */
+      @java.lang.Override
+      public int getBreakLevelMax() {
+        return breakLevelMax_;
+      }
+      /**
+       * <pre>
+       * 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
+       * </pre>
+       *
+       * <code>int32 breakLevelMax = 3;</code>
+       * @param value The breakLevelMax to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBreakLevelMax(int value) {
+        
+        breakLevelMax_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
+       * </pre>
+       *
+       * <code>int32 breakLevelMax = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBreakLevelMax() {
+        
+        breakLevelMax_ = 0;
+        onChanged();
+        return this;
+      }
+
       private com.google.protobuf.Internal.IntList skills_ = emptyIntList();
       private void ensureSkillsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
@@ -8358,10 +8538,10 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * 洗练技能， SoulPetSkill表id
+       * 拥有的洗练技能， SoulPetSkill表id
        * </pre>
        *
-       * <code>repeated int32 skills = 3;</code>
+       * <code>repeated int32 skills = 4;</code>
        * @return A list containing the skills.
        */
       public java.util.List<java.lang.Integer>
@@ -8371,10 +8551,10 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * 洗练技能， SoulPetSkill表id
+       * 拥有的洗练技能， SoulPetSkill表id
        * </pre>
        *
-       * <code>repeated int32 skills = 3;</code>
+       * <code>repeated int32 skills = 4;</code>
        * @return The count of skills.
        */
       public int getSkillsCount() {
@@ -8382,10 +8562,10 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * 洗练技能， SoulPetSkill表id
+       * 拥有的洗练技能， SoulPetSkill表id
        * </pre>
        *
-       * <code>repeated int32 skills = 3;</code>
+       * <code>repeated int32 skills = 4;</code>
        * @param index The index of the element to return.
        * @return The skills at the given index.
        */
@@ -8394,10 +8574,10 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * 洗练技能， SoulPetSkill表id
+       * 拥有的洗练技能， SoulPetSkill表id
        * </pre>
        *
-       * <code>repeated int32 skills = 3;</code>
+       * <code>repeated int32 skills = 4;</code>
        * @param index The index to set the value at.
        * @param value The skills to set.
        * @return This builder for chaining.
@@ -8411,10 +8591,10 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * 洗练技能， SoulPetSkill表id
+       * 拥有的洗练技能， SoulPetSkill表id
        * </pre>
        *
-       * <code>repeated int32 skills = 3;</code>
+       * <code>repeated int32 skills = 4;</code>
        * @param value The skills to add.
        * @return This builder for chaining.
        */
@@ -8426,10 +8606,10 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * 洗练技能， SoulPetSkill表id
+       * 拥有的洗练技能， SoulPetSkill表id
        * </pre>
        *
-       * <code>repeated int32 skills = 3;</code>
+       * <code>repeated int32 skills = 4;</code>
        * @param values The skills to add.
        * @return This builder for chaining.
        */
@@ -8443,10 +8623,10 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * 洗练技能， SoulPetSkill表id
+       * 拥有的洗练技能， SoulPetSkill表id
        * </pre>
        *
-       * <code>repeated int32 skills = 3;</code>
+       * <code>repeated int32 skills = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearSkills() {
@@ -8602,32 +8782,30 @@ public final class PetMsg {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014PetMsg.proto\022\006Protos\032\rBaseMsg.proto\032\017R" +
-      "ewardMsg.proto\"*\n\034PetCompositeRequest_19" +
-      "000001\022\n\n\002id\030\001 \001(\005\"\037\n\035PetCompositeRespon" +
-      "se_19000002\"(\n\032PetUpLevelRequest_1900000" +
-      "3\022\n\n\002id\030\001 \001(\005\"\035\n\033PetUpLevelResponse_1900" +
-      "0004\"(\n\032PetBreakUpRequest_19000005\022\n\n\002id" +
-      "\030\001 \001(\005\"\035\n\033PetBreakUpResponse_19000006\"\'\n" +
-      "\031PetRefineRequest_19000007\022\n\n\002id\030\001 \001(\005\"," +
-      "\n\032PetRefineResponse_19000008\022\016\n\006skills\030\001" +
-      " \003(\005\"\037\n\035PetRefineSaveRequest_19000009\" \n" +
-      "\036PetRefineSaveResponse_1900000a\"\'\n\031PetBa" +
-      "ttleRequest_19000011\022\n\n\002id\030\001 \001(\005\"\034\n\032PetB" +
-      "attleResponse_19000012\".\n PetBondsActiva" +
-      "teRequest_19000013\022\n\n\002id\030\001 \001(\005\"#\n!PetBon" +
-      "dsActivateResponse_19000014\"-\n\037PetBondsU" +
-      "pLevelRequest_19000015\022\n\n\002id\030\001 \001(\005\"\"\n Pe" +
-      "tBondsUpLevelResponse_19000016\"4\n\007PetInf" +
-      "o\022\n\n\002id\030\001 \001(\005\022\r\n\005level\030\002 \001(\005\022\016\n\006skills\030\003" +
-      " \003(\005B\033\n\031cn.game.protocol.protobufb\006proto" +
-      "3"
+      "\n\014PetMsg.proto\022\006Protos\"*\n\034PetCompositeRe" +
+      "quest_19000001\022\n\n\002id\030\001 \001(\005\"\037\n\035PetComposi" +
+      "teResponse_19000002\"(\n\032PetUpLevelRequest" +
+      "_19000003\022\n\n\002id\030\001 \001(\005\"\035\n\033PetUpLevelRespo" +
+      "nse_19000004\"(\n\032PetBreakUpRequest_190000" +
+      "05\022\n\n\002id\030\001 \001(\005\"\035\n\033PetBreakUpResponse_190" +
+      "00006\"\'\n\031PetRefineRequest_19000007\022\n\n\002id" +
+      "\030\001 \001(\005\",\n\032PetRefineResponse_19000008\022\016\n\006" +
+      "skills\030\001 \003(\005\"+\n\035PetRefineSaveRequest_190" +
+      "00009\022\n\n\002id\030\001 \001(\005\" \n\036PetRefineSaveRespon" +
+      "se_1900000a\"\'\n\031PetBattleRequest_19000011" +
+      "\022\n\n\002id\030\001 \001(\005\"\034\n\032PetBattleResponse_190000" +
+      "12\".\n PetBondsActivateRequest_19000013\022\n" +
+      "\n\002id\030\001 \001(\005\"#\n!PetBondsActivateResponse_1" +
+      "9000014\"-\n\037PetBondsUpLevelRequest_190000" +
+      "15\022\n\n\002id\030\001 \001(\005\"\"\n PetBondsUpLevelRespons" +
+      "e_19000016\"K\n\007PetInfo\022\n\n\002id\030\001 \001(\005\022\r\n\005lev" +
+      "el\030\002 \001(\005\022\025\n\rbreakLevelMax\030\003 \001(\005\022\016\n\006skill" +
+      "s\030\004 \003(\005B\033\n\031cn.game.protocol.protobufb\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          cn.game.protocol.protobuf.BaseMsg.getDescriptor(),
-          cn.game.protocol.protobuf.RewardMsg.getDescriptor(),
         });
     internal_static_Protos_PetCompositeRequest_19000001_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -8682,7 +8860,7 @@ public final class PetMsg {
     internal_static_Protos_PetRefineSaveRequest_19000009_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetRefineSaveRequest_19000009_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Id", });
     internal_static_Protos_PetRefineSaveResponse_1900000a_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_Protos_PetRefineSaveResponse_1900000a_fieldAccessorTable = new
@@ -8730,9 +8908,7 @@ public final class PetMsg {
     internal_static_Protos_PetInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetInfo_descriptor,
-        new java.lang.String[] { "Id", "Level", "Skills", });
-    cn.game.protocol.protobuf.BaseMsg.getDescriptor();
-    cn.game.protocol.protobuf.RewardMsg.getDescriptor();
+        new java.lang.String[] { "Id", "Level", "BreakLevelMax", "Skills", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

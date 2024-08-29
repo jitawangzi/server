@@ -75,11 +75,9 @@ message FriendBlackResponse_30000011 {
 
 }
 
-//赠送好友友情点
+//赠送好友友情点，注意人数不要发多了，超过每日次数限制。
 message FriendGiftRequest_30000012{
-
    repeated string friendId = 1;		//赠送的好友id
-
 }
 
 message FriendGiftResponse_30000013{
@@ -87,7 +85,7 @@ message FriendGiftResponse_30000013{
 }
 
 
-//领取好友赠送的友情点，包含一键领取
+//领取好友赠送的友情点，包含一键领取，注意人数不要领多了，超过每日次数限制。
 message FriendGiftReceiveRequest_30000014{
 
    repeated string friendId = 1;		//好友id

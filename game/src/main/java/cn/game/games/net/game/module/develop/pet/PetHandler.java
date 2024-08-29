@@ -1,30 +1,29 @@
 package cn.game.games.net.game.module.develop.pet;
 
 import org.springframework.stereotype.Component;
-
-import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.protocol.protobuf.PetMsg.PetCompositeRequest_19000001;
+import cn.game.protocol.protobuf.PetMsg.PetCompositeResponse_19000002;
+import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.PetMsg.PetUpLevelRequest_19000003;
+import cn.game.protocol.protobuf.PetMsg.PetUpLevelResponse_19000004;
+import cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005;
+import cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006;
+import cn.game.protocol.protobuf.PetMsg.PetRefineRequest_19000007;
+import cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008;
+import cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009;
+import cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a;
 import cn.game.protocol.protobuf.PetMsg.PetBattleRequest_19000011;
 import cn.game.protocol.protobuf.PetMsg.PetBattleResponse_19000012;
 import cn.game.protocol.protobuf.PetMsg.PetBondsActivateRequest_19000013;
 import cn.game.protocol.protobuf.PetMsg.PetBondsActivateResponse_19000014;
 import cn.game.protocol.protobuf.PetMsg.PetBondsUpLevelRequest_19000015;
 import cn.game.protocol.protobuf.PetMsg.PetBondsUpLevelResponse_19000016;
-import cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005;
-import cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006;
-import cn.game.protocol.protobuf.PetMsg.PetCompositeRequest_19000001;
-import cn.game.protocol.protobuf.PetMsg.PetCompositeResponse_19000002;
-import cn.game.protocol.protobuf.PetMsg.PetRefineRequest_19000007;
-import cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008;
-import cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009;
-import cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a;
-import cn.game.protocol.protobuf.PetMsg.PetUpLevelRequest_19000003;
-import cn.game.protocol.protobuf.PetMsg.PetUpLevelResponse_19000004;
 
 @Component
 public class PetHandler extends BaseHandler {
@@ -40,10 +39,10 @@ public class PetHandler extends BaseHandler {
         putInvoker(PbProtocol.PetUpLevelRequest_19000003, this::upLevel);
         putInvoker(PbProtocol.PetBreakUpRequest_19000005, this::breakUp);
         putInvoker(PbProtocol.PetRefineRequest_19000007, this::refine);
+        putInvoker(PbProtocol.PetRefineSaveRequest_19000009, this::refineSave);
         putInvoker(PbProtocol.PetBattleRequest_19000011, this::battle);
         putInvoker(PbProtocol.PetBondsActivateRequest_19000013, this::bondsActivate);
         putInvoker(PbProtocol.PetBondsUpLevelRequest_19000015, this::bondsUpLevel);
-        putInvoker(PbProtocol.PetRefineSaveRequest_19000009, this::refineSave);
     }
 
     private void composite(NetClient client, Object message) {
@@ -79,14 +78,25 @@ public class PetHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        PetBreakUpResponse_19000006.Builder resp = PetBreakUpResponse_19000006.newBuilder();
-        client.sendProtocol(resp.build());
+        client.sendProtocol(defaultInstance);
     }
 
     private void refine(NetClient client, Object message) {
         PetRefineRequest_19000007 req = (PetRefineRequest_19000007) message;
         int id = req.getId();
         PetRefineResponse_19000008 defaultInstance = PetRefineResponse_19000008.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        PetRefineResponse_19000008.Builder resp = PetRefineResponse_19000008.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void refineSave(NetClient client, Object message) {
+        PetRefineSaveRequest_19000009 req = (PetRefineSaveRequest_19000009) message;
+        PetRefineSaveResponse_1900000a defaultInstance = PetRefineSaveResponse_1900000a.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (!player.isFuncOpen(InitialUI.SoulPets)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
@@ -123,17 +133,6 @@ public class PetHandler extends BaseHandler {
         PetBondsUpLevelRequest_19000015 req = (PetBondsUpLevelRequest_19000015) message;
         int id = req.getId();
         PetBondsUpLevelResponse_19000016 defaultInstance = PetBondsUpLevelResponse_19000016.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
-            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
-            return;
-        }
-        client.sendProtocol(defaultInstance);
-    }
-
-    private void refineSave(NetClient client, Object message) {
-        PetRefineSaveRequest_19000009 req = (PetRefineSaveRequest_19000009) message;
-        PetRefineSaveResponse_1900000a defaultInstance = PetRefineSaveResponse_1900000a.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (!player.isFuncOpen(InitialUI.SoulPets)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());

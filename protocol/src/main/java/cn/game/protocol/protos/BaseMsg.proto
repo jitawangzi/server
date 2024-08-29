@@ -141,10 +141,9 @@ message SimplePlayerInfo{
 
 // 玩家展示的名片数据
 message PlayerShowInfo{
-
+	int32 battleId = 1;   // 主线关卡进度  Battle表id
 	string guild = 2; 		// 公会名称
-	uint32 combat = 3; 		// 战斗力
-	uint32 praisedCount = 4 ; 		// 被点赞数量
+  	repeated HeroInfo heros  = 7;        //当前阵容。
 }
 
 message PaymentOrderProto{

@@ -47,6 +47,7 @@ message PetRefineResponse_19000008{
 
 //实际保存上一次刷新出来的技能
 message PetRefineSaveRequest_19000009{
+	int32 id = 1; // SoulPet表id
 }
 
 message PetRefineSaveResponse_1900000a{
