@@ -259,7 +259,7 @@ public class ServerHandler extends BaseHandler {
 
 		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClient != null) {
-			gameClient.sendProtocol(id, data.toByteArray(), errorCode);
+			gameClient.sendProtocol(id, 0, data.toByteArray(), errorCode, false);
 		}
 	}
 
@@ -372,7 +372,7 @@ public class ServerHandler extends BaseHandler {
 
 		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClient != null) {
-			gameClient.sendProtocol(id, data.toByteArray(), errorCode);
+			gameClient.sendProtocol(id, 0, data.toByteArray(), errorCode, false);
 		}
 
 	}

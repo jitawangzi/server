@@ -123,13 +123,13 @@ public class GameClient extends AbstractNetClient {
 		return true;
 	}
 
-	private boolean sendProtocol(MessageLite message, int errorCode) {
+	private boolean sendProtocol(MessageLite message, int seq, int errorCode, boolean record) {
 
 		if (message == null) { 
 			throw new IllegalArgumentException("message can not be null "); 
 		}
 		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-		boolean flag = sendProtocol(msgId, message.toByteArray(), errorCode);
+		boolean flag = sendProtocol(msgId, seq > 0 ? seq : curMessageSeq, message.toByteArray(), errorCode, record);
 		if (flag) {
 			if (Config.recordSendData) {
 				if (msgId != PbProtocol.PlayerHeartbeatResponse_01000006) {
@@ -149,6 +149,17 @@ public class GameClient extends AbstractNetClient {
 		return false;
 
 	}
+
+	/** 
+	 * 最终的发消息方法， 这个方法一般不要直接调用，不会记录数据发送日志。 
+	 * 这里不方便记录消息名字、消息内容
+	 * @param msgId
+	 * @param seq
+	 * @param data
+	 * @param errorCode
+	 * @param recored
+	 * @return
+	 */
 	public boolean sendProtocol(int msgId, int seq, byte[] data, int errorCode, boolean recored) {
 
 //		ProtobufProtocol protobufProtocol = new ProtobufProtocol(msgId, data, errorCode);
@@ -178,25 +189,22 @@ public class GameClient extends AbstractNetClient {
 				}
 				list.add(protocol);
 			}
+
 			return true;
 		}
 		return false;
 	}
-	/** 
-	 * 客户端默认发送协议方法，记录当前的数据包序列。 
-	 * @param msgId
-	 * @param data
-	 * @param errorCode
-	 * @return
-	 */
-	public boolean sendProtocol(int msgId, byte[] data, int errorCode) {
+//	private boolean sendProtocol(int msgId, byte[] data, int errorCode) {
+//		return sendProtocol(msgId, curMessageSeq, data, errorCode, true);
+//	}
 
-		return sendProtocol(msgId, curMessageSeq, data, errorCode, true);
-	}
-	public boolean sendProtocol(int msgId, byte[] data) {
-
-		return sendProtocol(msgId, data, 0);
-	}
+//	private boolean sendProtocol(int msgId, byte[] data, int errorCode, boolean record) {
+//		return sendProtocol(msgId, curMessageSeq, data, errorCode, record);
+//	}
+//
+//	private boolean sendProtocol(int msgId, byte[] data) {
+//		return sendProtocol(msgId, data, 0);
+//	}
 	/**
 	 * @Title: isIdleTimeOut
 	 * @Description: 空闲超时
@@ -229,11 +237,14 @@ public class GameClient extends AbstractNetClient {
 
 	@Override
 	public void sendProtocol(Object message, int errorCode) {
+		sendProtocol(message, curMessageSeq, errorCode, true);
+	}
 
+	private void sendProtocol(Object message, int seq, int errorCode, boolean record) {
 		if (message instanceof Message) {
-			sendProtocol((Message) message, errorCode);
+			sendProtocol((Message) message, seq, errorCode, record);
 		} else if (message instanceof Builder) {
-			sendProtocol(((Builder) message).build(), errorCode);
+			sendProtocol(((Builder) message).build(), seq, errorCode, record);
 		} else {
 			throw new IllegalArgumentException("not support message ：" + message);
 		}
@@ -260,8 +271,7 @@ public class GameClient extends AbstractNetClient {
 //				// 超过消息数量，关闭连接
 //				GameClientManager.getInstance().logout(this);
 //				log.warn("GameClient[{}] Requested too frequently, force disconnect,seq[{}]", toDetailString(), protocol.getSeq());
-				sendProtocol(protocol.getMsgID(), protocol.getSeq(), PlayerErrorPush_01000099.getDefaultInstance().toByteArray(),
-						ErrorMsgEnum.requests_too_frequent.getId(), false);
+				sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), protocol.getSeq(), ErrorMsgEnum.requests_too_frequent.getId(), false);
 				return false;
 			} else {
 				packetMaxCountPerSecond = 0;
