@@ -39,10 +39,10 @@ message TestMissionFinishResponse_6f000023{
 
 
 /*** 请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  **/
-message TestPlayerAssetDataRequest_01000028{
+message TestPlayerAssetDataRequest_6f000028{
 }
 /***  **/
-message TestPlayerAssetDataResponse_01000029{
+message TestPlayerAssetDataResponse_6f000029{
    map<uint32, uint64> assets = 2;   // 主要是货币，附带一些经验体力等数据。   key:Asset表id
    repeated ItemInfo items  = 5;        //道具  Item表
 }

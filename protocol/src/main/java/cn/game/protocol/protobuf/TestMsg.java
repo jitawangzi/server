@@ -4135,8 +4135,8 @@ public final class TestMsg {
 
   }
 
-  public interface TestPlayerAssetDataRequest_01000028OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.TestPlayerAssetDataRequest_01000028)
+  public interface TestPlayerAssetDataRequest_6f000028OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.TestPlayerAssetDataRequest_6f000028)
       com.google.protobuf.MessageOrBuilder {
   }
   /**
@@ -4144,25 +4144,25 @@ public final class TestMsg {
    *** 请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  *
    * </pre>
    *
-   * Protobuf type {@code Protos.TestPlayerAssetDataRequest_01000028}
+   * Protobuf type {@code Protos.TestPlayerAssetDataRequest_6f000028}
    */
-  public static final class TestPlayerAssetDataRequest_01000028 extends
+  public static final class TestPlayerAssetDataRequest_6f000028 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.TestPlayerAssetDataRequest_01000028)
-      TestPlayerAssetDataRequest_01000028OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.TestPlayerAssetDataRequest_6f000028)
+      TestPlayerAssetDataRequest_6f000028OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use TestPlayerAssetDataRequest_01000028.newBuilder() to construct.
-    private TestPlayerAssetDataRequest_01000028(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use TestPlayerAssetDataRequest_6f000028.newBuilder() to construct.
+    private TestPlayerAssetDataRequest_6f000028(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private TestPlayerAssetDataRequest_01000028() {
+    private TestPlayerAssetDataRequest_6f000028() {
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new TestPlayerAssetDataRequest_01000028();
+      return new TestPlayerAssetDataRequest_6f000028();
     }
 
     @java.lang.Override
@@ -4170,7 +4170,7 @@ public final class TestMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private TestPlayerAssetDataRequest_01000028(
+    private TestPlayerAssetDataRequest_6f000028(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -4209,15 +4209,15 @@ public final class TestMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor;
+      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_6f000028_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_fieldAccessorTable
+      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_6f000028_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.Builder.class);
+              cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028.Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4253,10 +4253,10 @@ public final class TestMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 other = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028) obj;
+      cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 other = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028) obj;
 
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -4274,69 +4274,69 @@ public final class TestMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -4349,7 +4349,7 @@ public final class TestMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -4369,26 +4369,26 @@ public final class TestMsg {
      *** 请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  *
      * </pre>
      *
-     * Protobuf type {@code Protos.TestPlayerAssetDataRequest_01000028}
+     * Protobuf type {@code Protos.TestPlayerAssetDataRequest_6f000028}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.TestPlayerAssetDataRequest_01000028)
-        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.TestPlayerAssetDataRequest_6f000028)
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor;
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_6f000028_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_fieldAccessorTable
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_6f000028_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.Builder.class);
+                cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.newBuilder()
+      // Construct using cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -4412,17 +4412,17 @@ public final class TestMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor;
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataRequest_6f000028_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.getDefaultInstance();
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 build() {
-        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 result = buildPartial();
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 build() {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -4430,8 +4430,8 @@ public final class TestMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 buildPartial() {
-        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 result = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028(this);
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 buildPartial() {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 result = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028(this);
         onBuilt();
         return result;
       }
@@ -4470,16 +4470,16 @@ public final class TestMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028) {
-          return mergeFrom((cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028)other);
+        if (other instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028) {
+          return mergeFrom((cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 other) {
-        if (other == cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 other) {
+        if (other == cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -4495,11 +4495,11 @@ public final class TestMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 parsedMessage = null;
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -4521,48 +4521,48 @@ public final class TestMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.TestPlayerAssetDataRequest_01000028)
+      // @@protoc_insertion_point(builder_scope:Protos.TestPlayerAssetDataRequest_6f000028)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.TestPlayerAssetDataRequest_01000028)
-    private static final cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.TestPlayerAssetDataRequest_6f000028)
+    private static final cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028();
     }
 
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<TestPlayerAssetDataRequest_01000028>
-        PARSER = new com.google.protobuf.AbstractParser<TestPlayerAssetDataRequest_01000028>() {
+    private static final com.google.protobuf.Parser<TestPlayerAssetDataRequest_6f000028>
+        PARSER = new com.google.protobuf.AbstractParser<TestPlayerAssetDataRequest_6f000028>() {
       @java.lang.Override
-      public TestPlayerAssetDataRequest_01000028 parsePartialFrom(
+      public TestPlayerAssetDataRequest_6f000028 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new TestPlayerAssetDataRequest_01000028(input, extensionRegistry);
+        return new TestPlayerAssetDataRequest_6f000028(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<TestPlayerAssetDataRequest_01000028> parser() {
+    public static com.google.protobuf.Parser<TestPlayerAssetDataRequest_6f000028> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<TestPlayerAssetDataRequest_01000028> getParserForType() {
+    public com.google.protobuf.Parser<TestPlayerAssetDataRequest_6f000028> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface TestPlayerAssetDataResponse_01000029OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Protos.TestPlayerAssetDataResponse_01000029)
+  public interface TestPlayerAssetDataResponse_6f000029OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.TestPlayerAssetDataResponse_6f000029)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -4668,18 +4668,18 @@ public final class TestMsg {
    ***  *
    * </pre>
    *
-   * Protobuf type {@code Protos.TestPlayerAssetDataResponse_01000029}
+   * Protobuf type {@code Protos.TestPlayerAssetDataResponse_6f000029}
    */
-  public static final class TestPlayerAssetDataResponse_01000029 extends
+  public static final class TestPlayerAssetDataResponse_6f000029 extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Protos.TestPlayerAssetDataResponse_01000029)
-      TestPlayerAssetDataResponse_01000029OrBuilder {
+      // @@protoc_insertion_point(message_implements:Protos.TestPlayerAssetDataResponse_6f000029)
+      TestPlayerAssetDataResponse_6f000029OrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use TestPlayerAssetDataResponse_01000029.newBuilder() to construct.
-    private TestPlayerAssetDataResponse_01000029(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use TestPlayerAssetDataResponse_6f000029.newBuilder() to construct.
+    private TestPlayerAssetDataResponse_6f000029(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private TestPlayerAssetDataResponse_01000029() {
+    private TestPlayerAssetDataResponse_6f000029() {
       items_ = java.util.Collections.emptyList();
     }
 
@@ -4687,7 +4687,7 @@ public final class TestMsg {
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new TestPlayerAssetDataResponse_01000029();
+      return new TestPlayerAssetDataResponse_6f000029();
     }
 
     @java.lang.Override
@@ -4695,7 +4695,7 @@ public final class TestMsg {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private TestPlayerAssetDataResponse_01000029(
+    private TestPlayerAssetDataResponse_6f000029(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -4760,7 +4760,7 @@ public final class TestMsg {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor;
+      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_6f000029_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -4778,9 +4778,9 @@ public final class TestMsg {
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_fieldAccessorTable
+      return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_6f000029_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.Builder.class);
+              cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.Builder.class);
     }
 
     public static final int ASSETS_FIELD_NUMBER = 2;
@@ -4789,7 +4789,7 @@ public final class TestMsg {
           java.lang.Integer, java.lang.Long> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.Integer, java.lang.Long>newDefaultInstance(
-                  cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_descriptor, 
+                  cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_6f000029_AssetsEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.UINT32,
                   0,
                   com.google.protobuf.WireFormat.FieldType.UINT64,
@@ -4996,10 +4996,10 @@ public final class TestMsg {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029)) {
+      if (!(obj instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029)) {
         return super.equals(obj);
       }
-      cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 other = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029) obj;
+      cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 other = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029) obj;
 
       if (!internalGetAssets().equals(
           other.internalGetAssets())) return false;
@@ -5029,69 +5029,69 @@ public final class TestMsg {
       return hash;
     }
 
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(byte[] data)
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseDelimitedFrom(java.io.InputStream input)
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseDelimitedFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parseFrom(
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -5104,7 +5104,7 @@ public final class TestMsg {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 prototype) {
+    public static Builder newBuilder(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -5124,15 +5124,15 @@ public final class TestMsg {
      ***  *
      * </pre>
      *
-     * Protobuf type {@code Protos.TestPlayerAssetDataResponse_01000029}
+     * Protobuf type {@code Protos.TestPlayerAssetDataResponse_6f000029}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Protos.TestPlayerAssetDataResponse_01000029)
-        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029OrBuilder {
+        // @@protoc_insertion_point(builder_implements:Protos.TestPlayerAssetDataResponse_6f000029)
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029OrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor;
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_6f000029_descriptor;
       }
 
       @SuppressWarnings({"rawtypes"})
@@ -5160,12 +5160,12 @@ public final class TestMsg {
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_fieldAccessorTable
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_6f000029_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.Builder.class);
+                cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.class, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.Builder.class);
       }
 
-      // Construct using cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.newBuilder()
+      // Construct using cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -5197,17 +5197,17 @@ public final class TestMsg {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor;
+        return cn.game.protocol.protobuf.TestMsg.internal_static_Protos_TestPlayerAssetDataResponse_6f000029_descriptor;
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 getDefaultInstanceForType() {
-        return cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.getDefaultInstance();
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.getDefaultInstance();
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 build() {
-        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 result = buildPartial();
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 build() {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -5215,8 +5215,8 @@ public final class TestMsg {
       }
 
       @java.lang.Override
-      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 buildPartial() {
-        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 result = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029(this);
+      public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 buildPartial() {
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 result = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029(this);
         int from_bitField0_ = bitField0_;
         result.assets_ = internalGetAssets();
         result.assets_.makeImmutable();
@@ -5267,16 +5267,16 @@ public final class TestMsg {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029) {
-          return mergeFrom((cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029)other);
+        if (other instanceof cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029) {
+          return mergeFrom((cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 other) {
-        if (other == cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.getDefaultInstance()) return this;
+      public Builder mergeFrom(cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 other) {
+        if (other == cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.getDefaultInstance()) return this;
         internalGetMutableAssets().mergeFrom(
             other.internalGetAssets());
         if (itemsBuilder_ == null) {
@@ -5320,11 +5320,11 @@ public final class TestMsg {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 parsedMessage = null;
+        cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029) e.getUnfinishedMessage();
+          parsedMessage = (cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -5815,41 +5815,41 @@ public final class TestMsg {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Protos.TestPlayerAssetDataResponse_01000029)
+      // @@protoc_insertion_point(builder_scope:Protos.TestPlayerAssetDataResponse_6f000029)
     }
 
-    // @@protoc_insertion_point(class_scope:Protos.TestPlayerAssetDataResponse_01000029)
-    private static final cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Protos.TestPlayerAssetDataResponse_6f000029)
+    private static final cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029();
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029();
     }
 
-    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 getDefaultInstance() {
+    public static cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<TestPlayerAssetDataResponse_01000029>
-        PARSER = new com.google.protobuf.AbstractParser<TestPlayerAssetDataResponse_01000029>() {
+    private static final com.google.protobuf.Parser<TestPlayerAssetDataResponse_6f000029>
+        PARSER = new com.google.protobuf.AbstractParser<TestPlayerAssetDataResponse_6f000029>() {
       @java.lang.Override
-      public TestPlayerAssetDataResponse_01000029 parsePartialFrom(
+      public TestPlayerAssetDataResponse_6f000029 parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new TestPlayerAssetDataResponse_01000029(input, extensionRegistry);
+        return new TestPlayerAssetDataResponse_6f000029(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<TestPlayerAssetDataResponse_01000029> parser() {
+    public static com.google.protobuf.Parser<TestPlayerAssetDataResponse_6f000029> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<TestPlayerAssetDataResponse_01000029> getParserForType() {
+    public com.google.protobuf.Parser<TestPlayerAssetDataResponse_6f000029> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029 getDefaultInstanceForType() {
+    public cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029 getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -8019,20 +8019,20 @@ public final class TestMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_TestMissionFinishResponse_6f000023_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor;
+    internal_static_Protos_TestPlayerAssetDataRequest_6f000028_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_TestPlayerAssetDataRequest_01000028_fieldAccessorTable;
+      internal_static_Protos_TestPlayerAssetDataRequest_6f000028_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor;
+    internal_static_Protos_TestPlayerAssetDataResponse_6f000029_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_TestPlayerAssetDataResponse_01000029_fieldAccessorTable;
+      internal_static_Protos_TestPlayerAssetDataResponse_6f000029_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_descriptor;
+    internal_static_Protos_TestPlayerAssetDataResponse_6f000029_AssetsEntry_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_fieldAccessorTable;
+      internal_static_Protos_TestPlayerAssetDataResponse_6f000029_AssetsEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_TestRequest_6f000020_descriptor;
   private static final 
@@ -8072,9 +8072,9 @@ public final class TestMsg {
       "est_6f000022\022\n\n\002id\030\001 \003(\r\"J\n\"TestMissionF" +
       "inishResponse_6f000023\022$\n\010resource\030\001 \003(\013" +
       "2\022.Protos.RewardInfo\"%\n#TestPlayerAssetD" +
-      "ataRequest_01000028\"\300\001\n$TestPlayerAssetD" +
-      "ataResponse_01000029\022H\n\006assets\030\002 \003(\01328.P" +
-      "rotos.TestPlayerAssetDataResponse_010000" +
+      "ataRequest_6f000028\"\300\001\n$TestPlayerAssetD" +
+      "ataResponse_6f000029\022H\n\006assets\030\002 \003(\01328.P" +
+      "rotos.TestPlayerAssetDataResponse_6f0000" +
       "29.AssetsEntry\022\037\n\005items\030\005 \003(\0132\020.Protos.I" +
       "temInfo\032-\n\013AssetsEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
       "alue\030\002 \001(\004:\0028\001\"\"\n\024TestRequest_6f000020\022\n" +
@@ -8126,23 +8126,23 @@ public final class TestMsg {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_TestMissionFinishResponse_6f000023_descriptor,
         new java.lang.String[] { "Resource", });
-    internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor =
+    internal_static_Protos_TestPlayerAssetDataRequest_6f000028_descriptor =
       getDescriptor().getMessageTypes().get(6);
-    internal_static_Protos_TestPlayerAssetDataRequest_01000028_fieldAccessorTable = new
+    internal_static_Protos_TestPlayerAssetDataRequest_6f000028_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_TestPlayerAssetDataRequest_01000028_descriptor,
+        internal_static_Protos_TestPlayerAssetDataRequest_6f000028_descriptor,
         new java.lang.String[] { });
-    internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor =
+    internal_static_Protos_TestPlayerAssetDataResponse_6f000029_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_Protos_TestPlayerAssetDataResponse_01000029_fieldAccessorTable = new
+    internal_static_Protos_TestPlayerAssetDataResponse_6f000029_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor,
+        internal_static_Protos_TestPlayerAssetDataResponse_6f000029_descriptor,
         new java.lang.String[] { "Assets", "Items", });
-    internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_descriptor =
-      internal_static_Protos_TestPlayerAssetDataResponse_01000029_descriptor.getNestedTypes().get(0);
-    internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_fieldAccessorTable = new
+    internal_static_Protos_TestPlayerAssetDataResponse_6f000029_AssetsEntry_descriptor =
+      internal_static_Protos_TestPlayerAssetDataResponse_6f000029_descriptor.getNestedTypes().get(0);
+    internal_static_Protos_TestPlayerAssetDataResponse_6f000029_AssetsEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Protos_TestPlayerAssetDataResponse_01000029_AssetsEntry_descriptor,
+        internal_static_Protos_TestPlayerAssetDataResponse_6f000029_AssetsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_Protos_TestRequest_6f000020_descriptor =
       getDescriptor().getMessageTypes().get(8);

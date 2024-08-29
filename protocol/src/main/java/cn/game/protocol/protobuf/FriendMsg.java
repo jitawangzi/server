@@ -5269,7 +5269,7 @@ public final class FriendMsg {
   }
   /**
    * <pre>
-   *申请成为对方好友或者批量申请好友，从黑名单里加好友也用这个协议
+   *申请成为对方好友,支持批量
    * </pre>
    *
    * Protobuf type {@code Protos.FriendApplyRequest_30000005}
@@ -5576,7 +5576,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     *申请成为对方好友或者批量申请好友，从黑名单里加好友也用这个协议
+     *申请成为对方好友,支持批量
      * </pre>
      *
      * Protobuf type {@code Protos.FriendApplyRequest_30000005}
@@ -8921,7 +8921,7 @@ public final class FriendMsg {
   }
   /**
    * <pre>
-   * 将玩家加入到黑名单
+   * 将好友加入到黑名单
    * </pre>
    *
    * Protobuf type {@code Protos.FriendBlackRequest_30000010}
@@ -9209,7 +9209,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     * 将玩家加入到黑名单
+     * 将好友加入到黑名单
      * </pre>
      *
      * Protobuf type {@code Protos.FriendBlackRequest_30000010}
@@ -12195,7 +12195,7 @@ public final class FriendMsg {
 
     /**
      * <pre>
-     * 玩家基本数据
+     * 好友基本数据
      * </pre>
      *
      * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12204,7 +12204,7 @@ public final class FriendMsg {
     boolean hasPlayer();
     /**
      * <pre>
-     * 玩家基本数据
+     * 好友基本数据
      * </pre>
      *
      * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12213,7 +12213,7 @@ public final class FriendMsg {
     cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo getPlayer();
     /**
      * <pre>
-     * 玩家基本数据
+     * 好友基本数据
      * </pre>
      *
      * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12358,7 +12358,7 @@ public final class FriendMsg {
     private cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo player_;
     /**
      * <pre>
-     * 玩家基本数据
+     * 好友基本数据
      * </pre>
      *
      * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12370,7 +12370,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     * 玩家基本数据
+     * 好友基本数据
      * </pre>
      *
      * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12382,7 +12382,7 @@ public final class FriendMsg {
     }
     /**
      * <pre>
-     * 玩家基本数据
+     * 好友基本数据
      * </pre>
      *
      * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12784,7 +12784,7 @@ public final class FriendMsg {
           cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo.Builder, cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfoOrBuilder> playerBuilder_;
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12795,7 +12795,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12810,7 +12810,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12830,7 +12830,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12848,7 +12848,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12870,7 +12870,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12888,7 +12888,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12900,7 +12900,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>
@@ -12915,7 +12915,7 @@ public final class FriendMsg {
       }
       /**
        * <pre>
-       * 玩家基本数据
+       * 好友基本数据
        * </pre>
        *
        * <code>.Protos.SimplePlayerInfo player = 1;</code>

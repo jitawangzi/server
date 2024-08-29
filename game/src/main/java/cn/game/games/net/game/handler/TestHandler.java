@@ -55,8 +55,8 @@ import cn.game.protocol.protobuf.TestMsg.TestAddItemResponse_6f000009;
 import cn.game.protocol.protobuf.TestMsg.TestMessageRequest_6f000080;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishRequest_6f000022;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishResponse_6f000023;
-import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028;
-import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029;
+import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028;
+import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
@@ -96,7 +96,7 @@ public class TestHandler extends BaseHandler {
 		putInvoker(PbProtocol.TestRequest_6f000020, this::test);
 //		putInvoker(PbProtocol.TestDbRequest_6f000041, this::testDBinsert);
 		putInvoker(PbProtocol.TestMissionFinishRequest_6f000022, this::finishMission);
-		putInvoker(PbProtocol.TestPlayerAssetDataRequest_01000028, this::assetData);
+		putInvoker(PbProtocol.TestPlayerAssetDataRequest_6f000028, this::assetData);
 //		putInvoker(PbProtocol.TestStoryFinishRequest_6f000024, this::finishStory);
 
 //		putInvoker(PbProtocol.TestAddOrDelBagItemRequest_6f000032, this::bagTest);
@@ -230,8 +230,8 @@ public class TestHandler extends BaseHandler {
 	
 		}*/
 	private void assetData(NetClient client, Object message) {
-		TestPlayerAssetDataRequest_01000028 request = (TestPlayerAssetDataRequest_01000028) message;
-		TestPlayerAssetDataResponse_01000029.Builder response = TestPlayerAssetDataResponse_01000029.newBuilder();
+		TestPlayerAssetDataRequest_6f000028 request = (TestPlayerAssetDataRequest_6f000028) message;
+		TestPlayerAssetDataResponse_6f000029.Builder response = TestPlayerAssetDataResponse_6f000029.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 

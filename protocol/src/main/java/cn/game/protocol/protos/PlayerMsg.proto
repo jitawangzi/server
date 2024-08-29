@@ -9,6 +9,7 @@ import "BattleMsg.proto" ;
 import "QuestMsg.proto";
 import "DevelopMsg.proto";
 import "FairyFriendMsg.proto";
+import "PetMsg.proto";
 
 /*** 登陆****/
 message PlayerLoginRequest_01000001{
@@ -290,6 +291,9 @@ message PlayerAllInfo{
    QianKunMirrorInfo qianKunMirrorInfo = 19;   // 乾坤镜，灵根淬炼
    repeated FairyFriendInfo fairyFriends = 20;   // 仙友数据
    map<uint32, uint32> fairyFriendFights = 21;   //仙友切磋数据。 key:FairyFriendFight表id。value：状态，1已挑战完， 2已领奖。
+   repeated PetInfo pets = 22;   // 宠物数据
+   map<uint32, uint32> petBook = 23;   //
+
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
 

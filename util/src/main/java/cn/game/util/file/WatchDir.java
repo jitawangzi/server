@@ -7,7 +7,6 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 import java.io.IOException;
-
 /*
  * Copyright (c) 2008, 2010, Oracle and/or its affiliates. All rights reserved.
  *
@@ -50,6 +49,7 @@ import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Example to watch a directory (or tree) for changes to files.
@@ -61,6 +61,7 @@ public class WatchDir {
 	private final Map<WatchKey, Path> keys;
 	private final boolean recursive;
 	private boolean trace = false;
+	private Consumer<Path> consumer;
 
 	@SuppressWarnings("unchecked")
 	static <T> WatchEvent<T> cast(WatchEvent<?> event) {
@@ -121,6 +122,11 @@ public class WatchDir {
 		this.trace = true;
 	}
 
+	public WatchDir(Path dir, boolean recursive, Consumer<Path> consumer) throws IOException {
+		this(dir, recursive);
+		this.consumer = consumer;
+	}
+
 	/**
 	 * Process all events for keys queued to the watcher
 	 */
@@ -157,6 +163,13 @@ public class WatchDir {
 				// print out event
 				System.out.format("%s: %s\n", event.kind().name(), child);
 
+				if (consumer != null) {
+					try {
+						consumer.accept(child);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 				// if directory is created, and watching recursively, then
 				// register it and its sub-directories
 				if (recursive && (kind == ENTRY_CREATE)) {
@@ -186,6 +199,10 @@ public class WatchDir {
 	static void usage() {
 		System.err.println("usage: java WatchDir [-r] dir");
 		System.exit(-1);
+	}
+
+	public void start() {
+		processEvents();
 	}
 
 	public static void main(String[] args) throws IOException {

@@ -164,13 +164,13 @@ public class PbProtocol implements ProtocolParser {
 	public final static int FriendApplyListResponse_30000054 = 0x30000054;    
 	public final static int FriendRecommendRequest_30000003 = 0x30000003;    //搜索符合条件的推荐好友  
 	public final static int FriendRecommendResponse_30000004 = 0x30000004;    //推荐好友列表  
-	public final static int FriendApplyRequest_30000005 = 0x30000005;    //申请成为对方好友或者批量申请好友，从黑名单里加好友也用这个协议  
+	public final static int FriendApplyRequest_30000005 = 0x30000005;    //申请成为对方好友,支持批量  
 	public final static int FriendApplyResponse_30000006 = 0x30000006;    
 	public final static int FriendApplicationRequest_30000007 = 0x30000007;    //处理好友申请,包含批量处理  
 	public final static int FriendApplicationResponse_30000008 = 0x30000008;    
 	public final static int FriendDeleteRequest_30000009 = 0x30000009;    //删除好友,从黑名单里移除也用这个协议  
 	public final static int FriendDeleteResponse_3000000a = 0x3000000a;    
-	public final static int FriendBlackRequest_30000010 = 0x30000010;    //将玩家加入到黑名单  
+	public final static int FriendBlackRequest_30000010 = 0x30000010;    //将好友加入到黑名单  
 	public final static int FriendBlackResponse_30000011 = 0x30000011;    
 	public final static int FriendGiftRequest_30000012 = 0x30000012;    //赠送好友友情点  
 	public final static int FriendGiftResponse_30000013 = 0x30000013;    
@@ -288,12 +288,14 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PetBreakUpResponse_19000006 = 0x19000006;    
 	public final static int PetRefineRequest_19000007 = 0x19000007;    //宠物洗练  
 	public final static int PetRefineResponse_19000008 = 0x19000008;    
+	public final static int PetRefineSaveRequest_19000009 = 0x19000009;    //实际保存上一次刷新出来的技能  
+	public final static int PetRefineSaveResponse_1900000a = 0x1900000a;    
 	public final static int PetBattleRequest_19000011 = 0x19000011;    //宠物上阵  
 	public final static int PetBattleResponse_19000012 = 0x19000012;    
 	public final static int PetBondsActivateRequest_19000013 = 0x19000013;    //激活宠物羁绊  
-	public final static int PetBondsActivateResponse_19000014 = 0x19000014;    
+	public final static int PetBondsActivateResponse_19000014 = 0x19000014;    //激活宠物羁绊返回，前后端分别加羁绊元宝  
 	public final static int PetBondsUpLevelRequest_19000015 = 0x19000015;    //升级宠物羁绊  
-	public final static int PetBondsUpLevelResponse_19000016 = 0x19000016;    
+	public final static int PetBondsUpLevelResponse_19000016 = 0x19000016;    //升级宠物羁绊返回，前后端分别加羁绊元宝  
 	public final static int PlayerLoginRequest_01000001 = 0x01000001;    //登陆  
 	public final static int PlayerLoginResponse_01000002 = 0x01000002;    //用户登陆,返回游戏数据  
 	public final static int PlayerLogoutRequest_01000003 = 0x01000003;    //退出登陆  
@@ -426,8 +428,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int TestAddItemResponse_6f000009 = 0x6f000009;    
 	public final static int TestMissionFinishRequest_6f000022 = 0x6f000022;    //直接完成任务  
 	public final static int TestMissionFinishResponse_6f000023 = 0x6f000023;    
-	public final static int TestPlayerAssetDataRequest_01000028 = 0x01000028;    //请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  
-	public final static int TestPlayerAssetDataResponse_01000029 = 0x01000029;    //  
+	public final static int TestPlayerAssetDataRequest_6f000028 = 0x6f000028;    //请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  
+	public final static int TestPlayerAssetDataResponse_6f000029 = 0x6f000029;    //  
 	public final static int TestRequest_6f000020 = 0x6f000020;    //只是测试  
 	public final static int TestResponse_6f000021 = 0x6f000021;    
 	public final static int TestMessageRequest_6f000080 = 0x6f000080;    //模拟测试某玩家发送协议  
@@ -956,6 +958,10 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(PetRefineResponse_19000008, cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(PetRefineSaveRequest_19000009, cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PetRefineSaveResponse_1900000a, cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a.getDefaultInstance()
+				.getParserForType());
 		parsersMap.put(PetBattleRequest_19000011, cn.game.protocol.protobuf.PetMsg.PetBattleRequest_19000011.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PetBattleResponse_19000012, cn.game.protocol.protobuf.PetMsg.PetBattleResponse_19000012.getDefaultInstance()
@@ -1232,9 +1238,9 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(TestMissionFinishResponse_6f000023, cn.game.protocol.protobuf.TestMsg.TestMissionFinishResponse_6f000023.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(TestPlayerAssetDataRequest_01000028, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_01000028.getDefaultInstance()
+		parsersMap.put(TestPlayerAssetDataRequest_6f000028, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028.getDefaultInstance()
 				.getParserForType());
-		parsersMap.put(TestPlayerAssetDataResponse_01000029, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_01000029.getDefaultInstance()
+		parsersMap.put(TestPlayerAssetDataResponse_6f000029, cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(TestRequest_6f000020, cn.game.protocol.protobuf.TestMsg.TestRequest_6f000020.getDefaultInstance()
 				.getParserForType());
@@ -1767,6 +1773,10 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x19000007,"PetRefineRequest_19000007");
 		nameIdMap.put("PetRefineResponse_19000008", 0x19000008);
 		idNameMap.put(0x19000008,"PetRefineResponse_19000008");
+		nameIdMap.put("PetRefineSaveRequest_19000009", 0x19000009);
+		idNameMap.put(0x19000009,"PetRefineSaveRequest_19000009");
+		nameIdMap.put("PetRefineSaveResponse_1900000a", 0x1900000a);
+		idNameMap.put(0x1900000a,"PetRefineSaveResponse_1900000a");
 		nameIdMap.put("PetBattleRequest_19000011", 0x19000011);
 		idNameMap.put(0x19000011,"PetBattleRequest_19000011");
 		nameIdMap.put("PetBattleResponse_19000012", 0x19000012);
@@ -2043,10 +2053,10 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x6f000022,"TestMissionFinishRequest_6f000022");
 		nameIdMap.put("TestMissionFinishResponse_6f000023", 0x6f000023);
 		idNameMap.put(0x6f000023,"TestMissionFinishResponse_6f000023");
-		nameIdMap.put("TestPlayerAssetDataRequest_01000028", 0x01000028);
-		idNameMap.put(0x01000028,"TestPlayerAssetDataRequest_01000028");
-		nameIdMap.put("TestPlayerAssetDataResponse_01000029", 0x01000029);
-		idNameMap.put(0x01000029,"TestPlayerAssetDataResponse_01000029");
+		nameIdMap.put("TestPlayerAssetDataRequest_6f000028", 0x6f000028);
+		idNameMap.put(0x6f000028,"TestPlayerAssetDataRequest_6f000028");
+		nameIdMap.put("TestPlayerAssetDataResponse_6f000029", 0x6f000029);
+		idNameMap.put(0x6f000029,"TestPlayerAssetDataResponse_6f000029");
 		nameIdMap.put("TestRequest_6f000020", 0x6f000020);
 		idNameMap.put(0x6f000020,"TestRequest_6f000020");
 		nameIdMap.put("TestResponse_6f000021", 0x6f000021);

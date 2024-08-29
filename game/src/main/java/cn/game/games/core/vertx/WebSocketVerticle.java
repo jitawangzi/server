@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.Message;
+import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.TextFormat;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.process.Processor;
@@ -16,6 +18,7 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
+import cn.game.util.Config;
 import cn.game.util.SpringContextLoader;
 import io.netty.buffer.ByteBuf;
 import io.vertx.core.AbstractVerticle;
@@ -25,6 +28,8 @@ import io.vertx.core.impl.ContextInternal;
 public class WebSocketVerticle extends AbstractVerticle {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketVerticle.class);
+	protected Logger gamerecvLog = LoggerFactory.getLogger("gamerecvLog");
+
 	private int port = GameServerStatus.getInstance().getServerInfo().getPort();
 //	private static int count = 0;
 
@@ -69,6 +74,15 @@ public class WebSocketVerticle extends AbstractVerticle {
 					if (ServerContext.getInstance().getRunMode().isPressure() && ServerContext.getInstance().isPressureDev()) {
 						client.sendMessages.putIfAbsent(seq, Pair.of(message.getClass().getSimpleName(), System.nanoTime()));
 					}
+
+					if (Config.recordRecvData) {
+						if (msgID != PbProtocol.PlayerHeartbeatRequest_01000005) {
+							this.gamerecvLog
+									.info("opType[recv]{}receive msg[{}]data[{}]seq[{}]", client, message.getClass().getSimpleName(),
+											message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message) : message, seq);
+						}
+					}
+
 					ProtobufProtocol protocol = new ProtobufProtocol(msgID, message, seq);
 					client.setLastRecvPacketTime(System.currentTimeMillis());
 					processor.process(client, protocol);

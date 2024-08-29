@@ -3,6 +3,7 @@ package cn.game.games.net.game;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,6 +14,7 @@ import java.util.function.Consumer;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.RequestCallback;
 
@@ -47,6 +49,7 @@ import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.JsonUtil;
+import cn.game.util.MailUtil;
 import cn.game.util.RedissonUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -111,16 +114,19 @@ public class GameServer implements GameServerMBean {
 
 			instance.start(args);
 		} catch (Throwable e) {
-//			try {
-//				MailUtil.reportException("Game服务器【 " + instance.serverId + " 】启动失败", ExceptionUtils.getFullStackTrace(
-//						e));
-//			} catch (Exception e1) {
-//				e1.printStackTrace();
-//			}
-			e.printStackTrace();
-			System.exit(1);
+			handleStartFail(e);
 		}
 
+	}
+
+	private static void handleStartFail(Throwable e) {
+		try {
+			MailUtil.reportException("Game服务器【 " + System.getProperty(gameServerKey) + " 】启动失败", ExceptionUtils.getFullStackTrace(e));
+		} catch (Exception e1) {
+			System.err.println("发送邮件失败," + e1.getMessage());
+		}
+		e.printStackTrace();
+		System.exit(1);
 	}
 
 	public void start(String[] args) throws Exception {
@@ -185,6 +191,7 @@ public class GameServer implements GameServerMBean {
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		CommonLogger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", serverId, (System.currentTimeMillis() - start) / 1000));
+		System.out.println("启动成功");
 
 		// 记录bi
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
@@ -244,18 +251,25 @@ public class GameServer implements GameServerMBean {
 	}
 
 	private void initHotUpdate() {
-		if (Config.hotUpdate) {
+		if (ServerContext.getInstance().getRunMode().isProduction()) {
 			String className = ManagementFactory.getRuntimeMXBean().getName();
 			String pid = className.split("@")[0];
 			Thread attachThread = new Thread(() -> {
 				try {
+					// 尝试从 classpath 中获取 JAR 文件
+					URL jarUrl = getClass().getClassLoader().getResource("hotupdate-1.0.jar");
+					String agentPath = jarUrl.getPath();
 					VirtualMachine vm = VirtualMachine.attach(pid);
-					// 这个路径是相对于被热更的服务的，也就是这个pid的服务，也可以使用绝对路径。
-					vm.loadAgent(Config.agentJar);
+					vm.loadAgent(agentPath);
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
-			}, "agent attach");
+			}, "CodeHotUpdate");
+
+			// 设置未捕获异常处理器
+			attachThread.setUncaughtExceptionHandler((t, e) -> {
+				handleStartFail(e);
+			});
 			attachThread.setDaemon(true);
 			attachThread.start();
 		}
@@ -355,6 +369,8 @@ public class GameServer implements GameServerMBean {
 			GameClientManager.getInstance().storeAllPlayers();
 			SpringContextLoader.getContext().close();
 			quartzInitializer.destroyed();
+
+			ServerContext.getInstance().shutdown();
 
 			VxHolder.vertx.close().toCompletionStage().toCompletableFuture().get(300, TimeUnit.SECONDS);
 

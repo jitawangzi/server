@@ -14348,6 +14348,16 @@ public final class BaseMsg {
      */
     com.google.protobuf.ByteString
         getServerNameBytes();
+
+    /**
+     * <pre>
+     * 天道修为等级。
+     * </pre>
+     *
+     * <code>uint32 tiandaoLevel = 12;</code>
+     * @return The tiandaoLevel.
+     */
+    int getTiandaoLevel();
   }
   /**
    * <pre>
@@ -14454,6 +14464,11 @@ public final class BaseMsg {
               java.lang.String s = input.readStringRequireUtf8();
 
               serverName_ = s;
+              break;
+            }
+            case 96: {
+
+              tiandaoLevel_ = input.readUInt32();
               break;
             }
             default: {
@@ -14762,6 +14777,21 @@ public final class BaseMsg {
       }
     }
 
+    public static final int TIANDAOLEVEL_FIELD_NUMBER = 12;
+    private int tiandaoLevel_;
+    /**
+     * <pre>
+     * 天道修为等级。
+     * </pre>
+     *
+     * <code>uint32 tiandaoLevel = 12;</code>
+     * @return The tiandaoLevel.
+     */
+    @java.lang.Override
+    public int getTiandaoLevel() {
+      return tiandaoLevel_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -14805,6 +14835,9 @@ public final class BaseMsg {
       }
       if (!getServerNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 11, serverName_);
+      }
+      if (tiandaoLevel_ != 0) {
+        output.writeUInt32(12, tiandaoLevel_);
       }
       unknownFields.writeTo(output);
     }
@@ -14851,6 +14884,10 @@ public final class BaseMsg {
       if (!getServerNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, serverName_);
       }
+      if (tiandaoLevel_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(12, tiandaoLevel_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -14886,6 +14923,8 @@ public final class BaseMsg {
           .equals(other.getServerId())) return false;
       if (!getServerName()
           .equals(other.getServerName())) return false;
+      if (getTiandaoLevel()
+          != other.getTiandaoLevel()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -14918,6 +14957,8 @@ public final class BaseMsg {
       hash = (53 * hash) + getServerId().hashCode();
       hash = (37 * hash) + SERVERNAME_FIELD_NUMBER;
       hash = (53 * hash) + getServerName().hashCode();
+      hash = (37 * hash) + TIANDAOLEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getTiandaoLevel();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -15075,6 +15116,8 @@ public final class BaseMsg {
 
         serverName_ = "";
 
+        tiandaoLevel_ = 0;
+
         return this;
       }
 
@@ -15111,6 +15154,7 @@ public final class BaseMsg {
         result.offlineTime_ = offlineTime_;
         result.serverId_ = serverId_;
         result.serverName_ = serverName_;
+        result.tiandaoLevel_ = tiandaoLevel_;
         onBuilt();
         return result;
       }
@@ -15192,6 +15236,9 @@ public final class BaseMsg {
         if (!other.getServerName().isEmpty()) {
           serverName_ = other.serverName_;
           onChanged();
+        }
+        if (other.getTiandaoLevel() != 0) {
+          setTiandaoLevel(other.getTiandaoLevel());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -15860,6 +15907,49 @@ public final class BaseMsg {
   checkByteStringIsUtf8(value);
         
         serverName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int tiandaoLevel_ ;
+      /**
+       * <pre>
+       * 天道修为等级。
+       * </pre>
+       *
+       * <code>uint32 tiandaoLevel = 12;</code>
+       * @return The tiandaoLevel.
+       */
+      @java.lang.Override
+      public int getTiandaoLevel() {
+        return tiandaoLevel_;
+      }
+      /**
+       * <pre>
+       * 天道修为等级。
+       * </pre>
+       *
+       * <code>uint32 tiandaoLevel = 12;</code>
+       * @param value The tiandaoLevel to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTiandaoLevel(int value) {
+        
+        tiandaoLevel_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 天道修为等级。
+       * </pre>
+       *
+       * <code>uint32 tiandaoLevel = 12;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTiandaoLevel() {
+        
+        tiandaoLevel_ = 0;
         onChanged();
         return this;
       }
@@ -17731,17 +17821,18 @@ public final class BaseMsg {
       "gonInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004star\030\002 \001(\r\",\n\017Dra" +
       "gonSkillInfo\022\n\n\002id\030\001 \001(\r\022\r\n\005level\030\002 \001(\r\"" +
       ".\n\tSkillInfo\022\n\n\002id\030\001 \001(\r\022\025\n\rstrengthenId" +
-      "s\030\002 \003(\r\"\304\001\n\020SimplePlayerInfo\022\n\n\002id\030\001 \001(\t" +
+      "s\030\002 \003(\r\"\332\001\n\020SimplePlayerInfo\022\n\n\002id\030\001 \001(\t" +
       "\022\014\n\004name\030\002 \001(\t\022\r\n\005level\030\003 \001(\r\022\033\n\023combatE" +
       "ffectiveness\030\004 \001(\r\022\014\n\004head\030\006 \001(\r\022\021\n\thead" +
       "Frame\030\007 \001(\r\022\016\n\006online\030\010 \001(\010\022\023\n\013offlineTi" +
       "me\030\t \001(\r\022\020\n\010serverId\030\n \001(\t\022\022\n\nserverName" +
-      "\030\013 \001(\t\"E\n\016PlayerShowInfo\022\r\n\005guild\030\002 \001(\t\022" +
-      "\016\n\006combat\030\003 \001(\r\022\024\n\014praisedCount\030\004 \001(\r\"H\n" +
-      "\021PaymentOrderProto\022\020\n\010signData\030\001 \001(\t\022\016\n\006" +
-      "paySig\030\002 \001(\t\022\021\n\tsignature\030\003 \001(\t*-\n\nUpdat" +
-      "eType\022\n\n\006UPDATE\020\000\022\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033" +
-      "\n\031cn.game.protocol.protobufb\006proto3"
+      "\030\013 \001(\t\022\024\n\014tiandaoLevel\030\014 \001(\r\"E\n\016PlayerSh" +
+      "owInfo\022\r\n\005guild\030\002 \001(\t\022\016\n\006combat\030\003 \001(\r\022\024\n" +
+      "\014praisedCount\030\004 \001(\r\"H\n\021PaymentOrderProto" +
+      "\022\020\n\010signData\030\001 \001(\t\022\016\n\006paySig\030\002 \001(\t\022\021\n\tsi" +
+      "gnature\030\003 \001(\t*-\n\nUpdateType\022\n\n\006UPDATE\020\000\022" +
+      "\007\n\003ADD\020\001\022\n\n\006DELETE\020\002B\033\n\031cn.game.protocol" +
+      ".protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -17872,7 +17963,7 @@ public final class BaseMsg {
     internal_static_Protos_SimplePlayerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_SimplePlayerInfo_descriptor,
-        new java.lang.String[] { "Id", "Name", "Level", "CombatEffectiveness", "Head", "HeadFrame", "Online", "OfflineTime", "ServerId", "ServerName", });
+        new java.lang.String[] { "Id", "Name", "Level", "CombatEffectiveness", "Head", "HeadFrame", "Online", "OfflineTime", "ServerId", "ServerName", "TiandaoLevel", });
     internal_static_Protos_PlayerShowInfo_descriptor =
       getDescriptor().getMessageTypes().get(19);
     internal_static_Protos_PlayerShowInfo_fieldAccessorTable = new

@@ -20,7 +20,7 @@ public final class PetMsg {
 
     /**
      * <pre>
-     * Pet表id
+     * SoulSoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -118,7 +118,7 @@ public final class PetMsg {
     private int id_;
     /**
      * <pre>
-     * Pet表id
+     * SoulSoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -438,7 +438,7 @@ public final class PetMsg {
       private int id_ ;
       /**
        * <pre>
-       * Pet表id
+       * SoulSoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -450,7 +450,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulSoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -465,7 +465,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulSoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -954,7 +954,7 @@ public final class PetMsg {
 
     /**
      * <pre>
-     * Pet表id
+     * SoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -1052,7 +1052,7 @@ public final class PetMsg {
     private int id_;
     /**
      * <pre>
-     * Pet表id
+     * SoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -1372,7 +1372,7 @@ public final class PetMsg {
       private int id_ ;
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -1384,7 +1384,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -1399,7 +1399,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -1888,28 +1888,13 @@ public final class PetMsg {
 
     /**
      * <pre>
-     * Pet表id
+     * SoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
      * @return The id.
      */
     int getId();
-
-    /**
-     * <code>.Protos.RewardInfo rewards = 2;</code>
-     * @return Whether the rewards field is set.
-     */
-    boolean hasRewards();
-    /**
-     * <code>.Protos.RewardInfo rewards = 2;</code>
-     * @return The rewards.
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards();
-    /**
-     * <code>.Protos.RewardInfo rewards = 2;</code>
-     */
-    cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder();
   }
   /**
    * <pre>
@@ -1965,19 +1950,6 @@ public final class PetMsg {
               id_ = input.readInt32();
               break;
             }
-            case 18: {
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder subBuilder = null;
-              if (rewards_ != null) {
-                subBuilder = rewards_.toBuilder();
-              }
-              rewards_ = input.readMessage(cn.game.protocol.protobuf.RewardMsg.RewardInfo.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(rewards_);
-                rewards_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -2014,7 +1986,7 @@ public final class PetMsg {
     private int id_;
     /**
      * <pre>
-     * Pet表id
+     * SoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -2023,32 +1995,6 @@ public final class PetMsg {
     @java.lang.Override
     public int getId() {
       return id_;
-    }
-
-    public static final int REWARDS_FIELD_NUMBER = 2;
-    private cn.game.protocol.protobuf.RewardMsg.RewardInfo rewards_;
-    /**
-     * <code>.Protos.RewardInfo rewards = 2;</code>
-     * @return Whether the rewards field is set.
-     */
-    @java.lang.Override
-    public boolean hasRewards() {
-      return rewards_ != null;
-    }
-    /**
-     * <code>.Protos.RewardInfo rewards = 2;</code>
-     * @return The rewards.
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards() {
-      return rewards_ == null ? cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance() : rewards_;
-    }
-    /**
-     * <code>.Protos.RewardInfo rewards = 2;</code>
-     */
-    @java.lang.Override
-    public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder() {
-      return getRewards();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2068,9 +2014,6 @@ public final class PetMsg {
       if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (rewards_ != null) {
-        output.writeMessage(2, getRewards());
-      }
       unknownFields.writeTo(output);
     }
 
@@ -2083,10 +2026,6 @@ public final class PetMsg {
       if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
-      }
-      if (rewards_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getRewards());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2105,11 +2044,6 @@ public final class PetMsg {
 
       if (getId()
           != other.getId()) return false;
-      if (hasRewards() != other.hasRewards()) return false;
-      if (hasRewards()) {
-        if (!getRewards()
-            .equals(other.getRewards())) return false;
-      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2123,10 +2057,6 @@ public final class PetMsg {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId();
-      if (hasRewards()) {
-        hash = (37 * hash) + REWARDS_FIELD_NUMBER;
-        hash = (53 * hash) + getRewards().hashCode();
-      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2266,12 +2196,6 @@ public final class PetMsg {
         super.clear();
         id_ = 0;
 
-        if (rewardsBuilder_ == null) {
-          rewards_ = null;
-        } else {
-          rewards_ = null;
-          rewardsBuilder_ = null;
-        }
         return this;
       }
 
@@ -2299,11 +2223,6 @@ public final class PetMsg {
       public cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 buildPartial() {
         cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005 result = new cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005(this);
         result.id_ = id_;
-        if (rewardsBuilder_ == null) {
-          result.rewards_ = rewards_;
-        } else {
-          result.rewards_ = rewardsBuilder_.build();
-        }
         onBuilt();
         return result;
       }
@@ -2355,9 +2274,6 @@ public final class PetMsg {
         if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasRewards()) {
-          mergeRewards(other.getRewards());
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -2390,7 +2306,7 @@ public final class PetMsg {
       private int id_ ;
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -2402,7 +2318,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -2417,7 +2333,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -2428,125 +2344,6 @@ public final class PetMsg {
         id_ = 0;
         onChanged();
         return this;
-      }
-
-      private cn.game.protocol.protobuf.RewardMsg.RewardInfo rewards_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> rewardsBuilder_;
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       * @return Whether the rewards field is set.
-       */
-      public boolean hasRewards() {
-        return rewardsBuilder_ != null || rewards_ != null;
-      }
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       * @return The rewards.
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo getRewards() {
-        if (rewardsBuilder_ == null) {
-          return rewards_ == null ? cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance() : rewards_;
-        } else {
-          return rewardsBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder setRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (rewardsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          rewards_ = value;
-          onChanged();
-        } else {
-          rewardsBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder setRewards(
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder builderForValue) {
-        if (rewardsBuilder_ == null) {
-          rewards_ = builderForValue.build();
-          onChanged();
-        } else {
-          rewardsBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder mergeRewards(cn.game.protocol.protobuf.RewardMsg.RewardInfo value) {
-        if (rewardsBuilder_ == null) {
-          if (rewards_ != null) {
-            rewards_ =
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo.newBuilder(rewards_).mergeFrom(value).buildPartial();
-          } else {
-            rewards_ = value;
-          }
-          onChanged();
-        } else {
-          rewardsBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       */
-      public Builder clearRewards() {
-        if (rewardsBuilder_ == null) {
-          rewards_ = null;
-          onChanged();
-        } else {
-          rewards_ = null;
-          rewardsBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder getRewardsBuilder() {
-        
-        onChanged();
-        return getRewardsFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       */
-      public cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder getRewardsOrBuilder() {
-        if (rewardsBuilder_ != null) {
-          return rewardsBuilder_.getMessageOrBuilder();
-        } else {
-          return rewards_ == null ?
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo.getDefaultInstance() : rewards_;
-        }
-      }
-      /**
-       * <code>.Protos.RewardInfo rewards = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder> 
-          getRewardsFieldBuilder() {
-        if (rewardsBuilder_ == null) {
-          rewardsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              cn.game.protocol.protobuf.RewardMsg.RewardInfo, cn.game.protocol.protobuf.RewardMsg.RewardInfo.Builder, cn.game.protocol.protobuf.RewardMsg.RewardInfoOrBuilder>(
-                  getRewards(),
-                  getParentForChildren(),
-                  isClean());
-          rewards_ = null;
-        }
-        return rewardsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -2604,16 +2401,6 @@ public final class PetMsg {
   public interface PetBreakUpResponse_19000006OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.PetBreakUpResponse_19000006)
       com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <pre>
-     * Pet表id
-     * </pre>
-     *
-     * <code>int32 id = 1;</code>
-     * @return The id.
-     */
-    int getId();
   }
   /**
    * Protobuf type {@code Protos.PetBreakUpResponse_19000006}
@@ -2660,11 +2447,6 @@ public final class PetMsg {
             case 0:
               done = true;
               break;
-            case 8: {
-
-              id_ = input.readInt32();
-              break;
-            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -2697,21 +2479,6 @@ public final class PetMsg {
               cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.class, cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.Builder.class);
     }
 
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
-    /**
-     * <pre>
-     * Pet表id
-     * </pre>
-     *
-     * <code>int32 id = 1;</code>
-     * @return The id.
-     */
-    @java.lang.Override
-    public int getId() {
-      return id_;
-    }
-
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2726,9 +2493,6 @@ public final class PetMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (id_ != 0) {
-        output.writeInt32(1, id_);
-      }
       unknownFields.writeTo(output);
     }
 
@@ -2738,10 +2502,6 @@ public final class PetMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (id_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
-      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -2757,8 +2517,6 @@ public final class PetMsg {
       }
       cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 other = (cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006) obj;
 
-      if (getId()
-          != other.getId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2770,8 +2528,6 @@ public final class PetMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2905,8 +2661,6 @@ public final class PetMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        id_ = 0;
-
         return this;
       }
 
@@ -2933,7 +2687,6 @@ public final class PetMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 buildPartial() {
         cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 result = new cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006(this);
-        result.id_ = id_;
         onBuilt();
         return result;
       }
@@ -2982,9 +2735,6 @@ public final class PetMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006 other) {
         if (other == cn.game.protocol.protobuf.PetMsg.PetBreakUpResponse_19000006.getDefaultInstance()) return this;
-        if (other.getId() != 0) {
-          setId(other.getId());
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -3011,49 +2761,6 @@ public final class PetMsg {
             mergeFrom(parsedMessage);
           }
         }
-        return this;
-      }
-
-      private int id_ ;
-      /**
-       * <pre>
-       * Pet表id
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @return The id.
-       */
-      @java.lang.Override
-      public int getId() {
-        return id_;
-      }
-      /**
-       * <pre>
-       * Pet表id
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @param value The id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setId(int value) {
-        
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * Pet表id
-       * </pre>
-       *
-       * <code>int32 id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearId() {
-        
-        id_ = 0;
-        onChanged();
         return this;
       }
       @java.lang.Override
@@ -3115,7 +2822,7 @@ public final class PetMsg {
 
     /**
      * <pre>
-     * Pet表id
+     * SoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -3213,7 +2920,7 @@ public final class PetMsg {
     private int id_;
     /**
      * <pre>
-     * Pet表id
+     * SoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -3533,7 +3240,7 @@ public final class PetMsg {
       private int id_ ;
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -3545,7 +3252,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -3560,7 +3267,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -3628,6 +3335,35 @@ public final class PetMsg {
   public interface PetRefineResponse_19000008OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.PetRefineResponse_19000008)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill 表id ，显示用。
+     * </pre>
+     *
+     * <code>repeated int32 skills = 1;</code>
+     * @return A list containing the skills.
+     */
+    java.util.List<java.lang.Integer> getSkillsList();
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill 表id ，显示用。
+     * </pre>
+     *
+     * <code>repeated int32 skills = 1;</code>
+     * @return The count of skills.
+     */
+    int getSkillsCount();
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill 表id ，显示用。
+     * </pre>
+     *
+     * <code>repeated int32 skills = 1;</code>
+     * @param index The index of the element to return.
+     * @return The skills at the given index.
+     */
+    int getSkills(int index);
   }
   /**
    * Protobuf type {@code Protos.PetRefineResponse_19000008}
@@ -3642,6 +3378,7 @@ public final class PetMsg {
       super(builder);
     }
     private PetRefineResponse_19000008() {
+      skills_ = emptyIntList();
     }
 
     @java.lang.Override
@@ -3664,6 +3401,7 @@ public final class PetMsg {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -3674,6 +3412,27 @@ public final class PetMsg {
             case 0:
               done = true;
               break;
+            case 8: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                skills_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              skills_.addInt(input.readInt32());
+              break;
+            }
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                skills_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                skills_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -3689,6 +3448,9 @@ public final class PetMsg {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          skills_.makeImmutable(); // C
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -3706,6 +3468,46 @@ public final class PetMsg {
               cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008.class, cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008.Builder.class);
     }
 
+    public static final int SKILLS_FIELD_NUMBER = 1;
+    private com.google.protobuf.Internal.IntList skills_;
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill 表id ，显示用。
+     * </pre>
+     *
+     * <code>repeated int32 skills = 1;</code>
+     * @return A list containing the skills.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getSkillsList() {
+      return skills_;
+    }
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill 表id ，显示用。
+     * </pre>
+     *
+     * <code>repeated int32 skills = 1;</code>
+     * @return The count of skills.
+     */
+    public int getSkillsCount() {
+      return skills_.size();
+    }
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill 表id ，显示用。
+     * </pre>
+     *
+     * <code>repeated int32 skills = 1;</code>
+     * @param index The index of the element to return.
+     * @return The skills at the given index.
+     */
+    public int getSkills(int index) {
+      return skills_.getInt(index);
+    }
+    private int skillsMemoizedSerializedSize = -1;
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3720,6 +3522,14 @@ public final class PetMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
+      if (getSkillsList().size() > 0) {
+        output.writeUInt32NoTag(10);
+        output.writeUInt32NoTag(skillsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < skills_.size(); i++) {
+        output.writeInt32NoTag(skills_.getInt(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -3729,6 +3539,20 @@ public final class PetMsg {
       if (size != -1) return size;
 
       size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < skills_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(skills_.getInt(i));
+        }
+        size += dataSize;
+        if (!getSkillsList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        skillsMemoizedSerializedSize = dataSize;
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -3744,6 +3568,8 @@ public final class PetMsg {
       }
       cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008 other = (cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008) obj;
 
+      if (!getSkillsList()
+          .equals(other.getSkillsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3755,6 +3581,10 @@ public final class PetMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      if (getSkillsCount() > 0) {
+        hash = (37 * hash) + SKILLS_FIELD_NUMBER;
+        hash = (53 * hash) + getSkillsList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3888,6 +3718,8 @@ public final class PetMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        skills_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -3914,6 +3746,12 @@ public final class PetMsg {
       @java.lang.Override
       public cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008 buildPartial() {
         cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008 result = new cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          skills_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.skills_ = skills_;
         onBuilt();
         return result;
       }
@@ -3962,6 +3800,16 @@ public final class PetMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008 other) {
         if (other == cn.game.protocol.protobuf.PetMsg.PetRefineResponse_19000008.getDefaultInstance()) return this;
+        if (!other.skills_.isEmpty()) {
+          if (skills_.isEmpty()) {
+            skills_ = other.skills_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureSkillsIsMutable();
+            skills_.addAll(other.skills_);
+          }
+          onChanged();
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -3988,6 +3836,114 @@ public final class PetMsg {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.Internal.IntList skills_ = emptyIntList();
+      private void ensureSkillsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          skills_ = mutableCopy(skills_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill 表id ，显示用。
+       * </pre>
+       *
+       * <code>repeated int32 skills = 1;</code>
+       * @return A list containing the skills.
+       */
+      public java.util.List<java.lang.Integer>
+          getSkillsList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(skills_) : skills_;
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill 表id ，显示用。
+       * </pre>
+       *
+       * <code>repeated int32 skills = 1;</code>
+       * @return The count of skills.
+       */
+      public int getSkillsCount() {
+        return skills_.size();
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill 表id ，显示用。
+       * </pre>
+       *
+       * <code>repeated int32 skills = 1;</code>
+       * @param index The index of the element to return.
+       * @return The skills at the given index.
+       */
+      public int getSkills(int index) {
+        return skills_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill 表id ，显示用。
+       * </pre>
+       *
+       * <code>repeated int32 skills = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The skills to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSkills(
+          int index, int value) {
+        ensureSkillsIsMutable();
+        skills_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill 表id ，显示用。
+       * </pre>
+       *
+       * <code>repeated int32 skills = 1;</code>
+       * @param value The skills to add.
+       * @return This builder for chaining.
+       */
+      public Builder addSkills(int value) {
+        ensureSkillsIsMutable();
+        skills_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill 表id ，显示用。
+       * </pre>
+       *
+       * <code>repeated int32 skills = 1;</code>
+       * @param values The skills to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllSkills(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureSkillsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, skills_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill 表id ，显示用。
+       * </pre>
+       *
+       * <code>repeated int32 skills = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSkills() {
+        skills_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
         return this;
       }
       @java.lang.Override
@@ -4043,13 +3999,857 @@ public final class PetMsg {
 
   }
 
+  public interface PetRefineSaveRequest_19000009OrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PetRefineSaveRequest_19000009)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * <pre>
+   *实际保存上一次刷新出来的技能
+   * </pre>
+   *
+   * Protobuf type {@code Protos.PetRefineSaveRequest_19000009}
+   */
+  public static final class PetRefineSaveRequest_19000009 extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PetRefineSaveRequest_19000009)
+      PetRefineSaveRequest_19000009OrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PetRefineSaveRequest_19000009.newBuilder() to construct.
+    private PetRefineSaveRequest_19000009(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PetRefineSaveRequest_19000009() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PetRefineSaveRequest_19000009();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PetRefineSaveRequest_19000009(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveRequest_19000009_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveRequest_19000009_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.class, cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 other = (cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *实际保存上一次刷新出来的技能
+     * </pre>
+     *
+     * Protobuf type {@code Protos.PetRefineSaveRequest_19000009}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PetRefineSaveRequest_19000009)
+        cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009OrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveRequest_19000009_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveRequest_19000009_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.class, cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveRequest_19000009_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 build() {
+        cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 buildPartial() {
+        cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 result = new cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009) {
+          return mergeFrom((cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 other) {
+        if (other == cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PetRefineSaveRequest_19000009)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PetRefineSaveRequest_19000009)
+    private static final cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009();
+    }
+
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PetRefineSaveRequest_19000009>
+        PARSER = new com.google.protobuf.AbstractParser<PetRefineSaveRequest_19000009>() {
+      @java.lang.Override
+      public PetRefineSaveRequest_19000009 parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PetRefineSaveRequest_19000009(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PetRefineSaveRequest_19000009> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PetRefineSaveRequest_19000009> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009 getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PetRefineSaveResponse_1900000aOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PetRefineSaveResponse_1900000a)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code Protos.PetRefineSaveResponse_1900000a}
+   */
+  public static final class PetRefineSaveResponse_1900000a extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PetRefineSaveResponse_1900000a)
+      PetRefineSaveResponse_1900000aOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PetRefineSaveResponse_1900000a.newBuilder() to construct.
+    private PetRefineSaveResponse_1900000a(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PetRefineSaveResponse_1900000a() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PetRefineSaveResponse_1900000a();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PetRefineSaveResponse_1900000a(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveResponse_1900000a_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveResponse_1900000a_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a.class, cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a other = (cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.PetRefineSaveResponse_1900000a}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PetRefineSaveResponse_1900000a)
+        cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000aOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveResponse_1900000a_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveResponse_1900000a_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a.class, cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetRefineSaveResponse_1900000a_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a build() {
+        cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a buildPartial() {
+        cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a result = new cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a) {
+          return mergeFrom((cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a other) {
+        if (other == cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PetRefineSaveResponse_1900000a)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PetRefineSaveResponse_1900000a)
+    private static final cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a();
+    }
+
+    public static cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PetRefineSaveResponse_1900000a>
+        PARSER = new com.google.protobuf.AbstractParser<PetRefineSaveResponse_1900000a>() {
+      @java.lang.Override
+      public PetRefineSaveResponse_1900000a parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PetRefineSaveResponse_1900000a(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PetRefineSaveResponse_1900000a> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PetRefineSaveResponse_1900000a> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.PetMsg.PetRefineSaveResponse_1900000a getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface PetBattleRequest_19000011OrBuilder extends
       // @@protoc_insertion_point(interface_extends:Protos.PetBattleRequest_19000011)
       com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
-     * Pet表id
+     * SoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -4147,7 +4947,7 @@ public final class PetMsg {
     private int id_;
     /**
      * <pre>
-     * Pet表id
+     * SoulPet表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -4467,7 +5267,7 @@ public final class PetMsg {
       private int id_ ;
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -4479,7 +5279,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -4494,7 +5294,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * Pet表id
+       * SoulPet表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -4983,7 +5783,7 @@ public final class PetMsg {
 
     /**
      * <pre>
-     *   羁绊表id
+     *   SoulPetBook表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -5081,7 +5881,7 @@ public final class PetMsg {
     private int id_;
     /**
      * <pre>
-     *   羁绊表id
+     *   SoulPetBook表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -5401,7 +6201,7 @@ public final class PetMsg {
       private int id_ ;
       /**
        * <pre>
-       *   羁绊表id
+       *   SoulPetBook表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -5413,7 +6213,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       *   羁绊表id
+       *   SoulPetBook表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -5428,7 +6228,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       *   羁绊表id
+       *   SoulPetBook表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -5498,6 +6298,10 @@ public final class PetMsg {
       com.google.protobuf.MessageOrBuilder {
   }
   /**
+   * <pre>
+   *激活宠物羁绊返回，前后端分别加羁绊元宝
+   * </pre>
+   *
    * Protobuf type {@code Protos.PetBondsActivateResponse_19000014}
    */
   public static final class PetBondsActivateResponse_19000014 extends
@@ -5719,6 +6523,10 @@ public final class PetMsg {
       return builder;
     }
     /**
+     * <pre>
+     *激活宠物羁绊返回，前后端分别加羁绊元宝
+     * </pre>
+     *
      * Protobuf type {@code Protos.PetBondsActivateResponse_19000014}
      */
     public static final class Builder extends
@@ -5917,7 +6725,7 @@ public final class PetMsg {
 
     /**
      * <pre>
-     *   羁绊表id
+     *   SoulPetBook表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -6015,7 +6823,7 @@ public final class PetMsg {
     private int id_;
     /**
      * <pre>
-     *   羁绊表id
+     *   SoulPetBook表id
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -6335,7 +7143,7 @@ public final class PetMsg {
       private int id_ ;
       /**
        * <pre>
-       *   羁绊表id
+       *   SoulPetBook表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -6347,7 +7155,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       *   羁绊表id
+       *   SoulPetBook表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -6362,7 +7170,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       *   羁绊表id
+       *   SoulPetBook表id
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -6432,6 +7240,10 @@ public final class PetMsg {
       com.google.protobuf.MessageOrBuilder {
   }
   /**
+   * <pre>
+   *升级宠物羁绊返回，前后端分别加羁绊元宝
+   * </pre>
+   *
    * Protobuf type {@code Protos.PetBondsUpLevelResponse_19000016}
    */
   public static final class PetBondsUpLevelResponse_19000016 extends
@@ -6653,6 +7465,10 @@ public final class PetMsg {
       return builder;
     }
     /**
+     * <pre>
+     *升级宠物羁绊返回，前后端分别加羁绊元宝
+     * </pre>
+     *
      * Protobuf type {@code Protos.PetBondsUpLevelResponse_19000016}
      */
     public static final class Builder extends
@@ -6845,6 +7661,853 @@ public final class PetMsg {
 
   }
 
+  public interface PetInfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Protos.PetInfo)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * SoulSoulPet表id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * 等级
+     * </pre>
+     *
+     * <code>int32 level = 2;</code>
+     * @return The level.
+     */
+    int getLevel();
+
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill表id
+     * </pre>
+     *
+     * <code>repeated int32 skills = 3;</code>
+     * @return A list containing the skills.
+     */
+    java.util.List<java.lang.Integer> getSkillsList();
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill表id
+     * </pre>
+     *
+     * <code>repeated int32 skills = 3;</code>
+     * @return The count of skills.
+     */
+    int getSkillsCount();
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill表id
+     * </pre>
+     *
+     * <code>repeated int32 skills = 3;</code>
+     * @param index The index of the element to return.
+     * @return The skills at the given index.
+     */
+    int getSkills(int index);
+  }
+  /**
+   * Protobuf type {@code Protos.PetInfo}
+   */
+  public static final class PetInfo extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:Protos.PetInfo)
+      PetInfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PetInfo.newBuilder() to construct.
+    private PetInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PetInfo() {
+      skills_ = emptyIntList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PetInfo();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PetInfo(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              id_ = input.readInt32();
+              break;
+            }
+            case 16: {
+
+              level_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                skills_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              skills_.addInt(input.readInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                skills_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                skills_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          skills_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetInfo_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetInfo_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              cn.game.protocol.protobuf.PetMsg.PetInfo.class, cn.game.protocol.protobuf.PetMsg.PetInfo.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <pre>
+     * SoulSoulPet表id
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int LEVEL_FIELD_NUMBER = 2;
+    private int level_;
+    /**
+     * <pre>
+     * 等级
+     * </pre>
+     *
+     * <code>int32 level = 2;</code>
+     * @return The level.
+     */
+    @java.lang.Override
+    public int getLevel() {
+      return level_;
+    }
+
+    public static final int SKILLS_FIELD_NUMBER = 3;
+    private com.google.protobuf.Internal.IntList skills_;
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill表id
+     * </pre>
+     *
+     * <code>repeated int32 skills = 3;</code>
+     * @return A list containing the skills.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getSkillsList() {
+      return skills_;
+    }
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill表id
+     * </pre>
+     *
+     * <code>repeated int32 skills = 3;</code>
+     * @return The count of skills.
+     */
+    public int getSkillsCount() {
+      return skills_.size();
+    }
+    /**
+     * <pre>
+     * 洗练技能， SoulPetSkill表id
+     * </pre>
+     *
+     * <code>repeated int32 skills = 3;</code>
+     * @param index The index of the element to return.
+     * @return The skills at the given index.
+     */
+    public int getSkills(int index) {
+      return skills_.getInt(index);
+    }
+    private int skillsMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
+      if (level_ != 0) {
+        output.writeInt32(2, level_);
+      }
+      if (getSkillsList().size() > 0) {
+        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(skillsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < skills_.size(); i++) {
+        output.writeInt32NoTag(skills_.getInt(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      if (level_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, level_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < skills_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(skills_.getInt(i));
+        }
+        size += dataSize;
+        if (!getSkillsList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        skillsMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof cn.game.protocol.protobuf.PetMsg.PetInfo)) {
+        return super.equals(obj);
+      }
+      cn.game.protocol.protobuf.PetMsg.PetInfo other = (cn.game.protocol.protobuf.PetMsg.PetInfo) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (getLevel()
+          != other.getLevel()) return false;
+      if (!getSkillsList()
+          .equals(other.getSkillsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
+      hash = (53 * hash) + getLevel();
+      if (getSkillsCount() > 0) {
+        hash = (37 * hash) + SKILLS_FIELD_NUMBER;
+        hash = (53 * hash) + getSkillsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(cn.game.protocol.protobuf.PetMsg.PetInfo prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Protos.PetInfo}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Protos.PetInfo)
+        cn.game.protocol.protobuf.PetMsg.PetInfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetInfo_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetInfo_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                cn.game.protocol.protobuf.PetMsg.PetInfo.class, cn.game.protocol.protobuf.PetMsg.PetInfo.Builder.class);
+      }
+
+      // Construct using cn.game.protocol.protobuf.PetMsg.PetInfo.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+
+        level_ = 0;
+
+        skills_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.game.protocol.protobuf.PetMsg.internal_static_Protos_PetInfo_descriptor;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetInfo getDefaultInstanceForType() {
+        return cn.game.protocol.protobuf.PetMsg.PetInfo.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetInfo build() {
+        cn.game.protocol.protobuf.PetMsg.PetInfo result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public cn.game.protocol.protobuf.PetMsg.PetInfo buildPartial() {
+        cn.game.protocol.protobuf.PetMsg.PetInfo result = new cn.game.protocol.protobuf.PetMsg.PetInfo(this);
+        int from_bitField0_ = bitField0_;
+        result.id_ = id_;
+        result.level_ = level_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          skills_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.skills_ = skills_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.game.protocol.protobuf.PetMsg.PetInfo) {
+          return mergeFrom((cn.game.protocol.protobuf.PetMsg.PetInfo)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(cn.game.protocol.protobuf.PetMsg.PetInfo other) {
+        if (other == cn.game.protocol.protobuf.PetMsg.PetInfo.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.getLevel() != 0) {
+          setLevel(other.getLevel());
+        }
+        if (!other.skills_.isEmpty()) {
+          if (skills_.isEmpty()) {
+            skills_ = other.skills_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureSkillsIsMutable();
+            skills_.addAll(other.skills_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        cn.game.protocol.protobuf.PetMsg.PetInfo parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (cn.game.protocol.protobuf.PetMsg.PetInfo) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int id_ ;
+      /**
+       * <pre>
+       * SoulSoulPet表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * SoulSoulPet表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * SoulSoulPet表id
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int level_ ;
+      /**
+       * <pre>
+       * 等级
+       * </pre>
+       *
+       * <code>int32 level = 2;</code>
+       * @return The level.
+       */
+      @java.lang.Override
+      public int getLevel() {
+        return level_;
+      }
+      /**
+       * <pre>
+       * 等级
+       * </pre>
+       *
+       * <code>int32 level = 2;</code>
+       * @param value The level to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLevel(int value) {
+        
+        level_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 等级
+       * </pre>
+       *
+       * <code>int32 level = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLevel() {
+        
+        level_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList skills_ = emptyIntList();
+      private void ensureSkillsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          skills_ = mutableCopy(skills_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill表id
+       * </pre>
+       *
+       * <code>repeated int32 skills = 3;</code>
+       * @return A list containing the skills.
+       */
+      public java.util.List<java.lang.Integer>
+          getSkillsList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(skills_) : skills_;
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill表id
+       * </pre>
+       *
+       * <code>repeated int32 skills = 3;</code>
+       * @return The count of skills.
+       */
+      public int getSkillsCount() {
+        return skills_.size();
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill表id
+       * </pre>
+       *
+       * <code>repeated int32 skills = 3;</code>
+       * @param index The index of the element to return.
+       * @return The skills at the given index.
+       */
+      public int getSkills(int index) {
+        return skills_.getInt(index);
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill表id
+       * </pre>
+       *
+       * <code>repeated int32 skills = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The skills to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSkills(
+          int index, int value) {
+        ensureSkillsIsMutable();
+        skills_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill表id
+       * </pre>
+       *
+       * <code>repeated int32 skills = 3;</code>
+       * @param value The skills to add.
+       * @return This builder for chaining.
+       */
+      public Builder addSkills(int value) {
+        ensureSkillsIsMutable();
+        skills_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill表id
+       * </pre>
+       *
+       * <code>repeated int32 skills = 3;</code>
+       * @param values The skills to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllSkills(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureSkillsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, skills_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 洗练技能， SoulPetSkill表id
+       * </pre>
+       *
+       * <code>repeated int32 skills = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSkills() {
+        skills_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:Protos.PetInfo)
+    }
+
+    // @@protoc_insertion_point(class_scope:Protos.PetInfo)
+    private static final cn.game.protocol.protobuf.PetMsg.PetInfo DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new cn.game.protocol.protobuf.PetMsg.PetInfo();
+    }
+
+    public static cn.game.protocol.protobuf.PetMsg.PetInfo getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PetInfo>
+        PARSER = new com.google.protobuf.AbstractParser<PetInfo>() {
+      @java.lang.Override
+      public PetInfo parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PetInfo(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PetInfo> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PetInfo> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public cn.game.protocol.protobuf.PetMsg.PetInfo getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_PetCompositeRequest_19000001_descriptor;
   private static final 
@@ -6886,6 +8549,16 @@ public final class PetMsg {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_PetRefineResponse_19000008_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PetRefineSaveRequest_19000009_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PetRefineSaveRequest_19000009_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PetRefineSaveResponse_1900000a_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PetRefineSaveResponse_1900000a_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Protos_PetBattleRequest_19000011_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -6915,6 +8588,11 @@ public final class PetMsg {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Protos_PetBondsUpLevelResponse_19000016_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Protos_PetInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Protos_PetInfo_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6929,18 +8607,21 @@ public final class PetMsg {
       "000001\022\n\n\002id\030\001 \001(\005\"\037\n\035PetCompositeRespon" +
       "se_19000002\"(\n\032PetUpLevelRequest_1900000" +
       "3\022\n\n\002id\030\001 \001(\005\"\035\n\033PetUpLevelResponse_1900" +
-      "0004\"M\n\032PetBreakUpRequest_19000005\022\n\n\002id" +
-      "\030\001 \001(\005\022#\n\007rewards\030\002 \001(\0132\022.Protos.RewardI" +
-      "nfo\")\n\033PetBreakUpResponse_19000006\022\n\n\002id" +
-      "\030\001 \001(\005\"\'\n\031PetRefineRequest_19000007\022\n\n\002i" +
-      "d\030\001 \001(\005\"\034\n\032PetRefineResponse_19000008\"\'\n" +
-      "\031PetBattleRequest_19000011\022\n\n\002id\030\001 \001(\005\"\034" +
-      "\n\032PetBattleResponse_19000012\".\n PetBonds" +
-      "ActivateRequest_19000013\022\n\n\002id\030\001 \001(\005\"#\n!" +
-      "PetBondsActivateResponse_19000014\"-\n\037Pet" +
-      "BondsUpLevelRequest_19000015\022\n\n\002id\030\001 \001(\005" +
-      "\"\"\n PetBondsUpLevelResponse_19000016B\033\n\031" +
-      "cn.game.protocol.protobufb\006proto3"
+      "0004\"(\n\032PetBreakUpRequest_19000005\022\n\n\002id" +
+      "\030\001 \001(\005\"\035\n\033PetBreakUpResponse_19000006\"\'\n" +
+      "\031PetRefineRequest_19000007\022\n\n\002id\030\001 \001(\005\"," +
+      "\n\032PetRefineResponse_19000008\022\016\n\006skills\030\001" +
+      " \003(\005\"\037\n\035PetRefineSaveRequest_19000009\" \n" +
+      "\036PetRefineSaveResponse_1900000a\"\'\n\031PetBa" +
+      "ttleRequest_19000011\022\n\n\002id\030\001 \001(\005\"\034\n\032PetB" +
+      "attleResponse_19000012\".\n PetBondsActiva" +
+      "teRequest_19000013\022\n\n\002id\030\001 \001(\005\"#\n!PetBon" +
+      "dsActivateResponse_19000014\"-\n\037PetBondsU" +
+      "pLevelRequest_19000015\022\n\n\002id\030\001 \001(\005\"\"\n Pe" +
+      "tBondsUpLevelResponse_19000016\"4\n\007PetInf" +
+      "o\022\n\n\002id\030\001 \001(\005\022\r\n\005level\030\002 \001(\005\022\016\n\006skills\030\003" +
+      " \003(\005B\033\n\031cn.game.protocol.protobufb\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6977,13 +8658,13 @@ public final class PetMsg {
     internal_static_Protos_PetBreakUpRequest_19000005_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetBreakUpRequest_19000005_descriptor,
-        new java.lang.String[] { "Id", "Rewards", });
+        new java.lang.String[] { "Id", });
     internal_static_Protos_PetBreakUpResponse_19000006_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_Protos_PetBreakUpResponse_19000006_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetBreakUpResponse_19000006_descriptor,
-        new java.lang.String[] { "Id", });
+        new java.lang.String[] { });
     internal_static_Protos_PetRefineRequest_19000007_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_Protos_PetRefineRequest_19000007_fieldAccessorTable = new
@@ -6995,43 +8676,61 @@ public final class PetMsg {
     internal_static_Protos_PetRefineResponse_19000008_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetRefineResponse_19000008_descriptor,
+        new java.lang.String[] { "Skills", });
+    internal_static_Protos_PetRefineSaveRequest_19000009_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_Protos_PetRefineSaveRequest_19000009_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PetRefineSaveRequest_19000009_descriptor,
+        new java.lang.String[] { });
+    internal_static_Protos_PetRefineSaveResponse_1900000a_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_Protos_PetRefineSaveResponse_1900000a_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PetRefineSaveResponse_1900000a_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_PetBattleRequest_19000011_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_Protos_PetBattleRequest_19000011_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetBattleRequest_19000011_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_PetBattleResponse_19000012_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_Protos_PetBattleResponse_19000012_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetBattleResponse_19000012_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_PetBondsActivateRequest_19000013_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_Protos_PetBondsActivateRequest_19000013_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetBondsActivateRequest_19000013_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_PetBondsActivateResponse_19000014_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_Protos_PetBondsActivateResponse_19000014_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetBondsActivateResponse_19000014_descriptor,
         new java.lang.String[] { });
     internal_static_Protos_PetBondsUpLevelRequest_19000015_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_Protos_PetBondsUpLevelRequest_19000015_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetBondsUpLevelRequest_19000015_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_Protos_PetBondsUpLevelResponse_19000016_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_Protos_PetBondsUpLevelResponse_19000016_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_PetBondsUpLevelResponse_19000016_descriptor,
         new java.lang.String[] { });
+    internal_static_Protos_PetInfo_descriptor =
+      getDescriptor().getMessageTypes().get(16);
+    internal_static_Protos_PetInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Protos_PetInfo_descriptor,
+        new java.lang.String[] { "Id", "Level", "Skills", });
     cn.game.protocol.protobuf.BaseMsg.getDescriptor();
     cn.game.protocol.protobuf.RewardMsg.getDescriptor();
   }

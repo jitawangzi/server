@@ -321,11 +321,6 @@ public class ObjUtil {
 	
 	public static void main(String args[]) {
 
-		printObject(new Fuck());
-
 	}
 }
 
-class Fuck{
-	public int[] xx  = new int[]{1,2,3} ;  
-}
