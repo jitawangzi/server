@@ -46,7 +46,7 @@ message BattleFieldEndResponse_13000004{
 }
 
 
-// 关卡快速战斗请求
+// 关卡快速战斗请求,也可以当扫荡来使用
 message BattleFieldQuickEndRequest_13000005{
 	uint32 type = 1; 	// 玩法类型，主线战役推图，日常挑战等。 1代表主线战役，2 道心磨砺 3心魔试炼   11 合成的主线战役12 每日挑战 20 失落真经
 	uint32 typeId = 2; // 玩法类型对应的配置表id。 根据上面的type不同可能是不同的表id，例如1、2、3是Battle表id， 11 、12 是HCBattle表id;
@@ -382,16 +382,26 @@ message BattleWorldBossInfoResponse_13000302
 	int32 rank  = 3 ;  // 我的排名，暂时没有。
 	int32 battleTimes  = 4 ;  // 今日已经挑战次数。每天第一次免费，以后需要付费购买。
 	int32 buyTimes  = 5 ;  // 今日付费购买次数
-	bool canSweep  = 6 ;  // 是否可以扫荡，只有打过一次之后，才可以扫荡。
+	int32 rewardIndex  = 8 ;  // 已经领取过的宝箱索引，从0开始，如果没有领过是 -1
+
 }
 
-// 购买世界boss次数
+// 购买世界boss挑战次数
 message BattleWorldBossBuyTimesRequest_13000303
 {
 }
 
 message BattleWorldBossBuyTimesResponse_13000304
 {
+}
+// 领取世界boss伤害宝箱奖励
+message BattleWorldRewardRequest_13000305
+{
+}
+
+message BattleWorldRewardResponse_13000306
+{
+	repeated RewardInfo rewards = 1;		// 获得的奖励
 }
 
 //@NotUseStart

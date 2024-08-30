@@ -4939,7 +4939,7 @@ public final class PetMsg {
 
     /**
      * <pre>
-     * SoulPet表id
+     * 上阵传SoulPet表id,下阵传0
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -5037,7 +5037,7 @@ public final class PetMsg {
     private int id_;
     /**
      * <pre>
-     * SoulPet表id
+     * 上阵传SoulPet表id,下阵传0
      * </pre>
      *
      * <code>int32 id = 1;</code>
@@ -5357,7 +5357,7 @@ public final class PetMsg {
       private int id_ ;
       /**
        * <pre>
-       * SoulPet表id
+       * 上阵传SoulPet表id,下阵传0
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -5369,7 +5369,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * SoulPet表id
+       * 上阵传SoulPet表id,下阵传0
        * </pre>
        *
        * <code>int32 id = 1;</code>
@@ -5384,7 +5384,7 @@ public final class PetMsg {
       }
       /**
        * <pre>
-       * SoulPet表id
+       * 上阵传SoulPet表id,下阵传0
        * </pre>
        *
        * <code>int32 id = 1;</code>

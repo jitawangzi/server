@@ -58,7 +58,7 @@ public class PetModule extends AbstractItemModule<Pet> {
 
 	@Override
 	public RewardInfo toRewardInfo(Pet reward) {
-		return null;
+		return RewardInfo.getDefaultInstance();
 	}
 
 	@Override

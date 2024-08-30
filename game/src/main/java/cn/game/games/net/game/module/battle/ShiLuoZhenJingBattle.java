@@ -56,13 +56,7 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 	}
 
 	private void nextBattleId() {
-		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(DungeonTypeEnum.ShiLuoZhenJing.getId());
-		for (BattleConfig battleConfig : battleTypeList) {
-			if (battleConfig.preBattle == completeBattleId) {
-				startBattleId = battleConfig.ID;
-				break;
-			}
-		}
+		startBattleId = BattleHelper.nextStartBattleId(DungeonTypeEnum.ShiLuoZhenJing, completeBattleId);
 	}
 
 	public void battleCompleted() {

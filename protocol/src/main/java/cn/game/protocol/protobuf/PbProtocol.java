@@ -46,7 +46,7 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleFieldStartResponse_13000002 = 0x13000002;    //开始关卡战斗返回  
 	public final static int BattleFieldEndRequest_13000003 = 0x13000003;    //结束关卡战斗请求  
 	public final static int BattleFieldEndResponse_13000004 = 0x13000004;    //结束关卡战斗  
-	public final static int BattleFieldQuickEndRequest_13000005 = 0x13000005;    //关卡快速战斗请求  
+	public final static int BattleFieldQuickEndRequest_13000005 = 0x13000005;    //关卡快速战斗请求,也可以当扫荡来使用  
 	public final static int BattleFieldQuickEndResponse_13000006 = 0x13000006;    //关卡快速战斗响应  
 	public final static int BattleShareRequest_13000007 = 0x13000007;    //看广告并分享之后额外获得xx倍奖励  
 	public final static int BattleShareResponse_13000008 = 0x13000008;    //看广告并分享之后额外获得xx倍奖励  
@@ -102,8 +102,10 @@ public class PbProtocol implements ProtocolParser {
 	public final static int BattleLostDayRewardResponse_13000204 = 0x13000204;    
 	public final static int BattleWorldBossInfoRequest_13000301 = 0x13000301;    //请求世界boss数据  
 	public final static int BattleWorldBossInfoResponse_13000302 = 0x13000302;    
-	public final static int BattleWorldBossBuyTimesRequest_13000303 = 0x13000303;    //购买世界boss次数  
+	public final static int BattleWorldBossBuyTimesRequest_13000303 = 0x13000303;    //购买世界boss挑战次数  
 	public final static int BattleWorldBossBuyTimesResponse_13000304 = 0x13000304;    
+	public final static int BattleWorldRewardRequest_13000305 = 0x13000305;    //领取世界boss伤害宝箱奖励  
+	public final static int BattleWorldRewardResponse_13000306 = 0x13000306;    
 	public final static int BattleRougeRefreshRequest_13000052 = 0x13000052;    //肉鸽刷新,每天前3次免费，第四次看广告。  
 	public final static int BattleRougeRefreshResponse_13000053 = 0x13000053;    //肉鸽刷新  
 	public final static int BattleStaminaRequest_13000050 = 0x13000050;    //领取体力  
@@ -589,6 +591,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(BattleWorldBossBuyTimesRequest_13000303, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleWorldBossBuyTimesResponse_13000304, cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleWorldRewardRequest_13000305, cn.game.protocol.protobuf.BattleMsg.BattleWorldRewardRequest_13000305.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(BattleWorldRewardResponse_13000306, cn.game.protocol.protobuf.BattleMsg.BattleWorldRewardResponse_13000306.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(BattleRougeRefreshRequest_13000052, cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000052.getDefaultInstance()
 				.getParserForType());
@@ -1405,6 +1411,10 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x13000303,"BattleWorldBossBuyTimesRequest_13000303");
 		nameIdMap.put("BattleWorldBossBuyTimesResponse_13000304", 0x13000304);
 		idNameMap.put(0x13000304,"BattleWorldBossBuyTimesResponse_13000304");
+		nameIdMap.put("BattleWorldRewardRequest_13000305", 0x13000305);
+		idNameMap.put(0x13000305,"BattleWorldRewardRequest_13000305");
+		nameIdMap.put("BattleWorldRewardResponse_13000306", 0x13000306);
+		idNameMap.put(0x13000306,"BattleWorldRewardResponse_13000306");
 		nameIdMap.put("BattleRougeRefreshRequest_13000052", 0x13000052);
 		idNameMap.put(0x13000052,"BattleRougeRefreshRequest_13000052");
 		nameIdMap.put("BattleRougeRefreshResponse_13000053", 0x13000053);

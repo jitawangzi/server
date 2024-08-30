@@ -25,7 +25,7 @@ public class BinarySearchUtil {
 	}
 
 	/**
-	* 通用二分查找方法
+	* 通用二分查找方法，查找第一个小于给定值的对象
 	*
 	* @param list 已排序的列表
 	* @param value 用于比较的值

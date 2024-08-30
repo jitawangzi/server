@@ -28,6 +28,9 @@ public enum CacheType {
 	/** 自增起始id */
 	Player_MAX_ID,
 
+	/** 所有用户名 */
+	SET_ALL_NAME,
+
 	;
 
 	public String key(Object... ks) {

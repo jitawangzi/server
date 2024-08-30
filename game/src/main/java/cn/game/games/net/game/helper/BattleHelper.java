@@ -10,6 +10,7 @@ import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.GamePlayRandomBuffManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.util.Rnd;
 
 public class BattleHelper {
@@ -159,6 +160,24 @@ public class BattleHelper {
 			}
 		}
 		return null;
+	}
+
+	/** 
+	 * 根据已经完成的关卡id，找到下一个可以打的关卡id
+	 * @param battleType
+	 * @param completeBattleId
+	 * @return
+	 */
+	public static int nextStartBattleId(DungeonTypeEnum battleType, int completeBattleId) {
+		int startBattleId = 0;
+		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(battleType.getId());
+		for (BattleConfig battleConfig : battleTypeList) {
+			if (battleConfig.preBattle == completeBattleId) {
+				startBattleId = battleConfig.ID;
+				break;
+			}
+		}
+		return startBattleId;
 	}
 
 	/** 

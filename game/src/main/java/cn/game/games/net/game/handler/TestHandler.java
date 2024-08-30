@@ -39,11 +39,13 @@ import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
+import cn.game.protocol.generated.config.SoulPetConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
+import cn.game.protocol.generated.manager.SoulPetManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -559,30 +561,17 @@ public class TestHandler extends BaseHandler {
 						rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
 						allRewards.addAll(rewardItems);
 					}
+				} else if (goodsType == GoodsTypeEnum.Pet.getId()) {
+					Collection<SoulPetConfig> list = SoulPetManager.instance().list();
+					for (SoulPetConfig e : list) {
+						rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
+						allRewards.addAll(rewardItems);
+					}
 				} else {
 
 					List<RewardInfo> tmp = PlayerHelper.addResources(player, id, count, OpType.Test);
 					allRewards.addAll(tmp);
 				}
-//				else if (goodsType == GoodsTypeEnum.Role.getId()) {
-//					Collection<RoleConfig> list = RoleManager.getInstance().list();
-//					for (RoleConfig e : list) {
-//						rewardItems = PlayerHelper.addResources(player, e.getId(), 1);
-//						allRewards.addAll(rewardItems);
-//					}
-//				} else if (goodsType == GoodsTypeEnum.Skin.getId()) {
-//					Collection<RoleSkinConfig> list = RoleSkinManager.getInstance().list();
-//					for (RoleSkinConfig e : list) {
-//						rewardItems = PlayerHelper.addResources(player, e.getId(), 1);
-//						allRewards.addAll(rewardItems);
-//					}
-//				} else if (goodsType == GoodsTypeEnum.Equipment.getId()) {
-//					Collection<EquipmentConfig> list = EquipmentManager.getInstance().list();
-//					for (EquipmentConfig e : list) {
-//						rewardItems = PlayerHelper.addResources(player, e.getId(), 1);
-//						allRewards.addAll(rewardItems);
-//					}
-//				}
 			} else {
 				rewardItems = PlayerHelper.addResources(player, id, count, OpType.Test);
 				allRewards.addAll(rewardItems);

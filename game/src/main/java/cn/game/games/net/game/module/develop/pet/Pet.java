@@ -11,7 +11,7 @@ import cn.game.protocol.protobuf.PetMsg.PetInfo;
 public class Pet extends Item implements Serializable, DbEntity {
 
 	private static final long serialVersionUID = 1L;
-	private int level;
+	private int level = 1;
 	/** 已经突破的最高等级 */
 	private int breakLevel;
 	private List<Integer> skillsList = new ArrayList<>();;

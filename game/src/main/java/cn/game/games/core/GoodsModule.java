@@ -9,9 +9,6 @@ import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.net.game.helper.ItemHelper;
-import cn.game.games.net.game.module.currency.Currency;
-import cn.game.games.net.game.module.develop.mergeequip.MergeEquip;
-import cn.game.games.net.game.module.player.headbox.HeadBox;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -83,15 +80,19 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 			if (object instanceof ItemNoStack) {
 				list.add(toRewardInfo((E) object));
 			} else {
-				if (object instanceof Currency || object instanceof MergeEquip || object instanceof HeadBox) {
-					list.add(toRewardInfo((E) object));
-				} else {
+				if (object.getClass() == Item.class) {
+					// 一般是可重叠的道具
 					long newCount = getCount(configId);
 					Item itemAdd = new Item();
 					itemAdd.setConfigId(configId);
 					itemAdd.setCount(newCount - oldCount);
 					list.add(toRewardInfo((E) itemAdd));
+				} else {
+					list.add(toRewardInfo((E) object));
 				}
+//				if (object instanceof Currency || object instanceof MergeEquip || object instanceof HeadBox) {
+//					list.add(toRewardInfo((E) object));
+//				} else {}
 
 			}
 		} else if (object instanceof List) {
