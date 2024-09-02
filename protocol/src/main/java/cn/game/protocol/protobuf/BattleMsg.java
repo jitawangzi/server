@@ -47964,23 +47964,13 @@ public final class BattleMsg {
 
     /**
      * <pre>
-     * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+     * 已经领取过的宝箱id，WorldBossReward表id， 如果没领过，0或者不存在。
      * </pre>
      *
-     * <code>bool canSweep = 6;</code>
-     * @return The canSweep.
+     * <code>int32 rewardId = 8;</code>
+     * @return The rewardId.
      */
-    boolean getCanSweep();
-
-    /**
-     * <pre>
-     * 已经领取过的宝箱索引，从0开始，如果没有领过是 -1
-     * </pre>
-     *
-     * <code>int32 rewardIndex = 8;</code>
-     * @return The rewardIndex.
-     */
-    int getRewardIndex();
+    int getRewardId();
   }
   /**
    * Protobuf type {@code Protos.BattleWorldBossInfoResponse_13000302}
@@ -48052,14 +48042,9 @@ public final class BattleMsg {
               buyTimes_ = input.readInt32();
               break;
             }
-            case 48: {
-
-              canSweep_ = input.readBool();
-              break;
-            }
             case 64: {
 
-              rewardIndex_ = input.readInt32();
+              rewardId_ = input.readInt32();
               break;
             }
             default: {
@@ -48169,34 +48154,19 @@ public final class BattleMsg {
       return buyTimes_;
     }
 
-    public static final int CANSWEEP_FIELD_NUMBER = 6;
-    private boolean canSweep_;
+    public static final int REWARDID_FIELD_NUMBER = 8;
+    private int rewardId_;
     /**
      * <pre>
-     * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+     * 已经领取过的宝箱id，WorldBossReward表id， 如果没领过，0或者不存在。
      * </pre>
      *
-     * <code>bool canSweep = 6;</code>
-     * @return The canSweep.
+     * <code>int32 rewardId = 8;</code>
+     * @return The rewardId.
      */
     @java.lang.Override
-    public boolean getCanSweep() {
-      return canSweep_;
-    }
-
-    public static final int REWARDINDEX_FIELD_NUMBER = 8;
-    private int rewardIndex_;
-    /**
-     * <pre>
-     * 已经领取过的宝箱索引，从0开始，如果没有领过是 -1
-     * </pre>
-     *
-     * <code>int32 rewardIndex = 8;</code>
-     * @return The rewardIndex.
-     */
-    @java.lang.Override
-    public int getRewardIndex() {
-      return rewardIndex_;
+    public int getRewardId() {
+      return rewardId_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -48228,11 +48198,8 @@ public final class BattleMsg {
       if (buyTimes_ != 0) {
         output.writeInt32(5, buyTimes_);
       }
-      if (canSweep_ != false) {
-        output.writeBool(6, canSweep_);
-      }
-      if (rewardIndex_ != 0) {
-        output.writeInt32(8, rewardIndex_);
+      if (rewardId_ != 0) {
+        output.writeInt32(8, rewardId_);
       }
       unknownFields.writeTo(output);
     }
@@ -48263,13 +48230,9 @@ public final class BattleMsg {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, buyTimes_);
       }
-      if (canSweep_ != false) {
+      if (rewardId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(6, canSweep_);
-      }
-      if (rewardIndex_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, rewardIndex_);
+          .computeInt32Size(8, rewardId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -48296,10 +48259,8 @@ public final class BattleMsg {
           != other.getBattleTimes()) return false;
       if (getBuyTimes()
           != other.getBuyTimes()) return false;
-      if (getCanSweep()
-          != other.getCanSweep()) return false;
-      if (getRewardIndex()
-          != other.getRewardIndex()) return false;
+      if (getRewardId()
+          != other.getRewardId()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -48321,11 +48282,8 @@ public final class BattleMsg {
       hash = (53 * hash) + getBattleTimes();
       hash = (37 * hash) + BUYTIMES_FIELD_NUMBER;
       hash = (53 * hash) + getBuyTimes();
-      hash = (37 * hash) + CANSWEEP_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getCanSweep());
-      hash = (37 * hash) + REWARDINDEX_FIELD_NUMBER;
-      hash = (53 * hash) + getRewardIndex();
+      hash = (37 * hash) + REWARDID_FIELD_NUMBER;
+      hash = (53 * hash) + getRewardId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -48469,9 +48427,7 @@ public final class BattleMsg {
 
         buyTimes_ = 0;
 
-        canSweep_ = false;
-
-        rewardIndex_ = 0;
+        rewardId_ = 0;
 
         return this;
       }
@@ -48504,8 +48460,7 @@ public final class BattleMsg {
         result.rank_ = rank_;
         result.battleTimes_ = battleTimes_;
         result.buyTimes_ = buyTimes_;
-        result.canSweep_ = canSweep_;
-        result.rewardIndex_ = rewardIndex_;
+        result.rewardId_ = rewardId_;
         onBuilt();
         return result;
       }
@@ -48569,11 +48524,8 @@ public final class BattleMsg {
         if (other.getBuyTimes() != 0) {
           setBuyTimes(other.getBuyTimes());
         }
-        if (other.getCanSweep() != false) {
-          setCanSweep(other.getCanSweep());
-        }
-        if (other.getRewardIndex() != 0) {
-          setRewardIndex(other.getRewardIndex());
+        if (other.getRewardId() != 0) {
+          setRewardId(other.getRewardId());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -48819,88 +48771,45 @@ public final class BattleMsg {
         return this;
       }
 
-      private boolean canSweep_ ;
+      private int rewardId_ ;
       /**
        * <pre>
-       * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+       * 已经领取过的宝箱id，WorldBossReward表id， 如果没领过，0或者不存在。
        * </pre>
        *
-       * <code>bool canSweep = 6;</code>
-       * @return The canSweep.
+       * <code>int32 rewardId = 8;</code>
+       * @return The rewardId.
        */
       @java.lang.Override
-      public boolean getCanSweep() {
-        return canSweep_;
+      public int getRewardId() {
+        return rewardId_;
       }
       /**
        * <pre>
-       * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+       * 已经领取过的宝箱id，WorldBossReward表id， 如果没领过，0或者不存在。
        * </pre>
        *
-       * <code>bool canSweep = 6;</code>
-       * @param value The canSweep to set.
+       * <code>int32 rewardId = 8;</code>
+       * @param value The rewardId to set.
        * @return This builder for chaining.
        */
-      public Builder setCanSweep(boolean value) {
+      public Builder setRewardId(int value) {
         
-        canSweep_ = value;
+        rewardId_ = value;
         onChanged();
         return this;
       }
       /**
        * <pre>
-       * 是否可以扫荡，只有打过一次之后，才可以扫荡。
+       * 已经领取过的宝箱id，WorldBossReward表id， 如果没领过，0或者不存在。
        * </pre>
        *
-       * <code>bool canSweep = 6;</code>
+       * <code>int32 rewardId = 8;</code>
        * @return This builder for chaining.
        */
-      public Builder clearCanSweep() {
+      public Builder clearRewardId() {
         
-        canSweep_ = false;
-        onChanged();
-        return this;
-      }
-
-      private int rewardIndex_ ;
-      /**
-       * <pre>
-       * 已经领取过的宝箱索引，从0开始，如果没有领过是 -1
-       * </pre>
-       *
-       * <code>int32 rewardIndex = 8;</code>
-       * @return The rewardIndex.
-       */
-      @java.lang.Override
-      public int getRewardIndex() {
-        return rewardIndex_;
-      }
-      /**
-       * <pre>
-       * 已经领取过的宝箱索引，从0开始，如果没有领过是 -1
-       * </pre>
-       *
-       * <code>int32 rewardIndex = 8;</code>
-       * @param value The rewardIndex to set.
-       * @return This builder for chaining.
-       */
-      public Builder setRewardIndex(int value) {
-        
-        rewardIndex_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 已经领取过的宝箱索引，从0开始，如果没有领过是 -1
-       * </pre>
-       *
-       * <code>int32 rewardIndex = 8;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearRewardIndex() {
-        
-        rewardIndex_ = 0;
+        rewardId_ = 0;
         onChanged();
         return this;
       }
@@ -53464,21 +53373,20 @@ public final class BattleMsg {
       "000203\"K\n$BattleLostDayRewardResponse_13" +
       "000204\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
       "nfo\"%\n#BattleWorldBossInfoRequest_130003" +
-      "01\"\264\001\n$BattleWorldBossInfoResponse_13000" +
+      "01\"\237\001\n$BattleWorldBossInfoResponse_13000" +
       "302\022\030\n\020cumulativeDamage\030\001 \001(\005\022\026\n\016maxDama" +
       "geToday\030\002 \001(\005\022\014\n\004rank\030\003 \001(\005\022\023\n\013battleTim" +
-      "es\030\004 \001(\005\022\020\n\010buyTimes\030\005 \001(\005\022\020\n\010canSweep\030\006" +
-      " \001(\010\022\023\n\013rewardIndex\030\010 \001(\005\")\n\'BattleWorld" +
-      "BossBuyTimesRequest_13000303\"*\n(BattleWo" +
-      "rldBossBuyTimesResponse_13000304\"#\n!Batt" +
-      "leWorldRewardRequest_13000305\"I\n\"BattleW" +
-      "orldRewardResponse_13000306\022#\n\007rewards\030\001" +
-      " \003(\0132\022.Protos.RewardInfo\"$\n\"BattleRougeR" +
-      "efreshRequest_13000052\"%\n#BattleRougeRef" +
-      "reshResponse_13000053\"-\n\035BattleStaminaRe" +
-      "quest_13000050\022\014\n\004time\030\001 \001(\005\" \n\036BattleSt" +
-      "aminaResponse_13000051B\033\n\031cn.game.protoc" +
-      "ol.protobufb\006proto3"
+      "es\030\004 \001(\005\022\020\n\010buyTimes\030\005 \001(\005\022\020\n\010rewardId\030\010" +
+      " \001(\005\")\n\'BattleWorldBossBuyTimesRequest_1" +
+      "3000303\"*\n(BattleWorldBossBuyTimesRespon" +
+      "se_13000304\"#\n!BattleWorldRewardRequest_" +
+      "13000305\"I\n\"BattleWorldRewardResponse_13" +
+      "000306\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
+      "nfo\"$\n\"BattleRougeRefreshRequest_1300005" +
+      "2\"%\n#BattleRougeRefreshResponse_13000053" +
+      "\"-\n\035BattleStaminaRequest_13000050\022\014\n\004tim" +
+      "e\030\001 \001(\005\" \n\036BattleStaminaResponse_1300005" +
+      "1B\033\n\031cn.game.protocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -53922,7 +53830,7 @@ public final class BattleMsg {
     internal_static_Protos_BattleWorldBossInfoResponse_13000302_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_BattleWorldBossInfoResponse_13000302_descriptor,
-        new java.lang.String[] { "CumulativeDamage", "MaxDamageToday", "Rank", "BattleTimes", "BuyTimes", "CanSweep", "RewardIndex", });
+        new java.lang.String[] { "CumulativeDamage", "MaxDamageToday", "Rank", "BattleTimes", "BuyTimes", "RewardId", });
     internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_descriptor =
       getDescriptor().getMessageTypes().get(67);
     internal_static_Protos_BattleWorldBossBuyTimesRequest_13000303_fieldAccessorTable = new

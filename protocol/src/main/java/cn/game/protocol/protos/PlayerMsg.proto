@@ -250,6 +250,14 @@ message NoticeResponse_01000051{
 	string notice = 1;
 }
 
+/*** 请求红点，判断所有功能红点的状态。 **/
+message PlayerRedPointRequest_01000075{
+	repeated int32 type = 1;  // InitialUI 表id,功能类型
+}
+/*** 红点结果 **/
+message PlayerRedPointResponse_01000076{
+	repeated bool isRed = 1;
+}
 
 
 // 一次推送多个消息

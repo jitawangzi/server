@@ -2,6 +2,8 @@ package cn.game.games.net.game.module.battle;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -25,6 +27,10 @@ public class WorldBossBattle extends XiYouBattleHandler {
 	private int buyTimes; // 今日付费购买次数
 
 	private int maxDamage; // 历史最高伤害,扫荡使用
+	@JsonIgnore
+	@Deprecated
+	private int rewardIndex;
+	private int rewardId;
 
 	@Override
 	void newDay() {
@@ -45,7 +51,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 		if (BattleHelper.isNowAfter2330()) {
 			return ErrorMsgEnum.not_open.getId();
 		}
-		if (battleTimes > GlobalConst.JDTMFreeCnt) {
+		if (battleTimes >= GlobalConst.JDTMFreeCnt) {
 			if (buyTimes <= battleTimes - GlobalConst.JDTMFreeCnt) {
 				return ErrorMsgEnum.times_limit.getId();
 			}
@@ -65,7 +71,6 @@ public class WorldBossBattle extends XiYouBattleHandler {
 	@Override
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		int attackingDungeonId = chapterModule.getAttackingDungeonId();
 		end(request.getDamage());
 
 		return ResultObject.success();
@@ -89,7 +94,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 		if (maxDamage == 0) {
 			return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
 		}
-		if (player.hasWelfare(WelfareTypeEnum.JDTMSweep)) {
+		if (!player.hasWelfare(WelfareTypeEnum.JDTMSweep)) {
 			return ResultObject.fail(ErrorMsgEnum.welfare_check_error.getId());
 		}
 		int damage = (int) (maxDamage * Rnd.nextDouble(0.9, 1.1));
@@ -128,6 +133,14 @@ public class WorldBossBattle extends XiYouBattleHandler {
 
 	public int getMaxDamage() {
 		return maxDamage;
+	}
+
+	public int getRewardId() {
+		return rewardId;
+	}
+
+	public void setRewardId(int rewardId) {
+		this.rewardId = rewardId;
 	}
 
 }

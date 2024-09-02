@@ -1,8 +1,10 @@
 package cn.game.util;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**   
@@ -15,13 +17,50 @@ public class BinarySearchUtil {
 
 	public static void main(String args[]) {
 //		int[] array = new int[] { 1, 2, 3, 3, 3, 4, 5, 8, 8 };
-		int[] array = new int[] { };
+//		int[] array = new int[] { };
 		// 244
-		System.out.println(search(array, 0, array.length - 1, 5));
-		System.out.println(searchFirst(array, 0, array.length - 1, 8));
-		System.out.println(searchLast(array, 0, array.length - 1, 3));
-		System.out.println(searchFirstBig(array, 0, array.length - 1, 6));
-		System.out.println(searchLastLess(array, 0, array.length - 1, 3));
+//		System.out.println(search(array, 0, array.length - 1, 5));
+//		System.out.println(searchFirst(array, 0, array.length - 1, 8));
+//		System.out.println(searchLast(array, 0, array.length - 1, 3));
+//		System.out.println(searchFirstBig(array, 0, array.length - 1, 6));
+//		System.out.println(searchLastLess(array, 0, array.length - 1, 3));
+
+		List<CmpObj> items = Arrays
+				.asList(new CmpObj(10), new CmpObj(20), new CmpObj(30), new CmpObj(40), new CmpObj(50), new CmpObj(60), new CmpObj(70), new CmpObj(80),
+						new CmpObj(90), new CmpObj(100));
+
+		int targetValue = 25;
+		int index = findIndexLastLessThanOrEqual(items, targetValue, CmpObj::getId);
+		System.out.println("targetValue :" + targetValue + "  findIndexLastLessThanOrEqual ：" + index);
+
+		targetValue = 20;
+		CmpObj retObj = findFirstGreaterThanOrEqual(items, targetValue, CmpObj::getId);
+		System.out.println("targetValue :" + targetValue + "  findFirstGreaterThanOrEqual ：" + retObj);
+
+		targetValue = 30;
+		retObj = findFirstLessThan(items, targetValue, CmpObj::getId);
+		System.out.println("targetValue :" + targetValue + "  findFirstLessThan ：" + retObj);
+		
+		targetValue = 40;
+		index = findElementIndexByField(items, 40, CmpObj::getId, (r1, r2) -> r1 - r2);
+		System.out.println("targetValue :" + targetValue + "  findElementIndexByField ：" + index);
+	}
+
+	private static class CmpObj {
+		private int id;
+
+		public CmpObj(int id) {
+			this.id = id;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		@Override
+		public String toString() {
+			return "CmpObj [id=" + id + "]";
+		}
 	}
 
 	/**
@@ -62,19 +101,63 @@ public class BinarySearchUtil {
 	}
 
 	/**
-	 * 通用二分查找方法，查找第一个大于给定值的对象
+	 * 通用二分查找方法，查找第一个大于等于给定值的对象
 	 *
 	 * @param list 已排序的列表
 	 * @param value 用于比较的值
 	 * @param valueExtractor 从对象中提取比较值的函数
 	 * @param <T> 列表中对象的类型
 	 * @param <U> 比较值的类型
-	 * @return 第一个大于给定值的对象，如果没有找到则返回null
+	 * @return 第一个大于等于给定值的对象，如果没有找到则返回null
 	 */
-	public static <T, U extends Comparable<U>> T findFirstGreaterThan(List<T> list, U value, Function<T, U> valueExtractor) {
+	public static <T, U extends Comparable<U>> T findFirstGreaterThanOrEqual(List<T> list, U value, Function<T, U> valueExtractor) {
 
 		if (list == null || list.isEmpty()) {
 			return null;
+		}
+
+		int left = 0;
+		int right = list.size() - 1;
+		T result = null; // 用于保存找到的结果
+		while (left <= right) {
+			int mid = left + (right - left) / 2;
+			T midItem = list.get(mid);
+			U midValue = valueExtractor.apply(midItem);
+
+			if (midValue.compareTo(value) < 0) {
+				left = mid + 1; // 向右查找
+			} else {
+				result = midItem; // 记录找到的元素
+				right = mid - 1; // 继续向左查找，寻找第一个符合条件的元素
+			}
+		}
+
+		return result;
+	}
+
+	/** 
+	 * 找到最后一个小于或等于指定值的元素的索引
+	300
+	1000
+	2000
+	5000
+	20000
+	
+	例如传入5500 的的时候，则返回   5000对应的index 3 。 
+	出入2000的时候，返回2000对应的index 2 
+	
+	 * @param <T>
+	 * @param <U>
+	 * @param list
+	 * @param value
+	 * @param valueExtractor
+	 * @return  -1,如果没有找到符合条件的元素
+	 */
+	public static <T, U extends Comparable<U>> int findIndexLastLessThanOrEqual(List<T> list, U value, Function<T, U> valueExtractor) {
+		int result = -1;
+
+		if (list == null || list.isEmpty()) {
+			return result;
 		}
 
 		int left = 0;
@@ -86,16 +169,51 @@ public class BinarySearchUtil {
 			U midValue = valueExtractor.apply(midItem);
 
 			if (midValue.compareTo(value) <= 0) {
-				left = mid + 1;
+				result = mid; // 记录当前索引
+				left = mid + 1; // 继续在右侧查找
 			} else {
-				if (mid == 0 || valueExtractor.apply(list.get(mid - 1)).compareTo(value) <= 0) {
-					return midItem;
-				}
-				right = mid - 1;
+				right = mid - 1; // 在左侧查找
 			}
 		}
 
-		return null;
+		return result; // 返回最后一个小于等于给定值的元素的索引
+	}
+
+	/** 
+	 * 根据List中元素的某个属性值，来查找对应的元素，需要保证属性值存在且唯一
+	 * @param <T>
+	 * @param <U>
+	 * @param list
+	 * @param targetFieldValue
+	 * @param fieldExtractor
+	 * @param comparator  比较函数，如果元素没有实现Comparator接口
+	 * @return 元素在list中的索引。  如果没找到返回-1 。 
+	 */
+	public static <T, U> int findElementIndexByField(List<T> list, U targetFieldValue, Function<T, U> fieldExtractor, BiFunction<U, U, Integer> comparator) {
+		if (list == null || list.isEmpty()) {
+			return -1; // 返回 -1 表示未找到
+		}
+
+		int left = 0;
+		int right = list.size() - 1;
+
+		while (left <= right) {
+			int mid = left + (right - left) / 2;
+			T midItem = list.get(mid);
+			U midFieldValue = fieldExtractor.apply(midItem);
+
+			int comparisonResult = comparator.apply(midFieldValue, targetFieldValue);
+
+			if (comparisonResult == 0) {
+				return mid; // 找到目标元素，返回索引
+			} else if (comparisonResult < 0) {
+				left = mid + 1; // 目标在右侧
+			} else {
+				right = mid - 1; // 目标在左侧
+			}
+		}
+
+		return -1; // 未找到目标元素，返回 -1
 	}
 
 	/**

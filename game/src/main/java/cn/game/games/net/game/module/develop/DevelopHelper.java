@@ -17,7 +17,7 @@ public class DevelopHelper {
 	 * @return
 	 */
 	public static PotentialConfig getPotentialConfig(List<PotentialConfig> list, int level) {
-		return BinarySearchUtil.findFirstGreaterThan(list, level, r -> r.compareValue());
+		return BinarySearchUtil.findFirstGreaterThanOrEqual(list, level, r -> r.compareValue());
 	}
 
 	/** 

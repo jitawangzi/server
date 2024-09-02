@@ -339,6 +339,8 @@ public class PbProtocol implements ProtocolParser {
 	public final static int PlayerResetPush_01100016 = 0x01100016;    //通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新  
 	public final static int NoticeRequest_01000050 = 0x01000050;    //请求公告数据  
 	public final static int NoticeResponse_01000051 = 0x01000051;    //公告内容  
+	public final static int PlayerRedPointRequest_01000075 = 0x01000075;    //请求红点，判断所有功能红点的状态。  
+	public final static int PlayerRedPointResponse_01000076 = 0x01000076;    //红点结果  
 	public final static int PlayerBatchPush_01100100 = 0x01100100;    //一次推送多个消息  
 	public final static int QuestListRequest_20000001 = 0x20000001;    //查看某类任务数据,一般在任务功能开启时，客户端请求一下。  
 	public final static int QuestListResponse_20000002 = 0x20000002;    //任务数据  
@@ -1061,6 +1063,10 @@ public class PbProtocol implements ProtocolParser {
 		parsersMap.put(NoticeRequest_01000050, cn.game.protocol.protobuf.PlayerMsg.NoticeRequest_01000050.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(NoticeResponse_01000051, cn.game.protocol.protobuf.PlayerMsg.NoticeResponse_01000051.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerRedPointRequest_01000075, cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(PlayerRedPointResponse_01000076, cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointResponse_01000076.getDefaultInstance()
 				.getParserForType());
 		parsersMap.put(PlayerBatchPush_01100100, cn.game.protocol.protobuf.PlayerMsg.PlayerBatchPush_01100100.getDefaultInstance()
 				.getParserForType());
@@ -1881,6 +1887,10 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x01000050,"NoticeRequest_01000050");
 		nameIdMap.put("NoticeResponse_01000051", 0x01000051);
 		idNameMap.put(0x01000051,"NoticeResponse_01000051");
+		nameIdMap.put("PlayerRedPointRequest_01000075", 0x01000075);
+		idNameMap.put(0x01000075,"PlayerRedPointRequest_01000075");
+		nameIdMap.put("PlayerRedPointResponse_01000076", 0x01000076);
+		idNameMap.put(0x01000076,"PlayerRedPointResponse_01000076");
 		nameIdMap.put("PlayerBatchPush_01100100", 0x01100100);
 		idNameMap.put(0x01100100,"PlayerBatchPush_01100100");
 		nameIdMap.put("QuestListRequest_20000001", 0x20000001);

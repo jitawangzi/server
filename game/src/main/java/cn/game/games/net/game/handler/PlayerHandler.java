@@ -33,6 +33,7 @@ import cn.game.games.util.DAO;
 import cn.game.games.util.KeywordFilter;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.RandomNameConfig;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -64,6 +65,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolInfoRequest_01000070;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolInfoResponse_01000071;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecResponse_01000066;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointResponse_01000076;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerShowResponse_0100003a;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -117,7 +120,32 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerCloudBoxRequest_01000042, this::cloudBox);
 		putInvoker(PbProtocol.PlayerGuideRequest_01000060, this::guide);
 		putInvoker(PbProtocol.PlayerPatrolInfoRequest_01000070, this::patrolInfo);
+		putInvoker(PbProtocol.PlayerRedPointRequest_01000075, this::red);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
+	}
+
+	private void red(NetClient client, Object message) {
+		PlayerRedPointRequest_01000075 request = (PlayerRedPointRequest_01000075) message;
+		PlayerRedPointResponse_01000076.Builder resp = PlayerRedPointResponse_01000076.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		List<Integer> typeList = request.getTypeList();
+		List<Boolean> redList = new ArrayList<>();
+		boolean ret = false ; 
+		for (int i = 0; i < typeList.size(); i++) {
+			int type = typeList.get(i);
+			InitialUI func = InitialUI.get(type);
+			if (player.isFuncOpen(func)) {
+				switch (func) {
+				case QiankunMirror:
+//                resp.addReds();
+					ret = true;
+					break;
+				}
+			}
+
+			redList.add(ret);
+		}
+		client.sendProtocol(resp);
 	}
 
 	private void guide(NetClient client, Object message) {

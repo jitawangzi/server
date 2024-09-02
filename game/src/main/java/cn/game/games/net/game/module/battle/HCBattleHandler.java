@@ -36,6 +36,6 @@ public abstract class HCBattleHandler extends IBattleHandler {
 
 	@Override
 	public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
-		return null;
+		throw new UnsupportedOperationException("not support quickEnd, id: " + id + ", subId: " + subId + ", isWin: " + isWin);
 	}
 }

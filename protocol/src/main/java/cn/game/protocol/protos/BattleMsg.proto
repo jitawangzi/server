@@ -382,8 +382,7 @@ message BattleWorldBossInfoResponse_13000302
 	int32 rank  = 3 ;  // 我的排名，暂时没有。
 	int32 battleTimes  = 4 ;  // 今日已经挑战次数。每天第一次免费，以后需要付费购买。
 	int32 buyTimes  = 5 ;  // 今日付费购买次数
-	int32 rewardIndex  = 8 ;  // 已经领取过的宝箱索引，从0开始，如果没有领过是 -1
-
+	int32 rewardId  = 8 ;  // 已经领取过的宝箱id，WorldBossReward表id， 如果没领过，0或者不存在。
 }
 
 // 购买世界boss挑战次数

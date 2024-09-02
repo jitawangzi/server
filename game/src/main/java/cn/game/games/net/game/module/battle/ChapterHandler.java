@@ -25,12 +25,14 @@ import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.config.PatrolConfig;
+import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
+import cn.game.protocol.generated.manager.WorldBossRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -91,6 +93,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleSweepResponse_13000025;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302;
+import cn.game.protocol.protobuf.BattleMsg.BattleWorldRewardResponse_13000306;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleRewardRequest_13000027;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleRewardResponse_13000028;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleSweepRequest_13000040;
@@ -98,6 +101,7 @@ import cn.game.protocol.protobuf.BattleMsg.HCBattleSweepResponse_13000041;
 import cn.game.protocol.protobuf.BattleMsg.LineupInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.BinarySearchUtil;
 import cn.game.util.DateUtil;
 
 @Component
@@ -144,6 +148,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleLostDayRewardRequest_13000203, this::lostDayReward);
 		putInvoker(PbProtocol.BattleWorldBossInfoRequest_13000301, this::worldBossInfo);
 		putInvoker(PbProtocol.BattleWorldBossBuyTimesRequest_13000303, this::worldBossBuy);
+		putInvoker(PbProtocol.BattleWorldRewardRequest_13000305, this::worldBossReward);
 	}
 
 	protected void empty(NetClient client, Object message) {
@@ -157,6 +162,38 @@ public class ChapterHandler extends BaseHandler {
 		client.sendProtocol(resp);
 	}
 
+	protected void worldBossReward(NetClient client, Object message) {
+		BattleWorldRewardResponse_13000306.Builder resp = BattleWorldRewardResponse_13000306.newBuilder();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (!player.isFuncOpen(InitialUI.WorldBoss)) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		WorldBossBattle battle = chapterModule.getBattle(DungeonTypeEnum.WorldBoss);
+		int maxDamageToday = battle.getMaxDamageToday();
+		List<WorldBossRewardConfig> list = WorldBossRewardManager.instance().list(); 
+		int canRewardIndex = BinarySearchUtil.findIndexLastLessThanOrEqual(list, maxDamageToday, r -> r.BoxCondition);
+		
+		if (canRewardIndex < 0) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		WorldBossRewardConfig rewardConfig = list.get(canRewardIndex);
+		if (battle.getRewardId() >= rewardConfig.ID) {
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		int rewardIndex = BinarySearchUtil.findElementIndexByField(list, battle.getRewardId(), r -> r.ID, (r1, r2) -> r1 - r2);
+		for (int i = rewardIndex + 1; i <= canRewardIndex; i++) {
+			WorldBossRewardConfig config = list.get(i);
+			resp.addAllRewards(PlayerHelper.addReward(player, config.RandomGivenID, OpType.WorldBoss));
+		}
+		battle.setRewardId(rewardConfig.ID);
+		client.sendProtocol(resp);
+	}
 	protected void worldBossBuy(NetClient client, Object message) {
 		BattleWorldBossBuyTimesRequest_13000303 req = (BattleWorldBossBuyTimesRequest_13000303) message;
 		BattleWorldBossBuyTimesRequest_13000303 resp = BattleWorldBossBuyTimesRequest_13000303.getDefaultInstance();
@@ -197,8 +234,8 @@ public class ChapterHandler extends BaseHandler {
 		resp.setBattleTimes(battle.getBattleTimes());
 		resp.setBuyTimes(battle.getBuyTimes());
 		resp.setCumulativeDamage(battle.getCumulativeDamage());
-		resp.setCanSweep(battle.getMaxDamage() > 0);
 		resp.setMaxDamageToday(battle.getMaxDamageToday());
+		resp.setRewardId(battle.getRewardId());
 //		resp.setRank(0);
 
 		client.sendProtocol(resp.build());
@@ -1244,11 +1281,6 @@ public class ChapterHandler extends BaseHandler {
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
-		if (type != DungeonTypeEnum.ShiLuoZhenJing.getId()) {
-			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
-			return;
-		}
-
 		IBattleHandler battleHandler = chapterModule.getBattle(type);
 		int errorCode = battleHandler.check(typeId, subId);
 		if (errorCode > 0) {
