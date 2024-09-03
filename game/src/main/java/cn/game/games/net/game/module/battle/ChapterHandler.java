@@ -91,6 +91,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051;
 import cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024;
 import cn.game.protocol.protobuf.BattleMsg.BattleSweepResponse_13000025;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303;
+import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldRewardResponse_13000306;
@@ -196,7 +197,7 @@ public class ChapterHandler extends BaseHandler {
 	}
 	protected void worldBossBuy(NetClient client, Object message) {
 		BattleWorldBossBuyTimesRequest_13000303 req = (BattleWorldBossBuyTimesRequest_13000303) message;
-		BattleWorldBossBuyTimesRequest_13000303 resp = BattleWorldBossBuyTimesRequest_13000303.getDefaultInstance();
+		BattleWorldBossBuyTimesResponse_13000304 resp = BattleWorldBossBuyTimesResponse_13000304.getDefaultInstance();
 
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
