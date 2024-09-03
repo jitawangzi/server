@@ -90,10 +90,6 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 				} else {
 					list.add(toRewardInfo((E) object));
 				}
-//				if (object instanceof Currency || object instanceof MergeEquip || object instanceof HeadBox) {
-//					list.add(toRewardInfo((E) object));
-//				} else {}
-
 			}
 		} else if (object instanceof List) {
 			List<Item> items = (List<Item>) object;

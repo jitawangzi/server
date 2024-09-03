@@ -47,4 +47,8 @@ public abstract class IBattleHandler {
 	 * 跨天重置数据
 	 */
 	abstract void newDay();
+
+	public boolean hasRedPoint() {
+		return false;
+	}
 }

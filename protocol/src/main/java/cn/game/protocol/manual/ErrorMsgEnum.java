@@ -105,6 +105,9 @@ public enum ErrorMsgEnum {
 	story_pre_not_finish(145, "前置剧情没有完成"),
 	/** 该名称已存在 */
 	name_exist(166, "该名称已存在"),
+	/** 服务器没有处理对应的红点类型 */
+	red_point_not_support(170, "服务器没有处理对应的红点类型"),
+
 
 	// 英雄
 	hero_level_max(180, "英雄等级到达上限"),

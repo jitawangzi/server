@@ -1,6 +1,7 @@
 package cn.game.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -19,9 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
-
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 /**
  * Redisson操作工具类，封装常用方法
@@ -67,6 +65,13 @@ public class RedisUtil {
 		Config redisConfig = ConfigService.getConfig("redisson");
 		String content = redisConfig.getProperty("redisson", "");
 		org.redisson.config.Config config = org.redisson.config.Config.fromYAML(content);
+		redis = Redisson.create(config);
+
+	}
+
+	public void initFromFile() throws IOException {
+		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("redisson.yaml");
+		org.redisson.config.Config config = org.redisson.config.Config.fromYAML(inputStream);
 		redis = Redisson.create(config);
 
 	}
@@ -312,18 +317,6 @@ public class RedisUtil {
 	public static <V> V get(String key) {
 		RBucket<V> bucket = redis.getBucket(key);
 		return bucket.get();
-	}
-
-	public static <T> Future<T> toVertxFuture(RFuture<T> rFuture) {
-		Promise<T> promise = Promise.promise();
-		rFuture.onComplete((result, throwable) -> {
-			if (throwable != null) {
-				promise.fail(throwable);
-			} else {
-				promise.complete(result);
-			}
-		});
-		return promise.future();
 	}
 
 	public static void main(String args[]) throws Exception {

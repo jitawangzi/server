@@ -653,7 +653,8 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		rewardBattleIds.add(id); 
-		OpType opType = type == 2 ? OpType.DaoXinComplete : type == 3 ? OpType.XinMoComplete : OpType.YaoWangComplete;
+		OpType opType = type == DungeonTypeEnum.DaoHeart.getId() ? OpType.DaoXinComplete : type == DungeonTypeEnum.XinMo.getId() ? OpType.XinMoComplete
+				: OpType.YaoWangComplete;
 
 		resp.addAllRewards(PlayerHelper.addReward(player, battleConfig.ClearGameReward, opType));
 
@@ -773,17 +774,17 @@ public class ChapterHandler extends BaseHandler {
 		int type = req.getType(); 
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		if (type == 2) {
+		if (type == DungeonTypeEnum.DaoHeart.getId()) {
 			if (!player.isFuncOpen(InitialUI.DaoXinLLiLian)) {
 				client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
 				return;
 			}
-		} else if (type == 3) {
+		} else if (type == DungeonTypeEnum.XinMo.getId()) {
 			if (!player.isFuncOpen(InitialUI.XinMoShiLian)) {
 				client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
 				return;
 			}
-		} else if (type == 4) {
+		} else if (type == DungeonTypeEnum.YaoWang.getId()) {
 			if (!player.isFuncOpen(InitialUI.YaoWangBiePao)) {
 				client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
 				return;

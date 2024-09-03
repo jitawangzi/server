@@ -2,6 +2,7 @@ package cn.game.core.net.vertx;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -403,4 +404,7 @@ public class VxHolder {
 		});
 	}
 
+	public static <T> Future<T> toVertxFuture(CompletionStage<T> future) {
+		return Future.fromCompletionStage(future);
+	}
 }

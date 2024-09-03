@@ -26,6 +26,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.battle.DaoHeartBattle;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.util.AddressUtil;
@@ -131,21 +132,28 @@ public class PlayerHandler extends BaseHandler {
 		List<Integer> typeList = request.getTypeList();
 		List<Boolean> redList = new ArrayList<>();
 		boolean ret = false ; 
+		int errorCode = 0;
 		for (int i = 0; i < typeList.size(); i++) {
 			int type = typeList.get(i);
 			InitialUI func = InitialUI.get(type);
 			if (player.isFuncOpen(func)) {
 				switch (func) {
-				case QiankunMirror:
-//                resp.addReds();
+				case DaoXinMoLi: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
 					ret = true;
 					break;
 				}
+				default:
+					errorCode = ErrorMsgEnum.red_point_not_support.getId();
+					break; 
+				}
 			}
-
 			redList.add(ret);
 		}
-		client.sendProtocol(resp);
+		resp.addAllIsRed(redList);
+		client.sendProtocol(resp, errorCode);
 	}
 
 	private void guide(NetClient client, Object message) {
@@ -689,7 +697,7 @@ public class PlayerHandler extends BaseHandler {
 	 * @return
 	 */
 	private Future<Void> checkOtherServer(long playerId) {
-		return RedisUtil.toVertxFuture(RedisUtil.<String>getAsync(CacheType.PLAYER_SERVER_ID.key(playerId))).compose(serverId -> {
+		return VxHolder.toVertxFuture(RedisUtil.<String>getAsync(CacheType.PLAYER_SERVER_ID.key(playerId))).compose(serverId -> {
 			if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
 				return notifyOtherServerLogout(serverId, playerId);
 			}

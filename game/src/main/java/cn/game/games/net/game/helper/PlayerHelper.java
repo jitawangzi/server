@@ -1243,7 +1243,7 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static Future<Void> getPlayerDistributedLock(long playerId) {
-		return RedisUtil.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
+		return VxHolder.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
 			if (!locked) {
 				return Future.failedFuture(ErrorMsgEnum.player_lock.getId() + "");
 			}

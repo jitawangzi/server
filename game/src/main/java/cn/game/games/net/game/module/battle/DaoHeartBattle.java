@@ -47,6 +47,11 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 	};
 
 	@Override
+	public boolean hasRedPoint() {
+		return false;
+	}
+
+	@Override
 	void newDay() {
 		reset();
 	}
