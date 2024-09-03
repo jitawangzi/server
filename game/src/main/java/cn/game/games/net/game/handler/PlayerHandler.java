@@ -76,7 +76,7 @@ import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
 import cn.game.util.ConversionUtil;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
@@ -689,7 +689,7 @@ public class PlayerHandler extends BaseHandler {
 	 * @return
 	 */
 	private Future<Void> checkOtherServer(long playerId) {
-		return RedissonUtil.toVertxFuture(RedissonUtil.<String>getAsync(CacheType.PLAYER_SERVER_ID.key(playerId))).compose(serverId -> {
+		return RedisUtil.toVertxFuture(RedisUtil.<String>getAsync(CacheType.PLAYER_SERVER_ID.key(playerId))).compose(serverId -> {
 			if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
 				return notifyOtherServerLogout(serverId, playerId);
 			}

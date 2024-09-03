@@ -50,7 +50,7 @@ import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.JsonUtil;
 import cn.game.util.MailUtil;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
@@ -139,7 +139,7 @@ public class GameServer implements GameServerMBean {
 //		instance.log.info("启动逻辑服。。");
 
 		long start = System.currentTimeMillis();
-		RedissonUtil.getInstance().init();
+		RedisUtil.getInstance().init();
 		ZkHelper.init();
 		ServerContext.getInstance().init(ServerType.Game, serverId);
 		IdUtil.init();

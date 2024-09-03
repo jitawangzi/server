@@ -8,7 +8,7 @@ import cn.game.login.net.clientpacket.vertx.VertxServerListReq;
 import cn.game.login.net.clientpacket.vertx.VertxThirdPartyConfirmReq;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatShipPush;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatTest;
-import cn.game.util.RedisUtil;
+import cn.game.util.VxRedisUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
@@ -27,8 +27,8 @@ public class RestServer extends AbstractVerticle {
 		Vertx vertx = Vertx.vertx();
 		// 部署发布rest服务
 		vertx.deployVerticle(new RestServer());
-		RedisUtil.setRedisUrl("redis://:32SSDgSDFsa3dsdfgg@192.168.1.67:6379/0");
-		vertx.deployVerticle(new RedisUtil());
+		VxRedisUtil.setRedisUrl("redis://:32SSDgSDFsa3dsdfgg@192.168.1.67:6379/0");
+		vertx.deployVerticle(new VxRedisUtil());
 		vertx.deployVerticle(new RestServer());
 	}
 

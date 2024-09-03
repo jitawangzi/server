@@ -125,7 +125,7 @@ public class LockUtil {
 				if (res == null || res == false) {
 					failAction.accept(null);
 				} else {
-					RedissonUtil.getAndWaitAsyncBatch(action, keys);
+					RedisUtil.getAndWaitAsyncBatch(action, keys);
 				}
 			} catch (Exception e1) {
 				log.error("", e1);
@@ -184,12 +184,12 @@ public class LockUtil {
 		locks = getLockKey(locks);
 		RLock lock;
 		if (locks.length == 1) {
-			lock = RedissonUtil.getRedis().getLock(locks[0]);
+			lock = RedisUtil.getRedis().getLock(locks[0]);
 		} else {
 			RLock[] lockArray = new RLock[locks.length];
 			Arrays.sort(locks);
 			for (int i = 0; i < locks.length; i++) {
-				lockArray[i] = RedissonUtil.getRedis().getLock(locks[i]);
+				lockArray[i] = RedisUtil.getRedis().getLock(locks[i]);
 			}
 			lock = new RedissonMultiLock(lockArray);
 		}
@@ -197,12 +197,12 @@ public class LockUtil {
 	}
 	public static void main(String[] args) throws Exception {
 
-		RedissonUtil.getInstance().init();
+		RedisUtil.getInstance().init();
 		
-		RedissonUtil.set("a", "a");
-		RedissonUtil.set("b", "b");
-		RedissonUtil.set("c", "c");
-		RedissonUtil.set("d", "d");
+		RedisUtil.set("a", "a");
+		RedisUtil.set("b", "b");
+		RedisUtil.set("c", "c");
+		RedisUtil.set("d", "d");
 		// 同步
 		RLock lock = tryLockSync("fff");
 		if (lock != null) { // 获取到锁

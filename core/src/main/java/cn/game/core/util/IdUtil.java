@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import cn.game.core.cache.CacheType;
 import cn.game.util.IdWorker;
 import cn.game.util.LockUtil;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.ZkHelper;
 
 /**    
@@ -76,7 +76,7 @@ public class IdUtil {
 	private static int allocateWorkerId() throws Exception {
 
 		// 获取计数器对象
-		RAtomicLong counter = RedissonUtil.getRedis().getAtomicLong(CacheType.DISTRIBUTED_WORKER_COUNTER.name());
+		RAtomicLong counter = RedisUtil.getRedis().getAtomicLong(CacheType.DISTRIBUTED_WORKER_COUNTER.name());
 
 		// 递增计数器
 		int seq = (int) counter.incrementAndGet();

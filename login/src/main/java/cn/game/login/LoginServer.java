@@ -18,7 +18,7 @@ import cn.game.login.mapper.UserMapper;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.util.Config;
 import cn.game.util.MailUtil;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
@@ -59,7 +59,7 @@ public class LoginServer {
 		log.info("正在启动登录服...");
 		Config.load();
 		ZkHelper.init();
-		RedissonUtil.getInstance().init();
+		RedisUtil.getInstance().init();
 		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig(); // config instance is singleton for
 																					// each namespace and is never null
 		int vertHttpPort = config.getIntProperty("vertx.http.port", 0);
@@ -137,7 +137,7 @@ public class LoginServer {
 
 	public void initPlayerMaxId() {
 		String key = CacheType.Player_MAX_ID.key();
-		Integer maxPlayerId = RedissonUtil.get(key);
+		Integer maxPlayerId = RedisUtil.get(key);
 		if (maxPlayerId == null) {
 			UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
 			Long selectMaxId = userMapper.selectMaxId();
@@ -147,7 +147,7 @@ public class LoginServer {
 			} else {
 				selectMaxId += 1;
 			}
-			RedissonUtil.getRedis().getBucket(key).compareAndSet(null, selectMaxId.intValue());
+			RedisUtil.getRedis().getBucket(key).compareAndSet(null, selectMaxId.intValue());
 		}
 	}
 

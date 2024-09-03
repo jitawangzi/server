@@ -22,7 +22,7 @@ import cn.game.protocol.protobuf.Account.AccountLoginResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -65,7 +65,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 			String username = split[0];
 			String pwd = split[1];
 
-			RFuture<User> future = RedissonUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
+			RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 			future.onComplete((v, throwable) -> {
 				if (throwable != null) {
 					log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
@@ -129,7 +129,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 					String session_key = r.getString("session_key");
 					String unionid = r.getString("unionid");
 					String username = openid;
-					RFuture<User> future = RedissonUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
+					RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 					future.onComplete((v, throwable) -> {
 						if (throwable != null) {
 							log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
@@ -212,7 +212,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 //						response.end(resp.toJSON().toString());
 					return;
 				}
-				RFuture<Object> future = RedissonUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
+				RFuture<Object> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 
 				future.onComplete((v, throwable) -> {
 					if (throwable != null) {
@@ -251,7 +251,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 									user.setLoginTime(DateUtil.nowTimeStr());
 									mapper.updateByPrimaryKey(user);
 								}
-								RedissonUtil.setAsync(CacheType.F_USER_NAME_ID.key(username), JSON.toJSONString(user));
+								RedisUtil.setAsync(CacheType.F_USER_NAME_ID.key(username), JSON.toJSONString(user));
 							}
 
 							// 创建session

@@ -14,7 +14,7 @@ import cn.game.core.util.IdUtil;
 import cn.game.games.net.game.remote.GameRemoteServerInterface;
 import cn.game.util.Config;
 import cn.game.util.MailUtil;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
@@ -38,7 +38,7 @@ public class CrossServer {
 	public void start(String args[]) throws Exception {
 
 		long start = System.currentTimeMillis();
-		RedissonUtil.getInstance().init();
+		RedisUtil.getInstance().init();
 		ZkHelper.init();
 
 		String serverId = parseServerId(args);

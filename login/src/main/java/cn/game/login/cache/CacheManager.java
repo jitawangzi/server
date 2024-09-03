@@ -3,7 +3,7 @@ package cn.game.login.cache;
 import java.util.function.Consumer;
 
 import cn.game.core.cache.CacheType;
-import cn.game.util.RedisUtil;
+import cn.game.util.VxRedisUtil;
 import io.reactivex.rxjava3.annotations.Nullable;
 import io.vertx.core.Future;
 import io.vertx.redis.client.Response;
@@ -34,11 +34,11 @@ public class CacheManager {
 	 * @param ks
 	 */
 	public void load(Consumer<String> consumer, CacheType cacheType, Object... ks) {
-		RedisUtil.get(cacheType.key(ks), consumer);
+		VxRedisUtil.get(cacheType.key(ks), consumer);
 	}
 
 	public void incr(Consumer<Long> consumer, CacheType cacheType, Object... ks) {
-		RedisUtil.incr(cacheType.key(ks), consumer);
+		VxRedisUtil.incr(cacheType.key(ks), consumer);
 	}
 	/**
 	 * 异步载入缓存
@@ -47,16 +47,16 @@ public class CacheManager {
 	 * @return
 	 */
 	public Future<@Nullable Response> loadAsync(CacheType cacheType, Object... ks) {
-		return RedisUtil.get(cacheType.key(ks));
+		return VxRedisUtil.get(cacheType.key(ks));
 	}
 
 	public String loadSync(CacheType cacheType, Object... ks) {
-		return RedisUtil.getSync(cacheType.key(ks));
+		return VxRedisUtil.getSync(cacheType.key(ks));
 	}
 	public void put(String value, CacheType cacheType, Object... ks) {
-		RedisUtil.set(cacheType.key(ks), value);
+		VxRedisUtil.set(cacheType.key(ks), value);
 	}
 	public void put(int expire, String value, CacheType cacheType, Object... ks) {
-		RedisUtil.setex(cacheType.key(ks), value, expire);
+		VxRedisUtil.setex(cacheType.key(ks), value, expire);
 	}
 }

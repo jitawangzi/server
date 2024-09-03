@@ -40,7 +40,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.Pair;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -129,7 +129,7 @@ public class PlayerManager {
 	public String getServerId(long playerId) {
 		try {
 			return playerServers.get(playerId, () -> {
-				String serverId = RedissonUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
+				String serverId = RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
 				return serverId == null ? "" : serverId;
 			});
 		} catch (ExecutionException e) {

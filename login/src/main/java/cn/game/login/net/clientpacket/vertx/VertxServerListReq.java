@@ -21,7 +21,7 @@ import cn.game.protocol.protobuf.Account.AccountServerList;
 import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.protocol.protobuf.Account.ServerInfo;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -51,7 +51,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 		String passportSessionId = from.getPassportSessionId();
 		AccountServerListResponse.Builder resp = AccountServerListResponse.newBuilder();
 		// 查询用户
-		RedissonUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), user -> {
+		RedisUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), user -> {
 			if (user == null) {
 				HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("可能未登陆")
 						.setErrorCode(AccountErrorCode.PASSPORT_SESSION_ERROR).build();
@@ -59,7 +59,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 				return;
 			}
 			User u = (User) user ; 
-			RedissonUtil.getAndRunAsync(CacheType.PLAYER_SERVER_ID.key(u.getId()), serverId -> {
+			RedisUtil.getAndRunAsync(CacheType.PLAYER_SERVER_ID.key(u.getId()), serverId -> {
 				String myServerId = (String) serverId;
 				Collection<ServerList> serversList = ServerListManager.getInstance().getServerList();
 				Collection<String> activeServerSet = ActiveServerListManager.getInstance()

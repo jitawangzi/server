@@ -81,7 +81,7 @@ import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.Pair;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -1226,13 +1226,13 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static RFuture<Boolean> trySetServerId(long playerId) {
-		RFuture<Boolean> playerLockFuture = RedissonUtil
+		RFuture<Boolean> playerLockFuture = RedisUtil
 				.trySetAsync(CacheType.PLAYER_SERVER_ID.key(playerId), ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
 		return playerLockFuture;
 	}
 
 	public static RFuture<Void> setServerId(long playerId) {
-		RFuture<Void> playerLockFuture = RedissonUtil
+		RFuture<Void> playerLockFuture = RedisUtil
 				.setAsync(CacheType.PLAYER_SERVER_ID.key(playerId), ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
 		return playerLockFuture;
 	}
@@ -1243,7 +1243,7 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static Future<Void> getPlayerDistributedLock(long playerId) {
-		return RedissonUtil.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
+		return RedisUtil.toVertxFuture(PlayerHelper.trySetServerId(playerId)).compose(locked -> {
 			if (!locked) {
 				return Future.failedFuture(ErrorMsgEnum.player_lock.getId() + "");
 			}
@@ -1374,7 +1374,7 @@ public class PlayerHelper {
 			// TODO 异步保存SimplePlayer 到redis。
 //			log.info("GameClient[{}] Player[{}] logout finished[{}]", player.getGameClient() == null ? "" : player.getGameClient().toDetailString(), playerId);
 		}).compose(v -> {
-			RFuture<Boolean> deleteAsync = RedissonUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+			RFuture<Boolean> deleteAsync = RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
 			return Future.fromCompletionStage(deleteAsync.toCompletableFuture());
 		}).mapEmpty().otherwise(e -> {
 			log.error("Error during logout cache process for playerId: " + playerId, e);

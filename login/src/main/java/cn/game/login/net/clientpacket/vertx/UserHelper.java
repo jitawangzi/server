@@ -10,7 +10,7 @@ import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.util.DateUtil;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.SpringContextLoader;
 
 public class UserHelper {
@@ -50,7 +50,7 @@ public class UserHelper {
 	 * @return
 	 */
 	public static long genPlayerId() {
-		RAtomicLong atomicId = RedissonUtil.getRedis().getAtomicLong(CacheType.Player_MAX_ID.key());
+		RAtomicLong atomicId = RedisUtil.getRedis().getAtomicLong(CacheType.Player_MAX_ID.key());
 		return atomicId.addAndGet((long)GlobalConst.CreateUID[1]);
 	}
 	
@@ -59,27 +59,27 @@ public class UserHelper {
 		setUserBySession(user);
 	}
 	public static void setUserByName(User user) {
-		RedissonUtil.setAsync(CacheType.F_USER_NAME_ID.key(user.getUsername()), user, 30, TimeUnit.DAYS);
+		RedisUtil.setAsync(CacheType.F_USER_NAME_ID.key(user.getUsername()), user, 30, TimeUnit.DAYS);
 	}
 	public static void setUserBySession(User user) {
-		RedissonUtil.setAsync(CacheType.PASSPORT_SESSION.key(user.getSessionId()), user, 30, TimeUnit.DAYS);
+		RedisUtil.setAsync(CacheType.PASSPORT_SESSION.key(user.getSessionId()), user, 30, TimeUnit.DAYS);
 	}
 	public static String getSessionKey(String sessionId) {
-		User user = RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId));
+		User user = RedisUtil.get(CacheType.PASSPORT_SESSION.key(sessionId));
 		return user == null? null : user.getSessionKey(); 
 	}
 	public static User getUserBySessionId(String sessionId) {
-		return RedissonUtil.get(CacheType.PASSPORT_SESSION.key(sessionId));
+		return RedisUtil.get(CacheType.PASSPORT_SESSION.key(sessionId));
 	}
 	public static User getUserByName(String username) {
-		return RedissonUtil.get(CacheType.F_USER_NAME_ID.key(username));
+		return RedisUtil.get(CacheType.F_USER_NAME_ID.key(username));
 	}
 	public static String getServerId(long playerId) {
-		return RedissonUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
+		return RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
 	}
 	
 	public static void removeUser(long sessionId) {
-		RedissonUtil.deleteAsync(CacheType.PASSPORT_SESSION.key(sessionId)); 
+		RedisUtil.deleteAsync(CacheType.PASSPORT_SESSION.key(sessionId)); 
 	}
 
 }

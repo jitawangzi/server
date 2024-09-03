@@ -12,7 +12,7 @@ import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountRegister;
 import cn.game.protocol.protobuf.Account.AccountRegisterResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
@@ -55,7 +55,7 @@ public class VertxRegisterReq implements Handler<RoutingContext> {
 			return;
 		}
 
-		RedissonUtil.getAndRunAsync(CacheType.F_USER_NAME_ID.key(account), ret -> {
+		RedisUtil.getAndRunAsync(CacheType.F_USER_NAME_ID.key(account), ret -> {
 			if (!StringUtils.isEmpty((String) ret)) {
 				HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("账号已经存在")
 						.setErrorCode(AccountErrorCode.ACCOUNT_EXIST).build();

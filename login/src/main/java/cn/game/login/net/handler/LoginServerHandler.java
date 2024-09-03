@@ -26,7 +26,7 @@ import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 
@@ -111,7 +111,7 @@ public class LoginServerHandler extends BaseHandler {
 		String passportSessionId = request.getPassportSessionId();
 
 		// 查询用户
-		RedissonUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), retU -> {
+		RedisUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), retU -> {
 			if (retU == null) {
 				client.sendProtocol(LoginPlayerUidResponse_7d000019.getDefaultInstance(),
 						ErrorMsgEnum.session_not_exist.getId());

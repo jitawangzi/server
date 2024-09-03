@@ -4,7 +4,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import cn.game.util.LogbackConfig;
-import cn.game.util.RedisUtil;
+import cn.game.util.VxRedisUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -21,20 +21,20 @@ public class RedisVertxTest {
 		}
 //		new Config().load();
 
-		RedisUtil.main(new String[] { url });
+		VxRedisUtil.main(new String[] { url });
 
 		// 获取vertx基类
 		VertxOptions options = new VertxOptions();
 		options.setEventLoopPoolSize(64);
 		Vertx vertx = Vertx.vertx(options);
-		RedisUtil.setRedisUrl(url);
-		Future<String> deployVerticle = vertx.deployVerticle(new RedisUtil());
+		VxRedisUtil.setRedisUrl(url);
+		Future<String> deployVerticle = vertx.deployVerticle(new VxRedisUtil());
 		deployVerticle.onComplete(r -> {
 
 			String key = "abc";
 			String value = "SDFSADFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDSF";
 			for (int i = 0; i < 1000; i++) {
-				RedisUtil.set(key, value);
+				VxRedisUtil.set(key, value);
 			}
 
 			int count = 3;
@@ -63,7 +63,7 @@ public class RedisVertxTest {
 		CountDownLatch latch = new CountDownLatch(count);
 
 		for (int i = 0; i < count; i++) {
-			RedisUtil.setR(i + "", value, r -> {
+			VxRedisUtil.setR(i + "", value, r -> {
 				latch.countDown();
 			});
 		}
@@ -73,14 +73,14 @@ public class RedisVertxTest {
 	public static void setSync(int count, String value) {
 
 		for (int i = 0; i < count; i++) {
-			RedisUtil.set(i + "", value);
+			VxRedisUtil.set(i + "", value);
 		}
 	}
 
 	public static void getSync(int count, String key) {
 
 		for (int i = 0; i < count; i++) {
-			RedisUtil.getSync(key);
+			VxRedisUtil.getSync(key);
 		}
 	}
 

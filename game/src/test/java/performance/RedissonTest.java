@@ -9,7 +9,7 @@ import org.redisson.api.RFuture;
 
 /*import ch.qos.logback.core.joran.spi.JoranException;
 import cn.game.util.LogbackConfig;*/
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 
 public class RedissonTest {
 
@@ -23,7 +23,7 @@ public class RedissonTest {
 		String key = "1234";
 		String value = "SDFSADFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDSF";
 		for (int i = 0; i < 1000; i++) {
-			RedissonUtil.set("1234", value);
+			RedisUtil.set("1234", value);
 		}
 
 		int count = 100000;
@@ -44,7 +44,7 @@ public class RedissonTest {
 			keys.add(i + "");
 			values.add(value);
 		}
-		RFuture<BatchResult<?>> futrue = RedissonUtil.setAsyncBatch2(keys, values);
+		RFuture<BatchResult<?>> futrue = RedisUtil.setAsyncBatch2(keys, values);
 		futrue.await();
 
 	}
@@ -53,7 +53,7 @@ public class RedissonTest {
 		CountDownLatch latch = new CountDownLatch(count);
 
 		for (int i = 0; i < count; i++) {
-			RedissonUtil.setAsyncAndRun(i + "", value, r -> {
+			RedisUtil.setAsyncAndRun(i + "", value, r -> {
 				if (r) {
 					latch.countDown();
 				}
@@ -64,14 +64,14 @@ public class RedissonTest {
 	public static void setSync(int count, String value) {
 
 		for (int i = 0; i < count; i++) {
-			RedissonUtil.set(i + "", value);
+			RedisUtil.set(i + "", value);
 		}
 	}
 
 	public static void getSync(int count, String key) {
 
 		for (int i = 0; i < count; i++) {
-			RedissonUtil.get(key);
+			RedisUtil.get(key);
 		}
 	}
 
@@ -80,7 +80,7 @@ public class RedissonTest {
 		CountDownLatch latch = new CountDownLatch(count);
 
 		for (int i = 0; i < count; i++) {
-			RedissonUtil.getAndRunAsyncBatch(r -> {
+			RedisUtil.getAndRunAsyncBatch(r -> {
 				latch.countDown();
 			}, key);
 		}

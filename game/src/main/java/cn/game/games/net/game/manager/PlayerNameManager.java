@@ -12,7 +12,7 @@ import org.redisson.api.RSet;
 import org.redisson.api.RSetAsync;
 
 import cn.game.core.cache.CacheType;
-import cn.game.util.RedissonUtil;
+import cn.game.util.RedisUtil;
 
 
 /**    
@@ -30,13 +30,13 @@ public class PlayerNameManager {
 
 	public RFuture<Boolean> isUsernameTaken(String username) {
 		String key = getUsernameKey(username);
-		RSetAsync<String> set = RedissonUtil.getRedis().getSet(key);
+		RSetAsync<String> set = RedisUtil.getRedis().getSet(key);
 		return set.containsAsync(username);
 	}
 
 	public RFuture<Boolean> tryCreateUser(String username) {
 		String key = getUsernameKey(username);
-		RSetAsync<String> set = RedissonUtil.getRedis().getSet(key);
+		RSetAsync<String> set = RedisUtil.getRedis().getSet(key);
 		return set.addAsync(username);
 	}
 
@@ -47,7 +47,7 @@ public class PlayerNameManager {
 
 	public boolean addExistingUsername(String username) {
 		String key = getUsernameKey(username);
-		RSet<String> set = RedissonUtil.getRedis().getSet(key);
+		RSet<String> set = RedisUtil.getRedis().getSet(key);
 		return set.add(username);
 	}
 
@@ -64,7 +64,7 @@ public class PlayerNameManager {
 
 		// 为每个分片创建一个异步添加操作
 		List<RFuture<Boolean>> futures = shardedUsernames.entrySet().stream().map(entry -> {
-			RSetAsync<String> set = RedissonUtil.getRedis().getSet(entry.getKey());
+			RSetAsync<String> set = RedisUtil.getRedis().getSet(entry.getKey());
 			return set.addAllAsync(entry.getValue());
 		}).collect(Collectors.toList());
 
@@ -80,7 +80,7 @@ public class PlayerNameManager {
 	public RFuture<String> getRandomUsername() {
 		int randomShard = ThreadLocalRandom.current().nextInt(SHARD_COUNT);
 		String key = CacheType.SET_ALL_NAME.key(randomShard);
-		RSetAsync<String> set = RedissonUtil.getRedis().getSet(key);
+		RSetAsync<String> set = RedisUtil.getRedis().getSet(key);
 		return set.randomAsync();
 	}
 }
