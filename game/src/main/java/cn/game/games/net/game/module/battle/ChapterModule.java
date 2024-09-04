@@ -241,6 +241,11 @@ public class ChapterModule extends BasePlayerModule  {
 		return patrolConfig.IncomeGold * 60 * hours;
 	}
 
+	public int calcPatrolExp(int hours) {
+		PatrolConfig patrolConfig = PatrolManager.instance().get(getFightMainBattleId());
+		return patrolConfig.IncomeEXP * 60 * hours;
+	}
+
 	/** 
 	 * 获取可以打的，最新的战役id，最新解锁的，还没通关的
 	 * @param type  {@link BattleConfig#BattleType} 
