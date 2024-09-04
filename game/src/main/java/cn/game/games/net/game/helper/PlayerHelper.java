@@ -1379,7 +1379,7 @@ public class PlayerHelper {
 //			log.info("GameClient[{}] Player[{}] logout finished[{}]", player.getGameClient() == null ? "" : player.getGameClient().toDetailString(), playerId);
 		}).compose(v -> {
 			RFuture<Boolean> deleteAsync = RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
-			return Future.fromCompletionStage(deleteAsync.toCompletableFuture());
+			return Future.fromCompletionStage(deleteAsync);
 		}).mapEmpty().otherwise(e -> {
 			log.error("Error during logout cache process for playerId: " + playerId, e);
 			return null;
