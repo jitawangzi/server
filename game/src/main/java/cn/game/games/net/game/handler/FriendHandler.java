@@ -79,8 +79,8 @@ public class FriendHandler extends BaseHandler {
 
 		FriendListResponse_30000002.Builder response = FriendListResponse_30000002.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendModule friendOp = player.getModule(FriendModule.class);
-		Collection<Friend> allFriends = friendOp.getAllFriends();
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		Collection<Friend> allFriends = friendModule.getAllFriends();
 		TaskManager.getInstance().addWorkerTask(() -> {
 
 			try {
@@ -93,7 +93,7 @@ public class FriendHandler extends BaseHandler {
 //					}
 
 					FriendInfo friendBaseInfo = PbBuilder.buildFriendInfo(friend);
-					if (friendOp.isFriend(friend)) {
+					if (friendModule.isFriend(friend)) {
 						response.addFriends(friendBaseInfo);
 					}
 				}
@@ -110,8 +110,8 @@ public class FriendHandler extends BaseHandler {
 		FriendBlackListResponse_30000052.Builder resp = FriendBlackListResponse_30000052.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendModule friendOp = player.getModule(FriendModule.class);
-		Collection<Friend> allFriends = friendOp.getAllFriends();
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		Collection<Friend> allFriends = friendModule.getAllFriends();
 
 		TaskManager.getInstance().addWorkerTask(() -> {
 
@@ -135,13 +135,13 @@ public class FriendHandler extends BaseHandler {
 		FriendApplyListResponse_30000054.Builder resp = FriendApplyListResponse_30000054.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendModule friendOp = player.getModule(FriendModule.class);
-		Collection<Friend> allFriends = friendOp.getAllFriends();
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		Collection<Friend> allFriends = friendModule.getAllFriends();
 
 		TaskManager.getInstance().addWorkerTask(() -> {
 
 			try {
-				for (FriendApplication application : friendOp.getAllApplications().values()) {
+				for (FriendApplication application : friendModule.getAllApplications().values()) {
 
 					SimplePlayerInfo simplePlayerInfo = PbBuilder.buildSimplePlayerInfo(application.getApplyPlayerId(),
 							application
@@ -165,10 +165,10 @@ public class FriendHandler extends BaseHandler {
 		FriendRecommendResponse_30000004.Builder builder = FriendRecommendResponse_30000004.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendModule friendOp = player.getModule(FriendModule.class);
-		long lastRefreshTime = friendOp.getLastRefreshTime();
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		long lastRefreshTime = friendModule.getLastRefreshTime();
 //		if (lastRefreshTime > 0 && (System.currentTimeMillis() - lastRefreshTime) < maxTime) {
-//			List<SimplePlayer> lastRefreshPlayers = friendOp.getLastRefreshPlayers();
+//			List<SimplePlayer> lastRefreshPlayers = friendModule.getLastRefreshPlayers();
 //			builder.addAllFriends(PbBuilder.buildSimplePlayerInfos(lastRefreshPlayers));
 //			if (refresh) {
 //				builder.setNextFreshTime((int) ((lastRefreshTime + maxTime) / 1000));
@@ -292,14 +292,14 @@ public class FriendHandler extends BaseHandler {
 		List<String> friendIdList = request.getPlayerIdsList();
 		boolean agree = request.getAgree();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		FriendModule friendOp = player.getModule(FriendModule.class);
+		FriendModule friendModule = player.getModule(FriendModule.class);
 
 		TaskManager.getInstance().addWorkerTask(() -> {
 
 			for (int i = 0; i < friendIdList.size(); i++) {
 				String idString = friendIdList.get(i);
 				long id = Long.valueOf(idString);
-				boolean flag = friendOp.applicationDeal(id, agree);
+				boolean flag = friendModule.applicationDeal(id, agree);
 				if (flag) {
 					builder.addFriendIds(idString);
 				}
@@ -319,19 +319,19 @@ public class FriendHandler extends BaseHandler {
 		long friendId = Long.parseLong(idStirng);
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		FriendModule friendOp = player.getModule(FriendModule.class);
-//		if (!friendOp.isFriend(friendId)) {
+		FriendModule friendModule = player.getModule(FriendModule.class);
+//		if (!friendModule.isFriend(friendId)) {
 //			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 //			return;
 //		}
 
-		Friend friend = friendOp.getFriend(friendId);
+		Friend friend = friendModule.getFriend(friendId);
 		// 不在好友里，加入到好友，设置黑名单，否则直接设置黑名单关系
 		if (friend != null) {
 			friend.setRelation(Friend.BLACK);
 			FriendHelper.update(friend);
 		} else {
-			friendOp.addFriend(friendId, "", Friend.BLACK);
+			friendModule.addFriend(friendId, "", Friend.BLACK);
 		}
 
 		// 从对方好友列表里删除
@@ -350,11 +350,11 @@ public class FriendHandler extends BaseHandler {
 		FriendGiftRequest_30000012 request = (FriendGiftRequest_30000012) message;
 		ProtocolStringList friendIdList = request.getFriendIdList();
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		FriendModule friendOp = player.getModule(FriendModule.class);
+		FriendModule friendModule = player.getModule(FriendModule.class);
 		for (String string : friendIdList) {
 			long friendId = Long.parseLong(string);
-			Friend friend = friendOp.getFriend(friendId);
-			if (!friendOp.isFriend(friend) || friend.getGift()) {
+			Friend friend = friendModule.getFriend(friendId);
+			if (!friendModule.isFriend(friend) || friend.getGift()) {
 				continue;
 			}
 			Friend friendTarget;
@@ -389,9 +389,9 @@ public class FriendHandler extends BaseHandler {
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
 		for (String idString : request.getFriendIdList()) {
 			long id = Long.parseLong(idString);
-			FriendModule friendOp = player.getModule(FriendModule.class);
+			FriendModule friendModule = player.getModule(FriendModule.class);
 
-			Friend friend = friendOp.getFriend(id);
+			Friend friend = friendModule.getFriend(id);
 			if (friend == null) {
 				continue;
 			}
@@ -412,8 +412,8 @@ public class FriendHandler extends BaseHandler {
 		FriendDeleteRequest_30000009 request = (FriendDeleteRequest_30000009) message;
 		long friendId = Long.valueOf(request.getId());
 		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		FriendModule friendOp = player.getModule(FriendModule.class);
-		Friend friend = friendOp.getFriend(friendId);
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		Friend friend = friendModule.getFriend(friendId);
 		if (friend == null) {
 			client.sendProtocol(FriendDeleteResponse_3000000a.getDefaultInstance());
 			return;

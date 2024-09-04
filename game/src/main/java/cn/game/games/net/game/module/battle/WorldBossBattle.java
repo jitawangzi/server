@@ -21,8 +21,8 @@ import cn.game.util.Rnd;
  */
 public class WorldBossBattle extends XiYouBattleHandler {
 
-	private int cumulativeDamage; // 今日累计伤害
-	private int maxDamageToday; // 今日最高伤害
+	private long cumulativeDamage; // 今日累计伤害
+	private long maxDamageToday; // 今日最高伤害
 	private int battleTimes; // 今日已经挑战次数。每天第一次免费，以后需要付费购买。
 	private int buyTimes; // 今日付费购买次数
 
@@ -115,15 +115,15 @@ public class WorldBossBattle extends XiYouBattleHandler {
 		this.buyTimes = buyTimes;
 	}
 
-	public int getCumulativeDamage() {
+	public long getCumulativeDamage() {
 		return cumulativeDamage;
 	}
 
-	public void setCumulativeDamage(int cumulativeDamage) {
+	public void setCumulativeDamage(long cumulativeDamage) {
 		this.cumulativeDamage = cumulativeDamage;
 	}
 
-	public int getMaxDamageToday() {
+	public long getMaxDamageToday() {
 		return maxDamageToday;
 	}
 

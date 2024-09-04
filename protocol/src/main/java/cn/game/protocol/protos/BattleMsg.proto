@@ -377,8 +377,8 @@ message BattleWorldBossInfoRequest_13000301
 
 message BattleWorldBossInfoResponse_13000302
 {
-	int32 cumulativeDamage = 1 ;  //今日累计伤害
-	int32 maxDamageToday = 2 ;  //今日最高伤害
+	string cumulativeDamage = 1 ;  //今日累计伤害
+	string maxDamageToday = 2 ;  //今日最高伤害
 	int32 rank  = 3 ;  // 我的排名，暂时没有。
 	int32 battleTimes  = 4 ;  // 今日已经挑战次数。每天第一次免费，以后需要付费购买。
 	int32 buyTimes  = 5 ;  // 今日付费购买次数
