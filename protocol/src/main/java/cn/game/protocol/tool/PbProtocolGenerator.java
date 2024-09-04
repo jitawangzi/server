@@ -470,7 +470,7 @@ public class PbProtocolGenerator {
 	}
 
 	public static void generateRequestTest(MessageObject message, String charset) throws Exception {
-		String outPath = workspace + "/.." + initialProp.getProperty("client.test.dir");
+		String outPath = workspace + initialProp.getProperty("client.test.dir");
 
 		String inputTemplate = "client_test.vm";
 

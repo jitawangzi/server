@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ZooKeeperConfig channel="prepub" serverName="auth" timeOut="50000000" areaName="poker">
+    <!-- release的zkHost属性值由运维来填 -->
+    <ZooKeeperServerConfig zkHost="118.89.200.181:2181,118.89.202.217:2181" channel="prepub">
+    </ZooKeeperServerConfig>
+
+    <ZooKeeperServerConfig zkHost="10.23.1.110:2181,10.23.1.110:2181" channel="release">
+    </ZooKeeperServerConfig>
+    
+    <ZooKeeperServerConfig zkHost="123.206.211.17:2181,123.207.181.104:2181" channel="local">
+    </ZooKeeperServerConfig>
+</ZooKeeperConfig>

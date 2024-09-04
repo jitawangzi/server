@@ -1,0 +1,61 @@
+﻿序号,模块,协议,协议号,权重,描述
+1,模块,ActivityFirstChargeBuyRequest_11000010,0x11000010,1,购买首冲礼包，只能购买有售价的礼包。
+2,模块,ActivityFirstChargeRequest_11000007,0x11000007,1,查看首冲活动数据
+3,模块,ActivityFirstChargeRewardRequest_11000012,0x11000012,1,领取首冲礼包奖励
+4,模块,ActivityListRequest_11000001,0x11000001,1,查看有哪些显示的活动
+5,模块,ActivitySevenDaysCarnivalRequest_11000020,0x11000020,1,七日狂欢
+6,模块,ActivitySevenDaysSigninInfoRequest_11000024,0x11000024,1,"七日签到,查看七日签到数据"
+7,模块,ActivitySevenDaysSigninRequest_11000026,0x11000026,1,"七日签到,签到领奖"
+8,模块,BattleDaoHeartRequest_13000055,0x13000055,1,查看道心磨砺 心魔试炼数据
+9,模块,BattleDaoHeartSweepBatchRequest_13000062,0x13000062,1,一键扫荡道心磨砺 心魔试炼关卡
+10,模块,BattleDaoHeartSweepRequest_13000060,0x13000060,1,扫荡道心磨砺 心魔试炼关卡
+11,模块,BattleDaoHeartSweepRequest_13000064,0x13000064,1,查看道心磨砺 心魔试炼通关奖励领取情况
+12,模块,BattleDaoHeartSweepRequest_13000066,0x13000066,1,领取道心磨砺 心魔试炼关卡通关奖励
+13,模块,BattleDayChallengeReceiveActivePointRequest_13000070,0x13000070,1,领取每日挑战活跃积分奖励
+14,模块,BattleFieldEndRequest_13000003,0x13000003,1,结束关卡战斗请求
+15,模块,BattleFieldStartRequest_13000001,0x13000001,1,开始关卡战斗请求
+16,模块,BattlePatrolRewardRequest_13000044,0x13000044,1,领取巡逻奖励
+17,模块,BattleRewardRequest_13000022,0x13000022,1,"领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。"
+18,模块,BattleSweepRequest_13000024,0x13000024,1,关卡扫荡
+19,模块,DrawListRequest_37000001,0x37000001,1,请求卡池界面数据
+20,模块,DrawRequest_37000003,0x37000003,1,请求抽卡
+21,模块,HeroBattleDismissRequest_16000009,0x16000009,1,英雄下阵
+22,模块,HeroBattleRequest_16000005,0x16000005,1,英雄上阵
+23,模块,HeroConflateRequest_16000003,0x16000003,1,"英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。"
+24,模块,HeroFreeDayRentChooseRequest_16000032,0x16000032,1,选择某个英雄日租卡。
+25,模块,HeroFreeDayRentRequest_16000030,0x16000030,1,请求免费英雄日租卡，这个只有在功能开启的时候请求一下，不能重复请求
+26,模块,HeroIllustrationsListRequest_16000040,0x16000040,1,查看图鉴数据
+27,模块,HeroIllustrationsRewardRequest_16000042,0x16000042,1,一键领取英雄的图鉴奖励
+28,模块,HeroLevelResetRequest_16000007,0x16000007,1,"英雄等级重置,返还升级材料"
+29,模块,HeroQualityResetRequest_16000011,0x16000011,1,英雄品质重置
+30,模块,HeroUpLevelBatchRequest_16000023,0x16000023,1,批量英雄升级，能升级哪个升级哪个
+31,模块,HeroUpLevelMaxRequest_16000021,0x16000021,1,"英雄一键升级,自动升级到最高级。"
+32,模块,HeroUpLevelRequest_16000001,0x16000001,1,英雄升级
+33,模块,ItemUseRequest_0b000003,0x0b000003,1,使用道具
+34,模块,MailDeleteRequest_12000007,0x12000007,1,删除邮件
+35,模块,MailListRequest_12000001,0x12000001,1,请求邮件列表。
+36,模块,MailReceiveRequest_12000005,0x12000005,1,领取邮件奖励
+37,模块,MailSeeRequest_12000003,0x12000003,1,查看未读邮件
+38,模块,MonthCardBuyRequest_15000010,0x15000010,1,购买月卡
+39,模块,MonthCardBuyRewardRequest_15000012,0x15000012,1,领取月卡购买奖励，每个月卡只能领取一次
+40,模块,MonthCardDayRewardRequest_15000014,0x15000014,1,领取月卡每日奖励
+41,模块,MonthCardDoubleBonusRequest_15000016,0x15000016,1,领取双月卡一次性奖励
+42,模块,PlayerCloudBoxRequest_01000042,0x01000042,1,领取小云宝箱奖励
+43,模块,PlayerGenderRequest_01000017,0x01000017,1,修改性别
+44,模块,PlayerHeadFrameRequest_01000015,0x01000015,1,修改头像框
+45,模块,PlayerHeadRequest_01000013,0x01000013,1,修改头像
+46,模块,PlayerHeartbeatRequest_01000005,0x01000005,1,心跳
+47,模块,PlayerLoginRequest_01000001,0x01000001,0,登陆
+48,模块,PlayerNameRequest_01000011,0x01000011,1,修改名字
+49,模块,PlayerReconnecRequest_01000065,0x01000065,1,断线重连，和手机端通用
+50,模块,QuestListAllRequest_20000051,0x20000051,1,请求所有任务数据，一般在任务功能开启的时候请求一下。
+51,模块,QuestListRequest_20000001,0x20000001,1,"查看某类任务数据,一般在任务功能开启时，客户端请求一下。"
+52,模块,QuestReceiveActivePointRequest_20000008,0x20000008,1,领取任务活跃积分奖励
+53,模块,QuestReceiveRequest_20000004,0x20000004,1,领取任务奖励
+54,模块,ShopChapterPacksBuyRequest_15000020,0x15000020,1,购买章节礼包
+55,模块,ShopFundPassBuyRequest_15000030,0x15000030,1,购买通行证
+56,模块,ShopFundPassRewardRequest_15000032,0x15000032,1,领取通行证奖励
+57,模块,ShopHeishiRefreshRequest_15000005,0x15000005,1,手动刷新黑市请求
+58,模块,ShopItemBuyRequest_15000003,0x15000003,1,购买商品
+59,模块,ShopItemListRequest_15000001,0x15000001,1,查看商店里面的商品列表
+60,模块,ShopRechargeRequest_15000022,0x15000022,1,充值

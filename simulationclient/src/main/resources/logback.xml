@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" scan="true" scanPeriod="5 minutes">
+	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+    <substitutionProperty name="log.base" value="./logs/" />
+    <substitutionProperty name="defaultLog" value="${log.base}/stdout" />
+    <substitutionProperty name="errLog" value="${log.base}/err" />
+    <substitutionProperty name="recvLog" value="${log.base}/recv" />
+    <substitutionProperty name="sendLog" value="${log.base}/send" />
+    
+    
+    <jmxConfigurator />
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg  %logger{80} [%thread] %n</pattern>
+        </layout>
+    </appender>
+
+	<!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
+    <appender name="defaultLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+         <filter class="ch.qos.logback.classic.filter.LevelFilter">  
+            <level>ERROR</level>  
+            <OnMismatch>ACCEPT</OnMismatch>  
+          	<OnMatch>DENY</OnMatch>   
+        </filter>  
+        <Encoding>UTF-8</Encoding>
+        <File>${defaultLog}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${defaultLog}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <minIndex>1</minIndex>  
+            <maxIndex>3</maxIndex>            
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+	        	<!-- or whenever the file size reaches 100MB -->
+	        	<maxFileSize>100MB</maxFileSize>
+      		</timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</pattern>
+        </layout>
+    </appender>
+    
+    
+    <!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
+    <appender name="recvfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Encoding>UTF-8</Encoding>
+        <File>${recvLog}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${recvLog}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <minIndex>1</minIndex>  
+            <maxIndex>3</maxIndex>            
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+	        	<!-- or whenever the file size reaches 100MB -->
+	        	<maxFileSize>1000MB</maxFileSize>
+      		</timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg time[%d{yyyy-MM-dd HH:mm:ss.SSS}]thread[%thread]level[%-5level]logger[%logger{20}]%n</pattern>
+        </layout>
+    </appender>    
+    
+       <appender name="async_recvfile" class="ch.qos.logback.classic.AsyncAppender">  
+   	 <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->  
+    	<discardingThreshold>0</discardingThreshold>  
+    	<!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->  
+    	<queueSize>1024</queueSize>  
+   	 <!-- 添加附加的appender -->  
+    	<appender-ref ref="recvfile"/>  
+  	</appender>  
+  	
+       <appender name="async_defaultfile" class="ch.qos.logback.classic.AsyncAppender">  
+   	 <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->  
+    	<discardingThreshold>0</discardingThreshold>  
+    	<!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->  
+    	<queueSize>1024</queueSize>  
+   	 <!-- 添加附加的appender -->  
+    	<appender-ref ref="defaultLog"/>  
+  	</appender>  
+  	
+  	<!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
+    <appender name="sendfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Encoding>UTF-8</Encoding>
+        <File>${sendLog}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${sendLog}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <minIndex>1</minIndex>  
+            <maxIndex>3</maxIndex>            
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+	        	<!-- or whenever the file size reaches 100MB -->
+	        	<maxFileSize>1000MB</maxFileSize>
+      		</timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg time[%d{yyyy-MM-dd HH:mm:ss.SSS}]thread[%thread]level[%-5level]logger[%logger{20}]%n</pattern>
+        </layout>
+    </appender> 
+    
+    
+    <appender name="async_sendfile" class="ch.qos.logback.classic.AsyncAppender">  
+   	 <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->  
+    	<discardingThreshold>0</discardingThreshold>  
+    	<!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->  
+    	<queueSize>1024</queueSize>  
+   	 <!-- 添加附加的appender -->  
+    	<appender-ref ref="sendfile"/>  
+  	</appender>  
+  	
+  	
+    
+    
+ 	<!-- 错误输出 过滤出错误日志信息-->  
+	<appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">  
+         <filter class="ch.qos.logback.classic.filter.LevelFilter">  
+            <level>ERROR</level>  
+            <OnMismatch>DENY</OnMismatch>  
+            <OnMatch>ACCEPT</OnMatch>  
+        </filter>  
+        <Encoding>UTF-8</Encoding>
+        <File>${errLog}.log</File>  
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
+            <FileNamePattern>${errLog}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>  
+            <maxHistory>30</maxHistory>
+            <minIndex>1</minIndex>  
+            <maxIndex>3</maxIndex>            
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+	        	<!-- or whenever the file size reaches 100MB -->
+	        	<maxFileSize>100MB</maxFileSize>
+      		</timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+         
+        <layout class="ch.qos.logback.classic.PatternLayout">  
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</Pattern>  
+        </layout>  
+    </appender>
+    <!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
+	
+	<logger name="recvLog" additivity="false">
+		<level value="info"></level>
+	<appender-ref ref="async_recvfile" />
+	</logger>
+	<logger name="sendLog" additivity="false">
+		<level value="info"></level>
+		<appender-ref ref="async_sendfile" />
+	</logger>
+
+    <!--
+    --> 
+    <root level="info">
+        <appender-ref ref="stdout" />
+        <appender-ref ref="async_defaultfile" />
+    	<appender-ref ref="FILE-ERROR" /> 
+    </root>
+
+</configuration>

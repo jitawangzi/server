@@ -1,12 +1,11 @@
+/.settings
 /logs
-/login_logs
-/client_logs
 /bin
+/lib
 /dist
 /bin/*
 /target/
 /.settings/*
-.settings
 /build
 /.classpath
 /.project
