@@ -111,8 +111,6 @@ public class VipModule extends BasePlayerModule {
 
     public VipMsg.VipInfo toPb() {
     return VipMsg.VipInfo.newBuilder()
-        .setLevel(player.getVipLevel())
-        .setExp((int)player.getCurrencyModule().getCount(Asset.VIPExp.ID))
         .setRewardFreeGiftTimer((int) (rewardFreeGiftTimer / 1000L))
         .addAllBuyGiftIdList(buyGiftList)
         .build();
