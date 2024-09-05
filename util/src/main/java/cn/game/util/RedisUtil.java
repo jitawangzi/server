@@ -80,8 +80,9 @@ public class RedisUtil {
 	 * 异步设置值
 	 * @param key
 	 * @param value
+	 * @return 
 	 */
-	public static <V> void setAsync(String key, V value) {
+	public static <V> RFuture<Void> setAsync(String key, V value) {
 		RBucket<V> bucket = redis.getBucket(key);
 		RFuture<Void> futrue = bucket.setAsync(value);
 		futrue.onComplete((k, v) -> {
@@ -90,6 +91,7 @@ public class RedisUtil {
 				logger.error("redisson set error " + "key" + key + "value " + value, v);
 			}
 		});
+		return futrue;
 	}
 
 	/**

@@ -32,6 +32,7 @@ public enum ErrorMsgEnum {
 	not_online(11, "不在线/不在当前服务器"),
 	session_not_exist(12, "session错误，需要先登陆"),
 	requests_too_frequent(13, "请求太频繁"),
+	async_request_fail(14, "异步请求失败"),
 
 	// #通用错误 50 - 99
 	/** 玩家数据校验错误。 */

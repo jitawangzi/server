@@ -24,6 +24,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.GameServer;
+import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.account.Account;
@@ -115,6 +116,7 @@ public class Player  {
 	private Account account;
 	private transient GameClient gameClient;
 	private List<Long> timerTask = new ArrayList<>();
+	private boolean isOnline = true;
 
 	/** 支付后的操作 */
 	private Consumer<?> paymentAction;
@@ -443,6 +445,7 @@ public class Player  {
 				} else {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder().setOrder(body.getOrder()).build());
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
+					getPlayerModule().addPayRmbs(body.getOrderId(), cost[1]);
 				}
 			}).onFailure(r -> {
 				log.error("登录服创建充值订单失败： ", r);
@@ -526,6 +529,17 @@ public class Player  {
 	public int getLevel(Asset exp) {
 		return getPlayerModule().getExpLevelMap().getValue(exp.ID);
 	}
+
+	public void fail(Throwable t) {
+		if (t instanceof LogicException) {
+			LogicException logicException = (LogicException) t;
+			getGameClient().sendProtocol(logicException.getErrorCode());
+		} else {
+			getGameClient().sendProtocol(ErrorMsgEnum.unknown.getId());
+		}
+		log.error("", t);
+	}
+
 	public long getPlayerId() {
 		return playerId;
 	}
@@ -580,6 +594,14 @@ public class Player  {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public boolean isOnline() {
+		return isOnline;
+	}
+
+	public void setOnline(boolean isOnline) {
+		this.isOnline = isOnline;
 	}
 
 }

@@ -643,6 +643,7 @@ public class PlayerHandler extends BaseHandler {
 				if (!isReallyReconnect) {
 					loadOrCreatePlayerData(uid, account, newGameClient)
 							.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
+							.compose(PlayerHelper::saveSimplePlayer)
 							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}

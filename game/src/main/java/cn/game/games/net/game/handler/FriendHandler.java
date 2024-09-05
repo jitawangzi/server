@@ -1,25 +1,28 @@
 package cn.game.games.net.game.handler;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ProtocolStringList;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.core.task.TaskManager;
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.GameServer;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.FriendHelper;
-import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.friend.FriendModule;
+import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.FriendMsg.FriendAddPush_30000023;
 import cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007;
 import cn.game.protocol.protobuf.FriendMsg.FriendApplicationResponse_30000008;
@@ -43,6 +46,7 @@ import cn.game.protocol.protobuf.FriendMsg.FriendListResponse_30000002;
 import cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003;
 import cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004;
 import cn.game.protocol.protobuf.PbProtocol;
+import io.vertx.core.Future;
 
 @Component
 public class FriendHandler extends BaseHandler {
@@ -80,29 +84,20 @@ public class FriendHandler extends BaseHandler {
 		FriendListResponse_30000002.Builder response = FriendListResponse_30000002.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		FriendModule friendModule = player.getModule(FriendModule.class);
-		Collection<Friend> allFriends = friendModule.getAllFriends();
-		TaskManager.getInstance().addWorkerTask(() -> {
-
-			try {
-				for (Friend friend : allFriends) {
-//					if (local && !GameServer.getInstance().isLocalServer(friend.getServerId())) {
-//						continue;
-//					}
-//					if (!local && GameServer.getInstance().isLocalServer(friend.getServerId())) {
-//						continue;
-//					}
-
-					FriendInfo friendBaseInfo = PbBuilder.buildFriendInfo(friend);
-					if (friendModule.isFriend(friend)) {
-						response.addFriends(friendBaseInfo);
-					}
-				}
-			} catch (Exception e) {
-				log.error("", e);
+		List<Friend> allFriends = friendModule.getAllFriends();
+		List<String> ids = allFriends.stream().map(r -> r.getFriendId()).map(r -> CacheType.PLAYER_SIMPLE.key(r)).collect(Collectors.toList());
+		Future<List<SimplePlayer>> multiGetAsync = RedisLocalCache.getInstance().multiGetAsync(ids);
+		multiGetAsync.onSuccess(result -> {
+			for (int i = 0; i < result.size(); i++) {
+				SimplePlayer simplePlayer = result.get(i);
+				FriendInfo.Builder friendBuilder = FriendInfo.newBuilder();
+				Friend friend = allFriends.get(i);
+				friendBuilder.setGift(friend.toFriendGiftInfo());
+				friendBuilder.setPlayer(simplePlayer.toSimplePlayerInfo());
+				response.addFriends(friendBuilder);
 			}
-			client.sendProtocol(response);
-		});
-
+			client.sendProtocol(response.build());
+		}).onFailure(player::fail);
 	}
 
 	protected void blackList(NetClient client, Object message) {
@@ -111,49 +106,36 @@ public class FriendHandler extends BaseHandler {
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		FriendModule friendModule = player.getModule(FriendModule.class);
-		Collection<Friend> allFriends = friendModule.getAllFriends();
-
-		TaskManager.getInstance().addWorkerTask(() -> {
-
-			try {
-				for (Friend friend : allFriends) {
-
-					FriendInfo friendBaseInfo = PbBuilder.buildFriendInfo(friend);
-					if (friend.getRelation() == Friend.BLACK) {
-//						resp.addPlayers(friendBaseInfo);
-					}
-				}
-			} catch (Exception e) {
-				log.error("", e);
+		List<Friend> allFriends = friendModule.getAllBlack();
+		List<String> ids = allFriends.stream().map(r -> r.getFriendId()).map(r -> CacheType.PLAYER_SIMPLE.key(r)).collect(Collectors.toList());
+		Future<List<SimplePlayer>> multiGetAsync = RedisLocalCache.getInstance().multiGetAsync(ids);
+		multiGetAsync.onSuccess(result -> {
+			for (int i = 0; i < result.size(); i++) {
+				SimplePlayer simplePlayer = result.get(i);
+				resp.addPlayers(simplePlayer.toSimplePlayerInfo());
 			}
 			client.sendProtocol(resp.build());
-		});
-
+		}).onFailure(player::fail);
 	}
+
 	protected void applyList(NetClient client, Object message) {
 
 		FriendApplyListResponse_30000054.Builder resp = FriendApplyListResponse_30000054.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		FriendModule friendModule = player.getModule(FriendModule.class);
-		Collection<Friend> allFriends = friendModule.getAllFriends();
-
-		TaskManager.getInstance().addWorkerTask(() -> {
-
-			try {
-				for (FriendApplication application : friendModule.getAllApplications().values()) {
-
-					SimplePlayerInfo simplePlayerInfo = PbBuilder.buildSimplePlayerInfo(application.getApplyPlayerId(),
-							application
-							.getApplyPlayerServer());
-					resp.addPlayers(simplePlayerInfo);
-				}
-			} catch (Exception e) {
-				log.error("", e);
-			}
+		List<String> ids = friendModule
+				.getAllApplications()
+				.values()
+				.stream()
+				.map(r -> r.getApplyPlayerId())
+				.map(r -> CacheType.PLAYER_SIMPLE.key(r))
+				.collect(Collectors.toList());
+		Future<List<SimplePlayer>> multiGetAsync = RedisLocalCache.getInstance().multiGetAsync(ids);
+		multiGetAsync.onSuccess(result -> {
+			resp.addAllPlayers(PbBuilder.buildSimplePlayerInfos(result));
 			client.sendProtocol(resp.build());
-		});
-
+		}).onFailure(player::fail);
 	}
 
 	protected void recommend(NetClient client, Object message) {
@@ -229,35 +211,38 @@ public class FriendHandler extends BaseHandler {
 		FriendApplyRequest_30000005 request = (FriendApplyRequest_30000005) message;
 		FriendApplyResponse_30000006.Builder resp = FriendApplyResponse_30000006.newBuilder();
 
-		/*long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		List<String> friendIdList = request.getFriendIdsList();
-		ProtocolStringList serverIdsList = request.getServerIdsList();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		List<String> friendIdList = request.getPlayerIdsList();
 		for (int i = 0; i < friendIdList.size(); i++) {
 			Long id = Long.valueOf(friendIdList.get(i));
-			String serverId = serverIdsList.get(i);
 			if (id == playerId) {
 				continue;
 			}
-			if (!GameServer.getInstance().isLocalServer(serverId)) {
-		
-				FriendApplyPush_30000022 build = FriendApplyPush_30000022.newBuilder().setApplyPlayerId(playerId).setPlayerId(id)
-						.setApplyPlayerServer(ServerContext.getInstance().getServerId()).build();
-				GameClientManager.getInstance().sendToGameServer(serverId, build);
+			if (PlayerManager.getInstance().isOnline(id)) {
+				String serverId = PlayerManager.getInstance().getServerId(id);
+				FriendApplyPush_30000022 build = FriendApplyPush_30000022
+						.newBuilder()
+						.setApplyPlayerId(playerId)
+						.setPlayerId(id)
+						.setApplyPlayerServer(ServerContext.getInstance().getServerId())
+						.build();
+				VxHolder.sendToRemoteServer(serverId, build);
 				continue;
 			}
+//			FriendHelper.receiveApplication(id, playerId, ServerContext.getInstance().getServerId());
 		
 			// 如果在我的黑名单中，则先从黑名单中删除
-			FriendModule myFriendOp = player.getModule(FriendModule.class);
-			if (myFriendOp.isBlack(id)) {
-				myFriendOp.delete(id);
+			FriendModule myFriendModule = player.getModule(FriendModule.class);
+			if (myFriendModule.isBlack(id)) {
+				myFriendModule.delete(id);
 			}
-		
-			FriendHelper.receiveApplication(id, playerId, ServerContext.getInstance().getServerId());
-		
-			myFriendOp.addMyApplication(id);
-		
+			myFriendModule.addMyApplication(id);
+
+			FriendApplication friendApplication = FriendApplication.valueOf(id, playerId, "");
+			DAO.insert(friendApplication);
 		}
-		client.sendProtocol(resp);*/
+		client.sendProtocol(resp);
 
 	}
 	protected void remoteApply(NetClient client, Object message) {
@@ -273,15 +258,11 @@ public class FriendHandler extends BaseHandler {
 		long playerId = request.getPlayerId();
 		long friendId = request.getFriendId();
 		String friendServer = request.getFriendServer();
-
-		TaskManager.getInstance().addWorkerTask(() -> {
-			boolean ret = FriendHelper.addFriend(playerId, friendId, friendServer, Friend.FRIEND);
-
-			if (ret) {
-				FriendHelper.removeMyApplication(playerId, friendId);
-				FriendHelper.removeApplication(playerId, friendId);
-			}
-		});
+		boolean ret = FriendHelper.addFriend(playerId, friendId, friendServer, Friend.FRIEND);
+		if (ret) {
+			FriendHelper.removeMyApplication(playerId, friendId);
+			FriendHelper.removeApplication(playerId, friendId);
+		}
 	}
 
 	protected void application(NetClient client, Object message) {
@@ -294,19 +275,15 @@ public class FriendHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		FriendModule friendModule = player.getModule(FriendModule.class);
 
-		TaskManager.getInstance().addWorkerTask(() -> {
-
-			for (int i = 0; i < friendIdList.size(); i++) {
-				String idString = friendIdList.get(i);
-				long id = Long.valueOf(idString);
-				boolean flag = friendModule.applicationDeal(id, agree);
-				if (flag) {
-					builder.addFriendIds(idString);
-				}
+		for (int i = 0; i < friendIdList.size(); i++) {
+			String idString = friendIdList.get(i);
+			long id = Long.valueOf(idString);
+			boolean flag = friendModule.applicationDeal(id, agree);
+			if (flag) {
+				builder.addFriendIds(idString);
 			}
-
-			client.sendProtocol(builder.build());
-		});
+		}
+		client.sendProtocol(builder.build());
 
 	}
 
@@ -317,31 +294,41 @@ public class FriendHandler extends BaseHandler {
 
 		String idStirng = request.getId();
 		long friendId = Long.parseLong(idStirng);
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		FriendModule friendModule = player.getModule(FriendModule.class);
-//		if (!friendModule.isFriend(friendId)) {
-//			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-//			return;
-//		}
+		if (!friendModule.isFriend(friendId)) {
+			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
 
 		Friend friend = friendModule.getFriend(friendId);
 		// 不在好友里，加入到好友，设置黑名单，否则直接设置黑名单关系
 		if (friend != null) {
 			friend.setRelation(Friend.BLACK);
-			FriendHelper.update(friend);
+			DAO.update(friend);
 		} else {
 			friendModule.addFriend(friendId, "", Friend.BLACK);
 		}
 
 		// 从对方好友列表里删除
-		if (!GameServer.getInstance().isLocalServer(friend.getServerId())) {
+//		if (!GameServer.getInstance().isLocalServer(friend.getServerId())) {
+//			FriendDelPush_30000024 build = FriendDelPush_30000024.newBuilder().setPlayerId(friend.getFriendId()).setFriendId(playerId)
+//					.build();
+//			GameClientManager.getInstance().sendToGameServer(friend.getServerId(), build);
+//		} else {
+//			FriendHelper.deleteFriend(friendId, playerId);
+//		}
+		if (PlayerManager.getInstance().isOnline(friendId)) {
+			String serverId = PlayerManager.getInstance().getServerId(friendId);
 			FriendDelPush_30000024 build = FriendDelPush_30000024.newBuilder().setPlayerId(friend.getFriendId()).setFriendId(playerId)
 					.build();
-			GameClientManager.getInstance().sendToGameServer(friend.getServerId(), build);
+			VxHolder.requestRemoteServer(serverId, build);
 		} else {
-			FriendHelper.deleteFriend(friendId, playerId);
+			FriendHelper.deleteFriend(playerId, friendId);
 		}
+
 		client.sendProtocol(resp.build());
 	}
 
@@ -363,7 +350,7 @@ public class FriendHandler extends BaseHandler {
 				friendTarget = targetFriendOp.getFriend(playerId);
 				if (friendTarget != null) {
 					friendTarget.setGifted(true);
-					FriendHelper.update(friendTarget);
+					DAO.update(friendTarget);
 				}
 			} else {
 				friendTarget = new Friend();
@@ -371,12 +358,12 @@ public class FriendHandler extends BaseHandler {
 				friendTarget.setPlayerId(friendId);
 				friendTarget.setGifted(true);
 				
-				FriendHelper.update(friendTarget);
+				DAO.update(friendTarget);
 //				DAO.execute(FriendMapper.class,
 //						MapperConstant.updateByPrimaryKeySelective, friendTarget);
 			}
 			friend.setGift(true);
-			FriendHelper.update(friend);
+			DAO.update(friend);
 
 		}
 
@@ -399,7 +386,7 @@ public class FriendHandler extends BaseHandler {
 				continue;
 			}
 			friend.setReceive(true);
-			FriendHelper.update(friend);
+			DAO.update(friend);
 
 		}
 
@@ -415,16 +402,24 @@ public class FriendHandler extends BaseHandler {
 		FriendModule friendModule = player.getModule(FriendModule.class);
 		Friend friend = friendModule.getFriend(friendId);
 		if (friend == null) {
-			client.sendProtocol(FriendDeleteResponse_3000000a.getDefaultInstance());
+			client.sendProtocol(FriendDeleteResponse_3000000a.getDefaultInstance(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		if (!GameServer.getInstance().isLocalServer(friend.getServerId())) {
-			FriendDelPush_30000024 build = FriendDelPush_30000024.newBuilder().setPlayerId(friend.getFriendId()).setFriendId(playerId)
-					.build();
-			GameClientManager.getInstance().sendToGameServer(friend.getServerId(), build);
+
+		if (PlayerManager.getInstance().isOnline(friendId)) {
+			String serverId = PlayerManager.getInstance().getServerId(friendId);
+			FriendDelPush_30000024 build = FriendDelPush_30000024.newBuilder().setPlayerId(friend.getFriendId()).setFriendId(playerId).build();
+			VxHolder.requestRemoteServer(serverId, build);
 		} else {
 			FriendHelper.deleteFriend(friendId, playerId);
 		}
+//		if (!GameServer.getInstance().isLocalServer(friend.getServerId())) {
+//			FriendDelPush_30000024 build = FriendDelPush_30000024.newBuilder().setPlayerId(friend.getFriendId()).setFriendId(playerId)
+//					.build();
+//			GameClientManager.getInstance().sendToGameServer(friend.getServerId(), build);
+//		} else {
+//			FriendHelper.deleteFriend(friendId, playerId);
+//		}
 		FriendHelper.deleteFriend(playerId, friendId);
 
 		client.sendProtocol(FriendDeleteResponse_3000000a.getDefaultInstance());

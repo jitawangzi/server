@@ -66,7 +66,8 @@ public class PlayerManager {
 			TimeUnit.MINUTES).build();
 	/** 缓存玩家在哪个服务器 */
 	private Cache<Long, String> playerServers = CacheBuilder.newBuilder().maximumSize(8192)
-			.expireAfterWrite(5, TimeUnit.MINUTES).build();
+			.expireAfterWrite(10, TimeUnit.MINUTES)
+			.build();
 	
 	// playerId => ForbidAccount 封禁的账号
 	private ConcurrentHashMap<Long, ForbidAccount> forbidAccounts = new ConcurrentHashMap<>();
@@ -128,6 +129,10 @@ public class PlayerManager {
 	 */
 	public String getServerId(long playerId) {
 		try {
+			Player player = PlayerManager.getInstance().getPlayer(playerId);
+			if (player != null) {
+				return ServerContext.getInstance().getServerId();
+			}
 			return playerServers.get(playerId, () -> {
 				String serverId = RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
 				return serverId == null ? "" : serverId;
@@ -617,7 +622,7 @@ public class PlayerManager {
 			}else {
 				// 跨服 查玩家数据， 暂时先不查，给new个，有接口时再查
 				SimplePlayer simplePlayer = getAndLoadSimplePlayer(Long.parseLong(playerId), serverId);				
-				sPlayerInfo = PbBuilder.buildSimplePlayerInfo(simplePlayer);								 
+				sPlayerInfo = simplePlayer.toSimplePlayerInfo();
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

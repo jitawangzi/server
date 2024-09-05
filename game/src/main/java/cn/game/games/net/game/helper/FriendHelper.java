@@ -3,13 +3,11 @@ package cn.game.games.net.game.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.data.mapper.FriendApplicationMapper;
 import cn.game.games.net.data.mapper.FriendMapper;
-import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.friend.FriendModule;
@@ -21,23 +19,22 @@ public class FriendHelper {
 
 	public static void receiveApplication(long playerId, long applyPlayerId, String applyPlayerServer) {
 		FriendApplication friendApplication = FriendApplication.valueOf(playerId, applyPlayerId, applyPlayerServer);
+		// 应该是在线的
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			FriendModule friendOp = player.getModule(FriendModule.class);
-			if (friendOp.isApplicationLimit()) {
+			FriendModule friendModule = player.getModule(FriendModule.class);
+			if (friendModule.isApplicationLimit()) {
 				return; 
 			}
-			if (friendOp.isBlack(applyPlayerId)) {
+			if (friendModule.isBlack(applyPlayerId)) {
 				return ; 
 			}
-			if (friendOp.addApplication(friendApplication)) {
-				DAO.execute(FriendApplicationMapper.class, MapperConstant.insert,
-						friendApplication);
+			if (friendModule.addApplication(friendApplication)) {
+				DAO.insert(friendApplication);
 			}
 		} else {
 			// 这里离线增加可能会重复，不过也没有问题，上线处理
-			DAO.execute(FriendApplicationMapper.class, MapperConstant.insert,
-					friendApplication);
+//			DAO.insert(friendApplication);
 		}
 	}
 	
@@ -50,55 +47,59 @@ public class FriendHelper {
 	public static boolean addFriend(long playerId, long friendId, String friendServer, byte relation) {
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			FriendModule friendOp = player.getModule(FriendModule.class);
-			return friendOp.addFriend(friendId, friendServer, relation);
+			FriendModule friendModule = player.getModule(FriendModule.class);
+			return friendModule.addFriend(friendId, friendServer, relation);
 
 		} else {
-			String methed = GameServer.getInstance().isLocalServer(friendServer)
-					? "selectFriendLocalCount"
-					: "selectFriendOtherCount";
-			int count = (int) DAO.executeSync(FriendMapper.class, methed,
-					new Object[] { playerId, ServerContext.getInstance().getServerId() });
+//			String methed = GameServer.getInstance().isLocalServer(friendServer)
+//					? "selectFriendLocalCount"
+//					: "selectFriendOtherCount";
+//			int count = (int) DAO.executeSync(FriendMapper.class, methed,
+//					new Object[] { playerId, ServerContext.getInstance().getServerId() });
 
-			if (count < FriendModule.maxFriends) {
+//			if (count < GlobalConst.FriendMax) {
 
 				Friend add = Friend.valueOf(playerId, friendId, relation);
 				DAO.insert(add);
 				return true;
-			}
+//			}
 		}
-		return false;
 	}
 
 	/**
 	 * 成为好友后，如果我也申请对方为好友了，删除这个申请
 	 * @param playerId
-	 * @param applyPlayerId
+	 * @param applyPlayerId 我申请的目标好友id
 	 * @return
 	 */
 	public static void removeMyApplication(long playerId, long applyPlayerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		if (PlayerManager.getInstance().hasCache(playerId)) {
-			FriendModule friendOp = player.getModule(FriendModule.class);
-			boolean remove = friendOp.removeMyApplications(applyPlayerId);
+			FriendModule friendModule = player.getModule(FriendModule.class);
+			boolean remove = friendModule.removeMyApplications(applyPlayerId);
 			if (remove) {
 				DAO.execute(FriendApplicationMapper.class,
 						MapperConstant.deleteByPrimaryKey, new Object[] { applyPlayerId, playerId });
 			}
-
 		} else {
 			DAO.execute(FriendApplicationMapper.class, MapperConstant.deleteByPrimaryKey,
 					new Object[] { applyPlayerId, playerId });
 		}
 	}
+
+	/** 
+	 * 删除申请我的数据
+	 * @param playerId
+	 * @param applyPlayerId 向我申请的玩家id
+	 */
 	public static void removeApplication(long playerId, long applyPlayerId) {
 
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-			FriendModule friendOp = player.getModule(FriendModule.class);
-			FriendApplication remove = friendOp.getAllApplications().remove(applyPlayerId);
+			FriendModule friendModule = player.getModule(FriendModule.class);
+			FriendApplication remove = friendModule.getAllApplications().remove(applyPlayerId);
 			if (remove != null) {
 				DAO.execute(FriendApplicationMapper.class,
 						MapperConstant.deleteByPrimaryKey, new Object[] { playerId, applyPlayerId });
@@ -120,11 +121,11 @@ public class FriendHelper {
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-			FriendModule friendOp = player.getModule(FriendModule.class);
-			if (!friendOp.hasRelation(friendId)) {
+			FriendModule friendModule = player.getModule(FriendModule.class);
+			if (!friendModule.hasRelation(friendId)) {
 				return; 
 			}
-			friendOp.delete(friendId);
+			friendModule.delete(friendId);
 
 		} else {
 			delete(playerId, friendId);
@@ -144,8 +145,8 @@ public class FriendHelper {
 		if (hasCache) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-			FriendModule friendOp = player.getModule(FriendModule.class);
-			return friendOp.isBlack(friendId) ; 
+			FriendModule friendModule = player.getModule(FriendModule.class);
+			return friendModule.isBlack(friendId);
 		}else {
 
 			Long pid = (Long) DAO.executeSync(FriendMapper.class, "selectBlack",
@@ -164,14 +165,6 @@ public class FriendHelper {
 	public static void delete(long playerId, long friendId) {
 		DAO.execute(FriendMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] {
 				playerId, friendId });
-	}
-	public static void insert(Friend friend) {
-		DAO.execute(FriendMapper.class, MapperConstant.insert, friend);
-	}
-
-	public static void update(Friend friend) {
-		DAO.execute(FriendMapper.class, MapperConstant.updateByPrimaryKeySelective,
-				friend);
 	}
 
 }

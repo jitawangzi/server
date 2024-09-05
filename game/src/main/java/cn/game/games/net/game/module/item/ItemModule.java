@@ -52,10 +52,10 @@ public class ItemModule extends AbstractItemModule<Item> {
 			return player.getCurrencyModule().add(itemId, count, opType);
 		} else if (itemConfig.ItemType == 5) {
 			// 给经验
-			ChapterModule chapterModule = player.getModule(ChapterModule.class);
-			itemId = Asset.playerExp.ID;
-			count *= chapterModule.calcPatrolExp(itemConfig.Para[0]);
-			return player.getCurrencyModule().add(itemId, count, opType);
+//			ChapterModule chapterModule = player.getModule(ChapterModule.class);
+//			itemId = Asset.playerExp.ID;
+//			count *= chapterModule.calcPatrolExp(itemConfig.Para[0]);
+//			return player.getCurrencyModule().add(itemId, count, opType);
 		}
 		return super.add(itemId, count, opType);
 	}

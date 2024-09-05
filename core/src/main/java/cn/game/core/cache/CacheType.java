@@ -25,6 +25,8 @@ public enum CacheType {
 	/** 服务器序列号最大值 */
 	DISTRIBUTED_WORKER_COUNTER,
 	
+	/** 玩家简单信息 */
+	PLAYER_SIMPLE,
 	/** 自增起始id */
 	Player_MAX_ID,
 

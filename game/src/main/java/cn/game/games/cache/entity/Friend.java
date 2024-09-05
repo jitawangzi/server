@@ -3,8 +3,8 @@ package cn.game.games.cache.entity;
 import java.io.Serializable;
 
 import cn.game.core.base.ServerContext;
-import java.util.Date;
 import cn.game.games.cache.base.DbEntity;
+import cn.game.protocol.protobuf.FriendMsg.FriendGiftInfo;
 
 public class Friend implements Serializable, DbEntity {
 
@@ -202,5 +202,13 @@ public class Friend implements Serializable, DbEntity {
 		friend.setIntimateLevel(0);
 		friend.setServerId(serverId);
 		return friend;
+	}
+
+	public FriendGiftInfo toFriendGiftInfo() {
+		FriendGiftInfo.Builder builder = FriendGiftInfo.newBuilder();
+		builder.setGiftToFriend(this.getGift());
+		builder.setGiftToMe(this.getGifted());
+		builder.setReceive(this.getReceive());
+		return builder.build();
 	}
 }

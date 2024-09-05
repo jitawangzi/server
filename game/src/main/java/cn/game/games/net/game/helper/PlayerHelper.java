@@ -18,12 +18,14 @@ import com.google.protobuf.MessageLite.Builder;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
@@ -1237,6 +1239,16 @@ public class PlayerHelper {
 		return playerLockFuture;
 	}
 
+	public static Future<Void> saveSimplePlayerToRedis(Player player) {
+		String key = CacheType.PLAYER_SIMPLE.key(player.getData().getPlayerId());
+		return  RedisLocalCache.getInstance().putAsync(key, new SimplePlayer(player));
+	}
+
+	public static Future<Player> saveSimplePlayer(Player player) {
+		Future<Void> future = saveSimplePlayerToRedis(player);
+		return future.map(player);
+	}
+
 	/** 
 	 * 获取某玩家分布式锁
 	 * @param playerId
@@ -1368,6 +1380,7 @@ public class PlayerHelper {
 		if (player == null) {
 			return Future.succeededFuture();
 		}
+		player.setOnline(false);
 		PlayerData data = player.getData();
 		data.setOfflineTime(System.currentTimeMillis());
 		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
@@ -1375,11 +1388,12 @@ public class PlayerHelper {
 		return saveClientCache(playerId).onSuccess(r -> {
 			clearPlayer(playerId);
 			GameLogger.logout(player);
-			// TODO 异步保存SimplePlayer 到redis。
-//			log.info("GameClient[{}] Player[{}] logout finished[{}]", player.getGameClient() == null ? "" : player.getGameClient().toDetailString(), playerId);
 		}).compose(v -> {
 			RFuture<Boolean> deleteAsync = RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
 			return Future.fromCompletionStage(deleteAsync);
+		}).compose(v -> {
+			// 保存SimplePlayer 到redis。
+			return PlayerHelper.saveSimplePlayerToRedis(player);
 		}).mapEmpty().otherwise(e -> {
 			log.error("Error during logout cache process for playerId: " + playerId, e);
 			return null;

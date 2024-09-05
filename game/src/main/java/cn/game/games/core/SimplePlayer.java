@@ -2,8 +2,8 @@ package cn.game.games.core;
 
 import java.io.Serializable;
 
-import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Player;
+import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 
 /**
  * 玩家的简单数据，一般用来显示用
@@ -25,9 +25,8 @@ public class SimplePlayer implements Serializable {
 	public String unionName;
 	public long unionId;
 	public long offlineTime;
-	boolean online;
+	public boolean online = true;
 
-	public int combat;
 	/** 所在服务器id，并不是真正的在哪个服务器，只是加一个标签 */
 	public String serverId;
 	/** 所在服务器名，并不是真正的在哪个服务器，只是加一个标签 */
@@ -57,18 +56,47 @@ public class SimplePlayer implements Serializable {
 		this.id = player.getData().getPlayerId();
 		this.name = player.getData().getName();
 		this.level = player.getData().getLevel();
-		// TODO 计算战斗力
-//		this.combatEffectiveness = player.getData().getPower();
+		this.combatEffectiveness = player.getAttrModule().getPower();
 		this.head = player.getData().getHead();
 		this.headFrame = player.getData().getHeadFrame();
 		this.gender = (byte) (player.getData().getGender().booleanValue() == true ? 1 : 0);
 		this.offlineTime = player.getData().getOfflineTime();
-		this.online = true;
+		this.online = player.isOnline();
+	}
+
+	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
+		SimplePlayer simplePlayer = new SimplePlayer();
+		simplePlayer.setId(Long.parseLong(simplePlayerInfo.getId()));
+		simplePlayer.setName(simplePlayerInfo.getName());
+		simplePlayer.setLevel(simplePlayerInfo.getLevel());
+		simplePlayer.setHead(simplePlayerInfo.getHead());
+		simplePlayer.setOnline(simplePlayerInfo.getOnline());
+		simplePlayer.setOfflineTime(simplePlayerInfo.getOfflineTime());
+		simplePlayer.setServerId(simplePlayerInfo.getServerId());
 	}
 	public SimplePlayer initDataEx() {
-		setServerId(ServerContext.getInstance().getServerId());
+//		setServerId(ServerContext.getInstance().getServerId());
 		return this;
 	}
+
+	public SimplePlayerInfo toSimplePlayerInfo() {
+
+		SimplePlayerInfo.Builder builder = SimplePlayerInfo.newBuilder();
+
+		builder.setId(id + "");
+		builder.setLevel(level);
+		builder.setName(name);
+		builder.setOnline(isOnline());
+		builder.setOfflineTime((int) (getOfflineTime() / 1000));
+		builder.setHead(head);
+		builder.setHeadFrame(headFrame);
+		builder.setServerId(serverId);
+		builder.setCombatEffectiveness(combatEffectiveness);
+
+		return builder.build();
+
+	}
+
 	public SimplePlayer() {
 	};
 
@@ -163,13 +191,6 @@ public class SimplePlayer implements Serializable {
 
 	public void setHeadFrame(int headFrame) {
 		this.headFrame = headFrame;
-	}
-	public int getCombat() {
-		return combat;
-	}
-
-	public void setCombat(int combat) {
-		this.combat = combat;
 	}
 
 	public String getServerId() {

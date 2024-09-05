@@ -121,38 +121,6 @@ public class PbBuilder {
 
 	}
 
-	public static SimplePlayerInfo buildSimplePlayerInfo(SimplePlayer player) {
-
-		SimplePlayerInfo.Builder builder = SimplePlayerInfo.newBuilder();
-		if (player != null) {
-
-			Long playerId = player.getId();
-			builder.setId(playerId + "");
-			builder.setLevel(player.getLevel());
-			builder.setName(player.getName());
-			builder.setOnline(player.isOnline());
-			builder.setOfflineTime((int) (player.getOfflineTime() / 1000));
-			builder.setHead(player.getHead());
-			builder.setHeadFrame(player.getHeadFrame());
-			builder.setServerId(player.getServerId() == null ? "" : player.getServerId());
-
-		}
-		return builder.build();
-
-	}
-
-	public static SimplePlayer buildSimplePlayer(SimplePlayerInfo simplePlayerInfo) {
-		SimplePlayer simplePlayer = new SimplePlayer();
-		simplePlayer.setId(Long.parseLong(simplePlayerInfo.getId()));
-		simplePlayer.setName(simplePlayerInfo.getName());
-		simplePlayer.setLevel(simplePlayerInfo.getLevel());
-		simplePlayer.setHead(simplePlayerInfo.getHead());
-		simplePlayer.setOnline(simplePlayerInfo.getOnline());
-		simplePlayer.setOfflineTime(simplePlayerInfo.getOfflineTime());
-		simplePlayer.setServerId(simplePlayerInfo.getServerId());
-		
-		return simplePlayer;
-	}
 	
 	public static SimplePlayerInfo buildSimplePlayerInfo(long playerId, String serverId) throws Exception {
 
@@ -186,19 +154,21 @@ public class PbBuilder {
 	public static List<SimplePlayerInfo> buildSimplePlayerInfos(List<SimplePlayer> players) {
 		List<SimplePlayerInfo> list = new ArrayList<BaseMsg.SimplePlayerInfo>();
 		for (SimplePlayer simplePlayer : players) {
-			list.add(buildSimplePlayerInfo(simplePlayer));
+			list.add(simplePlayer.toSimplePlayerInfo());
 		}
 		return list;
 	}
+
+	@Deprecated
 	public static SimplePlayerInfo buildSimplePlayerInfo(long playerId) throws Exception {
-		SimplePlayerInfo builder;
+		SimplePlayerInfo builder = null;
 
 		if (PlayerManager.getInstance().hasCache(playerId)) {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 			builder = buildSimplePlayerInfo(player);
 		} else {
 			SimplePlayer simplePlayer = PlayerManager.getInstance().getAndLoadSimplePlayer(playerId);
-			builder = buildSimplePlayerInfo(simplePlayer);
+//			builder = buildSimplePlayerInfo(simplePlayer);
 		}
 		return builder;
 

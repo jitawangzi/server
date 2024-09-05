@@ -1,27 +1,29 @@
 package cn.game.games.net.game.module.friend;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.FriendApplicationMapper;
 import cn.game.games.net.game.GameServer;
-import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.FriendHelper;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.DAO;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.protobuf.FriendMsg.FriendAddPush_30000023;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 public class FriendModule extends BasePlayerModule {
@@ -30,12 +32,11 @@ public class FriendModule extends BasePlayerModule {
 	@JsonIgnore
 	private Map<Long, Friend> friends;
 
-	/** 申请成为我的好友的玩家 */
+	/** 收到的好友申请数据 key:申请人 */
 	@JsonIgnore
 	private Map<Long, FriendApplication> applications;
 	
 	/** 我申请的玩家id，推荐好友时不能包含我申请过的玩家id */
-	@JsonIgnore
 	private Set<Long> myApplications;
 
 	/** 上次推荐好友换一批时间 */
@@ -44,8 +45,6 @@ public class FriendModule extends BasePlayerModule {
 
 	@JsonIgnore
 	private List<SimplePlayer> lastRefreshPlayers;
-
-	public static final int maxFriends = 100;
 
 	@Override
 	public void init() {
@@ -101,7 +100,7 @@ public class FriendModule extends BasePlayerModule {
 		
 		if (relation == Friend.FRIEND) {
 			// 在判断下好友数量
-			boolean friendMax = isFriendMax(GameServer.getInstance().isLocalServer(serverId)); 
+			boolean friendMax = isFriendMax();
 			if (friendMax) {
 				return false ; 
 			}
@@ -110,13 +109,25 @@ public class FriendModule extends BasePlayerModule {
 		Friend friend = Friend.valueOf(playerId, id, serverId, relation);
 		this.friends.put(id, friend);
 
-		FriendHelper.insert(friend);
+		DAO.insert(friend);
 		return true ; 
 		
 	}
-	public Collection<Friend> getAllFriends() {
 
-		return this.friends.values();
+	/** 
+	 * 获取好友
+	 * @return
+	 */
+	public List<Friend> getAllFriends() {
+		return this.friends.values().stream().filter(f -> f.getRelation() == Friend.FRIEND).collect(Collectors.toList());
+	}
+
+	/** 
+	 * 获取黑名单列表
+	 * @return
+	 */
+	public List<Friend> getAllBlack() {
+		return this.friends.values().stream().filter(f -> f.getRelation() == Friend.BLACK).collect(Collectors.toList());
 	}
 
 	public Map<Long, FriendApplication> getAllApplications() {
@@ -130,45 +141,59 @@ public class FriendModule extends BasePlayerModule {
 		return true;
 	}
 
+	/** 
+	 * 
+	 * @param id  申请人
+	 * @param result
+	 * @return
+	 */
 	public boolean applicationDeal(long id, boolean result) {
 
 		FriendApplication delApplication = this.applications.remove(id);
 		if (delApplication == null) { 
 			return false;
 		}
-		DAO.execute(FriendApplicationMapper.class, MapperConstant.deleteByPrimaryKey,
-				new Object[] { playerId, id });
-
+		DAO.delete(delApplication);
+//		DAO.execute(FriendApplicationMapper.class, MapperConstant.deleteByPrimaryKey,
+//				new Object[] { playerId, id });
 		if (result) {
-			if (isFriendMax(GameServer.getInstance().isLocalServer(delApplication.getApplyPlayerServer()))) {
+			if (isFriendMax()) {
 				return false; 
 			}
 			if (isFriend(id)) { 
 				return false; 
 			}
-
-			if (!GameServer.getInstance().isLocalServer(delApplication.getApplyPlayerServer())) {
-//				FriendAddPush_30000023 build = FriendAddPush_30000023.newBuilder().setPlayerId(id).setFriendId(playerId)
-//						.setFriendServer(ServerContext.getInstance().getServerId()).build();
-//				GameClientManager.getInstance().sendToGameServer(delApplication.getApplyPlayerServer(), build);
-				boolean addFriend = GameServer.getInstance().getCrossGameServerInterface().addFriend(id, playerId,
-						ServerContext.getInstance().getServerId());
-				if (!addFriend) {
-					return false;
-				}
-
-			} else {
-
-				FriendHelper.removeMyApplication(id, playerId);
-				FriendHelper.removeApplication(id, playerId);
-
-				FriendHelper.addFriend(id, playerId, ServerContext.getInstance().getServerId(), Friend.FRIEND);
+			if (PlayerManager.getInstance().isOnline(id)) {
+				String serverId = PlayerManager.getInstance().getServerId(id);
+				FriendAddPush_30000023 build = FriendAddPush_30000023
+						.newBuilder()
+						.setPlayerId(id)
+						.setFriendId(playerId)
+						.setFriendServer(ServerContext.getInstance().getServerId())
+						.build();
+				VxHolder.sendToRemoteServer(serverId, build);
 			}
+			/*			if (!GameServer.getInstance().isLocalServer(delApplication.getApplyPlayerServer())) {
+			//				FriendAddPush_30000023 build = FriendAddPush_30000023.newBuilder().setPlayerId(id).setFriendId(playerId)
+			//						.setFriendServer(ServerContext.getInstance().getServerId()).build();
+			//				GameClientManager.getInstance().sendToGameServer(delApplication.getApplyPlayerServer(), build);
+							boolean addFriend = GameServer.getInstance().getCrossGameServerInterface().addFriend(id, playerId,
+									ServerContext.getInstance().getServerId());
+							if (!addFriend) {
+								return false;
+							}
+			
+						} else {
+			
+							FriendHelper.removeMyApplication(id, playerId);
+							FriendHelper.removeApplication(id, playerId);
+			
+							FriendHelper.addFriend(id, playerId, ServerContext.getInstance().getServerId(), Friend.FRIEND);
+						}*/
 			
 			FriendHelper.removeMyApplication(playerId, id);
 			return addFriend(id, delApplication.getApplyPlayerServer(), Friend.FRIEND);
 		}
-
 		return false;
 	}
 
@@ -192,7 +217,7 @@ public class FriendModule extends BasePlayerModule {
 		return this.applications.size() >= 50;
 	}
 
-	public boolean isFriendMax(boolean localServer) {
+	public boolean isFriendMax() {
 		int friendSize = 0;
 
 		for (Friend f : this.friends.values()) {
@@ -200,7 +225,7 @@ public class FriendModule extends BasePlayerModule {
 				friendSize++;
 			}
 		}
-		return friendSize >= maxFriends;
+		return friendSize >= GlobalConst.FriendMax;
 	}
 
 	public boolean hasRelation(long playerId) {
@@ -217,7 +242,7 @@ public class FriendModule extends BasePlayerModule {
 	public void delete(long friendId) {
 		Friend friend = this.friends.remove(friendId);
 		if (friend != null) {
-			FriendHelper.delete(friend);
+			DAO.delete(friend);
 		}
 	}
 
@@ -232,7 +257,7 @@ public class FriendModule extends BasePlayerModule {
 				if (friend.getGifted() && friend.getReceive()) {
 					friend.setGifted(false);
 					friend.setReceive(false);
-					FriendHelper.update(friend);
+					DAO.update(friend);
 				}
 			}
 		}
