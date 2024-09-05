@@ -110,6 +110,8 @@ public enum OpType{
 	HCHeroStarUp(204, "合成英雄升星"),
 	HCHeroLvUp(205, "合成英雄升级"),
 	HCHeroComposite(206, "合成英雄"),
+	vipFreeGiftReward(207, "vip 免费礼包掉落"),
+	vipGiftReward(208, "vip 一次性礼包掉落"),
 
 
 

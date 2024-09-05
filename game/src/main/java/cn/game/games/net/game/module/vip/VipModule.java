@@ -1,0 +1,120 @@
+package cn.game.games.net.game.module.vip;
+
+import cn.game.games.core.BasePlayerModule;
+import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.MailHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.award.Goods;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.VIPConfig;
+import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.manager.VIPManager;
+import cn.game.protocol.protobuf.PlayerMsg;
+import cn.game.protocol.protobuf.VipMsg;
+import cn.game.util.DateUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+* @ClassName VipModule
+* @description: VIP 模块
+* @author: ly
+* @create: 2024-09-04 15:46
+* @Version 1.0
+**/
+public class VipModule extends BasePlayerModule {
+
+    /**
+     * 买过的VIP 一次性礼包 等级
+     */
+    List<Integer> buyGiftList = new ArrayList<>();
+
+
+    /**
+     * 免费礼包领取时间戳
+     */
+    long rewardFreeGiftTimer;
+
+    @Override
+    public void buildPlayerAllInfo(PlayerMsg.PlayerAllInfo.Builder builder) {
+    }
+
+    @Override
+    public void initFromDbAfter() {
+
+    }
+
+    @Override
+    public EventTypeEnum[] getEventTypes() {
+        return new EventTypeEnum[]{EventTypeEnum.Charge,EventTypeEnum.LevelUp};
+    }
+
+    @Override
+    public void handleEvent(GameEvent event) {
+        switch (event.getType()){
+            case Charge -> {
+                int payNum = event.getIntParameter(0);
+                int addExp =  GlobalConst.PayVIPExp * payNum;
+                upVipLevel(addExp);
+            }
+            case LevelUp  -> {
+                int type = event.getIntParameter(0);
+                int level = event.getIntParameter(1);
+                long curExp = event.getLongParameter(2);
+                if (type == Asset.VIPExp.ID){
+                    //旧的免费礼包未领取  在VIP升级后，没有领取的每日奖励通过邮件发送ID=8；
+                    if (!DateUtil.isSameDay(System.currentTimeMillis(), rewardFreeGiftTimer)){
+                        VIPConfig config = VIPManager.instance().get(level);
+                        MailHelper.sendMail(playerId, 8, PlayerHelper.randomReward(player, config.DailyBox), true);
+                    }
+                    rewardFreeGiftTimer = 0;
+                    log.info(String.format( "vip levelUp curLevel:%d, curExp:%d, pid:%d", level,curExp,player.getPlayerId()));
+                }
+                break;
+            }
+            default -> {
+                log.error(String.format("VipModule handleEvent not found this type:%s, pid:%d",event.getType(),player.getPlayerId()));
+            }
+        }
+
+    }
+
+    private void upVipLevel(int addExp) {
+        PlayerHelper.addResources(player,Asset.VIPExp.ID,addExp);
+    }
+
+
+
+
+
+    public List<Integer> getBuyGiftList() {
+        return buyGiftList;
+    }
+
+    public void setBuyGiftList(List<Integer> buyGiftList) {
+        this.buyGiftList = buyGiftList;
+    }
+
+    public long getRewardFreeGiftTimer() {
+        return rewardFreeGiftTimer;
+    }
+
+    public void setRewardFreeGiftTimer(long rewardFreeGiftTimer) {
+        this.rewardFreeGiftTimer = rewardFreeGiftTimer;
+    }
+
+    public VIPConfig getCurVipConfig() {
+        return VIPManager.instance().get(player.getVipLevel());
+    }
+
+    public VipMsg.VipInfo toPb() {
+    return VipMsg.VipInfo.newBuilder()
+        .setLevel(player.getVipLevel())
+        .setExp((int)player.getCurrencyModule().getCount(Asset.VIPExp.ID))
+        .setRewardFreeGiftTimer((int) (rewardFreeGiftTimer / 1000L))
+        .addAllBuyGiftIdList(buyGiftList)
+        .build();
+    }
+}

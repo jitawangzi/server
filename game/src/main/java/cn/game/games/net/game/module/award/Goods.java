@@ -2,6 +2,9 @@ package cn.game.games.net.game.module.award;
 
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 物品id和数量的封装
  * 2020年10月15日 上午10:51:01
@@ -21,6 +24,13 @@ public class Goods {
 
 	public static Goods valueOf(int[] goods) {
 		return new Goods(goods[0], goods[1]);
+	}
+	public static List<Goods> valueOf(int[][] drops) {
+		List<Goods> result = new ArrayList<>();
+		for(int i = 0; i < drops.length; i++) {
+			result.add(new Goods(drops[0][0], drops[0][1]));
+		}
+		return result;
 	}
 
 	public Goods() {

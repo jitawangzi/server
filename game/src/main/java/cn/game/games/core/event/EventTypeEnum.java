@@ -109,6 +109,8 @@ public enum EventTypeEnum {
 
 	/** 某游戏事件完成 参数： 事件id */
 	GameEventFinish(76, "某游戏事件完成"),
+	vipExpChange(77, "VIP 经验变动"),
+	vipLevelChange(78, "VIP 等级变动"),
 
 	;
 	private int id;

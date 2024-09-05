@@ -499,6 +499,17 @@ public final class DateUtil {
 		return (int) ChronoUnit.DAYS.between(d1, d2);
 	}
 
+	/**
+	 * 判断俩时间戳 是否为同一天
+	 * @param t1
+	 * @param t2
+	 * @return true 是同一天 ； false 不是同一天
+	 */
+	public static boolean isSameDay(long t1, long t2){
+		return diffDays(t1,t2) == 0;
+	}
+
+
 	/** 
 	 * 计算当前时间与特定时间之间相隔的天数（日期数）
 	 * @param dateTimeStr  "yyyy-MM-dd HH:mm:ss"  格式
