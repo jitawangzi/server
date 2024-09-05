@@ -5,10 +5,8 @@ package Protos;
 import "RewardMsg.proto" ;
 //vip 相关
 message VipInfo{
-  int32 level = 1; //vip 等级
-  int32 exp = 2;  //VIP 当前经验
-  int32 rewardFreeGiftTimer = 3; //免费礼包上一次领取时间戳 每日刷新
-  repeated int32 buyGiftIdList = 4; // 已经购买的 一次性购买礼包id集合
+  int32 rewardFreeGiftTimer = 1; //免费礼包上一次领取时间戳 每日刷新
+  repeated int32 buyGiftIdList = 2; // 已经购买的 一次性购买礼包id集合
 }
 
 //获取VIP 信息 请求

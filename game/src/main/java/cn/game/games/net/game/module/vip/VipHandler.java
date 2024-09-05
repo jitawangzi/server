@@ -58,10 +58,8 @@ public class VipHandler extends BaseHandler {
         }
         vipModule.setRewardFreeGiftTimer(now);
         VIPConfig vipConfig = vipModule.getCurVipConfig();
-        List<Goods> drops = PlayerHelper.randomReward(player,vipConfig.DailyBox);
-        if (!drops.isEmpty()){
-            res.addAllDrops(PlayerHelper.addGoods(player,drops, OpType.vipFreeGiftReward));
-        }
+        res.addAllDrops(PlayerHelper.addReward(player,vipConfig.DailyBox,OpType.vipGiftReward));
+
         res.setRewardFreeGiftTimer((int) (vipModule.rewardFreeGiftTimer/1000L));
         client.sendProtocol(res);
     }
@@ -88,10 +86,7 @@ public class VipHandler extends BaseHandler {
         player.pay(buyConfig.Price).onComplete(result->{
             if (result.result()){
                 vipModule.getBuyGiftList().add(buyId);
-                List<Goods> drops = Goods.valueOf(buyConfig.Item);
-                if (!drops.isEmpty()){
-                    res.addAllDrops(PlayerHelper.addGoods(player,drops, OpType.vipGiftReward));
-                }
+                res.addAllDrops(PlayerHelper.addReward(player,buyConfig.RandomGivenId,OpType.vipGiftReward));
                 res.addAllBuyGiftIdList(vipModule.getBuyGiftList());
                 client.sendProtocol(res);
             } else {

@@ -20,30 +20,10 @@ public final class VipMsg {
 
     /**
      * <pre>
-     *vip 等级
-     * </pre>
-     *
-     * <code>int32 level = 1;</code>
-     * @return The level.
-     */
-    int getLevel();
-
-    /**
-     * <pre>
-     *VIP 当前经验
-     * </pre>
-     *
-     * <code>int32 exp = 2;</code>
-     * @return The exp.
-     */
-    int getExp();
-
-    /**
-     * <pre>
      *免费礼包上一次领取时间戳 每日刷新
      * </pre>
      *
-     * <code>int32 rewardFreeGiftTimer = 3;</code>
+     * <code>int32 rewardFreeGiftTimer = 1;</code>
      * @return The rewardFreeGiftTimer.
      */
     int getRewardFreeGiftTimer();
@@ -53,7 +33,7 @@ public final class VipMsg {
      * 已经购买的 一次性购买礼包id集合
      * </pre>
      *
-     * <code>repeated int32 buyGiftIdList = 4;</code>
+     * <code>repeated int32 buyGiftIdList = 2;</code>
      * @return A list containing the buyGiftIdList.
      */
     java.util.List<java.lang.Integer> getBuyGiftIdListList();
@@ -62,7 +42,7 @@ public final class VipMsg {
      * 已经购买的 一次性购买礼包id集合
      * </pre>
      *
-     * <code>repeated int32 buyGiftIdList = 4;</code>
+     * <code>repeated int32 buyGiftIdList = 2;</code>
      * @return The count of buyGiftIdList.
      */
     int getBuyGiftIdListCount();
@@ -71,7 +51,7 @@ public final class VipMsg {
      * 已经购买的 一次性购买礼包id集合
      * </pre>
      *
-     * <code>repeated int32 buyGiftIdList = 4;</code>
+     * <code>repeated int32 buyGiftIdList = 2;</code>
      * @param index The index of the element to return.
      * @return The buyGiftIdList at the given index.
      */
@@ -130,20 +110,10 @@ public final class VipMsg {
               break;
             case 8: {
 
-              level_ = input.readInt32();
-              break;
-            }
-            case 16: {
-
-              exp_ = input.readInt32();
-              break;
-            }
-            case 24: {
-
               rewardFreeGiftTimer_ = input.readInt32();
               break;
             }
-            case 32: {
+            case 16: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 buyGiftIdList_ = newIntList();
                 mutable_bitField0_ |= 0x00000001;
@@ -151,7 +121,7 @@ public final class VipMsg {
               buyGiftIdList_.addInt(input.readInt32());
               break;
             }
-            case 34: {
+            case 18: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
@@ -199,44 +169,14 @@ public final class VipMsg {
               cn.game.protocol.protobuf.VipMsg.VipInfo.class, cn.game.protocol.protobuf.VipMsg.VipInfo.Builder.class);
     }
 
-    public static final int LEVEL_FIELD_NUMBER = 1;
-    private int level_;
-    /**
-     * <pre>
-     *vip 等级
-     * </pre>
-     *
-     * <code>int32 level = 1;</code>
-     * @return The level.
-     */
-    @java.lang.Override
-    public int getLevel() {
-      return level_;
-    }
-
-    public static final int EXP_FIELD_NUMBER = 2;
-    private int exp_;
-    /**
-     * <pre>
-     *VIP 当前经验
-     * </pre>
-     *
-     * <code>int32 exp = 2;</code>
-     * @return The exp.
-     */
-    @java.lang.Override
-    public int getExp() {
-      return exp_;
-    }
-
-    public static final int REWARDFREEGIFTTIMER_FIELD_NUMBER = 3;
+    public static final int REWARDFREEGIFTTIMER_FIELD_NUMBER = 1;
     private int rewardFreeGiftTimer_;
     /**
      * <pre>
      *免费礼包上一次领取时间戳 每日刷新
      * </pre>
      *
-     * <code>int32 rewardFreeGiftTimer = 3;</code>
+     * <code>int32 rewardFreeGiftTimer = 1;</code>
      * @return The rewardFreeGiftTimer.
      */
     @java.lang.Override
@@ -244,14 +184,14 @@ public final class VipMsg {
       return rewardFreeGiftTimer_;
     }
 
-    public static final int BUYGIFTIDLIST_FIELD_NUMBER = 4;
+    public static final int BUYGIFTIDLIST_FIELD_NUMBER = 2;
     private com.google.protobuf.Internal.IntList buyGiftIdList_;
     /**
      * <pre>
      * 已经购买的 一次性购买礼包id集合
      * </pre>
      *
-     * <code>repeated int32 buyGiftIdList = 4;</code>
+     * <code>repeated int32 buyGiftIdList = 2;</code>
      * @return A list containing the buyGiftIdList.
      */
     @java.lang.Override
@@ -264,7 +204,7 @@ public final class VipMsg {
      * 已经购买的 一次性购买礼包id集合
      * </pre>
      *
-     * <code>repeated int32 buyGiftIdList = 4;</code>
+     * <code>repeated int32 buyGiftIdList = 2;</code>
      * @return The count of buyGiftIdList.
      */
     public int getBuyGiftIdListCount() {
@@ -275,7 +215,7 @@ public final class VipMsg {
      * 已经购买的 一次性购买礼包id集合
      * </pre>
      *
-     * <code>repeated int32 buyGiftIdList = 4;</code>
+     * <code>repeated int32 buyGiftIdList = 2;</code>
      * @param index The index of the element to return.
      * @return The buyGiftIdList at the given index.
      */
@@ -299,17 +239,11 @@ public final class VipMsg {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (level_ != 0) {
-        output.writeInt32(1, level_);
-      }
-      if (exp_ != 0) {
-        output.writeInt32(2, exp_);
-      }
       if (rewardFreeGiftTimer_ != 0) {
-        output.writeInt32(3, rewardFreeGiftTimer_);
+        output.writeInt32(1, rewardFreeGiftTimer_);
       }
       if (getBuyGiftIdListList().size() > 0) {
-        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(18);
         output.writeUInt32NoTag(buyGiftIdListMemoizedSerializedSize);
       }
       for (int i = 0; i < buyGiftIdList_.size(); i++) {
@@ -324,17 +258,9 @@ public final class VipMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (level_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, level_);
-      }
-      if (exp_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, exp_);
-      }
       if (rewardFreeGiftTimer_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, rewardFreeGiftTimer_);
+          .computeInt32Size(1, rewardFreeGiftTimer_);
       }
       {
         int dataSize = 0;
@@ -365,10 +291,6 @@ public final class VipMsg {
       }
       cn.game.protocol.protobuf.VipMsg.VipInfo other = (cn.game.protocol.protobuf.VipMsg.VipInfo) obj;
 
-      if (getLevel()
-          != other.getLevel()) return false;
-      if (getExp()
-          != other.getExp()) return false;
       if (getRewardFreeGiftTimer()
           != other.getRewardFreeGiftTimer()) return false;
       if (!getBuyGiftIdListList()
@@ -384,10 +306,6 @@ public final class VipMsg {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + LEVEL_FIELD_NUMBER;
-      hash = (53 * hash) + getLevel();
-      hash = (37 * hash) + EXP_FIELD_NUMBER;
-      hash = (53 * hash) + getExp();
       hash = (37 * hash) + REWARDFREEGIFTTIMER_FIELD_NUMBER;
       hash = (53 * hash) + getRewardFreeGiftTimer();
       if (getBuyGiftIdListCount() > 0) {
@@ -531,10 +449,6 @@ public final class VipMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        level_ = 0;
-
-        exp_ = 0;
-
         rewardFreeGiftTimer_ = 0;
 
         buyGiftIdList_ = emptyIntList();
@@ -566,8 +480,6 @@ public final class VipMsg {
       public cn.game.protocol.protobuf.VipMsg.VipInfo buildPartial() {
         cn.game.protocol.protobuf.VipMsg.VipInfo result = new cn.game.protocol.protobuf.VipMsg.VipInfo(this);
         int from_bitField0_ = bitField0_;
-        result.level_ = level_;
-        result.exp_ = exp_;
         result.rewardFreeGiftTimer_ = rewardFreeGiftTimer_;
         if (((bitField0_ & 0x00000001) != 0)) {
           buyGiftIdList_.makeImmutable();
@@ -622,12 +534,6 @@ public final class VipMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.VipMsg.VipInfo other) {
         if (other == cn.game.protocol.protobuf.VipMsg.VipInfo.getDefaultInstance()) return this;
-        if (other.getLevel() != 0) {
-          setLevel(other.getLevel());
-        }
-        if (other.getExp() != 0) {
-          setExp(other.getExp());
-        }
         if (other.getRewardFreeGiftTimer() != 0) {
           setRewardFreeGiftTimer(other.getRewardFreeGiftTimer());
         }
@@ -671,99 +577,13 @@ public final class VipMsg {
       }
       private int bitField0_;
 
-      private int level_ ;
-      /**
-       * <pre>
-       *vip 等级
-       * </pre>
-       *
-       * <code>int32 level = 1;</code>
-       * @return The level.
-       */
-      @java.lang.Override
-      public int getLevel() {
-        return level_;
-      }
-      /**
-       * <pre>
-       *vip 等级
-       * </pre>
-       *
-       * <code>int32 level = 1;</code>
-       * @param value The level to set.
-       * @return This builder for chaining.
-       */
-      public Builder setLevel(int value) {
-        
-        level_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *vip 等级
-       * </pre>
-       *
-       * <code>int32 level = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearLevel() {
-        
-        level_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int exp_ ;
-      /**
-       * <pre>
-       *VIP 当前经验
-       * </pre>
-       *
-       * <code>int32 exp = 2;</code>
-       * @return The exp.
-       */
-      @java.lang.Override
-      public int getExp() {
-        return exp_;
-      }
-      /**
-       * <pre>
-       *VIP 当前经验
-       * </pre>
-       *
-       * <code>int32 exp = 2;</code>
-       * @param value The exp to set.
-       * @return This builder for chaining.
-       */
-      public Builder setExp(int value) {
-        
-        exp_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       *VIP 当前经验
-       * </pre>
-       *
-       * <code>int32 exp = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearExp() {
-        
-        exp_ = 0;
-        onChanged();
-        return this;
-      }
-
       private int rewardFreeGiftTimer_ ;
       /**
        * <pre>
        *免费礼包上一次领取时间戳 每日刷新
        * </pre>
        *
-       * <code>int32 rewardFreeGiftTimer = 3;</code>
+       * <code>int32 rewardFreeGiftTimer = 1;</code>
        * @return The rewardFreeGiftTimer.
        */
       @java.lang.Override
@@ -775,7 +595,7 @@ public final class VipMsg {
        *免费礼包上一次领取时间戳 每日刷新
        * </pre>
        *
-       * <code>int32 rewardFreeGiftTimer = 3;</code>
+       * <code>int32 rewardFreeGiftTimer = 1;</code>
        * @param value The rewardFreeGiftTimer to set.
        * @return This builder for chaining.
        */
@@ -790,7 +610,7 @@ public final class VipMsg {
        *免费礼包上一次领取时间戳 每日刷新
        * </pre>
        *
-       * <code>int32 rewardFreeGiftTimer = 3;</code>
+       * <code>int32 rewardFreeGiftTimer = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearRewardFreeGiftTimer() {
@@ -812,7 +632,7 @@ public final class VipMsg {
        * 已经购买的 一次性购买礼包id集合
        * </pre>
        *
-       * <code>repeated int32 buyGiftIdList = 4;</code>
+       * <code>repeated int32 buyGiftIdList = 2;</code>
        * @return A list containing the buyGiftIdList.
        */
       public java.util.List<java.lang.Integer>
@@ -825,7 +645,7 @@ public final class VipMsg {
        * 已经购买的 一次性购买礼包id集合
        * </pre>
        *
-       * <code>repeated int32 buyGiftIdList = 4;</code>
+       * <code>repeated int32 buyGiftIdList = 2;</code>
        * @return The count of buyGiftIdList.
        */
       public int getBuyGiftIdListCount() {
@@ -836,7 +656,7 @@ public final class VipMsg {
        * 已经购买的 一次性购买礼包id集合
        * </pre>
        *
-       * <code>repeated int32 buyGiftIdList = 4;</code>
+       * <code>repeated int32 buyGiftIdList = 2;</code>
        * @param index The index of the element to return.
        * @return The buyGiftIdList at the given index.
        */
@@ -848,7 +668,7 @@ public final class VipMsg {
        * 已经购买的 一次性购买礼包id集合
        * </pre>
        *
-       * <code>repeated int32 buyGiftIdList = 4;</code>
+       * <code>repeated int32 buyGiftIdList = 2;</code>
        * @param index The index to set the value at.
        * @param value The buyGiftIdList to set.
        * @return This builder for chaining.
@@ -865,7 +685,7 @@ public final class VipMsg {
        * 已经购买的 一次性购买礼包id集合
        * </pre>
        *
-       * <code>repeated int32 buyGiftIdList = 4;</code>
+       * <code>repeated int32 buyGiftIdList = 2;</code>
        * @param value The buyGiftIdList to add.
        * @return This builder for chaining.
        */
@@ -880,7 +700,7 @@ public final class VipMsg {
        * 已经购买的 一次性购买礼包id集合
        * </pre>
        *
-       * <code>repeated int32 buyGiftIdList = 4;</code>
+       * <code>repeated int32 buyGiftIdList = 2;</code>
        * @param values The buyGiftIdList to add.
        * @return This builder for chaining.
        */
@@ -897,7 +717,7 @@ public final class VipMsg {
        * 已经购买的 一次性购买礼包id集合
        * </pre>
        *
-       * <code>repeated int32 buyGiftIdList = 4;</code>
+       * <code>repeated int32 buyGiftIdList = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearBuyGiftIdList() {
@@ -5223,19 +5043,18 @@ public final class VipMsg {
   static {
     java.lang.String[] descriptorData = {
       "\n\014VipMsg.proto\022\006Protos\032\017RewardMsg.proto\"" +
-      "Y\n\007VipInfo\022\r\n\005level\030\001 \001(\005\022\013\n\003exp\030\002 \001(\005\022\033" +
-      "\n\023rewardFreeGiftTimer\030\003 \001(\005\022\025\n\rbuyGiftId" +
-      "List\030\004 \003(\005\"\034\n\032getVipInfoRequest_34000001" +
-      "\"<\n\033getVipInfoResponse_34000002\022\035\n\004info\030" +
-      "\001 \001(\0132\017.Protos.VipInfo\"#\n!rewardFreeVipG" +
-      "iftRequest_34000003\"d\n\"rewardFreeVipGift" +
-      "Response_34000004\022!\n\005drops\030\001 \003(\0132\022.Proto" +
-      "s.RewardInfo\022\033\n\023rewardFreeGiftTimer\030\002 \001(" +
-      "\005\"(\n\032buyVipGiftRequest_34000005\022\n\n\002id\030\001 " +
-      "\001(\005\"W\n\033buyVipGiftResponse_34000006\022!\n\005dr" +
-      "ops\030\001 \003(\0132\022.Protos.RewardInfo\022\025\n\rbuyGift" +
-      "IdList\030\002 \003(\005B\033\n\031cn.game.protocol.protobu" +
-      "fb\006proto3"
+      "=\n\007VipInfo\022\033\n\023rewardFreeGiftTimer\030\001 \001(\005\022" +
+      "\025\n\rbuyGiftIdList\030\002 \003(\005\"\034\n\032getVipInfoRequ" +
+      "est_34000001\"<\n\033getVipInfoResponse_34000" +
+      "002\022\035\n\004info\030\001 \001(\0132\017.Protos.VipInfo\"#\n!re" +
+      "wardFreeVipGiftRequest_34000003\"d\n\"rewar" +
+      "dFreeVipGiftResponse_34000004\022!\n\005drops\030\001" +
+      " \003(\0132\022.Protos.RewardInfo\022\033\n\023rewardFreeGi" +
+      "ftTimer\030\002 \001(\005\"(\n\032buyVipGiftRequest_34000" +
+      "005\022\n\n\002id\030\001 \001(\005\"W\n\033buyVipGiftResponse_34" +
+      "000006\022!\n\005drops\030\001 \003(\0132\022.Protos.RewardInf" +
+      "o\022\025\n\rbuyGiftIdList\030\002 \003(\005B\033\n\031cn.game.prot" +
+      "ocol.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5247,7 +5066,7 @@ public final class VipMsg {
     internal_static_Protos_VipInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Protos_VipInfo_descriptor,
-        new java.lang.String[] { "Level", "Exp", "RewardFreeGiftTimer", "BuyGiftIdList", });
+        new java.lang.String[] { "RewardFreeGiftTimer", "BuyGiftIdList", });
     internal_static_Protos_getVipInfoRequest_34000001_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Protos_getVipInfoRequest_34000001_fieldAccessorTable = new
