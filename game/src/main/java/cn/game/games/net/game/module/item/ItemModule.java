@@ -45,10 +45,16 @@ public class ItemModule extends AbstractItemModule<Item> {
 		}
 		ItemConfig itemConfig = ItemManager.instance().get(itemId);
 		if (itemConfig.ItemType == 6) {
-			// TODO 给挂机金币
+			// 给挂机金币
 			ChapterModule chapterModule = player.getModule(ChapterModule.class);
 			itemId = Asset.gold.ID ; 
 			count *= chapterModule.calcPatrolGold(itemConfig.Para[0]);
+			return player.getCurrencyModule().add(itemId, count, opType);
+		} else if (itemConfig.ItemType == 5) {
+			// 给经验
+			ChapterModule chapterModule = player.getModule(ChapterModule.class);
+			itemId = Asset.playerExp.ID;
+			count *= chapterModule.calcPatrolExp(itemConfig.Para[0]);
 			return player.getCurrencyModule().add(itemId, count, opType);
 		}
 		return super.add(itemId, count, opType);

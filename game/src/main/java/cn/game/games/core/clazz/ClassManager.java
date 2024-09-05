@@ -107,6 +107,9 @@ public class ClassManager {
 		ActivityBase newInstance = null;
 		try {
 			Class<? extends ActivityBase> clazz = activityClass.get(type);
+			if (clazz == null) {
+				throw new IllegalArgumentException("ActivityClass is null, activity type : " + type);
+			}
 			newInstance = clazz.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {

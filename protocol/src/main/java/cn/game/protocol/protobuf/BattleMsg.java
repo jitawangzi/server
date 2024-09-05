@@ -47917,20 +47917,40 @@ public final class BattleMsg {
      *今日累计伤害
      * </pre>
      *
-     * <code>int32 cumulativeDamage = 1;</code>
+     * <code>string cumulativeDamage = 1;</code>
      * @return The cumulativeDamage.
      */
-    int getCumulativeDamage();
+    java.lang.String getCumulativeDamage();
+    /**
+     * <pre>
+     *今日累计伤害
+     * </pre>
+     *
+     * <code>string cumulativeDamage = 1;</code>
+     * @return The bytes for cumulativeDamage.
+     */
+    com.google.protobuf.ByteString
+        getCumulativeDamageBytes();
 
     /**
      * <pre>
      *今日最高伤害
      * </pre>
      *
-     * <code>int32 maxDamageToday = 2;</code>
+     * <code>string maxDamageToday = 2;</code>
      * @return The maxDamageToday.
      */
-    int getMaxDamageToday();
+    java.lang.String getMaxDamageToday();
+    /**
+     * <pre>
+     *今日最高伤害
+     * </pre>
+     *
+     * <code>string maxDamageToday = 2;</code>
+     * @return The bytes for maxDamageToday.
+     */
+    com.google.protobuf.ByteString
+        getMaxDamageTodayBytes();
 
     /**
      * <pre>
@@ -47985,6 +48005,8 @@ public final class BattleMsg {
       super(builder);
     }
     private BattleWorldBossInfoResponse_13000302() {
+      cumulativeDamage_ = "";
+      maxDamageToday_ = "";
     }
 
     @java.lang.Override
@@ -48017,14 +48039,16 @@ public final class BattleMsg {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              cumulativeDamage_ = input.readInt32();
+              cumulativeDamage_ = s;
               break;
             }
-            case 16: {
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              maxDamageToday_ = input.readInt32();
+              maxDamageToday_ = s;
               break;
             }
             case 24: {
@@ -48080,33 +48104,95 @@ public final class BattleMsg {
     }
 
     public static final int CUMULATIVEDAMAGE_FIELD_NUMBER = 1;
-    private int cumulativeDamage_;
+    private volatile java.lang.Object cumulativeDamage_;
     /**
      * <pre>
      *今日累计伤害
      * </pre>
      *
-     * <code>int32 cumulativeDamage = 1;</code>
+     * <code>string cumulativeDamage = 1;</code>
      * @return The cumulativeDamage.
      */
     @java.lang.Override
-    public int getCumulativeDamage() {
-      return cumulativeDamage_;
+    public java.lang.String getCumulativeDamage() {
+      java.lang.Object ref = cumulativeDamage_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        cumulativeDamage_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *今日累计伤害
+     * </pre>
+     *
+     * <code>string cumulativeDamage = 1;</code>
+     * @return The bytes for cumulativeDamage.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getCumulativeDamageBytes() {
+      java.lang.Object ref = cumulativeDamage_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        cumulativeDamage_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int MAXDAMAGETODAY_FIELD_NUMBER = 2;
-    private int maxDamageToday_;
+    private volatile java.lang.Object maxDamageToday_;
     /**
      * <pre>
      *今日最高伤害
      * </pre>
      *
-     * <code>int32 maxDamageToday = 2;</code>
+     * <code>string maxDamageToday = 2;</code>
      * @return The maxDamageToday.
      */
     @java.lang.Override
-    public int getMaxDamageToday() {
-      return maxDamageToday_;
+    public java.lang.String getMaxDamageToday() {
+      java.lang.Object ref = maxDamageToday_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        maxDamageToday_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *今日最高伤害
+     * </pre>
+     *
+     * <code>string maxDamageToday = 2;</code>
+     * @return The bytes for maxDamageToday.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMaxDamageTodayBytes() {
+      java.lang.Object ref = maxDamageToday_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        maxDamageToday_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int RANK_FIELD_NUMBER = 3;
@@ -48183,11 +48269,11 @@ public final class BattleMsg {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (cumulativeDamage_ != 0) {
-        output.writeInt32(1, cumulativeDamage_);
+      if (!getCumulativeDamageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, cumulativeDamage_);
       }
-      if (maxDamageToday_ != 0) {
-        output.writeInt32(2, maxDamageToday_);
+      if (!getMaxDamageTodayBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, maxDamageToday_);
       }
       if (rank_ != 0) {
         output.writeInt32(3, rank_);
@@ -48210,13 +48296,11 @@ public final class BattleMsg {
       if (size != -1) return size;
 
       size = 0;
-      if (cumulativeDamage_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, cumulativeDamage_);
+      if (!getCumulativeDamageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, cumulativeDamage_);
       }
-      if (maxDamageToday_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, maxDamageToday_);
+      if (!getMaxDamageTodayBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, maxDamageToday_);
       }
       if (rank_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -48249,10 +48333,10 @@ public final class BattleMsg {
       }
       cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 other = (cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302) obj;
 
-      if (getCumulativeDamage()
-          != other.getCumulativeDamage()) return false;
-      if (getMaxDamageToday()
-          != other.getMaxDamageToday()) return false;
+      if (!getCumulativeDamage()
+          .equals(other.getCumulativeDamage())) return false;
+      if (!getMaxDamageToday()
+          .equals(other.getMaxDamageToday())) return false;
       if (getRank()
           != other.getRank()) return false;
       if (getBattleTimes()
@@ -48273,9 +48357,9 @@ public final class BattleMsg {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + CUMULATIVEDAMAGE_FIELD_NUMBER;
-      hash = (53 * hash) + getCumulativeDamage();
+      hash = (53 * hash) + getCumulativeDamage().hashCode();
       hash = (37 * hash) + MAXDAMAGETODAY_FIELD_NUMBER;
-      hash = (53 * hash) + getMaxDamageToday();
+      hash = (53 * hash) + getMaxDamageToday().hashCode();
       hash = (37 * hash) + RANK_FIELD_NUMBER;
       hash = (53 * hash) + getRank();
       hash = (37 * hash) + BATTLETIMES_FIELD_NUMBER;
@@ -48417,9 +48501,9 @@ public final class BattleMsg {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        cumulativeDamage_ = 0;
+        cumulativeDamage_ = "";
 
-        maxDamageToday_ = 0;
+        maxDamageToday_ = "";
 
         rank_ = 0;
 
@@ -48509,11 +48593,13 @@ public final class BattleMsg {
 
       public Builder mergeFrom(cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302 other) {
         if (other == cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302.getDefaultInstance()) return this;
-        if (other.getCumulativeDamage() != 0) {
-          setCumulativeDamage(other.getCumulativeDamage());
+        if (!other.getCumulativeDamage().isEmpty()) {
+          cumulativeDamage_ = other.cumulativeDamage_;
+          onChanged();
         }
-        if (other.getMaxDamageToday() != 0) {
-          setMaxDamageToday(other.getMaxDamageToday());
+        if (!other.getMaxDamageToday().isEmpty()) {
+          maxDamageToday_ = other.maxDamageToday_;
+          onChanged();
         }
         if (other.getRank() != 0) {
           setRank(other.getRank());
@@ -48556,30 +48642,63 @@ public final class BattleMsg {
         return this;
       }
 
-      private int cumulativeDamage_ ;
+      private java.lang.Object cumulativeDamage_ = "";
       /**
        * <pre>
        *今日累计伤害
        * </pre>
        *
-       * <code>int32 cumulativeDamage = 1;</code>
+       * <code>string cumulativeDamage = 1;</code>
        * @return The cumulativeDamage.
        */
-      @java.lang.Override
-      public int getCumulativeDamage() {
-        return cumulativeDamage_;
+      public java.lang.String getCumulativeDamage() {
+        java.lang.Object ref = cumulativeDamage_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          cumulativeDamage_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *今日累计伤害
        * </pre>
        *
-       * <code>int32 cumulativeDamage = 1;</code>
+       * <code>string cumulativeDamage = 1;</code>
+       * @return The bytes for cumulativeDamage.
+       */
+      public com.google.protobuf.ByteString
+          getCumulativeDamageBytes() {
+        java.lang.Object ref = cumulativeDamage_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          cumulativeDamage_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *今日累计伤害
+       * </pre>
+       *
+       * <code>string cumulativeDamage = 1;</code>
        * @param value The cumulativeDamage to set.
        * @return This builder for chaining.
        */
-      public Builder setCumulativeDamage(int value) {
-        
+      public Builder setCumulativeDamage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         cumulativeDamage_ = value;
         onChanged();
         return this;
@@ -48589,40 +48708,93 @@ public final class BattleMsg {
        *今日累计伤害
        * </pre>
        *
-       * <code>int32 cumulativeDamage = 1;</code>
+       * <code>string cumulativeDamage = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearCumulativeDamage() {
         
-        cumulativeDamage_ = 0;
+        cumulativeDamage_ = getDefaultInstance().getCumulativeDamage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *今日累计伤害
+       * </pre>
+       *
+       * <code>string cumulativeDamage = 1;</code>
+       * @param value The bytes for cumulativeDamage to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCumulativeDamageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        cumulativeDamage_ = value;
         onChanged();
         return this;
       }
 
-      private int maxDamageToday_ ;
+      private java.lang.Object maxDamageToday_ = "";
       /**
        * <pre>
        *今日最高伤害
        * </pre>
        *
-       * <code>int32 maxDamageToday = 2;</code>
+       * <code>string maxDamageToday = 2;</code>
        * @return The maxDamageToday.
        */
-      @java.lang.Override
-      public int getMaxDamageToday() {
-        return maxDamageToday_;
+      public java.lang.String getMaxDamageToday() {
+        java.lang.Object ref = maxDamageToday_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          maxDamageToday_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *今日最高伤害
        * </pre>
        *
-       * <code>int32 maxDamageToday = 2;</code>
+       * <code>string maxDamageToday = 2;</code>
+       * @return The bytes for maxDamageToday.
+       */
+      public com.google.protobuf.ByteString
+          getMaxDamageTodayBytes() {
+        java.lang.Object ref = maxDamageToday_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          maxDamageToday_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *今日最高伤害
+       * </pre>
+       *
+       * <code>string maxDamageToday = 2;</code>
        * @param value The maxDamageToday to set.
        * @return This builder for chaining.
        */
-      public Builder setMaxDamageToday(int value) {
-        
+      public Builder setMaxDamageToday(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         maxDamageToday_ = value;
         onChanged();
         return this;
@@ -48632,12 +48804,32 @@ public final class BattleMsg {
        *今日最高伤害
        * </pre>
        *
-       * <code>int32 maxDamageToday = 2;</code>
+       * <code>string maxDamageToday = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearMaxDamageToday() {
         
-        maxDamageToday_ = 0;
+        maxDamageToday_ = getDefaultInstance().getMaxDamageToday();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *今日最高伤害
+       * </pre>
+       *
+       * <code>string maxDamageToday = 2;</code>
+       * @param value The bytes for maxDamageToday to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxDamageTodayBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        maxDamageToday_ = value;
         onChanged();
         return this;
       }
@@ -53374,8 +53566,8 @@ public final class BattleMsg {
       "000204\022#\n\007rewards\030\001 \003(\0132\022.Protos.RewardI" +
       "nfo\"%\n#BattleWorldBossInfoRequest_130003" +
       "01\"\237\001\n$BattleWorldBossInfoResponse_13000" +
-      "302\022\030\n\020cumulativeDamage\030\001 \001(\005\022\026\n\016maxDama" +
-      "geToday\030\002 \001(\005\022\014\n\004rank\030\003 \001(\005\022\023\n\013battleTim" +
+      "302\022\030\n\020cumulativeDamage\030\001 \001(\t\022\026\n\016maxDama" +
+      "geToday\030\002 \001(\t\022\014\n\004rank\030\003 \001(\005\022\023\n\013battleTim" +
       "es\030\004 \001(\005\022\020\n\010buyTimes\030\005 \001(\005\022\020\n\010rewardId\030\010" +
       " \001(\005\")\n\'BattleWorldBossBuyTimesRequest_1" +
       "3000303\"*\n(BattleWorldBossBuyTimesRespon" +

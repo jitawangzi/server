@@ -174,7 +174,7 @@ public class ChapterHandler extends BaseHandler {
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		WorldBossBattle battle = chapterModule.getBattle(DungeonTypeEnum.WorldBoss);
-		int maxDamageToday = battle.getMaxDamageToday();
+		long maxDamageToday = battle.getMaxDamageToday();
 		List<WorldBossRewardConfig> list = WorldBossRewardManager.instance().list(); 
 		int canRewardIndex = BinarySearchUtil.findIndexLastLessThanOrEqual(list, maxDamageToday, r -> r.BoxCondition);
 		
@@ -234,8 +234,8 @@ public class ChapterHandler extends BaseHandler {
 
 		resp.setBattleTimes(battle.getBattleTimes());
 		resp.setBuyTimes(battle.getBuyTimes());
-		resp.setCumulativeDamage(battle.getCumulativeDamage());
-		resp.setMaxDamageToday(battle.getMaxDamageToday());
+		resp.setCumulativeDamage(battle.getCumulativeDamage() + "");
+		resp.setMaxDamageToday(battle.getMaxDamageToday() + "");
 		resp.setRewardId(battle.getRewardId());
 //		resp.setRank(0);
 
