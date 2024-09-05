@@ -131,6 +131,9 @@ public enum ErrorMsgEnum {
 	fundpass_not_buy(380, "没有购买通行证"),
 	hero_day_rent_max(390, "日租卡最多能上一个"),
 	stamina_expire(391, "体力过期了"),
+	vip_free_gift_has_reward(392, "VIP 每日免费礼包已经领取过了"),
+	vip_gift_has_reward(393, "VIP一次性礼包不可重复购买"),
+	vip_gift_unlock(394, "VIP等级不足一次性礼包未解锁"),
 
 	;
 

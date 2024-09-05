@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import cn.game.protocol.generated.manager.*;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -49,17 +50,6 @@ import cn.game.protocol.generated.config.RewardConfig;
 import cn.game.protocol.generated.config.versionConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
-import cn.game.protocol.generated.manager.ConditionManager;
-import cn.game.protocol.generated.manager.ConsumeManager;
-import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
-import cn.game.protocol.generated.manager.FundPassUpgradeManager;
-import cn.game.protocol.generated.manager.GameCommandManager;
-import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
-import cn.game.protocol.generated.manager.RandomGivenManager;
-import cn.game.protocol.generated.manager.RandomGroupManager;
-import cn.game.protocol.generated.manager.RewardManager;
-import cn.game.protocol.generated.manager.UserUpgradeManager;
-import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
@@ -1480,6 +1470,8 @@ public class PlayerHelper {
 			return QiankunMirrorLvManager.instance().getNullable(level);
 		} else if (id == Asset.Favorability.ID) {
 			return FairyFriendFavorabilityManager.instance().getUIFairyListIDLV(subId, level);
+    	} else if (id == Asset.VIPExp.ID) {
+			return VIPManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}

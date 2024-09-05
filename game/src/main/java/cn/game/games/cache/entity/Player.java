@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import cn.game.games.net.game.module.vip.VipModule;
+import cn.game.protocol.generated.config.VIPConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -272,6 +274,9 @@ public class Player  {
 		return getModule(DevelopModule.class);
 	}
 
+	public VipModule getVipModule(){
+		return getModule(VipModule.class);
+	}
 	public Player() {
 	}
 
@@ -472,6 +477,13 @@ public class Player  {
 				ret += monthCardConfig.Benefit1.get(type.ID);
 			}
 		}
+
+		// Vip加成
+		VipModule vipModule = getVipModule();
+		VIPConfig curVipConfig = vipModule.getCurVipConfig();
+		if (curVipConfig != null && curVipConfig.Benefit.containsKey(type.ID)){
+			ret += curVipConfig.Benefit.get(type.ID);
+		}
 		return ret;
 	}
 
@@ -582,4 +594,7 @@ public class Player  {
 		this.account = account;
 	}
 
+	public int getVipLevel(){
+    return getPlayerModule().getExpLevelMap().getValue(Asset.VIPExp.ID);
+	}
 }

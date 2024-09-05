@@ -437,7 +437,13 @@ public class PbProtocol implements ProtocolParser {
 	public final static int TestRequest_6f000020 = 0x6f000020;    //只是测试  
 	public final static int TestResponse_6f000021 = 0x6f000021;    
 	public final static int TestMessageRequest_6f000080 = 0x6f000080;    //模拟测试某玩家发送协议  
-	public final static int TestMessageResponse_6f000081 = 0x6f000081;    	
+	public final static int TestMessageResponse_6f000081 = 0x6f000081;    
+	public final static int getVipInfoRequest_34000001 = 0x34000001;    //获取VIP 信息 请求  
+	public final static int getVipInfoResponse_34000002 = 0x34000002;    //获取VIP 信息 返回  
+	public final static int rewardFreeVipGiftRequest_34000003 = 0x34000003;    //领取每日免费奖励请求  
+	public final static int rewardFreeVipGiftResponse_34000004 = 0x34000004;    //领取每日免费奖励响应  
+	public final static int buyVipGiftRequest_34000005 = 0x34000005;    //购买一次性礼包奖励请求  
+	public final static int buyVipGiftResponse_34000006 = 0x34000006;    //购买一次性礼包奖励响应  	
 
 	static {	
 		parsersMap.put(ActivityListRequest_11000001, cn.game.protocol.protobuf.ActivityMsg.ActivityListRequest_11000001.getDefaultInstance()
@@ -1262,6 +1268,18 @@ public class PbProtocol implements ProtocolParser {
 				.getParserForType());
 		parsersMap.put(TestMessageResponse_6f000081, cn.game.protocol.protobuf.TestMsg.TestMessageResponse_6f000081.getDefaultInstance()
 				.getParserForType());
+		parsersMap.put(getVipInfoRequest_34000001, cn.game.protocol.protobuf.VipMsg.getVipInfoRequest_34000001.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(getVipInfoResponse_34000002, cn.game.protocol.protobuf.VipMsg.getVipInfoResponse_34000002.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(rewardFreeVipGiftRequest_34000003, cn.game.protocol.protobuf.VipMsg.rewardFreeVipGiftRequest_34000003.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(rewardFreeVipGiftResponse_34000004, cn.game.protocol.protobuf.VipMsg.rewardFreeVipGiftResponse_34000004.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(buyVipGiftRequest_34000005, cn.game.protocol.protobuf.VipMsg.buyVipGiftRequest_34000005.getDefaultInstance()
+				.getParserForType());
+		parsersMap.put(buyVipGiftResponse_34000006, cn.game.protocol.protobuf.VipMsg.buyVipGiftResponse_34000006.getDefaultInstance()
+				.getParserForType());
 
 		nameIdMap.put("ActivityListRequest_11000001", 0x11000001);
 		idNameMap.put(0x11000001,"ActivityListRequest_11000001");
@@ -2085,6 +2103,18 @@ public class PbProtocol implements ProtocolParser {
 		idNameMap.put(0x6f000080,"TestMessageRequest_6f000080");
 		nameIdMap.put("TestMessageResponse_6f000081", 0x6f000081);
 		idNameMap.put(0x6f000081,"TestMessageResponse_6f000081");
+		nameIdMap.put("getVipInfoRequest_34000001", 0x34000001);
+		idNameMap.put(0x34000001,"getVipInfoRequest_34000001");
+		nameIdMap.put("getVipInfoResponse_34000002", 0x34000002);
+		idNameMap.put(0x34000002,"getVipInfoResponse_34000002");
+		nameIdMap.put("rewardFreeVipGiftRequest_34000003", 0x34000003);
+		idNameMap.put(0x34000003,"rewardFreeVipGiftRequest_34000003");
+		nameIdMap.put("rewardFreeVipGiftResponse_34000004", 0x34000004);
+		idNameMap.put(0x34000004,"rewardFreeVipGiftResponse_34000004");
+		nameIdMap.put("buyVipGiftRequest_34000005", 0x34000005);
+		idNameMap.put(0x34000005,"buyVipGiftRequest_34000005");
+		nameIdMap.put("buyVipGiftResponse_34000006", 0x34000006);
+		idNameMap.put(0x34000006,"buyVipGiftResponse_34000006");
 	}	
 	@Override
 	public Message parseFrom(int msgID,byte[] data){
