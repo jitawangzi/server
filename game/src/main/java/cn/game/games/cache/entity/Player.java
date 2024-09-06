@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import cn.game.games.net.game.module.vip.VipModule;
-import cn.game.protocol.generated.config.VIPConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +23,6 @@ import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
-import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -52,7 +49,9 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
+import cn.game.games.net.game.module.vip.VipModule;
 import cn.game.protocol.generated.config.MonthCardConfig;
+import cn.game.protocol.generated.config.VIPConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
@@ -64,6 +63,7 @@ import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
@@ -290,16 +290,12 @@ public class Player  {
 
 	@SuppressWarnings("unchecked")
 	public void initPlayerModule() {
-		if (GameServer.getInstance().isSinglePlayerTable()) {
-			HashMap<String, BasePlayerModule> modules = null;
-			String modules2 = getData().getModules();
-			if (!StringUtils.isEmpty(modules2) && !"[]".equals(modules2)) {
-				modules = JsonUtil.parseObject(modules2, HashMap.class);
-			}
-			initModule(modules);
-		}else {
-			initModule(null); 
+		HashMap<String, BasePlayerModule> modules = null;
+		String modules2 = getData().getModules();
+		if (!StringUtils.isEmpty(modules2) && !"[]".equals(modules2)) {
+			modules = JsonUtil.parseObject(modules2, HashMap.class);
 		}
+		initModule(modules);
 	}
 
 	public void initModule(HashMap<String, BasePlayerModule> modulesFromDb) {
@@ -547,7 +543,7 @@ public class Player  {
 			LogicException logicException = (LogicException) t;
 			getGameClient().sendProtocol(logicException.getErrorCode());
 		} else {
-			getGameClient().sendProtocol(ErrorMsgEnum.unknown.getId());
+			getGameClient().sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
 		}
 		log.error("", t);
 	}

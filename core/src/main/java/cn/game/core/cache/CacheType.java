@@ -33,6 +33,9 @@ public enum CacheType {
 	/** 所有用户名 */
 	SET_ALL_NAME,
 
+	/** 玩家name--id */
+	MAP_PLAYER_NAME_ID,
+
 	;
 
 	public String key(Object... ks) {

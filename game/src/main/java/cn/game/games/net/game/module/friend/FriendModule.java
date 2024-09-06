@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,6 +19,8 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.data.mapper.FriendApplicationMapper;
+import cn.game.games.net.data.mapper.FriendMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -27,6 +30,7 @@ import cn.game.protocol.protobuf.FriendMsg.FriendAddPush_30000023;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 public class FriendModule extends BasePlayerModule {
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
 
 	/** 好友数据 */
 	@JsonIgnore
@@ -37,11 +41,20 @@ public class FriendModule extends BasePlayerModule {
 	private Map<Long, FriendApplication> applications;
 	
 	/** 我申请的玩家id，推荐好友时不能包含我申请过的玩家id */
+	@JsonIgnore
 	private Set<Long> myApplications;
 
 	/** 上次推荐好友换一批时间 */
-	@JsonIgnore
 	private long lastRefreshTime;
+
+	/** 每天给好友送礼次数 */
+	private int sendGiftCount;
+	/** 每天申请好友次数 */
+	private int applicationCount;
+	/** 每天领取送礼的次数 */
+	private int giftReceiveCount;
+	/** 每天推荐好友的刷新次数次数 */
+	private int refreshCount;
 
 	@JsonIgnore
 	private List<SimplePlayer> lastRefreshPlayers;
@@ -55,45 +68,6 @@ public class FriendModule extends BasePlayerModule {
 		applications = new HashMap<>();
 		myApplications = new HashSet<>();
 		lastRefreshPlayers = new ArrayList<SimplePlayer>();
-	}
-
-	public void initLoadData(List<Friend> friends,List<FriendApplication> applications) {
-
-		for (Friend friend : friends) {
-			this.friends.put(friend.getFriendId(), friend);
-		}
-
-		for (FriendApplication friendApplication : applications) {
-			if (friendApplication.getApplyPlayerId() == playerId) {
-				this.myApplications.add(friendApplication.getPlayerId());
-			} else {
-				this.applications.put(friendApplication.getApplyPlayerId(), friendApplication);
-			}
-		}
-		// 把我黑名单里边的申请删除掉,可能是离线申请的
-
-		for (Friend friend : this.friends.values()) {
-
-			if (friend.getRelation() == Friend.BLACK) {
-				FriendHelper.removeApplication(playerId, friend.getFriendId());
-			}
-
-		}
-
-//		if (applications!=null)
-//		{
-//			for (FriendApplication friendApplication : applications)
-//			{
-				
-//				if((System.currentTimeMillis()-friendApplication.getApplyTime())>24*60*60*1000*3){
-//					DAO.execute(FriendApplicationMapper.class, MapperConstant.deleteByPrimaryKey, friendApplication) ; 
-//					continue ; 
-//				}
-//				this.applications.add(friendApplication.getApplyPlayerId()) ; 
-//			}
-			
-//		}
-		
 	}
 
 	public boolean addFriend(long id, String serverId, byte relation) {
@@ -298,20 +272,68 @@ public class FriendModule extends BasePlayerModule {
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return events;
 	}
 
 	@Override
 	public void handleEvent(GameEvent event) {
-		// TODO Auto-generated method stub
+		switch (event.getType()) {
 
+		case PLAYER_CREATE: {
+		}
+		case NewDay: {
+			this.sendGiftCount = 0;
+			this.applicationCount = 0;
+			this.giftReceiveCount = 0;
+			this.refreshCount = 0;
+			break;
+		}
+		}
 	}
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Class[] { FriendMapper.class, FriendApplicationMapper.class };
+	}
+
+	@Override
+	protected void initFromDb(ListIterator<?> iterator) {
+
+		List<Friend> friends = (List<Friend>) iterator.next();
+		List<FriendApplication> applications = (List<FriendApplication>) iterator.next();
+
+		for (Friend friend : friends) {
+			this.friends.put(friend.getFriendId(), friend);
+		}
+
+		for (FriendApplication friendApplication : applications) {
+			if (friendApplication.getApplyPlayerId() == playerId) {
+				this.myApplications.add(friendApplication.getPlayerId());
+			} else {
+				this.applications.put(friendApplication.getApplyPlayerId(), friendApplication);
+			}
+		}
+		// 把我黑名单里边的申请删除掉,可能是离线申请的
+		for (Friend friend : this.friends.values()) {
+
+			if (friend.getRelation() == Friend.BLACK) {
+				FriendHelper.removeApplication(playerId, friend.getFriendId());
+			}
+		}
+//		if (applications!=null)
+//		{
+//			for (FriendApplication friendApplication : applications)
+//			{
+
+//				if((System.currentTimeMillis()-friendApplication.getApplyTime())>24*60*60*1000*3){
+//					DAO.execute(FriendApplicationMapper.class, MapperConstant.deleteByPrimaryKey, friendApplication) ; 
+//					continue ; 
+//				}
+//				this.applications.add(friendApplication.getApplyPlayerId()) ; 
+//			}
+
+//		}
+		return;
 	}
 
 	@Override
@@ -324,13 +346,40 @@ public class FriendModule extends BasePlayerModule {
 
 	}
 
-	@Override
-	public boolean alwaysStoreDataInStandaloneTable() {
-		return true;
+	public int getSendGiftCount() {
+		return sendGiftCount;
+	}
+
+	public void setSendGiftCount(int sendGiftCount) {
+		this.sendGiftCount = sendGiftCount;
+	}
+
+	public int getApplicationCount() {
+		return applicationCount;
+	}
+
+	public void setApplicationCount(int applicationCount) {
+		this.applicationCount = applicationCount;
+	}
+
+	public int getGiftReceiveCount() {
+		return giftReceiveCount;
+	}
+
+	public void setGiftReceiveCount(int giftReceiveCount) {
+		this.giftReceiveCount = giftReceiveCount;
+	}
+
+	public int getRefreshCount() {
+		return refreshCount;
+	}
+
+	public void setRefreshCount(int refreshCount) {
+		this.refreshCount = refreshCount;
 	}
 
 	@Override
-	public boolean isComplete() {
-		return false;
+	public boolean alwaysStoreDataInStandaloneTable() {
+		return true;
 	}
 }

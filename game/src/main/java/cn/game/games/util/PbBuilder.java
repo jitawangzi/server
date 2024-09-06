@@ -34,7 +34,6 @@ import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
-import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
@@ -140,15 +139,6 @@ public class PbBuilder {
 			builder.setServerId(serverId);
 		}
 		return builder.build();
-
-	}
-	public static PlayerShowInfo buildPlayerShowInfo(SimplePlayer player) {
-
-		PlayerShowInfo.Builder showInfo = PlayerShowInfo.newBuilder() ; 
-		
-		showInfo.setGuild(player.getUnionName() == null ? "" : player.getUnionName());
-		
-		return showInfo.build();
 
 	}
 	public static List<SimplePlayerInfo> buildSimplePlayerInfos(List<SimplePlayer> players) {

@@ -4,28 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.protobuf.Message;
+
 import cn.game.core.base.ServerContext;
-import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
-import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.activity.ActivityType;
+import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.games.net.game.module.quest.Quest;
-import cn.game.games.net.game.module.quest.QuestHandler;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.ActivityQingShenConfig;
-import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityQingShenManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.ActivityMsg;
-import com.google.protobuf.Message;
-
-import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.net.game.module.activity.ActivityType;
-import cn.game.games.net.game.module.activity.PlayerActivityBase;
-import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @ActivityType(type = ActivityTypeEnum.ActivityQingShen)
@@ -118,10 +114,12 @@ public class ActivityQingShen extends PlayerActivityBase {
 		if (event.getType() == EventTypeEnum.QuestFinish){
 			int taskId = event.getIntParameter(0);
 			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList();
-			int roundTaskId = roundConfigList.getLast().taskID;
-			if (taskId == roundTaskId){
-				log.info(String.format("open next round:%d, pid:%d, activityId:%d", round,player.getPlayerId(),id));
-				refreshActivity();
+			if (!roundConfigList.isEmpty()) {
+				int roundTaskId = roundConfigList.get(Math.max(0, roundConfigList.size() - 1)).taskID;
+				if (taskId == roundTaskId) {
+					log.info(String.format("open next round:%d, pid:%d, activityId:%d", round, player.getPlayerId(), id));
+					refreshActivity();
+				}
 			}
 		}
 	}

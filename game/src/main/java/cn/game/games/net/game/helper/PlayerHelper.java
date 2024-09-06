@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import cn.game.protocol.generated.manager.*;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -52,6 +51,18 @@ import cn.game.protocol.generated.config.RewardConfig;
 import cn.game.protocol.generated.config.versionConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
+import cn.game.protocol.generated.manager.ConditionManager;
+import cn.game.protocol.generated.manager.ConsumeManager;
+import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
+import cn.game.protocol.generated.manager.FundPassUpgradeManager;
+import cn.game.protocol.generated.manager.GameCommandManager;
+import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
+import cn.game.protocol.generated.manager.RandomGivenManager;
+import cn.game.protocol.generated.manager.RandomGroupManager;
+import cn.game.protocol.generated.manager.RewardManager;
+import cn.game.protocol.generated.manager.UserUpgradeManager;
+import cn.game.protocol.generated.manager.VIPManager;
+import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
@@ -555,13 +566,14 @@ public class PlayerHelper {
 //		}, Config.ONELINE_SAVE, Config.ONELINE_SAVE);
 		player.setPeriodicTask(Config.ONLINE_SAVE * 1000, r -> {
 			saveClientCache(player.getPlayerId());
+			PlayerHelper.saveSimplePlayerToRedis(player);
 		});
 		// 上线后生成自己的简单信息
-		try {
-			PlayerManager.getInstance().getAndLoadSimplePlayer(playerId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			PlayerManager.getInstance().getAndLoadSimplePlayer(playerId);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		player.handleEvent(EventTypeEnum.LoginFinish);
 
 		GameLogger.login(player);

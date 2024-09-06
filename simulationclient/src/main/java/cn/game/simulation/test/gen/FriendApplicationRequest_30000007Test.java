@@ -1,7 +1,8 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
@@ -14,7 +15,8 @@ public class FriendApplicationRequest_30000007Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007.newBuilder() ; 
 		
-		
+		builder.addPlayerIds(240200680 + "");
+		builder.setAgree(true);
 		
 		return builder.build() ; 
 	}
