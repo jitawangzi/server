@@ -42,7 +42,8 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	}
 
 	List<ActivityMeiRiBaoLiConfig> getConfigList(){
-		return ActivityMeiRiBaoLiManager.instance().list().stream().filter(activityMeiRiBaoLiConfig -> activityMeiRiBaoLiConfig.ActivityiD == getId()).collect(Collectors.toList());
+//		return ActivityMeiRiBaoLiManager.instance().list().stream().filter(activityMeiRiBaoLiConfig -> activityMeiRiBaoLiConfig.ActivityiD == getId()).collect(Collectors.toList());
+		return ActivityMeiRiBaoLiManager.instance().getActivityiDList(id);
 	}
 	@Override
 	public boolean newDay() {

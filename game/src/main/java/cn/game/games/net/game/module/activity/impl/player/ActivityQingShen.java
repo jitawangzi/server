@@ -51,7 +51,8 @@ public class ActivityQingShen extends PlayerActivityBase {
 	}
 
 	List<ActivityQingShenConfig> getConfigList() {
-		return ActivityQingShenManager.instance().list().stream().filter(activityQingShenConfig -> activityQingShenConfig.ActivityiD == getId()).collect(Collectors.toList());
+//		return ActivityQingShenManager.instance().list().stream().filter(activityQingShenConfig -> activityQingShenConfig.ActivityiD == getId()).collect(Collectors.toList());
+		return ActivityQingShenManager.instance().getActivityiDList(id);
 	}
 	List<ActivityQingShenConfig> getRoundConfigList(){
 		return getConfigList().stream().filter(activityQingShenConfig -> activityQingShenConfig.Round == round).toList();

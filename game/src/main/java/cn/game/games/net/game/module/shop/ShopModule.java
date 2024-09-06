@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.game.core.base.ServerContext;
+import cn.game.protocol.generated.manager.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -25,12 +27,6 @@ import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.protocol.generated.manager.FundPassManager;
-import cn.game.protocol.generated.manager.HeishiManager;
-import cn.game.protocol.generated.manager.HunhuoManager;
-import cn.game.protocol.generated.manager.RechargeStoreManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
@@ -40,7 +36,7 @@ import cn.game.util.Rnd;
 
 public class ShopModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LoginFinish, EventTypeEnum.NewDay,
-			EventTypeEnum.NewWeek,
+			EventTypeEnum.NewWeek,EventTypeEnum.NewMonth,
 			EventTypeEnum.LevelUp, EventTypeEnum.FuncOpen, EventTypeEnum.CostItem };
 
 //	private Map<Long, ShopItem> itemsMap = new HashMap<Long, ShopItem>();
@@ -199,6 +195,7 @@ public class ShopModule extends BasePlayerModule {
 	private void initShop() {
 		refreshShopNewDay();
 		refreshShopNewWeek();
+		refreshShopNewMonth();
 	}
 
 	private void refreshShopNewDay() {
@@ -218,6 +215,17 @@ public class ShopModule extends BasePlayerModule {
 		}
 		// 体力购买商店
 		refreshStaminaItems();
+
+		//刷新每日商店
+		refreshEveryDayShop();
+	}
+
+	/**
+	 * 每日礼包
+	 */
+	private void refreshEveryDayShop() {
+		int shop = 12;
+		refreshShopByShopType(shop);
 	}
 
 	public void refreshHeishiItems() {
@@ -270,6 +278,21 @@ public class ShopModule extends BasePlayerModule {
 
 	private void refreshShopNewWeek() {
 		refreshHunhuoItems();
+
+		//刷新 每周礼包
+		int shop = 13;
+		refreshShopByShopType(shop);
+	}
+
+	private void refreshShopByShopType(int shop) {
+		shopItemsMap.removeAll(shop);
+		ResidentPackManager.instance().list().stream().filter(residentPackConfig -> residentPackConfig.ShopID == shop)
+				.forEach(residentPackConfig -> {
+					shopItemsMap.put(shop,new ShopItem(residentPackConfig.ShopItemId));
+					if (!ServerContext.getInstance().getRunMode().isProduction()){
+						log.info(String.format("refreshShopByShopType shopId:%d, itemId:%d, pid:%d", shop,residentPackConfig.ShopItemId,player.getPlayerId()));
+					}
+				});
 	}
 
 	/*private void refreshShop() {
@@ -371,7 +394,10 @@ public class ShopModule extends BasePlayerModule {
 		case NewWeek: {
 			refreshShopNewWeek();
 			break;
-
+		}
+		case NewMonth:{
+			refreshShopNewMonth();
+			break;
 		}
 		case CostItem: {
 			int id = event.getIntParameter(0);
@@ -393,6 +419,10 @@ public class ShopModule extends BasePlayerModule {
 			break;
 		}
 		}
+	}
+
+	private void refreshShopNewMonth() {
+		refreshShopByShopType(14);
 	}
 
 	@Override

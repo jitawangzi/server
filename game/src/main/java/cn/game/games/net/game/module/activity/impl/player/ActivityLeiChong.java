@@ -79,7 +79,8 @@ public class ActivityLeiChong extends PlayerActivityBase {
 	}
 
 	private List<ActivityLeiChongConfig> getActivityLeiChongConfigList() {
-		return ActivityLeiChongManager.instance().list().stream().filter(activityLeiChongConfig -> activityLeiChongConfig.ActivityiD == id).collect(Collectors.toList());
+//		return ActivityLeiChongManager.instance().list().stream().filter(activityLeiChongConfig -> activityLeiChongConfig.ActivityiD == id).collect(Collectors.toList());
+		return ActivityLeiChongManager.instance().getActivityiDList(id);
 	}
 
 	@Override
