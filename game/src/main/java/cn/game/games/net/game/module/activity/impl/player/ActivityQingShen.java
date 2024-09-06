@@ -41,7 +41,9 @@ public class ActivityQingShen extends PlayerActivityBase {
 				.setActivityId(getId())
 				.setRound(round);
 		List<ActivityQingShenConfig> configList = getRoundConfigList();
-		res.setRoundTaskId(configList.getLast().taskID);
+		if (!configList.isEmpty()){
+			res.setRoundTaskId(configList.get(Math.max(0,configList.size() - 1)).taskID);
+		}
 		for(int i = 0; i < configList.size() - 1; i++) {
 			res.addTaskIds(configList.get(i).taskID);
 		}
