@@ -16,7 +16,6 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.core.BasePlayerModule;
-import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.FriendApplicationMapper;
@@ -55,9 +54,7 @@ public class FriendModule extends BasePlayerModule {
 	private int giftReceiveCount;
 	/** 每天推荐好友的刷新次数次数 */
 	private int refreshCount;
-
-	@JsonIgnore
-	private List<SimplePlayer> lastRefreshPlayers;
+	private List<Long> lastRefreshPlayers;
 
 	@Override
 	public void init() {
@@ -67,7 +64,7 @@ public class FriendModule extends BasePlayerModule {
 		friends = new HashMap<Long, Friend>();
 		applications = new HashMap<>();
 		myApplications = new HashSet<>();
-		lastRefreshPlayers = new ArrayList<SimplePlayer>();
+		lastRefreshPlayers = new ArrayList<Long>();
 	}
 
 	public boolean addFriend(long id, String serverId, byte relation) {
@@ -243,10 +240,12 @@ public class FriendModule extends BasePlayerModule {
 	public void setLastRefreshTime(long lastRefreshTime) {
 		this.lastRefreshTime = lastRefreshTime;
 	}
-	public List<SimplePlayer> getLastRefreshPlayers() {
+
+	public List<Long> getLastRefreshPlayers() {
 		return lastRefreshPlayers;
 	}
-	public void setLastRefreshPlayers(List<SimplePlayer> lastRefreshPlayers) {
+
+	public void setLastRefreshPlayers(List<Long> lastRefreshPlayers) {
 		this.lastRefreshPlayers = lastRefreshPlayers;
 	}
 
@@ -259,8 +258,8 @@ public class FriendModule extends BasePlayerModule {
 		Set<Long> ret = new HashSet<Long>();
 		ret.addAll(this.friends.keySet());
 		ret.addAll(myApplications);
-		for (SimplePlayer player : lastRefreshPlayers) {
-			ret.add(player.getId());
+		for (Long playerId : lastRefreshPlayers) {
+			ret.add(playerId);
 		}
 		ret.add(playerId);
 		return ret;

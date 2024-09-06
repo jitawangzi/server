@@ -71,6 +71,7 @@ public class SimplePlayer implements Serializable {
 		this.gender = (byte) (player.getData().getGender().booleanValue() == true ? 1 : 0);
 		this.offlineTime = player.getData().getOfflineTime();
 		this.online = player.isOnline();
+		this.level = player.getLevel();
 		
 		this.battleId = player.getChapterModule().getMainBattleHighest();
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
