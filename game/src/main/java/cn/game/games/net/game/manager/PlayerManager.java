@@ -2,12 +2,14 @@ package cn.game.games.net.game.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
@@ -23,6 +25,7 @@ import com.google.common.cache.CacheBuilder;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.ForbidAccount;
@@ -59,6 +62,7 @@ public class PlayerManager {
 
 	private ConcurrentHashMap<Long, String> id_names = new ConcurrentHashMap<>();
 	/** 本服玩家简略信息，在线和离线都有 */
+	@Deprecated
 	private Cache<Long, SimplePlayer> simplePlayers = CacheBuilder.newBuilder().maximumSize(8192).expireAfterWrite(60,
 			TimeUnit.MINUTES).build();
 	/** 其他服务器玩家简略信息， */
@@ -779,6 +783,38 @@ public class PlayerManager {
 
 		return ret;
 
+	}
+
+	public Future<List<SimplePlayer>> searchPlayersAsync(Player player) {
+
+		List<SimplePlayer> ret = new ArrayList<>();
+
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		Set<Long> excludeIds = friendModule.excludeIds();
+		CompletionStage<Map<String, Long>> stage = PlayerNameManager
+				.getInstance()
+				.getRandomUsernameFromAll(20)
+				.thenCompose(names -> PlayerNameManager.getInstance().getPlayerIds(names));
+		Future<Map<String, Long>> future = Future.fromCompletionStage(stage);
+		Future<List<SimplePlayer>> playersFuture = future
+				.map(r -> r.values().stream().map(String::valueOf).toArray(String[]::new))
+				.compose(r -> RedisLocalCache.getInstance().multiGetAsync(CacheType.PLAYER_SIMPLE, r));
+		playersFuture.map(r -> {
+			for (SimplePlayer simplePlayer : r) {
+				if (excludeIds.contains(simplePlayer.getId())) {
+					continue;
+				}
+				if (simplePlayer.getId() == player.getPlayerId()) {
+					continue;
+				}
+				ret.add(simplePlayer);
+			}
+			Collections.sort(ret, (a, b) -> {
+				return (int) (b.offlineTime - a.offlineTime);
+			});
+			return ret.subList(0, 5);
+		});
+		return playersFuture;
 	}
 
 	private List<SimplePlayer> randomPlayer(List<SimplePlayer> list, int count, List<SimplePlayer> exclude) {

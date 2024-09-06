@@ -9,13 +9,13 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class FriendApplyRequest_30000005Test extends ServerTest{
+public class PlayerShowRequest_01000039Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005.newBuilder() ; 
+		cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.newBuilder() ; 
 		
-		builder.addPlayerIds(240200679 + "");
+		builder.setPlayerId(240200669 + "");
 		
 		return builder.build() ; 
 	}
@@ -26,7 +26,7 @@ public class FriendApplyRequest_30000005Test extends ServerTest{
 		
 		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
 		
-		ServerTestContext.send(client, () -> new FriendApplyRequest_30000005Test().getMessage(client));
+		ServerTestContext.send(client, () -> new PlayerShowRequest_01000039Test().getMessage(client));
 
 		
 	}

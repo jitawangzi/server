@@ -18,11 +18,15 @@ import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.FriendHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.FriendMsg.FriendAddPush_30000023;
 import cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007;
 import cn.game.protocol.protobuf.FriendMsg.FriendApplicationResponse_30000008;
@@ -36,6 +40,7 @@ import cn.game.protocol.protobuf.FriendMsg.FriendBlackResponse_30000011;
 import cn.game.protocol.protobuf.FriendMsg.FriendDelPush_30000024;
 import cn.game.protocol.protobuf.FriendMsg.FriendDeleteRequest_30000009;
 import cn.game.protocol.protobuf.FriendMsg.FriendDeleteResponse_3000000a;
+import cn.game.protocol.protobuf.FriendMsg.FriendGiftPush_30000028;
 import cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveRequest_30000014;
 import cn.game.protocol.protobuf.FriendMsg.FriendGiftReceiveResponse_30000015;
 import cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012;
@@ -46,6 +51,7 @@ import cn.game.protocol.protobuf.FriendMsg.FriendListResponse_30000002;
 import cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003;
 import cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 
 @Component
@@ -68,11 +74,12 @@ public class FriendHandler extends BaseHandler {
 		putInvoker(PbProtocol.FriendApplicationRequest_30000007, this::application);
 		putInvoker(PbProtocol.FriendDeleteRequest_30000009, this::delete);
 		putInvoker(PbProtocol.FriendBlackRequest_30000010, this::black);
-		putInvoker(PbProtocol.FriendGiftRequest_30000012, this::friendship);
-		putInvoker(PbProtocol.FriendGiftReceiveRequest_30000014, this::friendshipReceive);
+		putInvoker(PbProtocol.FriendGiftRequest_30000012, this::gift);
+		putInvoker(PbProtocol.FriendGiftReceiveRequest_30000014, this::giftReceive);
 		putInvoker(PbProtocol.FriendApplyPush_30000022, this::remoteApply);
 		putInvoker(PbProtocol.FriendAddPush_30000023, this::remoteAdd);
 		putInvoker(PbProtocol.FriendDelPush_30000024, this::remoteDelete);
+		putInvoker(PbProtocol.FriendGiftPush_30000028, this::remoteGift);
 
 	}
 
@@ -141,70 +148,21 @@ public class FriendHandler extends BaseHandler {
 	protected void recommend(NetClient client, Object message) {
 		FriendRecommendRequest_30000003 req = (FriendRecommendRequest_30000003) message;
 //		boolean refresh = req.getRefresh();
-
-		int maxTime = 5000;
-
-		FriendRecommendResponse_30000004.Builder builder = FriendRecommendResponse_30000004.newBuilder();
+		FriendRecommendResponse_30000004.Builder resp = FriendRecommendResponse_30000004.newBuilder();
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		FriendModule friendModule = player.getModule(FriendModule.class);
-		long lastRefreshTime = friendModule.getLastRefreshTime();
-//		if (lastRefreshTime > 0 && (System.currentTimeMillis() - lastRefreshTime) < maxTime) {
-//			List<SimplePlayer> lastRefreshPlayers = friendModule.getLastRefreshPlayers();
-//			builder.addAllFriends(PbBuilder.buildSimplePlayerInfos(lastRefreshPlayers));
-//			if (refresh) {
-//				builder.setNextFreshTime((int) ((lastRefreshTime + maxTime) / 1000));
-//			}
-//			client.sendProtocol(builder.build());
-//			return;
-//		}
-//
-//		TaskManager.getInstance().addWorkerTask(() -> {
-//			List<SimplePlayer> players = PlayerManager.getInstance().searchPlayers(client.getPlayerId());
-//			for (SimplePlayer p : players) {
-//
-//				builder.addFriends(PbBuilder.buildSimplePlayerInfo(p));
-//			}
-//			client.sendProtocol(builder.build());
-//		});
 
-	}
-
-	protected void search(NetClient client, Object message) {
-		/*FriendSearchRequest_30000020 request = (FriendSearchRequest_30000020) message;
-		
-		String server = request.getServerId();
-		long targetId = Long.parseLong(request.getPlayerId());
-		
-		TaskManager.getInstance().addWorkerTask(() -> {
-			FriendSearchResponse_30000021.Builder response = FriendSearchResponse_30000021.newBuilder();
-			long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-			SimplePlayer simplePlayer = null ; 
-			try {
-				if (GameServer.getInstance().isLocalServer(server)) {
-					if (FriendHelper.isBlack(playerId, targetId) || FriendHelper.isBlack(targetId, playerId)) {
-						client.sendProtocol(PlayerBriefInfoOtherRequest_01000009.getDefaultInstance());
-						return;
-					}
-					simplePlayer = PlayerManager.getInstance().getAndLoadSimplePlayer(targetId); 
-				} else {
-					simplePlayer = GameServer.getInstance().getCrossGameServerInterfaceSync().searchFriendPlayer(targetId, playerId,
-							server);
-		
-				}
-			} catch (Exception e) {
-				log.error("", e);
-			}
-			int error = 0;
-			if (simplePlayer == null) {
-				error = ErrorMsgEnum.player_not_found.getId();
-			}
-			response.setPlayer(PbBuilder.buildSimplePlayerInfo(simplePlayer));
-			client.sendProtocol(response.build(), error);
-		});
-		
-		FriendSearchResponse_30000021.Builder resp = FriendSearchResponse_30000021.newBuilder();
-		*/
+		if (friendModule.getRefreshCount() >= GlobalConst.FriendFresh) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		friendModule.setRefreshCount(friendModule.getRefreshCount() + 1);
+		Future<List<SimplePlayer>> searchPlayersAsync = PlayerManager.getInstance().searchPlayersAsync(player);
+		searchPlayersAsync.onSuccess(result -> {
+			resp.addAllPlayers(PbBuilder.buildSimplePlayerInfos(result));
+			client.sendProtocol(resp.build());
+		}).onFailure(player::fail);
 
 	}
 	protected void apply(NetClient client, Object message) {
@@ -213,7 +171,15 @@ public class FriendHandler extends BaseHandler {
 
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		FriendModule myFriendModule = player.getModule(FriendModule.class);
+
 		List<String> friendIdList = request.getPlayerIdsList();
+		if (myFriendModule.getApplicationCount() + friendIdList.size() > GlobalConst.FriendApplicationMax) {
+			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		myFriendModule.setApplicationCount(myFriendModule.getApplicationCount() + friendIdList.size());
+
 		for (int i = 0; i < friendIdList.size(); i++) {
 			Long id = Long.valueOf(friendIdList.get(i));
 			if (id == playerId) {
@@ -233,7 +199,6 @@ public class FriendHandler extends BaseHandler {
 //			FriendHelper.receiveApplication(id, playerId, ServerContext.getInstance().getServerId());
 		
 			// 如果在我的黑名单中，则先从黑名单中删除
-			FriendModule myFriendModule = player.getModule(FriendModule.class);
 			if (myFriendModule.isBlack(id)) {
 				myFriendModule.delete(id);
 			}
@@ -326,58 +291,69 @@ public class FriendHandler extends BaseHandler {
 					.build();
 			VxHolder.requestRemoteServer(serverId, build);
 		} else {
-			FriendHelper.deleteFriend(playerId, friendId);
+			FriendHelper.deleteFriend(friendId, playerId);
 		}
 
 		client.sendProtocol(resp.build());
 	}
 
-	protected void friendship(NetClient client, Object message) {
+	protected void gift(NetClient client, Object message) {
 
 		FriendGiftRequest_30000012 request = (FriendGiftRequest_30000012) message;
+		FriendGiftResponse_30000013 resp = FriendGiftResponse_30000013.getDefaultInstance();
 		ProtocolStringList friendIdList = request.getFriendIdList();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		FriendModule friendModule = player.getModule(FriendModule.class);
+
+		if (friendModule.getSendGiftCount() + friendIdList.size() > GlobalConst.FriendValueGive) {
+			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		friendModule.setSendGiftCount(friendModule.getSendGiftCount() + friendIdList.size());
+
 		for (String string : friendIdList) {
 			long friendId = Long.parseLong(string);
 			Friend friend = friendModule.getFriend(friendId);
-			if (!friendModule.isFriend(friend) || friend.getGift()) {
+			if (!friendModule.isFriend(friendId) || friend.getGift()) {
 				continue;
 			}
-			Friend friendTarget;
-			if (PlayerManager.getInstance().hasCache(friendId)) {
-				FriendModule targetFriendOp = player.getModule(FriendModule.class);
-				friendTarget = targetFriendOp.getFriend(playerId);
-				if (friendTarget != null) {
-					friendTarget.setGifted(true);
-					DAO.update(friendTarget);
-				}
+			if (PlayerManager.getInstance().isOnline(friendId)) {
+				String serverId = PlayerManager.getInstance().getServerId(friendId);
+				FriendGiftPush_30000028 build = FriendGiftPush_30000028.newBuilder().setRecvPlayerId(friend.getFriendId()).setSendPlayerId(playerId).build();
+				VxHolder.requestRemoteServer(serverId, build);
 			} else {
-				friendTarget = new Friend();
+				Friend friendTarget = new Friend();
 				friendTarget.setFriendId(playerId);
 				friendTarget.setPlayerId(friendId);
 				friendTarget.setGifted(true);
-				
-				DAO.update(friendTarget);
-//				DAO.execute(FriendMapper.class,
-//						MapperConstant.updateByPrimaryKeySelective, friendTarget);
+
+				DAO.updateSelective(friendTarget);
 			}
+
 			friend.setGift(true);
 			DAO.update(friend);
-
 		}
 
 		client.sendProtocol(FriendGiftResponse_30000013.getDefaultInstance());
-
 	}
 
-	protected void friendshipReceive(NetClient client, Object message) {
+	protected void giftReceive(NetClient client, Object message) {
 		FriendGiftReceiveRequest_30000014 request = (FriendGiftReceiveRequest_30000014) message;
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-		for (String idString : request.getFriendIdList()) {
-			long id = Long.parseLong(idString);
-			FriendModule friendModule = player.getModule(FriendModule.class);
+		FriendGiftReceiveResponse_30000015.Builder resp = FriendGiftReceiveResponse_30000015.newBuilder();
+		ProtocolStringList friendIdList = request.getFriendIdList();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		if (friendModule.getGiftReceiveCount() + friendIdList.size() > GlobalConst.FriendValueReceive) {
+			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+			return;
+		}
+		friendModule.setGiftReceiveCount(friendModule.getGiftReceiveCount() + friendIdList.size());
 
+		int addCount = 0;
+		for (String idString : friendIdList) {
+			long id = Long.parseLong(idString);
 			Friend friend = friendModule.getFriend(id);
 			if (friend == null) {
 				continue;
@@ -385,27 +361,30 @@ public class FriendHandler extends BaseHandler {
 			if (friend.getReceive()) {
 				continue;
 			}
+			if (!friend.getGifted()) {
+				continue;
+			}
 			friend.setReceive(true);
 			DAO.update(friend);
-
+			addCount += GlobalConst.FriendValueEverytime;
 		}
-
-		client.sendProtocol(FriendGiftReceiveResponse_30000015.getDefaultInstance());
-
+		List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.FriendshipValue.ID, addCount, OpType.Friend);
+		resp.addAllRewards(resources);
+		client.sendProtocol(resp.build());
 	}
 
 	protected void delete(NetClient client, Object message) {
 
 		FriendDeleteRequest_30000009 request = (FriendDeleteRequest_30000009) message;
 		long friendId = Long.valueOf(request.getId());
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		FriendModule friendModule = player.getModule(FriendModule.class);
 		Friend friend = friendModule.getFriend(friendId);
 		if (friend == null) {
 			client.sendProtocol(FriendDeleteResponse_3000000a.getDefaultInstance(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-
 		if (PlayerManager.getInstance().isOnline(friendId)) {
 			String serverId = PlayerManager.getInstance().getServerId(friendId);
 			FriendDelPush_30000024 build = FriendDelPush_30000024.newBuilder().setPlayerId(friend.getFriendId()).setFriendId(playerId).build();
@@ -413,17 +392,9 @@ public class FriendHandler extends BaseHandler {
 		} else {
 			FriendHelper.deleteFriend(friendId, playerId);
 		}
-//		if (!GameServer.getInstance().isLocalServer(friend.getServerId())) {
-//			FriendDelPush_30000024 build = FriendDelPush_30000024.newBuilder().setPlayerId(friend.getFriendId()).setFriendId(playerId)
-//					.build();
-//			GameClientManager.getInstance().sendToGameServer(friend.getServerId(), build);
-//		} else {
-//			FriendHelper.deleteFriend(friendId, playerId);
-//		}
 		FriendHelper.deleteFriend(playerId, friendId);
 
 		client.sendProtocol(FriendDeleteResponse_3000000a.getDefaultInstance());
-
 	}
 	protected void remoteDelete(NetClient client, Object message) {
 
@@ -434,7 +405,21 @@ public class FriendHandler extends BaseHandler {
 		FriendHelper.deleteFriend(playerId, friendId);
 
 	}
-	
 
+	protected void remoteGift(NetClient client, Object message) {
+
+		FriendGiftPush_30000028 request = (FriendGiftPush_30000028) message;
+		long sendPlayerId = request.getSendPlayerId();
+		long recvPlayerId = request.getRecvPlayerId();
+
+		Player player = PlayerManager.getInstance().getPlayer(recvPlayerId);
+
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		Friend friend = friendModule.getFriend(sendPlayerId);
+		if (friend != null) {
+			friend.setGifted(true);
+			DAO.update(friend);
+		}
+	}
 
 }

@@ -1,8 +1,12 @@
 package cn.game.games.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 
 /**
@@ -28,12 +32,17 @@ public class SimplePlayer implements Serializable {
 	public boolean online = true;
 
 	/** 所在服务器id，并不是真正的在哪个服务器，只是加一个标签 */
-	public String serverId;
+	public String serverId = "";
 	/** 所在服务器名，并不是真正的在哪个服务器，只是加一个标签 */
-	public String serverName;
+	public String serverName = "";
 	/** 被点赞数量 */
 	public int praisedCount;
 	public Object accountAdChannel;
+
+	/** 关卡进度 */
+	public int battleId;
+
+	public List<Hero> heros;
 
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
 			String unionName, long offLinetime) {
@@ -62,6 +71,9 @@ public class SimplePlayer implements Serializable {
 		this.gender = (byte) (player.getData().getGender().booleanValue() == true ? 1 : 0);
 		this.offlineTime = player.getData().getOfflineTime();
 		this.online = player.isOnline();
+		
+		this.battleId = player.getChapterModule().getMainBattleHighest();
+		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -94,7 +106,19 @@ public class SimplePlayer implements Serializable {
 		builder.setCombatEffectiveness(combatEffectiveness);
 
 		return builder.build();
+	}
 
+	public PlayerShowInfo toShowInfo() {
+
+		PlayerShowInfo.Builder showInfo = PlayerShowInfo.newBuilder();
+		showInfo.setBattleId(battleId);
+		if (unionName != null) {
+			showInfo.setGuild(unionName);
+		}
+		for (Hero hero : heros) {
+			showInfo.addHeros(hero.toHeroInfo());
+		}
+		return showInfo.build();
 	}
 
 	public SimplePlayer() {

@@ -18,7 +18,12 @@ import java.util.function.Function;
  * 2010-12-17 下午02:02:48
  */
 public final class Rnd {
-	private static final Random random = new Random();
+	private static final ThreadLocal<Random> threadLocalRandom = ThreadLocal.withInitial(Random::new);
+
+	private static Random getRandom() {
+		return threadLocalRandom.get();
+	}
+//	private static final Random random = new Random();
 	private static final int RANDOM_CONST = 10000;
 	/** 按百分比随机 */
 	public static final int RANDOM_PERCENTAGE_CONST = 100;
@@ -33,7 +38,7 @@ public final class Rnd {
 	 * @throws
 	 */
 	public static final double get() {
-		return random.nextDouble();
+		return getRandom().nextDouble();
 	}
 
 	/**
@@ -44,7 +49,7 @@ public final class Rnd {
 	 * @return int 返回类型 @throws
 	 */
 	public static final int get(int min, int max) {
-		return min + (int) Math.floor(random.nextDouble() * (max - min + 1));
+		return min + (int) Math.floor(getRandom().nextDouble() * (max - min + 1));
 	}
 
 	/**
@@ -69,7 +74,7 @@ public final class Rnd {
 	 * @return int 返回类型 @throws
 	 */
 	public static final int nextInt(int n) {
-		return (int) Math.floor(random.nextDouble() * n);
+		return (int) Math.floor(getRandom().nextDouble() * n);
 	}
 	
 	/** 
@@ -79,7 +84,7 @@ public final class Rnd {
 	 * @return
 	 */
 	public static final int nextInt(int min, int max) {
-		return (int) Math.floor(min + random.nextDouble() * (max - min));
+		return (int) Math.floor(min + getRandom().nextDouble() * (max - min));
 	}
 
 	/**
@@ -89,7 +94,7 @@ public final class Rnd {
 	 * @return float 返回类型 @throws
 	 */
 	public static final float nextFloat(float f) {
-		return (float) (random.nextDouble() * f);
+		return (float) (getRandom().nextDouble() * f);
 	}
 
 	/**
@@ -99,11 +104,11 @@ public final class Rnd {
 	 * @throws
 	 */
 	public static final int nextInt() {
-		return random.nextInt();
+		return getRandom().nextInt();
 	}
 
 	public static final long nextLong() {
-		return random.nextLong();
+		return getRandom().nextLong();
 	}
 
 	/**
@@ -114,7 +119,7 @@ public final class Rnd {
 	 * @throws
 	 */
 	public static final double nextDouble() {
-		return random.nextDouble();
+		return getRandom().nextDouble();
 	}
 
 	/**
@@ -125,7 +130,7 @@ public final class Rnd {
 	 * @throws
 	 */
 	public static final double nextDouble(double from, double to) {
-		return from + random.nextDouble() * (to - from);
+		return from + getRandom().nextDouble() * (to - from);
 	}
 
 	/**
@@ -135,7 +140,7 @@ public final class Rnd {
 	 * @throws
 	 */
 	public static final double nextGaussian() {
-		return random.nextGaussian();
+		return getRandom().nextGaussian();
 	}
 
 	/**
@@ -145,7 +150,7 @@ public final class Rnd {
 	 * @throws
 	 */
 	public static final boolean nextBoolean() {
-		return random.nextBoolean();
+		return getRandom().nextBoolean();
 	}
 
 	/**
@@ -156,7 +161,7 @@ public final class Rnd {
 	 * @throws
 	 */
 	public static final void nextBytes(final byte[] array) {
-		random.nextBytes(array);
+		getRandom().nextBytes(array);
 	}
 
 	/**
@@ -417,7 +422,7 @@ public final class Rnd {
 
 		// Fisher-Yates 洗牌算法
 		for (int i = array.length - 1; i > 0; i--) {
-			int j = random.nextInt(i + 1);
+			int j = getRandom().nextInt(i + 1);
 			// 交换 array[i] 和 array[j]
 			int temp = array[i];
 			array[i] = array[j];

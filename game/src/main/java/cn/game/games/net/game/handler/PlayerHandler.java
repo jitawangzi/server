@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
@@ -23,6 +24,7 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
@@ -33,9 +35,7 @@ import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
 import cn.game.games.util.KeywordFilter;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.generated.config.RandomNameConfig;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -68,6 +68,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecResponse_01000066;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointResponse_01000076;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerSearchResponse_0100000c;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerShowResponse_0100003a;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -78,7 +80,6 @@ import cn.game.util.ConversionUtil;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
-import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -122,7 +123,34 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerGuideRequest_01000060, this::guide);
 		putInvoker(PbProtocol.PlayerPatrolInfoRequest_01000070, this::patrolInfo);
 		putInvoker(PbProtocol.PlayerRedPointRequest_01000075, this::red);
+		putInvoker(PbProtocol.PlayerSearchRequest_0100000b, this::searchPlayer);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
+	}
+
+	private void searchPlayer(NetClient client, Object message) {
+		PlayerSearchRequest_0100000b request = (PlayerSearchRequest_0100000b) message;
+		PlayerSearchResponse_0100000c.Builder resp = PlayerSearchResponse_0100000c.newBuilder();
+		String playerName = request.getPlayerName();
+		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
+		PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
+			long searchPlayerId = 0 ; 
+			if (r == null) {
+				searchPlayerId = playerId; 
+			} else {
+				searchPlayerId = r;
+			}
+			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(searchPlayerId));
+		}).onSuccess(r -> {
+			SimplePlayer simplePlayer = (SimplePlayer) r;
+			if (simplePlayer == null) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
+				return;
+			}
+			resp.setPlayer(simplePlayer.toSimplePlayerInfo());
+			client.sendProtocol(resp);
+		}).onFailure(t -> {
+			client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
+		});
 	}
 
 	private void red(NetClient client, Object message) {
@@ -501,19 +529,27 @@ public class PlayerHandler extends BaseHandler {
 
 	protected void show(NetClient client, Object message) {
 		PlayerShowRequest_01000039 request = (PlayerShowRequest_01000039) message;
-//		String serverId = request.getServerId();
-		long id = Long.parseLong(request.getPlayerId());
-		TaskManager.getInstance().addWorkerTask(() -> {
-			PlayerShowResponse_0100003a.Builder response = PlayerShowResponse_0100003a.newBuilder();
-			int error = 0;
-			try {
-				SimplePlayer simplePlayer = PlayerManager.getInstance().getAndLoadSimplePlayer(id, "");
-				response.setPlayer(PbBuilder.buildPlayerShowInfo(simplePlayer));
-			} catch (Exception e) {
-				e.printStackTrace();
-				error = ErrorMsgEnum.player_not_found.getId();
+		PlayerShowResponse_0100003a.Builder resp = PlayerShowResponse_0100003a.newBuilder();
+		String playerName = request.getPlayerName();
+		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
+		PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
+			long searchPlayerId = 0;
+			if (r == null) {
+				searchPlayerId = playerId;
+			} else {
+				searchPlayerId = r;
 			}
-			client.sendProtocol(response.build(), error);
+			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(searchPlayerId));
+		}).onSuccess(r -> {
+			SimplePlayer simplePlayer = (SimplePlayer) r;
+			if (simplePlayer == null) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
+				return;
+			}
+			resp.setPlayer(simplePlayer.toShowInfo());
+			client.sendProtocol(resp);
+		}).onFailure(t -> {
+			client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
 		});
 	}
 
@@ -670,7 +706,12 @@ public class PlayerHandler extends BaseHandler {
 	}
 
 	private Future<PlayerData> createNewPlayer(long playerId, Account account, GameClient client) {
-		return createPlayer(account, client, playerId, null, true, 0, false, true);
+
+		return PlayerNameManager
+				.getInstance()
+				.createUserName()
+				.compose(name -> createPlayer(account, client, playerId, name, true, 0, false, true))
+				.compose(PlayerNameManager.getInstance()::saveName2Id);
 	}
 
 	private Future<Player> handleExistingPlayer(PlayerData player, Account account, GameClient client) {
@@ -775,7 +816,7 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setCreateDate(DateUtil.getStringDate());
 //		player.getData().setName(create.getName());
 		// 随机一个名字
-		name = randomName();
+//		name = randomName();
 //		if (StringUtils.isEmpty(name)) {
 //			playerData.setName(id + "");
 //		} else {
@@ -805,20 +846,4 @@ public class PlayerHandler extends BaseHandler {
 		return promise.future();
 	}
 
-	private String randomName() {
-		List<RandomNameConfig> list = RandomNameManager.instance().list();
-		RandomNameConfig randomOne = Rnd.randomOne(list);
-		String xing = randomOne.Familyname;
-		String name1;
-		String name2;
-		boolean isMan = Rnd.nextBoolean();
-		if (isMan) {
-			name1 = Rnd.randomOne(list).MenName1;
-//			name2 = Rnd.randomOne(list).MenName2;
-		} else {
-			name1 = Rnd.randomOne(list).WomenName1;
-//			name2 = Rnd.randomOne(list).WomenName2;
-		}
-		return xing + name1;
-	}
 }

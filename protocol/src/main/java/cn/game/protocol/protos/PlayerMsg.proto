@@ -172,6 +172,32 @@ message GuideInfo{
 }
 
 
+// 搜索玩家
+message PlayerSearchRequest_0100000b{
+	// 有id尽量传id，按照id搜，没有id传name按照name搜
+	 string playerId = 1;
+	 string playerName = 2;
+}
+
+//  搜索出来的玩家
+message PlayerSearchResponse_0100000c{
+   SimplePlayerInfo player = 1;
+}
+
+
+/*** 获取一个玩家的展示数据 ***/
+message PlayerShowRequest_01000039{
+	// 有id尽量传id，按照id搜，没有id传name按照name搜
+	 string playerId = 1;
+	 string playerName = 2;
+}
+
+message PlayerShowResponse_0100003a{
+	// 玩家基本信息SimplePlayerInfo在请求之前应该能获取到，这里就不发了。
+	PlayerShowInfo player = 1;
+}
+
+
 //@NotUseStart
 
 /*** 获取一组玩家简略信息 本服 ***/
@@ -191,33 +217,6 @@ message PlayerBriefInfoOtherRequest_01000009{
 
 message PlayerBriefInfoOtherResponse_0100000a{
 	repeated SimplePlayerInfo players = 1;
-}
-
-
-// 搜索玩家
-message PlayerSearchRequest_0100000b{
-	// 有id尽量传id，按照id搜，没有id传name按照name搜
-	 string playerId = 1;
-	 string playerName = 2;
-}
-
-//  搜索出来的玩家
-message PlayerSearchResponse_0100000c{
-   SimplePlayerInfo player = 1;
-}
-
-
-/*** 获取一个玩家的展示数据 ***/
-message PlayerShowRequest_01000039{
-	// 有id尽量传id，按照id搜，没有id传name按照name搜
-	 string playerId = 1;
-	 string playerName = 2;
-
-}
-
-message PlayerShowResponse_0100003a{
-	// 玩家基本信息SimplePlayerInfo在请求之前应该能获取到，这里就不发了。
-	PlayerShowInfo player = 1;
 }
 
 /*** 炼金请求 ***/

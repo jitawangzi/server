@@ -10,7 +10,6 @@ public abstract class ServerTest {
 
 	static {
 		try {
-      System.setProperty("user.dir", "D:\\Party\\server\\server\\simulationclient");
 			LoggerManager.init();
 		} catch (Exception e) {
 			e.printStackTrace();
