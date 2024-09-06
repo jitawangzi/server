@@ -813,10 +813,10 @@ public class PlayerHandler extends BaseHandler {
 		String name2;
 		boolean isMan = Rnd.nextBoolean();
 		if (isMan) {
-			name1 = Rnd.randomOne(list).MenName1;
+			name1 = Rnd.randomOne(list).Name;
 //			name2 = Rnd.randomOne(list).MenName2;
 		} else {
-			name1 = Rnd.randomOne(list).WomenName1;
+			name1 = Rnd.randomOne(list).Name;
 //			name2 = Rnd.randomOne(list).WomenName2;
 		}
 		return xing + name1;

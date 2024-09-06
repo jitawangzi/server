@@ -7,10 +7,14 @@ import java.util.function.Consumer;
 
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.manager.ConditionManager;
+import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.QuestMsg.QuestConditionCompletePush_20500001;
 import cn.game.protocol.protobuf.QuestMsg.QuestInfo;
@@ -260,6 +264,7 @@ public class Quest implements Serializable, DbEntity {
 			QuestModule questModule = player.getModule(QuestModule.class);
 			if (this.getState() == QuestHelper.ACCEPTED) {
 				questModule.setState(this, QuestHelper.CAN_GIVEWARD, true);
+				player.handleEvent(EventTypeEnum.QuestFinish,getId());
 			}
 		};
 		if (conditionContainer == null) {
@@ -329,5 +334,23 @@ public class Quest implements Serializable, DbEntity {
 		}
 		questInfo.setState(getState());
 		return questInfo.build();
+	}
+
+	/**
+	 * 设置任务的进度值
+	 * @param updateVal 新的进度值
+	 */
+	public void setConditionValue(int updateVal) {
+		setConditionValue(0,updateVal);
+	}
+
+	private void setConditionValue(int index, int updateVal) {
+		QuestConfig questConfig = QuestManager.instance().get(id);
+		ConditionConfig conditionConfig = ConditionManager.instance().get(questConfig.Condition);
+		if (updateVal >  conditionConfig.numParam) {
+			updateVal = conditionConfig.numParam;
+		}
+		conditionContainer.addCount(index,updateVal);
+		checkFinish();
 	}
 }

@@ -301,7 +301,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 
-		final int[] itemsAdd = shopItemConfig.Item;
+		final int[][] itemsAdd = shopItemConfig.Item;
 		Supplier<Boolean> addItemAction = () -> {
 			List<RewardInfo> resources = PlayerHelper.addResources(player, itemsAdd, OpType.ShopTrade);
 //			if (shopItemConfig.PurchaseCnt > 0) {

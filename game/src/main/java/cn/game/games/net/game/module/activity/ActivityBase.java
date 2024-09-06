@@ -3,6 +3,10 @@ package cn.game.games.net.game.module.activity;
 import java.util.Date;
 import java.util.List;
 
+import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.module.quest.Quest;
+import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.google.protobuf.Message;
@@ -16,6 +20,8 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 基本的活动，这个活动可能是全体活动，也可能是玩家的活动
@@ -24,6 +30,9 @@ import cn.game.util.DateUtil;
  * @author SYQ
  */
 public abstract class ActivityBase implements EventHandler {
+	protected final static  transient Logger log = LoggerFactory.getLogger(ActivityBase.class);
+
+
 	/** 只序列化字段，不调用get()序列化 */
 	private static transient final boolean fieldBased = true;
 	private static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
@@ -56,6 +65,38 @@ public abstract class ActivityBase implements EventHandler {
 	 * @return
 	 */
 	public abstract List<RewardInfo> receive(int id);
+
+
+	/**
+	 * 是否能够领取活动奖励
+	 * @param ids 要领取的id集合
+	 * @return 错误码
+	 */
+	public  int canReceive(List<Integer> ids){
+		return ErrorMsgEnum.ok.ID;
+	};
+	public  int canReceive(List<Integer> ids,List<Integer> rewardIdList, Player player){
+		int failSize = 0;
+		int errCode = 0;
+		QuestModule questModule = player.getQuestModule();
+		for (int taskId :ids ) {
+			if (rewardIdList.contains(taskId)){
+				failSize++;
+				errCode = ErrorMsgEnum.activity_lei_chong_has_reward.ID;
+				continue;
+			}
+			Quest quest = questModule.get(taskId);
+			if (quest.getState() != QuestHelper.CAN_GIVEWARD){
+				failSize++;
+				errCode = ErrorMsgEnum.activity_task_not_finish.ID;
+				continue;
+			}
+		}
+		if (failSize == ids.size()){
+			return errCode;
+		}
+		return ErrorMsgEnum.ok.ID;
+	};
 
 	/** 活动开始，可以参加活动 */
 	public void startUp() {
@@ -136,4 +177,9 @@ public abstract class ActivityBase implements EventHandler {
 		}
 		return endTime;
 	}
+
+	/**
+	 * 检测活动是否能够刷新 且刷新
+	 */
+	public  void checkRefreshActivity(){};
 }

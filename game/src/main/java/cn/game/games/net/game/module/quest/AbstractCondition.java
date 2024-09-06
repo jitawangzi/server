@@ -205,6 +205,10 @@ public abstract class AbstractCondition implements Condition {
 			return;
 		}
 		finishCount += count;
+		int requireCount = getRequireCount();
+		if (finishCount > requireCount){
+			finishCount = requireCount;
+		}
 		updateAction();
 		isAchieve();
 	}

@@ -97,3 +97,43 @@ message ActivitySevenDaysSigninRequest_11000026{
 message ActivitySevenDaysSigninResponse_11000027{
    repeated RewardInfo rewards = 2;  // 获得的物品
 }
+
+
+//︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼活动任务领取︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+//活动任务奖励领取 请求
+message ActivityTaskRewardRequest_11000041{
+  int32 activityId = 1;   //  活动唯一id
+  repeated int32  taskIds = 2; //要领取的任务id集合 支持批量领取
+}
+//活动任务奖励领取 响应
+message ActivityTaskRewardResponse_11000042{
+  repeated RewardInfo rewards = 3; //任务奖励
+}
+
+//︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼累充豪礼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+message ActivityLeiChongInfoRequest_11000051{
+  int32  activityId = 1; //查看的活动id
+}
+message ActivityLeiChongInfoResponse_11000052{
+  int32  activityId = 1; //查看的活动id
+  repeated int32 taskIds = 2;//包含的任务id
+}
+
+//︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼每日豹利︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+message ActivityBaoLiInfoRequest_11000061{
+  int32 activityId = 1; //查看的活动id
+}
+message ActivityBaoLiInfoResponse_11000062{
+  int32  activityId = 1; //查看的活动id
+  repeated int32 taskIds = 2;//包含的任务id
+}
+//︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼风云聚义︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+message ActivityQingShenInfoRequest_11000071{
+  int32 activityId = 1; //查看的活动id
+}
+message ActivityQingShenInfoResponse_11000072{
+  int32  activityId = 1; //查看的活动id
+  repeated int32 taskIds = 2;//包含的任务id
+  int32 round = 3;  //轮次
+  int32 roundTaskId = 4;//轮次的任务
+}

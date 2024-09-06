@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.games.net.game.module.activity.impl.player.*;
+import cn.game.protocol.protobuf.ActivityMsg;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -11,9 +13,6 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
-import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivity;
-import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
@@ -78,7 +77,15 @@ public class ActivityHandler extends BaseHandler {
 		putInvoker(PbProtocol.ActivitySevenDaysSigninRequest_11000026, (client, message) -> {
 			sevenDaysSignin(client, message);
 		});
+		putInvoker(PbProtocol.ActivityLeiChongInfoRequest_11000051,this::getLeiChongInfo);
+		putInvoker(PbProtocol.ActivityTaskRewardRequest_11000041,this::rewardActivityTask);
+		putInvoker(PbProtocol.ActivityBaoLiInfoRequest_11000061,this::getBaoLiInfo);
+		putInvoker(PbProtocol.ActivityQingShenInfoRequest_11000071,this::getQingShenInfo);
+
 	}
+
+
+
 
 	private void empty(NetClient client, Object message) {
 		ActivityFirstChargeBuyRequest_11000010 req = (ActivityFirstChargeBuyRequest_11000010) message;
@@ -238,51 +245,59 @@ public class ActivityHandler extends BaseHandler {
 		resp.addAllActivitys(playerState.values());
 		client.sendProtocol(resp);
 	}
-
-	/*private void firstCharge(NetClient client, Object message) {
-		ActivityFirstChargeRequest_11000003 req = (ActivityFirstChargeRequest_11000003) message;
-		ActivityFirstChargeResponse_11000004.Builder resp = ActivityFirstChargeResponse_11000004.newBuilder();
+	private void getLeiChongInfo(NetClient client, Object o) {
+		ActivityMsg.ActivityLeiChongInfoRequest_11000051 req = (ActivityMsg.ActivityLeiChongInfoRequest_11000051)o;
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		int id = req.getId();
-		FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(id);
-		if (activityBase != null) {
-			resp.setFirstCharge((FirstChargeActivityInfo) activityBase.buildActivityInfo());
-		}
-		client.sendProtocol(resp);
-	}
-	
-	private void firstChargeBuy(NetClient client, Object message) {
-		ActivityFirstChargeBuyRequest_11000005 req = (ActivityFirstChargeBuyRequest_11000005) message;
-		ActivityFirstChargeBuyResponse_11000006.Builder resp = ActivityFirstChargeBuyResponse_11000006.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		int id = req.getId();
-		int chargeId = req.getChargeId();
-		List<Integer> selectedList = req.getSelectedList();
-	
-		FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(id);
-		if (activityBase == null || chargeId != activityBase.getChargeId()) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+		ActivityMsg.ActivityLeiChongInfoResponse_11000052.Builder res = ActivityMsg.ActivityLeiChongInfoResponse_11000052.newBuilder();
+		ActivityModule activityModule = player.getActivityModule();
+		ActivityLeiChong leiChong = (ActivityLeiChong) activityModule.get(req.getActivityId());
+		if (leiChong == null){
+			client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
 			return;
 		}
-		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(chargeId);
-	//		if (firstChargeConfig.Cnt != selectedList.size()) {
-	//			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-	//			return;
-	//		}
-		List<Integer> selectedIndex = activityBase.getSelectedIndex();
-		for (Integer integer : selectedList) {
-			if (selectedIndex.contains(integer)) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-				return;
-			}
+		client.sendProtocol(leiChong.buildActivityShowInfo());
+	}
+	private void rewardActivityTask(NetClient client, Object o) {
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ActivityMsg.ActivityTaskRewardRequest_11000041 req = (ActivityMsg.ActivityTaskRewardRequest_11000041)o;
+		ActivityMsg.ActivityTaskRewardResponse_11000042.Builder res = ActivityMsg.ActivityTaskRewardResponse_11000042.newBuilder();
+		ActivityModule activityModule = player.getActivityModule();
+		ActivityBase activityBase = activityModule.get(req.getActivityId());
+		int checkCode = activityBase.canReceive(req.getTaskIdsList());
+		if (checkCode != ErrorMsgEnum.ok.ID){
+			client.sendProtocol(res, checkCode);
+			return;
 		}
-		List<RewardInfo> rewards = activityBase.buy(chargeId, selectedList);
-		resp.addAllRewards(rewards);
-	
-		activityBase = (FirstChargeActivity) player.getActivityModule().get(id);
-		if (activityBase != null) {
-			resp.setFirstCharge((FirstChargeActivityInfo) activityBase.buildActivityInfo());
+		req.getTaskIdsList().forEach(taskId ->{
+			res.addAllRewards(activityBase.receive(taskId));
+		});
+		activityBase.checkRefreshActivity();
+		client.sendProtocol(res.build());
+
+	}
+	private void getBaoLiInfo(NetClient client, Object o) {
+		ActivityMsg.ActivityBaoLiInfoRequest_11000061 req = (ActivityMsg.ActivityBaoLiInfoRequest_11000061)o;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ActivityMsg.ActivityBaoLiInfoResponse_11000062.Builder res = ActivityMsg.ActivityBaoLiInfoResponse_11000062.newBuilder();
+		ActivityModule activityModule = player.getActivityModule();
+		ActivityMeiRiBaoLi baoLi = (ActivityMeiRiBaoLi) activityModule.get(req.getActivityId());
+		if (baoLi == null){
+			client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
+			return;
 		}
-		client.sendProtocol(resp);
-	}*/
+		client.sendProtocol(baoLi.buildActivityShowInfo());
+	}
+
+	private void getQingShenInfo(NetClient client, Object o) {
+		ActivityMsg.ActivityQingShenInfoRequest_11000071 req = (ActivityMsg.ActivityQingShenInfoRequest_11000071)o;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ActivityMsg.ActivityQingShenInfoResponse_11000072.Builder res = ActivityMsg.ActivityQingShenInfoResponse_11000072.newBuilder();
+		ActivityModule activityModule = player.getActivityModule();
+		ActivityQingShen qingShen = (ActivityQingShen) activityModule.get(req.getActivityId());
+		if (qingShen == null){
+			client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
+			return;
+		}
+		client.sendProtocol(qingShen.buildActivityShowInfo());
+	}
 }
