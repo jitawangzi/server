@@ -137,3 +137,11 @@ message ActivityQingShenInfoResponse_11000072{
   int32 round = 3;  //轮次
   int32 roundTaskId = 4;//轮次的任务
 }
+//︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼金钱豹爆爆︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+message ActivityJQBInfoRequest_11000081{
+  int32 activityId = 1; //查看的活动id
+}
+message ActivityJQBInfoResponse_11000082{
+  int32  activityId = 1; //查看的活动id
+   int32 taskId = 2;//当前进行的任务id
+}

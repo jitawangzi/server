@@ -26,6 +26,8 @@ import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.ActivityLeiChong)
 public class ActivityLeiChong extends PlayerActivityBase {
@@ -99,10 +101,12 @@ public class ActivityLeiChong extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public List<RewardInfo> receive(int id) {
+	public Future<List<RewardInfo>> receive(int id) {
 		QuestModule questModule = player.getQuestModule();
 		rewardTaskIds.add(id);
-		return questModule.receive(id);
+		Promise<List<RewardInfo>> promise =  Promise.promise();
+		promise.complete(questModule.receive(id));
+		return promise.future();
 	}
 
 	@Override

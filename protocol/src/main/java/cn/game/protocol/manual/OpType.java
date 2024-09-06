@@ -113,6 +113,7 @@ public enum OpType{
 	vipFreeGiftReward(207, "vip 免费礼包掉落"),
 	vipGiftReward(208, "vip 一次性礼包掉落"),
 	Friend(210, "好友"),
+	ActivityJQB(211, "金钱豹爆爆"),
 
 
 

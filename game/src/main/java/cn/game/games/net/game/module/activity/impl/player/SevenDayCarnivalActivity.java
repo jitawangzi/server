@@ -19,6 +19,7 @@ import cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest;
 import cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import io.vertx.core.Future;
 
 @ActivityType(type = ActivityTypeEnum.SevenDaysCarnival)
 public class SevenDayCarnivalActivity extends PlayerActivityBase {
@@ -86,7 +87,7 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public List<RewardInfo> receive(int id) {
+	public Future<List<RewardInfo>> receive(int id) {
 		return null;
 	}
 

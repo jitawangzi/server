@@ -14,6 +14,8 @@ import cn.game.protocol.generated.manager.SevenDaysSigninManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninInfoResponse_11000025;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.DoubleFirstCharge)
 public class DoubleFirstCharge extends PlayerActivityBase {
@@ -37,12 +39,14 @@ public class DoubleFirstCharge extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public List<RewardInfo> receive(int id) {
+	public Future<List<RewardInfo>> receive(int id) {
 		SevenDaysSigninConfig config = SevenDaysSigninManager.instance().getNullable(day + 1);
 		List<RewardInfo> resources = PlayerHelper.addResources(player, config.Item, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;
-		return resources;
+		Promise<List<RewardInfo>> promise =  Promise.promise();
+		promise.complete(resources);
+		return promise.future();
 	}
 
 	@Override

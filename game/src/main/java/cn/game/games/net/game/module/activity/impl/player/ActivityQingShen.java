@@ -23,6 +23,8 @@ import cn.game.protocol.generated.manager.ActivityQingShenManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.ActivityQingShen)
 public class ActivityQingShen extends PlayerActivityBase {
@@ -68,10 +70,12 @@ public class ActivityQingShen extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public List<RewardInfo> receive(int id) {
+	public Future<List<RewardInfo>> receive(int id) {
 		QuestModule questModule = player.getQuestModule();
 		rewardIdList.add(id);
-		return questModule.receive(id);
+		Promise<List<RewardInfo>> promise =  Promise.promise();
+		promise.complete(questModule.receive(id));
+		return promise.future();
 	}
 
 
