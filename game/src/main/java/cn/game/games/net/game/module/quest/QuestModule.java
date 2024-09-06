@@ -54,7 +54,7 @@ import cn.game.util.StringMapWrapper;
 public class QuestModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
 			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem,
-			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds, EventTypeEnum.HeroBreak, EventTypeEnum.Hero, EventTypeEnum.Patrol };
+			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds, EventTypeEnum.HeroBreak, EventTypeEnum.Hero, EventTypeEnum.Patrol ,EventTypeEnum.Draw };
 
 	/** 当前激活的任务 ,key1 ： QuestTypeEnum, key2: QuestConfig id */
 	private Map<Integer, Map<Integer, Quest>> quests;
@@ -303,7 +303,7 @@ public class QuestModule extends BasePlayerModule {
 		}
 
 		// 发起完成任务事件
-		player.handleEvent(EventTypeEnum.QuestFinish, quest.getId());
+		player.handleEvent(EventTypeEnum.QuestReward, quest.getId());
 
 		/*		if (QuestHelper.autoRewardUseMail(id)) {
 					MailHelper.sendMailMultiLanguage(playerId, 208011, 208009, 208010, MailHelper.SYSTEM, reward);
@@ -959,6 +959,12 @@ public class QuestModule extends BasePlayerModule {
 			addCumulativeCount(ConditionTypeEnum.QuickHangUpCumulation, 1);
 			break;
 		}
+			case Draw:{
+				int count = event.getIntParameter(0);
+				addCumulativeCount(ConditionTypeEnum.SupremeGacha, count);
+
+				break;
+			}
 		}
 	}
 }

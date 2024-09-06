@@ -81,7 +81,7 @@ public enum EventTypeEnum {
 
 	/** 合成章节胜利  参数: 章节id*/
 	HCChapterWin(25, "合成章节胜利"),
-	QuestFinish(26, "完成任务"),
+	QuestReward(26, "完成任务"),
 
 	// 参数 : 商店id，商品id，数量
 	BuyItems(28, "商店购买商品"),
@@ -111,7 +111,7 @@ public enum EventTypeEnum {
 	GameEventFinish(76, "某游戏事件完成"),
 	vipExpChange(77, "VIP 经验变动"),
 	vipLevelChange(78, "VIP 等级变动"),
-
+	QuestFinish(79,"任务完成"),
 	;
 	private int id;
 	private String desc;

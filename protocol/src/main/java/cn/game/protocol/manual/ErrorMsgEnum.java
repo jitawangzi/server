@@ -135,6 +135,9 @@ public enum ErrorMsgEnum {
 	vip_free_gift_has_reward(392, "VIP 每日免费礼包已经领取过了"),
 	vip_gift_has_reward(393, "VIP一次性礼包不可重复购买"),
 	vip_gift_unlock(394, "VIP等级不足一次性礼包未解锁"),
+	activity_lei_chong_has_reward(395, "该累充活动奖励已经领取过了"),
+	activity_task_not_finish(396, "该活动任务未完成不可领取"),
+	activity_not_found(397, "该活动不存在"),
 
 	;
 
