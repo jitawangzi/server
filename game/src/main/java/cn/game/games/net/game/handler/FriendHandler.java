@@ -152,14 +152,16 @@ public class FriendHandler extends BaseHandler {
 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		FriendModule friendModule = player.getModule(FriendModule.class);
-
+		Future<List<SimplePlayer>> playersFuture = null;
 		if (friendModule.getRefreshCount() >= GlobalConst.FriendFresh) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
-			return;
+			playersFuture = RedisLocalCache
+					.getInstance()
+					.multiGetAsync(CacheType.PLAYER_SIMPLE, friendModule.getLastRefreshPlayers().stream().map(String::valueOf).toArray(String[]::new));
+		} else {
+			playersFuture = PlayerManager.getInstance().searchPlayersAsync(player);
 		}
 		friendModule.setRefreshCount(friendModule.getRefreshCount() + 1);
-		Future<List<SimplePlayer>> searchPlayersAsync = PlayerManager.getInstance().searchPlayersAsync(player);
-		searchPlayersAsync.onSuccess(result -> {
+		playersFuture.onSuccess(result -> {
 			resp.addAllPlayers(PbBuilder.buildSimplePlayerInfos(result));
 			client.sendProtocol(resp.build());
 		}).onFailure(player::fail);

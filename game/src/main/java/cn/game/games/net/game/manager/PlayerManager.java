@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
@@ -736,8 +737,8 @@ public class PlayerManager {
 		List<SimplePlayer> ret = new ArrayList<>();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		FriendModule friendOp = player.getModule(FriendModule.class);
-		Set<Long> excludeIds = friendOp.excludeIds();
+		FriendModule friendModule = player.getModule(FriendModule.class);
+		Set<Long> excludeIds = friendModule.excludeIds();
 		int level = player.getData().getLevel();
 		ConcurrentMap<Long, SimplePlayer> map = simplePlayers.asMap();
 
@@ -778,8 +779,9 @@ public class PlayerManager {
 		}
 
 		// 设置本次刷新的记录
-		friendOp.setLastRefreshPlayers(ret);
-		friendOp.setLastRefreshTime(System.currentTimeMillis());
+		List<Long> idList = ret.stream().map(r -> r.getId()).collect(Collectors.toList());
+		friendModule.setLastRefreshPlayers(idList);
+		friendModule.setLastRefreshTime(System.currentTimeMillis());
 
 		return ret;
 
