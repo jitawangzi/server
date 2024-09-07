@@ -193,6 +193,30 @@ public class RankService {
 		return rank.revRankAsync(playerId).thenApply(r -> r != null ? r + 1 : -1);
 	}
 
+	/** 
+	 * 异步获取某人的当前排行分数
+	 * @param serverId
+	 * @param type
+	 * @param playerId
+	 * @return
+	 */
+	public CompletionStage<Long> getRankEntry(String serverId, RankType type, long playerId) {
+		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		return rank.getScoreAsync(playerId).thenApply(score -> (long) score.doubleValue());
+	}
+
+	/** 
+	 * 获取某人的当前排行分数
+	 * @param serverId
+	 * @param type
+	 * @param playerId
+	 * @return
+	 */
+	public Double getRankEntryAsync(String serverId, RankType type, long playerId) {
+		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		return rank.getScore(playerId);
+	}
+
 	/**
 	 * 从排行榜中移除玩家。
 	 *

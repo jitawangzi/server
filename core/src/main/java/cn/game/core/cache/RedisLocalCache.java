@@ -290,6 +290,14 @@ public class RedisLocalCache {
 		return result;
 	}
 
+	public <T> Future<List<T>> multiGetAsync(CacheType cacheType, List<String> keys) {
+		List<String> list = new ArrayList<>(keys.size());
+		for (String key : keys) {
+			list.add(cacheType.key(key));
+		}
+		return multiGetAsync(list);
+	}
+
 	/** 
 	 * 异步批量获取方法
 	 * @param <T>
