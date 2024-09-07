@@ -20,6 +20,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeResponse_1100000
 import cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import io.vertx.core.Future;
 
 /**    
  * 单充活动
@@ -121,7 +122,7 @@ public class FirstChargeActivity extends PlayerActivityBase {
 //		return chargeMap.get(chargeId);
 //	}
 	@Override
-	public List<RewardInfo> receive(int id) {
+	public Future<List<RewardInfo>> receive(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

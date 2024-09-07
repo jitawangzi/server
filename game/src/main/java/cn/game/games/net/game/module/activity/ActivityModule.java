@@ -27,6 +27,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import io.vertx.core.Future;
 
 public class ActivityModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LevelUp };
@@ -153,9 +154,10 @@ public class ActivityModule extends BasePlayerModule {
 
 	public List<RewardInfo> receive(int id, int subId) {
 		ActivityBase activityBase = this.activities.get(id);
-		List<RewardInfo> rewards = null;
+		List<RewardInfo> rewards = new ArrayList<>();
 		if (activityBase != null) {
-			rewards = activityBase.receive(subId);
+			Future<List<RewardInfo>> future = activityBase.receive(subId);
+			future.onSuccess(rewards::addAll);
 			if (rewards != null && rewards.size() > 0) {
 //				update(id);
 			}

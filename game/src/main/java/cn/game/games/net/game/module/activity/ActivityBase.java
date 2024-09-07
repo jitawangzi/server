@@ -20,6 +20,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import io.vertx.core.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public abstract class ActivityBase implements EventHandler {
 	 * @param id
 	 * @return
 	 */
-	public abstract List<RewardInfo> receive(int id);
+	public abstract Future<List<RewardInfo>> receive(int id);
 
 
 	/**

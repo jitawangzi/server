@@ -4,7 +4,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.module.activity.impl.player.*;
+import cn.game.games.net.game.module.quest.Quest;
+import cn.game.protocol.generated.config.ActivityJQBConfig;
+import cn.game.protocol.generated.manager.ActivityJQBManager;
 import cn.game.protocol.protobuf.ActivityMsg;
 import org.springframework.stereotype.Component;
 
@@ -81,6 +85,7 @@ public class ActivityHandler extends BaseHandler {
 		putInvoker(PbProtocol.ActivityTaskRewardRequest_11000041,this::rewardActivityTask);
 		putInvoker(PbProtocol.ActivityBaoLiInfoRequest_11000061,this::getBaoLiInfo);
 		putInvoker(PbProtocol.ActivityQingShenInfoRequest_11000071,this::getQingShenInfo);
+		putInvoker(PbProtocol.ActivityJQBInfoRequest_11000081,this::getJQBInfo);
 
 	}
 
@@ -137,8 +142,7 @@ public class ActivityHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
-		List<RewardInfo> receive = activityBase.receive(0);
-		resp.addAllRewards(receive);
+		 activityBase.receive(0).onSuccess(resp::addAllRewards);
 		client.sendProtocol(resp.build());
 	}
 	private void sevenDaysCarnival(NetClient client, Object message) {
@@ -250,11 +254,11 @@ public class ActivityHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ActivityMsg.ActivityLeiChongInfoResponse_11000052.Builder res = ActivityMsg.ActivityLeiChongInfoResponse_11000052.newBuilder();
 		ActivityModule activityModule = player.getActivityModule();
-		ActivityLeiChong leiChong = (ActivityLeiChong) activityModule.get(req.getActivityId());
-		if (leiChong == null){
+		if (activityModule.get(req.getActivityId()) == null){
 			client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
 			return;
 		}
+		ActivityLeiChong leiChong = (ActivityLeiChong) activityModule.get(req.getActivityId());
 		client.sendProtocol(leiChong.buildActivityShowInfo());
 	}
 	private void rewardActivityTask(NetClient client, Object o) {
@@ -262,6 +266,10 @@ public class ActivityHandler extends BaseHandler {
 		ActivityMsg.ActivityTaskRewardRequest_11000041 req = (ActivityMsg.ActivityTaskRewardRequest_11000041)o;
 		ActivityMsg.ActivityTaskRewardResponse_11000042.Builder res = ActivityMsg.ActivityTaskRewardResponse_11000042.newBuilder();
 		ActivityModule activityModule = player.getActivityModule();
+		if (activityModule.get(req.getActivityId()) == null){
+			client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
+			return;
+		}
 		ActivityBase activityBase = activityModule.get(req.getActivityId());
 		int checkCode = activityBase.canReceive(req.getTaskIdsList());
 		if (checkCode != ErrorMsgEnum.ok.ID){
@@ -269,7 +277,7 @@ public class ActivityHandler extends BaseHandler {
 			return;
 		}
 		req.getTaskIdsList().forEach(taskId ->{
-			res.addAllRewards(activityBase.receive(taskId));
+			activityBase.receive(taskId).onSuccess(res::addAllRewards);
 		});
 		activityBase.checkRefreshActivity();
 		client.sendProtocol(res.build());
@@ -280,11 +288,11 @@ public class ActivityHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ActivityMsg.ActivityBaoLiInfoResponse_11000062.Builder res = ActivityMsg.ActivityBaoLiInfoResponse_11000062.newBuilder();
 		ActivityModule activityModule = player.getActivityModule();
-		ActivityMeiRiBaoLi baoLi = (ActivityMeiRiBaoLi) activityModule.get(req.getActivityId());
-		if (baoLi == null){
+		if (activityModule.get(req.getActivityId()) == null){
 			client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
 			return;
 		}
+		ActivityMeiRiBaoLi baoLi = (ActivityMeiRiBaoLi) activityModule.get(req.getActivityId());
 		client.sendProtocol(baoLi.buildActivityShowInfo());
 	}
 
@@ -293,11 +301,25 @@ public class ActivityHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ActivityMsg.ActivityQingShenInfoResponse_11000072.Builder res = ActivityMsg.ActivityQingShenInfoResponse_11000072.newBuilder();
 		ActivityModule activityModule = player.getActivityModule();
-		ActivityQingShen qingShen = (ActivityQingShen) activityModule.get(req.getActivityId());
-		if (qingShen == null){
+		if (activityModule.get(req.getActivityId()) == null){
 			client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
 			return;
 		}
+		ActivityQingShen qingShen = (ActivityQingShen) activityModule.get(req.getActivityId());
 		client.sendProtocol(qingShen.buildActivityShowInfo());
+	}
+
+
+	private void getJQBInfo(NetClient client, Object o) {
+		ActivityMsg.ActivityJQBInfoRequest_11000081 req = (ActivityMsg.ActivityJQBInfoRequest_11000081)o;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ActivityMsg.ActivityJQBInfoResponse_11000082.Builder res = ActivityMsg.ActivityJQBInfoResponse_11000082.newBuilder();
+		ActivityModule activityModule = player.getActivityModule();
+		if (activityModule.get(req.getActivityId()) == null){
+			client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
+			return;
+		}
+		ActivityJQB activityJQB = (ActivityJQB) activityModule.get(req.getActivityId());
+		client.sendProtocol(activityJQB.buildActivityShowInfo());
 	}
 }

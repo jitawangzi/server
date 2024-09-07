@@ -25,6 +25,8 @@ import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.ActivityMeiRiBaoLi)
 public class ActivityMeiRiBaoLi extends PlayerActivityBase {
@@ -53,10 +55,12 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 
 
 	@Override
-	public List<RewardInfo> receive(int id) {
+	public Future<List<RewardInfo>> receive(int id) {
 		QuestModule questModule = player.getQuestModule();
 		rewardIdList.add(id);
-		return questModule.receive(id);
+		Promise<List<RewardInfo>> promise =  Promise.promise();
+		promise.complete(questModule.receive(id));
+		return promise.future();
 	}
 
 	@Override
