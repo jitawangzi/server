@@ -200,7 +200,7 @@ public class RankService {
 	 * @param playerId
 	 * @return
 	 */
-	public CompletionStage<Long> getRankEntry(String serverId, RankType type, long playerId) {
+	public CompletionStage<Long> getRankEntryAsync(String serverId, RankType type, long playerId) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
 		return rank.getScoreAsync(playerId).thenApply(score -> score == null ? 0 : (long) score.doubleValue());
 	}
@@ -212,7 +212,7 @@ public class RankService {
 	 * @param playerId
 	 * @return
 	 */
-	public long getRankEntryAsync(String serverId, RankType type, long playerId) {
+	public long getRankEntry(String serverId, RankType type, long playerId) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
 		Double score = rank.getScore(playerId);
 		return score != null ? score.longValue() : 0;
