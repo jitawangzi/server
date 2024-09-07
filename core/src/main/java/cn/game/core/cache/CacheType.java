@@ -36,6 +36,9 @@ public enum CacheType {
 	/** 玩家name--id */
 	MAP_PLAYER_NAME_ID,
 
+	/** 排行榜 */
+	SET_RANK,
+
 	;
 
 	public String key(Object... ks) {

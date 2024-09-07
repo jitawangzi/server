@@ -1,0 +1,34 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+import "BaseMsg.proto" ;
+//@File 排行榜相关协议
+
+//@HandlerPackage cn.game.games.net.game.module.rank
+//@MessageModule 35
+
+//请求排行榜数据
+message RankListRequest_35000001{
+  int32 type = 1; // RankType表id
+  int32 page = 2; // 分页显示使用，当前页，从1开始，如果不分页设置1
+  int32 pageSize = 3; // 每页显示数量。如果不分页，设置0。
+}
+
+message RankListResponse_35000002{
+	RankInfo rankInfo = 1;
+}
+
+message RankInfo{
+	int32 rank = 1; // 我的排名，-1或0表示没有进入排行榜，没有名次
+	repeated PlayerRankInfo players = 2;
+}
+
+message PlayerRankInfo{
+	SimplePlayerInfo player = 1;  //玩家基本数据
+	int32 rank = 2; //排名，-1或0表示没有进入排行榜，没有名次
+	string score = 3; //参与排行的分数，例如等级数、战力值、关卡id等等。
+}
+
+
+

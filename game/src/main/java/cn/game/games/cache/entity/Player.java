@@ -612,6 +612,10 @@ public class Player  {
 		this.isOnline = isOnline;
 	}
 
+	public String getServerId() {
+		return getData().getServerId();
+	}
+
 	public int getVipLevel(){
     return getPlayerModule().getExpLevelMap().getValue(Asset.VIPExp.ID);
 	}

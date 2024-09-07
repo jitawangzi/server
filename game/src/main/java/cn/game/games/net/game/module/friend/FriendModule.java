@@ -281,13 +281,17 @@ public class FriendModule extends BasePlayerModule {
 		case PLAYER_CREATE: {
 		}
 		case NewDay: {
-			this.sendGiftCount = 0;
-			this.applicationCount = 0;
-			this.giftReceiveCount = 0;
-			this.refreshCount = 0;
+			newDay();
 			break;
 		}
 		}
+	}
+
+	private void newDay() {
+		this.sendGiftCount = 0;
+		this.applicationCount = 0;
+		this.giftReceiveCount = 0;
+		this.refreshCount = 0;
 	}
 
 	@Override

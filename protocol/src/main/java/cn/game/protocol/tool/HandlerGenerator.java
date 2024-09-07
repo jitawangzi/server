@@ -133,6 +133,8 @@ public class HandlerGenerator {
 //		}
 //		write.close();
 		Path filePath = Paths.get(handlerPath);
+		// 创建目录（如果不存在）
+		Files.createDirectories(filePath.getParent());
 		Files.write(filePath, contentList);
 	}
 

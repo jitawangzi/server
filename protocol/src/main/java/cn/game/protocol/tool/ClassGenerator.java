@@ -64,8 +64,11 @@ public class ClassGenerator {
 		methodInititialize.addMarkerAnnotation("Override");
 		methodInititialize.setType(new com.github.javaparser.ast.type.VoidType());
 
+		// 创建目录（如果不存在）
+		Path path = Paths.get(handlerPath);
+		Files.createDirectories(path.getParent());
 		// 将新创建的类写入文件
-		Files.write(Paths.get(handlerPath), cu.toString().getBytes());
+		Files.write(path, cu.toString().getBytes());
 	}
 
 	/** 

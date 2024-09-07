@@ -812,6 +812,9 @@ public class PlayerHandler extends BaseHandler {
 		// player.getData().setSeq(seq) ;
 		// 这里先按照开服时间来设置区服，后续会改成按人数。
 		int days = GameServerStatus.getInstance().getOpenDays();
+		if (days > 3) {
+			days = 4;
+		}
 		playerData.setServerId("server" + days);
 
 		playerData.setPlayerId(id);
