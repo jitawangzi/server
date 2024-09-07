@@ -212,9 +212,10 @@ public class RankService {
 	 * @param playerId
 	 * @return
 	 */
-	public Double getRankEntryAsync(String serverId, RankType type, long playerId) {
+	public long getRankEntryAsync(String serverId, RankType type, long playerId) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
-		return rank.getScore(playerId);
+		Double score = rank.getScore(playerId);
+		return score != null ? score.longValue() : 0;
 	}
 
 	/**
