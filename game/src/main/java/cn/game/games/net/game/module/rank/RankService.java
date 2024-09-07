@@ -202,7 +202,7 @@ public class RankService {
 	 */
 	public CompletionStage<Long> getRankEntry(String serverId, RankType type, long playerId) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
-		return rank.getScoreAsync(playerId).thenApply(score -> (long) score.doubleValue());
+		return rank.getScoreAsync(playerId).thenApply(score -> score == null ? 0 : (long) score.doubleValue());
 	}
 
 	/** 
