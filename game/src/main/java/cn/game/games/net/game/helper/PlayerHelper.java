@@ -1504,4 +1504,32 @@ public class PlayerHelper {
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}
+
+	/** 
+	 * 获取某玩家虚拟的服务器id
+	 * @param playerId
+	 * @return
+	 */
+	public static String getServerId(long playerId) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player != null) {
+			return player.getServerId();
+		}
+		SimplePlayer simplePlayer = RedisLocalCache.getInstance().get(CacheType.PLAYER_SIMPLE.key(playerId));
+		return simplePlayer.getServerId();
+	}
+
+	/** 
+	 * 异步获取某玩家虚拟的服务器id
+	 * @param playerId
+	 * @return
+	 */
+	public static Future<String> getServerIdAsync(long playerId) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player != null) {
+			return Future.succeededFuture(player.getServerId());
+		}
+		Future<SimplePlayer> simplePlayer = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
+		return simplePlayer.map(SimplePlayer::getServerId);
+	}
 }
