@@ -71,12 +71,5 @@ message MailInfo{
 
 
 //邮件
-message MailAddRequest_12000007{
-	string uid = 1 ;	//邮件id,如果是null表示删除所有已读邮件
-}
-
-//删除邮件返回
-message MailAddResponse_12000008{
-}
 
 
