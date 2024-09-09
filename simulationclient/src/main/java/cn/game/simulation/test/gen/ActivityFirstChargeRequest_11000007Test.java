@@ -1,8 +1,7 @@
 package cn.game.simulation.test.gen;
 
-import org.springframework.stereotype.Component;
-
 import com.google.protobuf.Message;
+import org.springframework.stereotype.Component;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
@@ -15,7 +14,7 @@ public class ActivityFirstChargeRequest_11000007Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.newBuilder() ; 
 		
-		builder.setId(10);
+		
 		
 		return builder.build() ; 
 	}

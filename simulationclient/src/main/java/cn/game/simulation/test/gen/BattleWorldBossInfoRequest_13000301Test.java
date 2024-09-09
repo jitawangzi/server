@@ -1,8 +1,7 @@
 package cn.game.simulation.test.gen;
 
-import org.springframework.stereotype.Component;
-
 import com.google.protobuf.Message;
+import org.springframework.stereotype.Component;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;

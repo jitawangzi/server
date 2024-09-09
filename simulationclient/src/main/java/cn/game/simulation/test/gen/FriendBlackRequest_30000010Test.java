@@ -1,8 +1,7 @@
 package cn.game.simulation.test.gen;
 
-import org.springframework.stereotype.Component;
-
 import com.google.protobuf.Message;
+import org.springframework.stereotype.Component;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
@@ -14,8 +13,9 @@ public class FriendBlackRequest_30000010Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010.newBuilder() ; 
-		builder.setId(240200679 + "");
-
+		
+		
+		
 		return builder.build() ; 
 	}
 	

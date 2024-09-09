@@ -394,6 +394,7 @@ public class PlayerManager {
 					promise.complete(simplePlayer);
 				});
 			} catch (Exception e) {
+				e.printStackTrace();
 				TaskManager.getInstance().addMainTask(() -> {
 					promise.complete(null);
 				});
@@ -402,6 +403,11 @@ public class PlayerManager {
 
 		return promise.future();
 	}
+
+  public Future<SimplePlayer> getSimplePlayerFromRedisAsync(long playerId) {
+		return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
+  }
+
 	/**
 	 * 
 	 * 异步获取一个玩家简单信息，包含本服或者其他服

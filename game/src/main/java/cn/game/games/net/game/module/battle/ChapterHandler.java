@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.games.net.game.module.pvp.OfflineBattleHandler;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -150,6 +151,14 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleWorldBossInfoRequest_13000301, this::worldBossInfo);
 		putInvoker(PbProtocol.BattleWorldBossBuyTimesRequest_13000303, this::worldBossBuy);
 		putInvoker(PbProtocol.BattleWorldRewardRequest_13000305, this::worldBossReward);
+
+		//PVP 大道争锋
+		putInvoker(PbProtocol.BattlePvPTargetListRequest_13000111, OfflineBattleHandler::searchTargetList);
+		putInvoker(PbProtocol.BattlePvPStartRequest_13000113, OfflineBattleHandler::startBattle);
+		putInvoker(PbProtocol.BattlePvPEndRequest_13000115, OfflineBattleHandler::endBattle);
+		putInvoker(PbProtocol.BattlePvPInfoRequest_13000117, OfflineBattleHandler::getInfo);
+		putInvoker(PbProtocol.BattleBuyPvPTimeRequest_13000121, OfflineBattleHandler::buyTime);
+
 	}
 
 	protected void empty(NetClient client, Object message) {

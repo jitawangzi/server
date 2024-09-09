@@ -61,7 +61,6 @@ public final class DateUtil {
 	/***
 	 * 将字符串时间转换成 yyyy年MM月dd日 HH时mm分ss秒 格式
 	 * 
-	 * @param timeStr
 	 * @return
 	 */
 	public static String getTimeByPattern(Date time) {
@@ -71,7 +70,6 @@ public final class DateUtil {
 	/***
 	 * 将字符串时间转换成Pattern格式
 	 * 
-	 * @param timeStr
 	 * @param pattern
 	 * @return
 	 */
@@ -91,8 +89,6 @@ public final class DateUtil {
 	/***
 	 * 将字符串时间转换成Pattern格式
 	 * 
-	 * @param timeStr
-	 * @param pattern
 	 * @return
 	 */
 	public static String getTimeByPattern(Date time, SimpleDateFormat format) {
@@ -243,7 +239,6 @@ public final class DateUtil {
 	/**
 	 * 获取当前时间 n天后0点的毫秒时间戳
 	 * 
-	 * @param step
 	 * @return
 	 */
 	public static long nextDayStartTime(int days) {
@@ -252,7 +247,6 @@ public final class DateUtil {
 
 	/** 
 	 * 获取当前时间 n天后0点的秒时间戳
-	 * @param step
 	 * @return
 	 */
 	public static int nextDayStartTimeSecond(int days) {
@@ -343,7 +337,39 @@ public final class DateUtil {
 		calendar.set(Calendar.SECOND, 0);
 
 		return (int) (calendar.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+	}
 
+
+
+	/**
+	 * 获取当天 指定时间的时间戳
+	 * @param hourOffset 0--23 小时
+	 * @param minuteOffset 0--59 分钟
+	 * @param secondOffset 0--59 秒
+	 * @return
+	 */
+	public static long getDayTimeBySet(int hourOffset,int minuteOffset, int secondOffset){
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY,hourOffset);
+		calendar.set(Calendar.MINUTE,minuteOffset);
+		calendar.set(Calendar.SECOND,secondOffset);
+		return calendar.getTimeInMillis();
+	}
+
+	/**
+	 * 获取指定时间那天的指定时间的时间戳
+	 * @param hourOffset 0--23 小时
+	 * @param minuteOffset 0--59 分钟
+	 * @param secondOffset 0--59 秒
+	 * @return
+	 */
+	public static long getTimeBySet(long timer ,int hourOffset,int minuteOffset, int secondOffset){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(timer);
+		calendar.set(Calendar.HOUR_OF_DAY,hourOffset);
+		calendar.set(Calendar.MINUTE,minuteOffset);
+		calendar.set(Calendar.SECOND,secondOffset);
+		return calendar.getTimeInMillis();
 	}
 
 	/**
@@ -385,7 +411,17 @@ public final class DateUtil {
 		Calendar calendar = Calendar.getInstance();
 		return calendar.get(Calendar.MONTH);
 	}
-	
+
+	public static long addWeek(int offsetWeek){
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.WEEK_OF_YEAR,offsetWeek);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		return calendar.getTimeInMillis();
+
+	}
+
 	/**当前年份*/
 	public static int getYear() {
 		Calendar calendar = Calendar.getInstance(); 

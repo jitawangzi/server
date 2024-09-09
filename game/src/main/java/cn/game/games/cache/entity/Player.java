@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import cn.game.games.net.game.module.pvp.OfflineBattleModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -501,7 +502,8 @@ public class Player  {
 	 * @return
 	 */
 	public boolean isFuncOpen(InitialUI type) {
-		return getLevel() >= type.DisplayLevel;
+//		return getLevel() >= type.DisplayLevel;
+		return true;
 	}
 
 	public SimplePlayerInfo buildSimplePlayerInfo() {
@@ -612,11 +614,24 @@ public class Player  {
 		this.isOnline = isOnline;
 	}
 
-	public String getServerId() {
-		return getData().getServerId();
-	}
-
 	public int getVipLevel(){
     return getPlayerModule().getExpLevelMap().getValue(Asset.VIPExp.ID);
+	}
+
+	/**
+	 * 更新离线属性到redis
+	 */
+	public void updateOfflineAttrData(){
+		if(isFuncOpen(InitialUI.AvenueBattle)){
+			PlayerHelper.saveSimplePlayer(this);
+		}
+	}
+
+	public OfflineBattleModule getOfflineBattleModule() {
+		return getModule(OfflineBattleModule.class);
+	}
+
+	public String getServerId() {
+		return getData().getServerId();
 	}
 }
