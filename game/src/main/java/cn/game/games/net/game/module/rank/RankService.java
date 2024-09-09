@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.rank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
@@ -47,19 +48,19 @@ public class RankService {
 	}
 
 	/**
-	 * 更新玩家分数（仅主要分数）。
+	 * 设置玩家分数（仅主要分数）。
 	 *
 	 * @param serverId 服务器ID
 	 * @param type 排行榜类型
 	 * @param playerId 玩家ID
 	 * @param score 分数
 	 */
-	public void updateScore(String serverId, RankType type, long playerId, long score) {
-		updateScore(serverId, type, playerId, score, 0);
+	public void setScore(String serverId, RankType type, long playerId, long score) {
+		setScore(serverId, type, playerId, score, 0);
 	}
 
 	/**
-	 * 更新玩家分数（主要分数和次要分数）。
+	 * 设置玩家分数（主要分数和次要分数）。
 	 *
 	 * @param serverId 服务器ID
 	 * @param type 排行榜类型
@@ -67,14 +68,14 @@ public class RankService {
 	 * @param primaryScore 主要分数
 	 * @param secondaryScore 次要分数
 	 */
-	public void updateScore(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
+	public void setScore(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
 		double combinedScore = primaryScore + secondaryScore * SECONDARY_SCORE_FACTOR;
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
 		rank.add(combinedScore, playerId);
 	}
 
 	/**
-	 * 异步更新玩家分数（仅主要分数）。
+	 * 异步设置玩家分数（仅主要分数）。
 	 *
 	 * @param serverId 服务器ID
 	 * @param type 排行榜类型
@@ -82,12 +83,12 @@ public class RankService {
 	 * @param score 分数
 	 * @return 异步操作的Future
 	 */
-	public CompletionStage<Boolean> updateScoreAsync(String serverId, RankType type, long playerId, long score) {
-		return updateScoreAsync(serverId, type, playerId, score, 0);
+	public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long score) {
+		return setScoreAsync(serverId, type, playerId, score, 0);
 	}
 
 	/**
-	 * 异步更新玩家分数（主要分数和次要分数）。
+	 * 异步设置玩家分数（主要分数和次要分数）。
 	 *
 	 * @param serverId 服务器ID
 	 * @param type 排行榜类型
@@ -96,7 +97,7 @@ public class RankService {
 	 * @param secondaryScore 次要分数
 	 * @return 异步操作的Future
 	 */
-	public CompletionStage<Boolean> updateScoreAsync(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
+	public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
 		double combinedScore = primaryScore + secondaryScore * SECONDARY_SCORE_FACTOR;
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
 		return rank.addAsync(combinedScore, playerId).whenComplete((k, v) -> {
@@ -104,6 +105,32 @@ public class RankService {
                 v.printStackTrace();
             }
 		});
+	}
+
+	/**
+	 * 增加或减少玩家某排行分数
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param playerId 玩家ID
+	 * @param score 更新的分数，正数为增加，负数为减少
+	 */
+	public double updateScore(String serverId, RankType type, long playerId, long score) {
+		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		return rank.addScore(playerId, score);
+	}
+
+	/**
+	 * 异步增加或减少玩家某排行分数
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param playerId 玩家ID
+	 * @param score 更新的分数，正数为增加，负数为减少
+	 */
+	public CompletionStage<Double> updateScoreAsync(String serverId, RankType type, long playerId, long score) {
+		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		return rank.addScoreAsync(playerId, score);
 	}
 
 	/**
@@ -200,7 +227,7 @@ public class RankService {
 	 * @param playerId
 	 * @return
 	 */
-	public CompletionStage<Long> getRankEntryAsync(String serverId, RankType type, long playerId) {
+	public CompletionStage<Long> getScoreAsync(String serverId, RankType type, long playerId) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
 		return rank.getScoreAsync(playerId).thenApply(score -> score == null ? 0 : (long) score.doubleValue());
 	}
@@ -212,7 +239,7 @@ public class RankService {
 	 * @param playerId
 	 * @return
 	 */
-	public long getRankEntry(String serverId, RankType type, long playerId) {
+	public long getScore(String serverId, RankType type, long playerId) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
 		Double score = rank.getScore(playerId);
 		return score != null ? score.longValue() : 0;
@@ -304,6 +331,10 @@ public class RankService {
 	public CompletionStage<Collection<Long>> searchRankEntryByScoreAsync(String serverId, RankType type, long scoreStart, long scoreEnd, int count) {
 		RScoredSortedSet<Long> scoredSortedSet = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
 		return scoredSortedSet.valueRangeAsync(scoreStart, true, scoreEnd, true, 0, count);
+	}
+
+	public CompletableFuture<Double> updateMaxValueAsync(String serverId, RankType type, long playerId, double newValue) {
+		return CompletableFuture.supplyAsync(() -> 3d);
 	}
 
 }

@@ -7,7 +7,7 @@ import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.util.RedisUtil;
 
-public class RankExample2 {
+public class RankExample {
 	public static void main(String[] args) throws Exception {
 
 		RedisUtil.getInstance().init();
@@ -15,16 +15,16 @@ public class RankExample2 {
 		String serverId = "server1";
 
 		// 同步调用
-		rankService.updateScore(serverId, RankType.Battle, 1001, 50);
-		rankService.updateScore(serverId, RankType.Battle, 1002, 75);
-		rankService.updateScore(serverId, RankType.Battle, 1003, 90);
-		rankService.updateScore(serverId, RankType.Battle, 1004, 20);
-		rankService.updateScore(serverId, RankType.Level, 1002, 60);
-		rankService.updateScore(serverId, RankType.Level, 1003, 160);
-		rankService.updateScore(serverId, RankType.Level, 1004, 260);
+		rankService.setScore(serverId, RankType.Battle, 1001, 50);
+		rankService.setScore(serverId, RankType.Battle, 1002, 75);
+		rankService.setScore(serverId, RankType.Battle, 1003, 90);
+		rankService.setScore(serverId, RankType.Battle, 1004, 20);
+		rankService.setScore(serverId, RankType.Level, 1002, 60);
+		rankService.setScore(serverId, RankType.Level, 1003, 160);
+		rankService.setScore(serverId, RankType.Level, 1004, 260);
 
 		// 异步调用
-		CompletionStage<Boolean> updateFuture = rankService.updateScoreAsync(serverId, RankType.Battle, 1001, 1000);
+		CompletionStage<Boolean> updateFuture = rankService.setScoreAsync(serverId, RankType.Battle, 1001, 1000);
 		updateFuture.thenAccept(result -> System.out.println("Async update result: " + result));
 
 		// 获取前3名玩家（同步）

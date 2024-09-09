@@ -14,16 +14,18 @@ public class RankExample {
 		String serverId = "server4";
 
 		// 同步调用
-		rankService.updateScore(serverId, RankType.Battle, 240200711, 50);
-		rankService.updateScore(serverId, RankType.Battle, 240200712, 75);
-		rankService.updateScore(serverId, RankType.Battle, 240200713, 90);
-		rankService.updateScore(serverId, RankType.Battle, 240200714, 20);
-		rankService.updateScore(serverId, RankType.Level, 240200711, 60);
-		rankService.updateScore(serverId, RankType.Level, 240200712, 160);
-		rankService.updateScore(serverId, RankType.Level, 240200713, 260);
+		rankService.setScore(serverId, RankType.Battle, 240200711, 50);
+		rankService.setScore(serverId, RankType.Battle, 240200712, 75);
+		rankService.setScore(serverId, RankType.Battle, 240200713, 90);
+		rankService.setScore(serverId, RankType.Battle, 240200714, 20);
+		rankService.setScore(serverId, RankType.Level, 240200711, 60);
+		rankService.setScore(serverId, RankType.Level, 240200712, 160);
+		rankService.setScore(serverId, RankType.Level, 240200713, 260);
+
+		rankService.updateScore(serverId, RankType.Level, 240200711, -100);
 
 		// 异步调用
-		CompletionStage<Boolean> updateFuture = rankService.updateScoreAsync(serverId, RankType.Battle, 240200711, 1000);
+		CompletionStage<Boolean> updateFuture = rankService.setScoreAsync(serverId, RankType.Battle, 240200711, 1000);
 		updateFuture.thenAccept(result -> System.out.println("Async update result: " + result));
 
 		// 获取前3名玩家（同步）
