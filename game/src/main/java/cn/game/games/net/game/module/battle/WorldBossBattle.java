@@ -6,8 +6,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.RankConfig;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
+import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
@@ -87,6 +91,11 @@ public class WorldBossBattle extends XiYouBattleHandler {
 		}
 		battleTimes++;
 //		player.getPointRewardModule().addReward(PointRewardType.WorldBoss, damage, damage, damage)
+		RankConfig rankConfig = RankManager.instance().get(RankType.WorldBoss.ID);
+		if (cumulativeDamage >= rankConfig.Request) {
+			RankService.getInstance().updateScore(player.getServerId(), RankType.WorldBoss, player.getPlayerId(), cumulativeDamage);
+		}
+
 	}
 
 	@Override

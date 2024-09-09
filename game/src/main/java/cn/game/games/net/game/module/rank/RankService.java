@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.rank;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -9,12 +10,23 @@ import java.util.stream.Collectors;
 
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
+import org.redisson.client.codec.LongCodec;
 import org.redisson.client.protocol.ScoredEntry;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.task.TaskManager;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.game.helper.MailHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.award.Goods;
+import cn.game.protocol.generated.config.RankConfig;
+import cn.game.protocol.generated.config.RankRewardConfig;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.RankManager;
+import cn.game.protocol.generated.manager.RankRewardManager;
+import cn.game.util.BinarySearchUtil;
+import cn.game.util.LockUtil;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 
@@ -28,6 +40,7 @@ public class RankService {
 	private static final RankService INSTANCE = new RankService();
 	/** 缩放次要分数 */
 	private static final double SECONDARY_SCORE_FACTOR = 1e-15;
+	private static final int DEFAULT_PAGE_SIZE = 50;
 
 	private RankService() {
 	}
@@ -35,6 +48,9 @@ public class RankService {
 	public static RankService getInstance() {
 		return INSTANCE;
 	}
+
+	/** TODO 所有服务器id，先这么写 */
+	private static final String[] serverIds = new String[] { "server1", "server2", "server3", "server4" };
 
 	/**
 	 * 根据服务器ID和排行榜类型生成Redis键。
@@ -333,8 +349,164 @@ public class RankService {
 		return scoredSortedSet.valueRangeAsync(scoreStart, true, scoreEnd, true, 0, count);
 	}
 
+	/** 
+	 * 如果当前值大于历史值则更新，注意不能并发调用。 
+	 * @param serverId
+	 * @param type
+	 * @param playerId
+	 * @param newValue
+	 * @return
+	 */
 	public CompletableFuture<Double> updateMaxValueAsync(String serverId, RankType type, long playerId, double newValue) {
-		return CompletableFuture.supplyAsync(() -> 3d);
+		String key = getKey(serverId, type);
+		RScoredSortedSet<Long> sortedSet = RedisUtil.getRedis().getScoredSortedSet(key, LongCodec.INSTANCE);
+
+		CompletableFuture<Double> resultFuture = new CompletableFuture<>();
+
+		sortedSet.getScoreAsync(playerId).thenCompose(currentScore -> {
+			if (currentScore == null || newValue > currentScore) {
+				return sortedSet.addScoreAsync(playerId, newValue);
+			} else {
+				return CompletableFuture.completedFuture(currentScore);
+			}
+		}).whenComplete((score, throwable) -> {
+			if (throwable != null) {
+				resultFuture.completeExceptionally(throwable);
+			} else {
+				resultFuture.complete(score);
+			}
+		});
+
+		return resultFuture;
+	}
+
+	/**
+	* 获取排行榜中指定区间（m到n）之间的玩家信息，支持分页。
+	*
+	* @param serverId 服务器ID
+	* @param type 排行榜类型
+	* @param m 起始排名
+	* @param n 结束排名
+	* @param pageSize 每页获取的条数
+	* @return 区间[m, n]之间玩家的排行信息列表
+	*/
+	public List<RankEntry> getRankRange(String serverId, RankType type, int m, int n, int pageSize) {
+		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+
+		List<RankEntry> allEntries = new ArrayList<>();
+		int total = n - m + 1; // 总条数
+
+		int currentPage = 1; // 当前页，从1开始
+		int remaining = total; // 剩余条数
+
+		// 分页获取
+		while (remaining > 0) {
+			int start = m + (currentPage - 1) * pageSize;
+			int end = Math.min(m + currentPage * pageSize - 1, n);
+
+			// 获取当前页的entry
+			Collection<ScoredEntry<Long>> entrys = rank.entryRangeReversed(start - 1, end - 1);
+			List<RankEntry> pageEntries = convertToRankEntries(entrys, currentPage, pageSize);
+
+			allEntries.addAll(pageEntries);
+
+			currentPage++;
+			remaining -= pageSize;
+		}
+
+		return allEntries;
+	}
+
+	public List<RankEntry> getRankRangePage(String serverId, RankType type, int m, int n, int currentPage, int pageSize) {
+		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+
+
+		List<RankEntry> allEntries = new ArrayList<>();
+		int total = n - m + 1; // 总条数
+
+		if (currentPage == 0) {
+			currentPage = 1;
+		}
+		int remaining = total; // 剩余条数
+
+		// 分页获取
+//		while (remaining > 0) {
+		int start = m + (currentPage - 1) * pageSize;
+		int end = Math.min(m + currentPage * pageSize - 1, n);
+
+		// 获取当前页的entry
+		Collection<ScoredEntry<Long>> entrys = rank.entryRangeReversed(start - 1, end - 1);
+		List<RankEntry> pageEntries = convertToRankEntries(entrys, currentPage, pageSize);
+
+		allEntries.addAll(pageEntries);
+
+//			currentPage++;
+//			remaining -= pageSize;
+//		}
+
+		return allEntries;
+	}
+
+	/** 
+	 * 初始化排行榜结算任务
+	 */
+	public void initRewardTask() {
+		Collection<RankConfig> list = RankManager.instance().list();
+		for (RankConfig rankConfig : list) {
+			initNextRewardTask(rankConfig.ID);
+		}
+
+	}
+
+	/**
+	 * 结算排行榜
+	 * @param rankId
+	 */
+	private void reward(int rankId) {
+		RankConfig rankConfig = RankManager.instance().get(rankId);
+		List<RankRewardConfig> rewardList = RankRewardManager.instance().getTypeList(rankId);
+		if (rewardList == null) {
+			return;
+		}
+		RankType rankType = RankType.get(rankConfig.ID);
+		boolean lock = LockUtil.tryLockSync(60, CacheType.SET_RANK.key(rankId));
+		if (!lock) {
+			return;
+		}
+
+		for (String serverId : serverIds) {
+			for (int page = 1;; page++) {
+				List<RankEntry> rankEntries = getPage(serverId, rankType, page, DEFAULT_PAGE_SIZE);
+				if (rankEntries.isEmpty()) {
+					break;
+				}
+				for (RankEntry rankEntry : rankEntries) {
+					RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(), r -> r.RewardStage);
+					List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
+					MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false);
+				}
+			}
+		}
+
+	}
+
+	private void initNextRewardTask(int rankId) {
+
+		Date nowDate = new Date();
+		long timeMillis = nowDate.getTime();
+
+		RankConfig rankConfig = RankManager.instance().get(rankId);
+		if (rankConfig.RewardTime != null) {
+			long nextTime = rankConfig.RewardTime.getNextValidTimeAfter(nowDate).getTime();
+			TaskManager.getInstance().scheduleGeneral(() -> {
+				try {
+					reward(rankConfig.ID);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				initNextRewardTask(rankConfig.ID);
+			}, nextTime - timeMillis);
+		}
 	}
 
 }

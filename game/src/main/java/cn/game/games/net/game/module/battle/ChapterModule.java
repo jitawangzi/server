@@ -34,7 +34,9 @@ import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.protocol.protobuf.BattleMsg.BattleLineupInfo;
 import cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo;
+import cn.game.protocol.protobuf.BattleMsg.LineupInfo;
 import cn.game.protocol.protobuf.BattleMsg.PatrolInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -732,6 +734,14 @@ public class ChapterModule extends BasePlayerModule  {
 		builder.setBattleType(type) ; 
 		builder.setBattleId(dungeonId);
 
+		lineupMaps.forEach((k, v) -> {
+			BattleLineupInfo.Builder lineupbuilder = BattleLineupInfo.newBuilder();
+			lineupbuilder.setBattleType(k);
+			v.forEach((k1, v1) -> {
+				lineupbuilder.addLineups(LineupInfo.newBuilder().setSeq(k1).addAllHeroUid(v1));
+			});
+			builder.addBattleLineups(lineupbuilder.build());
+		});
 	}
 
 	public PatrolInfo buildPatrolInfo() {

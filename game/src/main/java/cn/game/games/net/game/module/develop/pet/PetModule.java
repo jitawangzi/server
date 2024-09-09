@@ -39,6 +39,7 @@ public class PetModule extends AbstractItemModule<Pet> {
 		switch (event.getType()) {
 
 		case PLAYER_CREATE: {
+			break;
 		}
 		case NewDay: {
 			break;

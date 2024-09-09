@@ -338,6 +338,7 @@ message PlayerAllInfo{
    repeated GuideInfo guides = 65;    	// 引导进行到哪一步了。
    int32 battleType = 68 ;     // 已经开始，尚未结束的战斗类型，暂时没有用到。
    int32 battleId = 69 ;     // 已经开始，尚未结束的战斗id，battle 表id
+   repeated BattleLineupInfo battleLineups = 70;  // 所有武将阵容。
 
 
    //︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻合并游戏独有的数据︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻

@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.games.cache.entity.Mail;
-import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.manager.MailManager;
@@ -34,16 +31,17 @@ public class MailHelper {
 
 	public static void sendMail(long receiverId, int mailId, String sender, String title, String content, byte type, List<Goods> attachmentList,
 			boolean notify) {
-
 		Mail mail = Mail.valueOf(receiverId, mailId, sender, title, content, type, attachmentList);
-		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
-			Player player = PlayerManager.getInstance().getPlayer(receiverId); 
-			MailModule mailModule = player.getMailModule() ;
-			mailModule.sendOnline(mail, notify);
-		} else {
-//			mail.insert() ; 
-			DAO.insert(mail);
-		}
+		// 先直接插库，不在先发送了
+//		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
+//			Player player = PlayerManager.getInstance().getPlayer(receiverId); 
+//			MailModule mailModule = player.getMailModule() ;
+//			mailModule.sendOnline(mail, notify);
+//		} else {
+//			DAO.insert(mail);
+//		}
+
+		DAO.insert(mail);
 	}
 
 	public static void sendMail2(long receiverId, String sender, String title, String content, byte type,
@@ -89,14 +87,15 @@ public class MailHelper {
 	public static void sendMail(long receiverId, int mailId, List<Goods> goods, boolean notify) {
 
 		Mail mail = Mail.valueOfMailId(receiverId, mailId, goods);
-		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
-			Player player = PlayerManager.getInstance().getPlayer(receiverId);
-			MailModule mailModule = player.getMailModule();
-			mailModule.sendOnline(mail, notify);
-		} else {
-//			mail.insert();
-			DAO.insert(mail);
-		}
+		// 先直接插库，不在先发送了
+//		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
+//			Player player = PlayerManager.getInstance().getPlayer(receiverId);
+//			MailModule mailModule = player.getMailModule();
+//			mailModule.sendOnline(mail, notify);
+//		} else {
+//			DAO.insert(mail);
+//		}
+		DAO.insert(mail);
 	}
 
 	/** 

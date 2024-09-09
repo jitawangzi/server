@@ -61,12 +61,14 @@ public class PlayerManager {
 
 	private ConcurrentHashMap<Long, Long> id_offLineTime = new ConcurrentHashMap<>();
 
+	@Deprecated
 	private ConcurrentHashMap<Long, String> id_names = new ConcurrentHashMap<>();
 	/** 本服玩家简略信息，在线和离线都有 */
 	@Deprecated
 	private Cache<Long, SimplePlayer> simplePlayers = CacheBuilder.newBuilder().maximumSize(8192).expireAfterWrite(60,
 			TimeUnit.MINUTES).build();
 	/** 其他服务器玩家简略信息， */
+	@Deprecated
 	private Cache<Long, SimplePlayer> simplePlayersOtherServer = CacheBuilder.newBuilder().maximumSize(8192).expireAfterWrite(60,
 			TimeUnit.MINUTES).build();
 	/** 缓存玩家在哪个服务器 */
@@ -119,6 +121,19 @@ public class PlayerManager {
 	}
 
 	/** 
+	 * 某玩家是否在其他服务器在线。 
+	 * @param playerId
+	 * @return
+	 */
+	public boolean isOnlineOtherServer(long playerId) {
+		if (isOnlineInCurrentServer(playerId)) {
+			return false;
+		}
+		String serverId = getServerId(playerId);
+		return !StringUtils.isEmpty(serverId);
+	}
+
+	/** 
 	 * 当前服务器是否在线
 	 * @param playerId
 	 * @return 
@@ -136,7 +151,8 @@ public class PlayerManager {
 		try {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 			if (player != null) {
-				return ServerContext.getInstance().getServerId();
+//				return ServerContext.getInstance().getServerId();
+				return player.getServerId();
 			}
 			return playerServers.get(playerId, () -> {
 				String serverId = RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
@@ -385,6 +401,7 @@ public class PlayerManager {
 	 * @param playerId
 	 * @return
 	 */
+	@Deprecated
 	public Future<SimplePlayer> getSimplePlayerAsync(long playerId) {
 		Promise<SimplePlayer> promise = Promise.promise();
 		VxHolder.vertx.executeBlocking(r -> {

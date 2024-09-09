@@ -473,7 +473,7 @@ public class PlayerHelper {
 	 * @param randomRewardId
 	 * @return
 	 */
-	public static List<Goods> randomReward(Player player, int randomRewardId) {
+	public static List<Goods> randomReward(int randomRewardId) {
 		List<Goods> ret = new ArrayList<>();
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId);
 		for (int[] rewardInfo : randomGivenConfig.MustGiven) {
