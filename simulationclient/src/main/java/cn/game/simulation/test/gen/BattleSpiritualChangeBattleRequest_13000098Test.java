@@ -1,8 +1,7 @@
 package cn.game.simulation.test.gen;
 
-import org.springframework.stereotype.Component;
-
 import com.google.protobuf.Message;
+import org.springframework.stereotype.Component;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
@@ -15,7 +14,7 @@ public class BattleSpiritualChangeBattleRequest_13000098Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.newBuilder() ; 
 		
-		builder.setBattleId(31002);
+		
 		
 		return builder.build() ; 
 	}

@@ -8,12 +8,12 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class FairyFriendFightRequest_27000003Test extends ServerTest{
+public class BattlePvPEndRequest_13000115Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRequest_27000003.Builder builder = cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRequest_27000003.newBuilder() ; 
-		
+		cn.game.protocol.protobuf.BattleMsg.BattlePvPEndRequest_13000115.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPEndRequest_13000115.newBuilder() ; 
+		builder.setWin(false);
 		
 		
 		return builder.build() ; 
@@ -25,7 +25,7 @@ public class FairyFriendFightRequest_27000003Test extends ServerTest{
 		
 		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
 		
-		ServerTestContext.send(client, () -> new FairyFriendFightRequest_27000003Test().getMessage(client));
+		ServerTestContext.send(client, () -> new BattlePvPEndRequest_13000115Test().getMessage(client));
 
 		
 	}

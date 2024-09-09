@@ -122,7 +122,7 @@ public class PlayerHelper {
 		return true;
 	}
 
-	/** 
+	/**
 	 * or的关系判断,二维数组中有一个满足就可以
 	 * @param player
 	 * @param list
@@ -170,8 +170,8 @@ public class PlayerHelper {
 		return player.getGoodsModule(id).isEnough(id, count);
 	}
 
-	/** 
-	 * 合并同id 的资源和道具的数量。 
+	/**
+	 * 合并同id 的资源和道具的数量。
 	 * @param rewards
 	 */
 	public static void mergeRewards(List<RewardInfo> rewards) {
@@ -207,7 +207,7 @@ public class PlayerHelper {
 		}
 	}
 
-	/** 
+	/**
 	 * 根据现有的奖励，在给n倍的奖励
 	 * @param player
 	 * @param rewards
@@ -269,7 +269,7 @@ public class PlayerHelper {
 
 	/**
 	 * 进行某操作时扣除资源，包括所有大类型
-	 * @param playerId
+	 * @param player
 	 * @param id
 	 * @param value
 	 * @param mode 数值或当前百分比
@@ -306,7 +306,7 @@ public class PlayerHelper {
 
 	/**
 	 * 进行某操作时扣除资源，包括所有大类型
-	 * @param playerId
+	 * @param player
 	 * @param id
 	 * @param value
 	 * @param consumeType
@@ -337,7 +337,7 @@ public class PlayerHelper {
 
 	/**
 	 * 进行某操作时扣除资源，包括所有大类型
-	 * @param playerId
+	 * @param player
 	 * @param list
 	 * @param consumeType
 	 * @return
@@ -405,7 +405,7 @@ public class PlayerHelper {
 		return false;
 	}
 
-	/** 
+	/**
 	 * 二维数组用或的关系扣东西
 	 * @param playerId
 	 * @param list
@@ -413,7 +413,7 @@ public class PlayerHelper {
 	 * @return
 	 */
 	/*	public static boolean delResources(Player player, int[][] list, ResourceConsumeEnum consumeType) {
-	
+
 			if (list == null || list.length == 0) {
 				return true;
 			}
@@ -429,7 +429,7 @@ public class PlayerHelper {
 			return false;
 		}*/
 
-	/** 
+	/**
 	 * 根据奖励id，增加所有物品
 	 * @param player
 	 * @param randomRewardId
@@ -467,7 +467,7 @@ public class PlayerHelper {
 		return resources;
 	}
 
-	/** 
+	/**
 	 * 只是随机出来具体的奖励，不加到玩家身上,较少用到
 	 * @param player
 	 * @param randomRewardId
@@ -546,7 +546,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * 登陆后进行一些初始化操作，例如刷新离线数据、初始化定时任务等等, 
+	 * 登陆后进行一些初始化操作，例如刷新离线数据、初始化定时任务等等,
 	 * 创建新玩家后，也会执行此方法;
 	 * @param player
 	 */
@@ -676,9 +676,9 @@ public class PlayerHelper {
 		log.info("new day five clock refresh player:" + playerId + " succ");
 	}
 
-	/** 
+	/**
 	 * 一次性增加多个奖励
-	 * @param playerId
+	 * @param player
 	 * @param rewards
 	 * @return
 	 */
@@ -752,9 +752,9 @@ public class PlayerHelper {
 		return addResources(player, rewards[0], rewards[1], opType);
 	}
 
-	/** 
+	/**
 	 * 一次性增加多个奖励，增加完奖励后推送给客户端一次。
-	 * @param playerId
+	 * @param player
 	 * @param rewards
 	 * @return
 	 */
@@ -796,7 +796,7 @@ public class PlayerHelper {
 		}
 	}
 
-	/** 
+	/**
 	 * 给某玩家发送一个待处理的消息
 	 * @param playerId
 	 * @param message
@@ -848,8 +848,8 @@ public class PlayerHelper {
 		}
 	}
 
-	/** 
-	 * 给某在线玩家推送一个消息，如果玩家不在线，可以丢弃消息。 
+	/**
+	 * 给某在线玩家推送一个消息，如果玩家不在线，可以丢弃消息。
 	 * @param playerId
 	 * @param message
 	 */
@@ -938,7 +938,7 @@ public class PlayerHelper {
 
 	/**
 	 * 是否满足所有条件
-	 * @param playerId
+	 * @param player
 	 * @param conditions
 	 * @return
 	 */
@@ -954,7 +954,7 @@ public class PlayerHelper {
 
 	/**
 	 * @Description
-	 * @param playerId
+	 * @param player
 	 * @param conditions
 	 * @param or
 	 *            true,如果满足任意条件
@@ -984,7 +984,7 @@ public class PlayerHelper {
 
 	/**
 	 * 基础的条件检查
-	 * @param playerId
+	 * @param player
 	 * @param condition
 	 * @return
 	 */
@@ -997,8 +997,8 @@ public class PlayerHelper {
 		return getConditionCount(player, condition) >= count;
 	}
 
-	/** 
-	 * 获取某条件的计数，一般是根据当前数据直接可以获得的，或者是累计计数等，不需要额外条件的。 
+	/**
+	 * 获取某条件的计数，一般是根据当前数据直接可以获得的，或者是累计计数等，不需要额外条件的。
 	 * @param player
 	 * @param condition
 	 * @return
@@ -1157,10 +1157,10 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * @param newGameClient  
+	 * @param newGameClient
 	 * @param reconnect 客户端传递的参数，是否是重连
 	 * @param playerId
-	 * @return  是否重连了 
+	 * @return  是否重连了
 	 */
 	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId) {
 		if (playerId == 0) {
@@ -1224,7 +1224,7 @@ public class PlayerHelper {
 		return Future.succeededFuture(player);
 	}
 
-	/** 
+	/**
 	 * 获取某个玩家id的分布式锁
 	 * @param playerId
 	 * @return
@@ -1245,6 +1245,10 @@ public class PlayerHelper {
 		String key = CacheType.PLAYER_SIMPLE.key(player.getData().getPlayerId());
 		return  RedisLocalCache.getInstance().putAsync(key, new SimplePlayer(player));
 	}
+
+
+
+
 
 	public static Future<Player> saveSimplePlayer(Player player) {
 		Future<Void> future = saveSimplePlayerToRedis(player);
@@ -1404,7 +1408,6 @@ public class PlayerHelper {
 
 	/** 
 	 * 清除玩家缓存数据
-	 * @param player
 	 */
 	public static void clearPlayer(long playerId) {
 		Player player = PlayerManager.getInstance().deletePlayer(playerId);

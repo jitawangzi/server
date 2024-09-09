@@ -53,6 +53,9 @@ public class ChapterModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
 			EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin };
 
+	@JsonIgnore
+	public static final int CHAPTER_TYPE_DA_DAO = 13;
+
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
 	/** 主线战役 */
@@ -143,6 +146,11 @@ public class ChapterModule extends BasePlayerModule  {
 			lineupMaps.put(type, map);
 		}
 		map.put(lineupId, new ArrayList<String>(heroUids));
+
+		if (type == CHAPTER_TYPE_DA_DAO && !player.getOfflineBattleModule().isJoin()){
+			player.getOfflineBattleModule().joinPlay();
+		}
+
 	}
 
 	public Map<Integer, List<String>> getLineups(int type) {

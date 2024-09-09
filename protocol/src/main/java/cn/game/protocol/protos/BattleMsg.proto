@@ -2,6 +2,7 @@ syntax = "proto3";
 option java_package = "cn.game.protocol.protobuf";
 package Protos;
 import "RewardMsg.proto" ;
+import "BaseMsg.proto";
 // 章节关卡协议
 // 开始关卡战斗请求
 message BattleFieldStartRequest_13000001{
@@ -408,7 +409,7 @@ message BattleWorldRewardResponse_13000306
 	repeated RewardInfo rewards = 1;		// 获得的奖励
 }
 
-//@NotUseStart
+
 
 // 肉鸽刷新,每天前3次免费，第四次看广告。
 message BattleRougeRefreshRequest_13000052{
@@ -426,5 +427,60 @@ message BattleStaminaRequest_13000050{
 
 message BattleStaminaResponse_13000051{
 }
+// ****************************************大道争锋********************************************
+//目标列表刷新 请求
+message BattlePvPTargetListRequest_13000111{
+	bool refreshFlag = 1;//true 进入玩法首次刷新
+}
+
+//目标列表刷新 响应
+message BattlePvPTargetListResponse_13000112{
+	repeated SimplePlayerInfo targetList = 1;//查询到的目标列表
+}
+
+//开始战斗请求
+message BattlePvPStartRequest_13000113{
+	int32 targetId = 1; //要挑战的对手的ID  可能是NPC 也可能是玩家
+}
+//开始战斗响应
+message BattlePvPStartResponse_13000114{
+		PlayerBattleAttrs selfAttrs = 1;  //我自己的属性
+		PlayerBattleAttrs targetAttrs = 2; //目标的属性
+}
+//结算战斗请求
+message BattlePvPEndRequest_13000115{
+	uint32 killMonsterCount = 1;	// 击杀怪物（小怪+头目）数量
+	uint32 killMonsterBossCount = 2;	// 击杀首领数量
+	uint32 hpPercent = 3;	// 城池剩余血量百分比，如剩余40%血量，则为40
+	bool win = 4;	        // 战斗是否成功，用血量百分比可能有误差。
+	uint32 battleTime = 5;	        // 战斗时长（秒）
+	uint32 damage = 6;	        // 战斗伤害，例如世界boss战斗需要这个数值。
+	int32 endType = 7; 				  // 结算类型 0 正常结算， 1 主动退出战斗
+}
+//结算战斗响应
+message BattlePvPEndResponse_13000116{
+	repeated RewardInfo drops = 1;
+	int32 selfScore = 2;//我的新积分
+	int32 targetScore = 3; //对方的积分
+}
+//获取大道争锋信息 请求
+message BattlePvPInfoRequest_13000117{
+}
+//获取大道争锋信息 响应
+message BattlePvPInfoResponse_13000118{
+	int32 num = 1; //今天已经挑战的次数
+	int32 settlementDayTimer = 2; //今天结算时间戳
+	int32 settlementSeasonTimer = 3; //当前赛季的结算时间戳
+	int32 nextSeasonTimer = 4; //下一个赛季时间戳
+	int32 buyNum = 5; //购买的挑战券数量
+}
+//购买挑战券 请求
+message BattleBuyPvPTimeRequest_13000121{
+}
+//购买挑战券 响应
+message BattleBuyPvPTimeResponse_13000122{
+	int32 curNum = 1; //购买后的数量
+}
+//@NotUseStart
 //@NotUseEnd
 

@@ -6,8 +6,11 @@ import java.util.List;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.protocol.generated.config.NPCConfig;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
+import cn.game.protocol.protobuf.BattleMsg;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * 玩家的简单数据，一般用来显示用
@@ -43,6 +46,10 @@ public class SimplePlayer implements Serializable {
 	public int battleId;
 
 	public List<Hero> heros;
+	/**
+	 * 前端需要的战斗相关的属性
+	 */
+	byte[] battleAttrs;
 
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
 			String unionName, long offLinetime) {
@@ -59,7 +66,6 @@ public class SimplePlayer implements Serializable {
 	/**
 	 * @param player
 	 *            根据在线的player对象，构造实例
-	 * @param unionName
 	 */
 	public SimplePlayer(Player player) {
 		this.id = player.getData().getPlayerId();
@@ -75,6 +81,7 @@ public class SimplePlayer implements Serializable {
 		
 		this.battleId = player.getChapterModule().getMainBattleHighest();
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
+		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -91,7 +98,15 @@ public class SimplePlayer implements Serializable {
 //		setServerId(ServerContext.getInstance().getServerId());
 		return this;
 	}
-
+	public static SimplePlayer makeByNpcConfig(NPCConfig npcConfig) {
+		SimplePlayer simplePlayer = new SimplePlayer();
+		simplePlayer.setId(npcConfig.ID);
+		simplePlayer.setName(npcConfig.Name);
+		simplePlayer.setOnline(true);
+		simplePlayer.setHeadFrame(400006);
+		simplePlayer.setHead(Integer.parseInt(npcConfig.Icon));
+		return simplePlayer;
+	}
 	public SimplePlayerInfo toSimplePlayerInfo() {
 
 		SimplePlayerInfo.Builder builder = SimplePlayerInfo.newBuilder();
@@ -261,5 +276,14 @@ public class SimplePlayer implements Serializable {
 	public String getClientDeviceId() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public BattleMsg.PlayerBattleAttrs getPlayerBattleAttrs() {
+		try {
+			return  BattleMsg.PlayerBattleAttrs.parseFrom(battleAttrs);
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

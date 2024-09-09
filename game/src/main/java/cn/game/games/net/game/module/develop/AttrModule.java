@@ -140,32 +140,36 @@ public class AttrModule extends BasePlayerModule {
 		Map<Long, Integer> battleHeros = player.getHeroModule().getBattleHeros();
 		for (Long uid : battleHeros.keySet()) {
 			Hero hero = player.getHeroModule().get(uid);
-			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-			// 初始属性
-			AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttributeId);
 			IntMapWrapper heroAttrMap = new IntMapWrapper();
-			heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
-			// 等级成长属性
-			if (hero.getLevel() > 1) {
-				attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.GrowthAttributeId);
-				attributeVlalueConfig.AttributeVlalue.forEach((k, v) -> {
-					heroAttrMap.add(k, v * (hero.getLevel() - 1));
-				});
-			}
-			// 突破属性
+			makeHeroAttr(hero, heroAttrMap);
+
+
+			heroAttrs.put(uid, heroAttrMap);
+		}
+	}
+
+	public static void makeHeroAttr(Hero hero, IntMapWrapper heroAttrMap) {
+		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+		// 初始属性
+		AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttributeId);
+		heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
+		// 等级成长属性
+		if (hero.getLevel() > 1) {
+			attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.GrowthAttributeId);
+			attributeVlalueConfig.AttributeVlalue.forEach((k, v) -> {
+				heroAttrMap.add(k, v * (hero.getLevel() - 1));
+			});
+		}
+		// 突破属性
 //			for (int[] attrArray : heroConfig.BreakActivationAttribute) {
 //				if (attrArray[0] == hero.getQuality()) {
 //					attributeVlalueConfig = AttributeVlalueManager.instance().get(attrArray[1]);
 //					heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
 //				}
 //			}
-			HeroBreakConfig uiInitialQualityStar = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
-			attributeVlalueConfig = AttributeVlalueManager.instance().get(uiInitialQualityStar.BreakOneTime);
-			heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
-
-
-			heroAttrs.put(uid, heroAttrMap);
-		}
+		HeroBreakConfig uiInitialQualityStar = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
+		attributeVlalueConfig = AttributeVlalueManager.instance().get(uiInitialQualityStar.BreakOneTime);
+		heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
 	}
 
 	public void calcDragonAttr() {
