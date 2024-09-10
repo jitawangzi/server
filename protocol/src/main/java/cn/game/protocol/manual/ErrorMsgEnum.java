@@ -140,8 +140,8 @@ public enum ErrorMsgEnum {
 	activity_not_found(397, "该活动不存在"),
 	da_dao_not_play(398, "当前时间不可进行大道争锋活动"),
 	da_dao_play_num_not_enough(399, "今日大道争锋挑战次数已经用完"),
-	da_dao_not_found_target_Player(399, "大道争锋要挑战的目标不存在"),
-	da_dao_in_battle(400, "大道争锋要挑战正在进行中，不可再次挑战"),
+	da_dao_not_found_target_Player(400, "大道争锋要挑战的目标不存在"),
+	da_dao_in_battle(401, "大道争锋要挑战正在进行中，不可再次挑战"),
 
 	;
 

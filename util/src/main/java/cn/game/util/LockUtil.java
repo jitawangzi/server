@@ -44,6 +44,23 @@ public class LockUtil {
 	}
 
 	/** 
+	 * 尝试同步获取锁，如果获取不到立刻返回，利用过期时间自动释放锁。
+	 * @param leaseTime 锁过期时间(秒)
+	 * @param keys
+	 * @return
+	 */
+	public static boolean tryLockSync(int leaseTime, String... keys) {
+		RLock lock = initLock(keys);
+		boolean tryLock = false;
+		try {
+			tryLock = lock.tryLock(waitTime, leaseTime, TimeUnit.SECONDS);
+		} catch (Exception e) {
+
+		}
+		return tryLock;
+	}
+
+	/** 
 	 * 获取一个不过期的锁，如果获取不到立刻返回。{@link #tryLockSync(String...)}
 	 * @param locks
 	 * @return 获取到的锁，没获取到返回null

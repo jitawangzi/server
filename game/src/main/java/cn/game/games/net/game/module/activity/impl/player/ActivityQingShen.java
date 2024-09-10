@@ -2,7 +2,6 @@ package cn.game.games.net.game.module.activity.impl.player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.google.protobuf.Message;
 
@@ -136,7 +135,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 				Quest quest = questModule.get(activityQingShenConfig.taskID);
 				if (quest.getState() == QuestHelper.CAN_GIVEWARD){
 					QuestConfig questConfig = QuestManager.instance().get(quest.getId());
-					MailHelper.sendMail(player.getPlayerId(),10,PlayerHelper.randomReward(player,questConfig.Reward),true);
+					MailHelper.sendMail(player.getPlayerId(), 10, PlayerHelper.randomReward(questConfig.Reward), true);
 				}
 			}
 			//活动结束  删除活动相关的任务

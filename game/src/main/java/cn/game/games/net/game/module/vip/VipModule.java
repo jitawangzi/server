@@ -1,11 +1,13 @@
 package cn.game.games.net.game.module.vip;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.VIPConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -13,9 +15,6 @@ import cn.game.protocol.generated.manager.VIPManager;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.VipMsg;
 import cn.game.util.DateUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
 * @ClassName VipModule
@@ -67,7 +66,7 @@ public class VipModule extends BasePlayerModule {
                     //旧的免费礼包未领取  在VIP升级后，没有领取的每日奖励通过邮件发送ID=8；
                     if (!DateUtil.isSameDay(System.currentTimeMillis(), rewardFreeGiftTimer)){
                         VIPConfig config = VIPManager.instance().get(level);
-                        MailHelper.sendMail(playerId, 8, PlayerHelper.randomReward(player, config.DailyBox), true);
+						MailHelper.sendMail(playerId, 8, PlayerHelper.randomReward(config.DailyBox), true);
                     }
                     rewardFreeGiftTimer = 0;
                     log.info(String.format( "vip levelUp curLevel:%d, curExp:%d, pid:%d", level,curExp,player.getPlayerId()));

@@ -279,6 +279,7 @@ public class FriendModule extends BasePlayerModule {
 		switch (event.getType()) {
 
 		case PLAYER_CREATE: {
+			break;
 		}
 		case NewDay: {
 			newDay();

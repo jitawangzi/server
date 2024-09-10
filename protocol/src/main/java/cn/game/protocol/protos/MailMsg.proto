@@ -65,3 +65,11 @@ message MailInfo{
 	bool receive = 12;			//是否领取过附件奖励
 	repeated GoodsInfo attachments = 13;	//附件奖励
 }
+
+
+// 下面协议只服务器用到。
+
+
+//邮件
+
+

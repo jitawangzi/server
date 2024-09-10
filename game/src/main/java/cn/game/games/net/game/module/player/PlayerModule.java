@@ -213,7 +213,7 @@ public class PlayerModule extends BasePlayerModule {
 					return;
 				}
 				if (Rnd.hit(randomCLoud[2])) {
-					cloudBox = PlayerHelper.randomReward(player, randomCLoud[3]);
+					cloudBox = PlayerHelper.randomReward(randomCLoud[3]);
 					List<GoodsInfo> collect = cloudBox.stream().map(Goods::toGoodsInfo).collect(Collectors.toList());
 					player.getGameClient().sendProtocol(PlayerCloudBoxPush_01100040.newBuilder().setCloudBox(CloudBoxInfo.newBuilder().addAllItems(collect)));
 					cloudBoxCount++;

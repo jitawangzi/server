@@ -2,28 +2,23 @@ package cn.game.games.net.game.module.activity.impl.player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import cn.game.games.cache.entity.Player;
+import com.google.protobuf.Message;
+
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
-import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.activity.ActivityType;
+import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.ActivityMeiRiBaoLiConfig;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityMeiRiBaoLiManager;
 import cn.game.protocol.generated.manager.QuestManager;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg;
-import cn.game.util.DateUtil;
-import com.google.protobuf.Message;
-
-import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.net.game.module.activity.ActivityType;
-import cn.game.games.net.game.module.activity.PlayerActivityBase;
-import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -95,7 +90,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 				Quest quest = questModule.get(activityMeiRiBaoLiConfig.taskID);
 				if (quest.getState() == QuestHelper.CAN_GIVEWARD){
 					QuestConfig questConfig = QuestManager.instance().get(quest.getId());
-					MailHelper.sendMail(player.getPlayerId(),9,PlayerHelper.randomReward(player,questConfig.Reward),true);
+					MailHelper.sendMail(player.getPlayerId(), 9, PlayerHelper.randomReward(questConfig.Reward), true);
 				}
 			}
 			//活动结束  删除活动相关的任务

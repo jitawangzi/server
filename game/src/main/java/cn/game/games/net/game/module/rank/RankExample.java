@@ -22,8 +22,7 @@ public class RankExample {
 		rankService.setScore(serverId, RankType.Level, 240200712, 160);
 		rankService.setScore(serverId, RankType.Level, 240200713, 260);
 
-		rankService.updateScore(serverId, RankType.Level, 240200711, -100);
-
+		rankService.updateMaxValueAsync(serverId, RankType.Level, 240200711, 1000);
 		// 异步调用
 		CompletionStage<Boolean> updateFuture = rankService.setScoreAsync(serverId, RankType.Battle, 240200711, 1000);
 		updateFuture.thenAccept(result -> System.out.println("Async update result: " + result));
