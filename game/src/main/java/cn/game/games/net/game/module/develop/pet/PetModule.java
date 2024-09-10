@@ -34,6 +34,10 @@ public class PetModule extends AbstractItemModule<Pet> {
 		return petBookMap;
 	}
 
+	public int getBattlePetId() {
+		return battlePetId;
+	}
+
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
@@ -54,12 +58,12 @@ public class PetModule extends AbstractItemModule<Pet> {
 
 	@Override
 	public Item newInstance() {
-		return new Pet();
+		return new Secretscript();
 	}
 
 	@Override
 	public RewardInfo toRewardInfo(Pet reward) {
-		return RewardInfo.getDefaultInstance();
+		return RewardInfo.newBuilder().setPet(reward.toPetInfo()).build();
 	}
 
 	@Override

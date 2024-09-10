@@ -30,6 +30,7 @@ public enum GoodsTypeEnum{
 	/** 龙技能 暂时没用到*/
 	DragonSkill(12, "龙技能"),
 
+	Secretscript(35, "神通"),
 	/** 暂时没用到 */
 	Sword(36, "武器"),
 	/**  */

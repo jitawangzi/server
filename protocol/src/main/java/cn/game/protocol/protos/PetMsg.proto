@@ -79,13 +79,6 @@ message PetBondsUpLevelRequest_19000015{
 message PetBondsUpLevelResponse_19000016{
 }
 
-message PetInfo{
-	int32 id = 1; // SoulSoulPet表id
-	int32 level = 2; // 等级
-	int32 breakLevelMax = 3;  // 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
-	repeated int32 skills = 4;  // 拥有的洗练技能， SoulPetSkill表id
-	repeated int32 petSkillsToSave = 24;  // 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
-}
 
 // 抽宠物
 

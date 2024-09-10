@@ -103,6 +103,7 @@ public enum OpType{
 	WorldBoss(171, "世界boss"),
 	FairyFriend(180, "仙友"),
 	SoulPet(181, "灵宠"),
+	Secretscript(182, "神通"),
 
 	BoxOpen(200, "合并开宝箱"),
 	MergeEquipLvUp(201, "合并装备升级"),

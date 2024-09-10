@@ -1,24 +1,22 @@
 package cn.game.simulation.test.gen;
 
+import org.springframework.stereotype.Component;
+
 import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
-//@Component
-public class TestAddItemRequest_6f000008Test extends ServerTest{
+@Component
+public class SecretscriptBreakUpRequest_38000005Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.Builder builder = cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.newBuilder() ; 
-
-//		builder.setId(Asset.playerExp.ID);
-//		builder.setCount(Integer.MAX_VALUE / 2);
-//		
-		builder.setId(2);
-		builder.setCount(0);
-
+		cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptBreakUpRequest_38000005.Builder builder = cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptBreakUpRequest_38000005.newBuilder() ; 
+		builder.setId(111);
+		
+		
 		return builder.build() ; 
 	}
 	
@@ -28,9 +26,9 @@ public class TestAddItemRequest_6f000008Test extends ServerTest{
 		
 		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
 		
-		ServerTestContext.send(client, () -> new TestAddItemRequest_6f000008Test().getMessage(client));
+		ServerTestContext.send(client, () -> new SecretscriptBreakUpRequest_38000005Test().getMessage(client));
 
-
+		
 	}
 
 }

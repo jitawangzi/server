@@ -6,6 +6,8 @@ public enum AttrCalcType {
 	Potential,
 	Spiritual,
 	SpiritualRoot,
+	Pet,
+	Secretscript,
 
 	;
 }

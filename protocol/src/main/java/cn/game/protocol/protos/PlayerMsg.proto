@@ -9,7 +9,6 @@ import "BattleMsg.proto" ;
 import "QuestMsg.proto";
 import "DevelopMsg.proto";
 import "FairyFriendMsg.proto";
-import "PetMsg.proto";
 
 /*** 登陆****/
 message PlayerLoginRequest_01000001{
@@ -304,7 +303,8 @@ message PlayerAllInfo{
    repeated PetInfo pets = 22;   // 宠物数据
    map<uint32, uint32> petBook = 23;   // 宠物羁绊/图鉴数据，key：SoulPetBook表id  value： 图鉴等级
    int32 petBattleId = 26;  // 上阵的宠物id  SoulPet 表id
-
+   repeated SecretscriptInfo secretscript= 27;  // 所有的神通
+   map<uint32, uint32> secretscriptPos= 28;  // 神通融汇。key: 神通id value: 位置，1-5
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼养成部分︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
 

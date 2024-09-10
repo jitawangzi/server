@@ -8,7 +8,7 @@ import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Item;
 import cn.game.protocol.protobuf.BaseMsg.PetInfo;
 
-public class Pet extends Item implements Serializable, DbEntity {
+public class Secretscript extends Item implements Serializable, DbEntity {
 
 	private static final long serialVersionUID = 1L;
 	private int level = 1;

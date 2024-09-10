@@ -32,6 +32,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
@@ -59,6 +60,7 @@ import cn.game.protocol.protobuf.TestMsg.TestMissionFinishRequest_6f000022;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishResponse_6f000023;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataRequest_6f000028;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029;
+import cn.game.protocol.protobuf.TestMsg.TestRequest_6f000020;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
@@ -298,10 +300,12 @@ public class TestHandler extends BaseHandler {
 	}
 
 	protected void test(NetClient client, Object message) {
+		TestRequest_6f000020 req = (TestRequest_6f000020) message;
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		GameClientManager.getInstance().logout((GameClient) client);
-
+//		GameClientManager.getInstance().logout((GameClient) client);
+		SecretscriptModule module = player.getModule(SecretscriptModule.class);
+		module.add(101, OpType.None);
 //		GameClientManager.getInstance().logout((GameClient)client); 
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 

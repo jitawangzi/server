@@ -124,6 +124,23 @@ message SkillInfo{
 	repeated uint32 strengthenIds = 2;//已经激活强化项id,SkillBuff表的id
 }
 
+//宠物
+message PetInfo{
+	int32 id = 1; // SoulSoulPet表id
+	int32 level = 2; // 等级
+	int32 breakLevelMax = 3;  // 已经突破的最高等级，例如在20、40、60级时需要突破后才能继续升级，如果在40级时突破了， 则记录40
+	repeated int32 skills = 4;  // 拥有的洗练技能， SoulPetSkill表id
+	repeated int32 petSkillsToSave = 24;  // 已经消耗道具洗练出来尚未保存的技能id  SoulPetSkill 表id
+}
+
+// 神通
+message SecretscriptInfo{
+	int32 id = 1; // Secretscript表的SecretscriptMark字段。
+	int32 level = 2; // 等级
+	int32 star = 3;  // 星级
+}
+
+
 // 玩家的简单信息
 message SimplePlayerInfo{
 	string id = 1; 			// id
