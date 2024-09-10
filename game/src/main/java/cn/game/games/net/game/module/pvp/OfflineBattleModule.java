@@ -1,7 +1,6 @@
 package cn.game.games.net.game.module.pvp;
 
 import cn.game.games.core.BasePlayerModule;
-import cn.game.games.core.ResultObject;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -14,17 +13,12 @@ import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.util.DateUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import org.apache.commons.lang.math.RandomUtils;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.*;
 
 /**
  * @ClassName OfflineBattleModule
@@ -181,10 +175,10 @@ public class OfflineBattleModule extends BasePlayerModule {
               }
               final int fianlScore = score;
               int[][] scoreRange = getScoreRange(rank.intValue());
-              CompletionStage<Collection<Long>> lastCompletion = null;
               List<List<Long>> matchList = new CopyOnWriteArrayList<>();
 
-              AtomicInteger findNum = new AtomicInteger(1);
+//              AtomicInteger findNum = new AtomicInteger(1);
+              CountDownLatch findNum = new CountDownLatch(5);
               int i = 0;
               for (int[] range : scoreRange) {
                 int minScore = fianlScore * range[0] / 10000;
@@ -195,21 +189,28 @@ public class OfflineBattleModule extends BasePlayerModule {
                 getTargetIdByScore(minScore, maxScore)
                     .exceptionally(
                         err -> {
-                          findNum.getAndIncrement();
+//                          findNum.getAndIncrement();
+                          findNum.countDown();
                           err.printStackTrace();
                           promise.fail(err);
                           return null;
                         })
                     .thenAccept(
                         rankPids -> {
-                          findNum.getAndIncrement();
+//                          findNum.getAndIncrement();
+                          findNum.countDown();
                           if (rankPids != null && !rankPids.isEmpty()) {
                             matchList.get(finalI).addAll(rankPids);
                           }
                         });
               }
-              while (findNum.get() < 5) {
-                continue;
+//              while (findNum.get() < 5) {
+//                continue;
+//              }
+              try {
+                findNum.await(1000L, TimeUnit.MILLISECONDS);
+              } catch (InterruptedException e) {
+                e.printStackTrace();
               }
               matchList.forEach(
                   (matchPids) -> {
@@ -224,7 +225,7 @@ public class OfflineBattleModule extends BasePlayerModule {
                         return; // 匹配到一个用户 直接退出
                       }
                     }
-                    // 未匹配到 则从NPC表在 尝试随机 10次 来匹配
+                    // 未匹配到 则从NPC表在 尝试随机 来匹配
                     NPCConfig npcConfig =
                         NPCManager.instance().list().stream()
                             .filter(config -> !usedPidList.contains((long) config.ID))
@@ -244,56 +245,6 @@ public class OfflineBattleModule extends BasePlayerModule {
     return promise.future();
   }
 
-  /*
-  getSelfScore()
-      .thenAccept(
-          selfScore -> {
-            int score = selfScore.intValue();
-            if (score == 0) {
-              score = GlobalConst.DaDaoStartupPoint;
-            }
-            final int fianlScore = score;
-            final  Object lock = new Object();
-            RankService.getInstance()
-                .getRankAsync(
-                    player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId())
-                .thenAccept(
-                    rank -> {
-                      int[][] scoreRange = getScoreRange(rank);
-                      CompletionStage<Collection<Long>> lastCompletion = null;
-                      for (int[] range : scoreRange) {
-                        int minScore = fianlScore * range[0] / 10000;
-                        int maxScore = fianlScore * range[1] / 10000;
-                        getTargetIdByScore(minScore, maxScore)
-                            .thenAccept(
-                                rankPids -> {
-                                  synchronized (lock){
-                                    if (rankPids != null && !rankPids.isEmpty()) {
-                                      for (long targetId : rankPids) {
-                                        if (usedPidList.contains(targetId)
-                                                || targetId == playerId) {
-                                          continue;
-                                        }
-                                        SimplePlayer simplePlayer = PlayerManager.getInstance().getSimplePlayer(targetId);
-                                        if (simplePlayer != null) {
-                                          addFindPlayer(resultList, simplePlayer,  promise);
-                                          return; // 匹配到一个用户 直接退出
-                                        }
-                                      }
-                                    }
-                                    // 未匹配到 则从NPC表在 尝试随机 10次 来匹配
-                                    NPCConfig npcConfig =
-                                            NPCManager.instance().list().stream().filter(config -> !usedPidList.contains((long)config.ID)).findAny().get();
-                                    SimplePlayer simplePlayer =
-                                            SimplePlayer.makeByNpcConfig(npcConfig);
-                                    addFindPlayer(resultList, simplePlayer, promise);
-                                  }
-                                });
-                      }
-                    });
-          });
-  return promise.future();*/
-  //  }
 
   private void addFindPlayer(
       List<SimplePlayer> resultList,
@@ -370,7 +321,7 @@ public class OfflineBattleModule extends BasePlayerModule {
         .getScoreAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId());
   }
 
-  public BattleMsg.PlayerBattleAttrs getTargetPlayerAttrs(long targetId) {
+  public SimplePlayer getTargetPlayer(long targetId) {
     NPCConfig npcConfig = NPCManager.instance().get((int) targetId);
     SimplePlayer battleTargetPlayer = null;
     for (SimplePlayer simplePlayer : tempRefreshList) {
@@ -383,19 +334,17 @@ public class OfflineBattleModule extends BasePlayerModule {
     if (npcConfig != null) {
       return null;
     }
-    if (battleTargetPlayer != null) return battleTargetPlayer.getPlayerBattleAttrs();
-    return null;
+    return battleTargetPlayer;
   }
 
-  public Future<Void> updateScore(
-      boolean win, BattleMsg.BattlePvPEndResponse_13000116.Builder res) {
+  public Future<Void> updateScore(boolean win,long  targetId, BattleMsg.BattlePvPEndResponse_13000116.Builder res) {
     int selfAddScore = 0, targetAddScore = 0;
     int targetIndex = 4;
     NPCConfig npcConfig = null;
     for (int i = 0; i < tempRefreshList.size(); i++) {
-      if (inBattlePlayer == tempRefreshList.get(i)) {
+      if (tempRefreshList.get(i).id == targetId){
         targetIndex = i;
-        npcConfig = NPCManager.instance().get((int) inBattlePlayer.id);
+        npcConfig = NPCManager.instance().get((int) targetId);
         break;
       }
     }
@@ -411,9 +360,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     CompletionStage<Double> selfStage =
         addDayRankScore(player.getPlayerId(), player.getServerId(), selfAddScore);
     // 修改对方的积分
-    Promise<Double> targetVoidPromise = Promise.promise();
-    targetVoidPromise.complete(0.0);
-    CompletionStage<Double> targetStage = targetVoidPromise.future().toCompletionStage();
+    CompletionStage<Double> targetStage = getDoubleCompletionStage();
     if (npcConfig == null) {
       targetStage = addDayRankScore(inBattlePlayer.id, player.getServerId(), targetAddScore);
       addSeasonRankScore(inBattlePlayer.id, player.getServerId(), targetAddScore);
@@ -431,5 +378,11 @@ public class OfflineBattleModule extends BasePlayerModule {
           return null;
         });
     return promise.future();
+  }
+
+  private CompletionStage<Double> getDoubleCompletionStage() {
+    Promise<Double> targetVoidPromise = Promise.promise();
+    targetVoidPromise.complete(0.0);
+      return targetVoidPromise.future().toCompletionStage();
   }
 }

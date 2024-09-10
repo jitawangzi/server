@@ -440,12 +440,13 @@ message BattlePvPTargetListResponse_13000112{
 
 //开始战斗请求
 message BattlePvPStartRequest_13000113{
-	int32 targetId = 1; //要挑战的对手的ID  可能是NPC 也可能是玩家
+	string targetId = 1; //要挑战的对手的ID  可能是NPC 也可能是玩家
 }
 //开始战斗响应
 message BattlePvPStartResponse_13000114{
 		PlayerBattleAttrs selfAttrs = 1;  //我自己的属性
-		PlayerBattleAttrs targetAttrs = 2; //目标的属性
+		PlayerBattleAttrs targetAttrs = 2; //目标的属性 null 则为NPC
+		BattleLineupInfo targetLineupInfo = 3; // 目标的阵容 null 则为NPC
 }
 //结算战斗请求
 message BattlePvPEndRequest_13000115{
@@ -455,7 +456,9 @@ message BattlePvPEndRequest_13000115{
 	bool win = 4;	        // 战斗是否成功，用血量百分比可能有误差。
 	uint32 battleTime = 5;	        // 战斗时长（秒）
 	uint32 damage = 6;	        // 战斗伤害，例如世界boss战斗需要这个数值。
-	int32 endType = 7; 				  // 结算类型 0 正常结算， 1 主动退出战斗
+	int32 endType = 7; 				  // 结算类型: 0 正常结算; 1 主动退出战斗; 2 扫荡结算
+	string targetId = 8; 					//要挑战的对手的ID  可能是NPC 也可能是玩家
+
 }
 //结算战斗响应
 message BattlePvPEndResponse_13000116{

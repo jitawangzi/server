@@ -35,6 +35,7 @@ public enum DungeonTypeEnum{
 	// 合成游戏的战斗
 	HCBattleChapter(11, "合成游戏主线章节"),
 	DayChallenge(12, "合成每日挑战"),
+	CHAPTER_TYPE_DA_DAO(50, "大道争锋玩法"),
     ;
 	/** id */
 	private int id ; 

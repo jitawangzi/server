@@ -2,10 +2,12 @@ package cn.game.games.net.game.module.pvp;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
@@ -78,16 +80,22 @@ public class OfflineBattleHandler {
         module.tempRefreshList.stream()
             .anyMatch(
                 simplePlayer -> {
-                  return simplePlayer.id == req.getTargetId();
+                  return simplePlayer.id == Long.parseLong(req.getTargetId());
                 });
     if (!match) {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_found_target_Player.ID);
       return;
     }
     res.setSelfAttrs(player.getAttrModule().buildBattleAttrs());
-    BattleMsg.PlayerBattleAttrs targetAttrs = module.getTargetPlayerAttrs(req.getTargetId());
-    if (targetAttrs != null) {
-      res.setTargetAttrs(targetAttrs);
+    SimplePlayer targetPlayer = module.getTargetPlayer(Long.parseLong(req.getTargetId()));
+    if (targetPlayer != null) {
+      res.setTargetAttrs(targetPlayer.getPlayerBattleAttrs());
+      BattleMsg.BattleLineupInfo.Builder targetLineup = BattleMsg.BattleLineupInfo.newBuilder();
+      targetLineup.setBattleType(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
+      targetPlayer.getLineupMaps().get(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()).forEach((k,v)->{
+        targetLineup.addLineups(BattleMsg.LineupInfo.newBuilder().setSeq(k).addAllHeroUid(v).build());
+      });
+      res.setTargetLineupInfo(targetLineup.build());
     }
     client.sendProtocol(res);
   }
@@ -113,7 +121,7 @@ public class OfflineBattleHandler {
       PlayerHelper.delResources(player, DA_DAO_TICK_ITEM_ID, 1, OpType.DA_DAO_JOIN, true);
     }
     module
-        .updateScore(req.getWin(), res)
+        .updateScore(req.getWin(),Long.parseLong(req.getTargetId()), res)
         .onComplete(
             result -> {
               if (req.getWin()) {
@@ -182,7 +190,6 @@ public class OfflineBattleHandler {
       client.sendProtocol(res);
     }else {
       client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
-
     }
   }
 }

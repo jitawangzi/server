@@ -2,11 +2,14 @@ package cn.game.games.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.protocol.generated.config.NPCConfig;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.BattleMsg;
@@ -50,6 +53,10 @@ public class SimplePlayer implements Serializable {
 	 * 前端需要的战斗相关的属性
 	 */
 	byte[] battleAttrs;
+	/**
+	 * 玩家阵容数据 目前只有PVP 玩法 有需要存储
+	 */
+	private Map<Integer, Map<Integer, List<String>>> lineupMaps = new HashMap<Integer, Map<Integer, List<String>>>();
 
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
 			String unionName, long offLinetime) {
@@ -82,6 +89,8 @@ public class SimplePlayer implements Serializable {
 		this.battleId = player.getChapterModule().getMainBattleHighest();
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
+		//存储 大道争锋阵容
+		lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()));
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -285,5 +294,13 @@ public class SimplePlayer implements Serializable {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public Map<Integer, Map<Integer, List<String>>> getLineupMaps() {
+		return lineupMaps;
+	}
+
+	public void setLineupMaps(Map<Integer, Map<Integer, List<String>>> lineupMaps) {
+		this.lineupMaps = lineupMaps;
 	}
 }

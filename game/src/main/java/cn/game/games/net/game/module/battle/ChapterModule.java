@@ -53,8 +53,7 @@ public class ChapterModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
 			EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin };
 
-	@JsonIgnore
-	public static final int CHAPTER_TYPE_DA_DAO = 13;
+
 
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
@@ -147,7 +146,7 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		map.put(lineupId, new ArrayList<String>(heroUids));
 
-		if (type == CHAPTER_TYPE_DA_DAO && !player.getOfflineBattleModule().isJoin()){
+		if (type == DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId() && !player.getOfflineBattleModule().isJoin()){
 			player.getOfflineBattleModule().joinPlay();
 		}
 
