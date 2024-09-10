@@ -31,7 +31,7 @@ public class OfflineBattleHandler {
     Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
     OfflineBattleModule module = player.getOfflineBattleModule();
     if (!player.isFuncOpen(InitialUI.AvenueBattle)) {
-      client.sendProtocol(res, ErrorMsgEnum.module_disabled.ID);
+      client.sendProtocol(res, ErrorMsgEnum.func_not_open.ID);
       return;
     }
     if (!module.isPlay()) {
@@ -63,7 +63,7 @@ public class OfflineBattleHandler {
     Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
     OfflineBattleModule module = player.getOfflineBattleModule();
     if (!player.isFuncOpen(InitialUI.AvenueBattle)) {
-      client.sendProtocol(res, ErrorMsgEnum.module_disabled.ID);
+      client.sendProtocol(res, ErrorMsgEnum.func_not_open.ID);
       return;
     }
     if (!module.isPlay()) {
@@ -99,7 +99,7 @@ public class OfflineBattleHandler {
     BattleMsg.BattlePvPEndRequest_13000115 req = (BattleMsg.BattlePvPEndRequest_13000115) o;
     Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
     if (!player.isFuncOpen(InitialUI.AvenueBattle)) {
-      client.sendProtocol(res, ErrorMsgEnum.module_disabled.ID);
+      client.sendProtocol(res, ErrorMsgEnum.func_not_open.ID);
       return;
     }
     OfflineBattleModule module = player.getOfflineBattleModule();
@@ -139,7 +139,7 @@ public class OfflineBattleHandler {
         BattleMsg.BattlePvPInfoResponse_13000118.newBuilder();
     Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
     if (!player.isFuncOpen(InitialUI.AvenueBattle)) {
-      client.sendProtocol(res, ErrorMsgEnum.module_disabled.ID);
+      client.sendProtocol(res, ErrorMsgEnum.func_not_open.ID);
       return;
     }
     OfflineBattleModule module = player.getOfflineBattleModule();
@@ -157,7 +157,7 @@ public class OfflineBattleHandler {
         BattleMsg.BattleBuyPvPTimeResponse_13000122.newBuilder();
     Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
     if (!player.isFuncOpen(InitialUI.AvenueBattle)) {
-      client.sendProtocol(res, ErrorMsgEnum.module_disabled.ID);
+      client.sendProtocol(res, ErrorMsgEnum.func_not_open.ID);
       return;
     }
     OfflineBattleModule module = player.getOfflineBattleModule();
@@ -175,16 +175,14 @@ public class OfflineBattleHandler {
       return;
     }
     int[] costs = GlobalConst.DaDaoChallengeTicketCost[module.buyNum];
-    player
-        .pay(costs)
-        .onComplete(
-            result -> {
-              if (result.result()) {
-                module.buyNum++;
-                PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1);
-                res.setCurNum(module.buyNum);
-                client.sendProtocol(res);
-              }
-            });
+    if (PlayerHelper.delResources(player, costs, OpType.DA_DAO_Buy)) {
+      module.buyNum++;
+      PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1);
+      res.setCurNum(module.buyNum);
+      client.sendProtocol(res);
+    }else {
+      client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
+
+    }
   }
 }

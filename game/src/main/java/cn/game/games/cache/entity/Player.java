@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -26,6 +27,7 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.games.net.game.module.battle.ChapterModule;
@@ -502,8 +504,7 @@ public class Player  {
 	 * @return
 	 */
 	public boolean isFuncOpen(InitialUI type) {
-//		return getLevel() >= type.DisplayLevel;
-		return true;
+		return getLevel() >= type.DisplayLevel;
 	}
 
 	public SimplePlayerInfo buildSimplePlayerInfo() {
@@ -623,7 +624,8 @@ public class Player  {
 	 */
 	public void updateOfflineAttrData(){
 		if(isFuncOpen(InitialUI.AvenueBattle)){
-			PlayerHelper.saveSimplePlayer(this);
+			PlayerManager.getInstance().addSimplePlayer(new SimplePlayer(this));
+//			PlayerHelper.saveSimplePlayer(this);
 		}
 	}
 
