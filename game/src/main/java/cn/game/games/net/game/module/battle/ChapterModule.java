@@ -739,7 +739,7 @@ public class ChapterModule extends BasePlayerModule  {
 			dayBuilder.addAllRewardIndex(dayChallenge.getRewardIndex());
 			builder.setMergeDayChallenge(dayBuilder.build());
 		}
-		builder.setBattleType(type) ; 
+		builder.setBattleType(type);
 		builder.setBattleId(dungeonId);
 
 		lineupMaps.forEach((k, v) -> {

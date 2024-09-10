@@ -23,6 +23,8 @@ import org.apache.commons.lang.math.RandomUtils;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @ClassName OfflineBattleModule
@@ -34,15 +36,21 @@ import java.util.concurrent.CompletionStage;
 public class OfflineBattleModule extends BasePlayerModule {
   /** 本次刷新 已经刷出来过的 用户id集合 */
   @JsonIgnore final List<Long> usedPidList = new ArrayList<>();
+
   /** 今天挑战次数 */
   int playNum;
+
   /** 购买的次数 */
   int buyNum;
+
   long nextSeasonTimer;
+
   /** 加入 大道争锋 标识 */
   @JsonIgnore boolean joinFlag;
+
   /** 本次挑战刷新出来的5个对手 */
   @JsonIgnore List<SimplePlayer> tempRefreshList = new ArrayList<>();
+
   /** 正在挑战中用户 断线重连 则重置 */
   @JsonIgnore SimplePlayer inBattlePlayer;
 
@@ -159,64 +167,144 @@ public class OfflineBattleModule extends BasePlayerModule {
     setInBattlePlayer(null);
     Promise<List<SimplePlayer>> promise = Promise.promise();
     List<SimplePlayer> resultList = new ArrayList<>();
-    getSelfScore()
-        .thenAccept(
-            selfScore -> {
+    CompletionStage<Long> scoreStage = getSelfScore();
+    CompletionStage<Integer> rankStage =
+        RankService.getInstance()
+            .getRankAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId());
+    rankStage
+        .thenCombine(
+            scoreStage,
+            (rank, selfScore) -> {
               int score = selfScore.intValue();
               if (score == 0) {
                 score = GlobalConst.DaDaoStartupPoint;
               }
               final int fianlScore = score;
-              final  Object lock = new Object();
-              RankService.getInstance()
-                  .getRankAsync(
-                      player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId())
-                  .thenAccept(
-                      rank -> {
-                        int[][] scoreRange = getScoreRange(rank);
-                        CompletionStage<Collection<Long>> lastCompletion = null;
-                        for (int[] range : scoreRange) {
-                          int minScore = fianlScore * range[0] / 10000;
-                          int maxScore = fianlScore * range[1] / 10000;
-                          getTargetIdByScore(minScore, maxScore)
-                              .thenAccept(
-                                  rankPids -> {
-                                    synchronized (lock){
-                                      if (rankPids != null && !rankPids.isEmpty()) {
-                                        for (long targetId : rankPids) {
-                                          if (usedPidList.contains(targetId)
-                                                  || targetId == playerId) {
-                                            continue;
-                                          }
-                                          SimplePlayer simplePlayer = PlayerManager.getInstance().getSimplePlayer(targetId);
-                                          if (simplePlayer != null) {
-                                            addFindPlayer(resultList, simplePlayer,  promise);
-                                            return; // 匹配到一个用户 直接退出
-                                          }
-                                        }
-                                      }
-                                      // 未匹配到 则从NPC表在 尝试随机 10次 来匹配
-                                      NPCConfig npcConfig =
-                                              NPCManager.instance().list().stream().filter(config -> !usedPidList.contains((long)config.ID)).findAny().get();
-                                      SimplePlayer simplePlayer =
-                                              SimplePlayer.makeByNpcConfig(npcConfig);
-                                      addFindPlayer(resultList, simplePlayer, promise);
-                                    }
-                                  });
-                        }
-                      });
+              int[][] scoreRange = getScoreRange(rank.intValue());
+              CompletionStage<Collection<Long>> lastCompletion = null;
+              List<List<Long>> matchList = new CopyOnWriteArrayList<>();
+
+              AtomicInteger findNum = new AtomicInteger(1);
+              int i = 0;
+              for (int[] range : scoreRange) {
+                int minScore = fianlScore * range[0] / 10000;
+                int maxScore = fianlScore * range[1] / 10000;
+                matchList.add(new ArrayList<>());
+                final int finalI = i;
+                i++;
+                getTargetIdByScore(minScore, maxScore)
+                    .exceptionally(
+                        err -> {
+                          findNum.getAndIncrement();
+                          err.printStackTrace();
+                          promise.fail(err);
+                          return null;
+                        })
+                    .thenAccept(
+                        rankPids -> {
+                          findNum.getAndIncrement();
+                          if (rankPids != null && !rankPids.isEmpty()) {
+                            matchList.get(finalI).addAll(rankPids);
+                          }
+                        });
+              }
+              while (findNum.get() < 5) {
+                continue;
+              }
+              matchList.forEach(
+                  (matchPids) -> {
+                    for (long targetId : matchPids) {
+                      if (usedPidList.contains(targetId) || targetId == playerId) {
+                        continue;
+                      }
+                      SimplePlayer simplePlayer =
+                          PlayerManager.getInstance().getSimplePlayer(targetId);
+                      if (simplePlayer != null) {
+                        addFindPlayer(resultList, simplePlayer, promise);
+                        return; // 匹配到一个用户 直接退出
+                      }
+                    }
+                    // 未匹配到 则从NPC表在 尝试随机 10次 来匹配
+                    NPCConfig npcConfig =
+                        NPCManager.instance().list().stream()
+                            .filter(config -> !usedPidList.contains((long) config.ID))
+                            .findAny()
+                            .get();
+                    SimplePlayer simplePlayer = SimplePlayer.makeByNpcConfig(npcConfig);
+                    addFindPlayer(resultList, simplePlayer, promise);
+                  });
+              promise.complete(resultList);
+              return null;
+            })
+        .exceptionally(
+            err -> {
+              promise.fail(err.getCause());
+              return null;
             });
     return promise.future();
   }
 
-  private  void  addFindPlayer(List<SimplePlayer> resultList, SimplePlayer simplePlayer, Promise<List<SimplePlayer>> promise) {
-      resultList.add(simplePlayer);
-      usedPidList.add(simplePlayer.id);
-     System.out.println("usedPidList " +usedPidList);
-      if (resultList.size() >= GlobalConst.DaDaoOpponentPicking.length){
-        tempRefreshList.addAll(resultList);
-        promise.complete(resultList);
-      }
+  /*
+  getSelfScore()
+      .thenAccept(
+          selfScore -> {
+            int score = selfScore.intValue();
+            if (score == 0) {
+              score = GlobalConst.DaDaoStartupPoint;
+            }
+            final int fianlScore = score;
+            final  Object lock = new Object();
+            RankService.getInstance()
+                .getRankAsync(
+                    player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId())
+                .thenAccept(
+                    rank -> {
+                      int[][] scoreRange = getScoreRange(rank);
+                      CompletionStage<Collection<Long>> lastCompletion = null;
+                      for (int[] range : scoreRange) {
+                        int minScore = fianlScore * range[0] / 10000;
+                        int maxScore = fianlScore * range[1] / 10000;
+                        getTargetIdByScore(minScore, maxScore)
+                            .thenAccept(
+                                rankPids -> {
+                                  synchronized (lock){
+                                    if (rankPids != null && !rankPids.isEmpty()) {
+                                      for (long targetId : rankPids) {
+                                        if (usedPidList.contains(targetId)
+                                                || targetId == playerId) {
+                                          continue;
+                                        }
+                                        SimplePlayer simplePlayer = PlayerManager.getInstance().getSimplePlayer(targetId);
+                                        if (simplePlayer != null) {
+                                          addFindPlayer(resultList, simplePlayer,  promise);
+                                          return; // 匹配到一个用户 直接退出
+                                        }
+                                      }
+                                    }
+                                    // 未匹配到 则从NPC表在 尝试随机 10次 来匹配
+                                    NPCConfig npcConfig =
+                                            NPCManager.instance().list().stream().filter(config -> !usedPidList.contains((long)config.ID)).findAny().get();
+                                    SimplePlayer simplePlayer =
+                                            SimplePlayer.makeByNpcConfig(npcConfig);
+                                    addFindPlayer(resultList, simplePlayer, promise);
+                                  }
+                                });
+                      }
+                    });
+          });
+  return promise.future();*/
+  //  }
+
+  private void addFindPlayer(
+      List<SimplePlayer> resultList,
+      SimplePlayer simplePlayer,
+      Promise<List<SimplePlayer>> promise) {
+    resultList.add(simplePlayer);
+    usedPidList.add(simplePlayer.id);
+    if (resultList.size() >= GlobalConst.DaDaoOpponentPicking.length) {
+      tempRefreshList.addAll(resultList);
+      promise.complete(resultList);
+    }
   }
 
   private int[][] getScoreRange(Integer rank) {
@@ -320,24 +408,28 @@ public class OfflineBattleModule extends BasePlayerModule {
     }
     // 修改自己的积分
     addSeasonRankScore(player.getPlayerId(), player.getServerId(), selfAddScore);
-    addDayRankScore(player.getPlayerId(), player.getServerId(), selfAddScore);
+    CompletionStage<Double> selfStage =
+        addDayRankScore(player.getPlayerId(), player.getServerId(), selfAddScore);
     // 修改对方的积分
+    Promise<Double> targetVoidPromise = Promise.promise();
+    targetVoidPromise.complete(0.0);
+    CompletionStage<Double> targetStage = targetVoidPromise.future().toCompletionStage();
     if (npcConfig == null) {
-      addDayRankScore(inBattlePlayer.id, player.getServerId(), targetAddScore);
+      targetStage = addDayRankScore(inBattlePlayer.id, player.getServerId(), targetAddScore);
       addSeasonRankScore(inBattlePlayer.id, player.getServerId(), targetAddScore);
     }
 
     Promise<Void> promise = Promise.promise();
-    CompletionStage<Long> selfStage =  RankService.getInstance()
-            .getScoreAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId());
-    CompletionStage<Long> targetStage = RankService.getInstance()
-            .getScoreAsync(player.getServerId(), RankType.DaDaoZhengFengDay, inBattlePlayer.id);
-    selfStage.thenCombine(targetStage,(selfScore, targetScore) ->{
-      res.setSelfScore(selfScore.intValue());
-      res.setTargetScore(targetScore.intValue());
-      promise.complete();
-      return null;
-    });
+    selfStage.thenCombine(
+        targetStage,
+        (selfScore, targetScore) -> {
+          res.setSelfScore(selfScore.intValue());
+          if (targetScore != null) {
+            res.setTargetScore(targetScore.intValue());
+          }
+          promise.complete();
+          return null;
+        });
     return promise.future();
   }
 }

@@ -468,7 +468,7 @@ public class HeroHandler extends BaseHandler {
 		deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
 		deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
 		PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
-
+		player.updateOfflineAttrData();
 		for (Hero entry : updateHeros) {
 			resp.addHeros(entry.toHeroLevelInfo());
 		}
@@ -562,7 +562,7 @@ public class HeroHandler extends BaseHandler {
 
 			hero.setLevel(1);
 		}
-
+		player.updateOfflineAttrData();
 		client.sendProtocol(resp.build());
 	}
 
@@ -844,6 +844,7 @@ public class HeroHandler extends BaseHandler {
 		PlayerHelper.delResources(player, GlobalConst.HeroLvItem, curConfig.LvConsumeItem, OpType.HeroLevelUp);
 		PlayerHelper.delResources(player, Asset.gold.ID, curConfig.LvConsumeMoney, OpType.HeroLevelUp);
 		hero.setLevel(hero.getLevel() + 1);
+		player.updateOfflineAttrData();
 //		hero.update();
 		player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
 

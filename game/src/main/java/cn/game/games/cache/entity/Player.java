@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.pvp.OfflineBattleModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -622,7 +624,8 @@ public class Player  {
 	 */
 	public void updateOfflineAttrData(){
 		if(isFuncOpen(InitialUI.AvenueBattle)){
-			PlayerHelper.saveSimplePlayer(this);
+			PlayerManager.getInstance().addSimplePlayer(new SimplePlayer(this));
+//			PlayerHelper.saveSimplePlayer(this);
 		}
 	}
 
