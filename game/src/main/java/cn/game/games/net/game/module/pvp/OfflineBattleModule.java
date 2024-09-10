@@ -21,6 +21,7 @@ import io.vertx.core.Promise;
 import org.apache.commons.lang.math.RandomUtils;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -173,6 +174,7 @@ public class OfflineBattleModule extends BasePlayerModule {
                   .thenAccept(
                       rank -> {
                         int[][] scoreRange = getScoreRange(rank);
+                        CompletionStage<Collection<Long>> lastCompletion = null;
                         for (int[] range : scoreRange) {
                           int minScore = fianlScore * range[0] / 10000;
                           int maxScore = fianlScore * range[1] / 10000;
@@ -326,20 +328,16 @@ public class OfflineBattleModule extends BasePlayerModule {
     }
 
     Promise<Void> promise = Promise.promise();
-    RankService.getInstance()
-        .getScoreAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId())
-        .thenAccept(
-            score -> {
-              res.setSelfScore(score.intValue());
-              RankService.getInstance()
-                  .getScoreAsync(
-                      player.getServerId(), RankType.DaDaoZhengFengDay, inBattlePlayer.id)
-                  .thenAccept(
-                      targetScore -> {
-                        res.setTargetScore(targetScore.intValue());
-                        promise.complete();
-                      });
-            });
+    CompletionStage<Long> selfStage =  RankService.getInstance()
+            .getScoreAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId());
+    CompletionStage<Long> targetStage = RankService.getInstance()
+            .getScoreAsync(player.getServerId(), RankType.DaDaoZhengFengDay, inBattlePlayer.id);
+    selfStage.thenCombine(targetStage,(selfScore, targetScore) ->{
+      res.setSelfScore(selfScore.intValue());
+      res.setTargetScore(targetScore.intValue());
+      promise.complete();
+      return null;
+    });
     return promise.future();
   }
 }
