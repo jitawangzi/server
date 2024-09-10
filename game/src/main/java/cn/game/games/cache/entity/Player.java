@@ -502,8 +502,7 @@ public class Player  {
 	 * @return
 	 */
 	public boolean isFuncOpen(InitialUI type) {
-//		return getLevel() >= type.DisplayLevel;
-		return true;
+		return getLevel() >= type.DisplayLevel;
 	}
 
 	public SimplePlayerInfo buildSimplePlayerInfo() {
