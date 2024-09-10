@@ -93,7 +93,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 //		player.getPointRewardModule().addReward(PointRewardType.WorldBoss, damage, damage, damage)
 		RankConfig rankConfig = RankManager.instance().get(RankType.WorldBoss.ID);
 		if (cumulativeDamage >= rankConfig.Request) {
-			RankService.getInstance().updateScore(player.getServerId(), RankType.WorldBoss, player.getPlayerId(), cumulativeDamage);
+			RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.WorldBoss, player.getPlayerId(), cumulativeDamage);
 		}
 
 	}

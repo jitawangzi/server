@@ -130,6 +130,7 @@ public class RankService {
 	 * @param type 排行榜类型
 	 * @param playerId 玩家ID
 	 * @param score 更新的分数，正数为增加，负数为减少
+	 * @return 返回更新后的最终分数
 	 */
 	public double updateScore(String serverId, RankType type, long playerId, long score) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
@@ -143,6 +144,7 @@ public class RankService {
 	 * @param type 排行榜类型
 	 * @param playerId 玩家ID
 	 * @param score 更新的分数，正数为增加，负数为减少
+	 * @return 返回更新后的最终分数
 	 */
 	public CompletionStage<Double> updateScoreAsync(String serverId, RankType type, long playerId, long score) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
@@ -284,6 +286,42 @@ public class RankService {
 	public RFuture<Boolean> removePlayerAsync(String serverId, RankType type, long playerId) {
 		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
 		return rank.removeAsync(playerId);
+	}
+
+	/**
+	 * 删除某个排行榜
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param playerId 玩家ID
+	 * @return 异步操作的Future
+	 */
+	public void removeRank(RankType type) {
+		for (int i = 0; i < serverIds.length; i++) {
+			String serverId = serverIds[i];
+			String key = getKey(serverId, type);
+			RedisUtil.delete(key);
+		}
+	}
+
+	/**
+	 * 异步删除某个排行榜
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param playerId 玩家ID
+	 * @return 异步操作的Future
+	 */
+	public CompletableFuture<Void> removeRankAsync(RankType type) {
+		CompletableFuture<Boolean>[] futures = new CompletableFuture[serverIds.length];
+		for (int i = 0; i < futures.length; i++) {
+			String serverId = serverIds[i];
+			String key = getKey(serverId, type);
+
+			RFuture<Boolean> rank = RedisUtil.deleteAsync(key);
+			futures[i] = rank.toCompletableFuture();
+		}
+		return CompletableFuture.allOf(futures);
 	}
 
 	/**
@@ -469,7 +507,7 @@ public class RankService {
 			return;
 		}
 		RankType rankType = RankType.get(rankConfig.ID);
-		boolean lock = LockUtil.tryLockSync(60, CacheType.SET_RANK.key(rankId));
+		boolean lock = LockUtil.tryLockNoWaitSync(600, CacheType.SET_RANK.key(rankId));
 		if (!lock) {
 			return;
 		}

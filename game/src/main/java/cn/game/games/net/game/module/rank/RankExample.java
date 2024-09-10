@@ -22,11 +22,13 @@ public class RankExample {
 		rankService.setScore(serverId, RankType.Level, 240200712, 160);
 		rankService.setScore(serverId, RankType.Level, 240200713, 260);
 
-		rankService.updateMaxValueAsync(serverId, RankType.Level, 240200711, 1000);
+		rankService.getRankAsync("server4", RankType.Level, 240200731);
 		// 异步调用
 		CompletionStage<Boolean> updateFuture = rankService.setScoreAsync(serverId, RankType.Battle, 240200711, 1000);
 		updateFuture.thenAccept(result -> System.out.println("Async update result: " + result));
 
+		CompletionStage<Double> updateScoreAsync = rankService.updateScoreAsync("server4", RankType.Level, 240200711, 2222);
+		updateScoreAsync.thenAccept(result -> System.out.println("Async update resul : " + result));
 		// 获取前3名玩家（同步）
 		System.out.println("Top 3 players in level rank:");
 		List<RankEntry> topPlayers = rankService.getTopN(serverId, RankType.Level, 3);

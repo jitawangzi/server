@@ -28,7 +28,7 @@ public class RankModule extends BasePlayerModule {
 			if (type == Asset.playerExp.ID) {
 				RankConfig rankConfig = RankManager.instance().get(RankType.Level.ID);
 				if (level >= rankConfig.Request) {
-					RankService.getInstance().setScore(player.getServerId(), RankType.Level, playerId, level);
+					RankService.getInstance().setScoreAsync(player.getServerId(), RankType.Level, playerId, level);
 				}
 			}
 			break;
@@ -38,7 +38,7 @@ public class RankModule extends BasePlayerModule {
 			int battleId = event.getIntParameter(0);
 
 			if (battleId == rankConfig.Request || BattleHelper.isPreBattle(rankConfig.Request, battleId)) {
-				RankService.getInstance().setScore(player.getServerId(), RankType.Battle, playerId, battleId);
+				RankService.getInstance().setScoreAsync(player.getServerId(), RankType.Battle, playerId, battleId);
 			}
 			break;
 		}

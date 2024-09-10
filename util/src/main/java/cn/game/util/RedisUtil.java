@@ -256,6 +256,11 @@ public class RedisUtil {
 		return bucket.deleteAsync();
 	}
 
+	public static <V> boolean delete(String key) {
+		RBucket<V> bucket = redis.getBucket(key);
+		return bucket.delete();
+	}
+
 	/**
 	 * 获取keys的异步查询结果
 	 * @param keys

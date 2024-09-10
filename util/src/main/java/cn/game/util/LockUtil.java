@@ -49,11 +49,11 @@ public class LockUtil {
 	 * @param keys
 	 * @return
 	 */
-	public static boolean tryLockSync(int leaseTime, String... keys) {
+	public static boolean tryLockNoWaitSync(int leaseTime, String... keys) {
 		RLock lock = initLock(keys);
 		boolean tryLock = false;
 		try {
-			tryLock = lock.tryLock(waitTime, leaseTime, TimeUnit.SECONDS);
+			tryLock = lock.tryLock(0, leaseTime, TimeUnit.SECONDS);
 		} catch (Exception e) {
 
 		}
