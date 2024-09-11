@@ -21,6 +21,7 @@ import org.apache.commons.lang.math.RandomUtils;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName OfflineBattleModule
@@ -165,7 +166,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     List<SimplePlayer> resultList = new ArrayList<>();
     CompletionStage<int[]> selfRankInfo = getSelfRankInfo();
     selfRankInfo
-        .thenAccept(
+        .thenCompose(
             rankArr -> {
               int rank = rankArr[0];
               int score = rankArr[1];
@@ -174,31 +175,11 @@ public class OfflineBattleModule extends BasePlayerModule {
               }
               int[][] scoreRange = getScoreRange(rank);
               final int fianlScore = score;
-              CompletableFuture<Map<Integer, SimplePlayer>> matchPidMapFuture =
-                  getMatchPidMapFuture(scoreRange, fianlScore);
-              matchPidMapFuture.whenComplete(
-                  (mapResult, err) -> {
-                    if (err != null) {
-                      promise.fail(err);
-                      err.printStackTrace();
-                      return;
-                    }
-                    for (int i = 0; i < scoreRange.length; i++) {
-                      SimplePlayer simplePlayer = mapResult.get(i);
-                      if (simplePlayer != null) {
-                        addFindPlayer(resultList, simplePlayer, promise);
-                      } else {
-                        // 未匹配到 则从NPC表在 尝试随机 来匹配
-                        NPCConfig npcConfig =
-                            NPCManager.instance().list().stream()
-                                .filter(config -> !usedPidList.contains((long) config.ID))
-                                .findAny()
-                                .get();
-                        simplePlayer = SimplePlayer.makeByNpcConfig(npcConfig);
-                        addFindPlayer(resultList, simplePlayer, promise);
-                      }
-                    }
-                  });
+              return getMatchPidMapFuture(scoreRange, fianlScore);
+            })
+        .thenAccept(
+            mapResult -> {
+              processMatchResults(mapResult, resultList, promise);
             })
         .exceptionally(
             err -> {
@@ -209,57 +190,69 @@ public class OfflineBattleModule extends BasePlayerModule {
     return promise.future();
   }
 
+  private void processMatchResults(
+      Map<Integer, SimplePlayer> mapResult,
+      List<SimplePlayer> resultList,
+      Promise<List<SimplePlayer>> promise) {
+    for (int i = 0; i < GlobalConst.DaDaoOpponentPicking.length; i++) {
+      SimplePlayer simplePlayer = mapResult.get(i);
+      if (simplePlayer != null) {
+        addFindPlayer(resultList, simplePlayer, promise);
+      } else {
+        matchNpcPlayer(resultList, promise);
+      }
+    }
+  }
+
+  private void matchNpcPlayer(List<SimplePlayer> resultList, Promise<List<SimplePlayer>> promise) {
+    NPCManager.instance().list().stream()
+        .filter(config -> !usedPidList.contains((long) config.ID))
+        .findAny()
+        .ifPresent(
+            npcConfig -> {
+              SimplePlayer npcPlayer = SimplePlayer.makeByNpcConfig(npcConfig);
+              addFindPlayer(resultList, npcPlayer, promise);
+            });
+  }
+
   private CompletableFuture<Map<Integer, SimplePlayer>> getMatchPidMapFuture(
       int[][] scoreRange, int fianlScore) {
-    CompletableFuture[] completionStageArr = new CompletableFuture[scoreRange.length];
-    List<List<Long>> matchList = new CopyOnWriteArrayList<>();
+    List<List<Long>> matchList = new CopyOnWriteArrayList<>(new ArrayList<>(scoreRange.length));
+    List<CompletableFuture<Collection<Long>>> futureList = new ArrayList<>();
+    Map<Integer, SimplePlayer> matchSimplePlayerMap = new TreeMap<>();
     for (int i = 0; i < scoreRange.length; i++) {
       matchList.add(new ArrayList<>());
       int minScore = fianlScore * scoreRange[i][0] / 10000;
       int maxScore = fianlScore * scoreRange[i][1] / 10000;
-      completionStageArr[i] =
-          (CompletableFuture) getTargetIdByScore(minScore, maxScore, i, matchList);
+        futureList.add(getTargetIdByScore(minScore, maxScore, i, matchList).toCompletableFuture());
     }
-    CompletableFuture<Map<Integer, SimplePlayer>> resultFuture = new CompletableFuture<>();
-    Map<Integer, SimplePlayer> matchSimplePlayerMap = new TreeMap<>();
-    CompletableFuture.allOf(completionStageArr)
-        .whenComplete(
-            (action, err) -> {
-              if (err != null) {
-                resultFuture.completeExceptionally(err);
-                return;
-              }
-              List<Long> finalPidList = new ArrayList<>();
-              matchList.forEach(
-                  (matchPids) -> {
-                    for (long targetId : matchPids) {
-                      if (usedPidList.contains(targetId)
-                          || targetId == playerId
-                          || finalPidList.contains(targetId)) {
-                        continue;
-                      }
-                      finalPidList.add(targetId);
-                      return;
-                    }
-                  });
-              PlayerManager.getInstance()
-                  .batchGetSimplePlayerFromRedisAsync(finalPidList)
-                  .onSuccess(
-                      (map) -> {
-                        map.forEach(
-                            (pid, simplePlayer) -> {
-                              matchSimplePlayerMap.put(finalPidList.indexOf(pid), simplePlayer);
-                            });
-                        resultFuture.complete(matchSimplePlayerMap);
-                      })
-                  .onFailure(resultFuture::completeExceptionally);
-            })
-        .exceptionally(
-            err -> {
-              resultFuture.completeExceptionally(err);
-              return null;
+    return CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
+        .thenCompose(
+            v -> {
+              return processMatchList(matchList, matchSimplePlayerMap);
             });
-    return resultFuture;
+  }
+
+  private CompletionStage<Map<Integer, SimplePlayer>> processMatchList(
+      List<List<Long>> matchList, Map<Integer, SimplePlayer> matchSimplePlayerMap) {
+    List<Long> finalPidList =
+        matchList.stream()
+            .flatMap(Collection::stream)
+            .distinct()
+            .filter(pid -> !usedPidList.contains(pid) && pid != playerId)
+            .collect(Collectors.toList());
+    return PlayerManager.getInstance()
+        .batchGetSimplePlayerFromRedisAsync(finalPidList)
+        .thenApply(
+            map -> {
+              for (int i = 0; i < finalPidList.size(); i++) {
+                SimplePlayer player = map.get(finalPidList.get(i));
+                if (player != null) {
+                  matchSimplePlayerMap.put(i, player);
+                }
+              }
+              return matchSimplePlayerMap;
+            });
   }
 
   private CompletionStage<int[]> getSelfRankInfo() {

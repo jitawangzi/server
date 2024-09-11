@@ -9,11 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -424,26 +420,35 @@ public class PlayerManager {
   public Future<SimplePlayer> getSimplePlayerFromRedisAsync(long playerId) {
 		return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
   }
-	public Future<Map<Long,SimplePlayer>> batchGetSimplePlayerFromRedisAsync(List<Long> playerIdList) {
-		List<String> pidKeys = new ArrayList<>();
-		Map<String, Long> keyPidMap = new HashMap<>();
-		playerIdList.forEach(pid ->{
-			pidKeys.add(CacheType.PLAYER_SIMPLE.key(pid));
-			keyPidMap.put(pidKeys.get(pidKeys.size() -1), pid);
-		});
-		Promise<Map<Long,SimplePlayer>> future = Promise.promise();
-		 RedisLocalCache.getInstance().getMultiFromRedisAsync(pidKeys).onSuccess((map) ->{
-			 Map<Long,SimplePlayer> result = new HashMap<>();
-			 map.forEach((key,simplePlayer) ->{
-				 result.put(keyPidMap.get(key), (SimplePlayer) simplePlayer);
-			 });
-			 future.complete(result);
-		 }).onFailure( err->{
-			 err.printStackTrace();
-			future.tryFail("not found SimplePlayer keys:"+ pidKeys.toString());
-		});
-		return future.future();
-	}
+
+  public CompletionStage<Map<Long, SimplePlayer>> batchGetSimplePlayerFromRedisAsync(
+      List<Long> playerIdList) {
+    List<String> pidKeys = new ArrayList<>();
+    playerIdList.forEach(
+        pid -> {
+          pidKeys.add(CacheType.PLAYER_SIMPLE.key(pid));
+        });
+	CompletableFuture<Map<Long, SimplePlayer>> future  = new CompletableFuture<>();
+    RedisLocalCache.getInstance()
+        .multiGetAsync(pidKeys.toArray(new String[0]))
+        .onSuccess(
+            list -> {
+              Map<Long, SimplePlayer> result = new HashMap<>();
+              list.forEach(
+                  data -> {
+                    SimplePlayer simplePlayer = (SimplePlayer) data;
+                    result.put(simplePlayer.id, simplePlayer);
+                  });
+			  future.complete(result);
+            })
+        .onFailure(
+            err -> {
+              err.printStackTrace();
+			  future.completeExceptionally(err);
+            });
+    return future;
+  }
+
 	/**
 	 * 
 	 * 异步获取一个玩家简单信息，包含本服或者其他服
