@@ -263,6 +263,32 @@ public class RankService {
 		return score != null ? score.longValue() : 0;
 	}
 
+	/** 
+	 * 异步获取某人的当前排行数据
+	 * @param serverId
+	 * @param type
+	 * @param playerId
+	 * @return
+	 */
+	public CompletionStage<RankEntry> getRankEntryAsync(String serverId, RankType type, long playerId) {
+		CompletionStage<Long> scoreAsync = getScoreAsync(serverId, type, playerId);
+		CompletionStage<Integer> rankAsync = getRankAsync(serverId, type, playerId);
+		return scoreAsync.thenCombine(rankAsync, (score, rank) -> new RankEntry(rank, playerId, score));
+	}
+
+	/** 
+	 * 获取某人的当前排行分数
+	 * @param serverId
+	 * @param type
+	 * @param playerId
+	 * @return
+	 */
+	public RankEntry getRankEntry(String serverId, RankType type, long playerId) {
+		long score = getScore(serverId, type, playerId);
+		int rank = getRank(serverId, type, playerId);
+		return new RankEntry(rank, playerId, score);
+	}
+
 	/**
 	 * 从排行榜中移除玩家。
 	 *
