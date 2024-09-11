@@ -26,6 +26,7 @@ public class GG {
 		System.out.println("交集数：  " + intersection.size());
 		System.out.println("比例：  " + intersection.size() * 1.0f / set22.size());
 		System.out.println(intersection);
+		
 	}
 	private static void test() {
 		int c2 = 0;

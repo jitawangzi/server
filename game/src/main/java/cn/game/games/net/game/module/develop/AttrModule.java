@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.develop;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,24 +13,18 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
 import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
 import cn.game.games.net.game.module.develop.dragon.Dragon;
-import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkill;
 import cn.game.games.net.game.module.develop.sword.Sword;
 import cn.game.games.net.game.module.develop.sword.SwordModule;
-import cn.game.protocol.generated.config.AttributeVlalueConfig;
 import cn.game.protocol.generated.config.DragonConfig;
 import cn.game.protocol.generated.config.DragonSkillConfig;
-import cn.game.protocol.generated.config.HeroBreakConfig;
-import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.HeroSwordConfig;
-import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
-import cn.game.protocol.generated.manager.HeroBreakManager;
-import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.HeroSwordManager;
 import cn.game.protocol.protobuf.BattleMsg.HeroAttr;
 import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
@@ -105,7 +98,7 @@ public class AttrModule extends BasePlayerModule {
 	private void logAllAttr() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("heroAttrs=").append(heroAttrs).append(" playerAttrs=").append(playerAttrCalcMap);
-		log.info("calcAllAttr ： " + sb.toString());
+		log.debug("calcAllAttr ： " + sb.toString());
 	}
 
 	public PlayerBattleAttrs buildBattleAttrs() {
@@ -148,29 +141,8 @@ public class AttrModule extends BasePlayerModule {
 		Map<Long, Integer> battleHeros = player.getHeroModule().getBattleHeros();
 		for (Long uid : battleHeros.keySet()) {
 			Hero hero = player.getHeroModule().get(uid);
-			heroAttrs.put(uid, makeHeroAttr(hero));
+			heroAttrs.put(uid, BattleHelper.makeHeroAttr(hero));
 		}
-	}
-
-	public static IntMapWrapper makeHeroAttr(Hero hero) {
-		IntMapWrapper heroAttrMap = new IntMapWrapper();
-
-		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-		// 初始属性
-		AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttributeId);
-		heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
-		// 等级成长属性
-		if (hero.getLevel() > 1) {
-			attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.GrowthAttributeId);
-			attributeVlalueConfig.AttributeVlalue.forEach((k, v) -> {
-				heroAttrMap.add(k, v * (hero.getLevel() - 1));
-			});
-		}
-		// 突破属性
-		HeroBreakConfig uiInitialQualityStar = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
-		attributeVlalueConfig = AttributeVlalueManager.instance().get(uiInitialQualityStar.BreakOneTime);
-		heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
-		return heroAttrMap;
 	}
 
 	public void calcDragonAttr() {
@@ -270,32 +242,11 @@ public class AttrModule extends BasePlayerModule {
 		return power;
 	}
 
-	public void updateHeroCombatRank() {
-		// 神将属性
-		Map<Long, IntMapWrapper> heroAttrs = new HashMap<Long, IntMapWrapper>();
-		HeroModule heroModule = player.getHeroModule();
-		Collection<Hero> list = heroModule.list();
-		for (Hero hero : list) {
-			IntMapWrapper heroAttr = makeHeroAttr(hero);
-			heroAttrs.put(hero.getId(), heroAttr);
-		}
-		// 所有外围属性
-		calcAllAttr();
-		IntMapWrapper playerAttrMap = getPlayerAttrMap();
-
-		// 单独的图鉴属性
-		IntMapWrapper bookAttrMap;
-		PlayerAttrCalc bookAttrCalc = playerAttrCalcMap.get(AttrCalcType.HeroBook);
-		if (bookAttrCalc != null) {
-			bookAttrMap = bookAttrCalc.getAttrMap();
-		}
-		//
-		Map<Long, Double> heroCombatMap = new HashMap<Long, Double>();
-
-		heroAttrs.forEach((id, attrMap) -> {
-
-		});
-
+	public void setPower(int power) {
+		this.power = power;
 	}
 
+	public Map<AttrCalcType, PlayerAttrCalc> getPlayerAttrCalcMap() {
+		return playerAttrCalcMap;
+	}
 }

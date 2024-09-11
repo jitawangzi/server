@@ -2,15 +2,28 @@ package cn.game.games.net.game.helper;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import cn.game.games.cache.entity.Hero;
+import cn.game.protocol.generated.config.AttrEffectConfigConfig;
+import cn.game.protocol.generated.config.AttributeVlalueConfig;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GamePlayRandomBuffConfig;
 import cn.game.protocol.generated.config.HCBattleConfig;
+import cn.game.protocol.generated.config.HeroBreakConfig;
+import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.manager.AttrEffectConfigManager;
+import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.GamePlayRandomBuffManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
+import cn.game.protocol.generated.manager.HeroBreakManager;
+import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
 public class BattleHelper {
@@ -190,6 +203,46 @@ public class BattleHelper {
 		LocalTime start = LocalTime.of(23, 30);
 
 		return now.isAfter(start); 
+	}
+
+	/** 
+	 * 计算属性的战斗力
+	 * @param attrMap
+	 * @return
+	 */
+	public static float calcCombat(IntMapWrapper attrMap) {
+
+		float combat = 0;
+		Iterator<Entry<Integer, Integer>> iterator = attrMap.getMap().entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<java.lang.Integer, java.lang.Integer> entry = (Map.Entry<java.lang.Integer, java.lang.Integer>) iterator.next();
+
+			AttrEffectConfigConfig attrEffectConfigConfig = AttrEffectConfigManager.instance().get(entry.getKey());
+			float combatEffectiveness = attrEffectConfigConfig.CombatEffectiveness / 10000f;
+			combat += combatEffectiveness * entry.getValue();
+		}
+		return combat;
+	}
+
+	public static IntMapWrapper makeHeroAttr(Hero hero) {
+		IntMapWrapper heroAttrMap = new IntMapWrapper();
+
+		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+		// 初始属性
+		AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttributeId);
+		heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
+		// 等级成长属性
+		if (hero.getLevel() > 1) {
+			attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.GrowthAttributeId);
+			attributeVlalueConfig.AttributeVlalue.forEach((k, v) -> {
+				heroAttrMap.add(k, v * (hero.getLevel() - 1));
+			});
+		}
+		// 突破属性
+		HeroBreakConfig uiInitialQualityStar = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
+		attributeVlalueConfig = AttributeVlalueManager.instance().get(uiInitialQualityStar.BreakOneTime);
+		heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
+		return heroAttrMap;
 	}
 
 }

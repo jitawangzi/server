@@ -37,6 +37,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
@@ -566,6 +567,8 @@ public class PlayerHelper {
 //		}, Config.ONELINE_SAVE, Config.ONELINE_SAVE);
 		player.setPeriodicTask(Config.ONLINE_SAVE * 1000, r -> {
 			saveClientCache(player.getPlayerId());
+			RankModule rankModule = player.getModule(RankModule.class);
+			rankModule.updateHeroCombatRank();
 			PlayerHelper.saveSimplePlayerToRedis(player);
 		});
 		// 上线后生成自己的简单信息
