@@ -14,18 +14,18 @@ public class RankExample {
 		String serverId = "server4";
 
 		// 同步调用
-		rankService.setScore(serverId, RankType.WorldBoss, 240200711, 50);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200712, 75);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200713, 90);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200714, 20);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200731, 30);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200732, 120);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200740, 220);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200742, 520);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200743, 10);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200745, 18);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200747, 120);
-		rankService.setScore(serverId, RankType.WorldBoss, 240200756, 320);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200711, 50);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200712, 75);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200713, 90);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200714, 20);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200731, 30);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200732, 120);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200740, 220);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200742, 520);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200743, 10);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200745, 18);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200747, 120);
+		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200756, 320);
 		rankService.setScore(serverId, RankType.Level, 240200711, 60);
 		rankService.setScore(serverId, RankType.Level, 240200712, 160);
 		rankService.setScore(serverId, RankType.Level, 240200713, 260);

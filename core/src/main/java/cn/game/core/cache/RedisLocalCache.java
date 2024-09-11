@@ -161,6 +161,7 @@ public class RedisLocalCache {
 	 * @param keys
 	 * @return
 	 */
+	@Deprecated
 	private <T> Map<String, T> getMultiFromRedis(List<String> keys) {
 		return keys.stream().collect(Collectors.toMap(key -> key, key -> redissonClient.<T>getBucket(key).get(), (v1, v2) -> v1, LinkedHashMap::new));
 	}
@@ -170,6 +171,7 @@ public class RedisLocalCache {
 	 * @param keys
 	 * @return
 	 */
+	@Deprecated
 	public <T> Future<Map<String, T>> getMultiFromRedisAsync(List<String> keys) {
 		Promise<Map<String, T>> promise = Promise.promise();
 

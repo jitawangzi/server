@@ -16,7 +16,7 @@ public class RankListRequest_35000001Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001.Builder builder = cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001.newBuilder() ; 
 		
-		builder.setType(RankType.Battle.ID);
+		builder.setType(RankType.DaDaoZhengFengSeason.ID);
 		builder.setPage(1);
 		builder.setPageSize(30);
 		
