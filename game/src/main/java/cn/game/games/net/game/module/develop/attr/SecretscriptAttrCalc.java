@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.develop.attr;
 
 import java.util.Collection;
+import java.util.List;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
@@ -30,30 +31,38 @@ public class SecretscriptAttrCalc extends PlayerAttrCalc {
 			attrMap.add(config.SecretscriptBase[0], attrValue);
 		}
 
-		Collection<SecretscriptBookConfig> books = SecretscriptBookManager.instance().list();
-		bookLoop: for (SecretscriptBookConfig secretscriptBookConfig : books) {
+		Collection<List<SecretscriptBookConfig>> booksList = SecretscriptBookManager.instance().list();
+		for (List<SecretscriptBookConfig> books : booksList) {
+			SecretscriptBookConfig levelConfig = books.get(0);
 			int minLevel = Integer.MAX_VALUE;
-			for (int id : secretscriptBookConfig.SecretscriptBookCardIdGroup) {
+			for (int id : levelConfig.SecretscriptBookCardIdGroup) {
 				Secretscript secretscript = module.get(id);
 				if (secretscript == null) {
-					continue bookLoop;
+					continue;
 				}
 				if (secretscript.getLevel() < minLevel) {
 					minLevel = secretscript.getLevel();
 				}
 			}
+			if (minLevel == Integer.MAX_VALUE) {
+				continue;
+			}
 			int bookLevel = 0;
-			for (int[] lvCondition : secretscriptBookConfig.SecretscriptBookLvCondition) {
-				if (minLevel >= lvCondition[1]) {
-					bookLevel = lvCondition[0];
+			SecretscriptBookConfig attrConfig = null;
+			for (SecretscriptBookConfig secretscriptBookConfig : books) {
+				if (minLevel >= secretscriptBookConfig.SecretscriptBookLvCondition) {
+					bookLevel = secretscriptBookConfig.SecretscriptBookLv;
+					attrConfig = secretscriptBookConfig;
 				}
 			}
-			if (bookLevel > 0) {
-				for (int[] attr : secretscriptBookConfig.SecretscriptBookStar) {
-					attrMap.add(attr[0], attr[1] * bookLevel);
-				}
+			if (bookLevel == 0) {
+				continue;
+			}
+			for (int[] attr : attrConfig.SecretscriptBookStar) {
+				attrMap.add(attr[0], attr[1]);
 			}
 		}
+
 	}
 	@Override
 	public InitialUI getFunction() {
