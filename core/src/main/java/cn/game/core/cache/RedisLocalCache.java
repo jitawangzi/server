@@ -232,9 +232,9 @@ public class RedisLocalCache {
 	public <T> Future<List<T>> multiGetAsync(String... keys) {
 		return multiGetAsync(Arrays.asList(keys));
 	}
-	public <T> Future<List<T>> multiGetAsync(CacheType cacheType, String... keys) {
+	public <T> Future<List<T>> multiGetAsync(CacheType cacheType, Object... keys) {
 		List<String> list = new ArrayList<>(keys.length);
-		for (String key : keys) {
+		for (Object key : keys) {
 			list.add(cacheType.key(key));
 		}
 		return multiGetAsync(list);

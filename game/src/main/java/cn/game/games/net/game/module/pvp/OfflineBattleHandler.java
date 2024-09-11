@@ -12,6 +12,9 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @ClassName OfflineBattleHandler
  *
@@ -40,14 +43,16 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
+    List<Integer> scoreList = new ArrayList<>();
     module
-        .searchTargetList(req.getRefreshFlag())
+        .searchTargetList(req.getRefreshFlag(),scoreList)
         .onSuccess(
             result -> {
               result.forEach(
                   simplePlayer -> {
                     res.addTargetList(simplePlayer.toSimplePlayerInfo());
                   });
+              res.addAllScoreList(scoreList);
               client.sendProtocol(res);
             })
         .onFailure(

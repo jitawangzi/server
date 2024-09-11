@@ -420,7 +420,10 @@ public class PlayerManager {
   public Future<SimplePlayer> getSimplePlayerFromRedisAsync(long playerId) {
 		return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
   }
-
+	public Future<List< SimplePlayer>> batchGetSimplePlayerListFromRedisAsync(
+			List<Long> playerIdList) {
+		return  RedisLocalCache.getInstance().multiGetAsync(CacheType.PLAYER_SIMPLE, playerIdList.toArray(new Long[0]));
+	}
   public CompletionStage<Map<Long, SimplePlayer>> batchGetSimplePlayerFromRedisAsync(
       List<Long> playerIdList) {
     List<String> pidKeys = new ArrayList<>();

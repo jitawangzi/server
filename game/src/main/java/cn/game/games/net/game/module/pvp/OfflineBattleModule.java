@@ -6,6 +6,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.*;
 import cn.game.protocol.generated.enume.RankType;
@@ -156,7 +157,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     return !play;
   }
 
-  public Future<List<SimplePlayer>> searchTargetList(boolean refreshFlag) {
+  public Future<List<SimplePlayer>> searchTargetList(boolean refreshFlag, List<Integer> scoreList) {
     if (refreshFlag) {
       usedPidList.clear();
       tempRefreshList.clear();
@@ -164,22 +165,35 @@ public class OfflineBattleModule extends BasePlayerModule {
     setInBattlePlayer(null);
     Promise<List<SimplePlayer>> promise = Promise.promise();
     List<SimplePlayer> resultList = new ArrayList<>();
-    CompletionStage<int[]> selfRankInfo = getSelfRankInfo();
+    CompletionStage<RankEntry> selfRankInfo = getSelfRankInfo();
     selfRankInfo
         .thenCompose(
-            rankArr -> {
-              int rank = rankArr[0];
-              int score = rankArr[1];
-              if (score == 0) {
-                score = GlobalConst.DaDaoStartupPoint;
+            rankEntry -> {
+              int rank = 0;
+              int score = GlobalConst.DaDaoStartupPoint;
+              if (rankEntry != null) {
+                rank = rankEntry.getRank();
+                score = (int) rankEntry.getScore();
               }
               int[][] scoreRange = getScoreRange(rank);
               final int fianlScore = score;
               return getMatchPidMapFuture(scoreRange, fianlScore);
             })
-        .thenAccept(
+        .thenCompose(
             mapResult -> {
               processMatchResults(mapResult, resultList, promise);
+              return null;
+            })
+        .thenCompose(
+            msg -> {
+              return getSerachTargetScoreList(resultList, scoreList);
+            })
+        .thenAccept(
+            action -> {
+              if (resultList.size() >= GlobalConst.DaDaoOpponentPicking.length) {
+                tempRefreshList.addAll(resultList);
+              }
+              promise.complete(resultList);
             })
         .exceptionally(
             err -> {
@@ -190,6 +204,43 @@ public class OfflineBattleModule extends BasePlayerModule {
     return promise.future();
   }
 
+  private CompletionStage<Void> getSerachTargetScoreList(
+      List<SimplePlayer> resultList, List<Integer> scoreList) {
+    CompletableFuture completableFuture = new CompletableFuture<>();
+    List<CompletableFuture<Void>> futureList = new ArrayList<>();
+    resultList.forEach(
+        targetPlayer -> {
+          NPCConfig npcConfig = NPCManager.instance().getNullable((int) targetPlayer.getId());
+          if (npcConfig != null) {
+            scoreList.add(npcConfig.Integral);
+          } else {
+            scoreList.add(0);
+            final int index = scoreList.size() - 1;
+            futureList.add(
+                RankService.getInstance()
+                    .getScoreAsync(
+                        player.getServerId(), RankType.DaDaoZhengFengDay, targetPlayer.getId())
+                    .thenAccept(
+                        score -> {
+                          scoreList.set(index, score.intValue());
+                        })
+                    .toCompletableFuture());
+          }
+        });
+    CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
+        .whenComplete(
+            (action, err) -> {
+              if (err != null) {
+                err.printStackTrace();
+                completableFuture.completeExceptionally(err);
+                return;
+              }
+
+              completableFuture.complete(null);
+            });
+    return completableFuture;
+  }
+
   private void processMatchResults(
       Map<Integer, SimplePlayer> mapResult,
       List<SimplePlayer> resultList,
@@ -197,7 +248,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     for (int i = 0; i < GlobalConst.DaDaoOpponentPicking.length; i++) {
       SimplePlayer simplePlayer = mapResult.get(i);
       if (simplePlayer != null) {
-        addFindPlayer(resultList, simplePlayer, promise);
+        addFindPlayer(resultList, simplePlayer);
       } else {
         matchNpcPlayer(resultList, promise);
       }
@@ -211,7 +262,7 @@ public class OfflineBattleModule extends BasePlayerModule {
         .ifPresent(
             npcConfig -> {
               SimplePlayer npcPlayer = SimplePlayer.makeByNpcConfig(npcConfig);
-              addFindPlayer(resultList, npcPlayer, promise);
+              addFindPlayer(resultList, npcPlayer);
             });
   }
 
@@ -219,64 +270,53 @@ public class OfflineBattleModule extends BasePlayerModule {
       int[][] scoreRange, int fianlScore) {
     List<List<Long>> matchList = new CopyOnWriteArrayList<>(new ArrayList<>(scoreRange.length));
     List<CompletableFuture<Collection<Long>>> futureList = new ArrayList<>();
-    Map<Integer, SimplePlayer> matchSimplePlayerMap = new TreeMap<>();
     for (int i = 0; i < scoreRange.length; i++) {
       matchList.add(new ArrayList<>());
       int minScore = fianlScore * scoreRange[i][0] / 10000;
       int maxScore = fianlScore * scoreRange[i][1] / 10000;
-        futureList.add(getTargetIdByScore(minScore, maxScore, i, matchList).toCompletableFuture());
+      futureList.add(getTargetIdByScore(minScore, maxScore, i, matchList).toCompletableFuture());
     }
     return CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
         .thenCompose(
             v -> {
-              return processMatchList(matchList, matchSimplePlayerMap);
+              return processMatchList(matchList);
             });
   }
 
   private CompletionStage<Map<Integer, SimplePlayer>> processMatchList(
-      List<List<Long>> matchList, Map<Integer, SimplePlayer> matchSimplePlayerMap) {
+      List<List<Long>> matchList) {
     List<Long> finalPidList =
         matchList.stream()
             .flatMap(Collection::stream)
             .distinct()
             .filter(pid -> !usedPidList.contains(pid) && pid != playerId)
             .collect(Collectors.toList());
-    return PlayerManager.getInstance()
-        .batchGetSimplePlayerFromRedisAsync(finalPidList)
-        .thenApply(
-            map -> {
-              for (int i = 0; i < finalPidList.size(); i++) {
-                SimplePlayer player = map.get(finalPidList.get(i));
-                if (player != null) {
-                  matchSimplePlayerMap.put(i, player);
+    CompletableFuture<Map<Integer, SimplePlayer>> completableFuture = new CompletableFuture<>();
+    PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(finalPidList).onSuccess(
+            list ->{
+              Map<Integer,SimplePlayer> map = new HashMap<>();
+              list.forEach(simplePlayer -> {
+                if (simplePlayer != null){
+                  map.put( finalPidList.indexOf(simplePlayer.id),simplePlayer);
                 }
-              }
-              return matchSimplePlayerMap;
-            });
+              });
+              completableFuture.complete(map);
+            }
+    ).onFailure( err ->{
+      completableFuture.completeExceptionally(err);
+    });
+    return completableFuture;
+
   }
 
-  private CompletionStage<int[]> getSelfRankInfo() {
-    CompletionStage<Long> scoreStage = getSelfScore();
-    CompletionStage<Integer> rankStage =
-        RankService.getInstance()
-            .getRankAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId());
-    return rankStage.thenCombine(
-        scoreStage,
-        (rank, selfScore) -> {
-          return new int[] {rank, selfScore.intValue()};
-        });
+  private CompletionStage<RankEntry> getSelfRankInfo() {
+    return RankService.getInstance()
+        .getRankEntryAsync(player.getServerId(), RankType.DaDaoZhengFengDay, playerId);
   }
 
-  private void addFindPlayer(
-      List<SimplePlayer> resultList,
-      SimplePlayer simplePlayer,
-      Promise<List<SimplePlayer>> promise) {
+  private void addFindPlayer(List<SimplePlayer> resultList, SimplePlayer simplePlayer) {
     resultList.add(simplePlayer);
     usedPidList.add(simplePlayer.id);
-    if (resultList.size() >= GlobalConst.DaDaoOpponentPicking.length) {
-      tempRefreshList.addAll(resultList);
-      promise.complete(resultList);
-    }
   }
 
   private int[][] getScoreRange(Integer rank) {

@@ -436,6 +436,7 @@ message BattlePvPTargetListRequest_13000111{
 //目标列表刷新 响应
 message BattlePvPTargetListResponse_13000112{
 	repeated SimplePlayerInfo targetList = 1;//查询到的目标列表
+	repeated int32 scoreList = 2;//查询到的目标的当前积分列表
 }
 
 //开始战斗请求
