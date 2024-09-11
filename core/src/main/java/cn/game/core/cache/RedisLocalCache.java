@@ -170,7 +170,7 @@ public class RedisLocalCache {
 	 * @param keys
 	 * @return
 	 */
-	private <T> Future<Map<String, T>> getMultiFromRedisAsync(List<String> keys) {
+	public <T> Future<Map<String, T>> getMultiFromRedisAsync(List<String> keys) {
 		Promise<Map<String, T>> promise = Promise.promise();
 
 		List<Future<Map.Entry<String, T>>> futures = keys.stream().map(key -> {

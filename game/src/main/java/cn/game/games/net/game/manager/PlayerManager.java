@@ -424,7 +424,26 @@ public class PlayerManager {
   public Future<SimplePlayer> getSimplePlayerFromRedisAsync(long playerId) {
 		return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
   }
-
+	public Future<Map<Long,SimplePlayer>> batchGetSimplePlayerFromRedisAsync(List<Long> playerIdList) {
+		List<String> pidKeys = new ArrayList<>();
+		Map<String, Long> keyPidMap = new HashMap<>();
+		playerIdList.forEach(pid ->{
+			pidKeys.add(CacheType.PLAYER_SIMPLE.key(pid));
+			keyPidMap.put(pidKeys.get(pidKeys.size() -1), pid);
+		});
+		Promise<Map<Long,SimplePlayer>> future = Promise.promise();
+		 RedisLocalCache.getInstance().getMultiFromRedisAsync(pidKeys).onSuccess((map) ->{
+			 Map<Long,SimplePlayer> result = new HashMap<>();
+			 map.forEach((key,simplePlayer) ->{
+				 result.put(keyPidMap.get(key), (SimplePlayer) simplePlayer);
+			 });
+			 future.complete(result);
+		 }).onFailure( err->{
+			 err.printStackTrace();
+			future.tryFail("not found SimplePlayer keys:"+ pidKeys.toString());
+		});
+		return future.future();
+	}
 	/**
 	 * 
 	 * 异步获取一个玩家简单信息，包含本服或者其他服

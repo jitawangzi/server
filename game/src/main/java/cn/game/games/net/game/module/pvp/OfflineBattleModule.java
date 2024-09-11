@@ -4,6 +4,7 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.*;
@@ -12,6 +13,7 @@ import cn.game.protocol.generated.manager.NPCManager;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.util.DateUtil;
+import cn.game.util.RedisUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -161,90 +163,116 @@ public class OfflineBattleModule extends BasePlayerModule {
     setInBattlePlayer(null);
     Promise<List<SimplePlayer>> promise = Promise.promise();
     List<SimplePlayer> resultList = new ArrayList<>();
-    CompletionStage<Long> scoreStage = getSelfScore();
-    CompletionStage<Integer> rankStage =
-        RankService.getInstance()
-            .getRankAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId());
-    rankStage
-        .thenCombine(
-            scoreStage,
-            (rank, selfScore) -> {
-              int score = selfScore.intValue();
+    CompletionStage<int[]> selfRankInfo = getSelfRankInfo();
+    selfRankInfo
+        .thenAccept(
+            rankArr -> {
+              int rank = rankArr[0];
+              int score = rankArr[1];
               if (score == 0) {
                 score = GlobalConst.DaDaoStartupPoint;
               }
+              int[][] scoreRange = getScoreRange(rank);
               final int fianlScore = score;
-              int[][] scoreRange = getScoreRange(rank.intValue());
-              List<List<Long>> matchList = new CopyOnWriteArrayList<>();
-
-//              AtomicInteger findNum = new AtomicInteger(1);
-              CountDownLatch findNum = new CountDownLatch(5);
-              int i = 0;
-              for (int[] range : scoreRange) {
-                int minScore = fianlScore * range[0] / 10000;
-                int maxScore = fianlScore * range[1] / 10000;
-                matchList.add(new ArrayList<>());
-                final int finalI = i;
-                i++;
-                getTargetIdByScore(minScore, maxScore)
-                    .exceptionally(
-                        err -> {
-//                          findNum.getAndIncrement();
-                          findNum.countDown();
-                          err.printStackTrace();
-                          promise.fail(err);
-                          return null;
-                        })
-                    .thenAccept(
-                        rankPids -> {
-//                          findNum.getAndIncrement();
-                          findNum.countDown();
-                          if (rankPids != null && !rankPids.isEmpty()) {
-                            matchList.get(finalI).addAll(rankPids);
-                          }
-                        });
-              }
-//              while (findNum.get() < 5) {
-//                continue;
-//              }
-              try {
-                findNum.await(1000L, TimeUnit.MILLISECONDS);
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              }
-              matchList.forEach(
-                  (matchPids) -> {
-                    for (long targetId : matchPids) {
-                      if (usedPidList.contains(targetId) || targetId == playerId) {
-                        continue;
-                      }
-                      SimplePlayer simplePlayer =
-                          PlayerManager.getInstance().getSimplePlayer(targetId);
+              CompletableFuture<Map<Integer, SimplePlayer>> matchPidMapFuture =
+                  getMatchPidMapFuture(scoreRange, fianlScore);
+              matchPidMapFuture.whenComplete(
+                  (mapResult, err) -> {
+                    if (err != null) {
+                      promise.fail(err);
+                      err.printStackTrace();
+                      return;
+                    }
+                    for (int i = 0; i < scoreRange.length; i++) {
+                      SimplePlayer simplePlayer = mapResult.get(i);
                       if (simplePlayer != null) {
                         addFindPlayer(resultList, simplePlayer, promise);
-                        return; // 匹配到一个用户 直接退出
+                      } else {
+                        // 未匹配到 则从NPC表在 尝试随机 来匹配
+                        NPCConfig npcConfig =
+                            NPCManager.instance().list().stream()
+                                .filter(config -> !usedPidList.contains((long) config.ID))
+                                .findAny()
+                                .get();
+                        simplePlayer = SimplePlayer.makeByNpcConfig(npcConfig);
+                        addFindPlayer(resultList, simplePlayer, promise);
                       }
                     }
-                    // 未匹配到 则从NPC表在 尝试随机 来匹配
-                    NPCConfig npcConfig =
-                        NPCManager.instance().list().stream()
-                            .filter(config -> !usedPidList.contains((long) config.ID))
-                            .findAny()
-                            .get();
-                    SimplePlayer simplePlayer = SimplePlayer.makeByNpcConfig(npcConfig);
-                    addFindPlayer(resultList, simplePlayer, promise);
                   });
-              promise.complete(resultList);
-              return null;
             })
         .exceptionally(
             err -> {
-              promise.fail(err.getCause());
+              err.printStackTrace();
+              promise.fail(err);
               return null;
             });
     return promise.future();
   }
 
+  private CompletableFuture<Map<Integer, SimplePlayer>> getMatchPidMapFuture(
+      int[][] scoreRange, int fianlScore) {
+    CompletableFuture[] completionStageArr = new CompletableFuture[scoreRange.length];
+    List<List<Long>> matchList = new CopyOnWriteArrayList<>();
+    for (int i = 0; i < scoreRange.length; i++) {
+      matchList.add(new ArrayList<>());
+      int minScore = fianlScore * scoreRange[i][0] / 10000;
+      int maxScore = fianlScore * scoreRange[i][1] / 10000;
+      completionStageArr[i] =
+          (CompletableFuture) getTargetIdByScore(minScore, maxScore, i, matchList);
+    }
+    CompletableFuture<Map<Integer, SimplePlayer>> resultFuture = new CompletableFuture<>();
+    Map<Integer, SimplePlayer> matchSimplePlayerMap = new TreeMap<>();
+    CompletableFuture.allOf(completionStageArr)
+        .whenComplete(
+            (action, err) -> {
+              if (err != null) {
+                resultFuture.completeExceptionally(err);
+                return;
+              }
+              List<Long> finalPidList = new ArrayList<>();
+              matchList.forEach(
+                  (matchPids) -> {
+                    for (long targetId : matchPids) {
+                      if (usedPidList.contains(targetId)
+                          || targetId == playerId
+                          || finalPidList.contains(targetId)) {
+                        continue;
+                      }
+                      finalPidList.add(targetId);
+                      return;
+                    }
+                  });
+              PlayerManager.getInstance()
+                  .batchGetSimplePlayerFromRedisAsync(finalPidList)
+                  .onSuccess(
+                      (map) -> {
+                        map.forEach(
+                            (pid, simplePlayer) -> {
+                              matchSimplePlayerMap.put(finalPidList.indexOf(pid), simplePlayer);
+                            });
+                        resultFuture.complete(matchSimplePlayerMap);
+                      })
+                  .onFailure(resultFuture::completeExceptionally);
+            })
+        .exceptionally(
+            err -> {
+              resultFuture.completeExceptionally(err);
+              return null;
+            });
+    return resultFuture;
+  }
+
+  private CompletionStage<int[]> getSelfRankInfo() {
+    CompletionStage<Long> scoreStage = getSelfScore();
+    CompletionStage<Integer> rankStage =
+        RankService.getInstance()
+            .getRankAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId());
+    return rankStage.thenCombine(
+        scoreStage,
+        (rank, selfScore) -> {
+          return new int[] {rank, selfScore.intValue()};
+        });
+  }
 
   private void addFindPlayer(
       List<SimplePlayer> resultList,
@@ -310,10 +338,18 @@ public class OfflineBattleModule extends BasePlayerModule {
     return outRangeScoreArr;
   }
 
-  private CompletionStage<Collection<Long>> getTargetIdByScore(int minScore, int maxScore) {
+  private CompletionStage<Collection<Long>> getTargetIdByScore(
+      int minScore, int maxScore, int index, List<List<Long>> matchList) {
     return RankService.getInstance()
         .searchRankEntryByScoreAsync(
-            player.getServerId(), RankType.DaDaoZhengFengDay, minScore, maxScore, 10);
+            player.getServerId(), RankType.DaDaoZhengFengDay, minScore, maxScore, 10)
+        .thenApply(
+            (rankPids) -> {
+              if (rankPids != null && !rankPids.isEmpty()) {
+                matchList.get(index).addAll(rankPids);
+              }
+              return rankPids;
+            });
   }
 
   private CompletionStage<Long> getSelfScore() {
@@ -337,12 +373,13 @@ public class OfflineBattleModule extends BasePlayerModule {
     return battleTargetPlayer;
   }
 
-  public Future<Void> updateScore(boolean win,long  targetId, BattleMsg.BattlePvPEndResponse_13000116.Builder res) {
+  public Future<Void> updateScore(
+      boolean win, long targetId, BattleMsg.BattlePvPEndResponse_13000116.Builder res) {
     int selfAddScore = 0, targetAddScore = 0;
     int targetIndex = 4;
     NPCConfig npcConfig = null;
     for (int i = 0; i < tempRefreshList.size(); i++) {
-      if (tempRefreshList.get(i).id == targetId){
+      if (tempRefreshList.get(i).id == targetId) {
         targetIndex = i;
         npcConfig = NPCManager.instance().get((int) targetId);
         break;
@@ -383,6 +420,6 @@ public class OfflineBattleModule extends BasePlayerModule {
   private CompletionStage<Double> getDoubleCompletionStage() {
     Promise<Double> targetVoidPromise = Promise.promise();
     targetVoidPromise.complete(0.0);
-      return targetVoidPromise.future().toCompletionStage();
+    return targetVoidPromise.future().toCompletionStage();
   }
 }
