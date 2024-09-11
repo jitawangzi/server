@@ -27,7 +27,6 @@ import cn.game.protocol.generated.manager.RandomNameManager;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 
 /**    
@@ -125,19 +124,10 @@ public class PlayerNameManager {
 	}
 
 	public Future<PlayerData> saveName2Id(PlayerData player) {
-		Promise<PlayerData> promise = Promise.promise();
-
 		String key = getUsernameIdKey(player.getName());
 		RMap<String, Long> map = RedisUtil.getRedis().getMap(key);
 		RFuture<Long> putAsync = map.putAsync(player.getName(), player.getPlayerId());
-		putAsync.onComplete((v,t) -> {
-            if (v == null && t == null) {
-                promise.complete(player);
-            } else {
-                promise.fail(t);
-            }
-		});
-		return promise.future(); 
+		return Future.fromCompletionStage(putAsync).map(r -> player);
 	}
 
 	public Future<Long> getPlayerId(String name) {

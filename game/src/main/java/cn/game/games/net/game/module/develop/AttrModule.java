@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.develop;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,6 +17,7 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
 import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
 import cn.game.games.net.game.module.develop.dragon.Dragon;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkill;
 import cn.game.games.net.game.module.develop.sword.Sword;
 import cn.game.games.net.game.module.develop.sword.SwordModule;
@@ -117,17 +119,23 @@ public class AttrModule extends BasePlayerModule {
 		IntMapWrapper dragon = new IntMapWrapper();
 		builder.putAllDragonAttrs(dragon.addAll(dragonAttr.getMap()).addAll(dragonSkillAttr.getMap()).getMap());
 
-		IntMapWrapper playerMap = new IntMapWrapper();
-		playerMap.addAll(swordAttr.getMap());
-		playerMap.addAll(alchemyAttr.getMap());
-
-		playerAttrCalcMap.forEach((k, v) -> {
-			playerMap.addAll(v.getAttrMap().getMap());
-		});
+		IntMapWrapper playerMap = getPlayerAttrMap();
 
 		builder.putAllPlayerAttrs(playerMap.getMap());
 
 		return builder.build();
+	}
+
+	public IntMapWrapper getPlayerAttrMap() {
+		IntMapWrapper playerMap = new IntMapWrapper();
+//		playerMap.addAll(swordAttr.getMap());
+//		playerMap.addAll(alchemyAttr.getMap());
+
+		playerAttrCalcMap.forEach((k, v) -> {
+			playerMap.addAll(v.getAttrMap().getMap());
+		});
+		return playerMap;
+
 	}
 
 	public void calcHeroAttr() {
@@ -140,15 +148,13 @@ public class AttrModule extends BasePlayerModule {
 		Map<Long, Integer> battleHeros = player.getHeroModule().getBattleHeros();
 		for (Long uid : battleHeros.keySet()) {
 			Hero hero = player.getHeroModule().get(uid);
-			IntMapWrapper heroAttrMap = new IntMapWrapper();
-			makeHeroAttr(hero, heroAttrMap);
-
-
-			heroAttrs.put(uid, heroAttrMap);
+			heroAttrs.put(uid, makeHeroAttr(hero));
 		}
 	}
 
-	public static void makeHeroAttr(Hero hero, IntMapWrapper heroAttrMap) {
+	public static IntMapWrapper makeHeroAttr(Hero hero) {
+		IntMapWrapper heroAttrMap = new IntMapWrapper();
+
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 		// 初始属性
 		AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttributeId);
@@ -161,15 +167,10 @@ public class AttrModule extends BasePlayerModule {
 			});
 		}
 		// 突破属性
-//			for (int[] attrArray : heroConfig.BreakActivationAttribute) {
-//				if (attrArray[0] == hero.getQuality()) {
-//					attributeVlalueConfig = AttributeVlalueManager.instance().get(attrArray[1]);
-//					heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
-//				}
-//			}
 		HeroBreakConfig uiInitialQualityStar = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
 		attributeVlalueConfig = AttributeVlalueManager.instance().get(uiInitialQualityStar.BreakOneTime);
 		heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
+		return heroAttrMap;
 	}
 
 	public void calcDragonAttr() {
@@ -267,6 +268,34 @@ public class AttrModule extends BasePlayerModule {
 
 	public int getPower() {
 		return power;
+	}
+
+	public void updateHeroCombatRank() {
+		// 神将属性
+		Map<Long, IntMapWrapper> heroAttrs = new HashMap<Long, IntMapWrapper>();
+		HeroModule heroModule = player.getHeroModule();
+		Collection<Hero> list = heroModule.list();
+		for (Hero hero : list) {
+			IntMapWrapper heroAttr = makeHeroAttr(hero);
+			heroAttrs.put(hero.getId(), heroAttr);
+		}
+		// 所有外围属性
+		calcAllAttr();
+		IntMapWrapper playerAttrMap = getPlayerAttrMap();
+
+		// 单独的图鉴属性
+		IntMapWrapper bookAttrMap;
+		PlayerAttrCalc bookAttrCalc = playerAttrCalcMap.get(AttrCalcType.HeroBook);
+		if (bookAttrCalc != null) {
+			bookAttrMap = bookAttrCalc.getAttrMap();
+		}
+		//
+		Map<Long, Double> heroCombatMap = new HashMap<Long, Double>();
+
+		heroAttrs.forEach((id, attrMap) -> {
+
+		});
+
 	}
 
 }

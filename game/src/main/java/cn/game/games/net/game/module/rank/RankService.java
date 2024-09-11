@@ -505,5 +505,4 @@ public class RankService {
 			}, nextTime - timeMillis);
 		}
 	}
-
 }

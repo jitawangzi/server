@@ -45,7 +45,7 @@ public class RankHandler extends BaseHandler {
 		RankListResponse_35000002.Builder resp = RankListResponse_35000002.newBuilder();
 
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		CompletionStage<Integer> rankAsync = RankService.getInstance().getRankAsync(player.getServerId(), rankType, player.getPlayerId());
+		CompletionStage<RankEntry> rankAsync = RankService.getInstance().getRankEntryAsync(player.getServerId(), rankType, player.getPlayerId());
 		CompletionStage<List<RankEntry>> pageAsync = RankService.getInstance().getPageAsync(player.getServerId(), rankType, page, pageSize);
 		CompletionStage<List<PlayerRank>> playerRankAsync = RankService.getInstance().convertToPlayerRankEntries(pageAsync);
 		rankAsync.thenCombine(playerRankAsync, (rank, rankEntries) -> {
@@ -58,7 +58,8 @@ public class RankHandler extends BaseHandler {
 				rb.setScore(entry.getRankEntry().getScore() + "");
 				rankInfo.addPlayers(rb);
 			});
-			rankInfo.setRank(rank);
+			rankInfo.setRank(rank.getRank());
+			rankInfo.setScore(rank.getScore() + "");
 			resp.setRankInfo(rankInfo);
 			client.sendProtocol(resp.build());
 			return null;

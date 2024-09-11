@@ -21,7 +21,8 @@ message RankListResponse_35000002{
 
 message RankInfo{
 	int32 rank = 1; // 我的排名，-1或0表示没有进入排行榜，没有名次
-	repeated PlayerRankInfo players = 2;
+	string score = 2; // 我的积分
+	repeated PlayerRankInfo players = 3;
 }
 
 message PlayerRankInfo{
