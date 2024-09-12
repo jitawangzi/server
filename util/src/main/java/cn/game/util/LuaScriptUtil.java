@@ -3,15 +3,14 @@ package cn.game.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.ListDocument.List;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Scalar.String;
 
 public class LuaScriptUtil {
 	private static final Logger logger = LoggerFactory.getLogger(LuaScriptUtil.class);
@@ -22,7 +21,8 @@ public class LuaScriptUtil {
 	}
 
 	public enum LuaScript {
-		UPDATE_IF_GREATER("update_if_greater.lua", "更新值如果新值更大"), INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值"),
+		UPDATE_IF_GREATER("update_if_greater.lua", "更新值如果新值更大"),
+		INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值"),
 		;
 
 		private final String filename;
