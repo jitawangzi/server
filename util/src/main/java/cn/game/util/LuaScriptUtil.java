@@ -21,7 +21,7 @@ public class LuaScriptUtil {
 	}
 
 	public enum LuaScript {
-		UPDATE_IF_GREATER("update_if_greater.lua", "更新值如果新值更大"),
+		UPDATE_SCORE_IF_GREATER("update_score_if_greater.lua", "更新值如果新值更大"),
 		INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值"),
 		;
 
@@ -76,14 +76,15 @@ public class LuaScriptUtil {
 	}
 
 	/**
-	 * 更新值如果新值更大
+	 * 更新有序集合中成员的分数，仅当新分数大于现有分数时
 	 *
-	 * @param key Redis 键
-	 * @param newValue 新值
-	 * @return 更新后的值
+	 * @param key 有序集合的键名
+	 * @param member 要更新的成员
+	 * @param newScore 新的分数
+	 * @return 更新后的分数
 	 */
-	public CompletionStage<Long> updateIfGreater(String key, long newValue) {
-		return executeLuaScript(LuaScript.UPDATE_IF_GREATER, List.of(key), newValue);
+	public CompletionStage<Double> updateScoreIfGreater(String key, String member, double newScore) {
+		return executeLuaScript(LuaScript.UPDATE_SCORE_IF_GREATER, List.of(key), member, String.valueOf(newScore));
 	}
 
 	/**

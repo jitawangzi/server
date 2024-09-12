@@ -34,6 +34,7 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
@@ -1534,5 +1535,24 @@ public class PlayerHelper {
 		}
 		Future<SimplePlayer> simplePlayer = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
 		return simplePlayer.map(SimplePlayer::getServerId);
+	}
+
+	/** 
+	 * 按照名字或者id查找玩家
+	 * @param playerName
+	 * @param playerId
+	 * @return
+	 */
+	public static Future<SimplePlayer> seachPlayer(String playerName, long playerId) {
+		return PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
+			long searchPlayerId = 0;
+			if (r == null) {
+				searchPlayerId = playerId;
+			} else {
+				searchPlayerId = r;
+			}
+			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(searchPlayerId));
+		});
+		
 	}
 }

@@ -132,15 +132,8 @@ public class PlayerHandler extends BaseHandler {
 		PlayerSearchResponse_0100000c.Builder resp = PlayerSearchResponse_0100000c.newBuilder();
 		String playerName = request.getPlayerName();
 		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
-		PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
-			long searchPlayerId = 0 ; 
-			if (r == null) {
-				searchPlayerId = playerId; 
-			} else {
-				searchPlayerId = r;
-			}
-			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(searchPlayerId));
-		}).onSuccess(r -> {
+		Future<SimplePlayer> future = PlayerHelper.seachPlayer(playerName, playerId);
+		future.onSuccess(r -> {
 			SimplePlayer simplePlayer = (SimplePlayer) r;
 			if (simplePlayer == null) {
 				client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
@@ -170,7 +163,63 @@ public class PlayerHandler extends BaseHandler {
 					ChapterModule chapterModule = player.getChapterModule();
 					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 
-					ret = true;
+					ret = false;
+					break;
+				}
+				case XinMoShiLian: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
+					ret = false;
+					break;
+				}
+				case YaoWangBiePao: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
+					ret = false;
+					break;
+				}
+				case ShiLuoZhenJing: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
+					ret = false;
+					break;
+				}
+				case WorldBoss: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
+					ret = false;
+					break;
+				}
+				case SpiritBattle: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
+					ret = false;
+					break;
+				}
+				case NightmareRealm: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
+					ret = false;
+					break;
+				}
+				case Letter: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
+					ret = false;
+					break;
+				}
+				case CardBook: {
+					ChapterModule chapterModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+
+					ret = false;
 					break;
 				}
 				default:

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
@@ -14,7 +16,6 @@ import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.BattleMsg;
-import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * 玩家的简单数据，一般用来显示用
@@ -122,7 +123,7 @@ public class SimplePlayer implements Serializable {
 		simplePlayer.setName(npcConfig.Name);
 		simplePlayer.setOnline(true);
 		simplePlayer.setHeadFrame(400006);
-		simplePlayer.setLevel(npcConfig.lv);
+//		simplePlayer.setLevel(npcConfig.lv);
 		simplePlayer.setHead(Integer.parseInt(npcConfig.Icon));
 		return simplePlayer;
 	}
