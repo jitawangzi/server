@@ -114,7 +114,7 @@ public class GameServer implements GameServerMBean {
       //			System.err.println(System.getProperty("log4j2.level"));
       //			CommonLogger.info("启动逻辑服。。");
       //			instance.log.info("启动逻辑服。。");
-      System.setProperty("user.dir", "D:\\Party\\server\\server\\game");
+//      System.setProperty("user.dir", "D:\\Party\\server\\server\\game");
 			instance.start(args);
 		} catch (Throwable e) {
 			handleStartFail(e);
