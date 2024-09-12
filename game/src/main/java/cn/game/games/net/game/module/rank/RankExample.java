@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.util.LuaScriptUtil;
 import cn.game.util.RedisUtil;
 
 public class RankExample {
@@ -22,11 +23,11 @@ public class RankExample {
 		rankService.setScore(serverId, RankType.Level, 240200712, 160);
 		rankService.setScore(serverId, RankType.Level, 240200713, 260);
 
-		rankService.updateMaxValueAsync("", 240200711, 100);
-		
 		rankService.getRankAsync("server4", RankType.Level, 240200731);
 		
-		
+		CompletionStage<Double> updateScoreIfGreater = LuaScriptUtil.updateScoreIfGreater("SET_RANK_server4_Level", 240200718, 560);
+		Double join = updateScoreIfGreater.toCompletableFuture().join();
+		System.out.println(join);
 		// 异步调用
 		CompletionStage<Boolean> updateFuture = rankService.setScoreAsync(serverId, RankType.Battle, 240200711, 1000);
 		updateFuture.thenAccept(result -> System.out.println("Async update result: " + result));

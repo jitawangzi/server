@@ -180,6 +180,7 @@ public class Friend implements Serializable, DbEntity {
 	public Object primaryKey() {
 		return new Object[] { playerId, friendId };
 	}
+
 	/** 好友 */
 	public static final byte FRIEND = 0;
 	/** 特别关注 */
