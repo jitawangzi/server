@@ -448,6 +448,7 @@ message BattlePvPStartResponse_13000114{
 		PlayerBattleAttrs selfAttrs = 1;  //我自己的属性
 		PlayerBattleAttrs targetAttrs = 2; //目标的属性 null 则为NPC
 		BattleLineupInfo targetLineupInfo = 3; // 目标的阵容 null 则为NPC
+	  BattleSecretscriptInfo targetSecretscriptInfo = 4; // 目标当前使用的秘术  null 则为NPC
 }
 //结算战斗请求
 message BattlePvPEndRequest_13000115{
@@ -486,5 +487,10 @@ message BattleBuyPvPTimeResponse_13000122{
 	int32 curNum = 1; //购买后的数量
 }
 //@NotUseStart
+//神通秘术 消息
+message BattleSecretscriptInfo{
+	map<int32, int32> secretscriptPosMap = 1; //神通位置信息  key id , value pos
+	repeated SecretscriptInfo secretscriptList = 2; // 神通信息
+}
 //@NotUseEnd
 

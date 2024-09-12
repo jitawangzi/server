@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.develop.secretscript;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,4 +68,7 @@ public class SecretscriptModule extends AbstractItemModule<Secretscript> {
 		this.secretscriptPosMap = secretscriptPosMap;
 	}
 
+	public Collection<Secretscript> getSecretscriptInfos() {
+		return list();
+	}
 }

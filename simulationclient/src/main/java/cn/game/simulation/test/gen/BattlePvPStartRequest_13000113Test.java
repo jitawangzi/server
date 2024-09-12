@@ -14,7 +14,7 @@ public class BattlePvPStartRequest_13000113Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePvPStartRequest_13000113.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPStartRequest_13000113.newBuilder() ; 
 		
-		builder.setTargetId(1);
+		builder.setTargetId("1");
 		
 		return builder.build() ; 
 	}

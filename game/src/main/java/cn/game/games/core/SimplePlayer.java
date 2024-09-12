@@ -8,6 +8,7 @@ import java.util.Map;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.module.develop.secretscript.Secretscript;
 import cn.game.protocol.generated.config.NPCConfig;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
@@ -57,6 +58,11 @@ public class SimplePlayer implements Serializable {
 	 * 玩家阵容数据 目前只有PVP 玩法 有需要存储
 	 */
 	private Map<Integer, Map<Integer, List<String>>> lineupMaps = new HashMap<Integer, Map<Integer, List<String>>>();
+	/**
+	 * 玩家神通 阵容数据
+	 */
+	Map<Integer,Map<Integer,Integer>> secretscripMap = new HashMap<Integer,Map<Integer,Integer>>();
+	List<Secretscript> secretscripInfos = new ArrayList<>();
 
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
 			String unionName, long offLinetime) {
@@ -91,6 +97,9 @@ public class SimplePlayer implements Serializable {
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		//存储 大道争锋阵容
 		lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()));
+        //存储 神通阵容
+        secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getSecretscriptPosMap());
+		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -113,6 +122,7 @@ public class SimplePlayer implements Serializable {
 		simplePlayer.setName(npcConfig.Name);
 		simplePlayer.setOnline(true);
 		simplePlayer.setHeadFrame(400006);
+		simplePlayer.setLevel(npcConfig.lv);
 		simplePlayer.setHead(Integer.parseInt(npcConfig.Icon));
 		return simplePlayer;
 	}
@@ -303,4 +313,30 @@ public class SimplePlayer implements Serializable {
 	public void setLineupMaps(Map<Integer, Map<Integer, List<String>>> lineupMaps) {
 		this.lineupMaps = lineupMaps;
 	}
+
+	public Map<Integer, Map<Integer, Integer>> getSecretscripMap() {
+		return secretscripMap;
+	}
+
+	public void setSecretscripMap(Map<Integer, Map<Integer, Integer>> secretscripMap) {
+		this.secretscripMap = secretscripMap;
+	}
+
+	public List<Secretscript> getSecretscripInfos() {
+		return secretscripInfos;
+	}
+
+	public void setSecretscripInfos(List<Secretscript> secretscripInfos) {
+		this.secretscripInfos = secretscripInfos;
+	}
+
+	public BattleMsg.BattleSecretscriptInfo toSecretscriptPbInfo(DungeonTypeEnum dungeonTypeEnum ) {
+        BattleMsg.BattleSecretscriptInfo.Builder builder = BattleMsg.BattleSecretscriptInfo.newBuilder();
+		builder.putAllSecretscriptPosMap(secretscripMap.get(dungeonTypeEnum.getId()));
+		secretscripInfos.forEach(secretscript -> {
+            builder.addSecretscriptList(secretscript.toProtoInfo());
+        });
+        return builder.build();
+    }
+
 }

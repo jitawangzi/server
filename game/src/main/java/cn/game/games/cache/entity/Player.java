@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -632,7 +633,9 @@ public class Player  {
 	public OfflineBattleModule getOfflineBattleModule() {
 		return getModule(OfflineBattleModule.class);
 	}
-
+	public SecretscriptModule getSecretscriptModule() {
+        return getModule(SecretscriptModule.class);
+    }
 	public String getServerId() {
 		return getData().getServerId();
 	}

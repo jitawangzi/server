@@ -101,6 +101,7 @@ public class OfflineBattleHandler {
         targetLineup.addLineups(BattleMsg.LineupInfo.newBuilder().setSeq(k).addAllHeroUid(v).build());
       });
       res.setTargetLineupInfo(targetLineup.build());
+      res.setTargetSecretscriptInfo(targetPlayer.toSecretscriptPbInfo(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO));
     }
     client.sendProtocol(res);
   }
