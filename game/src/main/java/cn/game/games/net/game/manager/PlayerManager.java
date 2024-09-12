@@ -9,7 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -147,8 +152,7 @@ public class PlayerManager {
 		try {
 			Player player = PlayerManager.getInstance().getPlayer(playerId);
 			if (player != null) {
-//				return ServerContext.getInstance().getServerId();
-				return player.getServerId();
+				return ServerContext.getInstance().getServerId();
 			}
 			return playerServers.get(playerId, () -> {
 				String serverId = RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));

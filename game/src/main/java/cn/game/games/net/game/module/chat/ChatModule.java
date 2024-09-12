@@ -3,10 +3,11 @@ package cn.game.games.net.game.module.chat;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.push.PushService;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 public class ChatModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] {};
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginFinish };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -16,6 +17,11 @@ public class ChatModule extends BasePlayerModule {
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
+
+		case LoginFinish: {
+			PushService.getInstance().addPlayerTags(playerId, player.getServerId());
+			break;
+		}
 		}
 	}
 

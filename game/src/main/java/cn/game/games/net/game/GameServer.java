@@ -35,9 +35,11 @@ import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
+import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossRemoteServerInterface;
 import cn.game.games.net.data.remote.DataGameServerInterface;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -187,6 +189,7 @@ public class GameServer implements GameServerMBean {
 		checkPlayerJsonStruct();
 		KeywordFilter.initializeFromFile();
 		RankService.getInstance().initRewardTask();
+		PushService.getInstance().init(PlayerHelper::sendProtocol);
 
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
