@@ -1,9 +1,5 @@
 package cn.game.games.net.game.module.chat;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +9,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.push.PushService;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.KeywordFilter;
@@ -54,8 +51,8 @@ public class ChatHandler extends BaseHandler {
 		String content = req.getContent();
 		ProtocolStringList atPlayerIdsList = req.getAtPlayerIdsList();
 		SimplePlayerInfo sendPlayer = req.getSendPlayer();
-		String sendServerId = sendPlayer.getServerId();
-		Set<Long> atPlayerIdsSet = atPlayerIdsList.stream().map(Long::valueOf).collect(Collectors.toSet());
+//		String sendServerId = sendPlayer.getServerId();
+//		Set<Long> atPlayerIdsSet = atPlayerIdsList.stream().map(Long::valueOf).collect(Collectors.toSet());
 		
 		ChatMessageInfo atMe = null;
 		ChatMessageInfo notAtMe = null;
@@ -74,17 +71,18 @@ public class ChatHandler extends BaseHandler {
 		switch (chatType) {
 		case WORLD_CHAT: {
 			// 推送给所有在线玩家
-			Collection<Player> players = PlayerManager.getInstance().getAllPlayer().values();
-			for (Player player : players) {
-				if (!player.getData().getServerId().equals(sendServerId)) {
-					continue;
-				}
-				if (atPlayerIdsSet.contains(player.getPlayerId())) {
-					player.getGameClient().sendProtocol(atMeMessage);
-				} else {
-					player.getGameClient().sendProtocol(notAtMeMessage);
-				}
-			}
+			PushService.getInstance().pushMessage(notAtMeMessage, false, sendPlayer.getServerId());
+//			Collection<Player> players = PlayerManager.getInstance().getAllPlayer().values();
+//			for (Player player : players) {
+//				if (!player.getData().getServerId().equals(sendServerId)) {
+//					continue;
+//				}
+//				if (atPlayerIdsSet.contains(player.getPlayerId())) {
+//					player.getGameClient().sendProtocol(atMeMessage);
+//				} else {
+//					player.getGameClient().sendProtocol(notAtMeMessage);
+//				}
+//			}
 			break;
 		}
 		case UNINON_CHAT: {

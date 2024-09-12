@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.rank;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
+import org.redisson.api.RScript;
 import org.redisson.client.codec.LongCodec;
 import org.redisson.client.protocol.ScoredEntry;
 
@@ -41,6 +43,10 @@ public class RankService {
 	/** 缩放次要分数 */
 	private static final double SECONDARY_SCORE_FACTOR = 1e-15;
 	private static final int DEFAULT_PAGE_SIZE = 50;
+
+	String updateScript = "local currentScore = redis.call('zscore', KEYS[1], ARGV[1]);\n"
+			+ "if currentScore == false or tonumber(ARGV[2]) > tonumber(currentScore) then\n" + "    redis.call('zadd', KEYS[1], ARGV[2], ARGV[1]);\n"
+			+ "    return ARGV[2];\n" + "else\n" + "    return currentScore;\n" + "end";
 
 	private RankService() {
 	}
@@ -86,7 +92,7 @@ public class RankService {
 	 */
 	public void setScore(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
 		double combinedScore = primaryScore + secondaryScore * SECONDARY_SCORE_FACTOR;
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		rank.add(combinedScore, playerId);
 	}
 
@@ -115,7 +121,7 @@ public class RankService {
 	 */
 	public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
 		double combinedScore = primaryScore + secondaryScore * SECONDARY_SCORE_FACTOR;
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addAsync(combinedScore, playerId).whenComplete((k, v) -> {
 			if (v != null) {
                 v.printStackTrace();
@@ -133,7 +139,7 @@ public class RankService {
 	 * @return 返回更新后的最终分数
 	 */
 	public double updateScore(String serverId, RankType type, long playerId, long score) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addScore(playerId, score);
 	}
 
@@ -147,7 +153,7 @@ public class RankService {
 	 * @return 返回更新后的最终分数
 	 */
 	public CompletionStage<Double> updateScoreAsync(String serverId, RankType type, long playerId, long score) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addScoreAsync(playerId, score);
 	}
 
@@ -160,7 +166,7 @@ public class RankService {
 	 * @return 前N名玩家的排行信息列表
 	 */
 	public List<RankEntry> getTopN(String serverId, RankType type, int n) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		Collection<ScoredEntry<Long>> entrys = rank.entryRangeReversed(0, n - 1);
 		return convertToRankEntries(entrys, 1, n);
 	}
@@ -174,7 +180,7 @@ public class RankService {
 	 * @return 异步操作的Future，包含前N名玩家的RankEntry集合
 	 */
 	public CompletionStage<List<RankEntry>> getTopNAsync(String serverId, RankType type, int n) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.entryRangeReversedAsync(0, n - 1).thenApply(entrys -> convertToRankEntries(entrys, 1, n));
 	}
 
@@ -188,11 +194,17 @@ public class RankService {
 	 * @return 指定页面的玩家排行信息列表
 	 */
 	public List<RankEntry> getPage(String serverId, RankType type, int page, int pageSize) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		int start = (page - 1) * pageSize;
 		int end = start + pageSize - 1;
 		Collection<ScoredEntry<Long>> players = rank.entryRangeReversed(start, end);
 		return convertToRankEntries(players, page, pageSize);
+	}
+
+	private RScoredSortedSet<Long> getRankSet(String serverId, RankType type) {
+		String key = getKey(serverId, type);
+		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(key, LongCodec.INSTANCE);
+		return rank;
 	}
 
 	/**
@@ -205,7 +217,7 @@ public class RankService {
 	 * @return 异步操作的Future，包含指定页面的玩家RankEntry集合
 	 */
 	public CompletionStage<List<RankEntry>> getPageAsync(String serverId, RankType type, int page, int pageSize) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		int start = (page - 1) * pageSize;
 		int end = start + pageSize - 1;
 		return rank.entryRangeReversedAsync(start, end).thenApply(players -> convertToRankEntries(players, page, pageSize));
@@ -220,7 +232,7 @@ public class RankService {
 	 * @return 玩家的排名，如果不在排行榜中返回-1
 	 */
 	public int getRank(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		Integer playerRank = rank.revRank(playerId);
 		return playerRank != null ? playerRank + 1 : -1;
 	}
@@ -234,7 +246,7 @@ public class RankService {
 	 * @return 异步操作的Future，包含玩家的排名
 	 */
 	public CompletionStage<Integer> getRankAsync(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.revRankAsync(playerId).thenApply(r -> r != null ? r + 1 : -1);
 	}
 
@@ -246,7 +258,7 @@ public class RankService {
 	 * @return
 	 */
 	public CompletionStage<Long> getScoreAsync(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.getScoreAsync(playerId).thenApply(score -> score == null ? 0 : (long) score.doubleValue());
 	}
 
@@ -258,7 +270,7 @@ public class RankService {
 	 * @return
 	 */
 	public long getScore(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		Double score = rank.getScore(playerId);
 		return score != null ? score.longValue() : 0;
 	}
@@ -297,7 +309,7 @@ public class RankService {
 	 * @param playerId 玩家ID
 	 */
 	public void removePlayer(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		rank.remove(playerId);
 	}
 
@@ -310,7 +322,7 @@ public class RankService {
 	 * @return 异步操作的Future
 	 */
 	public RFuture<Boolean> removePlayerAsync(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.removeAsync(playerId);
 	}
 
@@ -409,7 +421,7 @@ public class RankService {
 	 * @return
 	 */
 	public CompletionStage<Collection<Long>> searchRankEntryByScoreAsync(String serverId, RankType type, long scoreStart, long scoreEnd, int count) {
-		RScoredSortedSet<Long> scoredSortedSet = RedisUtil.getRedis().getScoredSortedSet(getKey(serverId, type));
+		RScoredSortedSet<Long> scoredSortedSet = getRankSet(serverId, type);
 		return scoredSortedSet.valueRangeAsync(scoreStart, true, scoreEnd, true, 0, count);
 	}
 
@@ -442,6 +454,16 @@ public class RankService {
 		});
 
 		return resultFuture;
+	}
+
+	public CompletionStage<Long> updateMaxValueAsync(String key, long playerId, long newScore) {
+		key = getKey("server4", RankType.Level);
+
+		RScript script = RedisUtil.getRedis().getScript(LongCodec.INSTANCE);
+		return script
+				.evalAsync(RScript.Mode.READ_WRITE, updateScript, RScript.ReturnType.VALUE, Collections.singletonList(key), String.valueOf(playerId),
+						String.valueOf(newScore))
+				.thenApply(result -> (Long) result);
 	}
 
 	/** 

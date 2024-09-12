@@ -4,16 +4,32 @@ import java.util.function.BiConsumer;
 
 import com.google.protobuf.Message;
 
-public class PushSystem {
+/**    
+ * 消息推送服务，一般用来广播聊天等消息
+ * 2024年9月11日 下午7:29:22
+ * @author SYQ
+ */
+public class PushService {
+
+	private static PushService instance = new PushService();
+
 	private TagSystem tagSystem;
 	private MessageQueue messageQueue;
 
-	public PushSystem(BiConsumer<Long, Message> sendToPlayer) {
+	public static PushService getInstance() {
+		return instance;
+	}
+//	public PushService(BiConsumer<Long, Message> sendToPlayer) {
+//		this.tagSystem = new TagSystem();
+//		this.messageQueue = new MessageQueue(tagSystem, sendToPlayer);
+//	}
+
+	public void init(BiConsumer<Long, Message> sendToPlayer) {
 		this.tagSystem = new TagSystem();
 		this.messageQueue = new MessageQueue(tagSystem, sendToPlayer);
 	}
 
-	public PushSystem() {
+	private PushService() {
 	}
 
 	public void addPlayerTags(long playerId, String... tags) {
