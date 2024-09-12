@@ -176,17 +176,16 @@ public class OfflineBattleModule extends BasePlayerModule {
                 score = (int) rankEntry.getScore();
               }
               int[][] scoreRange = getScoreRange(rank);
-              final int fianlScore = score;
-              return getMatchPidMapFuture(scoreRange, fianlScore);
+              final int finalScore = score;
+              return getMatchPidMapFuture(scoreRange, finalScore);
             })
-        .thenCompose(
+        .thenAccept(
             mapResult -> {
               processMatchResults(mapResult, resultList, promise);
-              return null;
             })
-        .thenCompose(
+        .thenAccept(
             msg -> {
-              return getSerachTargetScoreList(resultList, scoreList);
+               getSerachTargetScoreList(resultList, scoreList);
             })
         .thenAccept(
             action -> {
