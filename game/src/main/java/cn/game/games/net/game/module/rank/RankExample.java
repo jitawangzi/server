@@ -19,13 +19,13 @@ public class RankExample {
 //		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200712, 75);
 //		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200713, 90);
 //		rankService.setScore(serverId, RankType.DaDaoZhengFengDay, 240200714, 20);
-		rankService.setScore(serverId, RankType.Level, 240200711, 60);
-		rankService.setScore(serverId, RankType.Level, 240200712, 160);
-		rankService.setScore(serverId, RankType.Level, 240200713, 260);
+//		rankService.setScore(serverId, RankType.Level, 240200711, 60);
+//		rankService.setScore(serverId, RankType.Level, 240200712, 160);
+//		rankService.setScore(serverId, RankType.Level, 240200713, 260);
 
-		rankService.getRankAsync("server4", RankType.Level, 240200731);
+//		rankService.getRankAsync("server4", RankType.Level, 240200731);
 		
-		CompletionStage<Double> updateScoreIfGreater = LuaScriptUtil.updateScoreIfGreater("SET_RANK_server4_Level", 240200718, 560);
+		CompletionStage<Double> updateScoreIfGreater = LuaScriptUtil.updateScoreIfGreater("SET_RANK_server4_Level", 240200713, 550);
 		Double join = updateScoreIfGreater.toCompletableFuture().join();
 		System.out.println(join);
 		// 异步调用

@@ -150,7 +150,7 @@ message PatrolInfo{
 
 /*** 保存阵容 ***/
 message BattleLineupRequest_13000048{
-	int32 battleType = 1;			// 玩法类型，梦魇秘境  9
+	int32 battleType = 1;			// 玩法类型，梦魇秘境  9   大道争锋 50
 	LineupInfo lineup = 2;//  阵容数据
 }
 message BattleLineupResponse_13000049{
@@ -258,6 +258,7 @@ message BattleNightmareRealmQuickResponse_13000085{
 message LineupInfo{
 	int32 seq = 1; 							// 阵容顺序，从0开始
 	repeated string heroUid = 2;			// 英雄唯一id
+	repeated int32 heroId = 3;			// 英雄唯一id
 }
 // 某个玩法的阵容数据
 message BattleLineupInfo{

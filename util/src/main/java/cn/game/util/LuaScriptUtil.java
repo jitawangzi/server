@@ -22,17 +22,19 @@ public class LuaScriptUtil {
 	private static final Logger logger = LoggerFactory.getLogger(LuaScriptUtil.class);
 
 	public enum LuaScript {
-		UPDATE_SCORE_IF_GREATER("update_score_if_greater.lua", "更新值如果新值更大"),
-		INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值"),
+		UPDATE_SCORE_IF_GREATER("update_score_if_greater.lua", "更新值如果新值更大", true), INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值", true),
 		;
 
 		private final String filename;
 		private final String description;
 		private String content;
+		private final boolean useSha1;
+		private String sha1;
 
-		LuaScript(String filename, String description) {
+		LuaScript(String filename, String description, boolean useSha1) {
 			this.filename = filename;
 			this.description = description;
+			this.useSha1 = useSha1;
 		}
 
 		public String getFilename() {
@@ -46,6 +48,11 @@ public class LuaScriptUtil {
 		public String getContent() {
 			return content;
 		}
+
+		public String getSha1() {
+			return sha1;
+		}
+
 	}
 
 	static {
@@ -53,6 +60,9 @@ public class LuaScriptUtil {
 			try (InputStream inputStream = LuaScriptUtil.class.getResourceAsStream("/lua/" + script.getFilename())) {
 				if (inputStream != null) {
 					script.content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+					if (script.useSha1) {
+						script.sha1 = loadScript(script);
+					}
 				} else {
 					logger.error("Cannot find Lua script file: {}", script.getFilename());
 				}
@@ -62,6 +72,16 @@ public class LuaScriptUtil {
 		}
 	}
 
+	/** 
+	 * 预加载Lua脚本，并返回脚本的SHA1哈希值
+	 * @param script
+	 * @return
+	 */
+	public static String loadScript(LuaScript script) {
+		RScript rScript = RedisUtil.getRedis().getScript();
+		System.out.println("Script content: " + script.getContent());
+		return rScript.scriptLoad(script.getContent());
+	}
 	/**
 	 * 执行 Lua 脚本
 	 *
@@ -74,6 +94,9 @@ public class LuaScriptUtil {
 	 */
 	public static <T> CompletionStage<T> executeLuaScript(LuaScript script, Codec codec, List<Object> keys, Object... values) {
 		RScript rScript = codec == null ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
+		if (script.useSha1) {
+			return rScript.evalShaAsync(RScript.Mode.READ_WRITE, script.sha1, RScript.ReturnType.VALUE, keys, values);
+		}
 		return rScript.evalAsync(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
 	}
 
