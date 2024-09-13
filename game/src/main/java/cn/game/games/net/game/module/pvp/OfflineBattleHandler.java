@@ -1,5 +1,10 @@
 package cn.game.games.net.game.module.pvp;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
@@ -11,9 +16,6 @@ import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName OfflineBattleHandler
@@ -98,7 +100,13 @@ public class OfflineBattleHandler {
       BattleMsg.BattleLineupInfo.Builder targetLineup = BattleMsg.BattleLineupInfo.newBuilder();
       targetLineup.setBattleType(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
       targetPlayer.getLineupMaps().get(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()).forEach((k,v)->{
-        targetLineup.addLineups(BattleMsg.LineupInfo.newBuilder().setSeq(k).addAllHeroUid(v).build());
+			targetLineup
+					.addLineups(BattleMsg.LineupInfo
+							.newBuilder()
+							.setSeq(k)
+							.addAllHeroUid(v.stream().map(h -> h.getId() + "").collect(toList()))
+							.addAllHeroId(v.stream().map(h -> h.getConfigId()).collect(toList()))
+							.build());
       });
       res.setTargetLineupInfo(targetLineup.build());
       res.setTargetSecretscriptInfo(targetPlayer.toSecretscriptPbInfo(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO));

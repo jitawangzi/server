@@ -258,7 +258,7 @@ message BattleNightmareRealmQuickResponse_13000085{
 message LineupInfo{
 	int32 seq = 1; 							// 阵容顺序，从0开始
 	repeated string heroUid = 2;			// 英雄唯一id
-	repeated int32 heroId = 3;			// 英雄唯一id
+	repeated int32 heroId = 3;			// 英雄配置表id
 }
 // 某个玩法的阵容数据
 message BattleLineupInfo{

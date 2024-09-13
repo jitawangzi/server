@@ -58,7 +58,7 @@ public class SimplePlayer implements Serializable {
 	/**
 	 * 玩家阵容数据 目前只有PVP 玩法 有需要存储
 	 */
-	private Map<Integer, Map<Integer, List<String>>> lineupMaps = new HashMap<Integer, Map<Integer, List<String>>>();
+	private Map<Integer, Map<Integer, List<Hero>>> lineupMaps = new HashMap<Integer, Map<Integer, List<Hero>>>();
 	/**
 	 * 玩家神通 阵容数据
 	 */
@@ -97,7 +97,19 @@ public class SimplePlayer implements Serializable {
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		//存储 大道争锋阵容
-		lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()));
+		Map<Integer, List<String>> lineups = player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
+		Map<Integer, List<Hero>> lineupsMap = new HashMap<Integer, List<Hero>>();
+		lineups.forEach((k, v) -> {
+			List<Hero> heros = new ArrayList<Hero>();
+			v.forEach(heroId -> {
+				Hero hero = player.getHeroModule().get(Long.parseLong(heroId));
+				if (hero != null) {
+					heros.add(hero);
+				}
+			});
+			lineupsMap.put(k, heros);
+		});
+		lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(), lineupsMap);
         //存储 神通阵容
         secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getSecretscriptPosMap());
 		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
@@ -307,14 +319,13 @@ public class SimplePlayer implements Serializable {
 		}
 	}
 
-	public Map<Integer, Map<Integer, List<String>>> getLineupMaps() {
+	public Map<Integer, Map<Integer, List<Hero>>> getLineupMaps() {
 		return lineupMaps;
 	}
 
-	public void setLineupMaps(Map<Integer, Map<Integer, List<String>>> lineupMaps) {
+	public void setLineupMaps(Map<Integer, Map<Integer, List<Hero>>> lineupMaps) {
 		this.lineupMaps = lineupMaps;
 	}
-
 	public Map<Integer, Map<Integer, Integer>> getSecretscripMap() {
 		return secretscripMap;
 	}
