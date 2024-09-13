@@ -11,15 +11,6 @@ import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.module.battle.LingPoBattle;
-import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.HCBattleConfig;
-import cn.game.protocol.generated.config.QuestPointRewardConfig;
-import cn.game.protocol.generated.enume.Asset;
-import cn.game.protocol.generated.manager.BattleManager;
-import cn.game.protocol.generated.manager.HCBattleManager;
-import cn.game.protocol.generated.manager.QuestPointRewardManager;
-import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -86,58 +77,16 @@ public class PointRewardModule extends BasePlayerModule {
 	 */
 	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, long count, int... index) {
 
-		int[] conditionStage;
-		int[] randomRewardStage = null;
-		int[][] fixRewardStage = null;
-		int pointType = 0;
-		OpType opType = null;
-
-		if (type == PointRewardType.QUEST) {
-			QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(subType);
-			pointType = questPointRewardConfig.PointType;
-
-			conditionStage = questPointRewardConfig.Stage;
-			fixRewardStage = questPointRewardConfig.Reward;
-			opType = OpType.QuestActiveReward;
-		} else if (type == PointRewardType.DAY_CHALLENGE) {
-			HCBattleConfig battleConfig = HCBattleManager.instance().get(subType);
-			pointType = Asset.dailyIntegral.ID;
-
-			conditionStage = battleConfig.DailyIntegralCondition;
-			randomRewardStage = battleConfig.DailyInBoxRandomId;
-			opType = OpType.DayChallengeReward;
-		} else if (type == PointRewardType.LingPo) {
-			LingPoBattle lingPoBattle = player.getChapterModule().getBattle(DungeonTypeEnum.LingPo);
-			BattleConfig battleConfig = BattleManager.instance().get(lingPoBattle.getBattleId());
-			pointType = Asset.SpiritBattlePoint.ID;
-
-			conditionStage = battleConfig.BattleBoxTrigger;
-			randomRewardStage = battleConfig.BattleBoxRandomId;
-			opType = OpType.LingPoBattle;
-		} else if (type == PointRewardType.WorldBoss) {
-			BattleConfig battleConfig = BattleManager.instance().get(subType);
-//			pointType = Asset.SpiritBattlePoint.ID;
-			conditionStage = battleConfig.BattleBoxTrigger;
-			randomRewardStage = battleConfig.BattleBoxRandomId;
-			opType = OpType.WorldBoss;
-		} else {
-			throw new IllegalArgumentException("没有实现的PointRewardType :" + type);
+		if (!canReward(type, subType, count, index)) {
+			return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
 		}
 
-		if (fixRewardStage != null) {
-			for (int ix : index) {
-				if (ix >= fixRewardStage.length) {
-					return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
-				}
-			}
-		}
-		if (randomRewardStage != null) {
-			for (int ix : index) {
-				if (ix >= randomRewardStage.length) {
-					return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
-				}
-			}
-		}
+		PointRewardData data = PointRewardData.valueOf(player, type, subType);
+		int[] conditionStage = data.conditionStage;
+		int[] randomRewardStage = data.randomRewardStage;
+		int[][] fixRewardStage = data.fixRewardStage;
+		int pointType = data.pointType;
+		OpType opType = data.opType;
 
 		List<Integer> activeRewardList = getActiveRewardList(type, subType);
 
@@ -191,6 +140,68 @@ public class PointRewardModule extends BasePlayerModule {
 		}
 
 		return ResultObject.success(totalRewards);
+	}
+
+	/** 
+	 * 是否能领取积分奖励
+	 * @param type
+	 * @param subType
+	 * @param count
+	 * @param index
+	 * @return
+	 */
+	public boolean canReward(PointRewardType type, int subType, long count, int... index) {
+
+		PointRewardData data = PointRewardData.valueOf(player, type, subType);
+		int[] conditionStage = data.conditionStage;
+		int[] randomRewardStage = data.randomRewardStage;
+		int[][] fixRewardStage = data.fixRewardStage;
+		int pointType = data.pointType;
+
+		if (fixRewardStage != null) {
+			for (int ix : index) {
+				if (ix >= fixRewardStage.length) {
+					return false;
+				}
+			}
+		}
+		if (randomRewardStage != null) {
+			for (int ix : index) {
+				if (ix >= randomRewardStage.length) {
+					return false;
+				}
+			}
+		}
+
+		List<Integer> activeRewardList = getActiveRewardList(type, subType);
+
+		// Check if index is -1 to indicate all rewards
+		if (index[0] == -1) {
+			for (int i = 0; i < conditionStage.length; i++) {
+				if (!activeRewardList.contains(i)) {
+					long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
+					int needPoint = conditionStage[i];
+					if (point < needPoint) {
+						return false;
+					}
+				}
+			}
+		} else {
+
+			for (int ix : index) {
+
+				if (activeRewardList.contains(ix)) {
+					return false;
+				}
+
+				long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
+				int needPoint = conditionStage[ix];
+				if (point < needPoint) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@Override

@@ -122,7 +122,7 @@ public class SecretscriptHandler extends BaseHandler {
 		PlayerHelper.delResources(player, breakConfig.BreakConsumeSpecialItem1, specialItemCount, OpType.Secretscript);
 		
 		if (secretscript == null) {
-			PlayerHelper.addResources(player, id, 1, OpType.Secretscript);
+			module.add(id, OpType.Secretscript);
 		} else {
 			secretscript.setStar(star + 1);
 		}

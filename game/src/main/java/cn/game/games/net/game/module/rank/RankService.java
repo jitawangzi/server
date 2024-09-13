@@ -2,7 +2,6 @@ package cn.game.games.net.game.module.rank;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
-import org.redisson.api.RScript;
 import org.redisson.client.codec.LongCodec;
 import org.redisson.client.protocol.ScoredEntry;
 
@@ -29,6 +27,7 @@ import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.generated.manager.RankRewardManager;
 import cn.game.util.BinarySearchUtil;
 import cn.game.util.LockUtil;
+import cn.game.util.LuaScriptUtil;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 
@@ -43,10 +42,6 @@ public class RankService {
 	/** 缩放次要分数 */
 	private static final double SECONDARY_SCORE_FACTOR = 1e-15;
 	private static final int DEFAULT_PAGE_SIZE = 50;
-
-	String updateScript = "local currentScore = redis.call('zscore', KEYS[1], ARGV[1]);\n"
-			+ "if currentScore == false or tonumber(ARGV[2]) > tonumber(currentScore) then\n" + "    redis.call('zadd', KEYS[1], ARGV[2], ARGV[1]);\n"
-			+ "    return ARGV[2];\n" + "else\n" + "    return currentScore;\n" + "end";
 
 	private RankService() {
 	}
@@ -456,15 +451,19 @@ public class RankService {
 		return resultFuture;
 	}
 
-	public CompletionStage<Long> updateMaxValueAsync(String key, long playerId, long newScore) {
-		key = getKey("server4", RankType.Level);
-
-		RScript script = RedisUtil.getRedis().getScript(LongCodec.INSTANCE);
-		return script
-				.evalAsync(RScript.Mode.READ_WRITE, updateScript, RScript.ReturnType.VALUE, Collections.singletonList(key), String.valueOf(playerId),
-						String.valueOf(newScore))
-				.thenApply(result -> (Long) result);
+	/** 
+	 * 如果当前值大于历史值则更新,使用lua脚本实现,保证原子性
+	 * @param serverId
+	 * @param type
+	 * @param playerId
+	 * @param newValue
+	 * @return
+	 */
+	public CompletionStage<Double> updateMaxValueAsyncRScript(String serverId, RankType type, long playerId, double newValue) {
+		String key = getKey(serverId, type);
+		return LuaScriptUtil.updateScoreIfGreater(key, playerId, newValue);
 	}
+
 
 	/** 
 	 * 初始化排行榜结算任务
@@ -487,12 +486,11 @@ public class RankService {
 		if (rewardList == null) {
 			return;
 		}
-		RankType rankType = RankType.get(rankConfig.ID);
 		boolean lock = LockUtil.tryLockNoWaitSync(600, CacheType.SET_RANK.key(rankId));
 		if (!lock) {
 			return;
 		}
-
+		RankType rankType = RankType.get(rankConfig.ID);
 		for (String serverId : serverIds) {
 			for (int page = 1;; page++) {
 				List<RankEntry> rankEntries = getPage(serverId, rankType, page, DEFAULT_PAGE_SIZE);
