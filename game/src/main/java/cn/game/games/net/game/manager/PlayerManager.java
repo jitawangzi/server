@@ -980,12 +980,12 @@ public class PlayerManager {
 	 * @param unblockTime
 	 * @return 
 	 */
-	public int forbidAccount(long playerId, String reason, String unblockTime) {
+	public ForbidAccount forbidAccount(long playerId, String reason, String unblockTime) {
 		Date now = new Date();
 		Date unblock = new Date(Long.parseLong(unblockTime));
 		// 解封时间不合法
 		if (unblock.before(now)) {
-			return ErrorMsgEnum.unknown.getId();
+			return null;
 		}
 		// 本来已经封号
 		if (isForbidAccount(playerId)) {
@@ -993,7 +993,7 @@ public class PlayerManager {
 			account.setReason(reason);
 			account.setUnblockTime(unblock);
 			account.update();
-			return 0;
+			return account;
 		}
 		// 玩家在线
 		if (hasCache(playerId)) {
@@ -1004,24 +1004,24 @@ public class PlayerManager {
 			ForbidAccount insert = ForbidAccount.valueOf(player, reason, unblock);
 			DAO.insert(insert);
 			this.forbidAccounts.put(playerId, insert);
-			return 0;
+			return insert;
 		}
 		
 		// 玩家不在线
 		try {
 			SimplePlayer p = getAndLoadSimplePlayer(playerId);
 			if (p == null) {
-				return ErrorMsgEnum.player_not_found.getId();
+				return null;
 			}
 			ForbidAccount insert = ForbidAccount.valueOf(p, reason, unblock);
 			DAO.insert(insert);
 			this.forbidAccounts.put(playerId, insert);
 
-			return 0;
+			return insert;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ErrorMsgEnum.unknown.getId();
+			return null;
 		}
 	}
 

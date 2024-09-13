@@ -4,7 +4,6 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
@@ -14,7 +13,6 @@ import cn.game.protocol.generated.manager.NPCManager;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.util.DateUtil;
-import cn.game.util.RedisUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -124,7 +122,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     long now = System.currentTimeMillis();
     if (now > nextSeasonTimer) {
       clear();
-      nextSeasonTimer = DateUtil.addWeek(1);
+      nextSeasonTimer = DateUtil.addWeekBeginTimer(1);
       addDayRankScore(player.getPlayerId(), player.getServerId(), GlobalConst.DaDaoStartupPoint);
       addSeasonRankScore(player.getPlayerId(), player.getServerId(), GlobalConst.DaDaoStartupPoint);
     }
@@ -390,7 +388,7 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
 
   public SimplePlayer getTargetPlayer(long targetId) {
-    NPCConfig npcConfig = NPCManager.instance().get((int) targetId);
+    NPCConfig npcConfig = NPCManager.instance().getNullable((int) targetId);
     SimplePlayer battleTargetPlayer = null;
     for (SimplePlayer simplePlayer : tempRefreshList) {
       if (simplePlayer.id == targetId) {

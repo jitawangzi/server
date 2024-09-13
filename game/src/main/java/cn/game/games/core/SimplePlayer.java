@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.protocol.protobuf.GmMsg;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.games.cache.entity.Hero;
@@ -38,7 +39,9 @@ public class SimplePlayer implements Serializable {
 	public long unionId;
 	public long offlineTime;
 	public boolean online = true;
-
+	public long createTimer;
+	public long lastLoginTimer;
+	public int recharge; // 充值金额
 	/** 所在服务器id，并不是真正的在哪个服务器，只是加一个标签 */
 	public String serverId = "";
 	/** 所在服务器名，并不是真正的在哪个服务器，只是加一个标签 */
@@ -92,12 +95,17 @@ public class SimplePlayer implements Serializable {
 		this.offlineTime = player.getData().getOfflineTime();
 		this.online = player.isOnline();
 		this.level = player.getLevel();
-		
+		this.lastLoginTimer = player.getLastLoginTimer();
+		this.createTimer =  player.getCreateTimer();
 		this.battleId = player.getChapterModule().getMainBattleHighest();
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		//存储 大道争锋阵容
-		lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()));
+		if (player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()) != null){
+			lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()));
+		} else {
+			lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getChapterModule().getLineups(DungeonTypeEnum.BattleChapter.getId()));
+		}
         //存储 神通阵容
         secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getSecretscriptPosMap());
 		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
@@ -143,6 +151,23 @@ public class SimplePlayer implements Serializable {
 
 		return builder.build();
 	}
+
+	public GmMsg.GmPlayerInfo toGmPlayerInfo() {
+		GmMsg.GmPlayerInfo.Builder builder = GmMsg.GmPlayerInfo.newBuilder();
+		builder.setPlayerId(getId()+"");
+		builder.setName(getName());
+		builder.setLevel(getLevel());
+		builder.setCreateTime((int) (getCreateTimer()/1000));
+		builder.setLastLoginTime((int) (getLastLoginTimer()/1000));
+		builder.setServerId(getServerId());
+		builder.setChargeCumulation(recharge);
+		if (offlineTime < lastLoginTimer){
+			builder.setIsOnline(true);
+		} else {
+			builder.setIsOnline(false);
+		}
+        return builder.build();
+    }
 
 	public PlayerShowInfo toShowInfo() {
 
@@ -329,6 +354,30 @@ public class SimplePlayer implements Serializable {
 
 	public void setSecretscripInfos(List<Secretscript> secretscripInfos) {
 		this.secretscripInfos = secretscripInfos;
+	}
+
+	public long getCreateTimer() {
+		return createTimer;
+	}
+
+	public void setCreateTimer(long createTimer) {
+		this.createTimer = createTimer;
+	}
+
+	public long getLastLoginTimer() {
+		return lastLoginTimer;
+	}
+
+	public void setLastLoginTimer(long lastLoginTimer) {
+		this.lastLoginTimer = lastLoginTimer;
+	}
+
+	public int getRecharge() {
+		return recharge;
+	}
+
+	public void setRecharge(int recharge) {
+		this.recharge = recharge;
 	}
 
 	public BattleMsg.BattleSecretscriptInfo toSecretscriptPbInfo(DungeonTypeEnum dungeonTypeEnum ) {

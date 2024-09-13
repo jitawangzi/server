@@ -4,7 +4,6 @@ option java_package = "cn.game.protocol.protobuf";
 package Protos;
 import "BaseMsg.proto" ;
 // Gm协议
-
 // 查看某玩家数据，优先id，如果id没有通过name查询。
 message GmPlayerRequest_77000021{
 	string channel = 1; // 渠道，暂时用不到。
@@ -62,18 +61,17 @@ message GmMailPlayerSendResponse_77000041{
 
 // gm给指定服务器发邮件
 message GmMailServerSendRequest_77000048{
-	string channel = 1; // 渠道，暂时用不到。
-	repeated string serverId = 14; // 服务器id，暂时用不到
-	string title = 3;  			//标题
-	string content = 4;  		//内容
-	int32 sendStartTime = 5;  		//全服邮件的发送起始时间（秒时间戳）
-	int32 sendEndTime = 7;  		//全服邮件的发送截止时间（秒时间戳）
-	bool oneKeyReiceve = 8;		// 是否允许一键领取
-	repeated GoodsInfo attachments = 9;	//附件奖励
+	repeated string serverId = 1; // 全服邮件 允许的服务器 id
+	string title = 2;  			//标题
+	string content = 3;  		//内容
+	int32 sendStartTime = 4;  		//全服邮件的 验证起始时间（秒时间戳）
+	int32 sendEndTime = 5;  		//全服邮件的验证 截止时间（秒时间戳）
+	repeated GoodsInfo attachments = 6;	//附件奖励
+	int32 levelStart = 7;  		//限制起始等级
+	int32 levelEnd = 8;  		//限制结束等级
+	repeated string playerIds = 9;  // 接受邮件的玩家,类型是个人邮件时有效
+	int32 timeCheckType = 10;      //全服邮件 时间校验方式 0 登录时间 1 注册时间
 
-	int32 levelStart = 10;  		//限制起始等级
-	int32 levelEnd = 11;  		//限制结束等级
-	bool sendNewPlayer = 12;  		//是否发送给后创建角色
 }
 message GmMailServerSendResponse_77000049{
 }
@@ -83,18 +81,16 @@ message GmMailServerSendResponse_77000049{
 // 查看邮件列表
 message GmMailListRequest_77000042{
 	repeated string serverId = 1; // 服务器id，暂时用不到。全服邮件会选多个服务器id，个人邮件用1个
-	int32 type = 2;   				// 1 个人邮件 2 全服邮件 0 个人邮件+全服邮件
+	int32 type = 2;  				// 1 个人邮件 2 全服邮件 0 个人邮件+全服邮件
 	//查询参数
 	string title = 3;  			//标题
 	string content = 4;  		//内容
-	int32 sendStartTime = 5;  		//个人邮件的发送时间（秒时间戳），全服邮件的发送起始时间
-	int32 sendEndTime = 7;  		//全服邮件的发送截止时间（秒时间戳）
-	repeated GoodsInfo attachments = 9;	//附件奖励
+	int32 startTime = 5;  		//邮件创建的开始时间
+	int32 endTime = 7;  		//邮件创建的结束时间
 	int32 status = 10;   			//1 暂未审核 2 审核成功  3审核失败。0 全部状态
 	// 分页显示
 	int32  pageNum = 20;		// 第几页
 	int32  pageSize = 21;   // 每页记录数
-
 }
 message GmMailResponse_77000043{
 	repeated GmMailInfo mails = 1;
@@ -119,7 +115,7 @@ message GmMailDeleteResponse_77000047{
 // 邮件数据
 message GmMailInfo{
 	string uid = 1;  			//邮件唯一id
-	int32 type = 2;   			// 1 个人邮件 2 全服邮件
+	int32 type = 2;   			// 0 个人邮件 1 全服邮件
 	string title = 3;  			//标题
 	string content = 4;  		//内容
 	int32 createTime = 5;  		//创建时间（秒时间戳）
@@ -127,9 +123,14 @@ message GmMailInfo{
 	string sendName = 7;  			//发件人
 	string checkName = 8;  			//审核人
 	repeated GoodsInfo attachments = 9;	//附件奖励
-	int32 status = 10;   			//1 暂未审核 2 审核成功  3审核失败。
+	int32 status = 10;   			//0 未审核; 1 已审核  3审核失败。
 	repeated string serverId = 11; // 邮件发送区服，暂时用不到
+	int32  timeCheckType = 12;      //全服邮件 时间校验方式 0 登录时间 1 注册时间
+  int32 levelStart = 13;      //限制起始等级
+  int32 levelEnd = 14;      //限制结束等级
+  repeated string playerIds = 15;  // 接受邮件的玩家,类型是个人邮件时有效
 }
+
 
 
 // 增加公告
@@ -320,15 +321,3 @@ message GmPlayerLogouttResponse_7700000a{
 	uint32 errorCode = 1;
 }
 
-// gm给指定玩家发邮件,这个协议不用了。
-message GmPlayerMailRequest_77000010{
-	int64 playerId = 1;
-	uint32 id = 3 ;			//Mail表id
-	string title = 5;  			//标题，如果有值用这个值，如果没有从Mail表里面取内容
-	string content = 8;  		//内容，如果有值用这个值，如果没有从Mail表里面取内容
-	repeated GoodsInfo attachments = 13;	//附件奖励
-
-}
-message GmPlayerMailResponse_77000011{
-	uint32 errorCode = 1;
-}

@@ -41,6 +41,10 @@ public class MailModule extends BasePlayerModule  {
 	/** 公告邮件比较特殊，保存一个不删除。设置删除标记位，为了服务器一次更新只发一次公告邮件  */
 	@JsonIgnore
 	private Mail notice;
+	/**
+	 * 领取过的全服邮件版本号
+	 */
+	private long globalMailId;
 
 	public void sendOnline(Mail mail, boolean notify) {
 
@@ -245,6 +249,10 @@ public class MailModule extends BasePlayerModule  {
 	}
 
 	private void checkNoticeMail() {
+
+		//检测 是否有新的全服邮件待领取
+		MailHelper.onLoginAddGlobalMail(player);
+
 		int noticeMailId = MailHelper.getNoticeMailId();
 		if (noticeMailId > 0) {
 //			MailConfig mailConfig = MailManager.instance().get(noticeMailId); 
@@ -270,6 +278,14 @@ public class MailModule extends BasePlayerModule  {
 	
 	@Override
 	public boolean alwaysStoreDataInStandaloneTable() {
-		return true ; 
+		return true ;
+	}
+
+	public long getGlobalMailId() {
+		return globalMailId;
+	}
+
+	public void setGlobalMailId(long globalMailId) {
+		this.globalMailId = globalMailId;
 	}
 }
