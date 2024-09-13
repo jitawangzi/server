@@ -38,8 +38,6 @@ import cn.game.protocol.protobuf.GmMsg.GmAccountUnblockRequest_77000007;
 import cn.game.protocol.protobuf.GmMsg.GmAccountUnblockResponse_77000008;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogoutRequest_77000009;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogouttResponse_7700000a;
-import cn.game.protocol.protobuf.GmMsg.GmPlayerMailRequest_77000010;
-import cn.game.protocol.protobuf.GmMsg.GmPlayerMailResponse_77000011;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerResponse_77000022;
 import cn.game.protocol.protobuf.PbProtocol;

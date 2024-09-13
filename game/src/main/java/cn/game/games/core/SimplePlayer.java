@@ -161,6 +161,23 @@ public class SimplePlayer implements Serializable {
 		return builder.build();
 	}
 
+	public GmMsg.GmPlayerInfo toGmPlayerInfo() {
+		GmMsg.GmPlayerInfo.Builder builder = GmMsg.GmPlayerInfo.newBuilder();
+		builder.setPlayerId(getId()+"");
+		builder.setName(getName());
+		builder.setLevel(getLevel());
+		builder.setCreateTime((int) (getCreateTimer()/1000));
+		builder.setLastLoginTime((int) (getLastLoginTimer()/1000));
+		builder.setServerId(getServerId());
+		builder.setChargeCumulation(recharge);
+		if (offlineTime < lastLoginTimer){
+			builder.setIsOnline(true);
+		} else {
+			builder.setIsOnline(false);
+		}
+        return builder.build();
+    }
+
 	public PlayerShowInfo toShowInfo() {
 
 		PlayerShowInfo.Builder showInfo = PlayerShowInfo.newBuilder();
