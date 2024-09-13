@@ -29,13 +29,23 @@ import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.DaoHeartBattle;
+import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
+import cn.game.games.net.game.module.battle.WorldBossBattle;
+import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
+import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
+import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
 import cn.game.games.util.KeywordFilter;
 import cn.game.games.util.PbBuilder;
+import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.WorldBossRewardManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -76,6 +86,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutRequest_7d000101;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidRequest_7d000018;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
+import cn.game.util.BinarySearchUtil;
 import cn.game.util.ConversionUtil;
 import cn.game.util.DateUtil;
 import cn.game.util.ObjUtil;
@@ -161,44 +172,107 @@ public class PlayerHandler extends BaseHandler {
 				switch (func) {
 				case DaoXinMoLi: {
 					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(DungeonTypeEnum.DaoHeart);
+					if (daoHeartBattle == null) {
+						continue;
+					}
+					List<Integer> rewardBattleIds = daoHeartBattle.getRewardBattleIds();
+					int completeBattleId = daoHeartBattle.getCompleteBattleId();
+					if (completeBattleId == 0) {
+						continue;
+					}
+					BattleConfig battleConfig = BattleManager.instance().get(completeBattleId);
 
-					ret = false;
+					while (battleConfig != null) {
+						if (!rewardBattleIds.contains(battleConfig.ID)) {
+							ret = true;
+							break;
+						}
+						battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+					}
 					break;
 				}
 				case XinMoShiLian: {
 					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(DungeonTypeEnum.XinMo);
+					if (daoHeartBattle == null) {
+						continue;
+					}
+					List<Integer> rewardBattleIds = daoHeartBattle.getRewardBattleIds();
+					int completeBattleId = daoHeartBattle.getCompleteBattleId();
+					if (completeBattleId == 0) {
+						continue;
+					}
+					BattleConfig battleConfig = BattleManager.instance().get(completeBattleId);
 
-					ret = false;
+					while (battleConfig != null) {
+						if (!rewardBattleIds.contains(battleConfig.ID)) {
+							ret = true;
+							break;
+						}
+						battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+					}
 					break;
 				}
 				case YaoWangBiePao: {
 					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(DungeonTypeEnum.YaoWang);
+					if (daoHeartBattle == null) {
+						continue;
+					}
+					List<Integer> rewardBattleIds = daoHeartBattle.getRewardBattleIds();
+					int completeBattleId = daoHeartBattle.getCompleteBattleId();
+					if (completeBattleId == 0) {
+						continue;
+					}
+					BattleConfig battleConfig = BattleManager.instance().get(completeBattleId);
 
-					ret = false;
+					while (battleConfig != null) {
+						if (!rewardBattleIds.contains(battleConfig.ID)) {
+							ret = true;
+							break;
+						}
+						battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+					}
 					break;
 				}
 				case ShiLuoZhenJing: {
-					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+					ChapterModule chapterModule = player.getModule(ChapterModule.class);
+					ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+					if (battle.isDayReward()) {
+						continue;
+					}
+					int startBattleId = battle.getStartBattleId();
 
-					ret = false;
+					if (startBattleId == 0) {
+						continue;
+					}
+					ret = true;
 					break;
 				}
 				case WorldBoss: {
-					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+					ChapterModule chapterModule = player.getModule(ChapterModule.class);
+					WorldBossBattle battle = chapterModule.getBattle(DungeonTypeEnum.WorldBoss);
+					long maxDamageToday = battle.getMaxDamageToday();
+					List<WorldBossRewardConfig> list = WorldBossRewardManager.instance().list();
+					int canRewardIndex = BinarySearchUtil.findIndexLastLessThanOrEqual(list, maxDamageToday, r -> r.BoxCondition);
 
-					ret = false;
+					if (canRewardIndex < 0) {
+						continue;
+					}
+					WorldBossRewardConfig rewardConfig = list.get(canRewardIndex);
+					if (battle.getRewardId() >= rewardConfig.ID) {
+						continue;
+					}
+					int rewardIndex = BinarySearchUtil.findElementIndexByField(list, battle.getRewardId(), r -> r.ID, (r1, r2) -> r1 - r2);
+					if (rewardIndex != canRewardIndex) {
+						ret = true;
+					}
 					break;
 				}
 				case SpiritBattle: {
-					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
-
-					ret = false;
+					PointRewardModule pointRewardModule = player.getPointRewardModule();
+					ret = pointRewardModule.canReward(PointRewardType.LingPo, 0, 0, -1);
 					break;
 				}
 				case NightmareRealm: {
@@ -209,15 +283,11 @@ public class PlayerHandler extends BaseHandler {
 					break;
 				}
 				case Letter: {
-					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
-
-					ret = false;
+					MailModule module = player.getMailModule();
+					ret = module.hasNoRead();
 					break;
 				}
 				case CardBook: {
-					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 
 					ret = false;
 					break;
