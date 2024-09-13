@@ -99,17 +99,19 @@ public class SimplePlayer implements Serializable {
 		//存储 大道争锋阵容
 		Map<Integer, List<String>> lineups = player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
 		Map<Integer, List<Hero>> lineupsMap = new HashMap<Integer, List<Hero>>();
-		lineups.forEach((k, v) -> {
-			List<Hero> heros = new ArrayList<Hero>();
-			v.forEach(heroId -> {
-				Hero hero = player.getHeroModule().get(Long.parseLong(heroId));
-				if (hero != null) {
-					heros.add(hero);
-				}
+		if (lineups != null) {
+			lineups.forEach((k, v) -> {
+				List<Hero> heros = new ArrayList<Hero>();
+				v.forEach(heroId -> {
+					Hero hero = player.getHeroModule().get(Long.parseLong(heroId));
+					if (hero != null) {
+						heros.add(hero);
+					}
+				});
+				lineupsMap.put(k, heros);
 			});
-			lineupsMap.put(k, heros);
-		});
-		lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(), lineupsMap);
+			lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(), lineupsMap);
+		}
         //存储 神通阵容
         secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getSecretscriptPosMap());
 		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
