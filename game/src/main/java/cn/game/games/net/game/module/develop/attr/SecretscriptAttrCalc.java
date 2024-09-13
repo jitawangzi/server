@@ -27,8 +27,12 @@ public class SecretscriptAttrCalc extends PlayerAttrCalc {
 					.instance()
 					.getUISecretscriptMarkSecretscriptStar(secretscript.getConfigId(), secretscript.getStar());
 
-			int attrValue = config.SecretscriptBase[1] + (secretscript.getLevel() - 1) * config.SecretscriptGrow[1];
-			attrMap.add(config.SecretscriptBase[0], attrValue);
+			for (int i = 0; i < config.SecretscriptBase.length; i++) {
+				int[] base = config.SecretscriptBase[i];
+				int[] baseGrow = config.SecretscriptGrow[i];
+				int attrValue = base[1] + (secretscript.getLevel() - 1) * baseGrow[1];
+				attrMap.add(base[0], attrValue);
+			}
 		}
 
 		Collection<List<SecretscriptBookConfig>> booksList = SecretscriptBookManager.instance().list();
