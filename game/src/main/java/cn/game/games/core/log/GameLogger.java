@@ -14,6 +14,7 @@ import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.QuestManager;
@@ -575,7 +576,7 @@ public class GameLogger extends Logger {
 		try {
 			QuestConfig questConfig = QuestManager.instance().get(taskId);
 			ConditionConfig conditionConfig = ConditionManager.instance().get(questConfig.Condition);
-
+			ConditionTypeEnum conditionTypeEnum = ConditionTypeEnum.get(conditionConfig.type);
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
