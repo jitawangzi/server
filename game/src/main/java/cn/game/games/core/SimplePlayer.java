@@ -16,6 +16,7 @@ import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.BattleMsg;
+import cn.game.protocol.protobuf.GmMsg;
 
 /**
  * 玩家的简单数据，一般用来显示用
@@ -38,7 +39,9 @@ public class SimplePlayer implements Serializable {
 	public long unionId;
 	public long offlineTime;
 	public boolean online = true;
-
+	public long createTimer;
+	public long lastLoginTimer;
+	public int recharge; // 充值金额
 	/** 所在服务器id，并不是真正的在哪个服务器，只是加一个标签 */
 	public String serverId = "";
 	/** 所在服务器名，并不是真正的在哪个服务器，只是加一个标签 */
@@ -92,11 +95,12 @@ public class SimplePlayer implements Serializable {
 		this.offlineTime = player.getData().getOfflineTime();
 		this.online = player.isOnline();
 		this.level = player.getLevel();
-		this.serverId = player.getServerId();
-		
+		this.lastLoginTimer = player.getLastLoginTimer();
+		this.createTimer =  player.getCreateTimer();
 		this.battleId = player.getChapterModule().getMainBattleHighest();
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
+		this.serverId = player.getServerId();
 		//存储 大道争锋阵容
 		Map<Integer, List<String>> lineups = player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
 		Map<Integer, List<Hero>> lineupsMap = new HashMap<Integer, List<Hero>>();
@@ -114,7 +118,7 @@ public class SimplePlayer implements Serializable {
 			lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(), lineupsMap);
 		}
         //存储 神通阵容
-        secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getSecretscriptPosMap());
+        secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getPvPSecretscriptMap());
 		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
 	}
 
@@ -158,6 +162,23 @@ public class SimplePlayer implements Serializable {
 
 		return builder.build();
 	}
+
+	public GmMsg.GmPlayerInfo toGmPlayerInfo() {
+		GmMsg.GmPlayerInfo.Builder builder = GmMsg.GmPlayerInfo.newBuilder();
+		builder.setPlayerId(getId()+"");
+		builder.setName(getName());
+		builder.setLevel(getLevel());
+		builder.setCreateTime((int) (getCreateTimer()/1000));
+		builder.setLastLoginTime((int) (getLastLoginTimer()/1000));
+		builder.setServerId(getServerId());
+		builder.setChargeCumulation(recharge);
+		if (offlineTime < lastLoginTimer){
+			builder.setIsOnline(true);
+		} else {
+			builder.setIsOnline(false);
+		}
+        return builder.build();
+    }
 
 	public PlayerShowInfo toShowInfo() {
 
@@ -329,6 +350,7 @@ public class SimplePlayer implements Serializable {
 	public void setLineupMaps(Map<Integer, Map<Integer, List<Hero>>> lineupMaps) {
 		this.lineupMaps = lineupMaps;
 	}
+
 	public Map<Integer, Map<Integer, Integer>> getSecretscripMap() {
 		return secretscripMap;
 	}
@@ -343,6 +365,30 @@ public class SimplePlayer implements Serializable {
 
 	public void setSecretscripInfos(List<Secretscript> secretscripInfos) {
 		this.secretscripInfos = secretscripInfos;
+	}
+
+	public long getCreateTimer() {
+		return createTimer;
+	}
+
+	public void setCreateTimer(long createTimer) {
+		this.createTimer = createTimer;
+	}
+
+	public long getLastLoginTimer() {
+		return lastLoginTimer;
+	}
+
+	public void setLastLoginTimer(long lastLoginTimer) {
+		this.lastLoginTimer = lastLoginTimer;
+	}
+
+	public int getRecharge() {
+		return recharge;
+	}
+
+	public void setRecharge(int recharge) {
+		this.recharge = recharge;
 	}
 
 	public BattleMsg.BattleSecretscriptInfo toSecretscriptPbInfo(DungeonTypeEnum dungeonTypeEnum ) {

@@ -44,6 +44,7 @@ public class Chapter implements Serializable, DbEntity {
 	
 	/** 本章打了多少次 */
 	private int finishTimes;
+
 	/**
 	 * @mbg.generated
 	 */

@@ -1,17 +1,24 @@
 package cn.game.games.core.log;
 
-import java.util.ArrayList;
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
-import java.util.Set;
 
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.QuestManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.util.Config;
 import cn.game.util.log.Logger;
@@ -163,7 +170,7 @@ public class GameLogger extends Logger {
 	 * 登入服务器
 	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
 	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-	 * 角色名，登录ip，价值虚拟币总量, 获取总卡牌数，获取去重卡牌数， 时区
+	 * 角色名，登录ip，价值虚拟币总量
 	 */
 	public static void login(Player player) {
 		try {
@@ -238,9 +245,9 @@ public class GameLogger extends Logger {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.logout.name(), LoggerType.logout.version, "9999")),
 					player.getData().getName(),
 					player.getCurrencyModule().getCount(Asset.diamond.ID), GameLogAssistant.calculatePlayerOnlineDurationSecond(player),
-					player.getData().getVipLevel(),
+					player.getVipLevel(),
 					player.getCurrencyModule().getCount(Asset.playerEnergy.ID), player.getAttrModule().getPower(),
-					player.getChapterModule().getMainBattleHighest(),
+					player.getChapterModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()),
 					player.getAccount().getPlatform() };
 			LoggerType.logout.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -258,7 +265,8 @@ public class GameLogger extends Logger {
 		try {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.levelup.name(), LoggerType.levelup.version, "6010")),
-					player.getData().getName(), player.getLevel(), Math.max(0, player.getLevel() - 1), 0, GameLogAssistant.TIME_ZONE };
+					player.getData().getName(), player.getLevel(), Math.max(0, player.getLevel() - 1), -1,
+					player.getChapterModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()), player.getAccount().getPlatform() };
 			LoggerType.levelup.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -278,47 +286,39 @@ public class GameLogger extends Logger {
 		}
 	}
 
-//	/**
-//	 * 商城日志
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 商品类型id,商品id,商品数量,消耗货币id,消耗货币数量,商城id,
-//	 * vip等级
-//	 * 时区
-//	 */
-//	public static void shoptrade(Player player, List<Reward> rewardList, List<Reward> cost, int shopId, int secondShopId, int buyNum) {
-//		try {
-//			int itemType = -1;
-//			int itemId = -1;
-//			long itemCount = 0;
-//			if (CollectionUtil.isNotEmpty(rewardList)) {
-//				for (Reward reward : rewardList) {
-//					itemType = reward.getType();
-//					itemId = reward.getItemTemplateId();
-//					itemCount = reward.getValue();
-//					break;
-//				}
-//			}
-//			int type = ItemService.getItemTypeBy(itemId);
-//
-//			int moneyType = -1;
-//			long moneyNum = 0;
-//			if (CollectionUtil.isNotEmpty(cost)) {
-//				for (Reward reward : cost) {
-//					moneyType = reward.getItemTemplateId();
-//					moneyNum = reward.getValue();
-//					break;
-//				}
-//			}
-//
-//			Object[] array = new Object[] {
-//					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.shoptrade.name(), LoggerType.shoptrade.version, "7010")), type,
-//					itemId, buyNum, moneyType, moneyNum, shopId, player.getVipLevel(), GameLogAssistant.TIME_ZONE };
-//			LoggerType.shoptrade.logger.info(LoggerType.splice(array));
-//		} catch (Exception e) {
-//			SystemLogger.error(e);
-//		}
-//	}
+	/**
+	 * 商城日志
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 商品类型id,商品id,商品数量,消耗货币id,消耗货币数量,商城id,
+	 * vip等级
+	 * 时区
+	 */
+	public static void shoptrade(Player player, int shopId, int shopItemId) {
+		try {
+			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItemId);
+			int itemId = shopItemConfig.Item[0][0];
+			long itemCount = shopItemConfig.Item[0][1];
+			int itemType = ItemHelper.getGoodsType(itemId);
+
+			int[] buyParam = shopItemConfig.PurchaseParameter;
+			int costId = 0;
+			int costCount = 0;
+			if (buyParam.length == 0 || buyParam.length == 1) {
+				costId = Asset.gold.ID;
+				costCount = 0;
+			} else if (buyParam.length == 3) {
+				costId = buyParam[1];
+				costCount = buyParam[2];
+			}
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.shoptrade.name(), LoggerType.shoptrade.version, "7010")), itemType,
+					itemId, itemCount, costId, costCount, shopId, player.getVipLevel(), player.getAccount().getPlatform() };
+			LoggerType.shoptrade.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
 
 //	/**
 //	 * 完成称号任务
@@ -349,7 +349,7 @@ public class GameLogger extends Logger {
 		try {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.money.name(), LoggerType.money.version, "8010")),
-					opType.name(), count, player.getCurrencyModule().getCount(id), id, player.getData().getVipLevel(),
+					opType.name(), count, player.getCurrencyModule().getCount(id), id, player.getVipLevel(),
 					"null", isIncrease ? 1 : -1, player.getAccount().getPlatform() };
 			LoggerType.money.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -369,8 +369,8 @@ public class GameLogger extends Logger {
 
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.item.name(), LoggerType.item.version, "B2110")), type, id,
-					opType.name(), count, player.getData().getVipLevel(),
-					GameLogAssistant.getSubcauseIdByBehaviorType(player, opType), isAdd ? 1 : -1, player.getGoodsModule(id).getCount(id),
+					opType.name(), count, player.getVipLevel(),
+					"null", isAdd ? 1 : -1, player.getGoodsModule(id).getCount(id),
 					player.getAccount().getPlatform() };
 			LoggerType.item.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -378,21 +378,21 @@ public class GameLogger extends Logger {
 		}
 	}
 //
-//	/**
-//	 * 充值
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 充值额度（RMB元）,充值渠道id, 价值虚拟币数量, 币种, 用户进行充值时设备的ip,
-//	 * 价值虚拟币总量, Vip等级,商品id, 订单号
-//	 * 时区
-//	 */
+	/**
+	 * 充值
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 充值额度（RMB元）,充值渠道id, 价值虚拟币数量, 币种, 用户进行充值时设备的ip,
+	 * 价值虚拟币总量, Vip等级,商品id, 订单号
+	 * 时区
+	 */
 //	public static void recharge(Player player, Receipt receipt, PayItem payItem, int diamondCount, String currency) {
 //		try {
 //			int cur = "CNY".equals(currency) ? 11 : 1;
 //			Object[] array = new Object[] {
-//					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, "5000")),
-//					rmb, player.getAccount().sdkPayChannel, diamondCount, cur, player.getGameClient().getIp(),
-//					player.getCurrencyModule().get(Asset.diamond), 0, receipt.getGoodsId(), receipt.getCoOrderId(), player.getAccount().getPlatform() };
+//					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, "5000")), rmb,
+//					player.getAccount().sdkPayChannel, diamondCount, cur, player.getGameClient().getIp(), player.getCurrencyModule().get(Asset.diamond), 0,
+//					receipt.getGoodsId(), receipt.getCoOrderId(), player.getAccount().getPlatform() };
 //			LoggerType.recharge.logger.info(LoggerType.splice(array));
 //		} catch (Exception e) {
 //			SystemLogger.error(e);
@@ -547,28 +547,46 @@ public class GameLogger extends Logger {
 //    }
 //
 //
-//	/**
-//	 * 任务
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 任务id,结果,任务类型 时区
-//	 */
-//    public static void task(Player player, int taskId, int taskResult, int taskType) {
-//        try {
-//            String stepnumid = "B3110";
-//            if (taskResult == 1) {
-//                stepnumid = "B3120";
-//            }
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.task.name(), LoggerType.task.version, stepnumid)),
-//                    taskId, taskResult == 1 ? "1" : "0", taskType, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.task.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
+	/**
+	 * 任务
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 任务id,结果,任务类型 时区
+	 */
+	public static void task(Player player, int taskId, boolean finish) {
+		try {
+			String stepnumid = "B3110";
+			if (finish) {
+				stepnumid = "B3120";
+			}
+			QuestConfig questConfig = QuestManager.instance().get(taskId);
+
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.task.name(), LoggerType.task.version, stepnumid)),
+					taskId, "1", questConfig.Type + "", player.getAccount().getPlatform() };
+			LoggerType.task.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
+	public static void achievement(Player player, int taskId) {
+		try {
+			QuestConfig questConfig = QuestManager.instance().get(taskId);
+			ConditionConfig conditionConfig = ConditionManager.instance().get(questConfig.Condition);
+
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+									.buildLogCYPrefix(player, LoggerType.achievement.name(), LoggerType.achievement.version, "B5110")),
+					taskId, "1", questConfig.Type + "", player.getAccount().getPlatform() };
+			LoggerType.achievement.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
 	/**
 	 * pve 战斗
 	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
@@ -577,15 +595,16 @@ public class GameLogger extends Logger {
 	 * 剩余体力,上阵卡牌战力总和,当前关卡推荐战力,上阵卡牌1,上阵卡牌2,上阵卡牌3,角色属性,
 	 * 时区
 	 */
-	public static void pvefight(Player player, int stageId, int type, boolean result, long time, int round) {
+	public static void pvefight(Player player, int stageId, int type, boolean result, long time, int battleCount) {
 		try {
+			type = 1;
 //			BattleConfig battleConfig = BattleManager.instance().get(stageId);
-			String re = "0";
+			int re = 2;
 			if (result) {
-				re = "1";
+				re = 1;
 			}
-			Set<Long> battleHeros = player.getHeroModule().getBattleHeroIds();
-			List<Long> heroList = new ArrayList<>(battleHeros);
+			List<Hero> battleHeros = player.getHeroModule().getBattleHeroList();
+			List<Integer> heroList = battleHeros.stream().map(r -> r.getConfigId()).collect(toList());
 
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.pvefight.name(), LoggerType.pvefight.version, "B4100")), stageId,
@@ -594,7 +613,8 @@ public class GameLogger extends Logger {
 					heroList.size() > 1 ? heroList.get(1) : "null", heroList.size() > 2 ? heroList.get(2) : "null",
 					heroList.size() > 3 ? heroList.get(3) : "null", heroList.size() > 4 ? heroList.get(4) : "null",
 					heroList.size() > 5 ? heroList.get(5) : "null",
-					player.getAccount().getPlatform(), player.getAttrModule().getPower(), round
+					player.getAccount().getPlatform(), player.getAttrModule().getPower(), battleCount, battleCount,
+					player.getAttrModule().getPower()
 			};
 			LoggerType.pvefight.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {

@@ -11,6 +11,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
@@ -20,6 +21,7 @@ import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
+import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.QuestMsg.QuestAcceptRequest_20000026;
@@ -261,5 +263,14 @@ public class QuestHandler extends BaseHandler {
 		resp.addAllRewards(rewards);
 //		resp.setGroup(group);
 		client.sendProtocol(resp);
+		for (Integer id : ids) {
+			QuestConfig questConfig = QuestManager.instance().get(id);
+			if (questConfig.Type == QuestTypeEnum.Achievement.ID) {
+				GameLogger.task(player, id, true);
+			} else {
+				GameLogger.task(player, id, true);
+			}
+		}
+
 	}
 }

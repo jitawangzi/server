@@ -12,7 +12,6 @@ import org.redisson.client.codec.LongCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**    
  * redis lua脚本工具类
  * 2024年9月12日 20:00:45
@@ -22,8 +21,8 @@ public class LuaScriptUtil {
 	private static final Logger logger = LoggerFactory.getLogger(LuaScriptUtil.class);
 
 	public enum LuaScript {
-		UPDATE_SCORE_IF_GREATER("update_score_if_greater.lua", "更新值如果新值更大", true), INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值", true),
-		;
+		UPDATE_SCORE_IF_GREATER("update_score_if_greater.lua", "更新值如果新值更大", true),
+		INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值", true),;
 
 		private final String filename;
 		private final String description;
@@ -82,6 +81,7 @@ public class LuaScriptUtil {
 		System.out.println("Script content: " + script.getContent());
 		return rScript.scriptLoad(script.getContent());
 	}
+
 	/**
 	 * 执行 Lua 脚本
 	 *

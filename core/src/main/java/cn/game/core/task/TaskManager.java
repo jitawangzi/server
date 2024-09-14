@@ -32,6 +32,7 @@ import io.vertx.core.Context;
  * @author SYQ
  * @param <R>
  */
+@Deprecated
 public class TaskManager {
 	private static Logger log = LoggerFactory.getLogger(TaskManager.class);
 

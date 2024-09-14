@@ -18,7 +18,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
- * 灵魄之战
+ * 主线战役
  * 2024年7月31日 下午12:02:38
  * @author SYQ
  */

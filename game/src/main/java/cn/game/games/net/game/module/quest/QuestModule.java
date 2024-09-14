@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.ConditionCountMapper;
 import cn.game.games.net.data.mapper.QuestChallengeMapper;
 import cn.game.games.net.data.mapper.QuestMapper;
@@ -669,6 +670,7 @@ public class QuestModule extends BasePlayerModule {
 			break;
 		case QuestHelper.ACCEPTED:
 			quest.initCondition();
+			GameLogger.task(player, quest.getId(), false);
 			// 执行接取命令，事件
 			/*			if (missionConfig instanceof MainlineMissionConfig) {
 							MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) missionConfig;

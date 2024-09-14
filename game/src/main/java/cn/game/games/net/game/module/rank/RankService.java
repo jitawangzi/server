@@ -2,7 +2,6 @@ package cn.game.games.net.game.module.rank;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -15,7 +14,7 @@ import org.redisson.client.protocol.ScoredEntry;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
-import cn.game.core.task.TaskManager;
+import cn.game.core.task.SchedulerService;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -471,9 +470,8 @@ public class RankService {
 	public void initRewardTask() {
 		Collection<RankConfig> list = RankManager.instance().list();
 		for (RankConfig rankConfig : list) {
-			initNextRewardTask(rankConfig.ID);
+			initRewardTask(rankConfig.ID);
 		}
-
 	}
 
 	/**
@@ -507,22 +505,13 @@ public class RankService {
 
 	}
 
-	private void initNextRewardTask(int rankId) {
-
-		Date nowDate = new Date();
-		long timeMillis = nowDate.getTime();
+	private void initRewardTask(int rankId) {
 
 		RankConfig rankConfig = RankManager.instance().get(rankId);
 		if (rankConfig.RewardTime != null) {
-			long nextTime = rankConfig.RewardTime.getNextValidTimeAfter(nowDate).getTime();
-			TaskManager.getInstance().scheduleGeneral(() -> {
-				try {
-					reward(rankConfig.ID);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				initNextRewardTask(rankConfig.ID);
-			}, nextTime - timeMillis);
+			SchedulerService.getInstance().scheduleCronTask(() -> {
+				reward(rankConfig.ID);
+			}, rankConfig.RewardTime.getCronExpression());
 		}
 	}
 }
