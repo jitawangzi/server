@@ -479,6 +479,8 @@ message BattlePvPInfoResponse_13000118{
 	int32 settlementSeasonTimer = 3; //当前赛季的结算时间戳
 	int32 nextSeasonTimer = 4; //下一个赛季时间戳
 	int32 buyNum = 5; //购买的挑战券数量
+	map<int32, int32> secretscriptMap = 6; // 神通PVP 阵容 key  id; value 位置 1-5 0表示下阵
+
 }
 //购买挑战券 请求
 message BattleBuyPvPTimeRequest_13000121{

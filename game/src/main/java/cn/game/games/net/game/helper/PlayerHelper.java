@@ -1544,15 +1544,19 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static Future<SimplePlayer> seachPlayer(String playerName, long playerId) {
-		return PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
-			long searchPlayerId = 0;
-			if (r == null) {
-				searchPlayerId = playerId;
-			} else {
-				searchPlayerId = r;
-			}
-			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(searchPlayerId));
-		});
-		
+		if (playerId > 0){
+			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
+		} else if (playerName != null){
+			return PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
+				long searchPlayerId = 0;
+				if (r == null) {
+					searchPlayerId = playerId;
+				} else {
+					searchPlayerId = r;
+				}
+				return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(searchPlayerId));
+			});
+		}
+		return Future.failedFuture("没有传入playerId或者playerName");
 	}
 }

@@ -1,9 +1,16 @@
 package cn.game.games.net.game.helper;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import cn.game.games.cache.entity.GmMail;
+import cn.game.games.cache.entity.Player;
+import cn.game.games.net.data.mapper.GmMailMapper;
+import cn.game.games.net.game.gm.GmHelper;
+import cn.game.games.net.game.manager.PlayerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +35,24 @@ public class MailHelper {
 	public static final byte SYSTEM = 2;
 	/** 邮件类型，gm手动发的邮件 */
 	public static final byte GM = 5;
+
+	/**
+	 * 全服邮件
+	 */
+  	static List<GmMail> globalMailList = new CopyOnWriteArrayList<>();
+
+
+	  public static void initLoadGlobalMail() {
+		  DAO.execute(GmMailMapper.class,"selectGlobalMailList",new Date(System.currentTimeMillis())).onSuccess(rs -> {;
+			  if (rs != null) {
+				  List<GmMail> list = (List<GmMail>) rs;
+				  globalMailList.addAll(list);
+			  }
+          }).onFailure(rs -> {
+              log.error("加载全服邮件失败", rs);
+          });
+
+      }
 
 	public static void sendMail(long receiverId, int mailId, String sender, String title, String content, byte type, List<Goods> attachmentList,
 			boolean notify) {
@@ -115,5 +140,72 @@ public class MailHelper {
 		MailConfig mailConfig = MailManager.instance().getNullable(mail.getMailId());
 		return mailConfig != null && mailConfig.Type == 1;
 	}
-	
+
+	public static void addGlobalMail(GmMail gmMail) {
+		globalMailList.add(gmMail);
+		List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
+		PlayerManager.getInstance().getAllPlayer().values().forEach(player -> {
+			if (canAddMail(player, gmMail)) {
+				sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.GM, attachmentList, true);
+				player.getMailModule().setGlobalMailId(gmMail.getId());
+            }
+		});
+	}
+
+	public static void onLoginAddGlobalMail(Player 	player) {
+		globalMailList.forEach(gmMail -> {
+			if (canAddMail(player,gmMail)){
+				List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
+				sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.GM, attachmentList, true);
+				player.getMailModule().setGlobalMailId(gmMail.getId());
+			}
+		});
+    }
+
+	private static boolean canAddMail(Player player, GmMail gmMail) {
+		long now = System.currentTimeMillis();
+		if (now < gmMail.getSendStartTimer().getTime() || now > gmMail.getSendEndTimer().getTime()) {
+            return false;
+        }
+		if (player.getMailModule().getGlobalMailId() >= gmMail.getId()) {
+			return false;
+		}
+
+		List<String> serverids = new ArrayList<>();
+		if (gmMail.getServerids() != null){
+			String[] serveridStr = gmMail.getServerids().split(";");
+            for (String serverid : serveridStr) {
+                serverids.add(serverid);
+            }
+			if (serverids.contains(player.getServerId())){
+				return false;
+	        }
+		}
+//		全服邮件 时间校验方式 0 登录时间 1 注册时间',
+		if (gmMail.getTimeCheckType() == 0 && (player.getLastLoginTimer() < gmMail.getSendStartTimer().getTime())
+				|| player.getLastLoginTimer()  > gmMail.getSendEndTimer().getTime()) {
+            return false;
+        }
+		if (gmMail.getTimeCheckType() == 1 && (player.getCreateTimer() < gmMail.getSendStartTimer().getTime())
+				|| player.getCreateTimer()  > gmMail.getSendEndTimer().getTime()) {
+			return false;
+		}
+
+		if (player.getLevel() < gmMail.getMinLevel() || player.getLevel() > gmMail.getMaxLevel()) {
+            return false;
+        }
+            return true;
+    }
+
+    public static boolean removeGlobalMail(String gmMailId) {
+       return globalMailList.removeIf(gmMail -> gmMail.getId().equals(gmMailId));
+    }
+
+    public static List<GmMail> getGlobalMailList() {
+        return globalMailList;
+    }
+
+    public static void clearGlobalMail() {
+        globalMailList.clear();
+    }
 }

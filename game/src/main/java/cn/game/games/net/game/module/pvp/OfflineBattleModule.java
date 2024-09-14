@@ -4,7 +4,6 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
@@ -14,7 +13,6 @@ import cn.game.protocol.generated.manager.NPCManager;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.util.DateUtil;
-import cn.game.util.RedisUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -124,7 +122,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     long now = System.currentTimeMillis();
     if (now > nextSeasonTimer) {
       clear();
-      nextSeasonTimer = DateUtil.addWeek(1);
+      nextSeasonTimer = DateUtil.addWeekBeginTimer(1);
       addDayRankScore(player.getPlayerId(), player.getServerId(), GlobalConst.DaDaoStartupPoint);
       addSeasonRankScore(player.getPlayerId(), player.getServerId(), GlobalConst.DaDaoStartupPoint);
     }
@@ -132,6 +130,12 @@ public class OfflineBattleModule extends BasePlayerModule {
 
   public boolean isJoin() {
     return System.currentTimeMillis() < nextSeasonTimer;
+  }
+
+  public void checkAndInit(){
+    if (!isJoin()){
+      joinPlay();
+    }
   }
 
   private void clear() {
@@ -160,8 +164,8 @@ public class OfflineBattleModule extends BasePlayerModule {
   public Future<List<SimplePlayer>> searchTargetList(boolean refreshFlag, List<Integer> scoreList) {
     if (refreshFlag) {
       usedPidList.clear();
-      tempRefreshList.clear();
     }
+    tempRefreshList.clear();
     setInBattlePlayer(null);
     Promise<List<SimplePlayer>> promise = Promise.promise();
     List<SimplePlayer> resultList = new ArrayList<>();
@@ -173,7 +177,7 @@ public class OfflineBattleModule extends BasePlayerModule {
               int score = GlobalConst.DaDaoStartupPoint;
               if (rankEntry != null) {
                 rank = rankEntry.getRank();
-                score = (int) rankEntry.getScore();
+                score = (int) rankEntry.getScore() == 0 ? GlobalConst.DaDaoStartupPoint : (int) rankEntry.getScore();
               }
               int[][] scoreRange = getScoreRange(rank);
               final int finalScore = score;
@@ -319,7 +323,7 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
 
   private int[][] getScoreRange(Integer rank) {
-    if (rank > 5) {
+    if (rank > 5 || rank == -1) {
       return GlobalConst.DaDaoOpponentPicking;
     }
     int[][] outRangeScoreArr = new int[5][2];
@@ -390,7 +394,7 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
 
   public SimplePlayer getTargetPlayer(long targetId) {
-    NPCConfig npcConfig = NPCManager.instance().get((int) targetId);
+    NPCConfig npcConfig = NPCManager.instance().getNullable((int) targetId);
     SimplePlayer battleTargetPlayer = null;
     for (SimplePlayer simplePlayer : tempRefreshList) {
       if (simplePlayer.id == targetId) {

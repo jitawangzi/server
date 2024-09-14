@@ -412,9 +412,10 @@ public final class DateUtil {
 		return calendar.get(Calendar.MONTH);
 	}
 
-	public static long addWeek(int offsetWeek){
+	public static long addWeekBeginTimer(int offsetWeek){
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.WEEK_OF_YEAR,offsetWeek);
+		calendar.set(Calendar.DAY_OF_WEEK,2); // 以周一为第一天
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
@@ -574,7 +575,8 @@ public final class DateUtil {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		long addWeek = addWeekBeginTimer(1);
+        System.out.println(addWeek);
 		System.out.println(diffDays(System.currentTimeMillis() - DAY_MILLIS));
 
 		// System.out.println(DateUtil.getTimeByPattern(new Date()));

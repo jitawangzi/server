@@ -639,4 +639,12 @@ public class Player  {
 	public String getServerId() {
 		return getData().getServerId();
 	}
+
+	public long getLastLoginTimer() {
+		return  DateUtil.parse(getData().getLoginDate()).getTime();
+	}
+
+	public long getCreateTimer() {
+		return DateUtil.parse(getData().getCreateDate()).getTime();
+	}
 }
