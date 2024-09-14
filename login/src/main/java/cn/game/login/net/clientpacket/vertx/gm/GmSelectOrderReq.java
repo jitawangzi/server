@@ -19,7 +19,7 @@ import io.vertx.ext.web.RoutingContext;
 public class GmSelectOrderReq implements Handler<RoutingContext> {
     @Override
     public void handle(RoutingContext context) {
-        HttpServerResponse response = context.response().putHeader("content-type", "application/octet-stream");
+        HttpServerResponse response = context.response().putHeader("content-type", "application/text");
 //        String orderId = context.request().getParam("orderId"); //第三方订单id
         String selfOrderId = context.request().getParam("selfOrderId"); //自己订单id
         String playerId = context.request().getParam("playerId"); //玩家id
@@ -33,7 +33,7 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         Integer finalPageSize = pageSize;
         VxHolder.vertx.executeBlocking(future -> {
             try {
-                future.complete(mapper.selectOrderList(Long.parseLong(playerId), status, selfOrderId, finalPage, finalPageSize));
+                future.complete(mapper.selectOrderList(playerId == null ? null : Long.parseLong(playerId), status, selfOrderId, finalPage, finalPageSize));
             } catch (Exception e) {
                 e.printStackTrace();
                 future.fail(e);
