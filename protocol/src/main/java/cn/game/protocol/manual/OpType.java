@@ -118,6 +118,7 @@ public enum OpType{
 	DA_DAO_WIN(212, "大道争锋赢了掉落"),
 	DA_DAO_JOIN(213, "每天前5场战斗都会获得10争锋值"),
 	DA_DAO_Buy(214, "大道争锋购买"),
+	DA_DAO_FREE_ADD(215, "大道争锋每日免费奖励挑战券"),
 
 
 

@@ -478,7 +478,7 @@ message BattlePvPInfoResponse_13000118{
 	int32 settlementDayTimer = 2; //今天结算时间戳
 	int32 settlementSeasonTimer = 3; //当前赛季的结算时间戳
 	int32 nextSeasonTimer = 4; //下一个赛季时间戳
-	int32 buyNum = 5; //购买的挑战券数量
+	int32 buyNum = 5; //今日购买的挑战券次数
 	map<int32, int32> secretscriptMap = 6; // 神通PVP 阵容 key  id; value 位置 1-5 0表示下阵
 
 }
@@ -487,7 +487,8 @@ message BattleBuyPvPTimeRequest_13000121{
 }
 //购买挑战券 响应
 message BattleBuyPvPTimeResponse_13000122{
-	int32 curNum = 1; //购买后的数量
+	int32 buyNum = 1; //今日购买的挑战券次数
+	repeated RewardInfo rewards = 2; // 获得的奖励
 }
 //@NotUseStart
 //神通秘术 消息

@@ -4,12 +4,14 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.*;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.NPCManager;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.util.DateUtil;
@@ -40,6 +42,10 @@ public class OfflineBattleModule extends BasePlayerModule {
   int buyNum;
 
   long nextSeasonTimer;
+  /**
+   * 领取免费挑战券的时间戳
+   */
+  long lastRewardTickerTimer;
 
   /** 加入 大道争锋 标识 */
   @JsonIgnore boolean joinFlag;
@@ -69,12 +75,25 @@ public class OfflineBattleModule extends BasePlayerModule {
       case NewDay -> {
         clear();
         tryResetSeasonData();
+        checkAndAddTicker();
         break;
       }
       case LoginFinish -> {
         clear();
+        checkAndAddTicker();
         break;
       }
+    }
+  }
+
+  private void checkAndAddTicker() {
+    if (!isJoin()){
+      return;
+    }
+    long now = System.currentTimeMillis();
+    if (!DateUtil.isSameDay(now, lastRewardTickerTimer)){
+      PlayerHelper.addResources(player, OfflineBattleHandler.DA_DAO_TICK_ITEM_ID, GlobalConst.DaDaoFreeCnt, OpType.DA_DAO_FREE_ADD);
+      lastRewardTickerTimer = now;
     }
   }
 
@@ -278,6 +297,7 @@ public class OfflineBattleModule extends BasePlayerModule {
       int minScore = fianlScore * scoreRange[i][0] / 10000;
       int maxScore = fianlScore * scoreRange[i][1] / 10000;
       futureList.add(getTargetIdByScore(minScore, maxScore, i, matchList).toCompletableFuture());
+      log.info(String.format("getMatchPidMapFuture selfScore:%d,  minScore:%d, maxScore:%d scoreRange:[%d:%d]", fianlScore,minScore,maxScore, scoreRange[i][0], scoreRange[i][1]));
     }
     return CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
         .thenCompose(
@@ -437,7 +457,7 @@ public class OfflineBattleModule extends BasePlayerModule {
         addDayRankScore(player.getPlayerId(), player.getServerId(), selfAddScore);
     // 修改对方的积分
     CompletionStage<Double> targetStage = getDoubleCompletionStage();
-    if (npcConfig == null) {
+    if (npcConfig == null && inBattlePlayer != null) {
       targetStage = addDayRankScore(inBattlePlayer.id, player.getServerId(), targetAddScore);
       addSeasonRankScore(inBattlePlayer.id, player.getServerId(), targetAddScore);
     }

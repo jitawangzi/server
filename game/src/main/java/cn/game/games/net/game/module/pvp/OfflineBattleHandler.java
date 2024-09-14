@@ -79,6 +79,10 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
+    if (PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID,1)) {
+      client.sendProtocol(res, ErrorMsgEnum.da_dao_play_num_not_enough.ID);
+      return;
+    }
     if (module.getInBattlePlayer() != null) {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_in_battle.ID);
       return;
@@ -129,11 +133,12 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
-    module.playNum++;
-    if (module.playNum > GlobalConst.DaDaoFreeCnt) {
-      module.buyNum--;
-      PlayerHelper.delResources(player, DA_DAO_TICK_ITEM_ID, 1, OpType.DA_DAO_JOIN, true);
+    if (PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID,1)) {
+      client.sendProtocol(res, ErrorMsgEnum.da_dao_play_num_not_enough.ID);
+      return;
     }
+    module.playNum++;
+    PlayerHelper.delResources(player, DA_DAO_TICK_ITEM_ID, 1, OpType.DA_DAO_JOIN, true);
     module
         .updateScore(req.getWin(),Long.parseLong(req.getTargetId()), res)
         .onComplete(
@@ -189,11 +194,6 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
-    int maxPlayConfigNum = GlobalConst.DaDaoFreeCnt + GlobalConst.DaDaoChallengeTicketCost.length;
-    if (module.playNum >= maxPlayConfigNum) {
-      client.sendProtocol(res, ErrorMsgEnum.da_dao_play_num_not_enough.ID);
-      return;
-    }
     if (module.buyNum >= GlobalConst.DaDaoChallengeTicketCost.length) {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_play_num_not_enough.ID);
       return;
@@ -202,7 +202,7 @@ public class OfflineBattleHandler {
     if (PlayerHelper.delResources(player, costs, OpType.DA_DAO_Buy)) {
       module.buyNum++;
       PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1);
-      res.setCurNum(module.buyNum);
+      res.setBuyNum(module.buyNum);
       client.sendProtocol(res);
     }else {
       client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
