@@ -465,7 +465,7 @@ message BattlePvPEndRequest_13000115{
 }
 //结算战斗响应
 message BattlePvPEndResponse_13000116{
-	repeated RewardInfo drops = 1;
+	repeated RewardInfo rewards = 1;
 	int32 selfScore = 2;//我的新积分
 	int32 targetScore = 3; //对方的积分
 }

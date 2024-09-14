@@ -139,12 +139,12 @@ public class OfflineBattleHandler {
         .onComplete(
             result -> {
               if (req.getWin()) {
-                res.addAllDrops(
+                res.addAllRewards(
                     PlayerHelper.addResources(
                         player, GlobalConst.DaDaoChallengeCoin, OpType.DA_DAO_WIN));
               }
               if (module.playNum <= GlobalConst.DaDaoBrawlPoint.length) {
-                res.addAllDrops(
+                res.addAllRewards(
                     PlayerHelper.addResources(
                         player,
                         GlobalConst.DaDaoBrawlPoint[module.playNum - 1],
