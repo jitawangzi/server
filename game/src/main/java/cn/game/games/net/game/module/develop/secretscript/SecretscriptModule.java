@@ -17,6 +17,7 @@ public class SecretscriptModule extends AbstractItemModule<Secretscript> {
 
 	/** 神通融汇 */
 	private Map<Integer, Integer> secretscriptPosMap = new HashMap<Integer, Integer>();
+	private Map<Integer, Integer> PvPSecretscriptMap = new HashMap<Integer, Integer>();
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -70,5 +71,13 @@ public class SecretscriptModule extends AbstractItemModule<Secretscript> {
 
 	public Collection<Secretscript> getSecretscriptInfos() {
 		return list();
+	}
+
+	public void setPvPSecretscriptMap(Map<Integer, Integer> secretscriptMapMap) {
+		PvPSecretscriptMap.putAll(secretscriptMapMap);
+	}
+
+	public Map<Integer, Integer> getPvPSecretscriptMap() {
+		return PvPSecretscriptMap;
 	}
 }

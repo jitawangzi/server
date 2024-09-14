@@ -165,11 +165,13 @@ public class OfflineBattleHandler {
       return;
     }
     OfflineBattleModule module = player.getOfflineBattleModule();
+    module.checkAndInit();
     res.setNum(module.playNum);
     res.setNextSeasonTimer((int) (module.nextSeasonTimer / 1000L));
     res.setSettlementDayTimer((int) (module.getDaySettlementTimer() / 1000L));
     res.setSettlementSeasonTimer((int) (module.getSeasonSettlementTimer() / 1000L));
     res.setBuyNum(module.buyNum);
+    res.putAllSecretscriptMap(player.getSecretscriptModule().getPvPSecretscriptMap());
     client.sendProtocol(res);
   }
 

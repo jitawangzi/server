@@ -116,7 +116,7 @@ public class SimplePlayer implements Serializable {
 			lineupMaps.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(), lineupsMap);
 		}
         //存储 神通阵容
-        secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getSecretscriptPosMap());
+        secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getPvPSecretscriptMap());
 		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
 	}
 

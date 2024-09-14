@@ -132,6 +132,12 @@ public class OfflineBattleModule extends BasePlayerModule {
     return System.currentTimeMillis() < nextSeasonTimer;
   }
 
+  public void checkAndInit(){
+    if (!isJoin()){
+      joinPlay();
+    }
+  }
+
   private void clear() {
     tempRefreshList.clear();
     joinFlag = false;
@@ -158,8 +164,8 @@ public class OfflineBattleModule extends BasePlayerModule {
   public Future<List<SimplePlayer>> searchTargetList(boolean refreshFlag, List<Integer> scoreList) {
     if (refreshFlag) {
       usedPidList.clear();
-      tempRefreshList.clear();
     }
+    tempRefreshList.clear();
     setInBattlePlayer(null);
     Promise<List<SimplePlayer>> promise = Promise.promise();
     List<SimplePlayer> resultList = new ArrayList<>();
@@ -171,7 +177,7 @@ public class OfflineBattleModule extends BasePlayerModule {
               int score = GlobalConst.DaDaoStartupPoint;
               if (rankEntry != null) {
                 rank = rankEntry.getRank();
-                score = (int) rankEntry.getScore();
+                score = (int) rankEntry.getScore() == 0 ? GlobalConst.DaDaoStartupPoint : (int) rankEntry.getScore();
               }
               int[][] scoreRange = getScoreRange(rank);
               final int finalScore = score;
@@ -317,7 +323,7 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
 
   private int[][] getScoreRange(Integer rank) {
-    if (rank > 5) {
+    if (rank > 5 || rank == -1) {
       return GlobalConst.DaDaoOpponentPicking;
     }
     int[][] outRangeScoreArr = new int[5][2];
