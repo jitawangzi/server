@@ -1,6 +1,9 @@
 package cn.game.login.mapper;
 
 import cn.game.login.cache.entity.PayOrder;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface PayOrderMapper {
 
@@ -43,4 +46,11 @@ public interface PayOrderMapper {
 	 * @mbg.generated
 	 */
 	int updateByPrimaryKey(PayOrder row);
+	public List<PayOrder> selectOrderList(
+			@Param("playerId") Long playerId,
+            @Param("status") Integer status,
+            @Param("selfOrderId") String selfOrderId,
+            @Param("start") Integer page,
+            @Param("end") Integer pageSize
+	);
 }

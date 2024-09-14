@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import cn.game.games.net.game.helper.MailHelper;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.RequestCallback;
@@ -191,6 +192,7 @@ public class GameServer implements GameServerMBean {
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 
+		MailHelper.initLoadGlobalMail();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);

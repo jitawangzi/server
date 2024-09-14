@@ -288,21 +288,24 @@ public class OfflineBattleModule extends BasePlayerModule {
 
   private CompletionStage<Map<Integer, SimplePlayer>> processMatchList(
       List<List<Long>> matchList) {
-    List<Long> finalPidList =
-        matchList.stream()
-            .flatMap(Collection::stream)
-            .distinct()
-            .filter(pid -> !usedPidList.contains(pid) && pid != playerId)
-            .collect(Collectors.toList());
+    List<Long> finalPidList = new ArrayList<>();
+    matchList.forEach(
+        list -> {
+          Optional<Long> findPid = list.stream().filter(pid -> !usedPidList.contains(pid) && pid != playerId).findAny();
+          finalPidList.add(findPid.isPresent() ? findPid.get() : 0L);
+        });
     CompletableFuture<Map<Integer, SimplePlayer>> completableFuture = new CompletableFuture<>();
     PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(finalPidList).onSuccess(
             list ->{
               Map<Integer,SimplePlayer> map = new HashMap<>();
-              list.forEach(simplePlayer -> {
+              for(int i = 0; i < list.size(); i++) {
+                SimplePlayer simplePlayer = list.get(i);
                 if (simplePlayer != null){
                   map.put( finalPidList.indexOf(simplePlayer.id),simplePlayer);
+                } else {
+                  map.put(i,null);
                 }
-              });
+              }
               completableFuture.complete(map);
             }
     ).onFailure( err ->{
@@ -417,7 +420,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     for (int i = 0; i < tempRefreshList.size(); i++) {
       if (tempRefreshList.get(i).id == targetId) {
         targetIndex = i;
-        npcConfig = NPCManager.instance().get((int) targetId);
+        npcConfig = NPCManager.instance().getNullable((int) targetId);
         break;
       }
     }

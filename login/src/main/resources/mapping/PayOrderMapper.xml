@@ -331,4 +331,18 @@
       debug_text = #{debugText,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectOrderList" resultMap="BaseResultMap">
+ select * from t_pay_order where 1=1
+<if test="playerId != null">
+ and player_id = #{playerId,jdbcType=BIGINT}
+</if>
+<if test="status != null">
+ and pay_state = #{status,jdbcType=TINYINT}}
+</if>
+    <if test="selfOrderId != null">
+      and id = #{selfOrderId,jdbcType=BIGINT}}
+    </if>
+
+ limit #{start},#{end}
+  </select>
 </mapper>
