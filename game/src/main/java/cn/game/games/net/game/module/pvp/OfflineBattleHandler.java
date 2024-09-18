@@ -79,7 +79,7 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
-    if (PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID,1)) {
+    if (!PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID,1)) {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_play_num_not_enough.ID);
       return;
     }
@@ -133,7 +133,7 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
-    if (PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID,1)) {
+    if (!PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID,1)) {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_play_num_not_enough.ID);
       return;
     }
@@ -171,6 +171,7 @@ public class OfflineBattleHandler {
     }
     OfflineBattleModule module = player.getOfflineBattleModule();
     module.checkAndInit();
+
     res.setNum(module.playNum);
     res.setNextSeasonTimer((int) (module.nextSeasonTimer / 1000L));
     res.setSettlementDayTimer((int) (module.getDaySettlementTimer() / 1000L));

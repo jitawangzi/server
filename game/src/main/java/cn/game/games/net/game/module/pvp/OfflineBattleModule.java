@@ -9,6 +9,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.*;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.NPCManager;
 import cn.game.protocol.manual.OpType;
@@ -66,7 +67,7 @@ public class OfflineBattleModule extends BasePlayerModule {
 
   @Override
   public EventTypeEnum[] getEventTypes() {
-    return new EventTypeEnum[] {EventTypeEnum.NewDay, EventTypeEnum.LoginFinish};
+    return new EventTypeEnum[] {EventTypeEnum.NewDay, EventTypeEnum.refresh,EventTypeEnum.FuncOpen};
   }
 
   @Override
@@ -78,9 +79,17 @@ public class OfflineBattleModule extends BasePlayerModule {
         checkAndAddTicker();
         break;
       }
-      case LoginFinish -> {
+      case refresh -> {
         clear();
         checkAndAddTicker();
+        break;
+      }
+      case FuncOpen -> {
+        InitialUI openFucntion = (InitialUI) event.getParameter(0);
+        if (openFucntion ==  InitialUI.AvenueBattle) {
+          checkAndInit();
+          checkAndAddTicker();
+        }
         break;
       }
     }
@@ -154,6 +163,7 @@ public class OfflineBattleModule extends BasePlayerModule {
   public void checkAndInit(){
     if (!isJoin()){
       joinPlay();
+      checkAndAddTicker();
     }
   }
 

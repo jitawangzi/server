@@ -521,6 +521,7 @@ public class PlayerHelper {
 	 * @param player
 	 */
 	public static void refresh(Player player) {
+		player.handleEvent(EventTypeEnum.refresh);
 		refreshDay(player);
 		refreshFiveDay(player);
 		refreshWeek(player);
