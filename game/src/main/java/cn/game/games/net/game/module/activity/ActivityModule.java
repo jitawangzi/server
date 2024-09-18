@@ -159,7 +159,7 @@ public class ActivityModule extends BasePlayerModule {
 			rewards = activityBase.receive(subId);
 			rewards.addAll(rewards);
 			if (rewards != null && rewards.size() > 0) {
-				update(id);
+//				update(id);
 			}
 		}
 		return rewards;
