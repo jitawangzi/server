@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.inject.Stage;
 
+import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.module.account.Account;
@@ -47,7 +48,7 @@ public class GameLogAssistant extends Logger {
 		Account account = player.getAccount();
 
 		return new Object[] { getCurrentTimeLogText(), Config.APP_KEY, account.version != null ? account.version : "null", logName, logVersion, stepNum,
-				player.getServerId(), account.adChannel != null ? account.adChannel : "null",
+				ServerContext.getInstance().getServerId(), account.adChannel != null ? account.adChannel : "null",
 				player.getData().getAccountId() != null ? player.getData().getAccountId() : "null",
 				player.getPlayerId(), player.getLevel(), -1, player.getData().getDeviceId() != null ? player.getData().getDeviceId() : "null" };
 	}

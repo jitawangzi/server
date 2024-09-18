@@ -18,6 +18,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -311,6 +312,7 @@ public class PlayerHandler extends BaseHandler {
 		Map<Integer, Integer> guideMap = playerModule.getGuideMap();
 		guideMap.put(request.getType(), request.getStep());
 		client.sendProtocol(resp);
+		GameLogger.newstages(player, request.getType(), request.getStep());
 	}
 
 	private void patrolInfo(NetClient client, Object message) {

@@ -1,6 +1,7 @@
 package cn.game.games.util;
 
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.ItemHelper;
@@ -28,4 +29,9 @@ public class BIHelper {
 			GameLogger.item(player, id, (int) value, opType, isAdd);
 		}
 	}
+
+	public static void heroraise(Player player, Hero hero, long value) {
+
+	}
+
 }

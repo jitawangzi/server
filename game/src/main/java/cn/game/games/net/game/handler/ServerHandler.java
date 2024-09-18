@@ -23,6 +23,7 @@ import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -116,8 +117,8 @@ public class ServerHandler extends BaseHandler {
 				player.getPlayerModule().execPayCallback(uid);
 				resp.setSuccess(true);
 				client.sendProtocol(resp.build());
-				int payRmbs = player.getPlayerModule().getPayRmbs(uid); 
-				player.handleEvent(EventTypeEnum.Charge, payRmbs);
+				PayItem payItem = player.getPlayerModule().getPayItems(uid);
+				player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
 				
 			});
 		}

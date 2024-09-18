@@ -6,12 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import cn.game.games.net.game.helper.QuestHelper;
-import cn.game.games.net.game.module.activity.impl.player.*;
-import cn.game.games.net.game.module.quest.Quest;
-import cn.game.protocol.generated.config.ActivityJQBConfig;
-import cn.game.protocol.generated.manager.ActivityJQBManager;
-import cn.game.protocol.protobuf.ActivityMsg;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -19,11 +13,20 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.activity.impl.player.ActivityJQB;
+import cn.game.games.net.game.module.activity.impl.player.ActivityLeiChong;
+import cn.game.games.net.game.module.activity.impl.player.ActivityMeiRiBaoLi;
+import cn.game.games.net.game.module.activity.impl.player.ActivityQingShen;
+import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
+import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivity;
+import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
+import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.generated.manager.FirstChargeManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000011;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007;
@@ -216,7 +219,7 @@ public class ActivityHandler extends BaseHandler {
     }
     FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(chargeId);
 
-    Future<Boolean> pay = player.pay(firstChargeConfig.Price);
+	Future<Boolean> pay = player.pay(PayType.SingleCharge, id, firstChargeConfig.Price);
     pay.onComplete(
         t -> {
           if (t.result()) {

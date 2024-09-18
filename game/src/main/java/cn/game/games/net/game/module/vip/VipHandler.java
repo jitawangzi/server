@@ -1,22 +1,20 @@
 package cn.game.games.net.game.module.vip;
 
+import org.springframework.stereotype.Component;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.protocol.generated.config.VIPConfig;
-import cn.game.protocol.generated.manager.RandomAwardManager;
 import cn.game.protocol.generated.manager.VIPManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.VipMsg;
 import cn.game.util.DateUtil;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @ClassName VipHandler
@@ -83,7 +81,7 @@ public class VipHandler extends BaseHandler {
             client.sendProtocol(res, ErrorMsgEnum.config_data_not_found.getId());
             return;
         }
-        player.pay(buyConfig.Price).onComplete(result->{
+		player.pay(PayType.FundPass, buyId, buyConfig.Price).onComplete(result -> {
             if (result.result()){
                 vipModule.getBuyGiftList().add(buyId);
                 res.addAllDrops(PlayerHelper.addReward(player,buyConfig.RandomGivenId,OpType.vipGiftReward));
