@@ -2,33 +2,25 @@ package cn.game.games.net.game.module.activity.impl.player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import cn.game.games.cache.entity.Player;
+import com.google.protobuf.Message;
+
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
-import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.module.activity.ActivityType;
+import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.ActivityLeiChongConfig;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityLeiChongManager;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.QuestManager;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg;
-import com.google.protobuf.Message;
-
-import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.net.game.module.activity.ActivityType;
-import cn.game.games.net.game.module.activity.PlayerActivityBase;
-import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.ActivityLeiChong)
 public class ActivityLeiChong extends PlayerActivityBase {

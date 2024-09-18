@@ -21,8 +21,6 @@ import cn.game.protocol.generated.manager.ActivityMeiRiBaoLiManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.ActivityMeiRiBaoLi)
 public class ActivityMeiRiBaoLi extends PlayerActivityBase {

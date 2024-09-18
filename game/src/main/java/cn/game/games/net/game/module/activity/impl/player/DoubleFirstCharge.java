@@ -39,14 +39,12 @@ public class DoubleFirstCharge extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public Future<List<RewardInfo>> receive(int id) {
+	public  List<RewardInfo> receive(int id) {
 		SevenDaysSigninConfig config = SevenDaysSigninManager.instance().getNullable(day + 1);
 		List<RewardInfo> resources = PlayerHelper.addResources(player, config.Item, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;
-		Promise<List<RewardInfo>> promise =  Promise.promise();
-		promise.complete(resources);
-		return promise.future();
+		return resources;
 	}
 
 	@Override

@@ -65,7 +65,10 @@ public abstract class ActivityBase implements EventHandler {
 	 * @param id
 	 * @return
 	 */
-	public abstract Future<List<RewardInfo>> receive(int id);
+	public abstract List<RewardInfo> receive(int id);
+	public   Future<List<RewardInfo>> asyncReceive(int id){
+        return Future.succeededFuture(receive(id));
+	}
 
 
 	/**

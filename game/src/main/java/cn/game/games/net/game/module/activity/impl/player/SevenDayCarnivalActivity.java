@@ -87,7 +87,7 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public Future<List<RewardInfo>> receive(int id) {
+	public List<RewardInfo> receive(int id) {
 		return null;
 	}
 

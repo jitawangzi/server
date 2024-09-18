@@ -15,8 +15,6 @@ import cn.game.protocol.generated.manager.SevenDaysSigninManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninInfoResponse_11000025;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.SevenDaysSignin)
 public class SevenDaysSignin extends PlayerActivityBase {
