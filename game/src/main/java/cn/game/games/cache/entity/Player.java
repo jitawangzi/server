@@ -23,6 +23,7 @@ import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.ItemHelper;
@@ -460,6 +461,7 @@ public class Player  {
 					payItem.setPayType(payType);
 					payItem.setPayId(id);
 					getPlayerModule().addPayItems(payItem);
+					GameLogger.recharge(this, payItem);
 				}
 			}).onFailure(r -> {
 				log.error("登录服创建充值订单失败： ", r);

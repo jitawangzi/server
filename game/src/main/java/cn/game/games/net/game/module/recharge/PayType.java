@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.recharge;
 
 public enum PayType {
 	/** 单笔充值 */
+	FirstCharge(1),
 	SingleCharge(1),
 
 	/** 金钱豹爆爆 */

@@ -9,7 +9,7 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.recharge.PayType;
+import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -417,15 +417,16 @@ public class GameLogger extends Logger {
 	 * 价值虚拟币总量, Vip等级,商品id, 订单号
 	 * 时区
 	 */
-	public static void recharge(Player player, PayType payType, float rmb, String rechargechannel, int addId, int addCount, String currency,
-			int goodsId,
-			String orderId) {
+	public static void recharge(Player player, PayItem payItem) {
 		try {
-			int cur = "CNY".equals(currency) ? 11 : 1;
+//			int cur = "CNY".equals(currency) ? 11 : 1;
+			int cur = 1;
 			Object[] array = new Object[] { LoggerType
 					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, "5000")),
-					rmb, player.getAccount().sdkPayChannel, addCount, cur, player.getGameClient().getIp(),
-					player.getCurrencyModule().get(addId).getCount(), player.getVipLevel(), goodsId, orderId,
+					payItem.getRmb(), player.getAccount().sdkPayChannel, payItem.getAddCount(), cur, player.getGameClient().getIp(),
+					payItem.getAddId() > 0 ? player.getCurrencyModule().get(payItem.getAddId()).getCount() : 0, player.getVipLevel(),
+					payItem.getPayId(),
+					payItem.getOrderId(),
 					player.getAccount().getPlatform() };
 			LoggerType.recharge.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {

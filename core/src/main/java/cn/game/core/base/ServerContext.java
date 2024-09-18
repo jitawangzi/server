@@ -1,10 +1,12 @@
 package cn.game.core.base;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 
 import cn.game.core.cache.CacheType;
 import cn.game.util.LockUtil;
+import cn.game.util.MailUtil;
 import cn.game.util.ServerType;
 
 public class ServerContext {
@@ -83,5 +85,17 @@ public class ServerContext {
 		if (lock != null) {
 			lock.forceUnlock();
 		}
+	}
+
+	public void handleStartFail(Throwable e) {
+		try {
+			MailUtil
+					.reportException(serverType.name() + "服务器【 " + serverId + " 】启动失败",
+							ExceptionUtils.getFullStackTrace(e));
+		} catch (Exception e1) {
+			System.err.println("发送邮件失败," + e1.getMessage());
+		}
+		e.printStackTrace();
+		System.exit(1);
 	}
 }
