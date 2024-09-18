@@ -7,6 +7,7 @@ import java.util.List;
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.ConditionConfig;
@@ -621,6 +622,57 @@ public class GameLogger extends Logger {
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
+	}
+
+	/**
+	 *
+	 *
+	 * @param player
+	 * @param startFlag
+	 * @param selfRankBf
+	 * @param selfRankAf
+	 * @param battleType
+	 * @param targetPlayer
+	 * @param targetRankBf
+	 * @param targetRankAf
+	 * @param battleTime
+	 */
+	public static void pvpfight(Player player,boolean startFlag, int selfRankBf, int selfRankAf, int battleType, SimplePlayer targetPlayer, int targetRankBf, int targetRankAf, int battleTime, int endType,boolean win){
+		int sellteType = -1; //1:胜利 0:超时失败 -1:战斗失败 2：退出
+		if (!startFlag) {
+		  if (endType == 0 && win) { // 结算类型: 0 正常结算; 1 主动退出战斗; 2 扫荡结算
+			sellteType = 1;
+		  } else if (endType == 1) {
+			{
+			  sellteType = 2;
+			}
+		  }
+		}
+
+		try {
+			String stepnumid = startFlag? "B8310" : "B8320";
+
+			Object[] array = new Object[] {
+					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.pvpfight.name(), LoggerType.pvpfight.version, stepnumid)),
+					player.getAttrModule().getPower(), //上阵英雄战力
+					selfRankBf, //战斗前排名
+					selfRankAf, //战斗后排名
+					battleType, //战场id
+					targetPlayer.id , //对手角色id
+					targetPlayer.getName(), //对手角色名
+                    targetPlayer.getLevel(), //对手角色等级
+					targetPlayer.getCombatEffectiveness(), //对手战力
+                    targetRankBf, //对手战斗前排名
+					targetRankAf, //对手战斗后排名
+					sellteType, //战斗结果
+                    battleTime, //持续时长
+					player.getAccount().getPlatform() //平台标识
+			};
+			LoggerType.pvpfight.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+
 	}
 //
 //	/**

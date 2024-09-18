@@ -4,11 +4,13 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -17,6 +19,7 @@ import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
+import io.vertx.core.Future;
 
 /**
  * @ClassName OfflineBattleHandler
@@ -115,6 +118,9 @@ public class OfflineBattleHandler {
       });
       res.setTargetLineupInfo(targetLineup.build());
       res.setTargetSecretscriptInfo(targetPlayer.toSecretscriptPbInfo(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO));
+      module.getRankList(player.getPlayerId(),targetPlayer.id).whenComplete((rankResultList,action )->{
+        GameLogger.pvpfight(player,true,rankResultList.get(0),0,DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),targetPlayer,rankResultList.get(1),0,0,0,false);
+      });
     }
     client.sendProtocol(res);
   }
@@ -140,25 +146,33 @@ public class OfflineBattleHandler {
     }
     module.playNum++;
     PlayerHelper.delResources(player, DA_DAO_TICK_ITEM_ID, 1, OpType.DA_DAO_JOIN, true);
-    module
-        .updateScore(req.getWin(),Long.parseLong(req.getTargetId()), res)
-        .onComplete(
-            result -> {
-              if (req.getWin()) {
-                res.addAllRewards(
-                    PlayerHelper.addResources(
+    CompletableFuture<List<Integer>> rankListFuture = module.getRankList(player.getPlayerId(),Long.parseLong(req.getTargetId()));
+    Future<Void> updateFuture = module.updateScore(req.getWin(),Long.parseLong(req.getTargetId()), res);
+    rankListFuture.thenCombine(updateFuture.toCompletionStage(), (rankResultList,v)->{
+      final int selfRank = rankResultList.get(0);
+     final int targetRank = rankResultList.get(1);
+      if (req.getWin()) {
+        res.addAllRewards(
+                PlayerHelper.addResources(
                         player, GlobalConst.DaDaoChallengeCoin, OpType.DA_DAO_WIN));
-              }
-              if (module.playNum <= GlobalConst.DaDaoBrawlPoint.length) {
-                res.addAllRewards(
-                    PlayerHelper.addResources(
+      }
+      if (module.playNum <= GlobalConst.DaDaoBrawlPoint.length) {
+        res.addAllRewards(
+                PlayerHelper.addResources(
                         player,
                         GlobalConst.DaDaoBrawlPoint[module.playNum - 1],
                         OpType.DA_DAO_JOIN));
-              }
-              module.setInBattlePlayer(null);
-              client.sendProtocol(res);
-            });
+      }
+
+      client.sendProtocol(res);
+      final SimplePlayer targetPlayer = module.getTargetPlayer( req.getTargetId());
+      module.setInBattlePlayer(null);
+      module.getRankList(player.getPlayerId(), Long.parseLong(req.getTargetId())).thenAccept((rankResultList1)->{
+        GameLogger.pvpfight(player,false,selfRank,rankResultList1.get(0),DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),targetPlayer,targetRank,rankResultList1.get(1),req.getBattleTime(), req.getEndType(),req.getWin());
+      });
+      return null;
+    });
+
   }
 
   /** 获取大道争锋信息 */
