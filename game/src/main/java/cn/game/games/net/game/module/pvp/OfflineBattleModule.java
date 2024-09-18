@@ -88,7 +88,6 @@ public class OfflineBattleModule extends BasePlayerModule {
         InitialUI openFucntion = (InitialUI) event.getParameter(0);
         if (openFucntion ==  InitialUI.AvenueBattle) {
           checkAndInit();
-          checkAndAddTicker();
         }
         break;
       }
@@ -101,7 +100,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     }
     long now = System.currentTimeMillis();
     if (!DateUtil.isSameDay(now, lastRewardTickerTimer)){
-      PlayerHelper.addResources(player, OfflineBattleHandler.DA_DAO_TICK_ITEM_ID, GlobalConst.DaDaoFreeCnt, OpType.DA_DAO_FREE_ADD);
+      PlayerHelper.addResources(player, OfflineBattleHandler.DA_DAO_TICK_ITEM_ID, GlobalConst.DaDaoFreeCnt, OpType.DA_DAO_FREE_ADD,true);
       lastRewardTickerTimer = now;
     }
   }
