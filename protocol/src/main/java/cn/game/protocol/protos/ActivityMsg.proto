@@ -55,7 +55,7 @@ message ActivityFirstChargeBuyResponse_11000011{
 
 //领取首冲礼包奖励
 message ActivityFirstChargeRewardRequest_11000012{
-   uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
+   uint32 id = 1; 		//活动id Activity表的 id,如果同类型活动有多个，可以用id区分。
    uint32 chargeId  = 2;    // FirstCharge 表id
 }
 message ActivityFirstChargeRewardResponse_11000013{
