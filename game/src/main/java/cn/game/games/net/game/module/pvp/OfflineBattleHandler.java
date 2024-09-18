@@ -19,6 +19,7 @@ import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
+import cn.game.protocol.protobuf.RewardMsg;
 import io.vertx.core.Future;
 
 /**
@@ -217,7 +218,8 @@ public class OfflineBattleHandler {
     int[] costs = GlobalConst.DaDaoChallengeTicketCost[module.buyNum];
     if (PlayerHelper.delResources(player, costs, OpType.DA_DAO_Buy)) {
       module.buyNum++;
-      PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1);
+
+      PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1,OpType.DA_DAO_Buy,true);
       res.setBuyNum(module.buyNum);
       client.sendProtocol(res);
     }else {
