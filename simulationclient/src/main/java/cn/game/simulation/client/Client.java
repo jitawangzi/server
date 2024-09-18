@@ -171,6 +171,9 @@ public class Client extends AbstractNetClient {
 	/** 最后一次发消息的内容 */
 	private byte[] lastSendMessageContent;
 
+	public int guideType = 1;
+	public int guideStep = 1;
+
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
 

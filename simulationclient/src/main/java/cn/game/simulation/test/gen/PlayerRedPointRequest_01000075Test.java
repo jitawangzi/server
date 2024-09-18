@@ -1,8 +1,10 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
 
+import com.google.protobuf.Message;
+
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
@@ -14,7 +16,7 @@ public class PlayerRedPointRequest_01000075Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.newBuilder() ; 
 		
-		
+		builder.addType(InitialUI.DaoXinMoLi.ID);
 		
 		return builder.build() ; 
 	}

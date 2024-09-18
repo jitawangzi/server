@@ -14,7 +14,7 @@ public class SecretscriptBreakUpRequest_38000005Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptBreakUpRequest_38000005.Builder builder = cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptBreakUpRequest_38000005.newBuilder() ; 
-		builder.setId(111);
+		builder.setId(101);
 		
 		
 		return builder.build() ; 
