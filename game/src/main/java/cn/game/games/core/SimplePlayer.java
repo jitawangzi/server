@@ -1,10 +1,7 @@
 package cn.game.games.core;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -104,6 +101,16 @@ public class SimplePlayer implements Serializable {
 		//存储 大道争锋阵容
 		Map<Integer, List<String>> lineups = player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
 		Map<Integer, List<Hero>> lineupsMap = new HashMap<Integer, List<Hero>>();
+		if (lineups == null){
+      		Map<Integer, Long> heroPosMap = new TreeMap<>();
+			player.getHeroModule().getBattleHeros().forEach((heroId,pos) -> {
+               heroPosMap.put(pos,heroId);
+            });
+			List<String> list = new ArrayList<>();
+			heroPosMap.values().forEach(heroId -> list.add(heroId+""));
+			lineups = new HashMap<Integer, List<String>>();
+			lineups.put(0,list);
+		}
 		if (lineups != null) {
 			lineups.forEach((k, v) -> {
 				List<Hero> heros = new ArrayList<Hero>();
