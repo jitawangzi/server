@@ -87,6 +87,10 @@ public class ServerContext {
 		}
 	}
 
+	/** 
+	 * 服务器启动失败
+	 * @param e
+	 */
 	public void handleStartFail(Throwable e) {
 		try {
 			MailUtil

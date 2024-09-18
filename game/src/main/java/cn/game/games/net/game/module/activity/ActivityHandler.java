@@ -219,7 +219,7 @@ public class ActivityHandler extends BaseHandler {
     }
     FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(chargeId);
 
-	Future<Boolean> pay = player.pay(PayType.SingleCharge, id, firstChargeConfig.Price);
+	Future<Boolean> pay = player.pay(PayType.FirstCharge, id, firstChargeConfig.Price);
     pay.onComplete(
         t -> {
           if (t.result()) {

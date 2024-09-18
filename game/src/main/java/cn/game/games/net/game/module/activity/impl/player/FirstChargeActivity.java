@@ -9,6 +9,7 @@ import java.util.Map;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
@@ -20,7 +21,6 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeResponse_1100000
 import cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
-import io.vertx.core.Future;
 
 /**    
  * 单充活动
@@ -101,6 +101,7 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		SingleCharge charge = new SingleCharge();
 		charge.setDay(DateUtil.getDay());
 		chargeMap.put(firstChargeConfig.ActivityiD, charge);
+		GameLogger.activity(player, id, cid);
 	}
 
 	public List<RewardInfo> reward(int cid) {
