@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
@@ -39,14 +40,13 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public Future<List<RewardInfo>> receive(int id) {
+	public List<RewardInfo> receive(int id) {
 		SevenDaysSigninConfig config = SevenDaysSigninManager.instance().getNullable(day + 1);
 		List<RewardInfo> resources = PlayerHelper.addResources(player, config.Item, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;
-		Promise<List<RewardInfo>> promise =  Promise.promise();
-		promise.complete(resources);
-		return promise.future();
+		GameLogger.activity(player, id, day);
+		return resources;
 	}
 
 	@Override

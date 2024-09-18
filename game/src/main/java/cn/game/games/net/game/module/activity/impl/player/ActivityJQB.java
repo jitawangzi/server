@@ -17,6 +17,7 @@ import cn.game.protocol.protobuf.ActivityMsg;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
@@ -40,6 +41,11 @@ public class ActivityJQB extends PlayerActivityBase {
 	}
 
 	@Override
+	public List<RewardInfo> receive(int id) {
+		return null;
+	}
+
+	@Override
 	public void startUp() {
 		curId = 0;
 		rewardIdList.clear();
@@ -59,6 +65,8 @@ public class ActivityJQB extends PlayerActivityBase {
 		QuestModule questModule = player.getQuestModule();
 		questModule.remove(jqbConfig.taskID);
 		questModule.open(jqbConfig.taskID,true);
+
+		GameLogger.activity(player, id, curId);
 	}
 
 	public void checkRefresh() {
@@ -75,7 +83,7 @@ public class ActivityJQB extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public Future<List<RewardInfo>> receive(int id) {
+	public Future<List<RewardInfo>> asyncReceive(int id) {
 		Promise<List<RewardInfo>> promise = Promise.promise();
 		QuestModule questModule = player.getQuestModule();
 		ActivityJQBConfig activityJQBConfig = ActivityJQBManager.instance().get(curId);

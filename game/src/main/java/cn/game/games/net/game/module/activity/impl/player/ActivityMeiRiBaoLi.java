@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
@@ -50,12 +51,11 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 
 
 	@Override
-	public Future<List<RewardInfo>> receive(int id) {
+	public  List<RewardInfo> receive(int id) {
 		QuestModule questModule = player.getQuestModule();
 		rewardIdList.add(id);
-		Promise<List<RewardInfo>> promise =  Promise.promise();
-		promise.complete(questModule.receive(id));
-		return promise.future();
+		GameLogger.activity(player, super.id, id);
+		return questModule.receive(id);
 	}
 
 	@Override
