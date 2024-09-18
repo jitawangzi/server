@@ -14,7 +14,7 @@ public class ShopRechargeRequest_15000022Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022.newBuilder() ; 
-		builder.setId(7);
+		builder.setId(3);
 		
 		
 		return builder.build() ; 

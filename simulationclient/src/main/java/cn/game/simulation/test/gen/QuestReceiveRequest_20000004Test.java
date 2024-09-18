@@ -30,7 +30,6 @@ public class QuestReceiveRequest_20000004Test extends ServerTest{
 				}
 			}
 		} else {
-
 			builder.addIds(10301);
 		}
 		return builder.build() ; 

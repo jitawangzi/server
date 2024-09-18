@@ -171,7 +171,7 @@ public final class Config {
 			
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
 
-			APP_KEY = initialProp.getProperty("APP_KEY", "");
+			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
 
 			if (modules.length > 0) {
 				modulesDisabled = new int[modules.length];
