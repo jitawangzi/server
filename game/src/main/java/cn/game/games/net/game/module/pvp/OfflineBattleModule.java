@@ -257,7 +257,7 @@ public class OfflineBattleModule extends BasePlayerModule {
             scoreFindFuture.thenAccept(
                 score -> {
                   scoreList.set(index, score.intValue());
-                  System.out.println("index:"+index+", score: " + score+", id:" + targetPlayer.id);
+                  log.info("index:"+index+", score: " + score+", id:" + targetPlayer.id);
                 });
           }
         });
@@ -269,7 +269,7 @@ public class OfflineBattleModule extends BasePlayerModule {
                 completableFuture.completeExceptionally(err);
                 return;
               }
-              System.out.println("scoreList: " + scoreList);
+              log.info("scoreList: " + scoreList);
               completableFuture.complete(null);
             });
     return completableFuture;
@@ -443,7 +443,14 @@ public class OfflineBattleModule extends BasePlayerModule {
     }
     return battleTargetPlayer;
   }
-
+  public SimplePlayer getTargetPlayer(String targetId) {
+    for (SimplePlayer simplePlayer : tempRefreshList) {
+      if (simplePlayer.id == Long.parseLong(targetId)) {
+        return simplePlayer;
+      }
+    }
+    return null;
+  }
   public Future<Void> updateScore(
       boolean win, long targetId, BattleMsg.BattlePvPEndResponse_13000116.Builder res) {
     int selfAddScore = 0, targetAddScore = 0;
@@ -493,4 +500,16 @@ public class OfflineBattleModule extends BasePlayerModule {
     targetVoidPromise.complete(0.0);
     return targetVoidPromise.future().toCompletionStage();
   }
+
+  public CompletableFuture<List<Integer>> getRankList(long selfPid, long targetPid){
+    CompletableFuture<Integer> selfRankFuture = RankService.getInstance().getRankAsync(player.getServerId(), RankType.DaDaoZhengFengDay, selfPid).toCompletableFuture();
+    CompletableFuture<Integer> targetRankFuture = RankService.getInstance().getRankAsync(player.getServerId(), RankType.DaDaoZhengFengDay, targetPid).toCompletableFuture();
+    return targetRankFuture.thenCombine(selfRankFuture, (targetRank, selfRank) -> {
+      List<Integer> rankList = new ArrayList<>();
+      rankList.add(selfRank);
+      rankList.add(targetRank);
+      return rankList;
+    });
+  }
+
 }
