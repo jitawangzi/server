@@ -219,8 +219,9 @@ public class OfflineBattleHandler {
     if (PlayerHelper.delResources(player, costs, OpType.DA_DAO_Buy)) {
       module.buyNum++;
 
-      PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1,OpType.DA_DAO_Buy,true);
+      List<RewardMsg.RewardInfo> drops =  PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1,OpType.DA_DAO_Buy,true);
       res.setBuyNum(module.buyNum);
+      res.addAllRewards(drops);
       client.sendProtocol(res);
     }else {
       client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
