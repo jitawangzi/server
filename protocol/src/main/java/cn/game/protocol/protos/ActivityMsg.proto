@@ -90,10 +90,11 @@ message ActivitySevenDaysSigninInfoResponse_11000025{
    bool canSignin = 2; 	//是否可以领签到奖励，当天领完就不能再领了。隔天才能领下一天的
 }
 
-// 七日签到,签到领奖
+// 七日签到,签到领奖 请求
 message ActivitySevenDaysSigninRequest_11000026{
    uint32 id = 1; 		//活动id Activity表的id,如果同类型活动有多个，可以用id区分。
 }
+// 七日签到,签到领奖 响应
 message ActivitySevenDaysSigninResponse_11000027{
    repeated RewardInfo rewards = 2;  // 获得的物品
 }
@@ -111,26 +112,32 @@ message ActivityTaskRewardResponse_11000042{
 }
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼累充豪礼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+//累充豪礼信息请求
 message ActivityLeiChongInfoRequest_11000051{
   int32  activityId = 1; //查看的活动id
 }
+//累充豪礼信息响应
 message ActivityLeiChongInfoResponse_11000052{
   int32  activityId = 1; //查看的活动id
   repeated int32 taskIds = 2;//包含的任务id
 }
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼每日豹利︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+//每日豹利信息请求
 message ActivityBaoLiInfoRequest_11000061{
   int32 activityId = 1; //查看的活动id
 }
+//每日豹利信息响应
 message ActivityBaoLiInfoResponse_11000062{
   int32  activityId = 1; //查看的活动id
   repeated int32 taskIds = 2;//包含的任务id
 }
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼风云聚义︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+//风云聚义信息请求
 message ActivityQingShenInfoRequest_11000071{
   int32 activityId = 1; //查看的活动id
 }
+//风云聚义信息响应
 message ActivityQingShenInfoResponse_11000072{
   int32  activityId = 1; //查看的活动id
   repeated int32 taskIds = 2;//包含的任务id
@@ -138,9 +145,11 @@ message ActivityQingShenInfoResponse_11000072{
   int32 roundTaskId = 4;//轮次的任务
 }
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼金钱豹爆爆︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
+//金钱豹爆爆信息请求
 message ActivityJQBInfoRequest_11000081{
   int32 activityId = 1; //查看的活动id
 }
+//金钱豹爆爆信息响应
 message ActivityJQBInfoResponse_11000082{
   int32  activityId = 1; //查看的活动id
    int32 taskId = 2;//当前进行的任务id
