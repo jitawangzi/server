@@ -21,6 +21,8 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
+import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -112,7 +114,7 @@ public class HeroHandler extends BaseHandler {
 		HeroModule heroModule = player.getHeroModule();
 		Map<Integer, Integer> illustrationsIds = heroModule.getIllustrationsHeroQualitys();
 		Map<Integer, Integer> qualitysMax = heroModule.getIllustrationsHeroQualitysMax();
-		
+
 		List<RewardInfo> rewardsInfos = new ArrayList<>();
 		qualitysMax.forEach((configId, qualityMax) -> {
 			HeroConfig heroConfig = HeroManager.instance().get(configId);
@@ -224,6 +226,13 @@ public class HeroHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		Map<Long, Integer> heroOldCombatMap = new HashMap<>();
+		Map<Long, Integer> heroOldLevelMap = new HashMap<>();
+		heros.forEach(h -> {
+			heroOldCombatMap.put(h.getId(), BattleHelper.calcHeroCombat(h));
+			heroOldLevelMap.put(h.getId(), h.getLevel());
+		});
+
 		// 优先升等级最低的。如果等级相同，则升星级的。如果星级相同，则升品质高的。
 //		Collections.sort(heros, (o2, o1) -> {
 //			if (o1.getLevel() == o2.getLevel()) {
@@ -271,7 +280,8 @@ public class HeroHandler extends BaseHandler {
 					continue;
 				}
 				HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
-				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem)
+						|| !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
 					continue;
 				}
 				HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
@@ -306,9 +316,21 @@ public class HeroHandler extends BaseHandler {
 		for (Hero entry : updateHeros) {
 			resp.addHeros(entry.toHeroLevelInfo());
 		}
-//		if (upCount > 0) {
-//			player.handleEvent(EventTypeEnum.HeroLevelUp, upCount);
-//		}
+
+		Map<Long, Integer> heroNewLevelMap = new HashMap<>();
+		Map<Long, Integer> heroNewCombatMap = new HashMap<>();
+		heros.forEach(h -> {
+			heroNewCombatMap.put(h.getId(), BattleHelper.calcHeroCombat(h));
+			heroNewLevelMap.put(h.getId(), h.getLevel());
+		});
+		heroNewLevelMap.forEach((uid, level) -> {
+			if (heroOldLevelMap.containsKey(uid) && heroOldLevelMap.get(uid) != level) {
+				GameLogger
+						.heroraise(player, heroModule.get(uid), 1, level - heroOldLevelMap.get(uid), level, heroOldCombatMap.get(uid),
+								heroNewCombatMap.get(uid));
+
+			}
+		});
 		client.sendProtocol(resp.build());
 	}
 
@@ -364,7 +386,8 @@ public class HeroHandler extends BaseHandler {
 					continue;
 				}
 				HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
-				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem)
+						|| !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
 					continue;
 				}
 				HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
@@ -443,7 +466,8 @@ public class HeroHandler extends BaseHandler {
 					continue;
 				}
 				HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
-				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem)
+						|| !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
 					break loop;
 				}
 				HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
@@ -477,6 +501,7 @@ public class HeroHandler extends BaseHandler {
 //		}
 		client.sendProtocol(resp.build());
 	}
+
 	private void upLevelMax(NetClient client, Object message) {
 		HeroUpLevelMaxRequest_16000021 req = (HeroUpLevelMaxRequest_16000021) message;
 		HeroUpLevelMaxResponse_16000022.Builder resp = HeroUpLevelMaxResponse_16000022.newBuilder();
@@ -506,7 +531,8 @@ public class HeroHandler extends BaseHandler {
 				break;
 			}
 			HeroLvConfig heroLvConfig = HeroLvManager.instance().get(level);
-			if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+			if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem)
+					|| !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
 				break;
 			}
 			HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(level + 1);
@@ -525,7 +551,7 @@ public class HeroHandler extends BaseHandler {
 			}
 //			hero.setLevel(maxLevel);
 			List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
-			deleteItems.add(new AbstractMap.SimpleEntry(moneyId,moneyCount)) ; 
+			deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
 			deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
 			PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
 		}
@@ -586,9 +612,9 @@ public class HeroHandler extends BaseHandler {
 		for (int i = 1; i < star; i++) {
 			HeroBreakConfig breakConfig = HeroBreakManager.instance().getUIInitialQualityStar(quality, i);
 			sameIdHeros += breakConfig.SameConsumeNum;
-			
-			int omniItemID = getOmniItemID(heroConfig, breakConfig); 
-			int itemCount = breakConfig.CareerConsumeNum ; 
+
+			int omniItemID = getOmniItemID(heroConfig, breakConfig);
+			int itemCount = breakConfig.CareerConsumeNum;
 			itemsMap.compute(omniItemID, (k, v) -> v == null ? itemCount : v + itemCount);
 		}
 //		List<HeroInfo> heroInfos = new ArrayList<>();
@@ -628,6 +654,7 @@ public class HeroHandler extends BaseHandler {
 		}
 		client.sendProtocol(resp.build());
 	}
+
 	private void battle(NetClient client, Object message) {
 		HeroBattleRequest_16000005 req = (HeroBattleRequest_16000005) message;
 		HeroBattleResponse_16000006.Builder resp = HeroBattleResponse_16000006.newBuilder();
@@ -684,6 +711,7 @@ public class HeroHandler extends BaseHandler {
 		player.handleEvent(EventTypeEnum.HeroBattle, hero);
 		client.sendProtocol(resp.build());
 	}
+
 	private void conflate(NetClient client, Object message) {
 		HeroConflateRequest_16000003 req = (HeroConflateRequest_16000003) message;
 		HeroConflateResponse_16000004.Builder resp = HeroConflateResponse_16000004.newBuilder();
@@ -713,7 +741,9 @@ public class HeroHandler extends BaseHandler {
 
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			// 先检查能不能往下突破
-			HeroBreakConfig nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar() + 1);
+			HeroBreakConfig nextQualityStarConfig = HeroBreakManager
+					.instance()
+					.getUIInitialQualityStar(hero.getQuality(), hero.getStar() + 1);
 			if (nextQualityStarConfig == null) {
 				nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality() + 1, 1);
 			}
@@ -736,14 +766,26 @@ public class HeroHandler extends BaseHandler {
 			for (String string : consumedUidList) {
 				player.getHeroModule().del(Long.parseLong(string), OpType.HeroConflate);
 			}
+			int oldStar = hero.getStar();
+			int oldQuality = hero.getQuality();
+			int beforeCombat = 0;
 			hero.setStar(nextQualityStarConfig.Star);
 			hero.setQuality(nextQualityStarConfig.InitialQuality);
+
+			int newStar = hero.getStar();
+			int newQuality = hero.getQuality();
+			int afterCombat = 0;
+
+			if (oldStar != newStar) {
+				GameLogger.heroraise(player, hero, 3, 1, newStar, beforeCombat, afterCombat);
+			}
+			if (oldQuality != newQuality) {
+				GameLogger.heroraise(player, hero, 2, 1, newQuality, beforeCombat, afterCombat);
+			}
+
 			player.handleEvent(EventTypeEnum.HeroQuality, hero);
-
 			player.handleEvent(EventTypeEnum.HeroBreak, hero.getStar(), hero.getQuality());
-
 			resp.addHero(hero.toHeroInfo());
-
 		}
 
 		client.sendProtocol(resp.build());
@@ -836,10 +878,12 @@ public class HeroHandler extends BaseHandler {
 			return;
 		}
 		HeroLvConfig curConfig = HeroLvManager.instance().getNullable(hero.getLevel());
-		if (!player.isEnough(GlobalConst.HeroLvItem, curConfig.LvConsumeItem) || !player.isEnough(Asset.gold.ID, curConfig.LvConsumeMoney)) {
+		if (!player.isEnough(GlobalConst.HeroLvItem, curConfig.LvConsumeItem)
+				|| !player.isEnough(Asset.gold.ID, curConfig.LvConsumeMoney)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 			return;
 		}
+		int oldCombat = BattleHelper.calcHeroCombat(hero);
 
 		PlayerHelper.delResources(player, GlobalConst.HeroLvItem, curConfig.LvConsumeItem, OpType.HeroLevelUp);
 		PlayerHelper.delResources(player, Asset.gold.ID, curConfig.LvConsumeMoney, OpType.HeroLevelUp);
@@ -847,8 +891,10 @@ public class HeroHandler extends BaseHandler {
 //		player.updateOfflineAttrData();
 //		hero.update();
 		player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+		int newCombat = BattleHelper.calcHeroCombat(hero);
+
+		GameLogger.heroraise(player, hero, 1, 1, hero.getLevel(), oldCombat, newCombat);
 
 		client.sendProtocol(resp.build());
 	}
 }
-

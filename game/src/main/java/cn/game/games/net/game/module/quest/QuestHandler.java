@@ -192,6 +192,11 @@ public class QuestHandler extends BaseHandler {
 		}
 		resp.addAllRewards((Iterable<? extends RewardInfo>) resultObject.getValue());
 		client.sendProtocol(resp.build());
+		if (type == QuestTypeEnum.SevenDaysCarniva) {
+			for (Integer integer : index) {
+				GameLogger.activity(player, 11, integer);
+			}
+		}
 	}
 
 	protected void listAll(NetClient client, Object message) {
@@ -266,7 +271,7 @@ public class QuestHandler extends BaseHandler {
 		for (Integer id : ids) {
 			QuestConfig questConfig = QuestManager.instance().get(id);
 			if (questConfig.Type == QuestTypeEnum.Achievement.ID) {
-				GameLogger.task(player, id, true);
+				GameLogger.achievement(player, id);
 			} else {
 				GameLogger.task(player, id, true);
 			}

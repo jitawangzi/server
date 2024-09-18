@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
@@ -14,8 +15,6 @@ import cn.game.protocol.generated.manager.SevenDaysSigninManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninInfoResponse_11000025;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.SevenDaysSignin)
 public class SevenDaysSignin extends PlayerActivityBase {
@@ -44,6 +43,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		List<RewardInfo> resources = PlayerHelper.addResources(player, config.Item, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;
+		GameLogger.activity(player, id, day);
 		return resources;
 	}
 

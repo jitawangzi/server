@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,7 @@ import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.ItemHelper;
@@ -40,6 +40,7 @@ import cn.game.games.net.game.module.develop.hccommon.HCCommonModule;
 import cn.game.games.net.game.module.develop.hchero.HCHeroModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.pet.PetModule;
+import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
 import cn.game.games.net.game.module.event.EventModule;
 import cn.game.games.net.game.module.func.FuncModule;
@@ -50,6 +51,8 @@ import cn.game.games.net.game.module.player.VarModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.pvp.OfflineBattleModule;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.games.net.game.module.recharge.PayItem;
+import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
@@ -418,10 +421,14 @@ public class Player  {
 	
 	/** 
 	 * 支付，有可能支付普通货币，也有可能支付rmb
-	 * @param cost 
+	 * 一般普通货币支付的，尽量不要调用这个方法，这个方法尽量处理rmb支付的。 
+	 * 
+	 * @param payType  支付类型，购买的什么类型的东西
+	 * @param id   针对支付类型的id，例如购买月卡，id就是月卡id
+	 * @param cost   费用，第一个是支付类型，第二个是支付的id，第三个是支付的数量
 	 * @return
 	 */
-	public Future<Boolean> pay(int[] cost) {
+	public Future<Boolean> pay(PayType payType,int id, int[] cost) {
 		if (cost == null || cost.length == 0 || (cost.length == 1 && cost[0] == 0)) {
 			return Future.succeededFuture(true);
 		}
@@ -450,7 +457,13 @@ public class Player  {
 				} else {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder().setOrder(body.getOrder()).build());
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
-					getPlayerModule().addPayRmbs(body.getOrderId(), cost[1]);
+					PayItem payItem = new PayItem();
+					payItem.setOrderId(body.getOrderId());
+					payItem.setRmb(cost[1]);
+					payItem.setPayType(payType);
+					payItem.setPayId(id);
+					getPlayerModule().addPayItems(payItem);
+					GameLogger.recharge(this, payItem);
 				}
 			}).onFailure(r -> {
 				log.error("登录服创建充值订单失败： ", r);

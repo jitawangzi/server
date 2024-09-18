@@ -3,23 +3,25 @@ package cn.game.games.net.game.module.activity.impl.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.protobuf.Message;
+
+import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.module.activity.ActivityType;
+import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.protocol.generated.config.ActivityJQBConfig;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityJQBManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg;
-import com.google.protobuf.Message;
-
-import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.net.game.module.activity.ActivityType;
-import cn.game.games.net.game.module.activity.PlayerActivityBase;
-import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -64,6 +66,8 @@ public class ActivityJQB extends PlayerActivityBase {
 		QuestModule questModule = player.getQuestModule();
 		questModule.remove(jqbConfig.taskID);
 		questModule.open(jqbConfig.taskID,true);
+
+		GameLogger.activity(player, id, curId);
 	}
 
 	public void checkRefresh() {
@@ -85,12 +89,12 @@ public class ActivityJQB extends PlayerActivityBase {
 		QuestModule questModule = player.getQuestModule();
 		ActivityJQBConfig activityJQBConfig = ActivityJQBManager.instance().get(curId);
 		Quest quest = questModule.get(activityJQBConfig.taskID);
-		player.pay(activityJQBConfig.price).onComplete(result ->{
+		player.pay(PayType.ActivityJQB, id, activityJQBConfig.price).onComplete(result -> {
 			if (result.result()){
 				QuestConfig config = QuestManager.instance().get(quest.getId());
 				promise.complete(new ArrayList<>(PlayerHelper.addReward(player,config.Reward, OpType.ActivityJQB)));
 			}else {
-				promise.fail(ErrorMsgEnum.not_use.unknown.getDesc());
+				promise.fail(ErrorMsgEnum.unknown.getDesc());
 			}
 		});
 		return promise.future();

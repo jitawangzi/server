@@ -20,6 +20,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
+import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeadPortraitConfig;
 import cn.game.protocol.generated.config.UserUpgradeConfig;
@@ -62,7 +63,10 @@ public class PlayerModule extends BasePlayerModule {
 	private Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
 	/** 本次订单充了多少钱 */
 	@JsonIgnore
+	@Deprecated
 	private Map<Long, Integer> payRmbs = new HashMap<Long, Integer>();
+	@JsonIgnore
+	private Map<Long, PayItem> payItems = new HashMap<Long, PayItem>();
 	
 	/** 随机宝箱，小云宝箱 */
 	private List<Goods> cloudBox;
@@ -174,12 +178,12 @@ public class PlayerModule extends BasePlayerModule {
 		this.payCallback.put(uid, callback); 
 	}
 
-	public void addPayRmbs(long uid, int rmb) {
-		this.payRmbs.put(uid, rmb);
+	public void addPayItems(PayItem payItem) {
+		this.payItems.put(payItem.getOrderId(), payItem);
 	}
 
-	public int getPayRmbs(long uid) {
-		return this.payRmbs.get(uid);
+	public PayItem getPayItems(long uid) {
+		return this.payItems.get(uid);
 	}
 	
 	public Map<Integer, Integer> getGuideMap() {

@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
@@ -20,8 +21,6 @@ import cn.game.protocol.generated.manager.ActivityMeiRiBaoLiManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.ActivityMeiRiBaoLi)
 public class ActivityMeiRiBaoLi extends PlayerActivityBase {
@@ -53,6 +52,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	public  List<RewardInfo> receive(int id) {
 		QuestModule questModule = player.getQuestModule();
 		rewardIdList.add(id);
+		GameLogger.activity(player, super.id, id);
 		return questModule.receive(id);
 	}
 

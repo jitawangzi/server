@@ -14,8 +14,6 @@ import java.util.function.Consumer;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import cn.game.games.net.game.helper.MailHelper;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.RequestCallback;
 
@@ -40,6 +38,7 @@ import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossRemoteServerInterface;
 import cn.game.games.net.data.remote.DataGameServerInterface;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.GameClientManager;
@@ -53,7 +52,6 @@ import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.JsonUtil;
-import cn.game.util.MailUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -118,19 +116,9 @@ public class GameServer implements GameServerMBean {
 //      System.setProperty("user.dir", "D:\\Party\\server\\server\\game");
 			instance.start(args);
 		} catch (Throwable e) {
-			handleStartFail(e);
+			ServerContext.getInstance().handleStartFail(e);
 		}
 
-	}
-
-	private static void handleStartFail(Throwable e) {
-		try {
-			MailUtil.reportException("Game服务器【 " + System.getProperty(gameServerKey) + " 】启动失败", ExceptionUtils.getFullStackTrace(e));
-		} catch (Exception e1) {
-			System.err.println("发送邮件失败," + e1.getMessage());
-		}
-		e.printStackTrace();
-		System.exit(1);
 	}
 
 	public void start(String[] args) throws Exception {
@@ -275,7 +263,7 @@ public class GameServer implements GameServerMBean {
 
 			// 设置未捕获异常处理器
 			attachThread.setUncaughtExceptionHandler((t, e) -> {
-				handleStartFail(e);
+				ServerContext.getInstance().handleStartFail(e);
 			});
 			attachThread.setDaemon(true);
 			attachThread.start();

@@ -670,7 +670,9 @@ public class QuestModule extends BasePlayerModule {
 			break;
 		case QuestHelper.ACCEPTED:
 			quest.initCondition();
-			GameLogger.task(player, quest.getId(), false);
+			if (questConfig.Type != QuestTypeEnum.Achievement.ID) {
+				GameLogger.task(player, quest.getId(), false);
+			}
 			// 执行接取命令，事件
 			/*			if (missionConfig instanceof MainlineMissionConfig) {
 							MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) missionConfig;

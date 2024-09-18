@@ -52,6 +52,7 @@ public class BattleHelper {
 		
 
 	}
+	
 	/**
 	 * 战斗结束时，计算获得的角色经验
 	 * @param level
@@ -61,10 +62,10 @@ public class BattleHelper {
 	 * @return
 	 */
 	public static int calcRoleExp(int level, int ap) {
-		//		卡牌经验，(roundup(lv/10,0)*lv+10)*体力消耗
+		// 卡牌经验，(roundup(lv/10,0)*lv+10)*体力消耗
 		return (roundUpLevel(level) * level + 10) * ap;
-
 	}
+
 	/**
 	 * 战斗结束时，计算获得的金币
 	 * @param level
@@ -243,6 +244,10 @@ public class BattleHelper {
 		attributeVlalueConfig = AttributeVlalueManager.instance().get(uiInitialQualityStar.BreakOneTime);
 		heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
 		return heroAttrMap;
+	}
+
+	public static int calcHeroCombat(Hero hero) {
+		return (int) calcCombat(makeHeroAttr(hero));
 	}
 
 }

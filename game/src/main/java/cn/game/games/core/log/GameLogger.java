@@ -10,6 +10,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -288,6 +289,35 @@ public class GameLogger extends Logger {
 		}
 	}
 
+	/** 
+	 * 
+	 * @param player
+	 * @param hero
+	 * @param operatetype 1:升级
+	2:进阶
+	3.升星
+	
+	 * @param opType
+	 */
+	public static void heroraise(Player player, Hero hero, int operatetype, int addvalue, int endvalue, int beforeCombat, int afterCombat) {
+		try {
+			String step = "B8210";
+			if (operatetype == 2) {
+				step = "B8211";
+			}
+			if (operatetype == 3) {
+				step = "B8212";
+			}
+			Object[] array = new Object[] { LoggerType
+					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.gethero.name(), LoggerType.gethero.version, step)),
+					hero.getConfigId(), operatetype, addvalue <= 0 ? 1 : addvalue, endvalue, beforeCombat, afterCombat,
+					player.getAccount().getPlatform() };
+			LoggerType.gethero.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
 	/**
 	 * 商城日志
 	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
@@ -388,39 +418,40 @@ public class GameLogger extends Logger {
 	 * 价值虚拟币总量, Vip等级,商品id, 订单号
 	 * 时区
 	 */
-//	public static void recharge(Player player, Receipt receipt, PayItem payItem, int diamondCount, String currency) {
-//		try {
+	public static void recharge(Player player, PayItem payItem) {
+		try {
 //			int cur = "CNY".equals(currency) ? 11 : 1;
-//			Object[] array = new Object[] {
-//					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, "5000")), rmb,
-//					player.getAccount().sdkPayChannel, diamondCount, cur, player.getGameClient().getIp(), player.getCurrencyModule().get(Asset.diamond), 0,
-//					receipt.getGoodsId(), receipt.getCoOrderId(), player.getAccount().getPlatform() };
-//			LoggerType.recharge.logger.info(LoggerType.splice(array));
-//		} catch (Exception e) {
-//			SystemLogger.error(e);
-//		}
-//	}
+			int cur = 1;
+			Object[] array = new Object[] { LoggerType
+					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, "5000")),
+					payItem.getRmb(), player.getAccount().sdkPayChannel, payItem.getAddCount(), cur, player.getGameClient().getIp(),
+					payItem.getAddId() > 0 ? player.getCurrencyModule().get(payItem.getAddId()).getCount() : 0, player.getVipLevel(),
+					payItem.getPayId(),
+					payItem.getOrderId(),
+					player.getAccount().getPlatform() };
+			LoggerType.recharge.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
 
-//	/**
-//	 * 充值
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 活动id ,活动档位
-//	 * 时区
-//	 */
-//    public static void activity(Player player, int activityDataId, long subId, int activityType, int payResult, PayItem payItem) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.activity.name(), LoggerType.activity.version, "B6110")),
-//                    activityDataId, subId, ActivityType.getActivityTypeById(activityType) == null ? -1 : ActivityType.getActivityTypeById(activityType), payResult, payItem == null ? 0 : payItem.dollarPrice / 100.00,
-//                    GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.activity.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
+	/** 
+	 * 活动。 
+	 * @param player
+	 * @param activityId
+	 * @param subId
+	 */
+	public static void activity(Player player, int activityId, long subId) {
+		try {
+			Object[] array = new Object[] { LoggerType
+					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.activity.name(), LoggerType.activity.version, "B6110")),
+					activityId, subId };
+			LoggerType.activity.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
 //	/**
 //	 * 充值
 //	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
@@ -573,6 +604,11 @@ public class GameLogger extends Logger {
 		}
 	}
 
+	/** 
+	 * 成就
+	 * @param player
+	 * @param taskId
+	 */
 	public static void achievement(Player player, int taskId) {
 		try {
 			QuestConfig questConfig = QuestManager.instance().get(taskId);
@@ -582,7 +618,7 @@ public class GameLogger extends Logger {
 					LoggerType
 							.splice(GameLogAssistant
 									.buildLogCYPrefix(player, LoggerType.achievement.name(), LoggerType.achievement.version, "B5110")),
-					taskId, "1", questConfig.Type + "", player.getAccount().getPlatform() };
+					taskId, conditionTypeEnum.name(), -1 };
 			LoggerType.achievement.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -675,25 +711,25 @@ public class GameLogger extends Logger {
 
 	}
 //
-//	/**
-//	 * 新手引导
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 引导步
-//	 * 时区
-//	 */
-//    public static void newstages(Player player, int eventId, int logerId) {
-//        try {
-//            String stepNum = String.valueOf(logerId);
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.newstages.name(), LoggerType.newstages.version, stepNum)),
-//                    eventId, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.newstages.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
+	/**
+	 * 新手引导
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 引导步
+	 * 时区
+	 */
+	public static void newstages(Player player, int big, int small) {
+		try {
+			int step = 4000 + big * 10;
+			String stepNum = String.valueOf(step);
+			Object[] array = new Object[] { LoggerType
+					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.newstages.name(), LoggerType.newstages.version, stepNum)),
+					small };
+			LoggerType.newstages.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
 //
 //
 //	/**

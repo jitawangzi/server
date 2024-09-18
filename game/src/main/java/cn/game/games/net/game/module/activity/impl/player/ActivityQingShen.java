@@ -8,6 +8,7 @@ import com.google.protobuf.Message;
 import cn.game.core.base.ServerContext;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
@@ -108,6 +109,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 				log.info(String.format("create new taskId:%d, activityId:%d, round:%d  pid:%d,",activityQingShenConfig.taskID,id,round,player.getPlayerId()));
 			}
 		});
+		GameLogger.activity(player, id, round);
 	}
 
 	@Override

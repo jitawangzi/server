@@ -44,26 +44,27 @@ public enum LoggerType {
     task,                                                                       // 任务
     achievement,                                                                // 个人完成成就
     activity,                                                                   // 参与活动
-    arena,                                                                      // 竞技场
-    activationcode,                                                             //激活码激活
+//    arena,                                                                      // 竞技场
+//    activationcode,                                                             //激活码激活
 	gethero, // 获取卡牌
+	heroraise, // 卡牌养成
 
     /* *********************** 其他 ************************* */
-	equipmentshape, // 装备幻化
-	equipmentwear, // 装备穿戴
-	onhook, // 挂机
+//	equipmentshape, // 装备幻化
+//	equipmentwear, // 装备穿戴
+//	onhook, // 挂机
 //    boxlevelup,                                                                 //宝箱升级
 //    boxopen,                                                                    //宝箱开启
-	mail, // 邮件
-	mailbox, // 邮箱
-	chat, // 聊天
+//	mail, // 邮件
+//	mailbox, // 邮箱
+//	chat, // 聊天
 //    rankkz,                                                                     // 排行榜快照
 //    rankNumInfo,                                                                // 排行榜数量信息
 //    rankInfo,                                                                   // 排行榜信息
 //    bleachRedis,                                                                // Redis日志
 //    roleinfochange,                                                             // 玩家信息修改
-	equipgems, // 宝石镶嵌
-	mergegems, // 宝石合成
+//	equipgems, // 宝石镶嵌
+//	mergegems, // 宝石合成
 //    propertysnap,                                                               // 玩家属性快照
 //    resourcegrab,                                                               // 领地资源抢夺
     orderCreate,                                                                // 创建订单

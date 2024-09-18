@@ -19,6 +19,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
+import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.ChapterPacksConfig;
 import cn.game.protocol.generated.config.FundPassConfig;
@@ -194,7 +195,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
-		Future<Boolean> pay = player.pay(fundPassConfig.Price);
+		Future<Boolean> pay = player.pay(PayType.FundPass, id, fundPassConfig.Price);
 
 		pay.onComplete(t -> {
 			if (t.result()) {
@@ -271,7 +272,7 @@ public class ShopHandler extends BaseHandler {
 		int id = req.getId();
 		RechargeConfig rechargeConfig = RechargeManager.instance().get(id); 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		Future<Boolean> pay = player.pay(rechargeConfig.PurchaseParameter);
+		Future<Boolean> pay = player.pay(PayType.Recharge, id, rechargeConfig.PurchaseParameter);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				List<RewardInfo> resources = PlayerHelper.addResources(player, rechargeConfig.Item, OpType.ShopTrade);
@@ -312,10 +313,14 @@ public class ShopHandler extends BaseHandler {
 			resp.addAllRewards(resources);
 			client.sendProtocol(resp);
 //			GameLogger.shoptrade(player, null, null, shopId, shopId, itemId);
+
+			if (shopId == 12 || shopId == 13 || shopId == 14) {
+//				GameLogger.acti
+			}
 			return true;
 		};
 
-		Future<Boolean> pay = player.pay(shopItemConfig.PurchaseParameter);
+		Future<Boolean> pay = player.pay(PayType.ShopItem, itemId, shopItemConfig.PurchaseParameter);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				addItemAction.get();
@@ -391,7 +396,7 @@ public class ShopHandler extends BaseHandler {
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id); 
 		int[] cost = monthCardConfig.Price;
 		
-		Future<Boolean> pay = player.pay(cost); 
+		Future<Boolean> pay = player.pay(PayType.MonthCard, id, cost);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
@@ -483,7 +488,7 @@ public class ShopHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_gift_repeated.getId());
 			return;
 		}
-		Future<Boolean> pay = player.pay(chapterPacksConfig.PurchaseParameter);
+		Future<Boolean> pay = player.pay(PayType.ChapterPacks, id, chapterPacksConfig.PurchaseParameter);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				playerModule.addId(IdConstant.CHAPTER_PACK, id);
