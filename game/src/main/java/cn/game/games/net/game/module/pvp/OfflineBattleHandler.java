@@ -105,19 +105,25 @@ public class OfflineBattleHandler {
     res.setSelfAttrs(player.getAttrModule().buildBattleAttrs());
     SimplePlayer targetPlayer = module.getTargetPlayer(Long.parseLong(req.getTargetId()));
     if (targetPlayer != null) {
-      res.setTargetAttrs(targetPlayer.getPlayerBattleAttrs());
-      BattleMsg.BattleLineupInfo.Builder targetLineup = BattleMsg.BattleLineupInfo.newBuilder();
-      targetLineup.setBattleType(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
-      targetPlayer.getLineupMaps().get(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()).forEach((k,v)->{
-			targetLineup
-					.addLineups(BattleMsg.LineupInfo
-							.newBuilder()
-							.setSeq(k)
-							.addAllHeroUid(v.stream().map(h -> h.getId() + "").collect(toList()))
-							.addAllHeroId(v.stream().map(h -> h.getConfigId()).collect(toList()))
-							.build());
-      });
-      res.setTargetLineupInfo(targetLineup.build());
+      try{
+        res.setTargetAttrs(targetPlayer.getPlayerBattleAttrs());
+        BattleMsg.BattleLineupInfo.Builder targetLineup = BattleMsg.BattleLineupInfo.newBuilder();
+        targetLineup.setBattleType(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
+        targetPlayer.getLineupMaps().get(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()).forEach((k,v)->{
+          targetLineup
+                  .addLineups(BattleMsg.LineupInfo
+                          .newBuilder()
+                          .setSeq(k)
+                          .addAllHeroUid(v.stream().map(h -> h.getId() + "").collect(toList()))
+                          .addAllHeroId(v.stream().map(h -> h.getConfigId()).collect(toList()))
+                          .build());
+          res.setTargetLineupInfo(targetLineup.build());
+        });
+      } catch (Exception e){
+        e.printStackTrace();
+        module.setInBattlePlayer(null);
+        throw e;
+      }
       res.setTargetSecretscriptInfo(targetPlayer.toSecretscriptPbInfo(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO));
       module.getRankList(player.getPlayerId(),targetPlayer.id).whenComplete((rankResultList,action )->{
         GameLogger.pvpfight(player,true,rankResultList.get(0),0,DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),targetPlayer,rankResultList.get(1),0,0,0,false);

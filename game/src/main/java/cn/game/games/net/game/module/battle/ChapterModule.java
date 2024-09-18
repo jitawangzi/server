@@ -136,7 +136,6 @@ public class ChapterModule extends BasePlayerModule  {
 	 * 
 	 * @param type
 	 * @param lineupId  ，一般从0开始。 
-	 * @param lineup
 	 */
 	public void updateLineup(int type, int lineupId, List<String> heroUids) {
 		Map<Integer, List<String>> map = lineupMaps.get(type);
@@ -146,7 +145,7 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		map.put(lineupId, new ArrayList<String>(heroUids));
 
-		if (type == DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId() && !player.getOfflineBattleModule().isJoin()){
+		if (type == DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()){
 			player.getOfflineBattleModule().joinPlay();
 		}
 
