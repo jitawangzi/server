@@ -40,6 +40,11 @@ public class ActivityJQB extends PlayerActivityBase {
 	}
 
 	@Override
+	public List<RewardInfo> receive(int id) {
+		return null;
+	}
+
+	@Override
 	public void startUp() {
 		curId = 0;
 		rewardIdList.clear();
@@ -75,7 +80,7 @@ public class ActivityJQB extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public Future<List<RewardInfo>> receive(int id) {
+	public Future<List<RewardInfo>> asyncReceive(int id) {
 		Promise<List<RewardInfo>> promise = Promise.promise();
 		QuestModule questModule = player.getQuestModule();
 		ActivityJQBConfig activityJQBConfig = ActivityJQBManager.instance().get(curId);

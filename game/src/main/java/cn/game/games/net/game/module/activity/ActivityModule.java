@@ -156,10 +156,10 @@ public class ActivityModule extends BasePlayerModule {
 		ActivityBase activityBase = this.activities.get(id);
 		List<RewardInfo> rewards = new ArrayList<>();
 		if (activityBase != null) {
-			Future<List<RewardInfo>> future = activityBase.receive(subId);
-			future.onSuccess(rewards::addAll);
+			rewards = activityBase.receive(subId);
+			rewards.addAll(rewards);
 			if (rewards != null && rewards.size() > 0) {
-//				update(id);
+				update(id);
 			}
 		}
 		return rewards;

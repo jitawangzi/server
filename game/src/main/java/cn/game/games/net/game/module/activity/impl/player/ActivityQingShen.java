@@ -69,12 +69,10 @@ public class ActivityQingShen extends PlayerActivityBase {
 		return true;
 	}
 	@Override
-	public Future<List<RewardInfo>> receive(int id) {
+	public  List<RewardInfo> receive(int id) {
 		QuestModule questModule = player.getQuestModule();
 		rewardIdList.add(id);
-		Promise<List<RewardInfo>> promise =  Promise.promise();
-		promise.complete(questModule.receive(id));
-		return promise.future();
+		return questModule.receive(id);
 	}
 
 

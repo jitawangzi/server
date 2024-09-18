@@ -122,7 +122,7 @@ public class FirstChargeActivity extends PlayerActivityBase {
 //		return chargeMap.get(chargeId);
 //	}
 	@Override
-	public Future<List<RewardInfo>> receive(int id) {
+	public List<RewardInfo> receive(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
