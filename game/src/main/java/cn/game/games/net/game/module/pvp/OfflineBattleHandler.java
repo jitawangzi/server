@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
@@ -45,7 +46,7 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
-    List<Integer> scoreList = new ArrayList<>();
+    List<Integer> scoreList = new CopyOnWriteArrayList<>();
     module
         .searchTargetList(req.getRefreshFlag(),scoreList)
         .onSuccess(

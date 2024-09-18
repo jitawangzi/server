@@ -143,7 +143,7 @@ public class SimplePlayer implements Serializable {
 		simplePlayer.setOnline(true);
 		simplePlayer.setHeadFrame(400006);
 		simplePlayer.setCombatEffectiveness(npcConfig.Hero);
-//		simplePlayer.setLevel(npcConfig.lv);
+		simplePlayer.setLevel(npcConfig.lv);
 		simplePlayer.setHead(Integer.parseInt(npcConfig.Icon));
 		return simplePlayer;
 	}

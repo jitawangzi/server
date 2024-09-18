@@ -216,9 +216,9 @@ public class OfflineBattleModule extends BasePlayerModule {
             mapResult -> {
               processMatchResults(mapResult, resultList, promise);
             })
-        .thenAccept(
+        .thenCompose(
             msg -> {
-               getSerachTargetScoreList(resultList, scoreList);
+               return  getSerachTargetScoreList(resultList, scoreList);
             })
         .thenAccept(
             action -> {
@@ -239,7 +239,7 @@ public class OfflineBattleModule extends BasePlayerModule {
   private CompletionStage<Void> getSerachTargetScoreList(
       List<SimplePlayer> resultList, List<Integer> scoreList) {
     CompletableFuture completableFuture = new CompletableFuture<>();
-    List<CompletableFuture<Void>> futureList = new ArrayList<>();
+    List<CompletableFuture<Long>> futureList = new ArrayList<>();
     resultList.forEach(
         targetPlayer -> {
           NPCConfig npcConfig = NPCManager.instance().getNullable((int) targetPlayer.getId());
@@ -248,15 +248,17 @@ public class OfflineBattleModule extends BasePlayerModule {
           } else {
             scoreList.add(0);
             final int index = scoreList.size() - 1;
-            futureList.add(
+            CompletableFuture<Long> scoreFindFuture =
                 RankService.getInstance()
                     .getScoreAsync(
                         player.getServerId(), RankType.DaDaoZhengFengDay, targetPlayer.getId())
-                    .thenAccept(
-                        score -> {
-                          scoreList.set(index, score.intValue());
-                        })
-                    .toCompletableFuture());
+                    .toCompletableFuture();
+            futureList.add(scoreFindFuture);
+            scoreFindFuture.thenAccept(
+                score -> {
+                  scoreList.set(index, score.intValue());
+                  System.out.println("index:"+index+", score: " + score+", id:" + targetPlayer.id);
+                });
           }
         });
     CompletableFuture.allOf(futureList.toArray(new CompletableFuture[0]))
@@ -267,7 +269,7 @@ public class OfflineBattleModule extends BasePlayerModule {
                 completableFuture.completeExceptionally(err);
                 return;
               }
-
+              System.out.println("scoreList: " + scoreList);
               completableFuture.complete(null);
             });
     return completableFuture;

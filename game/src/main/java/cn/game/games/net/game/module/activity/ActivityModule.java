@@ -170,7 +170,7 @@ public class ActivityModule extends BasePlayerModule {
 	}
 
 
-	/** 
+	/**
 	 * 关闭活动，依然保留活动数据
 	 * @param id
 	 */
