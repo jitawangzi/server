@@ -14,6 +14,7 @@ public class PayItem {
 	private int addId;
 	/** 如果直接购买的某某东西，这个代表物品数量  */
 	private int addCount;
+	/** 订单是否已发货，不是绝对正确。 */
 	private boolean isFinish;
 	private long finishTime;
 
