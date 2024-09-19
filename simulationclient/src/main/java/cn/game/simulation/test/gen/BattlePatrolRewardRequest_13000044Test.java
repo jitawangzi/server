@@ -1,5 +1,7 @@
 package cn.game.simulation.test.gen;
 
+import org.springframework.stereotype.Component;
+
 import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,7 @@ public class BattlePatrolRewardRequest_13000044Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044.newBuilder() ; 
 		
-		
+		builder.setIsFast(true);
 		
 		return builder.build() ; 
 	}

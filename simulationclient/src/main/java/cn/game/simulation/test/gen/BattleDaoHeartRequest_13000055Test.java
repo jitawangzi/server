@@ -12,9 +12,9 @@ public class BattleDaoHeartRequest_13000055Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.newBuilder() ; 
-		
-		
+		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055.newBuilder() ;
+
+		builder.setType(3);
 		
 		return builder.build() ; 
 	}

@@ -14,7 +14,7 @@ public class DevelopRescueLvUpRequest_25000007Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpRequest_25000007.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpRequest_25000007.newBuilder() ; 
 		
-		
+		builder.setId(4001);
 		
 		return builder.build() ; 
 	}

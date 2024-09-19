@@ -12,9 +12,9 @@ public class ActivitySevenDaysCarnivalRequest_11000020Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.newBuilder() ; 
-		
-		
+		cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalRequest_11000020.newBuilder() ;
+
+		builder.setId(11);
 		
 		return builder.build() ; 
 	}

@@ -14,7 +14,7 @@ public class DevelopPotentialLvUpRequest_25000001Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialLvUpRequest_25000001.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialLvUpRequest_25000001.newBuilder() ; 
 		
-		
+		builder.setId(1001);
 		
 		return builder.build() ; 
 	}

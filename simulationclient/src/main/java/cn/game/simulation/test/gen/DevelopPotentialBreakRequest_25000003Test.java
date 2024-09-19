@@ -14,7 +14,7 @@ public class DevelopPotentialBreakRequest_25000003Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialBreakRequest_25000003.newBuilder() ; 
 		
-		
+		builder.setId(1001);
 		
 		return builder.build() ; 
 	}

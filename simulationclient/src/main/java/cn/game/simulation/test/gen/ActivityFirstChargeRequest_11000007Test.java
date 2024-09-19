@@ -12,9 +12,9 @@ public class ActivityFirstChargeRequest_11000007Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.newBuilder() ; 
-		
-		
+		cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.newBuilder() ;
+
+		builder.setId(10);
 		
 		return builder.build() ; 
 	}

@@ -12,9 +12,9 @@ public class BattleDaoHeartSweepRequest_13000064Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.newBuilder() ; 
-		
-		
+		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.newBuilder() ;
+
+		builder.setType(2);
 		
 		return builder.build() ; 
 	}

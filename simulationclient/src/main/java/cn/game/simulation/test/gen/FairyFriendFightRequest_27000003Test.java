@@ -14,7 +14,7 @@ public class FairyFriendFightRequest_27000003Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRequest_27000003.Builder builder = cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRequest_27000003.newBuilder() ; 
 		
-		
+		builder.setId(1);
 		
 		return builder.build() ; 
 	}

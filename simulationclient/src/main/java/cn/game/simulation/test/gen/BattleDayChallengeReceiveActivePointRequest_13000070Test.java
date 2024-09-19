@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.util.Rnd;
 
 @Component
 public class BattleDayChallengeReceiveActivePointRequest_13000070Test extends ServerTest{
@@ -14,7 +15,7 @@ public class BattleDayChallengeReceiveActivePointRequest_13000070Test extends Se
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.newBuilder() ; 
 		
-		
+		builder.setIndex(Rnd.nextInt(3));
 		
 		return builder.build() ; 
 	}
