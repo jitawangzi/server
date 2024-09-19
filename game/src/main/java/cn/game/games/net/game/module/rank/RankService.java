@@ -502,7 +502,9 @@ public class RankService {
 				}
 			}
 		}
-
+		if (rankConfig.ResetRank) {
+            removeRank(rankType);
+		}
 	}
 
 	private void initRewardTask(int rankId) {

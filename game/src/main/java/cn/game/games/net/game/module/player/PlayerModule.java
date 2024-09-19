@@ -2,8 +2,10 @@ package cn.game.games.net.game.module.player;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,7 +67,6 @@ public class PlayerModule extends BasePlayerModule {
 	@JsonIgnore
 	@Deprecated
 	private Map<Long, Integer> payRmbs = new HashMap<Long, Integer>();
-	@JsonIgnore
 	private Map<Long, PayItem> payItems = new HashMap<Long, PayItem>();
 	
 	/** 随机宝箱，小云宝箱 */
@@ -95,6 +96,15 @@ public class PlayerModule extends BasePlayerModule {
 //	}
 	@Override
 	public void initFromDbAfter() {
+		Iterator<Entry<Long, PayItem>> iterator = payItems.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<java.lang.Long, cn.game.games.net.game.module.recharge.PayItem> entry = (Map.Entry<java.lang.Long, cn.game.games.net.game.module.recharge.PayItem>) iterator
+					.next();
+			PayItem value = entry.getValue();
+			if (value.isFinish() && System.currentTimeMillis() - value.getFinishTime() > DateUtil.DAY_MILLIS * 10) {
+				iterator.remove();
+			}
+		}
 	};
 
 	public boolean addId(int type, int configId) {

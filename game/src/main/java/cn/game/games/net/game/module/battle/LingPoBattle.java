@@ -50,6 +50,7 @@ public class LingPoBattle extends XiYouBattleHandler {
 	 */
 	public void reset() {
 
+		player.getCurrencyModule().setCount(Asset.SpiritBattlePoint.ID, 0);
 		battleTimes = 0;
 		adsGetBattleTimes = false;
 		changeBattleTimes = 0;

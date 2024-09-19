@@ -36,8 +36,6 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	@Override
 	public void handleEvent(GameEvent event) {
 
-		player.getCurrencyModule().setCount(Asset.dailyIntegral.ID, 0);
-
 		switch (event.getType()) {
 
 		case NewDay: {

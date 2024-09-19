@@ -12,25 +12,23 @@ import "FairyFriendMsg.proto";
 
 /*** 登陆****/
 message PlayerLoginRequest_01000001{
-   string sessionId                    = 1;//登陆服产生的会话id
-   bool reconnect = 2;						// 是否是断线重连,true:断线重连，false:普通登陆
-   string verstion = 3;						// 客户端版本，如果版本不匹配不能登陆
+	string sessionId = 1; //登陆服产生的会话id
+	bool reconnect = 2; // 是否是断线重连,true:断线重连，false:普通登陆
 
-   //其他一些和BI相关的参数
-	int32 platform = 20;//平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
-    string adChannel = 30; //推广渠道id
-    string sdkPayChannel = 31; //充值渠道id ：0010安卓充值 ， 0020 IOS充值
+	//其他一些和BI相关的参数
+	string verstion = 3; // 客户端版本，如果版本不匹配不能登陆（暂时不做这个，只用在bi）
+	int32 platform = 20; //平台标示：  1	IOS APP ，2	安卓 APP ，3	IOS小游戏，4	安卓小游戏，5	window 微信小游戏，6	mac微信小游戏
+	string adChannel = 30; //推广渠道id 。  IOS广告_小程序_小程序投放 ： 4019392002   android_微信小程序_小程序 ： 2019402002
+	string sdkPayChannel = 31; //充值渠道id ：0010安卓充值 ， 0020 IOS充值
+	string sdkVersion = 40; //  SDK版本号：小游戏定死为“NULL”
+	string system = 41; //  系统: 小游戏定死“system”
+	string clue_token = 50; // 目前是在调起微信小程序时调用wx.getLaunchOptionsSync()获取到所有的参数内容并且转成Json字符串。
 
-	string sdkVersion = 40;  //  SDK版本号：小游戏定死为“NULL”
-	string system = 41;  //  系统: 小游戏定死“system”
-
-	string clue_token = 50 ; // 目前是在调起微信小程序时调用wx.getLaunchOptionsSync()获取到所有的参数内容并且转成Json字符串。
-
-//    string deviceId = 25; //设备唯一标识：MAC或者UUID或者IMEI，这里小游戏变为账号id ，即微信的openid
-//    string accountId = 26; //登录账号id，这里是微信的unionid
-// 这两个暂时用不到
-//  int32 accountType = 10; //渠道类型
-//	string sdkDeviceId = 24;
+	//    string deviceId = 25; //设备唯一标识：MAC或者UUID或者IMEI，这里小游戏变为账号id ，即微信的openid
+	//    string accountId = 26; //登录账号id，这里是微信的unionid
+	// 这两个暂时用不到
+	//  int32 accountType = 10; //渠道类型
+	//	string sdkDeviceId = 24;
 }
 
 /*** 用户登陆,返回游戏数据 ***/

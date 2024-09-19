@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,7 +22,6 @@ import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.ItemHelper;
@@ -126,9 +124,6 @@ public class Player  {
 	private transient GameClient gameClient;
 	private List<Long> timerTask = new ArrayList<>();
 	private boolean isOnline = true;
-
-	/** 支付后的操作 */
-	private Consumer<?> paymentAction;
 
 	public <T extends BasePlayerModule> T getModule(Class<? extends BasePlayerModule> clazz) {
 		return (T) this.modules.get(clazz.getName());
@@ -463,7 +458,6 @@ public class Player  {
 					payItem.setPayType(payType);
 					payItem.setPayId(id);
 					getPlayerModule().addPayItems(payItem);
-					GameLogger.recharge(this, payItem);
 				}
 			}).onFailure(r -> {
 				log.error("登录服创建充值订单失败： ", r);
@@ -605,13 +599,6 @@ public class Player  {
 		this.gameClient = gameClient;
 	}
 
-	public Consumer<?> getPaymentAction() {
-		return paymentAction;
-	}
-
-	public void setPaymentAction(Consumer<?> paymentAction) {
-		this.paymentAction = paymentAction;
-	}
 
 	public Account getAccount() {
 		return account;

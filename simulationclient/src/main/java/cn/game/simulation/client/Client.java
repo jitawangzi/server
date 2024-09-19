@@ -523,6 +523,14 @@ public class Client extends AbstractNetClient {
 					PlayerLoginRequest_01000001.Builder builder = PlayerLoginRequest_01000001.newBuilder();
 					builder.setSessionId(passportSessionId + "");
 					builder.setVerstion(version);
+					
+					builder.setAdChannel("4019392002");
+					builder.setPlatform(5);
+					builder.setSdkPayChannel("0010");
+					builder.setSdkVersion("NULL");
+					builder.setSystem("system");
+					builder.setClueToken("{}");
+					
 					sendProtocol(builder.build());
 				}
 			});
