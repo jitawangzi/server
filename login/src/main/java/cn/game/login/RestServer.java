@@ -6,6 +6,9 @@ import java.util.Set;
 import cn.game.login.net.clientpacket.vertx.VertxRegisterReq;
 import cn.game.login.net.clientpacket.vertx.VertxServerListReq;
 import cn.game.login.net.clientpacket.vertx.VertxThirdPartyConfirmReq;
+import cn.game.login.net.clientpacket.vertx.gm.GmAddIpWhitelistReq;
+import cn.game.login.net.clientpacket.vertx.gm.GmDelIpWhitelistReq;
+import cn.game.login.net.clientpacket.vertx.gm.GmIpWhitelistReq;
 import cn.game.login.net.clientpacket.vertx.gm.GmSelectOrderReq;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatShipPush;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatTest;
@@ -69,7 +72,10 @@ public class RestServer extends AbstractVerticle {
 		router.route("/wechat/ship/push").handler(new WechatShipPush());
 		router.route("/wechat/test").handler(new WechatTest());
     	router.route("/gm/order_list").handler(new GmSelectOrderReq());
-//		router.get().handler(this::handleGet2);
+    	router.route("/gm/ip_whitelist").handler(new GmIpWhitelistReq());
+    	router.route("/gm/add_ip_whitelist").handler(new GmAddIpWhitelistReq());
+    	router.route("/gm/del_ip_whitelist").handler(new GmDelIpWhitelistReq());
+	//		router.get().handler(this::handleGet2);
 		// 创建一个httpserver，监听端口，并交由路由器分发处理用户请求
 		vertx.createHttpServer().requestHandler(router::handle).listen(port);
 	}

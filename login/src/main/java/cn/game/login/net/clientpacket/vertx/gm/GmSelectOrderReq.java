@@ -5,6 +5,7 @@ import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.mapper.UserMapper;
 import cn.game.util.JsonUtil;
 import cn.game.util.SpringContextLoader;
+import com.alibaba.fastjson.JSONObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
@@ -19,7 +20,7 @@ import io.vertx.ext.web.RoutingContext;
 public class GmSelectOrderReq implements Handler<RoutingContext> {
     @Override
     public void handle(RoutingContext context) {
-        HttpServerResponse response = context.response().putHeader("content-type", "application/text");
+        HttpServerResponse response = context.response().putHeader("content-type", "application/json");
 //        String orderId = context.request().getParam("orderId"); //第三方订单id
         String selfOrderId = context.request().getParam("selfOrderId"); //自己订单id
         String playerId = context.request().getParam("playerId"); //玩家id
@@ -31,6 +32,7 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
         Integer finalPage = page;
         Integer finalPageSize = pageSize;
+        JSONObject result = getResultData();
         VxHolder.vertx.executeBlocking(future -> {
             try {
                 future.complete(mapper.selectOrderList(playerId == null ? null : Long.parseLong(playerId), status, selfOrderId, finalPage, finalPageSize));
@@ -44,10 +46,18 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
                 if (res.result() != null) {
                     resJson = JsonUtil.toJsonString(res.result());
                 }
-                response.end(resJson);
+                result.put("data", resJson);
+                response.end(result.toString());
             } else {
-                response.end("no data");
+                result.put("result","fail");
+                response.end(result.toString());
             }
         });
+    }
+
+    static JSONObject getResultData(){
+        JSONObject result = new JSONObject();
+        result.put("result","success");
+        return result;
     }
 }

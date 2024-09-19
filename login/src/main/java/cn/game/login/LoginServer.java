@@ -1,5 +1,7 @@
 package cn.game.login;
 
+import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
+import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +92,11 @@ public class LoginServer {
 		ServerListManager.getInstance().start();
 		ActiveServerListManager.getInstance().start(ServerType.Game);
 		GlobalConst.instance().load();
+
+		//白名单管理 初始化
+		IpWhitelistManger.getInstance().init();
+		//公告管理初始化
+        NoticeManger.getInstance().init();
 
 		initPlayerMaxId();
 		System.gc();

@@ -1,0 +1,58 @@
+package cn.game.games.net.data.mapper;
+
+import cn.game.games.cache.entity.IpWhitelist;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+public interface IpWhitelistMapper {
+
+	/**
+	 * @mbg.generated
+	 */
+	int deleteByPrimaryKey(Integer id);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insert(IpWhitelist row);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertSelective(IpWhitelist row);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(IpWhitelist row);
+
+	/**
+	 * @mbg.generated
+	 */
+	IpWhitelist selectByPrimaryKey(Integer id);
+
+	/**
+	 * @mbg.generated
+	 */
+	int updateByPrimaryKeySelective(IpWhitelist row);
+
+	/**
+	 * @mbg.generated
+	 */
+	int updateByPrimaryKey(IpWhitelist row);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertBatch(List<IpWhitelist> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int deleteBatch(List<IpWhitelist> records);
+
+	/**
+	 * @mbg.generated
+	 */
+	int updateBatch(@Param("recordList") List<IpWhitelist> recordList);
+}
