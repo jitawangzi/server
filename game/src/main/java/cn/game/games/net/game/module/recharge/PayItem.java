@@ -14,6 +14,13 @@ public class PayItem {
 	private int addId;
 	/** 如果直接购买的某某东西，这个代表物品数量  */
 	private int addCount;
+	private boolean isFinish;
+	private long finishTime;
+
+	public void finish() {
+		this.isFinish = true;
+		this.finishTime = System.currentTimeMillis();
+	}
 
 	public long getOrderId() {
 		return orderId;
@@ -61,6 +68,22 @@ public class PayItem {
 
 	public void setAddCount(int addCount) {
 		this.addCount = addCount;
+	}
+
+	public boolean isFinish() {
+		return isFinish;
+	}
+
+	public void setFinish(boolean isFinish) {
+		this.isFinish = isFinish;
+	}
+
+	public long getFinishTime() {
+		return finishTime;
+	}
+
+	public void setFinishTime(long finishTime) {
+		this.finishTime = finishTime;
 	}
 
 }

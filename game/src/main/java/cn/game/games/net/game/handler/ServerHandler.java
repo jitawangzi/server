@@ -17,6 +17,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.remote.DataGameServerInterface;
 import cn.game.games.net.game.db.DbTask;
@@ -119,7 +120,8 @@ public class ServerHandler extends BaseHandler {
 				client.sendProtocol(resp.build());
 				PayItem payItem = player.getPlayerModule().getPayItems(uid);
 				player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
-				
+				payItem.finish();
+				GameLogger.recharge(player, payItem);
 			});
 		}
 	}
