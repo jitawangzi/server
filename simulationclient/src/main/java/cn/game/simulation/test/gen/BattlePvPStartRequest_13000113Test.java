@@ -1,6 +1,7 @@
 package cn.game.simulation.test.gen;
 
 import com.google.protobuf.Message;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.stereotype.Component;
 
 import cn.game.simulation.client.Client;
@@ -12,10 +13,16 @@ public class BattlePvPStartRequest_13000113Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattlePvPStartRequest_13000113.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPStartRequest_13000113.newBuilder() ; 
-		
-		builder.setTargetId("1");
-		
+		cn.game.protocol.protobuf.BattleMsg.BattlePvPStartRequest_13000113.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPStartRequest_13000113.newBuilder() ;
+
+		long targetPid = 1;
+		if (client.getTargetListResponse() != null && client.getTargetListResponse().getTargetListCount() > 0){
+			int index = RandomUtils.nextInt(client.getTargetListResponse().getTargetListCount());
+			targetPid = Long.parseLong(client.getTargetListResponse().getTargetList(index).getId());
+			client.setInPvPBattle(targetPid);
+		}
+		builder.setTargetId(targetPid+"");
+
 		return builder.build() ; 
 	}
 	

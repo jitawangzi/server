@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 
 import javax.net.ssl.SSLException;
 
+import cn.game.protocol.protobuf.BattleMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -154,6 +155,9 @@ public class Client extends AbstractNetClient {
 	/** 玩家数据 **/
 	private PlayerAllInfo playerAllInfo;
 
+	private BattleMsg.BattlePvPTargetListResponse_13000112 targetListResponse ;
+	private long inPvPBattlePid;
+
 	// 位置，要么在房间中，要么在层地图中
 //	ExploreRoomInfo room; // 所在房间
 //	ExploreMapInfo floor; // 层地图数据
@@ -176,6 +180,7 @@ public class Client extends AbstractNetClient {
 
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
+
 
 	public static Client getClient(int callback) {
 		String string = callbacks.get(callback);
@@ -775,7 +780,27 @@ public class Client extends AbstractNetClient {
 
 //	}
 
-//	@Override
+	public BattleMsg.BattlePvPTargetListResponse_13000112 getTargetListResponse() {
+		return targetListResponse;
+	}
+
+	public void setTargetListResponse(BattleMsg.BattlePvPTargetListResponse_13000112 targetListResponse) {
+		this.targetListResponse = targetListResponse;
+	}
+
+	public boolean isInPvPBattle() {
+		return inPvPBattlePid > 0;
+	}
+
+	public void setInPvPBattle(long inPvPBattlePid) {
+		this.inPvPBattlePid = inPvPBattlePid;
+	}
+
+	public String getinPvPBattlePid() {
+		return inPvPBattlePid+"";
+	}
+
+	//	@Override
 //	public String getIp() {
 //		return null;
 //	}
