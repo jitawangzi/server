@@ -14,6 +14,7 @@ import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
@@ -28,6 +29,7 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.RechargeConfig;
+import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
@@ -38,6 +40,7 @@ import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -67,6 +70,7 @@ import cn.game.protocol.protobuf.ShopMsg.ShopItemListResponse_15000002;
 import cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022;
 import cn.game.protocol.protobuf.ShopMsg.ShopRechargeResponse_15000023;
 import cn.game.util.DateUtil;
+import cn.game.util.IntMapWrapper;
 import io.vertx.core.Future;
 
 @Component
@@ -149,13 +153,20 @@ public class ShopHandler extends BaseHandler {
 	private void heishiRefresh(NetClient client, Object message) {
 		ShopHeishiRefreshRequest_15000005 req = (ShopHeishiRefreshRequest_15000005) message;
 		ShopHeishiRefreshResponse_15000006.Builder resp = ShopHeishiRefreshResponse_15000006.newBuilder();
+		int shopId = req.getShopId();
+		ShopConfig shopConfig = ShopManager.instance().get(shopId);
+		if (shopConfig.Type != 2) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		if (!player.isFuncOpen(InitialUI.Shop)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
 			return;
 		}
 		ShopModule shopModule = player.getShopModule();
-		int heishiRefreshTimes = shopModule.getHeishiRefreshTimes();
+		IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
+		int heishiRefreshTimes = heishiRefreshTimesMap.getValue(shopId);
 		int heishiPayTimes = heishiRefreshTimes - GlobalConst.HeishiFreeRefresh;
 		if (heishiRefreshTimes < GlobalConst.HeishiFreeRefresh) {
 			player.handleEvent(EventTypeEnum.WatchAds);
@@ -170,8 +181,9 @@ public class ShopHandler extends BaseHandler {
 				return;
 			}
 		}
-		shopModule.setHeishiRefreshTimes(heishiRefreshTimes + 1);
-		shopModule.refreshHeishiItems();
+		heishiRefreshTimesMap.add(shopId);
+//		shopModule.setHeishiRefreshTimes(heishiRefreshTimes + 1);
+		shopModule.refreshHeishiItems(shopId);
 
 		List<ShopItem> shopItems = shopModule.getShopItems(2);
 		for (ShopItem shopItem : shopItems) {
@@ -312,7 +324,7 @@ public class ShopHandler extends BaseHandler {
 			player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
 			resp.addAllRewards(resources);
 			client.sendProtocol(resp);
-//			GameLogger.shoptrade(player, null, null, shopId, shopId, itemId);
+			GameLogger.shoptrade(player, shopId, itemId);
 
 			if (shopId == 12 || shopId == 13 || shopId == 14) {
 //				GameLogger.acti

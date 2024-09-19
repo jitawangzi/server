@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Message;
-import org.springframework.stereotype.Component;
 
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
@@ -19,7 +18,7 @@ public class BattleFieldStartRequest_13000001Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001.newBuilder() ; 
-		builder.setType(21);
+		builder.setType(1);
 
 		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(1);
 		if (battleTypeList != null) {

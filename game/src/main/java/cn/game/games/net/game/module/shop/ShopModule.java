@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.game.core.base.ServerContext;
-import cn.game.protocol.generated.manager.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
@@ -27,11 +27,19 @@ import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.FundPassManager;
+import cn.game.protocol.generated.manager.HeishiManager;
+import cn.game.protocol.generated.manager.HunhuoManager;
+import cn.game.protocol.generated.manager.RechargeStoreManager;
+import cn.game.protocol.generated.manager.ResidentPackManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
 import cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo;
 import cn.game.util.DateUtil;
+import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
 public class ShopModule extends BasePlayerModule {
@@ -44,7 +52,10 @@ public class ShopModule extends BasePlayerModule {
 	private Multimap<Integer, ShopItem> shopItemsMap = ArrayListMultimap.create();
 	/** 通行证里领完的奖励,key: 通行证id，购买过的 */
 	private Map<Integer, List<Integer>> fundPassRewardsMap = new HashMap<Integer, List<Integer>>();
+	@Deprecated
+	@JsonIgnore
 	private int heishiRefreshTimes;
+	private IntMapWrapper heishiRefreshTimesMap = new IntMapWrapper();
 	
 	/** 上次免费看广告开宝箱时间 */
 	private int lastFreeOpenBoxTime;
@@ -154,16 +165,16 @@ public class ShopModule extends BasePlayerModule {
 	}*/
 
 
-	public int getHeishiRefreshTimes() {
-		return heishiRefreshTimes;
-	}
-
-	public void setHeishiRefreshTimes(int heishiRefreshTimes) {
-		this.heishiRefreshTimes = heishiRefreshTimes;
-	}
-
 	public int getLastFreeOpenBoxTime() {
 		return lastFreeOpenBoxTime;
+	}
+
+	public IntMapWrapper getHeishiRefreshTimesMap() {
+		return heishiRefreshTimesMap;
+	}
+
+	public void setHeishiRefreshTimesMap(IntMapWrapper heishiRefreshTimesMap) {
+		this.heishiRefreshTimesMap = heishiRefreshTimesMap;
 	}
 
 	public void setLastFreeOpenBoxTime(int lastFreeOpenBoxTime) {
@@ -206,8 +217,9 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 		// 刷新黑市
-		refreshHeishiItems();
+		refreshHeishiItems(0);
 		heishiRefreshTimes = 0;
+		heishiRefreshTimesMap.clear();
 		// 刷新金币、钻石商店
 		Collection<RechargeStoreConfig> rechargeStore = RechargeStoreManager.instance().list();
 		for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
@@ -228,21 +240,39 @@ public class ShopModule extends BasePlayerModule {
 		refreshShopByShopType(shop);
 	}
 
-	public void refreshHeishiItems() {
-		// 刷新黑市
-		int shop = 2;
-		shopItemsMap.removeAll(shop);
+	/** 
+	 * 刷新指定id的黑市，如果不指定id，则刷新所有
+	 * @param shopId 
+	 */
+	public void refreshHeishiItems(int shopId) {
+		Collection<ShopConfig> shops = ShopManager.instance().list();
+		for (ShopConfig shopConfig : shops) {
+			if (shopConfig.Type != 2) {
+				continue;
+			}
+			if (shopId > 0 && shopConfig.ID != shopId) {
+				continue;
+			}
+			// 刷新黑市
+			int shop = shopConfig.ID;
+			shopItemsMap.removeAll(shop);
 
-		List<HeishiConfig> typeList = HeishiManager.instance().getTypeList(1);
-		int fixCount = typeList.size();
-		for (HeishiConfig heishiConfig : typeList) {
-			shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
-		}
+			List<HeishiConfig> typeList = HeishiManager.instance().getShopIDTypeList(shop, 1);
+			if (typeList == null) {
+				continue;
+			}
+			int fixCount = typeList.size();
+			for (HeishiConfig heishiConfig : typeList) {
+				shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
+			}
 
-		typeList = HeishiManager.instance().getTypeList(2);
-		List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd.randomWeighableElementsNonRepeating(typeList, GlobalConst.HeishiShelvesCnt - fixCount);
-		for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
-			shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
+			typeList = HeishiManager.instance().getShopIDTypeList(shop, 2);
+			List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd
+					.randomWeighableElementsNonRepeating(typeList, GlobalConst.HeishiShelvesCnt - fixCount);
+			for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
+				shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
+			}
+
 		}
 	}
 
@@ -345,7 +375,8 @@ public class ShopModule extends BasePlayerModule {
 			fb.addAllRewardIds(v);
 			builder.addFundPass(fb.build());
 		});
-		builder.setHeishiFreshTimes(heishiRefreshTimes);
+		builder.putAllHeishiFreshTimes(heishiRefreshTimesMap.getMap());
+//		builder.setHeishiFreshTimes(heishiRefreshTimes);
 		int remaining = lastFreeOpenBoxTime + GlobalConst.BoxAdvertTime * 60 * 60 - DateUtil.currentTimeSeconds();
 		if (remaining < 0) {
 			remaining = 0;

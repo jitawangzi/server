@@ -13,5 +13,10 @@ public class GG2 {
 		System.out.println();
 		System.out.println(Long.MAX_VALUE);
 
+//		System.out.println(Integer.parseInt("922746882", 16));
+
+//		System.out.println(0x55001501);
+		System.out.println(Integer.toHexString(922746882));
+
 	}
 }

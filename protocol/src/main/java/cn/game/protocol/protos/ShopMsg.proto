@@ -33,6 +33,7 @@ message ShopItemBuyResponse_15000004{
 
 //手动刷新黑市请求
 message ShopHeishiRefreshRequest_15000005{
+	int32 shopId = 1;  // 刷新的Shop表id，目前只有类型是2的商店可以手动刷新。
 }
 
 message ShopHeishiRefreshResponse_15000006{

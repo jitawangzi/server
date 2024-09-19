@@ -251,7 +251,12 @@ public class ServerTestContext {
 				if (client.getLastSendMessageTime() > 0 && System.currentTimeMillis() - client.getLastSendMessageTime() < botSendInterval) {
 					continue;
 				}
-				Message message = beansMap.get(CSVMessagesReader.randomMessage()).getMessage(client);
+				String randomMessage = CSVMessagesReader.randomMessage();
+				ServerTest serverTest = beansMap.get(randomMessage);
+				if (serverTest == null) {
+					throw new IllegalArgumentException("test message not found : " + randomMessage);
+				}
+				Message message = serverTest.getMessage(client);
 				if (message != null) {
 					client.sendProtocol(message);
 					lastSendTime = System.currentTimeMillis();

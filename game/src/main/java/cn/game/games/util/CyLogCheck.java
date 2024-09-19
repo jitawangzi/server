@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class CyLogCheck {
 	public static final char delimiter = 0x01;
-	public static final String dir = "d:\\log";
+	public static final String dir = "C:\\work_all\\work\\server\\logs\\cylog\\SYQ";
 
 	public static void main(String[] args) throws IOException {
 		long start = System.currentTimeMillis();

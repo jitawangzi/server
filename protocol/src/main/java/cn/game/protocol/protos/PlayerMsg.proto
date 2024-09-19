@@ -318,7 +318,7 @@ message PlayerAllInfo{
    bool monthCardDoubleBonus = 42 ; 			// 是否可以领取双月卡奖励。
    repeated uint32 chapterPacks  = 41;        //购买过的章节礼包id(ChapterPacks表)
    repeated FundPassInfo fundPass  = 44;        //领过的通行证奖励
-   int32 heishiFreshTimes = 46;        //黑市手动刷新次数
+   map<uint32, uint32> heishiFreshTimes = 46;        //黑市手动刷新次数,key shop表id
    repeated string freeDayRentHeros = 47;  //免费日租卡的英雄id
    string freeDayRentHeroUid = 49; // 当前选择使用的日租卡英雄唯一id。
 

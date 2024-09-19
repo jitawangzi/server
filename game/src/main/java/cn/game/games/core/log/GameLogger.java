@@ -309,10 +309,10 @@ public class GameLogger extends Logger {
 				step = "B8212";
 			}
 			Object[] array = new Object[] { LoggerType
-					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.gethero.name(), LoggerType.gethero.version, step)),
+					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.heroraise.name(), LoggerType.heroraise.version, step)),
 					hero.getConfigId(), operatetype, addvalue <= 0 ? 1 : addvalue, endvalue, beforeCombat, afterCombat,
 					player.getAccount().getPlatform() };
-			LoggerType.gethero.logger.info(LoggerType.splice(array));
+			LoggerType.heroraise.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
