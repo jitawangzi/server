@@ -1,9 +1,9 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
-import cn.game.games.cache.entity.IpWhitelist;
-import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.util.DAO;
+import cn.game.login.cache.entity.IpWhitelist;
+import cn.game.login.mapper.IpWhitelistMapper;
 import cn.game.util.DateUtil;
+import cn.game.util.SpringContextLoader;
 
 import java.util.Date;
 import java.util.List;
@@ -11,7 +11,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @ClassName IpWhitelistManger
- *
  * @description: IP 白名单
  * @author: ly
  * @create: 2024-09-19 15:03 @Version 1.0
@@ -19,6 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class IpWhitelistManger {
     private final static IpWhitelistManger instance = new IpWhitelistManger();
     List<IpWhitelist> ipWhitelistList = new CopyOnWriteArrayList<>();
+    IpWhitelistMapper mapper;
 
     private IpWhitelistManger() {
     }
@@ -40,13 +40,12 @@ public class IpWhitelistManger {
         }
         IpWhitelist ipWhitelist = new IpWhitelist();
         ipWhitelist.setIp(ip);
+        ipWhitelist.setCreateTimer(new Date());
         ipWhitelist.setFailTimer(new Date(expireTime));
-        DAO.insert(ipWhitelist).onSuccess(result -> {
-            ipWhitelistList.add(ipWhitelist);
-            //TODO  RPC 通知其他 login 节点
-        }).onFailure(throwable -> {
-            throwable.printStackTrace();
-        });
+
+        mapper.insert(ipWhitelist);
+        refreshIpWhitelistList();
+        //TODO  RPC 通知其他 login 节点
         return true;
     }
 
@@ -65,11 +64,8 @@ public class IpWhitelistManger {
         for (IpWhitelist ipWhitelist : ipWhitelistList) {
             if (ipWhitelist.getIp().equals(ip)) {
                 ipWhitelistList.remove(ipWhitelist);
-                DAO.delete(ipWhitelist).onSuccess(result -> {;
-                    //TODO  RPC 通知其他 login 节点
-                }).onFailure(throwable -> {
-                    throwable.printStackTrace();
-                });
+                mapper.deleteByPrimaryKey(ipWhitelist.getId());
+                //TODO  RPC 通知其他 login 节点
                 return true;
             }
         }
@@ -81,26 +77,24 @@ public class IpWhitelistManger {
     }
     
     public void init(){
+        mapper = SpringContextLoader.getContext().getBean(IpWhitelistMapper.class);
         refreshIpWhitelistList();
+
     }
 
     public void refreshIpWhitelistList() {
-        DAO.execute(IpWhitelist.class, MapperConstant.selectAll).onSuccess(result -> {
-            List<IpWhitelist> allList = (List<IpWhitelist>) result;
-            if (allList != null){
-                long now = System.currentTimeMillis();
-                allList.removeIf(ipWhitelist -> {
-                    boolean delFlag = ipWhitelist.getFailTimer().getTime() < now;
-                    if (delFlag){
-                        DAO.delete(ipWhitelist);
-                    }
-                    return delFlag;
-                });
-                ipWhitelistList.clear();
-                this.ipWhitelistList.addAll(allList);
-            }
-        }).onFailure(throwable -> {
-            throwable.printStackTrace();
-        });
+        List<IpWhitelist> allList = mapper.selectAll();
+        if (allList != null){
+            long now = System.currentTimeMillis();
+            allList.removeIf(ipWhitelist -> {
+                boolean delFlag = ipWhitelist.getFailTimer().getTime() < now;
+                if (delFlag){
+                    mapper.deleteByPrimaryKey(ipWhitelist.getId());
+                }
+                return delFlag;
+            });
+            ipWhitelistList.clear();
+            this.ipWhitelistList.addAll(allList);
+        }
     }
 }

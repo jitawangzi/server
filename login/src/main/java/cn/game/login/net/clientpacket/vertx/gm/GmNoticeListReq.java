@@ -6,18 +6,18 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
 /**
- * @ClassName GmIpWhitelistReq
+ * @ClassName GmNoticeListReq
  *
- * @description: GM IP白名单查询接口
+ * @description:
  * @author: ly
- * @create: 2024-09-19 15:34 @Version 1.0
+ * @create: 2024-09-19 19:14 @Version 1.0
  */
-public class GmIpWhitelistReq implements Handler<RoutingContext> {
+public class GmNoticeListReq implements Handler<RoutingContext> {
     @Override
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
         JSONObject result = GmSelectOrderReq.getResultData();
-        result.put("data",  IpWhitelistManger.getInstance().getIpWhitelistList());
+        result.put("data", NoticeManger.getInstance().getNoticeList());
         response.end(result.toString());
     }
 }

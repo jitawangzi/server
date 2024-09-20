@@ -142,6 +142,8 @@ public enum ErrorMsgEnum {
 	da_dao_play_num_not_enough(399, "今日大道争锋挑战次数已经用完"),
 	da_dao_not_found_target_Player(400, "大道争锋要挑战的目标不存在"),
 	da_dao_in_battle(401, "大道争锋要挑战正在进行中，不可再次挑战"),
+	da_dao_refresh_is_max(402, "大道争锋刷新次数已经达到最大"),
+	da_dao_free_refresh_is_max(403, "大道争锋免费刷新次数已经用完"),
 
 	;
 
