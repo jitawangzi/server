@@ -55,7 +55,7 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	 * 增加一个道具数量
 	 */
 	@Override
-	public T add(int itemId, int count, OpType opType) {
+	public Object add(int itemId, int count, OpType opType) {
 		if (count <= 0) {
 			return null;
 		}
@@ -76,7 +76,10 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 //		if (itemConfig.getIsAutoUse()) {
 //			ItemHelper.autoUse(playerId, itemId, count);
 //		}
-		return item;
+		Item addItem = new Item();
+		addItem.setConfigId(itemId);
+		addItem.setCount((long) count);
+		return addItem;
 	}
 
 	/**

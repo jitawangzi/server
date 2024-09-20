@@ -33,6 +33,7 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 
 	/** 
 	 * 返回新增的物品，注意可重叠的物品。 
+	 * 新增的物品，一般是做显示用的，不要直接用于逻辑
 	 * @param configId
 	 * @param count
 	 * @param opType
@@ -99,7 +100,6 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 		}
 		return list;
 	}
-
 
 	public Object add(int configId, OpType opType) {
 		return add(configId, 1, opType);
