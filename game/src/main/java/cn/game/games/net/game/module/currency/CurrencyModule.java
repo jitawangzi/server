@@ -221,7 +221,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		Collection<ItemConfig> list = ItemManager.instance().list();
 		for (ItemConfig itemConfig : list) {
 			int itemType = itemConfig.ItemType;
-			if (itemType == 1 || itemType == 2 || itemType == 3) {
+			if (itemType == 1 || itemType == 2 || itemType == 3 || itemType == 10) {
 				itemModule.add(itemConfig.ID, Integer.MAX_VALUE / 2, OpType.PressureTest);
 			}
 		}

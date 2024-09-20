@@ -78,6 +78,9 @@ public class FairyFriendHandler extends BaseHandler {
 			int randomIndex = Rnd.randomIndex(config.FairyListIDWeight);
 			int fairyId = config.FairyListID[randomIndex];
 			FairyFriend fairyFriend = module.get(fairyId);
+			if (fairyFriend == null) {
+				continue;
+			}
 			int[] exp = PlayerHelper.addExp(Asset.Favorability.ID, fairyId, fairyFriend.getLevel(), fairyFriend.getExp(), expAdd);
 			fairyFriend.setExp(exp[0]);
 			fairyFriend.setLevel(exp[1]);

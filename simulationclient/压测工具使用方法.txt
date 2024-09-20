@@ -14,8 +14,8 @@
 开始： 
     单开： 进入工具目录，env.properties中配置好参数后，运行run.sh。 
     多开：
-         方式1：复制整个工具目录， 修改env.properties，运行run.sh。 
-         方式2：run.sh 后面增加参数，env.properties里面的参数都可以通过参数的方式配置，参数之间用空格隔开，注意顺序，例如： 
+         方式1：不同目录多个窗口。复制整个工具目录， 修改env.properties，运行run.sh。 
+         方式2：同一目录多个窗口。 run.sh 后面增加参数，env.properties里面的参数都可以通过参数的方式配置，参数之间用空格隔开，注意顺序，例如： 
 
 	 sh run.sh 120000 100 50 10 500 5 15 
 	 

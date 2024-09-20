@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 
 import javax.net.ssl.SSLException;
 
-import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,7 +185,8 @@ public class ServerTestContext {
 		Map<String, ServerTest> beansRead = SpringContextLoader.getContext().getBeansOfType(ServerTest.class, true, true);
 		Map<String, ServerTest> beansMap = new HashMap<String, ServerTest>();
 		beansRead.forEach((k, v) -> {
-			beansMap.put(WordUtils.capitalize(k).substring(0, k.length() - 4), v);
+//			beansMap.put(WordUtils.capitalize(k).substring(0, k.length() - 4), v);
+			beansMap.put(k.substring(0, k.length() - 4).toLowerCase(), v);
 		});
 		Iterator<String> ipIterator = null;
 		if (sourceIps != null) {
@@ -252,7 +252,7 @@ public class ServerTestContext {
 					continue;
 				}
 				String randomMessage = CSVMessagesReader.randomMessage();
-				ServerTest serverTest = beansMap.get(randomMessage);
+				ServerTest serverTest = beansMap.get(randomMessage.toLowerCase());
 				if (serverTest == null) {
 					throw new IllegalArgumentException("test message not found : " + randomMessage);
 				}

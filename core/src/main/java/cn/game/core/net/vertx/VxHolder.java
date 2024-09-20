@@ -96,7 +96,7 @@ public class VxHolder {
 		VertxOptions options = new VertxOptions().setClusterManager(zookeeperClusterManager).setEventBusOptions(
 				eventBusOptions);
 		options.setMetricsOptions(new DropwizardMetricsOptions().setEnabled(true).setJmxEnabled(true).setJmxDomain("vertx-metrics"));
-		if (ServerContext.getInstance().getRunMode().isTest()) {
+		if (!ServerContext.getInstance().getRunMode().isProduction()) {
 			options.setBlockedThreadCheckInterval(Integer.MAX_VALUE);
 		}
 		options.setInternalBlockingPoolSize(32);

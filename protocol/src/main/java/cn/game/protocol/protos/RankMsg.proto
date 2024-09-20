@@ -21,7 +21,7 @@ message RankListResponse_35000002{
 
 message RankInfo{
 	int32 rank = 1; // 我的排名，-1或0表示没有进入排行榜，没有名次
-	string score = 2; // 我的积分
+	string score = 2;  //我的积分，参与排行的分数，例如等级数、战力值、关卡id等等。
 	repeated PlayerRankInfo players = 3;
 }
 

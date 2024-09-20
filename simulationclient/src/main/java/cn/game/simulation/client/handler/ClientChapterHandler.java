@@ -1,5 +1,7 @@
 package cn.game.simulation.client.handler;
 
+import org.springframework.stereotype.Component;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.protocol.protobuf.BattleMsg;
@@ -13,6 +15,7 @@ import cn.game.simulation.client.Client;
  * @author: ly
  * @create: 2024-09-19 17:18 @Version 1.0
  */
+@Component
 public class ClientChapterHandler extends BaseHandler {
     @Override
     protected void inititialize() {
