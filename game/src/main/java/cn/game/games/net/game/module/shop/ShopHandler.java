@@ -185,7 +185,7 @@ public class ShopHandler extends BaseHandler {
 //		shopModule.setHeishiRefreshTimes(heishiRefreshTimes + 1);
 		shopModule.refreshHeishiItems(shopId);
 
-		List<ShopItem> shopItems = shopModule.getShopItems(2);
+		List<ShopItem> shopItems = shopModule.getShopItems(shopId);
 		for (ShopItem shopItem : shopItems) {
 			resp.addItems(shopItem.toProto());
 		}

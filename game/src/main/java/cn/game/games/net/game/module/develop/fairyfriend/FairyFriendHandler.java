@@ -77,6 +77,10 @@ public class FairyFriendHandler extends BaseHandler {
 			// 经验奖励
 			int randomIndex = Rnd.randomIndex(config.FairyListIDWeight);
 			int fairyId = config.FairyListID[randomIndex];
+			// 通用奖励
+			List<RewardInfo> reward = PlayerHelper.addReward(player, config.RandomID, OpType.FairyFriend);
+			resp.addAllReward(reward);
+			resp.addTravelId(config.ID);
 			FairyFriend fairyFriend = module.get(fairyId);
 			if (fairyFriend == null) {
 				continue;
@@ -85,10 +89,6 @@ public class FairyFriendHandler extends BaseHandler {
 			fairyFriend.setExp(exp[0]);
 			fairyFriend.setLevel(exp[1]);
 			updateFairyFriends.compute(fairyFriend, (k, v) -> v == null ? expAdd : v + expAdd);
-			// 通用奖励
-			List<RewardInfo> reward = PlayerHelper.addReward(player, config.RandomID, OpType.FairyFriend);
-			resp.addAllReward(reward);
-			resp.addTravelId(config.ID);
 		}
 		updateFairyFriends.forEach((k, v) -> {
 			resp.addFavorabilityCount(v);
