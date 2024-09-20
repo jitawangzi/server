@@ -1251,10 +1251,6 @@ public class PlayerHelper {
 		return  RedisLocalCache.getInstance().putAsync(key, new SimplePlayer(player));
 	}
 
-
-
-
-
 	public static Future<Player> saveSimplePlayer(Player player) {
 		Future<Void> future = saveSimplePlayerToRedis(player);
 		return future.map(player);

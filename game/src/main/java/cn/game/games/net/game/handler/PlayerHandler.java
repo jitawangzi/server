@@ -800,7 +800,7 @@ public class PlayerHandler extends BaseHandler {
 				if (!isReallyReconnect) {
 					loadOrCreatePlayerData(uid, account, newGameClient)
 							.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
-							.compose(PlayerHelper::saveSimplePlayer)
+//							.compose(PlayerHelper::saveSimplePlayer)
 							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
@@ -841,7 +841,9 @@ public class PlayerHandler extends BaseHandler {
 
 	private Future<Player> handlePlayerData(PlayerData playerData, Account account, GameClient client) {
 		if (playerData.isNew()) {
-			return PlayerHelper.initPlayerData(PlayerHelper.createPlayer(playerData, account, client));
+			return PlayerHelper
+					.initPlayerData(PlayerHelper.createPlayer(playerData, account, client))
+					.compose(PlayerHelper::saveSimplePlayer);
 		}
 		return handleExistingPlayer(playerData, account, client);
 	}
