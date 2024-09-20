@@ -366,7 +366,7 @@ public class Player  {
 	 * @param id 配置表id
 	 * @return
 	 */
-	public GoodsModule getGoodsModule(int id) {
+	public GoodsModule<? extends Item, ? extends Item> getGoodsModule(int id) {
 		int goodsType = ItemHelper.getGoodsType(id);
 		return this.goodsModules.get(goodsType);
 	}
