@@ -75,6 +75,7 @@ public class RestServer extends AbstractVerticle {
     	router.route("/gm/addNotice").handler(new GmAddNoticeReq());
     	router.route("/gm/delNotice").handler(new GmDelNoticeReq());
     	router.route("/gm/NoticeList").handler(new GmNoticeListReq());
+    	router.route("/gm/optList").handler(new GmOptListReq());
 	//		router.get().handler(this::handleGet2);
 		// 创建一个httpserver，监听端口，并交由路由器分发处理用户请求
 		vertx.createHttpServer().requestHandler(router::handle).listen(port);

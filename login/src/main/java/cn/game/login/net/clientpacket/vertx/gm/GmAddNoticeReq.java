@@ -1,5 +1,6 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import cn.game.login.net.handler.LoginServerHandler;
 import com.alibaba.fastjson.JSONObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
@@ -45,6 +46,6 @@ public class GmAddNoticeReq implements Handler<RoutingContext> {
         }
         result.put("data", NoticeManger.getInstance().addNotice(id == null ? 0 : id, tab, title, text, startTime, endTime, orderNum == null ? 999 : orderNum));
         response.end(result.toString());
-
+        LoginServerHandler.addGmOptRecord("addNotice", reqBody.toString(),result.getString("data"),"");
     }
 }

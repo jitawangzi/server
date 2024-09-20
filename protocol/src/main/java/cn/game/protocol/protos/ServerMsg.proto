@@ -112,6 +112,17 @@ message GameGmPlayerInfoResponse_7d000051{
 	GmPlayerInfo player = 1;
 }
 
+//game 通知 login 记录gm操作日志
+message GmOptRecordRequest_7d000052{
+	string optmsg = 1;
+	string	opt_param = 2;
+	string opt_result = 3;
+	string optPid = 4;
+}
+message GmOptRecordResponse_7d000053{
+	bool result = 1;
+}
+
 // ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 
 // Game向Cross发数据，请求转发消息给指定玩家

@@ -1,5 +1,6 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import cn.game.login.net.handler.LoginServerHandler;
 import com.alibaba.fastjson.JSONObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
@@ -27,6 +28,8 @@ public class GmAddIpWhitelistReq implements Handler<RoutingContext> {
         }
         result.put("data", IpWhitelistManger.getInstance().addIpWhitelist(ip, failTime));
         response.end(result.toString());
+        LoginServerHandler.addGmOptRecord("addIpWhiteList", ip,result.getString("data"),"");
+
     }
     private static final String IPV4_REGEX =
             "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";

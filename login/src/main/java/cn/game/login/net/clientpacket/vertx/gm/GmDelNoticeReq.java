@@ -1,5 +1,6 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import cn.game.login.net.handler.LoginServerHandler;
 import com.alibaba.fastjson.JSONObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
@@ -25,5 +26,6 @@ public class GmDelNoticeReq implements Handler<RoutingContext> {
         }
         result.put("data", NoticeManger.getInstance().delNotice(Integer.parseInt(id)));
         response.end(result.toString());
+        LoginServerHandler.addGmOptRecord("delNotice", "删除公告id: "+ id,"结果: "+ result.getString("data"),"");
     }
 }

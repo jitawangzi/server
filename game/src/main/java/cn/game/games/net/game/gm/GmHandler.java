@@ -12,7 +12,9 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.util.DAO;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GmMsg;
+import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.JsonUtil;
+import cn.game.util.ServerType;
 import com.google.protobuf.Message;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
@@ -287,19 +289,23 @@ public class GmHandler extends BaseHandler {
     } else {
       client.sendProtocol(response);
     }
-    GmOpt gmOpt = new GmOpt();
-    gmOpt.setCreateTime(new Date());
-    gmOpt.setOptParam(request.toString());
-    gmOpt.setOptmsg(optMsg);
-    gmOpt.setOptpid(
-        client.getPlayerId()
-            + ":"
-            + PlayerManager.getInstance().getPlayer(client.getPlayerId()).getData().getName());
-    gmOpt.setOptResult(errMsg == null ? response.toString() : errMsg.getDesc());
-    DAO.insert(gmOpt);
+    String result = errMsg == null ? response.toString() : errMsg.getDesc();
+    ServerMsg.GmOptRecordRequest_7d000052.Builder req =
+        ServerMsg.GmOptRecordRequest_7d000052.newBuilder();
+    req.setOptmsg(optMsg)
+        .setOptParam(request.toString())
+        .setOptPid(
+            client.getPlayerId()
+                + ":"
+                + PlayerManager.getInstance().getPlayer(client.getPlayerId()).getData().getName())
+        .setOptResult(result);
+    VxHolder.requestRemoteServer(ServerType.Login, req.build())
+        .onComplete(r -> {})
+        .onFailure(
+            e -> {
+              e.printStackTrace();
+            });
   }
-
-
 
   private void shutdown(NetClient client, Object message) {
     CompletableFuture.runAsync(
@@ -325,15 +331,20 @@ public class GmHandler extends BaseHandler {
         GmAccountForbidResponse_77000006.newBuilder();
     String reason = request.getReason();
     long unblockTime = request.getEndTime();
-    request.getPlayerIdList().forEach(playerId ->{
-      ForbidAccount forbidAccount = PlayerManager.getInstance().forbidAccount(Long.parseLong(playerId), reason, unblockTime * 1000L + "");
-      if (forbidAccount != null){
-        //TODO 通知其他game节点添加封号记录
-        sendAndRecordOpt(client,request,response.build());
-      }else {
-        sendAndRecordOpt(client,request,response.build(), ErrorMsgEnum.unknown, reason);
-      }
-    });
+    request
+        .getPlayerIdList()
+        .forEach(
+            playerId -> {
+              ForbidAccount forbidAccount =
+                  PlayerManager.getInstance()
+                      .forbidAccount(Long.parseLong(playerId), reason, unblockTime * 1000L + "");
+              if (forbidAccount != null) {
+                // TODO 通知其他game节点添加封号记录
+                sendAndRecordOpt(client, request, response.build());
+              } else {
+                sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.unknown, reason);
+              }
+            });
   }
 
   /** 解封账号 */
@@ -341,11 +352,14 @@ public class GmHandler extends BaseHandler {
     GmAccountUnblockRequest_77000007 request = (GmAccountUnblockRequest_77000007) message;
     GmAccountUnblockResponse_77000008.Builder response =
         GmAccountUnblockResponse_77000008.newBuilder();
-    request.getPlayerIdList().forEach(playerId ->{
-      PlayerManager.getInstance().unblockAccount(Long.parseLong(playerId));
-      //TODO 通知其他game节点删除封号记录
-      sendAndRecordOpt(client,request,response.build());
-    });
+    request
+        .getPlayerIdList()
+        .forEach(
+            playerId -> {
+              PlayerManager.getInstance().unblockAccount(Long.parseLong(playerId));
+              // TODO 通知其他game节点删除封号记录
+              sendAndRecordOpt(client, request, response.build());
+            });
   }
 
   /** 踢玩家下线 */

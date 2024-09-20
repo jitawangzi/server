@@ -48,8 +48,19 @@ public class OfflineBattleModule extends BasePlayerModule {
    */
   long lastRewardTickerTimer;
 
-  /** 加入 大道争锋 标识 */
-  @JsonIgnore boolean joinFlag;
+  /**
+   * 免费刷新次数
+   */
+  int freeRefreshNum;
+  /**
+   * 付费刷新次数
+   */
+  int costRefreshNUm;
+  /*
+   * 本次挑战刷新出来的5个对手 PId
+   */
+  List<Long> matchRefreshTargetList = new ArrayList<>();
+
 
   /** 本次挑战刷新出来的5个对手 */
   @JsonIgnore List<SimplePlayer> tempRefreshList = new ArrayList<>();
@@ -75,6 +86,8 @@ public class OfflineBattleModule extends BasePlayerModule {
     switch (event.getType()) {
       case NewDay -> {
         clear();
+        clearRefreshNum();
+        matchRefreshTargetList.clear();
         tryResetSeasonData();
         checkAndAddTicker();
         break;
@@ -113,13 +126,6 @@ public class OfflineBattleModule extends BasePlayerModule {
     this.playNum = playNum;
   }
 
-  public boolean isJoinFlag() {
-    return joinFlag;
-  }
-
-  public void setJoinFlag(boolean joinFlag) {
-    this.joinFlag = joinFlag;
-  }
 
   public long getDaySettlementTimer() {
     return DateUtil.getDayTimeBySet(22, 0, 0);
@@ -168,7 +174,6 @@ public class OfflineBattleModule extends BasePlayerModule {
 
   private void clear() {
     tempRefreshList.clear();
-    joinFlag = false;
     playNum = 0;
     buyNum = 0;
     setInBattlePlayer(null);
@@ -190,10 +195,12 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
 
   public Future<List<SimplePlayer>> searchTargetList(boolean refreshFlag, List<Integer> scoreList) {
+
     if (refreshFlag) {
       usedPidList.clear();
     }
     tempRefreshList.clear();
+    matchRefreshTargetList.clear();
     setInBattlePlayer(null);
     Promise<List<SimplePlayer>> promise = Promise.promise();
     List<SimplePlayer> resultList = new ArrayList<>();
@@ -235,7 +242,7 @@ public class OfflineBattleModule extends BasePlayerModule {
     return promise.future();
   }
 
-  private CompletionStage<Void> getSerachTargetScoreList(
+   CompletionStage<Void> getSerachTargetScoreList(
       List<SimplePlayer> resultList, List<Integer> scoreList) {
     CompletableFuture completableFuture = new CompletableFuture<>();
     List<CompletableFuture<Long>> futureList = new ArrayList<>();
@@ -256,7 +263,6 @@ public class OfflineBattleModule extends BasePlayerModule {
             scoreFindFuture.thenAccept(
                 score -> {
                   scoreList.set(index, score.intValue());
-                  log.info("index:"+index+", score: " + score+", id:" + targetPlayer.id);
                 });
           }
         });
@@ -268,7 +274,6 @@ public class OfflineBattleModule extends BasePlayerModule {
                 completableFuture.completeExceptionally(err);
                 return;
               }
-              log.info("scoreList: " + scoreList);
               completableFuture.complete(null);
             });
     return completableFuture;
@@ -353,6 +358,7 @@ public class OfflineBattleModule extends BasePlayerModule {
 
   private void addFindPlayer(List<SimplePlayer> resultList, SimplePlayer simplePlayer) {
     resultList.add(simplePlayer);
+    matchRefreshTargetList.add(simplePlayer.id);
     usedPidList.add(simplePlayer.id);
   }
 
@@ -452,6 +458,9 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
   public Future<Void> updateScore(
       boolean win, long targetId, BattleMsg.BattlePvPEndResponse_13000116.Builder res) {
+    matchRefreshTargetList.clear();
+    tempRefreshList.clear();
+    clearRefreshNum();
     int selfAddScore = 0, targetAddScore = 0;
     int targetIndex = 4;
     NPCConfig npcConfig = null;
@@ -511,4 +520,8 @@ public class OfflineBattleModule extends BasePlayerModule {
     });
   }
 
+  void clearRefreshNum(){
+    freeRefreshNum = 0;
+    costRefreshNUm = 0;
+  }
 }
