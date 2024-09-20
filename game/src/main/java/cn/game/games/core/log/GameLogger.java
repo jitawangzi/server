@@ -422,8 +422,10 @@ public class GameLogger extends Logger {
 		try {
 //			int cur = "CNY".equals(currency) ? 11 : 1;
 			int cur = 1;
+			int stepNum = payItem.getPayType().getId() + 5000;
 			Object[] array = new Object[] { LoggerType
-					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, "5000")),
+					.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, stepNum + "")),
 					payItem.getRmb(), player.getAccount().sdkPayChannel, payItem.getAddCount(), cur, player.getGameClient().getIp(),
 					payItem.getAddId() > 0 ? player.getCurrencyModule().get(payItem.getAddId()).getCount() : 0, player.getVipLevel(),
 					payItem.getPayId(),
