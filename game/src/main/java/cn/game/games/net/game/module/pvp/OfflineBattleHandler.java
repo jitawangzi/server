@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
@@ -14,7 +15,9 @@ import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.NPCConfig;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.NPCManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -50,9 +53,29 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
+
+    int totalRefreshNum = module.freeRefreshNum + module.costRefreshNUm;
+    if (totalRefreshNum >= GlobalConst.DaDaoFreeCnt1 + GlobalConst.DaDaoPayCnt.length) {
+      client.sendProtocol(res, ErrorMsgEnum.da_dao_refresh_is_max.ID);
+      return;
+    }
+    if (module.freeRefreshNum >= GlobalConst.DaDaoFreeCnt1) {
+      if (req.getUseCost()) {
+        int[] cost = GlobalConst.DaDaoPayCnt[module.costRefreshNUm];
+        if (!PlayerHelper.delResources(player, cost[0],cost[1], OpType.DA_DAO_Buy,true)) {
+          client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
+          return;
+        }
+        module.costRefreshNUm++;
+      } else {
+        client.sendProtocol(res, ErrorMsgEnum.da_dao_free_refresh_is_max.ID);
+      }
+    } else {
+      module.freeRefreshNum++;
+    }
     List<Integer> scoreList = new CopyOnWriteArrayList<>();
     module
-        .searchTargetList(req.getRefreshFlag(),scoreList)
+        .searchTargetList(req.getRefreshFlag(), scoreList)
         .onSuccess(
             result -> {
               result.forEach(
@@ -60,6 +83,8 @@ public class OfflineBattleHandler {
                     res.addTargetList(simplePlayer.toSimplePlayerInfo());
                   });
               res.addAllScoreList(scoreList);
+              res.setRefreshNum(module.costRefreshNUm);
+              res.setFreeRefreshNum(module.freeRefreshNum);
               client.sendProtocol(res);
             })
         .onFailure(
@@ -84,7 +109,7 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
-    if (!PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID,1)) {
+    if (!PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID, 1)) {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_play_num_not_enough.ID);
       return;
     }
@@ -105,29 +130,47 @@ public class OfflineBattleHandler {
     res.setSelfAttrs(player.getAttrModule().buildBattleAttrs());
     SimplePlayer targetPlayer = module.getTargetPlayer(Long.parseLong(req.getTargetId()));
     if (targetPlayer != null) {
-      try{
+      try {
         res.setTargetAttrs(targetPlayer.getPlayerBattleAttrs());
         BattleMsg.BattleLineupInfo.Builder targetLineup = BattleMsg.BattleLineupInfo.newBuilder();
         targetLineup.setBattleType(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
-        targetPlayer.getLineupMaps().get(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()).forEach((k,v)->{
-          targetLineup
-                  .addLineups(BattleMsg.LineupInfo
-                          .newBuilder()
+        targetPlayer
+            .getLineupMaps()
+            .get(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId())
+            .forEach(
+                (k, v) -> {
+                  targetLineup.addLineups(
+                      BattleMsg.LineupInfo.newBuilder()
                           .setSeq(k)
                           .addAllHeroUid(v.stream().map(h -> h.getId() + "").collect(toList()))
                           .addAllHeroId(v.stream().map(h -> h.getConfigId()).collect(toList()))
                           .build());
-          res.setTargetLineupInfo(targetLineup.build());
-        });
-      } catch (Exception e){
+                  res.setTargetLineupInfo(targetLineup.build());
+                });
+      } catch (Exception e) {
         e.printStackTrace();
         module.setInBattlePlayer(null);
         throw e;
       }
-      res.setTargetSecretscriptInfo(targetPlayer.toSecretscriptPbInfo(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO));
-      module.getRankList(player.getPlayerId(),targetPlayer.id).whenComplete((rankResultList,action )->{
-        GameLogger.pvpfight(player,true,rankResultList.get(0),0,DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),targetPlayer,rankResultList.get(1),0,0,0,false);
-      });
+      res.setTargetSecretscriptInfo(
+          targetPlayer.toSecretscriptPbInfo(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO));
+      module
+          .getRankList(player.getPlayerId(), targetPlayer.id)
+          .whenComplete(
+              (rankResultList, action) -> {
+                GameLogger.pvpfight(
+                    player,
+                    true,
+                    rankResultList.get(0),
+                    0,
+                    DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
+                    targetPlayer,
+                    rankResultList.get(1),
+                    0,
+                    0,
+                    0,
+                    false);
+              });
     }
     client.sendProtocol(res);
   }
@@ -147,39 +190,53 @@ public class OfflineBattleHandler {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_play.ID);
       return;
     }
-    if (!PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID,1)) {
+    if (!PlayerHelper.isEnough(player, DA_DAO_TICK_ITEM_ID, 1)) {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_play_num_not_enough.ID);
       return;
     }
     module.playNum++;
+    final SimplePlayer targetPlayer = module.getTargetPlayer(req.getTargetId());
     PlayerHelper.delResources(player, DA_DAO_TICK_ITEM_ID, 1, OpType.DA_DAO_JOIN, true);
-    CompletableFuture<List<Integer>> rankListFuture = module.getRankList(player.getPlayerId(),Long.parseLong(req.getTargetId()));
-    Future<Void> updateFuture = module.updateScore(req.getWin(),Long.parseLong(req.getTargetId()), res);
-    rankListFuture.thenCombine(updateFuture.toCompletionStage(), (rankResultList,v)->{
-      final int selfRank = rankResultList.get(0);
-     final int targetRank = rankResultList.get(1);
-      if (req.getWin()) {
-        res.addAllRewards(
+    CompletableFuture<List<Integer>> rankListFuture =
+        module.getRankList(player.getPlayerId(), Long.parseLong(req.getTargetId()));
+    Future<Void> updateFuture =
+        module.updateScore(req.getWin(), Long.parseLong(req.getTargetId()), res);
+    rankListFuture.thenCombine(
+        updateFuture.toCompletionStage(),
+        (rankResultList, v) -> {
+          final int selfRank = rankResultList.get(0);
+          final int targetRank = rankResultList.get(1);
+          if (req.getWin()) {
+            res.addAllRewards(
                 PlayerHelper.addResources(
-                        player, GlobalConst.DaDaoChallengeCoin, OpType.DA_DAO_WIN));
-      }
-      if (module.playNum <= GlobalConst.DaDaoBrawlPoint.length) {
-        res.addAllRewards(
+                    player, GlobalConst.DaDaoChallengeCoin, OpType.DA_DAO_WIN));
+          }
+          if (module.playNum <= GlobalConst.DaDaoBrawlPoint.length) {
+            res.addAllRewards(
                 PlayerHelper.addResources(
+                    player, GlobalConst.DaDaoBrawlPoint[module.playNum - 1], OpType.DA_DAO_JOIN));
+          }
+          client.sendProtocol(res);
+          module.setInBattlePlayer(null);
+          module
+              .getRankList(player.getPlayerId(), Long.parseLong(req.getTargetId()))
+              .thenAccept(
+                  (rankResultList1) -> {
+                    GameLogger.pvpfight(
                         player,
-                        GlobalConst.DaDaoBrawlPoint[module.playNum - 1],
-                        OpType.DA_DAO_JOIN));
-      }
-
-      client.sendProtocol(res);
-      final SimplePlayer targetPlayer = module.getTargetPlayer( req.getTargetId());
-      module.setInBattlePlayer(null);
-      module.getRankList(player.getPlayerId(), Long.parseLong(req.getTargetId())).thenAccept((rankResultList1)->{
-        GameLogger.pvpfight(player,false,selfRank,rankResultList1.get(0),DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),targetPlayer,targetRank,rankResultList1.get(1),req.getBattleTime(), req.getEndType(),req.getWin());
-      });
-      return null;
-    });
-
+                        false,
+                        selfRank,
+                        rankResultList1.get(0),
+                        DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
+                        targetPlayer,
+                        targetRank,
+                        rankResultList1.get(1),
+                        req.getBattleTime(),
+                        req.getEndType(),
+                        req.getWin());
+                  });
+          return null;
+        });
   }
 
   /** 获取大道争锋信息 */
@@ -200,7 +257,54 @@ public class OfflineBattleHandler {
     res.setSettlementSeasonTimer((int) (module.getSeasonSettlementTimer() / 1000L));
     res.setBuyNum(module.buyNum);
     res.putAllSecretscriptMap(player.getSecretscriptModule().getPvPSecretscriptMap());
-    client.sendProtocol(res);
+    res.setFreeRefreshNum(module.freeRefreshNum);
+    res.setRefreshNum(module.costRefreshNUm);
+
+    List<Integer> scoreList = new ArrayList<>();
+    if (!module.tempRefreshList.isEmpty()) {
+      module.tempRefreshList.forEach(
+          simplePlayer -> {
+            res.addTargetList(simplePlayer.toSimplePlayerInfo());
+          });
+      module
+          .getSerachTargetScoreList(module.tempRefreshList, scoreList)
+          .thenAccept(
+              v -> {
+                res.addAllScoreList(scoreList);
+                client.sendProtocol(res);
+              });
+    } else if (!module.matchRefreshTargetList.isEmpty()) {
+      List<SimplePlayer> simplePlayerList = new ArrayList<>();
+      PlayerManager.getInstance()
+          .batchGetSimplePlayerListFromRedisAsync(module.matchRefreshTargetList)
+          .onSuccess(
+              findList -> {
+                for (int i = 0; i < findList.size(); i++) {
+                  SimplePlayer simplePlayer = findList.get(i);
+                  if (simplePlayer == null) {
+                    NPCConfig npcConfig =
+                        NPCManager.instance().get(module.matchRefreshTargetList.get(i).intValue());
+                    simplePlayer = SimplePlayer.makeByNpcConfig(npcConfig);
+                  }
+                  res.addTargetList(simplePlayer.toSimplePlayerInfo());
+                  simplePlayerList.add(simplePlayer);
+                }
+                module
+                    .getSerachTargetScoreList(simplePlayerList, scoreList)
+                    .thenAccept(
+                        v1 -> {
+                          res.addAllScoreList(scoreList);
+                          client.sendProtocol(res);
+                        });
+              })
+          .onFailure(
+              e -> {
+                e.printStackTrace();
+                client.sendProtocol(res);
+              });
+    } else {
+      client.sendProtocol(res);
+    }
   }
 
   /** 购买挑战券 请求 */
@@ -225,11 +329,12 @@ public class OfflineBattleHandler {
     if (PlayerHelper.delResources(player, costs, OpType.DA_DAO_Buy)) {
       module.buyNum++;
 
-      List<RewardMsg.RewardInfo> drops =  PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1,OpType.DA_DAO_Buy,true);
+      List<RewardMsg.RewardInfo> drops =
+          PlayerHelper.addResources(player, DA_DAO_TICK_ITEM_ID, 1, OpType.DA_DAO_Buy, true);
       res.setBuyNum(module.buyNum);
       res.addAllRewards(drops);
       client.sendProtocol(res);
-    }else {
+    } else {
       client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
     }
   }
