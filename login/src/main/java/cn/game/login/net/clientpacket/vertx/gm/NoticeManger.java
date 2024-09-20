@@ -1,10 +1,10 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
-import cn.game.games.cache.entity.Notice;
-import cn.game.games.net.data.mapper.NoticeMapper;
-import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.util.DAO;
+import cn.game.login.cache.entity.Notice;
+import cn.game.login.mapper.NoticeMapper;
+import cn.game.util.SpringContextLoader;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class NoticeManger {
   private static NoticeManger instance = new NoticeManger();
   List<Notice> noticeList = new CopyOnWriteArrayList<>();
-
+  NoticeMapper mapper;
   private NoticeManger() {}
 
   public static NoticeManger getInstance() {
@@ -26,26 +26,19 @@ public class NoticeManger {
   }
 
   public void init() {
+    mapper = SpringContextLoader.getContext().getBean(NoticeMapper.class);
     refreshNoticeList();
   }
 
   private void refreshNoticeList() {
-    DAO.execute(NoticeMapper.class, MapperConstant.selectAll)
-        .onSuccess(
-            result -> {
-              List<Notice> list = (List<Notice>) result;
-              if (list != null && !list.isEmpty()) {
-                long now = System.currentTimeMillis();
-                list.removeIf(notice -> notice.getShowEndTimer().getTime() < now);
-                noticeList.clear();
-                noticeList.addAll(list);
-                sortNoticeList();
-              }
-            })
-        .onFailure(
-            throwable -> {
-              throwable.printStackTrace();
-            });
+    List<Notice> list = mapper.selectAll();
+    if (list != null && !list.isEmpty()) {
+      long now = System.currentTimeMillis();
+      list.removeIf(notice -> notice.getShowEndTimer().getTime() < now);
+      noticeList.clear();
+      noticeList.addAll(list);
+      sortNoticeList();
+    }
   }
 
   public boolean addNotice(
@@ -62,36 +55,26 @@ public class NoticeManger {
       if (notice == null) {
         return false;
       }
+      notice.setId(id);
     } else {
       notice = new Notice();
     }
 
-    notice.setId(id);
     notice.setTab(tab);
     notice.setTitle(title);
     notice.setText(text);
+    notice.setCreateTime(new Date());
     notice.setOrdernum(orderNum);
     notice.setShowStartTimer(new java.util.Date(showStartTimer));
     notice.setShowEndTimer(new java.util.Date(showEndTimer));
-    final Notice finalNotice = notice;
-    if (notice.getId() > 0) {
-      DAO.update(notice).onSuccess(result -> {;
-        sortNoticeList();
-
-        //TODO RPC 通知其他 login 节点 从新加载
-      });
+    if (id > 0) {
+      mapper.updateByPrimaryKey(notice);
+      sortNoticeList();
+      //TODO RPC 通知其他 login 节点 从新加载
     } else {
-      DAO.insert(notice)
-          .onSuccess(
-              result -> {
-                noticeList.add(finalNotice);
-                sortNoticeList();
-                //TODO RPC 通知其他 login 节点 从新加载
-              })
-          .onFailure(
-              throwable -> {
-                throwable.printStackTrace();
-              });
+      mapper.insert(notice);
+      refreshNoticeList();
+      //TODO RPC 通知其他 login 节点 从新加载
     }
     return true;
   }
@@ -108,11 +91,8 @@ public class NoticeManger {
     for (Notice notice : noticeList) {
       if (notice.getId() == id) {
         noticeList.remove(notice);
-        DAO.delete(notice).onSuccess(result -> {;
-          //TODO  RPC 通知其他 login 节点
-        }).onFailure(throwable -> {
-          throwable.printStackTrace();
-        });
+        mapper.deleteByPrimaryKey(notice.getId());
+        //TODO  RPC 通知其他 login 节点
         return true;
       }
     }

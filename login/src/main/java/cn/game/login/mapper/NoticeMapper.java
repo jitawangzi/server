@@ -1,7 +1,8 @@
-package cn.game.games.net.data.mapper;
+package cn.game.login.mapper;
 
-import cn.game.games.cache.entity.Notice;
 import java.util.List;
+
+import cn.game.login.cache.entity.Notice;
 import org.apache.ibatis.annotations.Param;
 
 public interface NoticeMapper {
@@ -60,5 +61,6 @@ public interface NoticeMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<Notice> recordList);
-	List<Notice> selectAll();
+
+	public List<Notice> selectAll();
 }

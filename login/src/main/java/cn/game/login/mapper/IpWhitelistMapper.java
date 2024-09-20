@@ -1,8 +1,8 @@
-package cn.game.games.net.data.mapper;
+package cn.game.login.mapper;
 
-import cn.game.games.cache.entity.IpWhitelist;
 import java.util.List;
 
+import cn.game.login.cache.entity.IpWhitelist;
 import org.apache.ibatis.annotations.Param;
 
 public interface IpWhitelistMapper {
@@ -56,5 +56,6 @@ public interface IpWhitelistMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<IpWhitelist> recordList);
-	List<IpWhitelist> selectAll();
+
+	public List<IpWhitelist> selectAll();
 }

@@ -3,6 +3,7 @@ package cn.game.login.net.clientpacket.vertx.gm;
 import com.alibaba.fastjson.JSONObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
 /**
@@ -17,7 +18,32 @@ public class GmAddNoticeReq implements Handler<RoutingContext> {
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
         JSONObject result = GmSelectOrderReq.getResultData();
-        String text = context.getBodyAsJson().getString("text");
+        JsonObject reqBody = context.getBodyAsJson();
+        if (reqBody == null) {
+            result.put("result", "param error");
+            response.end(result.toString());
+            return;
+        }
+        String text = reqBody.getString("text");
+        String tab = reqBody.getString("tab");
+        String title = reqBody.getString("title");
+        Integer id  = reqBody.getInteger("id");
+        Integer orderNum  = reqBody.getInteger("orderNum");
+        String showStartTimer = reqBody.getString("showStartTimer");
+        String showEndTimer = reqBody.getString("showEndTimer");
+        if (text == null || tab == null || title == null || showStartTimer == null || showEndTimer == null) {
+            result.put("result", "param error");
+            response.end(result.toString());
+            return;
+        }
+        long startTime = Long.parseLong(showStartTimer);
+        long endTime = Long.parseLong(showEndTimer);
+        if (startTime > endTime) {
+            result.put("result", "param error");
+            response.end(result.toString());
+            return;
+        }
+        result.put("data", NoticeManger.getInstance().addNotice(id == null ? 0 : id, tab, title, text, startTime, endTime, orderNum == null ? 999 : orderNum));
         response.end(result.toString());
 
     }

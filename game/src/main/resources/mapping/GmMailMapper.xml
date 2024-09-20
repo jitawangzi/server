@@ -411,7 +411,7 @@
         and content like concat('%',#{content},'%')
       </if>
       <if test="startTime != null and endTime != null">
-        and create_time >= #{startTime,jdbcType=TIMESTAMP}
+        and create_time &gt;= #{startTime,jdbcType=TIMESTAMP}
       </if>
       <if test=" endTime != null">
         and create_time &lt;= #{endTime,jdbcType=TIMESTAMP}
