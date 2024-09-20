@@ -1,5 +1,9 @@
 package cn.game.login.net.handler;
 
+import cn.game.login.cache.entity.GmOpt;
+import cn.game.login.mapper.GmOptMapper;
+import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.util.*;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSONObject;
@@ -24,11 +28,8 @@ import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidRequest_7d000018;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
-import cn.game.util.Config;
-import cn.game.util.DateUtil;
-import cn.game.util.RedisUtil;
-import cn.game.util.ServerType;
-import cn.game.util.SpringContextLoader;
+
+import java.util.Date;
 
 /**
  * 服务器之间的消息处理器
@@ -46,8 +47,28 @@ public class LoginServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.GameStatusPublish_7d000017, this::gameStatus);
 		putInvoker(PbProtocol.LoginPlayerUidRequest_7d000018, this::uid);
 		putInvoker(PbProtocol.PaymentOrderCreateRequest_7d000020, this::paymentCreate);
+		putInvoker(PbProtocol.GmOptRecordRequest_7d000052, LoginServerHandler::addGmOptRecord);
 
 	}
+
+	public static  void addGmOptRecord(NetClient client, Object o) {
+		ServerMsg.GmOptRecordRequest_7d000052 req = (ServerMsg.GmOptRecordRequest_7d000052) o;
+		ServerMsg.GmOptRecordResponse_7d000053.Builder res = ServerMsg.GmOptRecordResponse_7d000053.newBuilder() ;
+		res.setResult(addGmOptRecord(req.getOptmsg(), req.getOptParam(), req.getOptResult(), req.getOptPid()));
+		client.sendProtocol(res);
+	}
+
+	public static boolean addGmOptRecord(String optmsg,String opt_param,String opt_result, String optPid) {
+		GmOpt opt = new GmOpt() ;
+		opt.setCreateTime(new Date());
+		opt.setOptmsg(optmsg);
+        opt.setOptParam(opt_param == null ? "null" : opt_param);
+        opt.setOptResult(opt_result == null ? "null": opt_result);
+        opt.setOptpid(optPid == null ? "" : optPid);
+		GmOptMapper gmOptMapper = SpringContextLoader.getContext().getBean(GmOptMapper.class);
+    	System.out.println(String.format("addGmOptRecord:%s", JsonUtil.toJsonString(opt)));
+        return gmOptMapper.insert(opt) > 0;
+    }
 
 	protected void paymentCreate(NetClient client, Object message) {
 		PaymentOrderCreateRequest_7d000020 request = (PaymentOrderCreateRequest_7d000020) message;

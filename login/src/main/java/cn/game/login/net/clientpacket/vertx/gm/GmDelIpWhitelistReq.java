@@ -1,5 +1,6 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import cn.game.login.net.handler.LoginServerHandler;
 import com.alibaba.fastjson.JSONObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
@@ -20,5 +21,6 @@ public class GmDelIpWhitelistReq implements Handler<RoutingContext> {
         String ip = context.request().getParam("ip");
         result.put("data", IpWhitelistManger.getInstance().delIpWhitelist(ip));
         response.end(result.toString());
+        LoginServerHandler.addGmOptRecord("delIpWhiteList","删除IP: "+ ip,"删除结果: "+result.getString("data"),"");
     }
 }
