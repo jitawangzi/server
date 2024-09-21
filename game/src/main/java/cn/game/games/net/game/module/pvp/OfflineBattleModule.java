@@ -458,8 +458,8 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
   public Future<Void> updateScore(
       boolean win, long targetId, BattleMsg.BattlePvPEndResponse_13000116.Builder res) {
-    matchRefreshTargetList.clear();
-    tempRefreshList.clear();
+//    matchRefreshTargetList.clear();
+//    tempRefreshList.clear();
     clearRefreshNum();
     int selfAddScore = 0, targetAddScore = 0;
     int targetIndex = 4;

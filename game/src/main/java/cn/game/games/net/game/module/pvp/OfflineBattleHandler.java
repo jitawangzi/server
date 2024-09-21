@@ -118,10 +118,10 @@ public class OfflineBattleHandler {
       return;
     }
     boolean match =
-        module.tempRefreshList.stream()
+        module.matchRefreshTargetList.stream()
             .anyMatch(
-                simplePlayer -> {
-                  return simplePlayer.id == Long.parseLong(req.getTargetId());
+                matchPid -> {
+                  return matchPid == Long.parseLong(req.getTargetId());
                 });
     if (!match) {
       client.sendProtocol(res, ErrorMsgEnum.da_dao_not_found_target_Player.ID);
