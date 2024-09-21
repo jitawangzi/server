@@ -272,7 +272,7 @@ message BattleLineupInfo{
 // 领取每日挑战活跃积分奖励
 message BattleDayChallengeReceiveActivePointRequest_13000070
 {
-	repeated int32 index = 1 ;  // 0-3，一共4个奖励，领哪个
+	int32 index = 1 ;  // 0-3，一共4个奖励，领哪个
 }
 
 message BattleDayChallengeReceiveActivePointResponse_13000071
@@ -303,7 +303,7 @@ message BattleSpiritualInfoResponse_13000091
 // 领取灵魄之战活跃积分奖励
 message BattleSpiritualReceiveActivePointRequest_13000092
 {
-	int32 index = 1 ;  // 0-3，一共4个奖励，领哪个
+	repeated int32 index = 1 ;  // 0-3，一共4个奖励，领哪个
 }
 
 message BattleSpiritualReceiveActivePointResponse_13000093

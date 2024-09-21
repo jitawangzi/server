@@ -2,6 +2,7 @@ package cn.game.core.net.vertx.rpc;
 
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.util.ServerType;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -15,7 +16,7 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 	}
 
 	@Override
-	public <T> void request(T message, String serverId, Handler<AsyncResult<Message<T>>> replyHandler) {
+	public <T> void request(String serverId, T message, Handler<AsyncResult<Message<T>>> replyHandler) {
 		if (replyHandler != null) {
 			vertx.eventBus().request(VxHolder.rpcServiceAddr(serverId), message, replyHandler);
 		} else {
@@ -23,11 +24,11 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 		}
 	}
 	@Override
-	public <T> Future<Message<T>> request(T message, String serverId) {
+	public <T> Future<Message<T>> request(String serverId, T message) {
 		return vertx.eventBus().request(VxHolder.rpcServiceAddr(serverId), message);
 	}
 	@Override
-	public <T> void send(T message, String serverId) {
+	public <T> void send(String serverId, T message) {
 		vertx.eventBus().send(VxHolder.rpcServiceAddr(serverId), message);
 	}
 
@@ -45,6 +46,16 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 	@Override
 	public <T> void send(T message) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> Future<Message<T>> request(ServerType serverType, T message) {
+		return vertx.eventBus().request(serverType.name(), message);
+	}
+
+	@Override
+	public <T> void broadcast(ServerType serverType, T message) {
+		vertx.eventBus().publish(serverType.name(), message);
 	}
 
 }

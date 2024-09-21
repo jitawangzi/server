@@ -20,14 +20,15 @@ import com.alibaba.fastjson.JSON;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.transport.Result;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.eventbus.Message;
 import cn.game.util.ByteHelp;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
 import cn.game.util.MailUtil;
+import cn.game.util.ServerType;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.eventbus.Message;
 
 @Deprecated
 public class ZeroMQRpcClient implements Runnable, RpcClient {
@@ -203,25 +204,6 @@ public class ZeroMQRpcClient implements Runnable, RpcClient {
 			}
 		}
 	}
-
-	@Override
-	public <T> void request(T message, String serverId, Handler<AsyncResult<Message<T>>> replyHandler) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public <T> Future<Message<T>> request(T message, String serverId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@SuppressWarnings("hiding")
-	@Override
-	public <ZMsg> void send(ZMsg message, String serverId) {
-		// TODO Auto-generated method stub
-
-	}
 	@Override
 	public <ZMsg> void send(ZMsg message) {
 	}
@@ -229,6 +211,36 @@ public class ZeroMQRpcClient implements Runnable, RpcClient {
 	public boolean checkAllowSync() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public <T> void request(String serverId, T message, Handler<AsyncResult<Message<T>>> replyHandler) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public <T> Future<Message<T>> request(String serverId, T message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> Future<Message<T>> request(ServerType serverType, T message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> void broadcast(ServerType serverType, T message) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public <T> void send(String serverId, T message) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

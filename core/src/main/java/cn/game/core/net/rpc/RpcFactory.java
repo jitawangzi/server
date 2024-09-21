@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.util.ServerType;
+
 public class RpcFactory {
 
 	private static Logger log = LoggerFactory.getLogger(RpcFactory.class);
@@ -21,6 +23,7 @@ public class RpcFactory {
 		Invocation invocation = new Invocation();
 		invocation.setBlock(block);
 		invocation.setRpcClient(rpcClient);
+		invocation.setCallType(CallType.PointToPoint);
 		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
 		return instance;
 	}
@@ -29,6 +32,7 @@ public class RpcFactory {
 		invocation.setBlock(block);
 		invocation.setRpcClient(rpcClient);
 		invocation.setServerId(serverId);
+		invocation.setCallType(CallType.PointToPoint);
 		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
 		return instance;
 	}
@@ -39,6 +43,25 @@ public class RpcFactory {
 		invocation.setRpcClient(rpcClient);
 		invocation.setCallBackTask(callBackTask);
 		invocation.setServerId(serverId);
+		invocation.setCallType(CallType.PointToPoint);
+		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
+		return instance;
+	}
+
+	public static <T> T getImplLoadBalancer(RpcClient rpcClient, Class<T> rpcInterfaceClass, ServerType serverType) {
+		Invocation invocation = new Invocation();
+		invocation.setRpcClient(rpcClient);
+		invocation.setServerType(serverType);
+		invocation.setCallType(CallType.LoadBalancer);
+		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
+		return instance;
+	}
+
+	public static <T> T getImplLoadBroadcast(RpcClient rpcClient, Class<T> rpcInterfaceClass, ServerType serverType) {
+		Invocation invocation = new Invocation();
+		invocation.setRpcClient(rpcClient);
+		invocation.setServerType(serverType);
+		invocation.setCallType(CallType.Broadcast);
 		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
 		return instance;
 	}
@@ -55,9 +78,16 @@ public class RpcFactory {
 	private static class Invocation implements InvocationHandler {
 
 		private RpcClient rpcClient;
+		/** 回调任务，只有在异步调用时才有用 */
 		private Consumer<?> callBackTask;
+		/** 是否同步阻塞调用 */
 		private boolean block;
+		/** 点对点通讯的地址 */
 		private String serverId;
+		/** 负载均衡或者广播时的地址 */
+		private ServerType serverType;
+		/** 调用类型 */
+		private CallType callType;
 
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) {
@@ -68,8 +98,9 @@ public class RpcFactory {
 				if (objectMethods.get(mname) != null) {
 					return method.invoke(proxy, args);
 				}
-				return rpcClient.invoke(method.getName(), method.getParameterTypes(), method.getReturnType(), args, callBackTask,
-						block, serverId);
+				return rpcClient
+						.invoke(callType, method.getName(), method.getParameterTypes(), method.getReturnType(), args, callBackTask,
+						block, serverId, serverType);
 
 			} catch (Exception e) {
 				log.error("rpc invoke 调用出现异常", e);
@@ -91,6 +122,14 @@ public class RpcFactory {
 
 		public void setServerId(String serverId) {
 			this.serverId = serverId;
+		}
+
+		public void setServerType(ServerType serverType) {
+			this.serverType = serverType;
+		}
+
+		public void setCallType(CallType callType) {
+			this.callType = callType;
 		}
 
 	}

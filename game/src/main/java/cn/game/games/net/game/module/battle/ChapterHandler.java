@@ -408,7 +408,7 @@ public class ChapterHandler extends BaseHandler {
 	protected void spiritualReceiveActivePoint(NetClient client, Object message) {
 		BattleSpiritualReceiveActivePointRequest_13000092 req = (BattleSpiritualReceiveActivePointRequest_13000092) message;
 		BattleSpiritualReceiveActivePointResponse_13000093.Builder resp = BattleSpiritualReceiveActivePointResponse_13000093.newBuilder();
-		int index = req.getIndex();
+		List<Integer> index = req.getIndexList();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (!player.isFuncOpen(InitialUI.SpiritBattle)) {
@@ -416,7 +416,8 @@ public class ChapterHandler extends BaseHandler {
 			return;
 		}
 		PointRewardModule pointRewardModule = player.getPointRewardModule();
-		ResultObject resultObject = pointRewardModule.addReward(PointRewardType.LingPo, 0, index);
+		ResultObject resultObject = pointRewardModule
+				.addReward(PointRewardType.LingPo, 0, index.stream().mapToInt(Integer::intValue).toArray());
 		if (!resultObject.isOK()) {
 			client.sendProtocol(resp, resultObject.getErrorCode());
 			return;
@@ -818,14 +819,14 @@ public class ChapterHandler extends BaseHandler {
 	protected void dayChallengePointReward(NetClient client, Object message) {
 		BattleDayChallengeReceiveActivePointRequest_13000070 req = (BattleDayChallengeReceiveActivePointRequest_13000070) message;
 		BattleDayChallengeReceiveActivePointResponse_13000071.Builder resp = BattleDayChallengeReceiveActivePointResponse_13000071.newBuilder();
-		List<Integer> index = req.getIndexList();
+		int index = req.getIndex();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		PointRewardModule pointRewardModule = player.getPointRewardModule();
 		BattleDayChallenge battle = chapterModule.getBattle(DungeonTypeEnum.DayChallenge);
-		ResultObject reward = pointRewardModule
-				.addReward(PointRewardType.DAY_CHALLENGE, battle.getBattleId(), index.stream().mapToInt(Integer::intValue).toArray());
+		ResultObject reward = pointRewardModule.addReward(PointRewardType.DAY_CHALLENGE, battle.getBattleId(),
+				index);
 		if (!reward.isOK()) {
 			client.sendProtocol(resp, reward.getErrorCode());
 			return;

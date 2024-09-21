@@ -32,7 +32,6 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
@@ -303,9 +302,20 @@ public class TestHandler extends BaseHandler {
 		TestRequest_6f000020 req = (TestRequest_6f000020) message;
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-//		GameClientManager.getInstance().logout((GameClient) client);
-		SecretscriptModule module = player.getModule(SecretscriptModule.class);
-		module.add(101, OpType.None);
+//		List<RewardInfo> resources = PlayerHelper.addResources(player, 200032, 10);
+//		for (RewardInfo rewardInfo : resources) {
+//			System.out.println(rewardInfo);
+//		}
+//		PayItem payItem = new PayItem();
+//		payItem.setOrderId(System.currentTimeMillis());
+//		payItem.setRmb(30);
+//		payItem.setPayType(PayType.MonthCard);
+//		payItem.setPayId(1);
+//		GameLogger.recharge(player, payItem);
+
+		GameClientManager.getInstance().logout((GameClient) client);
+//		SecretscriptModule module = player.getModule(SecretscriptModule.class);
+//		module.add(101, OpType.None);
 //		GameClientManager.getInstance().logout((GameClient)client); 
 //		List<Goods> list = new ArrayList<Goods>(); 
 //		list.add(new Goods(1,66666)) ; 

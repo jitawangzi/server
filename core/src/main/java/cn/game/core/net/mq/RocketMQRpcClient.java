@@ -15,6 +15,7 @@ import cn.game.core.net.rpc.RpcClient;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
+import cn.game.util.ServerType;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -104,22 +105,6 @@ public class RocketMQRpcClient implements RpcClient {
 			log.error("mq message request error", e);
 		}
 	}
-
-	@Override
-	public <T> void request(T message, String serverId, Handler<AsyncResult<io.vertx.core.eventbus.Message<T>>> replyHandler) {
-		// TODO Auto-generated method stub
-
-	}
-	@Override
-	public <T> Future<io.vertx.core.eventbus.Message<T>> request(T message, String serverId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public <T> void send(T message, String serverId) {
-		// TODO Auto-generated method stub
-
-	}
 	@Override
 	public <T> void send(T message) {
 		// TODO Auto-generated method stub
@@ -162,5 +147,35 @@ public class RocketMQRpcClient implements RpcClient {
 	@Override
 	public boolean checkAllowSync() {
 		return true;
+	}
+
+	@Override
+	public <T> void request(String serverId, T message, Handler<AsyncResult<io.vertx.core.eventbus.Message<T>>> replyHandler) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public <T> Future<io.vertx.core.eventbus.Message<T>> request(String serverId, T message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> Future<io.vertx.core.eventbus.Message<T>> request(ServerType serverType, T message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> void broadcast(ServerType serverType, T message) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public <T> void send(String serverId, T message) {
+		// TODO Auto-generated method stub
+
 	}
 }
