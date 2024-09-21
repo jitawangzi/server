@@ -818,14 +818,14 @@ public class ChapterHandler extends BaseHandler {
 	protected void dayChallengePointReward(NetClient client, Object message) {
 		BattleDayChallengeReceiveActivePointRequest_13000070 req = (BattleDayChallengeReceiveActivePointRequest_13000070) message;
 		BattleDayChallengeReceiveActivePointResponse_13000071.Builder resp = BattleDayChallengeReceiveActivePointResponse_13000071.newBuilder();
-		int index = req.getIndex(); 
+		List<Integer> index = req.getIndexList();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		PointRewardModule pointRewardModule = player.getPointRewardModule();
 		BattleDayChallenge battle = chapterModule.getBattle(DungeonTypeEnum.DayChallenge);
-		ResultObject reward = pointRewardModule.addReward(PointRewardType.DAY_CHALLENGE, battle.getBattleId(),
-				index);
+		ResultObject reward = pointRewardModule
+				.addReward(PointRewardType.DAY_CHALLENGE, battle.getBattleId(), index.stream().mapToInt(Integer::intValue).toArray());
 		if (!reward.isOK()) {
 			client.sendProtocol(resp, reward.getErrorCode());
 			return;
