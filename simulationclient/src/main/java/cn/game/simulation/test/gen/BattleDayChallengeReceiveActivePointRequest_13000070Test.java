@@ -1,7 +1,8 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
@@ -15,7 +16,7 @@ public class BattleDayChallengeReceiveActivePointRequest_13000070Test extends Se
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.newBuilder() ; 
 		
-		builder.setIndex(Rnd.nextInt(3));
+		builder.addIndex(Rnd.nextInt(3));
 		
 		return builder.build() ; 
 	}
