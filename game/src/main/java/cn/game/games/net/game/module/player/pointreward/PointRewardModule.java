@@ -59,7 +59,10 @@ public class PointRewardModule extends BasePlayerModule {
 	}
 
 	public void clearActiveRewardList(PointRewardType type) {
-		clearActiveRewardList(type, 0);
+		Map<Integer, List<Integer>> map = activeRewardMap.get(type);
+		if (map != null) {
+			map.clear();
+		}
 	}
 
 	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, int... index) {
@@ -213,6 +216,12 @@ public class PointRewardModule extends BasePlayerModule {
 		case FuncOpen: {
 			break;
 		}
+		case NewDay: {
+			clearActiveRewardList(PointRewardType.DAY_CHALLENGE);
+			clearActiveRewardList(PointRewardType.LingPo);
+			clearActiveRewardList(PointRewardType.WorldBoss);
+			break;
+		}
 		}
 	}
 
@@ -225,6 +234,11 @@ public class PointRewardModule extends BasePlayerModule {
 	public void initFromDbAfter() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected int getInitOrder() {
+		return INIT_PRIORITY_LOW;
 	}
 
 }
