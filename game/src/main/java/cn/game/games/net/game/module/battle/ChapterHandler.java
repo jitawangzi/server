@@ -197,10 +197,11 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.BossBattleBox);
 		int rewardIndex = BinarySearchUtil.findElementIndexByField(list, battle.getRewardId(), r -> r.ID, (r1, r2) -> r1 - r2);
 		for (int i = rewardIndex + 1; i <= canRewardIndex; i++) {
 			WorldBossRewardConfig config = list.get(i);
-			resp.addAllRewards(PlayerHelper.addReward(player, config.RandomGivenID, OpType.WorldBoss));
+			resp.addAllRewards(PlayerHelper.addReward(player, config.RandomGivenID, welfareValue, OpType.WorldBoss));
 		}
 		battle.setRewardId(rewardConfig.ID);
 		client.sendProtocol(resp);
@@ -507,7 +508,9 @@ public class ChapterHandler extends BaseHandler {
 		BattleConfig battleConfig = BattleManager.instance().getNullable(maxSweepBattle);
 		while (battleConfig != null) {
 			if (battleConfig.ClearGameReward > 0 && !rewardBattleIds.contains(battleConfig.ID)) {
-				List<RewardInfo> list = PlayerHelper.addReward(player, battleConfig.ClearGameReward, OpType.MengYanMiJingFirst);
+				List<RewardInfo> list = PlayerHelper
+						.addReward(player, battleConfig.ClearGameReward, player.getWelfareValue(WelfareTypeEnum.MengYanQuickBattleAward),
+								OpType.MengYanMiJingFirst);
 				rewardsList.addAll(list); 
 				rewardBattleIds.add(battleConfig.ID); 
 			}
@@ -732,8 +735,16 @@ public class ChapterHandler extends BaseHandler {
 			}
 		}
 		for (int i = 0; i < allCount; i++) {
-			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
-			resp.addAllRewards(reward);
+
+			if (type == DungeonTypeEnum.YaoWang.getId()) {
+				int welfareValue = player.getWelfareValue(WelfareTypeEnum.PaoPaoQuickBattleAward);
+				List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, welfareValue, opType);
+				resp.addAllRewards(reward);
+			} else {
+				List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
+				resp.addAllRewards(reward);
+			}
+
 		}
 		client.sendProtocol(resp);
 	}
@@ -774,7 +785,11 @@ public class ChapterHandler extends BaseHandler {
 		}
 		
 		BattleConfig battleConfig = BattleManager.instance().get(id);
-		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
+
+		WelfareTypeEnum welfareType = type == DungeonTypeEnum.DaoHeart.getId() ? WelfareTypeEnum.DaoHeartFairy
+				: type == DungeonTypeEnum.XinMo.getId() ? WelfareTypeEnum.InnerDemonsFairy : WelfareTypeEnum.DemonKingFairy;
+		int welfareValue = player.getWelfareValue(welfareType);
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, welfareValue, opType);
 		resp.addAllRewards(reward);
 
 		client.sendProtocol(resp);
@@ -968,9 +983,14 @@ public class ChapterHandler extends BaseHandler {
 			minute = GlobalConst.QuickPatrolDuration / 60;
 			hours = minute / 60;
 		} else {
+			int maxSeconds = GlobalConst.MaximumPatrolDuration; // 最大巡逻时间
+			int welfareValue = player.getWelfareValue(WelfareTypeEnum.TravelTime);
+			if (welfareValue > 0) {
+				maxSeconds += welfareValue * 60 * 60;
+			}
 			int seconds = DateUtil.currentTimeSeconds() - chapterModule.getLastPatrolRewardTime();
-			if (seconds >= GlobalConst.MaximumPatrolDuration) {
-				seconds = GlobalConst.MaximumPatrolDuration;
+			if (seconds >= maxSeconds) {
+				seconds = maxSeconds;
 			}
 			minute = seconds / 60;
 			hours = minute / 60;
@@ -979,10 +999,13 @@ public class ChapterHandler extends BaseHandler {
 		PatrolConfig patrolConfig = PatrolManager.instance().get(chapterModule.getFightMainBattleId());
 
 		float incomeRate = player.getWelfareValue(WelfareTypeEnum.PatrolIncome);
-		float rate = 1 + (incomeRate / 10000);
+		float goldRate = player.getWelfareValue(WelfareTypeEnum.TravelTimeMoney);
+		float expRate = player.getWelfareValue(WelfareTypeEnum.TravelTimeExp);
+		float expRateAdd = 1 + ((expRate + incomeRate) / 10000f);
+		float goldRateAdd = 1 + ((goldRate + incomeRate) / 10000f);
 
-		int exp = (int) (patrolConfig.IncomeEXP * minute * rate);
-		int gold = (int) (patrolConfig.IncomeGold * minute * rate);
+		int exp = (int) (patrolConfig.IncomeEXP * minute * expRateAdd);
+		int gold = (int) (patrolConfig.IncomeGold * minute * goldRateAdd);
 
 		PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);
 		PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Patrol);

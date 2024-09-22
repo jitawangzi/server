@@ -438,8 +438,26 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static List<RewardInfo> addReward(Player player, int randomRewardId, OpType opType) {
+		return addReward(player, randomRewardId, 0, opType);
+	}
+
+	/**
+	 * 根据奖励id，增加所有物品,带加成
+	 * @param player
+	 * @param randomRewardId  奖励id
+	 * @param additionValue,额外增加的数量加成， 除以10000
+	 * @return
+	 */
+
+	public static List<RewardInfo> addReward(Player player, int randomRewardId, int additionValue, OpType opType) {
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId);
-		List<RewardInfo> resources = addResources(player, randomGivenConfig.MustGiven, opType, false);
+		int[][] mustGiven = randomGivenConfig.MustGiven;
+		if (additionValue > 0) {
+			for (int i = 0; i < mustGiven.length; i++) {
+				mustGiven[i][1] = (int) (mustGiven[i][1] * (1 + additionValue / 10000f));
+			}
+		}
+		List<RewardInfo> resources = addResources(player, mustGiven, opType, false);
 		if (randomGivenConfig.RandomNumber.length > 0) {
 			int randomCount = 0;
 			if (randomGivenConfig.RandomNumber.length == 1) {
@@ -454,7 +472,11 @@ public class PlayerHelper {
 				int group = randomGivenConfig.RandomParameterGroupId[randomIndex];
 				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
 				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
-				resources.addAll(addResources(player, groupConfig.AssetID, groupConfig.Several, opType));
+				int several = groupConfig.Several;
+				if (additionValue > 0) {
+					several = (int) (several * (1 + additionValue / 10000f));
+				}
+				resources.addAll(addResources(player, groupConfig.AssetID, several, opType));
 			}
 		}
 		for (int i = 0; i < randomGivenConfig.FixedNumRandomDrop.length; i++) {
@@ -463,7 +485,11 @@ public class PlayerHelper {
 			List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
 			for (int j = 0; j < randomCount; j++) {
 				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
-				resources.addAll(addResources(player, groupConfig.AssetID, groupConfig.Several, opType));
+				int several = groupConfig.Several;
+				if (additionValue > 0) {
+					several = (int) (several * (1 + additionValue / 10000f));
+				}
+				resources.addAll(addResources(player, groupConfig.AssetID, several, opType));
 			}
 		}
 		return resources;

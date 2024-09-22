@@ -59,7 +59,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 			if (buyTimes <= battleTimes - GlobalConst.JDTMFreeCnt) {
 				return ErrorMsgEnum.times_limit.getId();
 			}
-			if (battleTimes >= GlobalConst.JDTMFreeCnt + GlobalConst.JDTMPayCnt) {
+			if (battleTimes >= GlobalConst.JDTMFreeCnt + GlobalConst.JDTMPayCnt + player.getWelfareValue(WelfareTypeEnum.BossBattleNum)) {
 				return ErrorMsgEnum.times_limit.getId();
 			}
 		}
@@ -82,6 +82,11 @@ public class WorldBossBattle extends XiYouBattleHandler {
 	}
 
 	private void end(int damage) {
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.BossBattleIntegral);
+		if (welfareValue > 0) {
+			damage = (int) (damage * (1 + welfareValue / 10000.0));
+		}
+		
 		cumulativeDamage += damage;
 		if (damage > maxDamageToday) {
 			maxDamageToday = damage;
