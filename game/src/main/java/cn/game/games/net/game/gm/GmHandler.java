@@ -149,8 +149,6 @@ public class GmHandler extends BaseHandler {
             "",
             "selectGmMailList",
             req.getType(),
-            req.getStartTime() == 0 ? null : new java.sql.Date(req.getStartTime()),
-            req.getEndTime() == 0 ? null : new java.sql.Date(req.getEndTime()),
             req.getTitle() == null ? null : req.getTitle(),
             req.getContent() == null ? null : req.getContent(),
             req.getStatus(),
