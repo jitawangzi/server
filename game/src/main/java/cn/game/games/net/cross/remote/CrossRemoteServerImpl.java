@@ -97,6 +97,32 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 		gameServerInterface.addMail(playerId, serverId, titleId, contentId, typeId, resourceText);
 		return false;
 	}
+	@Override
+	public void notifyBroadcastAddForbidAccount(List<Long> pids, String reason, String timer ){
+		CrossServer.getInstance().getGameServerInterfaces().values().forEach(
+				gameServerInterface -> gameServerInterface.notifyAddForbidAccount(pids, reason, timer)
+		);
+	}
+	@Override
+	public void notifyBroadcastDelForbidAccount(List<Long> pids ){
+		CrossServer.getInstance().getGameServerInterfaces().values().forEach(
+				gameServerInterface -> gameServerInterface.notifyDelForbidAccount(pids)
+		);
+	}
+
+	@Override
+	public void notifyBroadcastAddGlobalGmMail(int mailId) {
+		CrossServer.getInstance().getGameServerInterfaces().values().forEach(
+				gameServerInterface -> gameServerInterface.addGlobalGmMail(mailId)
+		);
+	}
+
+	@Override
+	public void notifyBroadcastDelGlobalGmMail(int mailId) {
+		CrossServer.getInstance().getGameServerInterfaces().values().forEach(
+				gameServerInterface -> gameServerInterface.delGlobalGmMail(mailId)
+		);
+	}
 
 	@Override
 	public List<ServerStatus> serverStatus(String[] serverIds) {

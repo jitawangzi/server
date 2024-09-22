@@ -3,10 +3,7 @@ package cn.game.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -413,13 +410,11 @@ public final class DateUtil {
 	}
 
 	public static long addWeekBeginTimer(int offsetWeek){
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.WEEK_OF_YEAR,offsetWeek);
-		calendar.set(Calendar.DAY_OF_WEEK,2); // 以周一为第一天
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		return calendar.getTimeInMillis();
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime targetWeekStart = now.plusWeeks(offsetWeek)
+				.with(DayOfWeek.MONDAY)
+				.truncatedTo(ChronoUnit.DAYS);
+		return targetWeekStart.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
 	}
 
@@ -575,7 +570,7 @@ public final class DateUtil {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		long addWeek = addWeekBeginTimer(1);
+		long addWeek = addWeekBeginTimer(2);
         System.out.println(addWeek);
 		System.out.println(diffDays(System.currentTimeMillis() - DAY_MILLIS));
 

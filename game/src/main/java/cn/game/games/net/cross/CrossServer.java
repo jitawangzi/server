@@ -100,4 +100,7 @@ public class CrossServer {
 		return serverId;
 	}
 
+	public ConcurrentMap<String, GameRemoteServerInterface> getGameServerInterfaces() {
+		return gameServerInterfaces;
+	}
 }

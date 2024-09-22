@@ -8,10 +8,12 @@ import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.util.DAO;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.GmMsg;
+import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,17 +36,17 @@ public class GmHelper {
     return promise.future();
   }
 
-  public static GmMsg.GmMailInfo toGmMailPb(GmMail gmMail) {
+  public static GmMsg.GmMailInfo toGmMailPb(GmMail gmMail) throws ParseException {
     GmMsg.GmMailInfo.Builder builder = GmMsg.GmMailInfo.newBuilder();
     builder.setUid(gmMail.getId() + "");
     builder.setType(gmMail.getMailopttype());
     builder.setTitle(gmMail.getTitle());
     builder.setContent(gmMail.getContext());
-    builder.setCreateTime((int) (gmMail.getCreateTime().getTime() / 1000L));
+    builder.setCreateTime((int) (DateUtil.getLongDate(gmMail.getCreateTime()) / 1000L));
     builder.setCheckTime(
         gmMail.getApprovalTimer() == null
             ? 0
-            : (int) (gmMail.getApprovalTimer().getTime() / 1000L));
+            : (int) (DateUtil.getLongDate(gmMail.getApprovalTimer()) / 1000L));
     if (gmMail.getAttachment() != null) {
       List<Goods> goodsList = getAttachment(gmMail);
       if (goodsList != null) {

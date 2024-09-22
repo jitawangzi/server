@@ -56,5 +56,6 @@ public interface IpWhitelistMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<IpWhitelist> recordList);
+
 	List<IpWhitelist> selectAll();
 }
