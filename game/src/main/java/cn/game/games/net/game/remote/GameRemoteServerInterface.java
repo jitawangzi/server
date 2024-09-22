@@ -42,4 +42,9 @@ public interface GameRemoteServerInterface {
 
 	public List<Object> getExploreMap(long playerId);
 
+	public void notifyAddForbidAccount(List<Long> pids, String reason, String timer );
+	public void notifyDelForbidAccount(List<Long> pids );
+	public void addGlobalGmMail(int mailId);
+
+	void delGlobalGmMail(int mailId);
 }

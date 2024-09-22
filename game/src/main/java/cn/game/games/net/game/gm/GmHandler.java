@@ -1,5 +1,6 @@
 package cn.game.games.net.game.gm;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,11 +9,13 @@ import java.util.concurrent.CompletableFuture;
 import cn.game.games.cache.entity.GmMail;
 import cn.game.games.cache.entity.GmOpt;
 import cn.game.games.net.data.mapper.GmMailMapper;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.util.DAO;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GmMsg;
 import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.ServerType;
 import com.google.protobuf.Message;
@@ -46,6 +49,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoRequest_7d000050;
 import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoResponse_7d000051;
 import io.vertx.core.Future;
+import org.springframework.util.unit.DataUnit;
 
 /** gm处理器 */
 @Component
@@ -92,7 +96,7 @@ public class GmHandler extends BaseHandler {
     GmMail gmMail = new GmMail();
     gmMail.setTitle(title);
     gmMail.setContext(content);
-    gmMail.setCreateTime(new Date());
+    gmMail.setCreateTime(DateUtil.getStringDate());
     if (!list.isEmpty()) {
       gmMail.setAttachment(JsonUtil.toJsonString(list));
     }
@@ -105,12 +109,18 @@ public class GmHandler extends BaseHandler {
         return;
       }
       gmMail.setServerids(req.getServerIdList().toString());
-      gmMail.setSendStartTimer(new Date(req.getSendStartTime() * 1000L));
-      gmMail.setSendEndTimer(new Date(req.getSendEndTime() * 1000L));
+
+      gmMail.setSendStartTimer(
+          DateUtil.getTimeByPattern(new Date(req.getSendStartTime() * 1000L), DateUtil.pattern_en));
+      gmMail.setSendEndTimer(
+          DateUtil.getTimeByPattern(new Date(req.getSendEndTime() * 1000L), DateUtil.pattern_en));
       gmMail.setMinLevel(req.getLevelStart());
       gmMail.setMaxLevel(req.getLevelEnd());
+      gmMail.setOptFlag((byte) 0);
       gmMail.setTimeCheckType(req.getTimeCheckType());
+      gmMail.setMailopttype(1);
     } else {
+      gmMail.setMailopttype(0);
       gmMail.setPids(req.getPlayerIdsList().toString());
     }
     DAO.insert(gmMail)
@@ -120,6 +130,7 @@ public class GmHandler extends BaseHandler {
             })
         .onFailure(
             e -> {
+              e.printStackTrace();
               sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "");
             });
   }
@@ -151,7 +162,11 @@ public class GmHandler extends BaseHandler {
               if (list != null) {
                 list.forEach(
                     gmMail -> {
-                      res.addMails(GmHelper.toGmMailPb(gmMail));
+                      try {
+                        res.addMails(GmHelper.toGmMailPb(gmMail));
+                      } catch (ParseException e) {
+                        e.printStackTrace();
+                      }
                     });
               }
               sendAndRecordOpt(client, req, res.build());
@@ -173,37 +188,50 @@ public class GmHandler extends BaseHandler {
     req.getUidList()
         .forEach(
             mailId -> {
-              DAO.execute(GmMailMapper.class, MapperConstant.selectByPrimaryKey, mailId)
+              DAO.execute(
+                      GmMailMapper.class,
+                      MapperConstant.selectByPrimaryKey,
+                      Integer.parseInt(mailId))
                   .onSuccess(
                       r -> {
-                        GmMail gmMail = (GmMail) r;
-                        if (gmMail != null) {
-                          gmMail.setApprovalTimer(new Date());
-                          List<Goods> attachment = GmHelper.getAttachment(gmMail);
-                          // 个人邮件
-                          if (gmMail.getPids() != null) {
-                            String[] pids = gmMail.getPids().split(";");
-                            for (String pid : pids) {
-                              MailHelper.sendMail(
-                                  Long.parseLong(pid),
-                                  0,
-                                  "系统管理员",
-                                  gmMail.getTitle(),
-                                  gmMail.getContext(),
-                                  MailHelper.GM,
-                                  attachment,
-                                  true);
-                            }
-                          } else { // 全服邮件
-                            MailHelper.addGlobalMail(gmMail);
-                            // TODO 通知其他节点 添加新的全服邮件
-                          }
+                        if (r == null) {
+                          return;
                         }
+                        GmMail gmMail = (GmMail) r;
+                        if (gmMail.getApprovalTimer() != null) {
+                          sendAndRecordOpt(
+                              client, req, res.build(), ErrorMsgEnum.request_parameter_null, "");
+                          return;
+                        }
+                        gmMail.setApprovalTimer(DateUtil.getStringDate());
+                        gmMail.setOptFlag((byte) 1);
+                        List<Goods> attachment = GmHelper.getAttachment(gmMail);
                         DAO.update(gmMail);
+
+                        // 个人邮件
+                        if (gmMail.getPids() != null) {
+                          String[] pids = gmMail.getPids().split(";");
+                          for (String pid : pids) {
+                            MailHelper.sendMail(
+                                Long.parseLong(pid),
+                                0,
+                                "系统管理员",
+                                gmMail.getTitle(),
+                                gmMail.getContext(),
+                                MailHelper.GM,
+                                attachment,
+                                true);
+                          }
+                        } else { // 全服邮件
+                          MailHelper.addGlobalMail(gmMail);
+                          // 通知其他节点 添加新的全服邮件
+                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastAddGlobalGmMail(gmMail.getId());
+                        }
                         sendAndRecordOpt(client, req, res.build());
                       })
                   .onFailure(
                       e -> {
+                        e.printStackTrace();
                         sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "");
                       });
             });
@@ -223,8 +251,9 @@ public class GmHandler extends BaseHandler {
               DAO.execute(GmMailMapper.class, MapperConstant.deleteByPrimaryKey, mailId)
                   .onSuccess(
                       r -> {
-                        if (MailHelper.removeGlobalMail(mailId)) {
-                          // TODO 该邮件是全服邮件, 通知其他节点删除该邮件
+                        if (r != null &&  MailHelper.removeGlobalMail(mailId)) {
+                          // 该邮件是全服邮件, 通知其他节点删除该邮件
+                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastDelGlobalGmMail(Integer.parseInt(mailId));
                         }
                         sendAndRecordOpt(client, req, res.build());
                       })
@@ -292,7 +321,7 @@ public class GmHandler extends BaseHandler {
     String result = errMsg == null ? response.toString() : errMsg.getDesc();
     ServerMsg.GmOptRecordRequest_7d000052.Builder req =
         ServerMsg.GmOptRecordRequest_7d000052.newBuilder();
-    req.setOptmsg(optMsg)
+    req.setOptmsg(optMsg == null ? "null" : optMsg)
         .setOptParam(request.toString())
         .setOptPid(
             client.getPlayerId()
@@ -331,6 +360,7 @@ public class GmHandler extends BaseHandler {
         GmAccountForbidResponse_77000006.newBuilder();
     String reason = request.getReason();
     long unblockTime = request.getEndTime();
+    List<Long> pids = new ArrayList<>();
     request
         .getPlayerIdList()
         .forEach(
@@ -339,12 +369,18 @@ public class GmHandler extends BaseHandler {
                   PlayerManager.getInstance()
                       .forbidAccount(Long.parseLong(playerId), reason, unblockTime * 1000L + "");
               if (forbidAccount != null) {
-                // TODO 通知其他game节点添加封号记录
                 sendAndRecordOpt(client, request, response.build());
+                pids.add(forbidAccount.getPlayerId());
               } else {
                 sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.unknown, reason);
               }
             });
+    //  通知其他game节点添加封号记录
+    if (!pids.isEmpty()) {
+      GameServer.getInstance()
+          .getCrossGameServerInterfaceSync()
+          .notifyBroadcastAddForbidAccount(pids, reason, unblockTime * 1000L + "");
+    }
   }
 
   /** 解封账号 */
@@ -352,14 +388,21 @@ public class GmHandler extends BaseHandler {
     GmAccountUnblockRequest_77000007 request = (GmAccountUnblockRequest_77000007) message;
     GmAccountUnblockResponse_77000008.Builder response =
         GmAccountUnblockResponse_77000008.newBuilder();
+    List<Long> pids = new ArrayList<>();
     request
         .getPlayerIdList()
         .forEach(
             playerId -> {
               PlayerManager.getInstance().unblockAccount(Long.parseLong(playerId));
-              // TODO 通知其他game节点删除封号记录
+              pids.add(Long.parseLong(playerId));
               sendAndRecordOpt(client, request, response.build());
             });
+    // 通知其他game节点删除封号记录
+    if (!pids.isEmpty()) {
+      GameServer.getInstance()
+          .getCrossGameServerInterfaceSync()
+          .notifyBroadcastDelForbidAccount(pids);
+    }
   }
 
   /** 踢玩家下线 */

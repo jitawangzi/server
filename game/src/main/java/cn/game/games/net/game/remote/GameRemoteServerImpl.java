@@ -124,4 +124,31 @@ public class GameRemoteServerImpl implements GameRemoteServerInterface {
 		List<Object> list = new ArrayList<>();
 		return list;
 	}
+
+	@Override
+	public void notifyAddForbidAccount(List<Long> pids, String reason, String timer) {
+		pids.forEach(pid ->{
+			PlayerManager.getInstance()
+					.forbidAccount(pid, reason, timer+"");
+		});
+	}
+
+	@Override
+	public void addGlobalGmMail(int mailId) {
+		MailHelper.addGlobalMail(mailId);
+	}
+
+	@Override
+	public void delGlobalGmMail(int mailId) {
+		MailHelper.removeGlobalMail(mailId+"");
+	}
+
+	@Override
+  public void notifyDelForbidAccount(List<Long> pids) {
+    pids.forEach(
+        pid -> {
+          PlayerManager.getInstance().unblockAccount(pid);
+        });
+
+	}
 }

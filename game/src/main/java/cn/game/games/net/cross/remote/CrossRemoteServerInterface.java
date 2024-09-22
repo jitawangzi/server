@@ -56,5 +56,9 @@ public interface CrossRemoteServerInterface {
 	@Deprecated
 	public void stopServers(String[] serverIds);
 
+	public void notifyBroadcastAddForbidAccount(List<Long> pids, String reason, String timer );
+	public void notifyBroadcastDelForbidAccount(List<Long> pids );
+	public void notifyBroadcastAddGlobalGmMail(int mailId);
+	public void notifyBroadcastDelGlobalGmMail(int mailId);
 
 }

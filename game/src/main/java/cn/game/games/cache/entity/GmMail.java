@@ -11,10 +11,10 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private Integer id;
 	/**
-	 * 创建时间
+	 * 鍒涘缓鏃堕棿
 	 * @mbg.generated
 	 */
-	private Date createTime;
+	private String createTime;
 	/**
 	 * 邮件类型 0 个人邮件 1 全服邮件
 	 * @mbg.generated
@@ -41,15 +41,15 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private Byte optFlag;
 	/**
-	 * 全服邮件 生效的开始时间
+	 * 閸忋劍婀囬柇顔绘 閻㈢喐鏅ラ惃鍕磻婵妞傞梻?
 	 * @mbg.generated
 	 */
-	private Date sendStartTimer;
+	private String sendStartTimer;
 	/**
-	 * 全服邮件生效的结束时间
+	 * 閸忋劍婀囬柇顔绘閻㈢喐鏅ラ惃鍕波閺夌喐妞傞梻?
 	 * @mbg.generated
 	 */
-	private Date sendEndTimer;
+	private String sendEndTimer;
 	/**
 	 * 全服邮件 玩家最低等级
 	 * @mbg.generated
@@ -61,7 +61,7 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private Integer maxLevel;
 	/**
-	 * 邮件附件
+	 * 閭欢闄勪欢
 	 * @mbg.generated
 	 */
 	private String attachment;
@@ -76,10 +76,10 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private String serverids;
 	/**
-	 * 审批时间戳
+	 * 审核时间戳
 	 * @mbg.generated
 	 */
-	private Date approvalTimer;
+	private String approvalTimer;
 	/**
 	 * @mbg.generated
 	 */
@@ -102,14 +102,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 
@@ -186,28 +186,28 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Date getSendStartTimer() {
+	public String getSendStartTimer() {
 		return sendStartTimer;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setSendStartTimer(Date sendStartTimer) {
+	public void setSendStartTimer(String sendStartTimer) {
 		this.sendStartTimer = sendStartTimer;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Date getSendEndTimer() {
+	public String getSendEndTimer() {
 		return sendEndTimer;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setSendEndTimer(Date sendEndTimer) {
+	public void setSendEndTimer(String sendEndTimer) {
 		this.sendEndTimer = sendEndTimer;
 	}
 
@@ -284,14 +284,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Date getApprovalTimer() {
+	public String getApprovalTimer() {
 		return approvalTimer;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setApprovalTimer(Date approvalTimer) {
+	public void setApprovalTimer(String approvalTimer) {
 		this.approvalTimer = approvalTimer;
 	}
 
