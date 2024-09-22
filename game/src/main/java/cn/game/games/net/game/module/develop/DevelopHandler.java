@@ -198,7 +198,7 @@ public class DevelopHandler extends BaseHandler {
 		for (int i = 1; i <= affixCount; i++) {
 			List<SpiritualAttrConfig> spiritPositionAttrGroupList = SpiritualAttrManager
 					.instance()
-					.getSpiritPositionAttrGroupList(nextPos, i);
+					.getSpiritPositionAttrGroupList(pos + 1, i);
 			int randomIndex = Rnd.randomIndex(spiritPositionAttrGroupList, r -> r.Weight);
 			SpiritualAttrConfig spiritualAttrConfig = spiritPositionAttrGroupList.get(randomIndex);
 			spiritualBuilder.addAtts(AttrGrowInfo.newBuilder().setId(spiritualAttrConfig.AttributeId).setStartValue(spiritualAttrConfig.AttrMin)
