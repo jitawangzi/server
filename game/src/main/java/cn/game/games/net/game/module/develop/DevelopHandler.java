@@ -196,7 +196,9 @@ public class DevelopHandler extends BaseHandler {
 		int affixCount = spiritualQualityConfig.SpiritQualityaAffixNum[Rnd.randomIndex(spiritualQualityConfig.SpiritQualityaAffixNumProbability)];
 		cn.game.protocol.protobuf.DevelopMsg.SpiritualInfo.Builder spiritualBuilder = SpiritualInfo.newBuilder();
 		for (int i = 1; i <= affixCount; i++) {
-			List<SpiritualAttrConfig> spiritPositionAttrGroupList = SpiritualAttrManager.instance().getSpiritPositionAttrGroupList(pos + 1, i); 
+			List<SpiritualAttrConfig> spiritPositionAttrGroupList = SpiritualAttrManager
+					.instance()
+					.getSpiritPositionAttrGroupList(nextPos, i);
 			int randomIndex = Rnd.randomIndex(spiritPositionAttrGroupList, r -> r.Weight);
 			SpiritualAttrConfig spiritualAttrConfig = spiritPositionAttrGroupList.get(randomIndex);
 			spiritualBuilder.addAtts(AttrGrowInfo.newBuilder().setId(spiritualAttrConfig.AttributeId).setStartValue(spiritualAttrConfig.AttrMin)
