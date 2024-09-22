@@ -15,7 +15,7 @@ public class ShopItemListRequest_15000001Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.newBuilder() ; 
 		
-		builder.setShopId(2);
+		builder.setShopId(15);
 		
 		return builder.build() ; 
 	}

@@ -48,7 +48,7 @@ public class RpcFactory {
 		return instance;
 	}
 
-	public static <T> T getImplLoadBalancer(RpcClient rpcClient, Class<T> rpcInterfaceClass, ServerType serverType) {
+	public static <T> T getImplLoadBalancer(Class<T> rpcInterfaceClass, RpcClient rpcClient, ServerType serverType) {
 		Invocation invocation = new Invocation();
 		invocation.setRpcClient(rpcClient);
 		invocation.setServerType(serverType);
@@ -57,7 +57,7 @@ public class RpcFactory {
 		return instance;
 	}
 
-	public static <T> T getImplLoadBroadcast(RpcClient rpcClient, Class<T> rpcInterfaceClass, ServerType serverType) {
+	public static <T> T getImplLoadBroadcast(Class<T> rpcInterfaceClass, RpcClient rpcClient, ServerType serverType) {
 		Invocation invocation = new Invocation();
 		invocation.setRpcClient(rpcClient);
 		invocation.setServerType(serverType);

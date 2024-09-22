@@ -34,6 +34,8 @@ import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.develop.dragon.DragonModule;
+import cn.game.games.net.game.module.develop.fairyfriend.FairyFriend;
+import cn.game.games.net.game.module.develop.fairyfriend.FairyFriendModule;
 import cn.game.games.net.game.module.develop.hccommon.HCCommonModule;
 import cn.game.games.net.game.module.develop.hchero.HCHeroModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
@@ -55,12 +57,14 @@ import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.net.game.module.vip.VipModule;
+import cn.game.protocol.generated.config.FairyFriendFavorabilityConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.VIPConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
+import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.generated.manager.PayManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -494,6 +498,18 @@ public class Player  {
 		if (curVipConfig != null && curVipConfig.Benefit.containsKey(type.ID)){
 			ret += curVipConfig.Benefit.get(type.ID);
 		}
+		// 仙友加成
+		FairyFriendModule fairyFriendModule = getModule(FairyFriendModule.class);
+		Collection<FairyFriend> list = fairyFriendModule.list();
+		for (FairyFriend fairyFriend : list) {
+			FairyFriendFavorabilityConfig favorabilityConfig = FairyFriendFavorabilityManager
+					.instance()
+					.getUIFairyListIDLV(fairyFriend.getConfigId(), fairyFriend.getLevel());
+			if (favorabilityConfig.FavorabilityAward.containsKey(type.ID)) {
+				ret += favorabilityConfig.FavorabilityAward.get(type.ID);
+			}
+		}
+
 		return ret;
 	}
 
