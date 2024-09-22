@@ -1,4 +1,4 @@
-package cn.game.core.net.vertx.rpc;
+package cn.game.core.net.rpc.vertx;
 
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.vertx.VxHolder;

@@ -1,6 +1,8 @@
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import io.vertx.core.Vertx;
+
 public class GG2 {
 
 
@@ -17,6 +19,13 @@ public class GG2 {
 
 //		System.out.println(0x55001501);
 		System.out.println(Integer.toHexString(922746882));
+		
+
+		Vertx vertx = Vertx.vertx(); 
+		System.out.println("start");
+		vertx.setPeriodic(3000, r -> {
+            System.out.println("hello");
+		});
 
 	}
 }
