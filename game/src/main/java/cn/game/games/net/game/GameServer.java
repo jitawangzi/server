@@ -80,7 +80,7 @@ public class GameServer implements GameServerMBean {
 //			e.printStackTrace();
 //		}
 //	}
-	private static final String gameServerKey = "game.serever.id";
+	private static final String gameServerKey = "game.server.id";
 
 //	private final Logger log = LoggerFactory.getLogger(GameServer.class);
 	private Properties initialProp;
@@ -192,6 +192,7 @@ public class GameServer implements GameServerMBean {
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
 //		producer.start();
 //		testUpdateBatch();
+//		getLoginGameServerInterface().getUidByName("sfsdfs32");
 	}
 
 	/** 
@@ -301,8 +302,8 @@ public class GameServer implements GameServerMBean {
 				throw new IllegalArgumentException("serverId can not be null");
 		}
 
-		this.loginGameServerInterface = RpcFactory.getImpl(LoginGameServerInterface.class, rpcClient, false,
-				loginServerId);
+		this.loginGameServerInterface = RpcFactory
+				.getImplLoadBalancer(LoginGameServerInterface.class, rpcClient, ServerType.Login);
 		this.crossGameServerInterface = RpcFactory.getImpl(CrossRemoteServerInterface.class, rpcClient, false,
 				crossServerId);
 		this.crossGameServerInterfaceSync = RpcFactory.getImpl(CrossRemoteServerInterface.class, rpcClient, true,

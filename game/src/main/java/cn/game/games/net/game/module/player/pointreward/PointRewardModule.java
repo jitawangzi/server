@@ -11,10 +11,12 @@ import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.GameUtil;
 
 /**    
  * 积分领宝箱， 七日任务， 每日挑战积分等等
@@ -90,6 +92,10 @@ public class PointRewardModule extends BasePlayerModule {
 		int[][] fixRewardStage = data.fixRewardStage;
 		int pointType = data.pointType;
 		OpType opType = data.opType;
+		int welfareValue = 0;
+		if (type == PointRewardType.LingPo) {
+			welfareValue = player.getWelfareValue(WelfareTypeEnum.LingPoBattleBox);
+		}
 
 		List<Integer> activeRewardList = getActiveRewardList(type, subType);
 
@@ -104,9 +110,9 @@ public class PointRewardModule extends BasePlayerModule {
 					if (point >= needPoint) {
 						List<RewardInfo> reward;
 						if (randomRewardStage != null) {
-							reward = PlayerHelper.addReward(player, randomRewardStage[i], opType);
+							reward = PlayerHelper.addReward(player, randomRewardStage[i], welfareValue, opType);
 						} else if (fixRewardStage != null) {
-							reward = PlayerHelper.addResources(player, fixRewardStage[i], opType);
+							reward = PlayerHelper.addResources(player, GameUtil.arrayAddition(fixRewardStage[i], welfareValue), opType);
 						} else {
 							throw new IllegalArgumentException(MessageFormat.format("Invalid reward type,type[{}]subType[{}]index[{}]", type, subType, index));
 						}
@@ -131,9 +137,9 @@ public class PointRewardModule extends BasePlayerModule {
 
 				List<RewardInfo> reward = null;
 				if (randomRewardStage != null) {
-					reward = PlayerHelper.addReward(player, randomRewardStage[ix], opType);
+					reward = PlayerHelper.addReward(player, randomRewardStage[ix], welfareValue, opType);
 				} else if (fixRewardStage != null) {
-					reward = PlayerHelper.addResources(player, fixRewardStage[ix], opType);
+					reward = PlayerHelper.addResources(player, GameUtil.arrayAddition(fixRewardStage[ix], welfareValue), opType);
 				} else {
 					throw new IllegalArgumentException(MessageFormat.format("Invalid reward type,type[{}]subType[{}]index[{}]", type, subType, index));
 				}

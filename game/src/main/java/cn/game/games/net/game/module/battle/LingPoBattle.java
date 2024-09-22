@@ -11,6 +11,7 @@ import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -185,6 +186,11 @@ public class LingPoBattle extends XiYouBattleHandler {
 					break;
 				}
 			}
+		}
+
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.LingPoBattleIntegral);
+		if (welfareValue > 0) {
+			pointAdd = (int) (pointAdd * (1 + welfareValue / 10000.0));
 		}
 
 		List<RewardInfo> reward = PlayerHelper.addResources(player, Asset.SpiritBattlePoint.ID, pointAdd, OpType.LingPoBattle);
