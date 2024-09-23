@@ -265,21 +265,21 @@ public class ChapterHandler extends BaseHandler {
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
-		if (battle.isDayReward()) {
+		if (battle.isHistoryMaxReward()) {
 			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
-		int startBattleId = battle.getStartBattleId();
+		int maxBattleId = battle.getHistoryMaxBattleId();
 
-		if (startBattleId == 0) {
+		if (maxBattleId == 0) {
 			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 			return;
 		}
-		BattleConfig battleConfig = BattleManager.instance().get(startBattleId);
+		BattleConfig battleConfig = BattleManager.instance().get(maxBattleId);
 		for (int randomId : battleConfig.BattleBoxRandomId) {
 			resp.addAllRewards(PlayerHelper.addReward(player, randomId, OpType.ShiLuoZhenJing));
 		}
-		battle.setDayReward(true);
+		battle.setHistoryMaxReward(true);
 		client.sendProtocol(resp);
 	}
 
@@ -297,7 +297,9 @@ public class ChapterHandler extends BaseHandler {
 		ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
 		resp.setBattleId(battle.getStartBattleId());
 		resp.setBattleStage(battle.getBattleStage());
-		resp.setDayReward(battle.isDayReward());
+		resp.setHistoryMaxBattleReward(battle.isHistoryMaxReward());
+		resp.setHistoryMaxbattleStage(battle.getHistoryMaxStage());
+		resp.setHistoryMaxBattle(battle.getHistoryMaxBattleId());
 		resp.addAllRandomBuff(battle.getRandomBuff());
 
 		client.sendProtocol(resp);

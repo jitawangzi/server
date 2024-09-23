@@ -18,7 +18,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 
 public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, EventHandler {
 	protected transient Logger log = LoggerFactory.getLogger(this.getClass());
-
+	// @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected transient Player player;
 	protected transient long playerId;
 	protected transient Class<?>[] defaultDbMapperClass;
@@ -27,7 +27,6 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	protected static final int INIT_PRIORITY_MIDDLE = 1_0000;
 	protected static final int INIT_PRIORITY_HIGH = 100;
 	protected static final int INIT_PRIORITY_LOW = 100_0000;
-
 	/**
 	 * 是否初始化过
 	 */

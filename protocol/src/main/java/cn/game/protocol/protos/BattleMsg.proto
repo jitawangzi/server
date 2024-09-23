@@ -359,13 +359,15 @@ message BattleLostInfoRequest_13000201
 
 message BattleLostInfoResponse_13000202
 {
-	int32 battleId = 1 ;  //当前可打的战役id（还没通关的）战斗关卡。
-	int32 battleStage = 2 ;  //当前可打的失落真经非战斗关卡，从1开始，如果为0表示打战斗关卡
-	bool  dayReward = 3;  // 每日奖励是否已经领取了。
-	repeated int32 randomBuff = 4;	// 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+	int32 battleId = 1; //当前可打的战役id（还没通关的）战斗关卡。
+	int32 battleStage = 2; //当前可打的失落真经非战斗关卡，从1开始，如果为0表示打战斗关卡
+	repeated int32 randomBuff = 4; // 只有战斗关才有。每天不同的随机 增益或者减益buff， HeroBUFF表id。
+	int32 historyMaxBattle = 5; // 历史最高关卡，今天以前打的最高关
+	int32 historyMaxbattleStage = 6; // 历史最高关卡，今天以前打的最高关 （从1开始，如果为0表示打战斗关卡）
+	bool historyMaxBattleReward = 7; // 历史最高关卡奖励是否已经领取了。（今天）
 }
 
-// 领取失落真经每日奖励
+// 领取失落真经历史最高关卡奖励
 message BattleLostDayRewardRequest_13000203
 {
 }

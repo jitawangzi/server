@@ -18,9 +18,14 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
+	private int historyMaxStage = -1;
+	private int historyMaxBattleId;
+	/** 历史最高奖励是否已经领取了。 */
+	private boolean historyMaxReward;
+
 	/** 当前可打的失落真经非战斗关卡，从1开始，如果为10表示打战斗关卡 */
 	private int battleStage = -1;
-	/** 每日奖励是否已经领取了。 */
+	@Deprecated
 	private boolean dayReward;
 	/** 最新通关的battleId */
 	private int completeBattleId;
@@ -44,8 +49,12 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 //			}
 //			MailHelper.sendMail(player.getPlayerId(), 7, goods);
 //		}
-
-		dayReward = false;
+		if (historyMaxReward) {
+			historyMaxReward = false;
+		}
+		historyMaxBattleId = completeBattleId;
+		historyMaxStage = battleStage;
+//		dayReward = false;
 		if (startBattleId == 0) {
 			nextBattleId();
 		}
@@ -124,10 +133,6 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		return battleStage;
 	}
 
-	public boolean isDayReward() {
-		return dayReward;
-	}
-
 	public int getCompleteBattleId() {
 		return completeBattleId;
 	}
@@ -140,8 +145,29 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		return randomBuff;
 	}
 
-	public void setDayReward(boolean dayReward) {
-		this.dayReward = dayReward;
+
+	public int getHistoryMaxStage() {
+		return historyMaxStage;
+	}
+
+	public void setHistoryMaxStage(int historyMaxStage) {
+		this.historyMaxStage = historyMaxStage;
+	}
+
+	public int getHistoryMaxBattleId() {
+		return historyMaxBattleId;
+	}
+
+	public void setHistoryMaxBattleId(int historyMaxBattleId) {
+		this.historyMaxBattleId = historyMaxBattleId;
+	}
+
+	public boolean isHistoryMaxReward() {
+		return historyMaxReward;
+	}
+
+	public void setHistoryMaxReward(boolean historyMaxReward) {
+		this.historyMaxReward = historyMaxReward;
 	}
 
 	private List<RewardInfo> calcRewardInfos(int level, int stage) {
