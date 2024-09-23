@@ -59,6 +59,7 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 			nextBattleId();
 		}
 		List<Integer> randomBuffs = BattleHelper.randomBuffs(startBattleId, DungeonTypeEnum.ShiLuoZhenJing.getId());
+		this.randomBuff.clear();
 		this.randomBuff.addAll(randomBuffs);
 		if (battleStage == -1) {
 			battleStage = 1;
