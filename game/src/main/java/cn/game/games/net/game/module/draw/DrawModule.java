@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.draw;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,8 +28,10 @@ import cn.game.util.Rnd;
 public class DrawModule extends BasePlayerModule {
 
 	/** 当前第几档必送神将,key：GiftCardConfig 表id */
+	@Deprecated
 	private IntMapWrapper giftIndex = new IntMapWrapper();
-	/** 当前档位的抽卡次数,key：GiftCardConfig 表id */
+	/** 当前档d位的抽卡次数,key：GiftCardConfig 表id */
+	@Deprecated
 	private IntMapWrapper drawTimes = new IntMapWrapper();
 	/** 免费单抽的时间 key：DrawConfig 表id */
 	private IntMapWrapper freeDrawTime = new IntMapWrapper();
@@ -43,7 +46,12 @@ public class DrawModule extends BasePlayerModule {
 	private int curGuidanceGroupIndex = -1;
 
 	/** 至尊抽卡，已经抽过的索引、下标 SupremeRandomGroupConfig */
+//	@Deprecated
+//	@JsonIgnore
 	private List<Integer> supremeRandomGroupList = new ArrayList<Integer>();
+
+	/** key：draw表id，value : 已经抽过的索引、下标 SupremeRandomGroupConfig */
+	private Map<Integer, List<Integer>> supremeRandomGroupMap = new HashMap<>();
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -114,7 +122,6 @@ public class DrawModule extends BasePlayerModule {
 
 		DrawConfig drawConfig = DrawManager.instance().get(id);
 		if (id == 2) { // 至尊抽卡走特殊逻辑。首次十连给指定的卡，接下来走特殊卡池
-			List<SupremeRandomGroupConfig> list = SupremeRandomGroupManager.instance().list();
 			Map<Integer, List<GuidanceRandomGroupConfig>> randomParameterGroupIds = GuidanceRandomGroupManager.instance().getRandomParameterGroupIds();
 			Set<Integer> guidanceKeySet = randomParameterGroupIds.keySet();
 			if (count == 10 && isFirstTen) {
@@ -148,21 +155,16 @@ public class DrawModule extends BasePlayerModule {
 						ret.addAll(reward);
 						guidanceDrawCount++;
 					} else {
-						int randomWeighableIndex = Rnd.randomWeighableIndexExcludeIndex(list, supremeRandomGroupList);
-						SupremeRandomGroupConfig supremeRandomGroupConfig = list.get(randomWeighableIndex);
-						if (supremeRandomGroupConfig.SupremeRandomParameterTarget) {
-							supremeRandomGroupList.clear();
-						} else {
-							supremeRandomGroupList.add(randomWeighableIndex);
-							if (supremeRandomGroupList.size() >= list.size()) {
-								supremeRandomGroupList.clear();
-							}
-						}
-						List<RewardInfo> reward = PlayerHelper.addReward(player, supremeRandomGroupConfig.GivenID, OpType.Draw);
+						List<RewardInfo> reward = supremeDraw(id);
 						ret.addAll(reward);
 					}
 
 				}
+			}
+		} else if (id == 201 || id == 301) {
+			for (int i = 0; i < count; i++) {
+				List<RewardInfo> reward = supremeDraw(id);
+				ret.addAll(reward);
 			}
 		} else {
 			for (int i = 0; i < count; i++) {
@@ -170,7 +172,7 @@ public class DrawModule extends BasePlayerModule {
 				ret.addAll(reward);
 			}
 		}
-		
+
 		for (int[] money : drawConfig.DrawMoney) {
 			PlayerHelper.addResources(player, money[0], money[1] * count, OpType.Draw);
 		}
@@ -178,6 +180,30 @@ public class DrawModule extends BasePlayerModule {
 			freeDrawTime.setValue(id, DateUtil.currentTimeSeconds());
 		}
 		return allRewards;
+	}
+
+	/** 
+	 * 保底抽卡掉落方式
+	 * @param id  draw表id
+	 * @return
+	 */
+	private List<RewardInfo> supremeDraw(int id) {
+		List<SupremeRandomGroupConfig> list = SupremeRandomGroupManager.instance().getDrawIdList(id);
+
+		List<Integer> supremeRandomGroupList = supremeRandomGroupMap.computeIfAbsent(id, k -> new ArrayList<>());
+
+		int randomWeighableIndex = Rnd.randomWeighableIndexExcludeIndex(list, supremeRandomGroupList);
+		SupremeRandomGroupConfig supremeRandomGroupConfig = list.get(randomWeighableIndex);
+		if (supremeRandomGroupConfig.SupremeRandomParameterTarget) {
+			supremeRandomGroupList.clear();
+		} else {
+			supremeRandomGroupList.add(randomWeighableIndex);
+			if (supremeRandomGroupList.size() >= list.size()) {
+				supremeRandomGroupList.clear();
+			}
+		}
+		List<RewardInfo> reward = PlayerHelper.addReward(player, supremeRandomGroupConfig.GivenID, OpType.Draw);
+		return reward;
 	}
 
 }
