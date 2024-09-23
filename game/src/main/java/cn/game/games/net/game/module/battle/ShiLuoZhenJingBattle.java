@@ -8,6 +8,7 @@ import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -146,9 +147,13 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 	private List<RewardInfo> calcRewardInfos(int level, int stage) {
 		List<RewardInfo> rewardInfos = new ArrayList<>();
 
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.LostScripturesFriendAddition);
 		for (int i = 0; i < GlobalConst.LostScripturesRewards.length; i++) {
 			int rewardId = GlobalConst.LostScripturesRewards[i];
 			int rewardCount = calcRewardCount(GlobalConst.LostScripturesRewardsNum[i], level, stage);
+			if (welfareValue > 0) {
+				rewardCount += rewardCount * welfareValue / 10000f;
+			}
 			List<RewardInfo> resources = PlayerHelper.addResources(player, rewardId, rewardCount, OpType.ShiLuoZhenJing);
 			rewardInfos.addAll(resources);
 		}

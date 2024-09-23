@@ -55,11 +55,12 @@ public class WorldBossBattle extends XiYouBattleHandler {
 		if (BattleHelper.isNowAfter2330()) {
 			return ErrorMsgEnum.not_open.getId();
 		}
-		if (battleTimes >= GlobalConst.JDTMFreeCnt) {
-			if (buyTimes <= battleTimes - GlobalConst.JDTMFreeCnt) {
+		int maxFreeCount = GlobalConst.JDTMFreeCnt + player.getWelfareValue(WelfareTypeEnum.BossBattleNum);
+		if (battleTimes >= maxFreeCount) {
+			if (buyTimes <= battleTimes - maxFreeCount) {
 				return ErrorMsgEnum.times_limit.getId();
 			}
-			if (battleTimes >= GlobalConst.JDTMFreeCnt + GlobalConst.JDTMPayCnt + player.getWelfareValue(WelfareTypeEnum.BossBattleNum)) {
+			if (battleTimes >= maxFreeCount + GlobalConst.JDTMPayCnt) {
 				return ErrorMsgEnum.times_limit.getId();
 			}
 		}

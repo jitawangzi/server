@@ -17,12 +17,14 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.NPCConfig;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.NPCManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.RewardMsg;
+import cn.game.util.GameUtil;
 import io.vertx.core.Future;
 
 /**
@@ -209,12 +211,12 @@ public class OfflineBattleHandler {
           if (req.getWin()) {
             res.addAllRewards(
                 PlayerHelper.addResources(
-                    player, GlobalConst.DaDaoChallengeCoin, OpType.DA_DAO_WIN));
+                    player, GameUtil.arrayAddition(GlobalConst.DaDaoChallengeCoin, player.getWelfareValue(WelfareTypeEnum.DadaoFriendAddition)), OpType.DA_DAO_WIN));
           }
           if (module.playNum <= GlobalConst.DaDaoBrawlPoint.length) {
             res.addAllRewards(
                 PlayerHelper.addResources(
-                    player, GlobalConst.DaDaoBrawlPoint[module.playNum - 1], OpType.DA_DAO_JOIN));
+                    player, GameUtil.arrayAddition(GlobalConst.DaDaoBrawlPoint[module.playNum - 1], player.getWelfareValue(WelfareTypeEnum.DadaoFriendAddition)), OpType.DA_DAO_JOIN));
           }
           client.sendProtocol(res);
           module.setInBattlePlayer(null);
