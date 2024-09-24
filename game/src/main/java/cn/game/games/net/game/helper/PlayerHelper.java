@@ -450,53 +450,18 @@ public class PlayerHelper {
 	 */
 
 	public static List<RewardInfo> addReward(Player player, int randomRewardId, int additionValue, OpType opType) {
-		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId);
-		int[][] mustGiven = randomGivenConfig.MustGiven;
+		List<Goods> randomReward = randomReward(randomRewardId);
 		if (additionValue > 0) {
-			for (int i = 0; i < mustGiven.length; i++) {
-				mustGiven[i][1] = (int) (mustGiven[i][1] * (1 + additionValue / 10000f));
+			for (Goods goods : randomReward) {
+				goods.setCount((goods.getCount() + (int) (goods.getCount() * additionValue / 10000f)));
 			}
 		}
-		List<RewardInfo> resources = addResources(player, mustGiven, opType, false);
-		if (randomGivenConfig.RandomNumber.length > 0) {
-			int randomCount = 0;
-			if (randomGivenConfig.RandomNumber.length == 1) {
-				randomCount = randomGivenConfig.RandomNumber[0];
-			} else if (randomGivenConfig.RandomNumber.length == 2) {
-				randomCount = Rnd.get(randomGivenConfig.RandomNumber[0], randomGivenConfig.RandomNumber[1]);
-			} else {
-				throw new IllegalArgumentException("RandomGiven奖励数量貌似不对：  " + randomGivenConfig.ID);
-			}
-			for (int i = 0; i < randomCount; i++) {
-				int randomIndex = Rnd.randomIndex(randomGivenConfig.RandomParameterWeight);
-				int group = randomGivenConfig.RandomParameterGroupId[randomIndex];
-				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
-				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
-				int several = groupConfig.Several;
-				if (additionValue > 0) {
-					several = (int) (several * (1 + additionValue / 10000f));
-				}
-				resources.addAll(addResources(player, groupConfig.AssetID, several, opType));
-			}
-		}
-		for (int i = 0; i < randomGivenConfig.FixedNumRandomDrop.length; i++) {
-			int group = randomGivenConfig.FixedNumRandomDrop[i][0];
-			int randomCount = randomGivenConfig.FixedNumRandomDrop[i][1];
-			List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
-			for (int j = 0; j < randomCount; j++) {
-				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
-				int several = groupConfig.Several;
-				if (additionValue > 0) {
-					several = (int) (several * (1 + additionValue / 10000f));
-				}
-				resources.addAll(addResources(player, groupConfig.AssetID, several, opType));
-			}
-		}
+		List<RewardInfo> resources = addGoods(player, randomReward, opType);
 		return resources;
 	}
 
 	/**
-	 * 只是随机出来具体的奖励，不加到玩家身上,较少用到
+	 * 只是随机出来具体的奖励，不加到玩家身上,较少直接用到
 	 * @param player
 	 * @param randomRewardId
 	 * @return
