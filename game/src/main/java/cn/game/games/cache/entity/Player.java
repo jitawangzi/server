@@ -636,15 +636,7 @@ public class Player  {
     return getPlayerModule().getExpLevelMap().getValue(Asset.VIPExp.ID);
 	}
 
-	/**
-	 * 更新离线属性到redis
-	 */
-	public void updateOfflineAttrData(){
-		if(isFuncOpen(InitialUI.AvenueBattle)){
-			PlayerManager.getInstance().addSimplePlayer(new SimplePlayer(this));
-//			PlayerHelper.saveSimplePlayer(this);
-		}
-	}
+
 
 	public OfflineBattleModule getOfflineBattleModule() {
 		return getModule(OfflineBattleModule.class);

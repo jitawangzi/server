@@ -149,7 +149,6 @@ public class OfflineBattleModule extends BasePlayerModule {
 
   public void joinPlay() {
     tryResetSeasonData();
-    player.updateOfflineAttrData();
   }
 
   private void tryResetSeasonData() {
