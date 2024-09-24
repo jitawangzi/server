@@ -528,15 +528,15 @@ public class PlayerHelper {
 				Goods goods = new Goods(groupConfig.AssetID, groupConfig.Several);
 				ret.add(goods);
 			}
-			for (int i = 0; i < randomGivenConfig.FixedNumRandomDrop.length; i++) {
-				int group = randomGivenConfig.FixedNumRandomDrop[i][0];
-				int randomDropCount = randomGivenConfig.FixedNumRandomDrop[i][1];
-				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
-				for (int j = 0; j < randomDropCount; j++) {
-					RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
-					Goods goods = new Goods(groupConfig.AssetID, groupConfig.Several);
-					ret.add(goods);
-				}
+		}
+		for (int i = 0; i < randomGivenConfig.FixedNumRandomDrop.length; i++) {
+			int group = randomGivenConfig.FixedNumRandomDrop[i][0];
+			int randomDropCount = randomGivenConfig.FixedNumRandomDrop[i][1];
+			List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
+			for (int j = 0; j < randomDropCount; j++) {
+				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
+				Goods goods = new Goods(groupConfig.AssetID, groupConfig.Several);
+				ret.add(goods);
 			}
 		}
 		return ret;

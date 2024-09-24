@@ -370,7 +370,12 @@ public class ChapterHandler extends BaseHandler {
 		CurrencyModule currencyModule = player.getCurrencyModule();
 		long curCount = currencyModule.getCount(cid);
 
-		BattleConfig battleConfig = BattleManager.instance().get(lingPoBattle.getBattleId());
+		int battleId = lingPoBattle.getBattleId();
+		if (battleId == 0) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+		BattleConfig battleConfig = BattleManager.instance().get(battleId);
 		int[] battleBoxTrigger = battleConfig.BattleBoxTrigger;
 		int maxCount = battleBoxTrigger[battleBoxTrigger.length - 1];
 
@@ -842,6 +847,10 @@ public class ChapterHandler extends BaseHandler {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		PointRewardModule pointRewardModule = player.getPointRewardModule();
 		BattleDayChallenge battle = chapterModule.getBattle(DungeonTypeEnum.DayChallenge);
+		if (battle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
 		ResultObject reward = pointRewardModule.addReward(PointRewardType.DAY_CHALLENGE, battle.getBattleId(),
 				index);
 		if (!reward.isOK()) {

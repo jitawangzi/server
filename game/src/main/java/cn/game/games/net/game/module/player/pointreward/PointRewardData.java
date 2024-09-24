@@ -37,12 +37,14 @@ public class PointRewardData {
 			data.opType = OpType.DayChallengeReward;
 		} else if (type == PointRewardType.LingPo) {
 			LingPoBattle lingPoBattle = player.getChapterModule().getBattle(DungeonTypeEnum.LingPo);
-			BattleConfig battleConfig = BattleManager.instance().get(lingPoBattle.getBattleId());
-			data.pointType = Asset.SpiritBattlePoint.ID;
+			BattleConfig battleConfig = BattleManager.instance().getNullable(lingPoBattle.getBattleId());
+			if (battleConfig != null) {
+				data.pointType = Asset.SpiritBattlePoint.ID;
 
-			data.conditionStage = battleConfig.BattleBoxTrigger;
-			data.randomRewardStage = battleConfig.BattleBoxRandomId;
-			data.opType = OpType.LingPoBattle;
+				data.conditionStage = battleConfig.BattleBoxTrigger;
+				data.randomRewardStage = battleConfig.BattleBoxRandomId;
+				data.opType = OpType.LingPoBattle;
+			}
 		} else if (type == PointRewardType.WorldBoss) {
 			BattleConfig battleConfig = BattleManager.instance().get(subType);
 //			pointType = Asset.SpiritBattlePoint.ID;

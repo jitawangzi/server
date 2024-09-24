@@ -1,7 +1,8 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
@@ -14,7 +15,7 @@ public class ActivityLeiChongInfoRequest_11000051Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityLeiChongInfoRequest_11000051.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityLeiChongInfoRequest_11000051.newBuilder() ; 
 		
-		
+		builder.setActivityId(23);
 		
 		return builder.build() ; 
 	}

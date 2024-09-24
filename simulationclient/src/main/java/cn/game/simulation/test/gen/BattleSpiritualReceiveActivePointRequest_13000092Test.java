@@ -1,7 +1,8 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
@@ -14,7 +15,7 @@ public class BattleSpiritualReceiveActivePointRequest_13000092Test extends Serve
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleSpiritualReceiveActivePointRequest_13000092.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSpiritualReceiveActivePointRequest_13000092.newBuilder() ; 
 		
-		
+		builder.addIndex(-1);
 		
 		return builder.build() ; 
 	}
