@@ -33,6 +33,7 @@ import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.ChapterPacksManager;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.FundPassRewardsManager;
@@ -167,8 +168,13 @@ public class ShopHandler extends BaseHandler {
 		ShopModule shopModule = player.getShopModule();
 		IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
 		int heishiRefreshTimes = heishiRefreshTimesMap.getValue(shopId);
-		int heishiPayTimes = heishiRefreshTimes - GlobalConst.HeishiFreeRefresh;
-		if (heishiRefreshTimes < GlobalConst.HeishiFreeRefresh) {
+		
+		int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.StoreRefresh);
+		freeFreshMaxTimes += welfareValue;
+		
+		int heishiPayTimes = heishiRefreshTimes - freeFreshMaxTimes;
+		if (heishiRefreshTimes < freeFreshMaxTimes) {
 			player.handleEvent(EventTypeEnum.WatchAds);
 		}else {
 			if (heishiPayTimes >= GlobalConst.HeishiPayfrseh.length) {

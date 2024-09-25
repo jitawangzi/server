@@ -7,6 +7,7 @@ import java.util.List;
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -161,7 +162,8 @@ public class GameLogger extends Logger {
 	 */
 	public static void heart() {
 		try {
-			Object[] array = new Object[] { getCurrentTimeLogText(), Config.APP_KEY, "null", LoggerType.heart.name(), LoggerType.heart.version,
+			Object[] array = new Object[] { getCurrentTimeLogText(), Config.APP_KEY,
+					GameServerStatus.getInstance().getServerInfo().getVersion(), LoggerType.heart.name(), LoggerType.heart.version,
 					"1010", ServerContext.getInstance().getServerId(), PlayerManager.getInstance().getOnlineCount() };
 			LoggerType.heart.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -653,8 +655,7 @@ public class GameLogger extends Logger {
 					heroList.size() > 1 ? heroList.get(1) : "null", heroList.size() > 2 ? heroList.get(2) : "null",
 					heroList.size() > 3 ? heroList.get(3) : "null", heroList.size() > 4 ? heroList.get(4) : "null",
 					heroList.size() > 5 ? heroList.get(5) : "null",
-					player.getAccount().getPlatform(), player.getAttrModule().getPower(), battleCount, battleCount,
-					player.getAttrModule().getPower()
+					player.getAccount().getPlatform(), player.getAttrModule().getPower(), battleCount
 			};
 			LoggerType.pvefight.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {

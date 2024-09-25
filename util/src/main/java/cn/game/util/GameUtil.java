@@ -60,6 +60,50 @@ public class GameUtil {
 	}
 
 	/** 
+	 * 给数量做加成
+	 * @param array 0：id 1：数量
+	 * @param addition
+	 * @return
+	 */
+	public static int[] arrayAddition(int[] array, int addition) {
+		if (addition <= 0) {
+			return array;
+		}
+		int[] ret = new int[array.length];
+		for (int i = 0; i < array.length; i++) {
+			if (i % 2 == 0) {
+				ret[i] = array[i];
+			} else {
+				ret[i] = (int) (array[i] * (1 + addition / 10000f));
+			}
+		}
+		return ret;
+	}
+
+	/** 
+	 * 给数量做加成
+	 * @param array 0：id 1：数量
+	 * @param addition
+	 * @return
+	 */
+	public static int[][] arrayAddition(int[][] array, int addition) {
+		if (addition <= 0) {
+			return array;
+		}
+		int[][] ret = new int[array.length][array[0].length];
+		for (int i = 0; i < array.length; i++) {
+			for (int j = 0; j < array[i].length; j++) {
+				if (j % 2 == 0) {
+					ret[i][j] = array[i][j];
+				} else {
+					ret[i][j] = (int) (array[i][j] * (1 + addition / 10000f));
+				}
+			}
+		}
+		return ret;
+	}
+
+	/** 
 	 * 是不是同一个大版本
 	 * @param version1
 	 * @param version2

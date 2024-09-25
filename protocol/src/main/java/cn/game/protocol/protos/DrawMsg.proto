@@ -15,9 +15,9 @@ message DrawListResponse_37000002{
 }
 
 message DrawInfo{
-	// 还有xxx次赠送xxx品质的卡，key:品质,value:次数
+	// 废弃了：  还有xxx次赠送xxx品质的卡，key:品质,value:次数
 	map<int32,int32> giftRemainingTimes = 1;
-	// 赠送当前品质的卡，需要的次数。 key:品质,value:次数
+	// 废弃了： 赠送当前品质的卡，需要的次数。 key:品质,value:次数
 	map<int32,int32> giftMaxTimes = 3;
 	int32 nextFreeTime = 2;  // 距离下次免费单抽的时间(秒)
 }
@@ -32,7 +32,7 @@ message DrawRequest_37000003{
 
 // 抽卡结果
 message DrawResponse_37000004{
-	repeated RewardInfo rewards	=	1;	// 抽卡获得的英雄
+	repeated RewardInfo rewards	=	1;	// 抽卡获得的英雄,道具等。
 	int32 gold =	2;	// 抽卡获得的金币
 	DrawInfo draw = 3;  // 更新相关数据
 	repeated RewardInfo heros	=	4;	// 额外赠送的英雄，废弃了

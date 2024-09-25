@@ -3,7 +3,6 @@ package cn.game.games.net.game.module.develop.pet;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.item.AbstractItemModule;
@@ -57,8 +56,8 @@ public class PetModule extends AbstractItemModule<Pet> {
 	}
 
 	@Override
-	public Item newInstance() {
-		return new Secretscript();
+	public Pet newInstance() {
+		return new Pet();
 	}
 
 	@Override

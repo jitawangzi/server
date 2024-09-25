@@ -15,6 +15,7 @@ import cn.game.core.task.TaskManager;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
 import cn.game.util.MailUtil;
+import cn.game.util.ServerType;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -36,39 +37,59 @@ public interface RpcClient {
 	 * @param sync,是否同步
 	 * @return 同步情况下返回远程结果，异步情况下，requestCallback 不为null时，返回null，否则返回Future对象
 	 */
-	default public Object invoke(String methodName, Class<?>[] clazz, Class<?> returnType, Object[] args, Consumer<?> requestCallback,
-			boolean sync, String serverId) {
+	default public Object invoke(CallType callType, String methodName, Class<?>[] clazz, Class<?> returnType, Object[] args,
+			Consumer<?> requestCallback,
+			boolean sync, String serverId, ServerType serverType) {
 		Command command = new Command(methodName, clazz, args);
-		return send(command, requestCallback, returnType, sync, serverId);
+		return send(callType, command, requestCallback, returnType, sync, serverId, serverType);
 
 	}
 
 	/** 
 	 * 发送协议给远程服务器，需要有消息返回
 	 * @param <T>
-	 * @param message 消息
 	 * @param serverId 远程服务器id
+	 * @param message 消息
 	 * @param replyHandler 消息返回时的回调处理器
 	 */
-	public <T> void request(T message, String serverId, Handler<AsyncResult<Message<T>>> replyHandler);
+	public <T> void request(String serverId, T message, Handler<AsyncResult<Message<T>>> replyHandler);
+	
 	/** 
 	 * 发送协议给远程服务器，需要有消息返回
 	 * @param <T>
-	 * @param message 消息
 	 * @param serverId 远程服务器id
+	 * @param message 消息
 	 * @return  
 	 */
-	public <T> Future<Message<T>> request(T message, String serverId);
+	public <T> Future<Message<T>> request(String serverId, T message);
+
 	/** 
-	 * 给指定服务器发送消息
+	 * 发送协议给某类远程服务器，如果某类服务器有多个，则只有一个服务器会受到消息， 需要有消息返回
+	 * @param <T>
+	 * @param serverType 远程服务器类型
+	 * @param message 消息
+	 * @return  
+	 */
+	public <T> Future<Message<T>> request(ServerType serverType, T message);
+	
+	/** 
+	 * 给某类服务器广播消息
+	 * @param <T>
+	 * @param serverType
+	 * @param message
+	 */
+	public <T> void broadcast(ServerType serverType, T message);
+
+	/** 
+	 * 给指定服务器发送消息，不用返回值。
 	 * @param <T>
 	 * @param message
 	 * @param serverId
 	 */
-	public <T> void send(T message, String serverId);
+	public <T> void send(String serverId, T message);
 
 	/** 
-	 * 发送消息，某些类型的消息里包含消息的目的地址
+	 * 发送消息，不用返回值。  某些类型的消息里包含消息的目的地址
 	 * @param <T>
 	 * @param message
 	 */
@@ -79,21 +100,54 @@ public interface RpcClient {
 	 */
 	public boolean checkAllowSync();
 
-	private Object send(Command command, Consumer callBackTask, Class<?> returnType, boolean sync, String serverId) {
+	/** 
+	 * 发送远程调用请求到远端
+	 * @param command 具体要执行的方法和参数等
+	 * @param callBackTask  数据返回后的回调任务
+	 * @param returnType   方法返回值类型
+	 * @param sync   是否同步调用
+	 * @param serverId  远程的地址。 
+	 * @return
+	 */
+	private Object send(CallType callType, Command command, Consumer callBackTask, Class<?> returnType, boolean sync, String serverId,
+			ServerType serverType) {
 
 		byte[] datas = KryoUtils.serialize(command);
-		// Future方式异步
+		// vertx的 Future方式异步
 		if (Future.class.isAssignableFrom(returnType)) {
 			long startLong = System.currentTimeMillis();
-			Future<Message<byte[]>> request = request(datas, serverId);
-			return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult()).onFailure(t -> {
-				log.error(MessageFormat.format("request message to serverId[{0}] failed ,command[{1}]usetime[{2}]", serverId, command,
-						(System.currentTimeMillis() - startLong) / 1000), t);
-			});
+			if (callType == CallType.LoadBalancer) {
+				if (serverType == null) {
+					throw new IllegalArgumentException("serverType can not be null when callType is LoadBalancer");
+				}
+				Future<Message<byte[]>> request = request(serverType, datas);
+				return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult()).onFailure(t -> {
+					log.error(MessageFormat
+									.format("request message to serverType[{0}] failed ,command[{1}]usetime[{2}]", serverType, command,
+											(System.currentTimeMillis() - startLong) / 1000),t);
+				});
+			} else if (callType == CallType.Broadcast) {
+				if (serverType == null) {
+					throw new IllegalArgumentException("serverType can not be null when callType is Broadcast");
+				}
+				// 广播一般不需要返回值,默认成功
+				broadcast(serverType, datas);
+				return Future.succeededFuture();
+			} else if (callType == CallType.PointToPoint) {
+				if (serverId == null) {
+					throw new IllegalArgumentException("serverId can not be null when callType is PointToPoint");
+				}
+				Future<Message<byte[]>> request = request(serverId, datas);
+				return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult()).onFailure(t -> {
+					log.error(MessageFormat.format("request message to serverId[{0}] failed ,command[{1}]usetime[{2}]", serverId, command,
+							(System.currentTimeMillis() - startLong) / 1000), t);
+				});
+			}
+			
 		}
 		// callBack方式异步。
 		if (callBackTask != null || !sync) {
-			request(datas, serverId, r -> {
+			request(serverId, datas, r -> {
 				if (r instanceof Throwable) {
 					log.error("put message to serverId[{}] failed ,command[{}]exception[{}]", serverId, command, r);
 				} else {
@@ -104,10 +158,11 @@ public interface RpcClient {
 			});
 			return null;
 		}
-		// 同步方式
+		// 下面是同步方式调用，尽量少用
+		// vertx中一般只允许在worker线程中调用
 		checkAllowSync();
 
-		Future<Message<byte[]>> request = request(datas, serverId);
+		Future<Message<byte[]>> request = request(serverId, datas);
 		byte[] result = null;
 		try {
 			// 默认等待5秒

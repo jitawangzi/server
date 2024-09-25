@@ -52,8 +52,8 @@ public interface GmMailMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<GmMail> recordList);
-	List<GmMail> selectGlobalMailList(@Param("time") Date time);
-	List<GmMail> selectGmMailList(@Param("mailOptType")int mailOptType, @Param("startTime") Date startTime, @Param("endTime") Date endTime
+	List<GmMail> selectGlobalMailList();
+	List<GmMail> selectGmMailList(@Param("mailOptType")int mailOptType
 	,@Param("title")String title, @Param("context") String context, @Param("status")int status
     ,@Param("limit")int limit, @Param("offset")int offset
 	);

@@ -14,7 +14,7 @@ public class ItemUseRequest_0b000003Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.Builder builder = cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.newBuilder() ; 
-		builder.setId(207007);
+		builder.setId(200000);
 		builder.setCount(1);
 		
 		

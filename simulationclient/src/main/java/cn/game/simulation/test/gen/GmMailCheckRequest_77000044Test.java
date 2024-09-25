@@ -14,7 +14,7 @@ public class GmMailCheckRequest_77000044Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.Builder builder = cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.newBuilder() ; 
 		
-		
+		builder.addUid("3");
 		
 		return builder.build() ; 
 	}

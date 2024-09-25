@@ -60,5 +60,6 @@ public interface NoticeMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<Notice> recordList);
+
 	List<Notice> selectAll();
 }

@@ -55,11 +55,12 @@ public class WorldBossBattle extends XiYouBattleHandler {
 		if (BattleHelper.isNowAfter2330()) {
 			return ErrorMsgEnum.not_open.getId();
 		}
-		if (battleTimes >= GlobalConst.JDTMFreeCnt) {
-			if (buyTimes <= battleTimes - GlobalConst.JDTMFreeCnt) {
+		int maxFreeCount = GlobalConst.JDTMFreeCnt + player.getWelfareValue(WelfareTypeEnum.BossBattleNum);
+		if (battleTimes >= maxFreeCount) {
+			if (buyTimes <= battleTimes - maxFreeCount) {
 				return ErrorMsgEnum.times_limit.getId();
 			}
-			if (battleTimes >= GlobalConst.JDTMFreeCnt + GlobalConst.JDTMPayCnt) {
+			if (battleTimes >= maxFreeCount + GlobalConst.JDTMPayCnt) {
 				return ErrorMsgEnum.times_limit.getId();
 			}
 		}
@@ -82,6 +83,11 @@ public class WorldBossBattle extends XiYouBattleHandler {
 	}
 
 	private void end(int damage) {
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.BossBattleIntegral);
+		if (welfareValue > 0) {
+			damage = (int) (damage * (1 + welfareValue / 10000.0));
+		}
+		
 		cumulativeDamage += damage;
 		if (damage > maxDamageToday) {
 			maxDamageToday = damage;
@@ -93,7 +99,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 //		player.getPointRewardModule().addReward(PointRewardType.WorldBoss, damage, damage, damage)
 		RankConfig rankConfig = RankManager.instance().get(RankType.WorldBoss.ID);
 		if (cumulativeDamage >= rankConfig.Request) {
-			RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.WorldBoss, player.getPlayerId(), cumulativeDamage);
+			RankService.getInstance().updateMaxValueAsync(player.getServerId(), RankType.WorldBoss, player.getPlayerId(), cumulativeDamage);
 		}
 
 	}

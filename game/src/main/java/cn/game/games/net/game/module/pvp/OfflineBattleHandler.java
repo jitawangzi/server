@@ -17,12 +17,14 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.NPCConfig;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.NPCManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.RewardMsg;
+import cn.game.util.GameUtil;
 import io.vertx.core.Future;
 
 /**
@@ -62,7 +64,7 @@ public class OfflineBattleHandler {
     if (module.freeRefreshNum >= GlobalConst.DaDaoFreeCnt1) {
       if (req.getUseCost()) {
         int[] cost = GlobalConst.DaDaoPayCnt[module.costRefreshNUm];
-        if (!PlayerHelper.delResources(player, cost[0],cost[1], OpType.DA_DAO_Buy,true)) {
+        if (!PlayerHelper.delResources(player, cost[0], cost[1], OpType.DA_DAO_Buy, true)) {
           client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
           return;
         }
@@ -128,51 +130,58 @@ public class OfflineBattleHandler {
       return;
     }
     res.setSelfAttrs(player.getAttrModule().buildBattleAttrs());
-    SimplePlayer targetPlayer = module.getTargetPlayer(Long.parseLong(req.getTargetId()));
-    if (targetPlayer != null) {
-      try {
-        res.setTargetAttrs(targetPlayer.getPlayerBattleAttrs());
-        BattleMsg.BattleLineupInfo.Builder targetLineup = BattleMsg.BattleLineupInfo.newBuilder();
-        targetLineup.setBattleType(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
-        targetPlayer
-            .getLineupMaps()
-            .get(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId())
-            .forEach(
-                (k, v) -> {
-                  targetLineup.addLineups(
-                      BattleMsg.LineupInfo.newBuilder()
-                          .setSeq(k)
-                          .addAllHeroUid(v.stream().map(h -> h.getId() + "").collect(toList()))
-                          .addAllHeroId(v.stream().map(h -> h.getConfigId()).collect(toList()))
-                          .build());
-                  res.setTargetLineupInfo(targetLineup.build());
-                });
-      } catch (Exception e) {
-        e.printStackTrace();
-        module.setInBattlePlayer(null);
-        throw e;
-      }
-      res.setTargetSecretscriptInfo(
-          targetPlayer.toSecretscriptPbInfo(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO));
-      module
-          .getRankList(player.getPlayerId(), targetPlayer.id)
-          .whenComplete(
-              (rankResultList, action) -> {
-                GameLogger.pvpfight(
-                    player,
-                    true,
-                    rankResultList.get(0),
-                    0,
-                    DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
-                    targetPlayer,
-                    rankResultList.get(1),
-                    0,
-                    0,
-                    0,
-                    false);
-              });
-    }
-    client.sendProtocol(res);
+    Future<SimplePlayer> targetPlayerFuture =
+        module.getTargetPlayer(Long.parseLong(req.getTargetId()));
+    targetPlayerFuture.onSuccess(
+        targetPlayer -> {
+          if (targetPlayer != null) {
+            try {
+              res.setTargetAttrs(targetPlayer.getPlayerBattleAttrs());
+              BattleMsg.BattleLineupInfo.Builder targetLineup =
+                  BattleMsg.BattleLineupInfo.newBuilder();
+              targetLineup.setBattleType(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
+              targetPlayer
+                  .getLineupMaps()
+                  .get(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId())
+                  .forEach(
+                      (k, v) -> {
+                        targetLineup.addLineups(
+                            BattleMsg.LineupInfo.newBuilder()
+                                .setSeq(k)
+                                .addAllHeroUid(
+                                    v.stream().map(h -> h.getId() + "").collect(toList()))
+                                .addAllHeroId(
+                                    v.stream().map(h -> h.getConfigId()).collect(toList()))
+                                .build());
+                        res.setTargetLineupInfo(targetLineup.build());
+                      });
+            } catch (Exception e) {
+              e.printStackTrace();
+              module.setInBattlePlayer(null);
+              throw e;
+            }
+            res.setTargetSecretscriptInfo(
+                targetPlayer.toSecretscriptPbInfo(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO));
+            module
+                .getRankList(player.getPlayerId(), targetPlayer.id)
+                .whenComplete(
+                    (rankResultList, action) -> {
+                      GameLogger.pvpfight(
+                          player,
+                          true,
+                          rankResultList.get(0),
+                          0,
+                          DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
+                          targetPlayer,
+                          rankResultList.get(1),
+                          0,
+                          0,
+                          0,
+                          false);
+                    });
+          }
+          client.sendProtocol(res);
+        });
   }
 
   /** 结算战斗请求 */
@@ -209,12 +218,20 @@ public class OfflineBattleHandler {
           if (req.getWin()) {
             res.addAllRewards(
                 PlayerHelper.addResources(
-                    player, GlobalConst.DaDaoChallengeCoin, OpType.DA_DAO_WIN));
+                    player,
+                    GameUtil.arrayAddition(
+                        GlobalConst.DaDaoChallengeCoin,
+                        player.getWelfareValue(WelfareTypeEnum.DadaoFriendAddition)),
+                    OpType.DA_DAO_WIN));
           }
           if (module.playNum <= GlobalConst.DaDaoBrawlPoint.length) {
             res.addAllRewards(
                 PlayerHelper.addResources(
-                    player, GlobalConst.DaDaoBrawlPoint[module.playNum - 1], OpType.DA_DAO_JOIN));
+                    player,
+                    GameUtil.arrayAddition(
+                        GlobalConst.DaDaoBrawlPoint[module.playNum - 1],
+                        player.getWelfareValue(WelfareTypeEnum.DadaoFriendAddition)),
+                    OpType.DA_DAO_JOIN));
           }
           client.sendProtocol(res);
           module.setInBattlePlayer(null);
@@ -222,19 +239,20 @@ public class OfflineBattleHandler {
               .getRankList(player.getPlayerId(), Long.parseLong(req.getTargetId()))
               .thenAccept(
                   (rankResultList1) -> {
-                    GameLogger.pvpfight(
-                        player,
-                        false,
-                        selfRank,
-                        rankResultList1.get(0),
-                        DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
-                        targetPlayer,
-                        targetRank,
-                        rankResultList1.get(1),
-                        req.getBattleTime(),
-                        req.getEndType(),
-                        req.getWin());
+                          GameLogger.pvpfight(
+                              player,
+                              false,
+                              selfRank,
+                              rankResultList1.get(0),
+                              DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
+                              targetPlayer,
+                              targetRank,
+                              rankResultList1.get(1),
+                              req.getBattleTime(),
+                              req.getEndType(),
+                              req.getWin());
                   });
+
           return null;
         });
   }

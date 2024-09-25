@@ -230,6 +230,7 @@ public class ShopModule extends BasePlayerModule {
 
 		//刷新每日商店
 		refreshEveryDayShop();
+		
 	}
 
 	/**
@@ -294,11 +295,10 @@ public class ShopModule extends BasePlayerModule {
 
 	}
 
-	public void refreshHunhuoItems() {
+	public void refreshHunhuoItems(int shop) {
 		// 刷新魂火商店
-		int shop = 10;
 		shopItemsMap.removeAll(shop);
-		List<HunhuoConfig> configs = HunhuoManager.instance().list();
+		List<HunhuoConfig> configs = HunhuoManager.instance().getShopIDList(shop);
 		if (configs != null) {
 			for (HunhuoConfig hunhuoConfig : configs) {
 				shopItemsMap.put(shop, new ShopItem(hunhuoConfig.Item));
@@ -307,8 +307,8 @@ public class ShopModule extends BasePlayerModule {
 	}
 
 	private void refreshShopNewWeek() {
-		refreshHunhuoItems();
-
+		refreshHunhuoItems(10);
+		refreshHunhuoItems(15);
 		//刷新 每周礼包
 		int shop = 13;
 		refreshShopByShopType(shop);

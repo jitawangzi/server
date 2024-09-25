@@ -8,7 +8,6 @@ import cn.game.protocol.generated.enume.RankType;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
-import cn.game.util.Rnd;
 
 @Component
 public class RankListRequest_35000001Test extends ServerTest{
@@ -17,15 +16,15 @@ public class RankListRequest_35000001Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001.Builder builder = cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001.newBuilder() ; 
 		// 随机一个排行榜
-		RankType[] values = RankType.values();
-		int nextInt = Rnd.nextInt(values.length);
-		RankType rankType = values[nextInt];
-		builder.setType(rankType.ID);
+//		RankType[] values = RankType.values();
+//		int nextInt = Rnd.nextInt(values.length);
+//		RankType rankType = values[nextInt];
+//		builder.setType(rankType.ID);
 
 		// 指定排行榜
-//		builder.setType(RankType.DaDaoZhengFengSeason.ID);
+		builder.setType(RankType.Battle.ID);
 		builder.setPage(1);
-		builder.setPageSize(10);
+		builder.setPageSize(100);
 		
 		return builder.build() ; 
 	}

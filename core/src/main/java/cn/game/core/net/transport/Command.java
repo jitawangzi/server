@@ -50,6 +50,17 @@ public class Command implements Serializable {
 	public void setClazz(Class<?>[] clazz) {
 		this.clazz = clazz;
 	}
+
+	public String getClassName() {
+		if (this.clazz == null) {
+			return "" ; 
+		}
+		StringBuilder sb = new StringBuilder();
+		for (Class clazz : this.clazz) {
+			sb.append(clazz.getName()).append("_");
+		}
+		return sb.toString();
+	}
 	@Override
 	public String toString() {
 		return "Command [methodName=" + methodName + ", args=" + JSON.toJSONString(args) + ", clazz=" + Arrays.toString(clazz) + "]";

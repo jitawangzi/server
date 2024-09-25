@@ -16,7 +16,7 @@ public class BattleDayChallengeReceiveActivePointRequest_13000070Test extends Se
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.newBuilder() ; 
 		
-		builder.addIndex(Rnd.nextInt(3));
+		builder.setIndex(Rnd.nextInt(3));
 		
 		return builder.build() ; 
 	}

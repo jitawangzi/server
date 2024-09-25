@@ -6,9 +6,14 @@ import java.util.List;
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.RankConfig;
+import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -17,9 +22,14 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
+	private int historyMaxStage = -1;
+	private int historyMaxBattleId;
+	/** 历史最高奖励是否已经领取了。 */
+	private boolean historyMaxReward;
+
 	/** 当前可打的失落真经非战斗关卡，从1开始，如果为10表示打战斗关卡 */
 	private int battleStage = -1;
-	/** 每日奖励是否已经领取了。 */
+	@Deprecated
 	private boolean dayReward;
 	/** 最新通关的battleId */
 	private int completeBattleId;
@@ -43,12 +53,17 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 //			}
 //			MailHelper.sendMail(player.getPlayerId(), 7, goods);
 //		}
-
-		dayReward = false;
+		if (historyMaxReward) {
+			historyMaxReward = false;
+		}
+		historyMaxBattleId = completeBattleId;
+		historyMaxStage = battleStage;
+//		dayReward = false;
 		if (startBattleId == 0) {
 			nextBattleId();
 		}
 		List<Integer> randomBuffs = BattleHelper.randomBuffs(startBattleId, DungeonTypeEnum.ShiLuoZhenJing.getId());
+		this.randomBuff.clear();
 		this.randomBuff.addAll(randomBuffs);
 		if (battleStage == -1) {
 			battleStage = 1;
@@ -66,12 +81,18 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 			this.randomBuff.clear();
 			List<Integer> randomBuffs = BattleHelper.randomBuffs(startBattleId, DungeonTypeEnum.ShiLuoZhenJing.getId());
 			this.randomBuff.addAll(randomBuffs);
+			
+			RankConfig rankConfig = RankManager.instance().get(RankType.ShiLuoZhenJing.ID);
+			if (BattleHelper.isComplete(completeBattleId, rankConfig.Request)) {
+				RankService.getInstance().setScoreAsync(player.getServerId(), RankType.ShiLuoZhenJing, player.getPlayerId(), completeBattleId);
+			}
 		}
 		this.battleStage++;
 		// 1打到9，然后10本关
 		if (this.battleStage == 11) {
 			this.battleStage = 1;
 		}
+
 	}
 
 	@Override
@@ -123,10 +144,6 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		return battleStage;
 	}
 
-	public boolean isDayReward() {
-		return dayReward;
-	}
-
 	public int getCompleteBattleId() {
 		return completeBattleId;
 	}
@@ -139,16 +156,41 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		return randomBuff;
 	}
 
-	public void setDayReward(boolean dayReward) {
-		this.dayReward = dayReward;
+
+	public int getHistoryMaxStage() {
+		return historyMaxStage;
+	}
+
+	public void setHistoryMaxStage(int historyMaxStage) {
+		this.historyMaxStage = historyMaxStage;
+	}
+
+	public int getHistoryMaxBattleId() {
+		return historyMaxBattleId;
+	}
+
+	public void setHistoryMaxBattleId(int historyMaxBattleId) {
+		this.historyMaxBattleId = historyMaxBattleId;
+	}
+
+	public boolean isHistoryMaxReward() {
+		return historyMaxReward;
+	}
+
+	public void setHistoryMaxReward(boolean historyMaxReward) {
+		this.historyMaxReward = historyMaxReward;
 	}
 
 	private List<RewardInfo> calcRewardInfos(int level, int stage) {
 		List<RewardInfo> rewardInfos = new ArrayList<>();
 
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.LostScripturesFriendAddition);
 		for (int i = 0; i < GlobalConst.LostScripturesRewards.length; i++) {
 			int rewardId = GlobalConst.LostScripturesRewards[i];
 			int rewardCount = calcRewardCount(GlobalConst.LostScripturesRewardsNum[i], level, stage);
+			if (welfareValue > 0) {
+				rewardCount += rewardCount * welfareValue / 10000f;
+			}
 			List<RewardInfo> resources = PlayerHelper.addResources(player, rewardId, rewardCount, OpType.ShiLuoZhenJing);
 			rewardInfos.addAll(resources);
 		}

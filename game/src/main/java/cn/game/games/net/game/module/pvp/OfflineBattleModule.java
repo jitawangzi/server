@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.pvp;
 
+import cn.game.games.cache.entity.Player;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
@@ -148,7 +149,6 @@ public class OfflineBattleModule extends BasePlayerModule {
 
   public void joinPlay() {
     tryResetSeasonData();
-    player.updateOfflineAttrData();
   }
 
   private void tryResetSeasonData() {
@@ -433,29 +433,48 @@ public class OfflineBattleModule extends BasePlayerModule {
         .getScoreAsync(player.getServerId(), RankType.DaDaoZhengFengDay, player.getPlayerId());
   }
 
-  public SimplePlayer getTargetPlayer(long targetId) {
+  public  Future<SimplePlayer> getTargetPlayer(long targetId) {
     NPCConfig npcConfig = NPCManager.instance().getNullable((int) targetId);
+    Promise<SimplePlayer> promise = Promise.promise();
     SimplePlayer battleTargetPlayer = null;
     for (SimplePlayer simplePlayer : tempRefreshList) {
       if (simplePlayer.id == targetId) {
-        setInBattlePlayer(simplePlayer);
         battleTargetPlayer = simplePlayer;
         break;
       }
     }
     if (npcConfig != null) {
+      promise.complete(null);
       return null;
     }
-    return battleTargetPlayer;
-  }
-  public SimplePlayer getTargetPlayer(String targetId) {
-    for (SimplePlayer simplePlayer : tempRefreshList) {
-      if (simplePlayer.id == Long.parseLong(targetId)) {
-        return simplePlayer;
-      }
+    if (battleTargetPlayer == null){//未找到 从redis 加载
+      PlayerManager.getInstance().getSimplePlayerFromRedisAsync(targetId).onSuccess(
+              findPlayer ->{
+                if (findPlayer != null) {
+                  setInBattlePlayer(findPlayer);
+                }
+                promise.complete(findPlayer);
+              }
+      ).onFailure(err ->{
+        err.printStackTrace();
+        promise.complete(null);
+      });
+    } else {//直接用本地缓存
+      setInBattlePlayer(battleTargetPlayer);
+      promise.complete(battleTargetPlayer);
     }
-    return null;
+    return promise.future();
   }
+
+  public SimplePlayer getTargetPlayer(String targetId) {
+    if (inBattlePlayer != null) {
+      return inBattlePlayer;
+    } else {
+      NPCConfig npcConfig = NPCManager.instance().get(Integer.parseInt(targetId));
+      return SimplePlayer.makeByNpcConfig(npcConfig);
+    }
+    }
+
   public Future<Void> updateScore(
       boolean win, long targetId, BattleMsg.BattlePvPEndResponse_13000116.Builder res) {
 //    matchRefreshTargetList.clear();

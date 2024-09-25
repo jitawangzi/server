@@ -9,6 +9,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -96,12 +97,12 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 
 	public int getMaxFreeSweepCount() {
 		if (type == 2) {
-			return GlobalConst.DaoHeartFreeCnt;
+			return GlobalConst.DaoHeartFreeCnt + player.getWelfareValue(WelfareTypeEnum.DaoXinDailySweep);
 		} else if (type == 3) {
-			return GlobalConst.InnerDemonsFreeCnt;
+			return GlobalConst.InnerDemonsFreeCnt + player.getWelfareValue(WelfareTypeEnum.XinMoDailySweep);
 		}
 		else if (type == 4) {
-			return GlobalConst.DemonKingFreeCnt;
+			return GlobalConst.DemonKingFreeCnt + player.getWelfareValue(WelfareTypeEnum.PaoPaoQuickBattleNum);
 		}
 		throw new IllegalArgumentException("没有实现的战役类型： " + type);
 	}
