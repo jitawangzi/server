@@ -316,11 +316,11 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 						player.getGameClient().getContext().runOnContext(r -> {
 
 							ActivityModule activityModule = player.getActivityModule();
-							activityModule.open(id);
+							activityModule.open(id, true);
 						});
 					}
 				} else {
-					activityModule.open(id);
+					activityModule.open(id, true);
 					activeActivitys.add(id);
 				}
 			});

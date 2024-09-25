@@ -27,7 +27,6 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
-import io.vertx.core.Future;
 
 public class ActivityModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LevelUp };
@@ -56,7 +55,7 @@ public class ActivityModule extends BasePlayerModule {
 		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_CREATE);
 		if (openTypeList != null) {
 			for (ActivityConfig activityConfig : openTypeList) {
-				open(activityConfig.ID);
+				open(activityConfig.ID, false);
 			}
 		}
 	}
@@ -104,7 +103,7 @@ public class ActivityModule extends BasePlayerModule {
 		Set<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
 		for (Integer id : openList) {
 			if (!activities.containsKey(id)) {
-				open(id);
+				open(id, false);
 			}
 		}
 	};
@@ -209,7 +208,7 @@ public class ActivityModule extends BasePlayerModule {
 	}
 
 
-	public void open(int id) {
+	public void open(int id, boolean notify) {
 
 		if (!activities.containsKey(id)) {
 			// new activity
@@ -224,7 +223,9 @@ public class ActivityModule extends BasePlayerModule {
 			if (activityBase != null) {
 				this.activities.put(activityConfig.ID, activityBase);
 				activityBase.init(activityConfig.ID, player, true);
-				activityBase.syncActivityInfo();
+				if (notify) {
+					activityBase.syncActivityInfo();
+				}
 //				initAdd(activityConfig.ID);
 			}
 		}
@@ -287,7 +288,7 @@ public class ActivityModule extends BasePlayerModule {
 				List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_LEVEL);
 				for (ActivityConfig activityConfig : openTypeList) {
 					if (activityConfig.openParam == level) {
-						open(activityConfig.ID);
+						open(activityConfig.ID, true);
 					}
 				}
 			}

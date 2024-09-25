@@ -187,7 +187,7 @@ public class GameServer implements GameServerMBean {
 		KeywordFilter.initializeFromFile();
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
-		initSimplePlayers();
+//		initSimplePlayers();
 
 		MailHelper.initLoadGlobalMail();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
@@ -252,6 +252,7 @@ public class GameServer implements GameServerMBean {
 						Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
 						PlayerHelper.saveSimplePlayerToRedisSync(player);
 					} catch (Exception e) {
+						e.printStackTrace();
 						SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
 					}
 				});
