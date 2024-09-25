@@ -37,9 +37,12 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 	private int startBattleId;
 	/** 下一关可打的战役随机buff  增益或者减益buff， HeroBUFF表id*/
 	private List<Integer> randomBuff = new ArrayList<>();
+	/** 是否可以领奖， 只有注册后第二天才可以领奖 */
+	private boolean canReward = false;
 
 	@Override
 	void newDay() {
+		canReward = true;
 		reset();
 	}
 
@@ -179,6 +182,10 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
 	public void setHistoryMaxReward(boolean historyMaxReward) {
 		this.historyMaxReward = historyMaxReward;
+	}
+
+	public boolean isCanReward() {
+		return canReward;
 	}
 
 	private List<RewardInfo> calcRewardInfos(int level, int stage) {

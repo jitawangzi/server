@@ -240,6 +240,10 @@ public class PlayerHandler extends BaseHandler {
 				case ShiLuoZhenJing: {
 					ChapterModule chapterModule = player.getModule(ChapterModule.class);
 					ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+
+					if (!battle.isCanReward()) {
+						continue;
+					}
 					if (battle.isHistoryMaxReward()) {
 						continue;
 					}

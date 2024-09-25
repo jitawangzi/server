@@ -1340,6 +1340,8 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, result.getErrorCode());
 			return;
 		}
+		player.handleEvent(EventTypeEnum.BattleEnd, typeId, subId, win, 0, 0);
+
 		if (result.getValue() != null) {
 			resp.addAllRewards(result.getValue());
 		}
