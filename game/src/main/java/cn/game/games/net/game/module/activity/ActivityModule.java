@@ -29,7 +29,8 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
 public class ActivityModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LevelUp };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.NewWeek,
+			EventTypeEnum.NewMonth, EventTypeEnum.LevelUp };
 	/** 已经开始的活动，只是展示的不在这里。  */
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
 
@@ -207,6 +208,14 @@ public class ActivityModule extends BasePlayerModule {
 		}
 	}
 
+	/** 
+	 * 重置某个活动
+	 * @param id
+	 */
+	public void reset(int id) {
+		destroy(id, false);
+		open(id, false);
+	}
 
 	public void open(int id, boolean notify) {
 
@@ -260,6 +269,18 @@ public class ActivityModule extends BasePlayerModule {
 		}
 	}
 
+	/** 
+	 * 重置活动
+	 */
+	public void refreshByType(int resetType) {
+		Collection<ActivityConfig> list = ActivityManager.instance().list();
+		for (ActivityConfig activityConfig : list) {
+			if (activityConfig.resetType == resetType) {
+				reset(activityConfig.ID);
+			}
+		}
+	}
+
 	public Collection<ActivityBase> list() {
 		return this.activities.values();
 	}
@@ -278,7 +299,16 @@ public class ActivityModule extends BasePlayerModule {
 		}
 		case NewDay: {
 			checkExpired();
+			refreshByType(1);
 			newDay();
+			break;
+		}
+		case NewWeek: {
+			refreshByType(2);
+			break;
+		}
+		case NewMonth: {
+			refreshByType(3);
 			break;
 		}
 		case LevelUp: {
