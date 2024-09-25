@@ -99,9 +99,13 @@ public class GameServer implements GameServerMBean {
 
 	@Deprecated
 	private LoginGameServerInterface loginGameServerInterface;
+	@Deprecated
 	private CrossRemoteServerInterface crossGameServerInterface;
+	@Deprecated
 	private CrossRemoteServerInterface crossGameServerInterfaceSync;
+	@Deprecated
 	private ConcurrentMap<String, GameRemoteServerInterface> gameServerInterfacesSync = new ConcurrentHashMap<String, GameRemoteServerInterface>();
+	@Deprecated
 	private ConcurrentMap<String, GameRemoteServerInterface> gameServerInterfacesAsync = new ConcurrentHashMap<String, GameRemoteServerInterface>();
 
 	private RpcClient rpcClient;

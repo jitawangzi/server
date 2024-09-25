@@ -197,6 +197,13 @@ public class VxHolder {
 		return vertx.eventBus().request(serverId, message, protobufOptions);
 	}
 
+	/** 
+	 * 给某类服务器发送消息，需要有返回，消息会负载到某个节点中。 
+	 * @param <T>
+	 * @param serverType
+	 * @param message
+	 * @return
+	 */
 	public static <T> Future<Message<T>> requestRemoteServer(ServerType serverType,
 			com.google.protobuf.Message message) {
 		return vertx.eventBus().request(serverType.name(), message, protobufOptions);
@@ -219,6 +226,7 @@ public class VxHolder {
 	 * @param msgId
 	 * @param byteArray
 	 */
+	@Deprecated
 	public static void broadcastRemoteServer(ServerType serverType, int msgId, byte[] byteArray) {
 
 		vertx.eventBus().publish(serverType.name(), toBuffer(msgId, byteArray));
