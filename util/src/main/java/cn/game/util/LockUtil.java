@@ -43,6 +43,28 @@ public class LockUtil {
 		return null;
 	}
 
+	/**
+	 * 同步获取锁，如果正常获取到锁则直接锁定,处理完业务后需要手动释放锁
+	 * @param waitTime
+	 * @param leaseTime
+	 * @param unit
+	 * @param locks
+	 * @return lock，成功获取到锁，只能在获取锁成功情况下才能进行后续处理； null，获取锁失败
+	 */
+	public static RLock tryLockSync(long waitTime, long leaseTime, TimeUnit unit, String... locks) {
+		RLock lock = initLock(locks);
+		try {
+			boolean tryLock = lock.tryLock(waitTime, leaseTime, TimeUnit.SECONDS);
+			if (tryLock) {
+				return lock;
+			}
+		} catch (Exception e) {
+			log.warn("try lock failed [{}]", Arrays.toString(locks));
+		}
+		log.warn("Thread[{}] lock failed, locks[{}] : ", Thread.currentThread().getName(), locks);
+		return null;
+	}
+
 	/** 
 	 * 尝试同步获取锁，如果获取不到立刻返回，利用过期时间自动释放锁。
 	 * @param leaseTime 锁过期时间(秒)

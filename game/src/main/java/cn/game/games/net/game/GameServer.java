@@ -19,6 +19,7 @@ import javax.management.ObjectName;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.RequestCallback;
 import org.redisson.api.RKeys;
+import org.redisson.api.RLock;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
@@ -187,7 +188,7 @@ public class GameServer implements GameServerMBean {
 		KeywordFilter.initializeFromFile();
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
-//		initSimplePlayers();
+		initSimplePlayers();
 
 		MailHelper.initLoadGlobalMail();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
@@ -204,18 +205,22 @@ public class GameServer implements GameServerMBean {
 //		getLoginGameServerInterface().getUidByName("sfsdfs32");
 	}
 
+	/** 
+	 * 如果redis中清空数据了，则重新把数据库中的数据同步到redis
+	 */
 	private void initSimplePlayers() {
-		boolean lock = LockUtil.tryLockNoWaitSync(600, CacheType.SERVER_SIMPLE_PLAYER_INIT.name());
-		if (!lock) {
+		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.SERVER_SIMPLE_PLAYER_INIT.name());
+		if (lock == null) {
 			return;
 		}
-		RKeys keys = RedisUtil.getRedis().getKeys();
-		boolean found = false;
+		try {
+			RKeys keys = RedisUtil.getRedis().getKeys();
+			boolean found = false;
 
-		Stream<String> keyStream = keys.getKeysStreamByPattern(CacheType.SERVER_SIMPLE_PLAYER_INIT.name() + "*");
-		if (keyStream.count() > 0) {
-			found = true;
-		}
+			Stream<String> keyStream = keys.getKeysStreamByPattern(CacheType.PLAYER_SIMPLE.name() + "*");
+			if (keyStream.count() > 0) {
+				found = true;
+			}
 //		for (String key : keys.getKeysByPattern(CacheType.PLAYER_SIMPLE.name() + "*")) {
 //			found = true;
 //			break;
@@ -235,29 +240,34 @@ public class GameServer implements GameServerMBean {
 //			}
 //		}
 
-		if (!found) {
-			PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-			int batchSize = 100;
-			int offset = 0;
+			if (!found) {
+				PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
+				int batchSize = 100;
+				int offset = 0;
 
-			while (true) {
-				List<PlayerData> batch = mapper.getBatch(offset, batchSize);
-				if (batch.isEmpty()) {
-					break;
-				}
-
-				batch.parallelStream().forEach(playerData -> {
-					try {
-						Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-						Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
-						PlayerHelper.saveSimplePlayerToRedisSync(player);
-					} catch (Exception e) {
-						e.printStackTrace();
-						SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+				while (true) {
+					List<PlayerData> batch = mapper.getBatch(offset, batchSize);
+					if (batch.isEmpty()) {
+						break;
 					}
-				});
-				offset += batchSize;
+					batch.parallelStream().forEach(playerData -> {
+						try {
+							Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
+							Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+							PlayerHelper.saveSimplePlayerToRedisSync(player);
+							PlayerHelper.clearPlayer(player.getPlayerId());
+						} catch (Exception e) {
+							SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+							ServerContext.getInstance().handleStartFail(e);
+						}
+					});
+					offset += batchSize;
+				}
 			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			lock.unlock();
 		}
 	}
 

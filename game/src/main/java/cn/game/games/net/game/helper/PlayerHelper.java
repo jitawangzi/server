@@ -90,6 +90,7 @@ import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.impl.ContextInternal;
 
 public class PlayerHelper {
 
@@ -1199,12 +1200,15 @@ public class PlayerHelper {
 	/** 
 	 * 只是查询构造出来player对象，不做任何初始化操作
 	 * 注意这里将Player加入到PlayerManager中，某些模块初始化会用到
-	 * 如果查询出来Player不在使用，需要手动从PlayerManager中移除
+	 * 如果查询出来Player不在使用，需要手动移除 @link PlayerHelper#clearPlayer(long)
 	 * @param playerData
 	 * @return
 	 */
 	public static Future<Player> loadPlayerFromDb(PlayerData playerData) {
+		GameClient gameClient = new GameClient(null); // 临时的
+		gameClient.setContext((ContextInternal) VxHolder.vertx.getOrCreateContext());
 		Player player = new Player(playerData);
+		player.setGameClient(gameClient);
 		PlayerManager.getInstance().initAdd(player);
 		return selectPlayerModuleData(player);
 	}
