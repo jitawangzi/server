@@ -738,8 +738,20 @@ public class PlayerHandler extends BaseHandler {
 		if (var == 0) {
 			player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
 		}
-		player.getData().setName(newName);
-		client.sendProtocol(resp);
+		PlayerNameManager.getInstance().tryCreateUser(newName).thenApply(r -> {
+			if (!r) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_name_repeat.getId());
+			} else {
+				PlayerNameManager
+						.getInstance()
+						.saveName2Id(newName, player.getData().getPlayerId())
+						.thenCompose(rr -> PlayerNameManager.getInstance().removeName(player.getData().getName()));
+
+				player.getData().setName(newName);
+				client.sendProtocol(resp);
+			}
+			return null;
+		}).exceptionally(player::failFunction);
 	}
 
 	protected void gender(NetClient client, Object message) {

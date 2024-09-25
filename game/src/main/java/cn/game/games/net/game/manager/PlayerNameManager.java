@@ -130,6 +130,30 @@ public class PlayerNameManager {
 		return Future.fromCompletionStage(putAsync).map(r -> player);
 	}
 
+	public RFuture<Long> saveName2Id(String name, long playerId) {
+		String key = getUsernameIdKey(name);
+		RMap<String, Long> map = RedisUtil.getRedis().getMap(key);
+		RFuture<Long> putAsync = map.putAsync(name, playerId);
+		return putAsync;
+	}
+
+	/** 
+	 * 删除某个存在的名字
+	 * @param name
+	 * @return
+	 */
+	public CompletionStage<Long> removeName(String name) {
+		String key = getUsernameKey(name);
+		String keyId = getUsernameIdKey(name);
+
+		RSet<String> set = RedisUtil.getRedis().getSet(key);
+		RMap<String, Long> map = RedisUtil.getRedis().getMap(keyId);
+		
+		return set.removeAsync(name).thenCompose(r -> {
+			return map.removeAsync(name);
+		});
+	}
+
 	public Future<Long> getPlayerId(String name) {
 		if (StringUtils.isEmpty(name)) {
 			return Future.succeededFuture();
