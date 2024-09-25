@@ -88,6 +88,7 @@ message PaymentOrderCreateRequest_7d000020{
 	string sessionId = 2; //
 	uint32 goodsPrice = 4; // 单价（分）
 	string itemId = 5; // 道具id
+	string platform = 6; // 平台 Android/IOS
 }
 message PaymentOrderCreateResponse_7d000021{
 	// 订单参数
