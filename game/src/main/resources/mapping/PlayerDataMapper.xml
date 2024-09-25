@@ -751,6 +751,13 @@
     )
   </update>
   
+  <select id="streamAll" resultMap="ResultMapWithBLOBs">
+    SELECT * FROM t_player_data
+</select>
+  <select id="getBatch" resultMap="ResultMapWithBLOBs">
+    SELECT * FROM t_player_data LIMIT #{limit} OFFSET #{offset}
+</select>
+  
   
     <sql id="Simple_Column_List">id, gender, name, level, power, head_icon, offLine_time, union_id, union_name,combat</sql>
   <resultMap id="SimpleResultMap" type="cn.game.games.core.SimplePlayer">

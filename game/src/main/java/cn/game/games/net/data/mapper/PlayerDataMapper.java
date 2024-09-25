@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.cursor.Cursor;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -69,6 +70,10 @@ public interface PlayerDataMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<PlayerData> recordList);
+
+	Cursor<PlayerData> streamAll();
+
+	List<PlayerData> getBatch(@Param("offset") int offset, @Param("limit") int limit);
 
 	List<Player> selectPlayersByUid(Long uid);
 

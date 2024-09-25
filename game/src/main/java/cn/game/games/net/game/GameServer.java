@@ -5,17 +5,20 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.RequestCallback;
+import org.redisson.api.RKeys;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
@@ -23,6 +26,7 @@ import com.google.protobuf.Message;
 import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.cache.CacheType;
 import cn.game.core.net.mq.RocketMQRpcClient;
 import cn.game.core.net.remote.LoginGameServerInterface;
 import cn.game.core.net.rpc.RpcClient;
@@ -32,11 +36,13 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossRemoteServerInterface;
+import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.data.remote.DataGameServerInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -52,6 +58,7 @@ import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.JsonUtil;
+import cn.game.util.LockUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -64,6 +71,7 @@ import cn.game.util.log.LoggerManager;
 import cn.game.util.log.SystemLogger;
 import cn.game.util.quartz.QuartzInitializer;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 
 /**
  * vertx重构通讯
@@ -179,6 +187,7 @@ public class GameServer implements GameServerMBean {
 		KeywordFilter.initializeFromFile();
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
+		initSimplePlayers();
 
 		MailHelper.initLoadGlobalMail();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
@@ -193,6 +202,62 @@ public class GameServer implements GameServerMBean {
 //		producer.start();
 //		testUpdateBatch();
 //		getLoginGameServerInterface().getUidByName("sfsdfs32");
+	}
+
+	private void initSimplePlayers() {
+		boolean lock = LockUtil.tryLockNoWaitSync(600, CacheType.SERVER_SIMPLE_PLAYER_INIT.name());
+		if (!lock) {
+			return;
+		}
+		RKeys keys = RedisUtil.getRedis().getKeys();
+		boolean found = false;
+
+		Stream<String> keyStream = keys.getKeysStreamByPattern(CacheType.SERVER_SIMPLE_PLAYER_INIT.name() + "*");
+		if (keyStream.count() > 0) {
+			found = true;
+		}
+//		for (String key : keys.getKeysByPattern(CacheType.PLAYER_SIMPLE.name() + "*")) {
+//			found = true;
+//			break;
+//		}
+//		if (!found) {
+//			// 重新初始化PLAYER_SIMPLE
+//			PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
+//			try (Cursor<PlayerData> cursor = mapper.streamAll()) {
+//				for (PlayerData playerData : cursor) {
+//					Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
+//					Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+//					PlayerHelper.saveSimplePlayerToRedisSync(player);
+//				}
+//			} catch (Exception e) {
+//				SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+//				ServerContext.getInstance().handleStartFail(e);
+//			}
+//		}
+
+		if (!found) {
+			PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
+			int batchSize = 100;
+			int offset = 0;
+
+			while (true) {
+				List<PlayerData> batch = mapper.getBatch(offset, batchSize);
+				if (batch.isEmpty()) {
+					break;
+				}
+
+				batch.parallelStream().forEach(playerData -> {
+					try {
+						Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
+						Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+						PlayerHelper.saveSimplePlayerToRedisSync(player);
+					} catch (Exception e) {
+						SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+					}
+				});
+				offset += batchSize;
+			}
+		}
 	}
 
 	/** 

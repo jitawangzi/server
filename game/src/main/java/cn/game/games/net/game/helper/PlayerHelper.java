@@ -1196,6 +1196,19 @@ public class PlayerHelper {
 		return selectPlayerModuleData(player).compose(PlayerHelper::initPlayerData);
 	}
 
+	/** 
+	 * 只是查询构造出来player对象，不做任何初始化操作
+	 * 注意这里将Player加入到PlayerManager中，某些模块初始化会用到
+	 * 如果查询出来Player不在使用，需要手动从PlayerManager中移除
+	 * @param playerData
+	 * @return
+	 */
+	public static Future<Player> loadPlayerFromDb(PlayerData playerData) {
+		Player player = new Player(playerData);
+		PlayerManager.getInstance().initAdd(player);
+		return selectPlayerModuleData(player);
+	}
+
 	public static Player createPlayer(PlayerData playerData, Account account, GameClient client) {
 		client.setPlayerId(playerData.getPlayerId());
 		GameClientManager.getInstance().addGameClientPlayer((GameClient) client);
@@ -1240,6 +1253,15 @@ public class PlayerHelper {
 	public static Future<Void> saveSimplePlayerToRedis(Player player) {
 		String key = CacheType.PLAYER_SIMPLE.key(player.getData().getPlayerId());
 		return  RedisLocalCache.getInstance().putAsync(key, new SimplePlayer(player));
+	}
+
+	/** 
+	 * 同步保存，一般只在初始化时使用
+	 * @param player
+	 */
+	public static void saveSimplePlayerToRedisSync(Player player) {
+		String key = CacheType.PLAYER_SIMPLE.key(player.getData().getPlayerId());
+		RedisLocalCache.getInstance().put(key, new SimplePlayer(player));
 	}
 
 	public static Future<Player> saveSimplePlayer(Player player) {
