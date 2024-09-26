@@ -489,7 +489,7 @@ public class PlayerHelper {
 				int randomIndex = Rnd.randomIndex(randomGivenConfig.RandomParameterWeight);
 				int group = randomGivenConfig.RandomParameterGroupId[randomIndex];
 				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
-				RandomGroupConfig groupConfig = Rnd.randomOne(randomGroupIDList);
+				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
 
 				Goods goods = new Goods(groupConfig.AssetID, groupConfig.Several);
 				ret.add(goods);
