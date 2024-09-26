@@ -14,6 +14,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
+import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GameServerStatus;
@@ -51,6 +52,8 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataRequest_01000200;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataResponse_01000201;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherResponse_0100000a;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
@@ -136,9 +139,23 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerPatrolInfoRequest_01000070, this::patrolInfo);
 		putInvoker(PbProtocol.PlayerRedPointRequest_01000075, this::red);
 		putInvoker(PbProtocol.PlayerSearchRequest_0100000b, this::searchPlayer);
+		putInvoker(PbProtocol.PlayerAssetDataRequest_01000200, this::assetData);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
 	}
 
+	private void assetData(NetClient client, Object message) {
+		PlayerAssetDataRequest_01000200 request = (PlayerAssetDataRequest_01000200) message;
+		PlayerAssetDataResponse_01000201.Builder response = PlayerAssetDataResponse_01000201.newBuilder();
+
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		response.putAllAssets(player.getCurrencyModule().getCurrencyMap().getMap());
+
+		for (Item item : player.getItemModule().list()) {
+			response.addItems(item.toItemInfo());
+		}
+		client.sendProtocol(response.build());
+	}
 	private void searchPlayer(NetClient client, Object message) {
 		PlayerSearchRequest_0100000b request = (PlayerSearchRequest_0100000b) message;
 		PlayerSearchResponse_0100000c.Builder resp = PlayerSearchResponse_0100000c.newBuilder();
@@ -164,14 +181,17 @@ public class PlayerHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		List<Integer> typeList = request.getTypeList();
 		List<Boolean> redList = new ArrayList<>();
-		boolean ret = false ; 
+		for (Integer i : typeList) {
+			redList.add(false);
+		}
 		int errorCode = 0;
 		for (int i = 0; i < typeList.size(); i++) {
 			int type = typeList.get(i);
 			InitialUI func = InitialUI.get(type);
+			boolean ret = false;
 			if (player.isFuncOpen(func)) {
 				switch (func) {
-				case DaoXinMoLi: {
+				case DaoXinLLiLian: {
 					ChapterModule chapterModule = player.getChapterModule();
 					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(DungeonTypeEnum.DaoHeart);
 					if (daoHeartBattle == null) {
@@ -302,7 +322,8 @@ public class PlayerHandler extends BaseHandler {
 					break; 
 				}
 			}
-			redList.add(ret);
+			redList.set(i, ret);
+//			redList.add(ret);
 		}
 		resp.addAllIsRed(redList);
 		client.sendProtocol(resp, errorCode);

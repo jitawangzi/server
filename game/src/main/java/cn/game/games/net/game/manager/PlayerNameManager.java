@@ -2,6 +2,7 @@ package cn.game.games.net.game.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,11 +13,14 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.redisson.api.RFuture;
 import org.redisson.api.RMap;
 import org.redisson.api.RSet;
 import org.redisson.api.RSetAsync;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.druid.util.StringUtils;
 
@@ -35,6 +39,8 @@ import io.vertx.core.Future;
  * @author SYQ
  */
 public class PlayerNameManager {
+	private static Logger log = LoggerFactory.getLogger(PlayerNameManager.class);
+
 	private static final int SHARD_COUNT = 16; // 使用16个分片
 	private static PlayerNameManager instance = new PlayerNameManager();
 
@@ -164,6 +170,7 @@ public class PlayerNameManager {
 	}
 
 	public CompletableFuture<Map<String, Long>> getPlayerIds(Set<String> names) {
+		log.info("getPlayerIds names:{}", names);
 		// 按分片对用户名进行分组
 		Map<Integer, List<String>> shardToNames = names.stream().collect(Collectors.groupingBy(this::getShardIndex));
 
@@ -241,7 +248,6 @@ public class PlayerNameManager {
 		RSetAsync<String> set = RedisUtil.getRedis().getSet(key);
 		return set.randomAsync(count);
 	}
-
 	/** 
 	 * 从所有分片中随机用户名
 	 * @param count
@@ -249,23 +255,73 @@ public class PlayerNameManager {
 	 */
 	public CompletionStage<Set<String>> getRandomUsernameFromAll(int count) {
 		Set<String> result = new HashSet<>();
-		CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
-		int maxAttempts = SHARD_COUNT; // 最大尝试次数
-		int attempts = 0;
+		List<Integer> shards = IntStream.range(0, SHARD_COUNT).boxed().collect(Collectors.toList());
+		Collections.shuffle(shards);
 
-		// 循环直到获得所需数量的用户名或达到最大尝试次数
-		while (result.size() < count && attempts < maxAttempts) {
-			int randomShard = Rnd.nextInt(SHARD_COUNT);
-			String key = CacheType.SET_ALL_NAME.key(randomShard);
-			RSetAsync<String> set = RedisUtil.getRedis().getSet(key);
+		return queryNextShard(shards, 0, count, result);
+	}
 
-			// 使用 CompletableFuture 异步获取随机元素
-			future = future.thenCompose(v -> set.randomAsync(count - result.size()).thenAccept(randomElements -> result.addAll(randomElements)));
-			attempts++;
+	private CompletionStage<Set<String>> queryNextShard(List<Integer> shards, int index, int count, Set<String> result) {
+		if (result.size() >= count || index >= shards.size()) {
+			return CompletableFuture.completedFuture(result.stream().limit(count).collect(Collectors.toSet()));
 		}
-		return future.thenApply(v -> {
-			// 返回的结果集的大小不超过请求的数量
+
+		int shard = shards.get(index);
+		String key = CacheType.SET_ALL_NAME.key(shard);
+		RSetAsync<String> set = RedisUtil.getRedis().getSet(key);
+
+		return set.randomAsync(count - result.size()).thenCompose(randomElements -> {
+			result.addAll(randomElements);
+			return queryNextShard(shards, index + 1, count, result);
+		}).exceptionally(e -> {
+			log.error("Error fetching random usernames from shard " + shard, e);
+			// 直接返回当前结果
 			return result.stream().limit(count).collect(Collectors.toSet());
 		});
 	}
+
+	/** 
+	 * 获取所有用户名，只是测试用。 
+	 * @return
+	 */
+	public Set<String> testGetAllName() {
+		Set<String> result = new HashSet<>();
+
+		for (int i = 0; i < SHARD_COUNT; i++) {
+			String key = CacheType.SET_ALL_NAME.key(i);
+			RSet<String> set = RedisUtil.getRedis().getSet(key);
+			Set<String> all = set.readAll();
+			result.addAll(all);
+		}
+		return result;
+	}
+
+	/** 
+	 * 获取所有用户id，只是测试用。 
+	 * @return
+	 */
+	public Set<Long> testGetAllPlayerId() {
+		Set<Long> result = new HashSet<>();
+		
+		for (int i = 0; i < SHARD_COUNT; i++) {
+			String key = CacheType.MAP_PLAYER_NAME_ID.key(i);
+			RMap<String, Long> map = RedisUtil.getRedis().getMap(key);
+			Map<String, Long> allMap = map.readAllMap();
+			result.addAll(allMap.values());
+		}
+		return result;
+	}
+
+	public Map<String, Long> testGetAllPlayerIdMap() {
+		Map<String, Long> ret = new HashMap<>();
+
+		for (int i = 0; i < SHARD_COUNT; i++) {
+			String key = CacheType.MAP_PLAYER_NAME_ID.key(i);
+			RMap<String, Long> map = RedisUtil.getRedis().getMap(key);
+			Map<String, Long> allMap = map.readAllMap();
+			ret.putAll(allMap);
+		}
+		return ret;
+	}
+
 }

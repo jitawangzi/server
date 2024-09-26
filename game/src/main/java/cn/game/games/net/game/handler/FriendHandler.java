@@ -161,9 +161,10 @@ public class FriendHandler extends BaseHandler {
 			playersFuture = PlayerManager.getInstance().searchPlayersAsync(player);
 		}
 		friendModule.setRefreshCount(friendModule.getRefreshCount() + 1);
-		playersFuture.onSuccess(result -> {
+		playersFuture.map(result -> {
 			resp.addAllPlayers(PbBuilder.buildSimplePlayerInfos(result));
 			client.sendProtocol(resp.build());
+			return null;
 		}).onFailure(player::fail);
 
 	}

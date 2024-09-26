@@ -41,7 +41,6 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.Pair;

@@ -17,6 +17,8 @@ import org.redisson.api.RBatch;
 import org.redisson.api.RBucket;
 import org.redisson.api.RFuture;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -33,6 +35,7 @@ import io.vertx.core.Promise;
  * @author SYQ
  */
 public class RedisLocalCache {
+	private static Logger log = LoggerFactory.getLogger(RedisLocalCache.class);
 
 	private final long expirationTimeInMinutes = 10;
 	private final Cache<String, Object> cache = CacheBuilder.newBuilder().expireAfterWrite(expirationTimeInMinutes, TimeUnit.MINUTES).build();
@@ -233,6 +236,8 @@ public class RedisLocalCache {
 		return multiGetAsync(Arrays.asList(keys));
 	}
 	public <T> Future<List<T>> multiGetAsync(CacheType cacheType, Object... keys) {
+//		log.info("multiGetAsync cacheType: {}, keys: {}", cacheType, Arrays.toString(keys));
+
 		List<String> list = new ArrayList<>(keys.length);
 		for (Object key : keys) {
 			list.add(cacheType.key(key));

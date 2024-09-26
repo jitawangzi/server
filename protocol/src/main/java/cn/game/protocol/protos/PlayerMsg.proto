@@ -255,6 +255,16 @@ message PlayerRedPointResponse_01000076{
 	repeated bool isRed = 1;
 }
 
+/*** 请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。  **/
+message PlayerAssetDataRequest_01000200{
+}
+/***  **/
+message PlayerAssetDataResponse_01000201{
+   map<uint32, uint64> assets = 2;   // 主要是货币，附带一些经验体力等数据。   key:Asset表id
+   repeated ItemInfo items  = 5;        //道具  Item表
+}
+
+
 
 // 一次推送多个消息
 message PlayerBatchPush_01100100 {
