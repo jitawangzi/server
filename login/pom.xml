@@ -92,6 +92,12 @@
 			<artifactId>wechatpay-java</artifactId>
 			<version>0.2.14</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.binarywang/weixin-java-pay -->
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-pay</artifactId>
+			<version>4.6.5.B</version>
+		</dependency>
 
 	</dependencies>
 

@@ -6,21 +6,24 @@ import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
+import cn.game.login.net.clientpacket.vertx.wechat.combineModule.PrepayRequest;
+import cn.game.login.net.clientpacket.vertx.wechat.combineModule.ReqAmountInfo;
+import cn.game.login.net.clientpacket.vertx.wechat.combineModule.ReqSubOrderCompatible;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
+import com.github.binarywang.wxpay.config.WxPayConfig;
+import com.github.binarywang.wxpay.service.WxPayService;
+import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.notification.NotificationConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
 import com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction;
-import com.wechat.pay.java.service.payments.jsapi.JsapiService;
-import com.wechat.pay.java.service.payments.jsapi.model.Amount;
-import com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayResponse;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -46,6 +49,19 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
     public static String merchantSerialNumber = "5157F09EFDC096DE15EBE81A47057A72********";
     /** 商户APIV3密钥 */
     public static String apiV3Key = "...";
+    public static String appId = "...";
+    // 使用自动更新平台证书的RSA配置
+    // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
+
+    public final static  Config config =
+            new RSAAutoCertificateConfig.Builder()
+                    .merchantId(merchantId)
+                    .privateKeyFromPath(privateKeyPath)
+                    .merchantSerialNumber(merchantSerialNumber)
+                    .apiV3Key(apiV3Key)
+                    .build();
+
+
     public IOSPayOrderProcessor() {
         super(PayOrderPlatformEnum.IOS);
     }
@@ -194,31 +210,28 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setPlayerId(playerId);
         payOrder.setUserId(playerId);
         payOrder.setThirdUid(user.getThirdUid());
-        VxHolder.vertx.executeBlocking(r -> {
-// 使用自动更新平台证书的RSA配置
-            // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
-            Config config =
-                    new RSAAutoCertificateConfig.Builder()
-                            .merchantId(merchantId)
-                            .privateKeyFromPath(privateKeyPath)
-                            .merchantSerialNumber(merchantSerialNumber)
-                            .apiV3Key(apiV3Key)
-                            .build();
-            // 构建service
-            JsapiService service = new JsapiService.Builder().config(config).build();
-            // request.setXxx(val)设置所需参数，具体参数可见Request定义
-            PrepayRequest request = new PrepayRequest();
-            Amount amount = new Amount();
-            amount.setTotal(req.getGoodsPrice());
-            request.setAmount(amount);
-            request.setAppid("wxa9d9651ae******");
-            request.setMchid("190000****");
-            request.setDescription("测试商品标题");
-            request.setNotifyUrl("https://notify_url");
-            request.setOutTradeNo(payOrder.getId()+"");
+    VxHolder.vertx.executeBlocking(
+        r -> {
+          CombineJsapiService combineJsapiService =
+              new CombineJsapiService.Builder().config(config).build();
+          PrepayRequest request = new PrepayRequest();
+          request.setCombineAppid(appId);
+          request.setCombineOutTradeNo(payOrder.getId() + "");
+          request.setCombineMchid(merchantId);
+          request.setNotifyUrl("https://notify_url");
+          ReqAmountInfo amount = new ReqAmountInfo();
+          amount.setTotalAmount(req.getGoodsPrice());
+          ReqSubOrderCompatible subOrderCompatible = new ReqSubOrderCompatible();
+          subOrderCompatible.setAmount(amount);
+          subOrderCompatible.setMchId(merchantId);
+          subOrderCompatible.setDetail("测试商品标题");
+          subOrderCompatible.setOutTradeNo(request.getCombineOutTradeNo());
+          subOrderCompatible.setAttach("测试商品描述");
+
+          request.addSubOrders(subOrderCompatible);
             // 调用下单方法，得到应答
             try {
-                PrepayResponse response = service.prepay(request);
+                PrepayResponse response = combineJsapiService.prepay(request);
                 payOrder.setThirdOrderId(response.getPrepayId());
                 promise.complete(payOrder);
 
@@ -226,6 +239,28 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
                 e.printStackTrace();
                 promise.fail(e);
             }
+          /*   // 构建service
+          JsapiService service = new JsapiService.Builder().config(config).build();
+          // request.setXxx(val)设置所需参数，具体参数可见Request定义
+          PrepayRequest request = new PrepayRequest();
+          Amount amount = new Amount();
+          amount.setTotal(req.getGoodsPrice());
+          request.setAmount(amount);
+          request.setAppid(appId);
+          request.setMchid(merchantId);
+          request.setDescription("测试商品标题");
+          request.setNotifyUrl("https://notify_url");
+          request.setOutTradeNo(payOrder.getId()+"");
+          // 调用下单方法，得到应答
+          try {
+              PrepayResponse response = service.prepay(request);
+              payOrder.setThirdOrderId(response.getPrepayId());
+              promise.complete(payOrder);
+
+          }catch (Exception e){
+              e.printStackTrace();
+              promise.fail(e);
+          }*/
         });
 
         // 使用微信扫描 code_url 对应的二维码，即可体验Native支付
