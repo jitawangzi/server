@@ -3,6 +3,8 @@ package cn.game.games.net.game.handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.games.net.game.helper.MailHelper;
+import cn.game.protocol.protobuf.ServerMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -84,9 +86,59 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PaymentOrderShipRequest_7d000022, this::ship);
 		putInvoker(PbProtocol.GamePlayerPush_7d000011, this::playerPush);
 		putInvoker(PbProtocol.GameGmPlayerInfoRequest_7d000050, this::gmPlayer);
+		putInvoker(PbProtocol.NotifyGmAddForbidAccountRequest_7d000054, this::gmAddForbidAccount);
+		putInvoker(PbProtocol.NotifyGmDelForbidAccountRequest_7d000056, this::gmDelForbidAccount);
+		putInvoker(PbProtocol.NotifyRefreshGlobalGmMailRequest_7d000058, this::refreshGlobalGmMail);
+		putInvoker(PbProtocol.NotifyRefreshGlobalGmMailRequest_7d000058, this::refreshGlobalGmMail);
+		putInvoker(PbProtocol.NotifyAddGlobalGmMailRequest_7d000060, this::ddGlobalGmMail);
+		putInvoker(PbProtocol.NotifyDelGlobalGmMailRequest_7d000062, this::delGlobalGmMail);
+
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
+	}
+
+	private void delGlobalGmMail(NetClient client, Object o) {
+		ServerMsg.NotifyDelGlobalGmMailRequest_7d000062 req = (ServerMsg.NotifyDelGlobalGmMailRequest_7d000062)o;
+		MailHelper.removeGlobalMail(req.getDelGmMailId()+"");
+		log.info("delGlobalGmMail: ", req.getDelGmMailId());
+		ServerMsg.NotifyDelGlobalGmMailResponse_7d000063.Builder res = ServerMsg.NotifyDelGlobalGmMailResponse_7d000063.newBuilder().setResult(true);
+		client.sendProtocol(res.build());
+	}
+
+	private void ddGlobalGmMail(NetClient client, Object o) {
+		ServerMsg.NotifyAddGlobalGmMailRequest_7d000060 req = (ServerMsg.NotifyAddGlobalGmMailRequest_7d000060)o;
+		MailHelper.addGlobalMail(req.getAddGmMailId());
+		log.info("ddGlobalGmMail: ", req.getAddGmMailId());
+		ServerMsg.NotifyAddGlobalGmMailResponse_7d000061.Builder res = ServerMsg.NotifyAddGlobalGmMailResponse_7d000061.newBuilder().setResult(true);
+		client.sendProtocol(res.build());
+	}
+
+	private void refreshGlobalGmMail(NetClient client, Object o) {
+		ServerMsg.NotifyRefreshGlobalGmMailResponse_7d000059.Builder res = ServerMsg.NotifyRefreshGlobalGmMailResponse_7d000059.newBuilder().setResult(true);
+		MailHelper.initLoadGlobalMail();
+		log.info("refreshGlobalGmMail");
+		client.sendProtocol(res.build());
+	}
+
+	private void gmDelForbidAccount(NetClient client, Object o) {
+		ServerMsg.NotifyGmDelForbidAccountRequest_7d000056 req = (ServerMsg.NotifyGmDelForbidAccountRequest_7d000056)o;
+		req.getPidsList().forEach(delPid ->{
+			PlayerManager.getInstance().unblockAccount(delPid);
+			log.info(String.format("gmDelForbidAccount pid=%d", delPid));
+		});
+		ServerMsg.NotifyGmDelForbidAccountResponse_7d000057.Builder res = ServerMsg.NotifyGmDelForbidAccountResponse_7d000057.newBuilder().setResult(true);
+		client.sendProtocol(res.build());
+	}
+
+	private void gmAddForbidAccount(NetClient client, Object o) {
+		ServerMsg.NotifyGmAddForbidAccountRequest_7d000054 req = (ServerMsg.NotifyGmAddForbidAccountRequest_7d000054)o;
+		req.getPidsList().forEach(addPid ->{
+					PlayerManager.getInstance().forbidAccount(addPid, req.getReason(), req.getTimer()+"");
+					log.info(String.format("gmAddForbidAccount pid=%d, reason=%s, timer=%s", addPid, req.getReason(), req.getTimer()));
+		});
+		ServerMsg.NotifyGmAddForbidAccountResponse_7d000055.Builder res = ServerMsg.NotifyGmAddForbidAccountResponse_7d000055.newBuilder().setResult(true);
+		client.sendProtocol(res.build());
 	}
 
 	protected void gmPlayer(NetClient client, Object message) {

@@ -223,7 +223,8 @@ public class GmHandler extends BaseHandler {
                         } else { // 全服邮件
                           MailHelper.addGlobalMail(gmMail);
                           // 通知其他节点 添加新的全服邮件
-                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastAddGlobalGmMail(gmMail.getId());
+                            VxHolder.broadcastRemoteServer(ServerType.Game,ServerMsg.NotifyAddGlobalGmMailRequest_7d000060.newBuilder().setAddGmMailId(gmMail.getId()).build());
+//                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastAddGlobalGmMail(gmMail.getId());
                         }
                         sendAndRecordOpt(client, req, res.build());
                       })
@@ -251,7 +252,8 @@ public class GmHandler extends BaseHandler {
                       r -> {
                         if (r != null &&  MailHelper.removeGlobalMail(mailId)) {
                           // 该邮件是全服邮件, 通知其他节点删除该邮件
-                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastDelGlobalGmMail(Integer.parseInt(mailId));
+//                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastDelGlobalGmMail(Integer.parseInt(mailId));
+                            VxHolder.broadcastRemoteServer(ServerType.Game,ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId(Integer.parseInt(mailId)).build());
                         }
                         sendAndRecordOpt(client, req, res.build());
                       })
@@ -375,9 +377,16 @@ public class GmHandler extends BaseHandler {
             });
     //  通知其他game节点添加封号记录
     if (!pids.isEmpty()) {
-      GameServer.getInstance()
-          .getCrossGameServerInterfaceSync()
-          .notifyBroadcastAddForbidAccount(pids, reason, unblockTime * 1000L + "");
+      VxHolder.broadcastRemoteServer(
+          ServerType.Game,
+          ServerMsg.NotifyGmAddForbidAccountRequest_7d000054.newBuilder()
+              .setReason(request.getReason())
+                  .setTimer(unblockTime*1000L)
+                  .addAllPids(pids)
+                  .build());
+//      GameServer.getInstance()
+//          .getCrossGameServerInterfaceSync()
+//          .notifyBroadcastAddForbidAccount(pids, reason, unblockTime * 1000L + "");
     }
   }
 
@@ -397,9 +406,10 @@ public class GmHandler extends BaseHandler {
             });
     // 通知其他game节点删除封号记录
     if (!pids.isEmpty()) {
-      GameServer.getInstance()
-          .getCrossGameServerInterfaceSync()
-          .notifyBroadcastDelForbidAccount(pids);
+        VxHolder.broadcastRemoteServer(ServerType.Game, ServerMsg.NotifyGmDelForbidAccountRequest_7d000056.newBuilder().addAllPids(pids).build());
+//      GameServer.getInstance()
+//          .getCrossGameServerInterfaceSync()
+//          .notifyBroadcastDelForbidAccount(pids);
     }
   }
 
