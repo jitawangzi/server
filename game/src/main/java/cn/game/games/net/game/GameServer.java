@@ -327,6 +327,9 @@ public class GameServer implements GameServerMBean {
 	}
 
 	private void initHotUpdate() {
+		if (!Config.hotUpdate) {
+			return;
+		}
 		if (ServerContext.getInstance().getRunMode().isProduction()) {
 			String className = ManagementFactory.getRuntimeMXBean().getName();
 			String pid = className.split("@")[0];

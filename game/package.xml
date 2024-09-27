@@ -57,9 +57,6 @@ groupId:artifactId:type:classifier:version
             <excludes>
                 <exclude>config/logback.xml</exclude>
             </excludes>
-<!--             <includes> -->
-<!--                 <include>/log4j2.xml</include> -->
-<!--             </includes> -->
         </fileSet>
         
 <!--         <fileSet> -->
@@ -74,10 +71,10 @@ groupId:artifactId:type:classifier:version
  </fileSets>
 	<files>
 <!-- 	单个文件 -->
-		<file>
-			<source>/log4j2.xml</source>
-			<outputDirectory>/</outputDirectory>
-		</file>
+<!-- 		<file> -->
+<!-- 			<source>/log4j2.xml</source> -->
+<!-- 			<outputDirectory>/</outputDirectory> -->
+<!-- 		</file> -->
 	</files>
     
 </assembly>
