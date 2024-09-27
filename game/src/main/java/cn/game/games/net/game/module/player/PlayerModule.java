@@ -331,7 +331,9 @@ public class PlayerModule extends BasePlayerModule {
 		for (Asset asset : Asset.values()) {
 			if (asset.Type == 2) {
 				if (!expLevelMap.hasValue(asset.ID)) {
-					expLevelMap.add(asset.ID, 1);
+					if (asset.ID != Asset.VIPExp.ID){ //VIP 初始 从 0 级开始
+						expLevelMap.add(asset.ID, 1);
+					}
 				}
 			}
 		}
