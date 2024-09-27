@@ -89,7 +89,6 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.NotifyGmAddForbidAccountRequest_7d000054, this::gmAddForbidAccount);
 		putInvoker(PbProtocol.NotifyGmDelForbidAccountRequest_7d000056, this::gmDelForbidAccount);
 		putInvoker(PbProtocol.NotifyRefreshGlobalGmMailRequest_7d000058, this::refreshGlobalGmMail);
-		putInvoker(PbProtocol.NotifyRefreshGlobalGmMailRequest_7d000058, this::refreshGlobalGmMail);
 		putInvoker(PbProtocol.NotifyAddGlobalGmMailRequest_7d000060, this::ddGlobalGmMail);
 		putInvoker(PbProtocol.NotifyDelGlobalGmMailRequest_7d000062, this::delGlobalGmMail);
 
