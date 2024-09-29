@@ -6,25 +6,20 @@ import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
-import cn.game.login.net.clientpacket.vertx.wechat.combineModule.PrepayRequest;
-import cn.game.login.net.clientpacket.vertx.wechat.combineModule.ReqAmountInfo;
-import cn.game.login.net.clientpacket.vertx.wechat.combineModule.ReqSubOrderCompatible;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
-import com.github.binarywang.wxpay.config.WxPayConfig;
-import com.github.binarywang.wxpay.service.WxPayService;
-import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.notification.NotificationConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
-import com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction;
-import com.wechat.pay.java.service.payments.jsapi.model.PrepayResponse;
+import com.wechat.pay.java.service.payments.jsapi.JsapiService;
+import com.wechat.pay.java.service.payments.jsapi.model.*;
+import com.wechat.pay.java.service.payments.model.Transaction;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
@@ -50,17 +45,17 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
     /** 商户APIV3密钥 */
     public static String apiV3Key = "...";
     public static String appId = "...";
+    /**客服消息的TOKEN      ggsaPOLW05QpMfA1w5SotegFUQgpMb*/
+    public static String CustomerToken = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
     // 使用自动更新平台证书的RSA配置
     // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
 
-    public final static  Config config =
-            new RSAAutoCertificateConfig.Builder()
+    public final static  Config config = new RSAAutoCertificateConfig.Builder()
                     .merchantId(merchantId)
                     .privateKeyFromPath(privateKeyPath)
                     .merchantSerialNumber(merchantSerialNumber)
                     .apiV3Key(apiV3Key)
                     .build();
-
 
     public IOSPayOrderProcessor() {
         super(PayOrderPlatformEnum.IOS);
@@ -130,7 +125,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
             onFail(response,500,"payOrder.getThirdOrderId().equals(transaction.getTransactionId())");
             return;
         }
-        User user = UserHelper.getUserByName(transaction.getPayer().getSpOpenid());
+        User user = UserHelper.getUserByName(transaction.getPayer().getOpenid());
         if (user == null){
             onFail(response,500,"User user");
             return;
@@ -212,7 +207,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setThirdUid(user.getThirdUid());
     VxHolder.vertx.executeBlocking(
         r -> {
-          CombineJsapiService combineJsapiService =
+       /*   CombineJsapiService combineJsapiService =
               new CombineJsapiService.Builder().config(config).build();
           PrepayRequest request = new PrepayRequest();
           request.setCombineAppid(appId);
@@ -238,8 +233,8 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
             }catch (Exception e){
                 e.printStackTrace();
                 promise.fail(e);
-            }
-          /*   // 构建service
+            }*/
+            // 构建service
           JsapiService service = new JsapiService.Builder().config(config).build();
           // request.setXxx(val)设置所需参数，具体参数可见Request定义
           PrepayRequest request = new PrepayRequest();
@@ -260,7 +255,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
           }catch (Exception e){
               e.printStackTrace();
               promise.fail(e);
-          }*/
+          }
         });
 
         // 使用微信扫描 code_url 对应的二维码，即可体验Native支付
