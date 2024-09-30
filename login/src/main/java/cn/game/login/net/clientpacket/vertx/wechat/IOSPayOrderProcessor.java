@@ -7,11 +7,10 @@ import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.protocol.protobuf.ServerMsg;
-import cn.game.util.DateUtil;
-import cn.game.util.ServerType;
-import cn.game.util.SpringContextLoader;
+import cn.game.util.*;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
+import com.google.gson.JsonObject;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.notification.NotificationConfig;
@@ -36,30 +35,44 @@ import org.apache.commons.lang3.StringUtils;
  * @create: 2024-09-24 15:45 @Version 1.0
  */
 public class IOSPayOrderProcessor extends BasePayOrderProcessor{
+    public static final String SEND_URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send";
     /** 商户号 */
     public static String merchantId = "190000****";
-    /** 商户API私钥路径 */
-    public static String privateKeyPath = "/Users/yourname/your/path/apiclient_key.pem";
+
+  /** 商户API私钥路径 */
+  public static String privateKeyPath = "C:\\opt\\data\\game\\config-cache\\apiclient_key.pem";
+
     /** 商户证书序列号 */
     public static String merchantSerialNumber = "5157F09EFDC096DE15EBE81A47057A72********";
     /** 商户APIV3密钥 */
     public static String apiV3Key = "...";
-    public static String appId = "...";
-    /**客服消息的TOKEN      ggsaPOLW05QpMfA1w5SotegFUQgpMb*/
-    public static String CustomerToken = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
-    // 使用自动更新平台证书的RSA配置
-    // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
-
     public final static  Config config = new RSAAutoCertificateConfig.Builder()
                     .merchantId(merchantId)
                     .privateKeyFromPath(privateKeyPath)
                     .merchantSerialNumber(merchantSerialNumber)
                     .apiV3Key(apiV3Key)
                     .build();
+    public static String appId = "...";
+    /**客服消息的TOKEN      ggsaPOLW05QpMfA1w5SotegFUQgpMb*/
+    public static String CustomerToken = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
+    public static String encodingAesKey = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
+
+    // 使用自动更新平台证书的RSA配置
+    // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
+    /***https://developers.weixin.qq.com/miniprogram/dev/framework/server-ability/message-push.html#%E5%BC%80%E5%8F%91%E8%80%85%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A5%E6%94%B6%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81*/
+    public static String accessToken = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
+    public static long accessTokenExpiresTimer = 0;
+    /** https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html#58*/
+    public static String jsapiTicket = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
+    public static long jsapiTicketExpiresTimer = 0;
+
+    /** 小程序唯一凭证密钥，即 AppSecret，获取方式同 appid */
+    public static String AppSecret = "";
 
     public IOSPayOrderProcessor() {
         super(PayOrderPlatformEnum.IOS);
     }
+
 
 //    HTTP 头 Wechatpay-Signature。应答的微信支付签名。
 //    HTTP 头 Wechatpay-Serial。微信支付平台证书的序列号，验签必须使用序列号对应的微信支付平台证书。
@@ -184,6 +197,67 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         response.setStatusCode(200);
         response.end();
     }
+
+    //TODO  需要用 定时器做
+    public static void startRefreshAccessTokenTask(){
+        new Thread(()->{
+            long lastRefreshTimer = 0;
+            String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
+            String  jsapiTicketUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi";
+            while (true) {
+                try {
+
+                    long now = System.currentTimeMillis();
+                    if (now - lastRefreshTimer >= 5 * DateUtil.MINUTE_MILLIS) {
+                        lastRefreshTimer = now;
+                        //TODO 需要用分布式锁
+                        String url = String.format(tokenUrl, appId, AppSecret);
+                        String result = HttpUtil.get(url);
+                        if (result != null){
+                            JsonObject jsonObject = JsonUtil.parserJson(result);
+                            String accessToken = jsonObject.get("access_token").getAsString();
+                            String expires_in = jsonObject.get("expires_in").getAsString();
+                            updateAccessToken(accessToken,now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
+
+                            //获取 jsapi_ticket jsapi_ticket是公众号用于调用微信JS接口的临时票据
+                            url = String.format(jsapiTicketUrl, accessToken);
+                            result = HttpUtil.get(url);
+                            if (result != null){
+                                jsonObject = JsonUtil.parserJson(result);
+                                String jsapiTicket = jsonObject.get("ticket").getAsString();
+                                 expires_in = jsonObject.get("expires_in").getAsString();
+                                updateJsapiTicket(jsapiTicket,now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
+
+                            }
+
+                             //通知其他节点
+                             VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000054.newBuilder()
+                                     .setAccessToken(accessToken).setExpireTime(accessTokenExpiresTimer)
+                                             .setJsapiTicket(jsapiTicket).setTickExpireTime(jsapiTicketExpiresTimer)
+                                     .build());
+                        }
+                    } else {
+                        Thread.sleep(1 * DateUtil.MINUTE_MILLIS);
+                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        ).start();
+}
+
+    public static void updateJsapiTicket(String jsapiTicket, long l) {
+        IOSPayOrderProcessor.jsapiTicket = jsapiTicket;
+        IOSPayOrderProcessor.jsapiTicketExpiresTimer = l;
+    }
+
+    public static void updateAccessToken(String accessToken, long accessTokenExpiresTimer) {
+    IOSPayOrderProcessor.accessToken = accessToken;
+    IOSPayOrderProcessor.accessTokenExpiresTimer = accessTokenExpiresTimer;
+}
+
 
     @Override
     public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 req, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {

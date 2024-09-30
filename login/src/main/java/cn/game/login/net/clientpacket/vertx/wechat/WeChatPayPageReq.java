@@ -2,35 +2,54 @@ package cn.game.login.net.clientpacket.vertx.wechat;
 
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.LoginServer;
+import cn.game.login.cache.entity.PayOrder;
+import cn.game.login.mapper.PayOrderMapper;
+import cn.game.util.SpringContextLoader;
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
+import org.apache.commons.codec.digest.DigestUtils;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @ClassName WeChatPayPageReq
  *
- * @description:
+ * @description: iOS 支付  wx_pay.ftl 跳转的页面的参数
  * @author: ly
  * @create: 2024-09-29 10:08 @Version 1.0
  */
 public class WeChatPayPageReq implements Handler<RoutingContext> {
     @Override
     public void handle(RoutingContext ctx) {
+        HttpServerRequest req = ctx.request();
+        String orderId = req.getParam("orderId");
+        System.out.println(req.absoluteURI());
+        PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+        PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(orderId));
+        if (payOrder == null) {
+            ctx.response().setStatusCode(404).end("Not Found");
+            return;
+        }
+//        Map<String,String> sign = sign(payOrder.getThirdOrderId(), UUID.randomUUID().toString().replace("-", ""), System.currentTimeMillis()/1000);
+
+        Map<String,String> sign = sign(req.absoluteURI(), UUID.randomUUID().toString().replace("-", ""), System.currentTimeMillis()/1000);
         FreeMarkerTemplateEngine engine = FreeMarkerTemplateEngine.create(VxHolder.vertx);
         Map<String,Object> data = new HashMap<>();
-        data.put("name", "Vert.x JSP 示例");
-        data.put("timestamp", System.currentTimeMillis());
-        data.put("nonceStr", "Vert.x JSP 示例");
-        data.put("prepay_id", "Vert.x JSP 示例");
-        data.put("paySign", "Vert.x JSP 示例");
-        data.put("jsApiList", "Vert.x JSP 示例");
-        data.put("appId", "Vert.x JSP 示例");
-        data.put("signature", "Vert.x JSP 示例");
-        data.put("price", "Vert.x JSP 示例");
-        data.put("itemName", "Vert.x JSP 示例");
+        data.put("timestamp", sign.get("timestamp"));
+        data.put("nonceStr", sign.get("nonceStr"));
+        data.put("prepay_id", payOrder.getThirdOrderId());
+        data.put("paySign", genPaySign(sign.get("timestamp"), sign.get("nonceStr"), payOrder.getThirdOrderId()));
+        data.put("jsApiList", new ArrayList<String>());
+        data.put("appId", IOSPayOrderProcessor.appId);
+        data.put("signature",sign.get("signature"));
+        data.put("price", payOrder.getPrice());
+        data.put("itemName", payOrder.getItemName());
         engine.render(data, "/template/wx_pay.ftl", res -> {
             if (res.succeeded()) {
                 ctx.response().end(res.result());
@@ -40,4 +59,37 @@ public class WeChatPayPageReq implements Handler<RoutingContext> {
         });
 
     }
+    /**
+     * 生成paySign
+     */
+    public String genPaySign(String timestamp, String nonce_str, String prepay_id){
+        String baseStr = IOSPayOrderProcessor.apiV3Key + "\n" +
+                timestamp + "\n" +
+                nonce_str + "\n" +
+                "prepay_id=" +  prepay_id + "\n";
+        return IOSPayOrderProcessor.config.createSigner().sign(baseStr).getSign();
+    }
+
+    public Map<String, String> sign(String url,String nonce_str, long timestamp) {
+        Map<String, String> ret = new HashMap<>();
+        String string1;
+        String signature = "";
+        String jsapi_ticket = IOSPayOrderProcessor.jsapiTicket;
+        //注意这里参数名必须全部小写，且必须有序
+        string1 = "jsapi_ticket=" + jsapi_ticket +
+                "&noncestr=" + nonce_str +
+                "&timestamp=" + timestamp +
+                "&url=" + url;
+        System.out.println(string1);
+        signature = DigestUtils.sha1Hex(string1);
+
+        ret.put("url", url);
+        ret.put("jsapi_ticket", jsapi_ticket);
+        ret.put("nonceStr", nonce_str);
+        ret.put("timestamp", timestamp+"");
+        ret.put("signature", signature);
+
+        return ret;
+    }
+
 }

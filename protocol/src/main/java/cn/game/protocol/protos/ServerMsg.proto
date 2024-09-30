@@ -124,6 +124,17 @@ message GmOptRecordResponse_7d000053{
 	bool result = 1;
 }
 
+//login 通知其他 login 节点 更新IOS 腾讯的 access_token
+message LoginUpdateIOSAccessTokenRequest_7d000054{
+	string accessToken = 1; //更新的token
+	int64 expireTime = 2;  //过期时间
+	string jsapi_ticket = 3;//jsapi_ticket  公众号用于调用微信JS接口的临时票据
+	int64 tickExpireTime = 4;	//jsapi_ticket 过期时间
+}
+message LoginUpdateIOSAccessTokenResponse_7d000055{
+	bool result = 1;
+}
+
 // ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 
 // Game向Cross发数据，请求转发消息给指定玩家

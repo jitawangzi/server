@@ -55,9 +55,19 @@ public class LoginServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.LoginPlayerUidRequest_7d000018, this::uid);
 		putInvoker(PbProtocol.PaymentOrderCreateRequest_7d000020, this::paymentCreate);
 		putInvoker(PbProtocol.GmOptRecordRequest_7d000052, LoginServerHandler::addGmOptRecord);
+		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000054, LoginServerHandler::updateIOSAccessToken);
 
 		registerPayOrderProcessor(new AndroidPayOrderProcessor());
 		registerPayOrderProcessor(new IOSPayOrderProcessor());
+	}
+
+	private static void updateIOSAccessToken(NetClient client, Object o) {
+		ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000054 req = (ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000054) o;
+    	IOSPayOrderProcessor.updateAccessToken(req.getAccessToken(), req.getExpireTime());
+    	IOSPayOrderProcessor.updateJsapiTicket(req.getJsapiTicket(), req.getTickExpireTime());
+		ServerMsg.LoginUpdateIOSAccessTokenResponse_7d000055.Builder res = ServerMsg.LoginUpdateIOSAccessTokenResponse_7d000055.newBuilder() ;
+		res.setResult(true);
+		client.sendProtocol(res);
 	}
 
 	private void registerPayOrderProcessor(BasePayOrderProcessor payOrderProcessor) {

@@ -3,6 +3,8 @@ package cn.game.util;
 import java.io.IOException;
 import java.util.BitSet;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.MultiKeyMap;
 
@@ -75,15 +77,19 @@ public class JsonUtil {
 		}
 	}
 
-	public static <T> T parseObject(String value, Class<T> valueType) {
-		try {
-			return objectMapper.readValue(value, valueType);
-		} catch (JsonMappingException e) {
-			throw new RuntimeException("json 反序列化异常:" + value, e);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException("json 反序列化异常:" + value, e);
-		}
-	}
+  public static <T> T parseObject(String value, Class<T> valueType) {
+    try {
+      return objectMapper.readValue(value, valueType);
+    } catch (JsonMappingException e) {
+      throw new RuntimeException("json 反序列化异常:" + value, e);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException("json 反序列化异常:" + value, e);
+    }
+}
+public static JsonObject parserJson(String jsonStr) throws Exception {
+	Gson gson = new Gson();
+	return  gson.fromJson(jsonStr, JsonObject.class);
+}
 
 	// 自定义 BitSet 序列化器
 	public static class BitSetSerializer extends JsonSerializer<BitSet> {

@@ -39,6 +39,9 @@ public enum CacheType {
 	/** 排行榜 */
 	SET_RANK,
 
+	/**ios 玩家 待处理的订单id openId orderId **/
+	IOS_OPENID_ORDER_DATA,
+
 	;
 
 	public String key(Object... ks) {
