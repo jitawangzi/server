@@ -14,7 +14,7 @@ public class QuestListRequest_20000001Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.newBuilder() ; 
-		builder.setType(5);
+		builder.setType(1);
 		
 		
 		return builder.build() ; 

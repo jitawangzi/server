@@ -82,14 +82,14 @@
         <!-- 根日志记录器 -->
         <Root level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="Console"/>
-<!--             <AppenderRef ref="AsyncStdout"/> -->
+            <AppenderRef ref="AsyncStdout"/>
             <AppenderRef ref="AsyncError"/>
-<!--             <AppenderRef ref="AsyncWarn" additivity="false"/> -->
+            <AppenderRef ref="AsyncWarn" additivity="false"/>
         </Root>
-        <AsyncLogger name="Net" level="info" includeLocation="false" additivity="true">
+        <AsyncLogger name="Net" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="Net"/>
         </AsyncLogger>
-        <AsyncLogger name="SystemOut" level="info" includeLocation="false" additivity="false">
+        <AsyncLogger name="SystemOut" level="error" includeLocation="false" additivity="false">
             <AppenderRef ref="SystemOut"/>
         </AsyncLogger>
     </Loggers>

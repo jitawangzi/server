@@ -16,7 +16,7 @@ public class PlayerRedPointRequest_01000075Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.newBuilder() ; 
 		
-		builder.addType(InitialUI.DaoXinMoLi.ID);
+		builder.addType(InitialUI.YaoWangBiePao.ID);
 		
 		return builder.build() ; 
 	}

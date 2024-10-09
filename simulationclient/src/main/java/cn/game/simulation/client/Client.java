@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 
 import javax.net.ssl.SSLException;
 
-import cn.game.protocol.protobuf.BattleMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -44,6 +43,8 @@ import cn.game.protocol.protobuf.Account.AccountServerList;
 import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.protocol.protobuf.Account.ServerInfo;
+import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
+import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005;
@@ -177,6 +178,8 @@ public class Client extends AbstractNetClient {
 
 	public int guideType = 1;
 	public int guideStep = 1;
+
+	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
 
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
@@ -566,8 +569,11 @@ public class Client extends AbstractNetClient {
 			future.addListeners(f -> {
 				if (f.isSuccess()) {
 //					System.out.print("==============================消息发送成功==========================");
-					netLogger.info("opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]", playerId, name, msg.getClass().getSimpleName(),
-							TextFormat.shortDebugString(msg), seqSend);
+					if (!msg.getClass().getSimpleName().equals("PlayerHeartbeatRequest_01000005")) {
+						netLogger
+								.info("opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]", playerId, name,
+										msg.getClass().getSimpleName(), TextFormat.shortDebugString(msg), seqSend);
+					}
 					// 先不记录这个数据了
 //					sendingMessageMap.put(seqSend, msg);
 					sendCount.incrementAndGet();

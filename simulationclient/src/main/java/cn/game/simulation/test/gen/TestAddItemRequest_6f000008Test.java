@@ -16,7 +16,7 @@ public class TestAddItemRequest_6f000008Test extends ServerTest{
 //		builder.setId(Asset.playerExp.ID);
 //		builder.setCount(Integer.MAX_VALUE / 2);
 //		
-		builder.setId(200000);
+		builder.setId(205000);
 		builder.setCount(1);
 
 		return builder.build() ; 
