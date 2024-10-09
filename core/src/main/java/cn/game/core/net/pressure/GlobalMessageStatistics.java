@@ -159,8 +159,8 @@ public class GlobalMessageStatistics {
 
 				}
 			}
-			globalSendMessages.clear();
-			globalRecvMessages.clear();
+//			globalSendMessages.clear();
+//			globalRecvMessages.clear();
 
 		} catch (Exception e) {
 			e.printStackTrace();
