@@ -43,7 +43,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		List<RewardInfo> resources = PlayerHelper.addResources(player, config.Item, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;
-		GameLogger.activity(player, id, day);
+		GameLogger.activity(player, super.id, day);
 		return resources;
 	}
 

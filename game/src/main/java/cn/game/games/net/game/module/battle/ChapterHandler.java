@@ -13,7 +13,6 @@ import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -1387,8 +1386,8 @@ public class ChapterHandler extends BaseHandler {
 			chapterModule.setLastBattleRewards(rewardsList);
 		}
 		client.sendProtocol(resp);
-		Chapter chapter = chapterModule.getChapter(attackingDungeonId);
-		GameLogger.pvefight(player, attackingDungeonId, 1, win, req.getBattleTime(), chapter == null ? 1 : chapter.getFinishTimes());
+//		Chapter chapter = chapterModule.getChapter(attackingDungeonId);
+//		GameLogger.pvefight(player, attackingDungeonId, 1, win, req.getBattleTime(), chapter == null ? 1 : chapter.getFinishTimes());
 	}
 	
 	/*private void addExp(BattleFieldEndResponse_13000004.Builder resp, Player player, int lineupId, int apCost) {
