@@ -208,8 +208,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
         Map<String, Object> linkMap = new HashMap<>();
         linkMap.put("title", "点我充值");
         linkMap.put("description", "点我充值" + receipt.getPrice() / 100 + "元");
-        //TODO
-        linkMap.put("url", "WeChatPayPageReq 地址");
+        linkMap.put("url", Config.wechat_pay_page_url);
         //"https://ydxhxbjzmp.the3.changyou.com/release/Assets/PayImg/chongzhi-2.png";
         String thumb_url = "https://ydtj.the3.changyou.com/dev/wx_release_debug/webgl/Assets/PayImg/chongzhi-2.png";
         linkMap.put("thumb_url", thumb_url);

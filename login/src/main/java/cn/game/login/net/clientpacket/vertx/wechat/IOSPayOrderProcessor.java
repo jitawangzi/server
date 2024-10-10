@@ -218,7 +218,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
                         String url = String.format(tokenUrl, cn.game.util.Config.wechat_appid, cn.game.util.Config.wechat_secret);
                         String result = HttpUtil.get(url);
                         if (result != null){
-                            JsonObject jsonObject = JsonUtil.parserJson(result);
+                            JsonObject jsonObject = JsonUtil.parserJson(result);;
                             String accessToken = jsonObject.get("access_token").getAsString();
                             String expires_in = jsonObject.get("expires_in").getAsString();
                             updateAccessToken(accessToken,now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
@@ -235,7 +235,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
                             }
 
                              //通知其他节点
-                             VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000054.newBuilder()
+                             VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074.newBuilder()
                                      .setAccessToken(accessToken).setExpireTime(accessTokenExpiresTimer)
                                              .setJsapiTicket(jsapiTicket).setTickExpireTime(jsapiTicketExpiresTimer)
                                      .build());
@@ -271,7 +271,6 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         String sessionId = req.getSessionId();
         User user = UserHelper.getUserBySessionId(sessionId);
         long outTradeNo = IdUtil.genOrderId(playerId);
-
         // 创建一个订单
         PayOrder payOrder = new PayOrder() ;
         payOrder.setId(outTradeNo);
@@ -303,6 +302,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
           // 调用下单方法，得到应答
           try {
               PrepayResponse response = service.prepay(request);
+              log.info(String.format("下单成功，prepayId=%s" ,response.getPrepayId()));
               payOrder.setThirdOrderId(response.getPrepayId());
               promise.complete(payOrder);
 

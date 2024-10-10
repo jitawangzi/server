@@ -444,7 +444,12 @@ public class Player  {
 			if (Boolean.getBoolean("DisableRecharge")) {
 				return Future.succeededFuture(true);
 			}
-			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId())
+
+			String platform = "Android";
+			if (getAccount().getPlatform() == 1 || getAccount().getPlatform() == 3){
+				platform = "IOS";
+			}
+			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId()).setPlatform(platform)
 					.setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1] * 100).setItemId(PayManager.instance().get(cost[1]).Name).build();
 			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
 			requestRemoteServer.onSuccess(r -> {

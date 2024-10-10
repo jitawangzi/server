@@ -98,6 +98,11 @@
 			<artifactId>weixin-java-pay</artifactId>
 			<version>4.6.5.B</version>
 		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-web-templ-freemarker</artifactId>
+			<version>4.2.1</version>
+		</dependency>
 
 	</dependencies>
 

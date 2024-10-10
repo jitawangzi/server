@@ -108,6 +108,7 @@ public final class Config {
 	public static byte  wechat_midas_env;
 	public static String  wechat_midas_AppKey;
 	public static String wechat_pay_callback_url;
+	public static String wechat_pay_page_url;
 	// 消息统计的时间间隔，分钟
 	public static int messageStatisticsInterval;
 
@@ -170,6 +171,7 @@ public final class Config {
 			wechat_midas_env = Byte.parseByte(initialProp.getProperty("wechat_midas_env", ""));
 			wechat_midas_AppKey = initialProp.getProperty("wechat_midas_AppKey", "");
 			wechat_pay_callback_url = initialProp.getProperty("wechat_pay_callback_url", "");
+			wechat_pay_page_url = initialProp.getProperty("wechat_pay_page_url", "");
 
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
 

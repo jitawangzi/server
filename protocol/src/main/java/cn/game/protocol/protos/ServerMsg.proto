@@ -124,6 +124,61 @@ message GmOptRecordResponse_7d000053{
 	bool result = 1;
 }
 
+//GM 添加封禁账号请求
+message NotifyGmAddForbidAccountRequest_7d000054{
+	repeated int64 pids = 1;
+	string reason = 2;
+	int64 timer = 3;
+}
+//GM 添加封禁账号响应
+message NotifyGmAddForbidAccountResponse_7d000055{
+	bool result = 1;
+}
+
+//GM 解封账号请求
+message NotifyGmDelForbidAccountRequest_7d000056{
+	repeated int64 pids = 1;
+}
+//GM 解封账号响应
+message NotifyGmDelForbidAccountResponse_7d000057{
+	bool result = 1;
+}
+
+//GM  刷新全局gm邮件 请求
+message NotifyRefreshGlobalGmMailRequest_7d000058{
+}
+//GM  刷新全局gm邮件 响应
+message NotifyRefreshGlobalGmMailResponse_7d000059{
+	bool result = 1;
+}
+
+// GM  添加全局gm邮件 请求
+message NotifyAddGlobalGmMailRequest_7d000060{
+	int32 addGmMailId = 1;
+}
+// GM  添加全局gm邮件 响应
+message NotifyAddGlobalGmMailResponse_7d000061{
+	bool result = 1;
+}
+// GM  删除全局gm邮件 请求
+message NotifyDelGlobalGmMailRequest_7d000062{
+	int32 delGmMailId = 1;
+}
+// GM  删除全局gm邮件 响应
+message NotifyDelGlobalGmMailResponse_7d000063{
+	bool result = 1;
+}
+//login 通知其他 login 节点 更新IOS 腾讯的 access_token
+message LoginUpdateIOSAccessTokenRequest_7d000074{
+	string accessToken = 1; //更新的token
+	int64 expireTime = 2;  //过期时间
+	string jsapi_ticket = 3;//jsapi_ticket  公众号用于调用微信JS接口的临时票据
+	int64 tickExpireTime = 4;	//jsapi_ticket 过期时间
+}
+message LoginUpdateIOSAccessTokenResponse_7d000075{
+	bool result = 1;
+}
+
 // ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 
 // Game向Cross发数据，请求转发消息给指定玩家

@@ -9,9 +9,7 @@ import cn.game.login.net.clientpacket.vertx.VertxRegisterReq;
 import cn.game.login.net.clientpacket.vertx.VertxServerListReq;
 import cn.game.login.net.clientpacket.vertx.VertxThirdPartyConfirmReq;
 import cn.game.login.net.clientpacket.vertx.gm.*;
-import cn.game.login.net.clientpacket.vertx.wechat.WeChatPayPageReq;
-import cn.game.login.net.clientpacket.vertx.wechat.WechatShipPush;
-import cn.game.login.net.clientpacket.vertx.wechat.WechatTest;
+import cn.game.login.net.clientpacket.vertx.wechat.*;
 import cn.game.util.VxRedisUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
@@ -86,6 +84,8 @@ public class RestServer extends AbstractVerticle {
 
 		//微信IOS 支付跳转页面
     	router.route("/wx_pay").handler(new WeChatPayPageReq());
+    	router.route("/wx_customer").handler(new WeChatCustomerServiceReq());
+    	router.route("/wx_pay_callback").handler(new PayCallbackSuccessReq());
 	//		router.get().handler(this::handleGet2);
 		// 创建一个httpserver，监听端口，并交由路由器分发处理用户请求
 		vertx.createHttpServer().requestHandler(router::handle).listen(port);
