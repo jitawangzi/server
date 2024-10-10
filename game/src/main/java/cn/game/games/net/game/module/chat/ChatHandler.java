@@ -12,7 +12,6 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.push.PushService;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.util.KeywordFilter;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo;
@@ -106,7 +105,7 @@ public class ChatHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_null.getId());
 			return;
 		}
-		content = KeywordFilter.getInstance().filter(content);
+//		content = KeywordFilter.getInstance().filter(content);
 		ProtocolStringList atPlayerIdsList = req.getAtPlayerIdsList();
 		String targetPlayerId = req.getTargetPlayerId();
 
