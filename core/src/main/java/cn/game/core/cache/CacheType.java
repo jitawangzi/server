@@ -18,7 +18,8 @@ public enum CacheType {
 	
 	//其他
 	SERVER_LIST(), RECENT_SERVER_LIST(),
-
+	// 服务器id分布式锁，防止同时多个同样id的服务器运行
+	SERVER_LOCK,
 	/** 服务器序列号 */
 	SERVER_SEQUENCE,
 	/** 服务器序列号最大值 */
@@ -37,11 +38,7 @@ public enum CacheType {
 
 	/** 排行榜 */
 	SET_RANK,
- // 一些分布式锁定义
-	// 服务器id分布式锁，防止同时多个同样id的服务器运行
-	SERVER_LOCK,
-	/** SimplePlayer初始化锁 */
-	SERVER_SIMPLE_PLAYER_INIT,
+
 	;
 
 	public String key(Object... ks) {

@@ -2,8 +2,12 @@ package cn.game.login.net.handler;
 
 import cn.game.login.cache.entity.GmOpt;
 import cn.game.login.mapper.GmOptMapper;
+import cn.game.login.net.clientpacket.vertx.wechat.AndroidPayOrderProcessor;
+import cn.game.login.net.clientpacket.vertx.wechat.BasePayOrderProcessor;
+import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.*;
+import io.vertx.core.Future;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSONObject;
@@ -30,13 +34,16 @@ import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * 服务器之间的消息处理器
  */
 @Component
 public class LoginServerHandler extends BaseHandler {
-
+	Map<String,BasePayOrderProcessor> payOrderProcessorMap = new HashMap<>();
 	@Override
 	protected int getModule() {
 		return 0x7d;
@@ -48,7 +55,23 @@ public class LoginServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.LoginPlayerUidRequest_7d000018, this::uid);
 		putInvoker(PbProtocol.PaymentOrderCreateRequest_7d000020, this::paymentCreate);
 		putInvoker(PbProtocol.GmOptRecordRequest_7d000052, LoginServerHandler::addGmOptRecord);
+		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000054, LoginServerHandler::updateIOSAccessToken);
 
+		registerPayOrderProcessor(new AndroidPayOrderProcessor());
+		registerPayOrderProcessor(new IOSPayOrderProcessor());
+	}
+
+	private static void updateIOSAccessToken(NetClient client, Object o) {
+		ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000054 req = (ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000054) o;
+    	IOSPayOrderProcessor.updateAccessToken(req.getAccessToken(), req.getExpireTime());
+    	IOSPayOrderProcessor.updateJsapiTicket(req.getJsapiTicket(), req.getTickExpireTime());
+		ServerMsg.LoginUpdateIOSAccessTokenResponse_7d000055.Builder res = ServerMsg.LoginUpdateIOSAccessTokenResponse_7d000055.newBuilder() ;
+		res.setResult(true);
+		client.sendProtocol(res);
+	}
+
+	private void registerPayOrderProcessor(BasePayOrderProcessor payOrderProcessor) {
+		payOrderProcessorMap.put(payOrderProcessor.platform.getPlatform(),payOrderProcessor);
 	}
 
 	public static  void addGmOptRecord(NetClient client, Object o) {
@@ -74,9 +97,36 @@ public class LoginServerHandler extends BaseHandler {
 		PaymentOrderCreateRequest_7d000020 request = (PaymentOrderCreateRequest_7d000020) message;
 		PaymentOrderCreateResponse_7d000021.Builder resp = PaymentOrderCreateResponse_7d000021.newBuilder() ; 
 		long playerId = request.getPlayerId();
-		String sessionId = request.getSessionId(); 
-		
-		JSONObject signData = new JSONObject(); 
+		String sessionId = request.getSessionId();
+
+		String platform = request.getPlatform();
+
+		BasePayOrderProcessor payOrderProcessor = payOrderProcessorMap.get(platform);
+		if (payOrderProcessor == null){
+			log.error(String.format(" BasePayOrderProcessor payOrderProcessor not found platform:%s not support, req:%s", platform,request.toString()));
+			resp.setOrderId(0);
+			client.sendProtocol(resp.build());
+			return;
+		}
+
+		Future<PayOrder> payOrderFuture = payOrderProcessor.createPayOrder(request, resp);
+		payOrderFuture.onSuccess(payOrder -> {
+			if (payOrder != null){
+				resp.setOrderId(payOrder.getId());
+				PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+				mapper.insert(payOrder);
+			} else {
+				resp.setOrderId(0);
+				log.error(String.format(" BasePayOrderProcessor payOrderProcessor  create payOrder fail, req:%s", request.toString()));
+			}
+			client.sendProtocol(resp.build());
+		}).onFailure(e -> {
+			resp.setOrderId(0);
+			client.sendProtocol(resp.build());
+		});
+
+
+	/*	JSONObject signData = new JSONObject();
 		// game? 
 		signData.put("mode", "goods");
 		signData.put("offerId", Config.wechat_midas_offerId) ; 
@@ -125,7 +175,7 @@ public class LoginServerHandler extends BaseHandler {
 			client.sendProtocol(resp.build());
 
 //			client.sendProtocol(ExceptionUtils.getFullStackTrace(e),1) ; 
-		});
+		});*/
 	}
 	protected void uid(NetClient client, Object message) {
 		LoginPlayerUidRequest_7d000018 request = (LoginPlayerUidRequest_7d000018) message;

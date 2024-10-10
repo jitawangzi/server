@@ -8,11 +8,11 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -389,7 +389,36 @@ public class HttpUtil {
 			http.getConnectionManager().shutdown();
 		}
 	}
+	public static String buildUrl(final String baseUrl, final String[][] urlParams) {
+		return buildUrl(baseUrl, Arrays.stream(urlParams).map(param -> param[0] + "=" + param[1]).collect(Collectors.toList()));
+	}
 
+	public static String buildUrl(final String baseUrl, final Map<String, String> urlParams) {
+		return buildUrl(baseUrl, urlParams.entrySet().stream().map(param -> param.getKey() + "=" + param.getValue()).collect(Collectors.toList()));
+	}
+
+	public static String buildUrl(final String baseUrl, final org.apache.commons.lang3.tuple.Pair<String, String>[] urlParams) {
+		return buildUrl(baseUrl, Arrays.stream(urlParams).map(param -> param.getLeft() + "=" + param.getRight()).collect(Collectors.toList()));
+	}
+
+	public static String buildUrl(final String baseUrl, final Collection<Pair<String, String>> urlParams) {
+		return buildUrl(baseUrl, urlParams.stream().map(param -> param.getLeft() + "=" + param.getRight()).collect(Collectors.toList()));
+	}
+
+	private static String buildUrl(String baseUrl, List<String> keyValues) {
+		return appendUrlSeparator(baseUrl) + StringUtils.join(keyValues, '&');
+	}
+	private static String appendUrlSeparator(final String url) {
+		if (StringUtils.lastIndexOf(url, '?') < 0) {
+			return url + "?";
+		} else {
+			if (StringUtils.endsWith(url, "?") || StringUtils.endsWith(url, "&")) {
+				return url;
+			} else {
+				return url + "&";
+			}
+		}
+	}
 	public static void main(String[] args) throws Exception {
 		// downFile("http://login.qxsgz.com.cn:7998/dict_version.json",
 		// "d:/tmp/a.txt");

@@ -92,6 +92,21 @@ public class PayOrder implements Serializable {
 	 */
 	private String callback;
 	/**
+	 * 第三方订单号
+	 * @mbg.generated
+	 */
+	private String thirdOrderId;
+	/**
+	 * 价格 分
+	 * @mbg.generated
+	 */
+	private Long price;
+	/**
+	 * 物品名称
+	 * @mbg.generated
+	 */
+	private String itemName;
+	/**
 	 * @mbg.generated
 	 */
 	private static final long serialVersionUID = 1L;
@@ -346,5 +361,29 @@ public class PayOrder implements Serializable {
 	 */
 	public void setCallback(String callback) {
 		this.callback = callback;
+	}
+
+	public String getThirdOrderId() {
+		return thirdOrderId;
+	}
+
+	public void setThirdOrderId(String thirdOrderId) {
+		this.thirdOrderId = thirdOrderId;
+	}
+
+	public Long getPrice() {
+		return price;
+	}
+
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public void setPrice(Long price) {
+		this.price = price;
 	}
 }

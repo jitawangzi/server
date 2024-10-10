@@ -1,7 +1,9 @@
 package cn.game.login;
 
+import cn.game.core.task.TaskManager;
 import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
+import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +99,8 @@ public class LoginServer {
 		IpWhitelistManger.getInstance().init();
 		//公告管理初始化
         NoticeManger.getInstance().init();
+
+		IOSPayOrderProcessor.startRefreshAccessTokenTask();
 
 		initPlayerMaxId();
 		System.gc();

@@ -1,23 +1,29 @@
 package cn.game.login;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import cn.game.login.net.clientpacket.vertx.VertxRegisterReq;
 import cn.game.login.net.clientpacket.vertx.VertxServerListReq;
 import cn.game.login.net.clientpacket.vertx.VertxThirdPartyConfirmReq;
 import cn.game.login.net.clientpacket.vertx.gm.*;
+import cn.game.login.net.clientpacket.vertx.wechat.WeChatPayPageReq;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatShipPush;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatTest;
 import cn.game.util.VxRedisUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.common.template.TemplateEngine;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 
 public class RestServer extends AbstractVerticle {
 
@@ -61,6 +67,7 @@ public class RestServer extends AbstractVerticle {
 		allowedMethods.add(HttpMethod.PUT);
 		// 处理跨域
 		router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
+		// 配置JSP模板引擎
 
 		// 这里貌似只能这样写，不能加参数
 		router.route("/account/register").handler(new VertxRegisterReq());
@@ -76,6 +83,9 @@ public class RestServer extends AbstractVerticle {
     	router.route("/gm/delNotice").handler(new GmDelNoticeReq());
     	router.route("/gm/NoticeList").handler(new GmNoticeListReq());
     	router.route("/gm/optList").handler(new GmOptListReq());
+
+		//微信IOS 支付跳转页面
+    	router.route("/wx_pay").handler(new WeChatPayPageReq());
 	//		router.get().handler(this::handleGet2);
 		// 创建一个httpserver，监听端口，并交由路由器分发处理用户请求
 		vertx.createHttpServer().requestHandler(router::handle).listen(port);
