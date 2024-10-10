@@ -37,25 +37,30 @@ import org.apache.commons.lang3.StringUtils;
 public class IOSPayOrderProcessor extends BasePayOrderProcessor{
     public static final String SEND_URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send";
     /** 商户号 */
-    public static String merchantId = "190000****";
+    public static String merchantId = "1502514891";
+    public static String appId = "wx06cbd7d8a5cf0da3";
+    /** 小程序唯一凭证密钥，即 AppSecret，获取方式同 appid */
+    public static String AppSecret = "cd4c3da6d0d1489b3303dc81228ce834";
 
   /** 商户API私钥路径 */
-  public static String privateKeyPath = "C:\\opt\\data\\game\\config-cache\\apiclient_key.pem";
+  public static String privateKeyPath =  IOSPayOrderProcessor.class.getClassLoader().getResource("apiclient_key.pem").getPath();
+//      "D:\\Party\\server\\server\\login\\src\\main\\resources\\apiclient_key.pem";
 
     /** 商户证书序列号 */
-    public static String merchantSerialNumber = "5157F09EFDC096DE15EBE81A47057A72********";
+    public static String merchantSerialNumber = "580431AE81584BB7E7B0266180D5893C12F2B31A";
     /** 商户APIV3密钥 */
-    public static String apiV3Key = "...";
+    public static String apiV3Key = "WxNtZmE1dXth7Qxffpz9swHFrkio2bfh";
     public final static  Config config = new RSAAutoCertificateConfig.Builder()
                     .merchantId(merchantId)
                     .privateKeyFromPath(privateKeyPath)
                     .merchantSerialNumber(merchantSerialNumber)
                     .apiV3Key(apiV3Key)
                     .build();
-    public static String appId = "...";
+
     /**客服消息的TOKEN      ggsaPOLW05QpMfA1w5SotegFUQgpMb*/
     public static String CustomerToken = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
     public static String encodingAesKey = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
+
 
     // 使用自动更新平台证书的RSA配置
     // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
@@ -66,8 +71,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
     public static String jsapiTicket = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
     public static long jsapiTicketExpiresTimer = 0;
 
-    /** 小程序唯一凭证密钥，即 AppSecret，获取方式同 appid */
-    public static String AppSecret = "";
+
 
     public IOSPayOrderProcessor() {
         super(PayOrderPlatformEnum.IOS);
@@ -211,7 +215,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
                     if (now - lastRefreshTimer >= 5 * DateUtil.MINUTE_MILLIS) {
                         lastRefreshTimer = now;
                         //TODO 需要用分布式锁
-                        String url = String.format(tokenUrl, appId, AppSecret);
+                        String url = String.format(tokenUrl, cn.game.util.Config.wechat_appid, cn.game.util.Config.wechat_secret);
                         String result = HttpUtil.get(url);
                         if (result != null){
                             JsonObject jsonObject = JsonUtil.parserJson(result);
@@ -281,44 +285,20 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setThirdUid(user.getThirdUid());
     VxHolder.vertx.executeBlocking(
         r -> {
-       /*   CombineJsapiService combineJsapiService =
-              new CombineJsapiService.Builder().config(config).build();
-          PrepayRequest request = new PrepayRequest();
-          request.setCombineAppid(appId);
-          request.setCombineOutTradeNo(payOrder.getId() + "");
-          request.setCombineMchid(merchantId);
-          request.setNotifyUrl("https://notify_url");
-          ReqAmountInfo amount = new ReqAmountInfo();
-          amount.setTotalAmount(req.getGoodsPrice());
-          ReqSubOrderCompatible subOrderCompatible = new ReqSubOrderCompatible();
-          subOrderCompatible.setAmount(amount);
-          subOrderCompatible.setMchId(merchantId);
-          subOrderCompatible.setDetail("测试商品标题");
-          subOrderCompatible.setOutTradeNo(request.getCombineOutTradeNo());
-          subOrderCompatible.setAttach("测试商品描述");
-
-          request.addSubOrders(subOrderCompatible);
-            // 调用下单方法，得到应答
-            try {
-                PrepayResponse response = combineJsapiService.prepay(request);
-                payOrder.setThirdOrderId(response.getPrepayId());
-                promise.complete(payOrder);
-
-            }catch (Exception e){
-                e.printStackTrace();
-                promise.fail(e);
-            }*/
             // 构建service
           JsapiService service = new JsapiService.Builder().config(config).build();
           // request.setXxx(val)设置所需参数，具体参数可见Request定义
           PrepayRequest request = new PrepayRequest();
           Amount amount = new Amount();
           amount.setTotal(req.getGoodsPrice());
+          Payer p = new Payer();
+          p.setOpenid(user.getThirdUid());
+          request.setPayer(p);
           request.setAmount(amount);
-          request.setAppid(appId);
+          request.setAppid(cn.game.util.Config.wechat_appid);
           request.setMchid(merchantId);
-          request.setDescription("测试商品标题");
-          request.setNotifyUrl("https://notify_url");
+          request.setDescription(req.getItemId());
+          request.setNotifyUrl(cn.game.util.Config.wechat_pay_callback_url);
           request.setOutTradeNo(payOrder.getId()+"");
           // 调用下单方法，得到应答
           try {
@@ -337,4 +317,18 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         return promise.future();
     }
 
+    public static void main(String[] args){
+        IOSPayOrderProcessor payOrderProcessor = new IOSPayOrderProcessor();
+        ServerMsg.PaymentOrderCreateRequest_7d000020 req = ServerMsg.PaymentOrderCreateRequest_7d000020.newBuilder()
+                .setPlayerId(1231)
+                .setItemId(111+"")
+                .setGoodsPrice(100)
+                .setSessionId("111")
+                .setPlatform("")
+                .build();
+
+
+         ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp = ServerMsg.PaymentOrderCreateResponse_7d000021.newBuilder();
+        payOrderProcessor.createPayOrder(req,resp);
+    }
 }

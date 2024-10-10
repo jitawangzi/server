@@ -4,10 +4,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
-import cn.game.util.HttpUtil;
-import cn.game.util.JsonUtil;
-import cn.game.util.RedisUtil;
-import cn.game.util.SpringContextLoader;
+import cn.game.util.*;
 import com.google.gson.JsonObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
@@ -116,7 +113,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
             String msgSignature = request.getParam("msg_signature");
             String timestamp = request.getParam("timestamp");
             String nonceStr = request.getParam("nonce");
-            WXBizMsgCrypt pc = new WXBizMsgCrypt(IOSPayOrderProcessor.CustomerToken, IOSPayOrderProcessor.encodingAesKey, IOSPayOrderProcessor.appId);
+            WXBizMsgCrypt pc = new WXBizMsgCrypt(IOSPayOrderProcessor.CustomerToken, IOSPayOrderProcessor.encodingAesKey, Config.wechat_appid);
             log.info("customer_service,doPost," + replaceBlank(postBodyStr));
             //TODO 之后添加
             /*if (!WeChatManager.getInstance().accessTokenIsEffect()) {

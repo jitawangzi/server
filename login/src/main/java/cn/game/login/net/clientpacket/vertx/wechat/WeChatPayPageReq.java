@@ -4,6 +4,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.LoginServer;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
+import cn.game.util.Config;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
@@ -46,7 +47,7 @@ public class WeChatPayPageReq implements Handler<RoutingContext> {
         data.put("prepay_id", payOrder.getThirdOrderId());
         data.put("paySign", genPaySign(sign.get("timestamp"), sign.get("nonceStr"), payOrder.getThirdOrderId()));
         data.put("jsApiList", new ArrayList<String>());
-        data.put("appId", IOSPayOrderProcessor.appId);
+        data.put("appId", Config.wechat_appid);
         data.put("signature",sign.get("signature"));
         data.put("price", payOrder.getPrice());
         data.put("itemName", payOrder.getItemName());

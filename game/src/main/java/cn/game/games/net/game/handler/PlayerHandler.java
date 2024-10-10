@@ -171,7 +171,7 @@ public class PlayerHandler extends BaseHandler {
 			InitialUI func = InitialUI.get(type);
 			if (player.isFuncOpen(func)) {
 				switch (func) {
-				case DaoXinMoLi: {
+				case DaoXinLLiLian: {
 					ChapterModule chapterModule = player.getChapterModule();
 					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(DungeonTypeEnum.DaoHeart);
 					if (daoHeartBattle == null) {
