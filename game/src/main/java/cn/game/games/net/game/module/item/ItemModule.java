@@ -69,23 +69,17 @@ public class ItemModule extends AbstractItemModule<Item> {
 				int item = Rnd.randomOne(itemConfig.Para);
 				GoodsModule<? extends Item, ? extends Item> goodsModule = player.getGoodsModule(item);
 				Object object = goodsModule.add(item, 1, opType);
-				if (object instanceof List) {
-					ret.addAll((List) object);
-				} else {
-					ret.add(object);
-				}
+				ret.add(object);
 			}
 			return ret;
 		} else if (itemConfig.ItemType == 8) {
 			List<Object> ret = new ArrayList<>();
-			for (int randomId : itemConfig.Para) {
-				List<Goods> randomReward = PlayerHelper.randomReward(randomId);
-				for (Goods goods : randomReward) {
-					GoodsModule<? extends Item, ? extends Item> goodsModule = player.getGoodsModule(goods.getId());
-					Object object = goodsModule.add(goods.getId(), goods.getCount(), opType);
-					if (object instanceof List) {
-						ret.addAll((List) object);
-					} else {
+			for (int i = 0; i < count; i++) {
+				for (int randomId : itemConfig.Para) {
+					List<Goods> randomReward = PlayerHelper.randomReward(randomId);
+					for (Goods goods : randomReward) {
+						GoodsModule<? extends Item, ? extends Item> goodsModule = player.getGoodsModule(goods.getId());
+						Object object = goodsModule.add(goods.getId(), goods.getCount(), opType);
 						ret.add(object);
 					}
 				}

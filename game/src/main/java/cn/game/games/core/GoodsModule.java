@@ -7,8 +7,8 @@ import java.util.List;
 
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Item;
-import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.games.net.game.module.award.RewardHelper;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -37,7 +37,7 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	 * @param configId
 	 * @param count
 	 * @param opType
-	 * @return
+	 * @return  只能返回Item类型，或者List<Item>、List<List<Item>>类型。 
 	 */
 	public abstract Object add(int configId, int count, OpType opType);
 
@@ -53,6 +53,7 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 		return IdUtil.getId();
 	}
 
+	@Deprecated
 	public abstract RewardInfo toRewardInfo(E reward);
 
 	protected Item setInstance(T item, int configId, int count) {
@@ -72,30 +73,28 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 
 	public List<RewardInfo> addReward(int configId, int count, OpType opType) {
 		List<RewardInfo> list = new ArrayList<RewardInfo>(1);
-		long oldCount = getCount(configId);
+//		long oldCount = getCount(configId);
 		Object object = add(configId, count, opType);
 		if (object == null) {
 			return list;
 		}
 		if (object instanceof Item) {
-			if (object instanceof ItemNoStack) {
-				list.add(toRewardInfo((E) object));
-			} else {
-				if (object.getClass() == Item.class) {
-					// 一般是可重叠的道具
-					long newCount = getCount(configId);
-					Item itemAdd = new Item();
-					itemAdd.setConfigId(configId);
-					itemAdd.setCount(newCount - oldCount);
-					list.add(toRewardInfo((E) itemAdd));
-				} else {
-					list.add(toRewardInfo((E) object));
-				}
-			}
+			list.add(RewardHelper.toRewardInfo((Item) object));
 		} else if (object instanceof List) {
-			List<Item> items = (List<Item>) object;
-			for (Item item : items) {
-				list.add(toRewardInfo((E) item));
+			for (Object object2 : (List) object) {
+				if (object2 instanceof Item) {
+					list.add(RewardHelper.toRewardInfo((Item) object2));
+				} else if (object2 instanceof List) {
+					for (Object object3 : (List) object2) {
+						if (object3 instanceof Item) {
+							list.add(RewardHelper.toRewardInfo((Item) object3));
+						} else {
+							throw new RuntimeException("不支持的RewardInfo类型 : " + object3.getClass().getName());
+						}
+					}
+				} else {
+					throw new RuntimeException("不支持的RewardInfo类型 : " + object.getClass().getName());
+				}
 			}
 		}
 		return list;
