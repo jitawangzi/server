@@ -1377,7 +1377,7 @@ public class ChapterHandler extends BaseHandler {
 		}
 
 		if (req.getWin()) {
-			player.handleEvent(EventTypeEnum.ChapterWin, attackingDungeonId);
+			player.handleEvent(EventTypeEnum.ChapterWin, attackingDungeonId, attackingId);
 		}
 		chapterModule.setAttackingData(0, 0, 0, 0, 0, 0);
 		List<RewardInfo> rewardsList = result.getValue();

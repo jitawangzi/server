@@ -70,6 +70,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 
 	@Override
 	public void startUp() {
+		super.startUp();
 		rewardIdList.clear();
 		QuestModule questModule = player.getQuestModule();
 		getConfigList().forEach(activityMeiRiBaoLiConfig -> {

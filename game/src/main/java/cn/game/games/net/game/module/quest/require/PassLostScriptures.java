@@ -1,16 +1,17 @@
 package cn.game.games.net.game.module.quest.require;
 
-import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
+import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.PassLostScriptures)
-//TODO
 public class PassLostScriptures extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroBattle, EventTypeEnum.HeroLevelUp };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.ChapterWin };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -22,16 +23,13 @@ public class PassLostScriptures extends AbstractCondition {
 	}
 
 	@Override
-	public long getFinishCount() {
-		int count = 0;
-		int level = getParam(0);
-		return count;
-	}
-
-	@Override
 	public boolean checkEventParam(GameEvent event) {
-		Hero hero = event.getParameter(0);
-		int level = getParam(0);
-		return hero.getLevel() >= level;
+		int battleId = event.getParameter(0);
+		int subId = event.getParameter(1);
+		BattleConfig battleConfig = BattleManager.instance().getNullable(battleId);
+		if (battleConfig == null || battleConfig.BattleType != DungeonTypeEnum.ShiLuoZhenJing.getId()) {
+			return false;
+		}
+		return battleId == getRequireId() && subId == getParam();
 	}
 }

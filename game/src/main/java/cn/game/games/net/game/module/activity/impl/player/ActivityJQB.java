@@ -48,6 +48,7 @@ public class ActivityJQB extends PlayerActivityBase {
 
 	@Override
 	public void startUp() {
+		super.startUp();
 		curId = 0;
 		rewardIdList.clear();
 		refreshActivity(1);
