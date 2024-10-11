@@ -25,11 +25,11 @@ public class PassLostScriptures extends AbstractCondition {
 	@Override
 	public boolean checkEventParam(GameEvent event) {
 		int battleId = event.getParameter(0);
+		int subId = event.getParameter(1);
 		BattleConfig battleConfig = BattleManager.instance().getNullable(battleId);
 		if (battleConfig == null || battleConfig.BattleType != DungeonTypeEnum.ShiLuoZhenJing.getId()) {
 			return false;
 		}
-		int level = getParam();
-		return battleConfig.Level >= level;
+		return battleId == getRequireId() && subId == getParam();
 	}
 }
