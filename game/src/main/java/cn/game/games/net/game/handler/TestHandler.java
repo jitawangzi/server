@@ -32,6 +32,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
@@ -302,6 +303,7 @@ public class TestHandler extends BaseHandler {
 		TestRequest_6f000020 req = (TestRequest_6f000020) message;
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		player.getQuestModule().open(20101, false);
 //		List<RewardInfo> resources = PlayerHelper.addResources(player, 200032, 10);
 //		for (RewardInfo rewardInfo : resources) {
 //			System.out.println(rewardInfo);
@@ -313,7 +315,7 @@ public class TestHandler extends BaseHandler {
 //		payItem.setPayId(1);
 //		GameLogger.recharge(player, payItem);
 
-		GameClientManager.getInstance().logout((GameClient) client);
+//		GameClientManager.getInstance().logout((GameClient) client);
 //		SecretscriptModule module = player.getModule(SecretscriptModule.class);
 //		module.add(101, OpType.None);
 //		GameClientManager.getInstance().logout((GameClient)client); 
@@ -529,10 +531,16 @@ public class TestHandler extends BaseHandler {
 		List<RewardInfo> allRewards = new ArrayList<>();
 		List<RewardInfo> rewardItems = null;
 		List<RewardInfo> buildRewardInfo = null;
-//		Player player =  PlayerManager.getInstance().getPlayer(client.getPlayerId()) ;
 		int id = req.getId();
 		int count = req.getCount();
-		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (id == 10000001) {
+			DevelopModule developModule = player.getDevelopModule();
+			developModule.setHeavenlyDaoLevel(count);
+			client.sendProtocol(resp.build(), 0);
+			return;
+		}
 		int goodsType = ItemHelper.getGoodsType(id);
 		int error = 0;
 

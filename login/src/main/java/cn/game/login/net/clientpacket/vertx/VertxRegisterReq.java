@@ -73,7 +73,7 @@ public class VertxRegisterReq implements Handler<RoutingContext> {
 					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 				
 				}
-			}) ;
+			}, false);
 			
 		});
 	}
