@@ -36,6 +36,7 @@ public class ActivityLeiChong extends PlayerActivityBase {
 
 	@Override
 	public void startUp() {
+		super.startUp();
 		moreRechargeNum = 0;
 		refreshActivityData();
 	}

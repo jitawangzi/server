@@ -23,8 +23,6 @@ import cn.game.protocol.generated.manager.ActivityQingShenManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 @ActivityType(type = ActivityTypeEnum.ActivityQingShen)
 public class ActivityQingShen extends PlayerActivityBase {
@@ -89,6 +87,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 
 	@Override
 	public void startUp() {
+		super.startUp();
 		round = 0;
 		refreshActivity();
 	}
