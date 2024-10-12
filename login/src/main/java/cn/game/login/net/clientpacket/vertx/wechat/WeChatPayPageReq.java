@@ -49,7 +49,7 @@ public class WeChatPayPageReq implements Handler<RoutingContext> {
         data.put("jsApiList", new ArrayList<String>());
         data.put("appId", Config.wechat_appid);
         data.put("signature",sign.get("signature"));
-        data.put("price", payOrder.getPrice());
+        data.put("price", (double)payOrder.getPrice()/100);
         data.put("itemName", payOrder.getItemName());
         engine.render(data, "/template/wx_pay.ftl", res -> {
             if (res.succeeded()) {

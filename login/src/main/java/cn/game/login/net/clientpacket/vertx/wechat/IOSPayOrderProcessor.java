@@ -139,7 +139,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
             return;
         }
 
-        if (!payOrder.getThirdOrderId().equals(transaction.getTransactionId())){
+        if (payOrder.getId().longValue() != Long.parseLong(transaction.getOutTradeNo())){
             onFail(response,500,"payOrder.getThirdOrderId().equals(transaction.getTransactionId())");
             return;
         }
@@ -152,6 +152,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         String serverId = UserHelper.getServerId(user.getId());
         ServerMsg.PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = ServerMsg.PaymentOrderShipRequest_7d000022
                 .newBuilder().setPlayerId(user.getId()).setUid(payOrder.getId()).build();
+        log.info(String.format("充值成功 通知 game：%s ",paymentOrderShipRequest_7d000022.toString()));
         Future<Message<ServerMsg.PaymentOrderShipResponse_7d000023>> future;
         if (StringUtils.isEmpty(serverId)) {
             future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);
@@ -321,8 +322,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setEnv(cn.game.util.Config.wechat_midas_env);
         payOrder.setIsDeliver(false);
         payOrder.setPayState((byte) 1);
-//        payOrder.setPrice(req.getGoodsPrice());
-        payOrder.setPrice(1);
+        payOrder.setPrice(req.getGoodsPrice());
         payOrder.setPlayerId(playerId);
         payOrder.setUserId(playerId);
         payOrder.setThirdUid(user.getUsername());
