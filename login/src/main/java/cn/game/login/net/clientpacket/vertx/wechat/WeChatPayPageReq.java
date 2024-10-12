@@ -64,7 +64,7 @@ public class WeChatPayPageReq implements Handler<RoutingContext> {
      * 生成paySign
      */
     public String genPaySign(String timestamp, String nonce_str, String prepay_id){
-        String baseStr = IOSPayOrderProcessor.apiV3Key + "\n" +
+        String baseStr = Config.wechat_appid + "\n" +
                 timestamp + "\n" +
                 nonce_str + "\n" +
                 "prepay_id=" +  prepay_id + "\n";

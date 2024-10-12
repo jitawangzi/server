@@ -18,7 +18,6 @@
 <script type="text/javascript">
 
     function pay(){
-        alert("支付");
         // config信息验证后会执行 ready 方法，所有接口调用都必须在 config 接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在 ready 函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在 ready 函数中。
         wx.chooseWXPay({
             timestamp:'${timestamp}', // 支付签名时间戳，注意微信 jssdk 中的所有使用 timestamp 字段均为小写。但最新版的支付后台生成签名使用的 timeStamp 字段名需大写其中的 S 字符
@@ -27,12 +26,16 @@
             signType: 'RSA', // 微信支付V3的传入 RSA ,微信支付V2的传入格式与V2统一下单的签名格式保持一致
             paySign: '${paySign}', // 支付签名
             success: function (res) {
+                console.log(res);
                 wx.closeWindow();
+
             },
             fail: function (res){
+                console.log(res);
                 wx.closeWindow();
             },
             cancel: function (res){
+                console.log(res);
                 wx.closeWindow();
             }
         });
@@ -44,22 +47,23 @@
         timestamp: '${timestamp}', // 必填，生成签名的时间戳
         nonceStr: '${nonceStr}', // 必填，生成签名的随机串
         signature: '${signature}',// 必填，签名
-        jsApiList: ['${jsApiList}'] // 必填，需要使用的 JS 接口列表
+        jsApiList: ['chooseWXPay'] // 必填，需要使用的 JS 接口列表
     });
 
     wx.ready(pay)
 
     wx.error(function(res){
+        console.log(res);
         wx.closeWindow();
     });
 
 </script>
 
-<p>游戏： 魔剑奇兵</p>
+<p>游戏： 战姬少女</p>
 
 <p>金额： ${price} </p>
 
-<p>物品：  ${itemName} </p>
+<#--<p>物品：  ${itemName} </p>-->
 <p></p>
 <p></p>
 <p>自动拉起支付，如未自动跳转，请手动选择确认支付</p>

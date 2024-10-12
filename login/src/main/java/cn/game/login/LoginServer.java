@@ -100,7 +100,7 @@ public class LoginServer {
 		//公告管理初始化
         NoticeManger.getInstance().init();
 
-		IOSPayOrderProcessor.startRefreshAccessTokenTask();
+//		IOSPayOrderProcessor.startRefreshAccessTokenTask();
 
 		initPlayerMaxId();
 		System.gc();

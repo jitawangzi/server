@@ -98,9 +98,8 @@ public class LoginServerHandler extends BaseHandler {
 		PaymentOrderCreateResponse_7d000021.Builder resp = PaymentOrderCreateResponse_7d000021.newBuilder() ; 
 		long playerId = request.getPlayerId();
 		String sessionId = request.getSessionId();
-
 		String platform = request.getPlatform();
-
+		log.info(String.format("paymentCreate:%s", request.toString()));
 		BasePayOrderProcessor payOrderProcessor = payOrderProcessorMap.get(platform);
 		if (payOrderProcessor == null){
 			log.error(String.format(" BasePayOrderProcessor payOrderProcessor not found platform:%s not support, req:%s", platform,request.toString()));
@@ -112,6 +111,7 @@ public class LoginServerHandler extends BaseHandler {
 		Future<PayOrder> payOrderFuture = payOrderProcessor.createPayOrder(request, resp);
 		payOrderFuture.onSuccess(payOrder -> {
 			if (payOrder != null){
+				log.info("create new order:" +  payOrder.toString());
 				resp.setOrderId(payOrder.getId());
 				PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
 				mapper.insert(payOrder);
@@ -121,6 +121,7 @@ public class LoginServerHandler extends BaseHandler {
 			}
 			client.sendProtocol(resp.build());
 		}).onFailure(e -> {
+			e.printStackTrace();
 			resp.setOrderId(0);
 			client.sendProtocol(resp.build());
 		});

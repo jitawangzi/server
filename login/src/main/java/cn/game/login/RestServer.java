@@ -63,6 +63,7 @@ public class RestServer extends AbstractVerticle {
 		allowedMethods.add(HttpMethod.PATCH);
 		allowedMethods.add(HttpMethod.OPTIONS);
 		allowedMethods.add(HttpMethod.PUT);
+
 		// 处理跨域
 		router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
 		// 配置JSP模板引擎
@@ -88,6 +89,7 @@ public class RestServer extends AbstractVerticle {
     	router.route("/wx_pay_callback").handler(new PayCallbackSuccessReq());
 	//		router.get().handler(this::handleGet2);
 		// 创建一个httpserver，监听端口，并交由路由器分发处理用户请求
+
 		vertx.createHttpServer().requestHandler(router::handle).listen(port);
 	}
 

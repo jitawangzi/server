@@ -1,5 +1,6 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
+import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.PayOrder;
@@ -57,9 +58,9 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
                     .apiV3Key(apiV3Key)
                     .build();
 
-    /**客服消息的TOKEN      ggsaPOLW05QpMfA1w5SotegFUQgpMb*/
-    public static String CustomerToken = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
-    public static String encodingAesKey = "ggsaPOLW05QpMfA1w5SotegFUQgpMb";
+    /**客服消息的TOKEN      */
+    public static String CustomerToken = "qwerqwer";
+    public static String encodingAesKey = "kI8SLJSbyHfXad5KMPGpwDDV8BEYVjTSl7zGV12niFh";
 
 
     // 使用自动更新平台证书的RSA配置
@@ -203,63 +204,104 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
     }
 
     //TODO  需要用 定时器做
+    static String  tokenUrl =
+            "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s&force_refresh=false";
+    static String jsapiTicketUrl =
+            "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi";
     public static void startRefreshAccessTokenTask(){
-        new Thread(()->{
-            long lastRefreshTimer = 0;
-            String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
-            String  jsapiTicketUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi";
-            while (true) {
+
+        try {
+            refreshOnceAccessToken(System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new Thread(
+            () -> {
+              long lastRefreshTimer = 0;
+
+              while (true) {
                 try {
 
-                    long now = System.currentTimeMillis();
-                    if (now - lastRefreshTimer >= 5 * DateUtil.MINUTE_MILLIS) {
-                        lastRefreshTimer = now;
-                        //TODO 需要用分布式锁
-                        String url = String.format(tokenUrl, cn.game.util.Config.wechat_appid, cn.game.util.Config.wechat_secret);
-                        String result = HttpUtil.get(url);
-                        if (result != null){
-                            JsonObject jsonObject = JsonUtil.parserJson(result);;
-                            String accessToken = jsonObject.get("access_token").getAsString();
-                            String expires_in = jsonObject.get("expires_in").getAsString();
-                            updateAccessToken(accessToken,now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
-
-                            //获取 jsapi_ticket jsapi_ticket是公众号用于调用微信JS接口的临时票据
-                            url = String.format(jsapiTicketUrl, accessToken);
-                            result = HttpUtil.get(url);
-                            if (result != null){
-                                jsonObject = JsonUtil.parserJson(result);
-                                String jsapiTicket = jsonObject.get("ticket").getAsString();
-                                 expires_in = jsonObject.get("expires_in").getAsString();
-                                updateJsapiTicket(jsapiTicket,now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
-
-                            }
-
-                             //通知其他节点
-                             VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074.newBuilder()
-                                     .setAccessToken(accessToken).setExpireTime(accessTokenExpiresTimer)
-                                             .setJsapiTicket(jsapiTicket).setTickExpireTime(jsapiTicketExpiresTimer)
-                                     .build());
-                        }
-                    } else {
-                        Thread.sleep(1 * DateUtil.MINUTE_MILLIS);
-                    }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
-                    }
+                  long now = System.currentTimeMillis();
+                  long difTimer = 2 * DateUtil.MINUTE_MILLIS;
+                  if (now - lastRefreshTimer >= difTimer) {
+                    lastRefreshTimer = now;
+                      if (refreshOnceAccessToken( now)) continue;
+                  } else {
+                    Thread.sleep(1 * DateUtil.MINUTE_MILLIS);
+                  }
+                } catch (Exception e) {
+                  e.printStackTrace();
+                  throw new RuntimeException(e);
                 }
-            }
-        ).start();
+              }
+            })
+        .start();
 }
 
+    static boolean refreshOnceAccessToken(long now) throws Exception {
+        boolean lock =
+            LockUtil.tryLockNoWaitSync(
+                6, CacheType.IOS_WE_CHAT_ACCESS_TOKEN_REFRESH_LOCK.key());
+        if (!lock) {
+          log.info("startRefreshAccessTokenTask not lock");
+           return true;
+        }
+        String url =
+            String.format(
+                    tokenUrl,
+                cn.game.util.Config.wechat_appid,
+                cn.game.util.Config.wechat_secret);
+        log.info("startRefreshAccessTokenTask url:" + url);
+        String result = HttpUtil.get(url);
+        if (result != null) {
+          JsonObject jsonObject = JsonUtil.parserJson(result);
+          String accessToken = jsonObject.get("access_token").getAsString();
+          String expires_in = jsonObject.get("expires_in").getAsString();
+          updateAccessToken(
+              accessToken, now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
+
+          // 获取 jsapi_ticket jsapi_ticket是公众号用于调用微信JS接口的临时票据
+          url = String.format(jsapiTicketUrl, accessToken);
+          result = HttpUtil.get(url);
+          if (result != null) {
+            jsonObject = JsonUtil.parserJson(result);
+            String jsapiTicket = jsonObject.get("ticket").getAsString();
+            expires_in = jsonObject.get("expires_in").getAsString();
+            updateJsapiTicket(
+                jsapiTicket, now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
+          }
+
+          // 通知其他节点
+          VxHolder.broadcastRemoteServer(
+              ServerType.Login,
+              ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074.newBuilder()
+                  .setAccessToken(accessToken)
+                  .setExpireTime(accessTokenExpiresTimer)
+                  .setJsapiTicket(jsapiTicket)
+                  .setTickExpireTime(jsapiTicketExpiresTimer)
+                  .build());
+        }
+        return false;
+    }
+
     public static void updateJsapiTicket(String jsapiTicket, long l) {
+        if (IOSPayOrderProcessor.jsapiTicket.equals(jsapiTicket)){
+            return;
+        }
         IOSPayOrderProcessor.jsapiTicket = jsapiTicket;
         IOSPayOrderProcessor.jsapiTicketExpiresTimer = l;
+        log.info(String.format("更新jsapiTicket成功 jsapiTicket:%s, jsapiTicketExpiresTimer:%s", jsapiTicket,jsapiTicketExpiresTimer));
+
     }
 
     public static void updateAccessToken(String accessToken, long accessTokenExpiresTimer) {
+        if (IOSPayOrderProcessor.accessToken.equals(accessToken)){
+            return;
+        }
     IOSPayOrderProcessor.accessToken = accessToken;
     IOSPayOrderProcessor.accessTokenExpiresTimer = accessTokenExpiresTimer;
+    log.info(String.format("更新access_token成功 accessToken:%s, accessTokenExpiresTimer:%s", accessToken,accessTokenExpiresTimer));
 }
 
 
@@ -279,9 +321,11 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setEnv(cn.game.util.Config.wechat_midas_env);
         payOrder.setIsDeliver(false);
         payOrder.setPayState((byte) 1);
+//        payOrder.setPrice(req.getGoodsPrice());
+        payOrder.setPrice(1);
         payOrder.setPlayerId(playerId);
         payOrder.setUserId(playerId);
-        payOrder.setThirdUid(user.getThirdUid());
+        payOrder.setThirdUid(user.getUsername());
     VxHolder.vertx.executeBlocking(
         r -> {
             // 构建service
@@ -291,7 +335,8 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
           Amount amount = new Amount();
           amount.setTotal(req.getGoodsPrice());
           Payer p = new Payer();
-          p.setOpenid(user.getThirdUid());
+          p.setOpenid(user.getUsername());
+          
           request.setPayer(p);
           request.setAmount(amount);
           request.setAppid(cn.game.util.Config.wechat_appid);
@@ -308,6 +353,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
 
           }catch (Exception e){
               e.printStackTrace();
+              log.error(e.getMessage());
               promise.fail(e);
           }
         });

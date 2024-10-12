@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,12 +72,17 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
     public void handle(RoutingContext ctx) {
         HttpServerRequest request = ctx.request();
         HttpServerResponse response = ctx.response();
-        if (request.method() == HttpMethod.GET) {
-            doGet(request,response);
-        } else if (request.method() == HttpMethod.POST) {
-            doPost(request,response,ctx);
-        }
-        else {
+        try{
+            if (request.method() == HttpMethod.GET) {
+                doGet(request,response);
+            } else if (request.method() == HttpMethod.POST) {
+                doPost(request,response,ctx);
+            }
+            else {
+                response.end("error");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
             response.end("error");
         }
     }
@@ -137,18 +143,16 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
                 if (content == null || "".equals(content)) {
                     return;
                 }
-                io.vertx.core.json.JsonObject.mapFrom(content);
                 JsonObject jsonObject = JsonUtil.parserJson(content);
                 isOrder = jsonObject.has("orderId");
                 if (isOrder) {
                     long playerId = jsonObject.get("playerId").getAsLong();
                     String orderId = jsonObject.get("orderId").getAsString();
-                    //TODO
 //                    WeChatMsgManager.getInstance().addOrderMsg(openId, playerId, orderId);
                      saveOrderMsg(openId, orderId,playerId);
                 }
             }
-                if (msgTypeNode != null && !isOrder) {
+                if (msgTypeNode != null && !isOrder ) {
                     String msgType = msgTypeNode.getTextContent();
                     // 收到卡片消息 下发充值连接
                     if (msgType.equals("miniprogrampage")) {
@@ -170,6 +174,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
                 }
         }catch (Exception e){
             e.printStackTrace();
+            log.error(e.getMessage());
         } finally{
             log.info("customer_service,doPost,response: " + rst);
             response.end(rst);
@@ -206,26 +211,64 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
         paramMap.put("touser", openId);
         paramMap.put("msgtype", "link");
         Map<String, Object> linkMap = new HashMap<>();
-        linkMap.put("title", "点我充值");
-        linkMap.put("description", "点我充值" + receipt.getPrice() / 100 + "元");
-        linkMap.put("url", Config.wechat_pay_page_url);
-        //"https://ydxhxbjzmp.the3.changyou.com/release/Assets/PayImg/chongzhi-2.png";
+        paramMap.put("link",linkMap);
         String thumb_url = "https://ydtj.the3.changyou.com/dev/wx_release_debug/webgl/Assets/PayImg/chongzhi-2.png";
+
+//        linkMap.put("content","点我充值");
+        linkMap.put("title", "点我充值");
+        linkMap.put("description", "点我充值" + (double)receipt.getPrice() / 100 + "元");
+        linkMap.put("url", String.format(Config.wechat_pay_page_url+"?orderId=%s", receipt.getId()));
+        //"https://ydxhxbjzmp.the3.changyou.com/release/Assets/PayImg/chongzhi-2.png";
         linkMap.put("thumb_url", thumb_url);
         paramMap.put("link", linkMap);
-        Map<String, String> sendBuildMap = new HashMap<>();
-        sendBuildMap.put("access_token", IOSPayOrderProcessor.accessToken);
-        String sendUrl = HttpUtil.buildUrl(IOSPayOrderProcessor.SEND_URL, sendBuildMap);
-        try {
-            log.info("sendCustomer,sendUrl: " + sendUrl);
 
-            log.info("sendCustomer,paramMap: " +JsonUtil.toJsonString(paramMap));
-            String result = HttpUtil.postJSON(sendUrl,  JsonUtil.toJsonString(paramMap),"UTF-8",null);
-//            String result = HttpUtil.requestHttpWithPostReturnString(sendUrl, JsonUtil.map2Json(paramMap), CharsetEncoding.ENCODING_UTF_8);
-            log.info("sendCustomer,result: " + result);
-            if (JsonUtil.parserJson(result).get("errcode").getAsInt() != 0) {
-                log.error("发送客服消息失败！result:{}", result);
+      /*  {
+            "touser":"OPENID",
+                "msgtype":"news",
+                "news":{
+            "articles": [
+            {
+                "title":"Happy Day",
+                    "description":"Is Really A Happy Day",
+                    "url":"URL",
+                    "picurl":"PIC_URL"
             }
+         ]
+        }
+        }*/
+       /* List<Map<String,String>> articles = new ArrayList<>();
+        Map<String, String> articleMap = new HashMap<>();
+        articleMap.put("title","点我充值");
+        articleMap.put("url",Config.wechat_pay_page_url);
+        articleMap.put("picurl",thumb_url);
+        articleMap.put("description","点我充值" + receipt.getPrice() / 100 + "元");
+        articles.add(articleMap);
+        linkMap.put("articles",articles);*/
+
+        Map<String, String> sendBuildMap = new HashMap<>();
+        try {
+            IOSPayOrderProcessor.refreshOnceAccessToken(System.currentTimeMillis());
+            sendBuildMap.put("access_token", IOSPayOrderProcessor.accessToken);
+            String sendUrl = HttpUtil.buildUrl(IOSPayOrderProcessor.SEND_URL, sendBuildMap);
+            log.info("sendCustomer,sendUrl: " + sendUrl);
+            log.info("sendCustomer,paramMap: " +JsonUtil.toJsonStr(paramMap));
+//            String result = HttpUtil.postJSON2(sendUrl,  JsonUtil.toJsonStr(paramMap),null);
+             HttpHelp.postJSonUrl( sendUrl,   paramMap,
+                    result -> {
+                        try {
+                            log.info("sendCustomer,result: " + result);
+                            if (JsonUtil.parserJson(result).get("errcode").getAsInt() != 0) {
+                                log.error("发送客服消息失败！result:{}", result);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            log.error(e.getMessage());
+                        }
+                    },
+                     e -> log.error("TEXT---发送客服消息失败！result:{}",e )
+                    );
+//            String result = HttpUtil.requestHttpWithPostReturnString(sendUrl, JsonUtil.map2Json(paramMap), CharsetEncoding.ENCODING_UTF_8);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -247,11 +290,21 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
             try {
                 log.info("TEXT---sendCustomer,sendUrl: " + sendUrl);
                 log.info("TEXT---sendCustomer,paramMap: " + JsonUtil.toJsonString(paramMap));
-                String result = HttpUtil.postJSON(sendUrl,  JsonUtil.toJsonString(paramMap),"UTF-8",null);
-                log.info("TEXT---sendCustomer,result: " + result);
-                if (JsonUtil.parserJson(result).get("errcode").getAsInt() != 0) {
-                    log.error("TEXT---发送客服消息失败！result:{}", result);
-                }
+                HttpHelp.postJSonUrl(sendUrl,paramMap,
+                        result -> {
+                            log.info("TEXT---sendCustomer,result: " + result);
+                            try {
+                                if (JsonUtil.parserJson(result).get("errcode").getAsInt() != 0) {
+                                    log.error("TEXT---发送客服消息失败！result:{}", result);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                log.error(e.getMessage());
+                            }
+                        },
+                        e -> log.error("TEXT---发送客服消息失败！result:{}",e )
+                );
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

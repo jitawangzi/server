@@ -13,12 +13,14 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.geometry.spherical.twod.Vertex;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.message.BasicNameValuePair;
@@ -265,6 +267,48 @@ public class HttpUtil {
 			// POST请求
 			DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 			out.writeBytes(requestJSON);
+			out.flush();
+			out.close();
+
+			// 读取响应
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String lines;
+			StringBuffer sb = new StringBuffer("");
+			while ((lines = reader.readLine()) != null) {
+				lines = new String(lines.getBytes(), "utf-8");
+				sb.append(lines);
+			}
+
+			reader.close();
+
+			// 断开连接
+			connection.disconnect();
+
+			return sb.toString();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+
+	public static String postJSON2(String url, String requestJSON,  Map<String, String> headers) {
+
+		try {
+			// 创建连接
+			URL aurl = new URL(url);
+			HttpURLConnection connection = (HttpURLConnection) aurl.openConnection();
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setRequestMethod("POST");
+			connection.setUseCaches(false);
+			connection.setInstanceFollowRedirects(true);
+			connection.setRequestProperty("content-type", "application/json;charset=utf-8");
+			connection.setConnectTimeout(10000);
+			connection.setReadTimeout(10000);
+			connection.connect();
+			// POST请求
+			DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+			out.writeBytes(new StringEntity(requestJSON,"utf-8").toString());
 			out.flush();
 			out.close();
 

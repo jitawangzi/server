@@ -46,21 +46,6 @@ public interface GmOptMapper {
 	 */
 	int updateByPrimaryKey(GmOpt row);
 
-	/**
-	 * @mbg.generated
-	 */
-	int insertBatch(List<GmOpt> records);
-
-	/**
-	 * @mbg.generated
-	 */
-	int deleteBatch(List<GmOpt> records);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateBatch(@Param("recordList") List<GmOpt> recordList);
-
 	List<GmOpt> selectByPage(@Param("begin") int begin, @Param("end") int end);
 
 	int count();

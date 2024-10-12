@@ -76,6 +76,11 @@ public class JsonUtil {
 			throw new RuntimeException("json 序列化异常:" + value, e);
 		}
 	}
+	static final Gson gson = new Gson();
+
+	public static String toJsonStr(Object val){
+		return  gson.toJson(val).toString();
+	}
 
   public static <T> T parseObject(String value, Class<T> valueType) {
     try {
@@ -87,7 +92,6 @@ public class JsonUtil {
     }
 }
 public static JsonObject parserJson(String jsonStr) throws Exception {
-	Gson gson = new Gson();
 	return  gson.fromJson(jsonStr, JsonObject.class);
 }
 

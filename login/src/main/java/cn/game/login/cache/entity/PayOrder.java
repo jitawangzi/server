@@ -87,25 +87,25 @@ public class PayOrder implements Serializable {
 	 */
 	private String debugText;
 	/**
-	 * 玩家支付成功后的回调
-	 * @mbg.generated
-	 */
-	private String callback;
-	/**
 	 * 第三方订单号
 	 * @mbg.generated
 	 */
 	private String thirdOrderId;
 	/**
-	 * 价格 分
+	 * 价格分
 	 * @mbg.generated
 	 */
-	private Long price;
+	private Integer price;
 	/**
 	 * 物品名称
 	 * @mbg.generated
 	 */
 	private String itemName;
+	/**
+	 * 玩家支付成功后的回调
+	 * @mbg.generated
+	 */
+	private String callback;
 	/**
 	 * @mbg.generated
 	 */
@@ -352,6 +352,48 @@ public class PayOrder implements Serializable {
 	/**
 	 * @mbg.generated
 	 */
+	public String getThirdOrderId() {
+		return thirdOrderId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setThirdOrderId(String thirdOrderId) {
+		this.thirdOrderId = thirdOrderId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public Integer getPrice() {
+		return price;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setPrice(Integer price) {
+		this.price = price;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getItemName() {
+		return itemName;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
 	public String getCallback() {
 		return callback;
 	}
@@ -363,27 +405,30 @@ public class PayOrder implements Serializable {
 		this.callback = callback;
 	}
 
-	public String getThirdOrderId() {
-		return thirdOrderId;
-	}
-
-	public void setThirdOrderId(String thirdOrderId) {
-		this.thirdOrderId = thirdOrderId;
-	}
-
-	public Long getPrice() {
-		return price;
-	}
-
-	public String getItemName() {
-		return itemName;
-	}
-
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
-
-	public void setPrice(Long price) {
-		this.price = price;
+	@Override
+	public String toString() {
+		return "PayOrder{" +
+				"id=" + id +
+				", gameServerId='" + gameServerId + '\'' +
+				", channelCode='" + channelCode + '\'' +
+				", channelLabel='" + channelLabel + '\'' +
+				", userId=" + userId +
+				", playerId=" + playerId +
+				", thirdUid='" + thirdUid + '\'' +
+				", env=" + env +
+				", payState=" + payState +
+				", isDeliver=" + isDeliver +
+				", createDate='" + createDate + '\'' +
+				", createTime='" + createTime + '\'' +
+				", payDate='" + payDate + '\'' +
+				", payTime='" + payTime + '\'' +
+				", completeDate='" + completeDate + '\'' +
+				", completeTime='" + completeTime + '\'' +
+				", debugText='" + debugText + '\'' +
+				", thirdOrderId='" + thirdOrderId + '\'' +
+				", price=" + price +
+				", itemName='" + itemName + '\'' +
+				", callback='" + callback + '\'' +
+				'}';
 	}
 }

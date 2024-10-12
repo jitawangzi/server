@@ -64,6 +64,7 @@ public class AndroidPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setIsDeliver(false);
         payOrder.setPayState((byte) 1);
         payOrder.setPlayerId(playerId);
+        payOrder.setPrice(request.getGoodsPrice());
         payOrder.setUserId(playerId);
         payOrder.setThirdUid(user.getThirdUid());
 //		ObjUtil.setDefaultValue(payOrder);

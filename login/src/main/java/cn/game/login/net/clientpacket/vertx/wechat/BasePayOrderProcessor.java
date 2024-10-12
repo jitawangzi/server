@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @create: 2024-09-24 14:53 @Version 1.0
  */
 public abstract class BasePayOrderProcessor {
-    protected Logger log = LoggerFactory.getLogger(this.getClass());
+    protected static Logger log = LoggerFactory.getLogger(BasePayOrderProcessor.class);
 
     public final PayOrderPlatformEnum platform;
 

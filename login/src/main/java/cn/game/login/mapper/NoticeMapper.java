@@ -47,20 +47,5 @@ public interface NoticeMapper {
 	 */
 	int updateByPrimaryKey(Notice row);
 
-	/**
-	 * @mbg.generated
-	 */
-	int insertBatch(List<Notice> records);
-
-	/**
-	 * @mbg.generated
-	 */
-	int deleteBatch(List<Notice> records);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateBatch(@Param("recordList") List<Notice> recordList);
-
 	public List<Notice> selectAll();
 }

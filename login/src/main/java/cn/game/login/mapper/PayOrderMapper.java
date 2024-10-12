@@ -46,6 +46,7 @@ public interface PayOrderMapper {
 	 * @mbg.generated
 	 */
 	int updateByPrimaryKey(PayOrder row);
+
 	public List<PayOrder> selectOrderList(
 			@Param("playerId") Long playerId,
             @Param("status") Integer status,

@@ -40,6 +40,8 @@ public enum CacheType {
 	// 一些分布式锁定义
 	// 服务器id分布式锁，防止同时多个同样id的服务器运行
 	SERVER_LOCK,
+	/**ios 微信 access_token 请求分布式锁*/
+	IOS_WE_CHAT_ACCESS_TOKEN_REFRESH_LOCK,
 	/** SimplePlayer初始化锁 */
 	SERVER_SIMPLE_PLAYER_INIT,
 	IOS_OPENID_ORDER_DATA;

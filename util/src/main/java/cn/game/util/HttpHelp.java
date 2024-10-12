@@ -1,7 +1,10 @@
 package cn.game.util;
 
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import io.vertx.core.Future;
+import io.vertx.ext.web.client.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +38,35 @@ public class HttpHelp {
 			}
 		});
 
+	}
+
+	public static void postJSonUrl( String url, Object body,Consumer<String> successFun , Consumer<Exception> failFun) {
+
+		WebClient client = WebClient.create(vertx);
+		Future<HttpResponse<Buffer>> reslutFuture = client.postAbs(url)
+//				.putHeader("Content-Type", "charset=utf-8")
+				.sendJson(body);
+		try {
+      reslutFuture
+          .onSuccess(
+              result -> {
+                if (result != null) {
+                  successFun.accept(result.bodyAsString());
+                }
+              })
+          .onFailure(
+              err -> {
+                if (failFun != null) {
+                  failFun.accept(new RuntimeException(err));
+                }
+              });
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (failFun != null){
+				failFun.accept(e);
+			}
+			throw e;
+		}
 	}
 
 	public static void sendForm() {

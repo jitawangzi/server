@@ -457,7 +457,7 @@ public class Player  {
 				if (body.getOrderId() == 0) {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.getDefaultInstance(), ErrorMsgEnum.payment_order_create_fail.getId());
 				} else {
-					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder().setOrder(body.getOrder()).build());
+					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder().setOrder(body.getOrder()).setOrderId(body.getOrderId()+"").build());
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
 					PayItem payItem = new PayItem();
 					payItem.setOrderId(body.getOrderId());

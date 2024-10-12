@@ -42,20 +42,5 @@ public interface IpWhitelistMapper {
 	 */
 	int updateByPrimaryKey(IpWhitelist row);
 
-	/**
-	 * @mbg.generated
-	 */
-	int insertBatch(List<IpWhitelist> records);
-
-	/**
-	 * @mbg.generated
-	 */
-	int deleteBatch(List<IpWhitelist> records);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateBatch(@Param("recordList") List<IpWhitelist> recordList);
-
 	public List<IpWhitelist> selectAll();
 }
