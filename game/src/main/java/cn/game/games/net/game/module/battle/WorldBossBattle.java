@@ -46,6 +46,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 		maxDamageToday = 0;
 		battleTimes = 0;
 		buyTimes = 0;
+		rewardId = 0;
 	}
 
 	@Override
