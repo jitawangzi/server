@@ -582,8 +582,10 @@ public class Client extends AbstractNetClient {
 					resendCount = 0;
 
 				} else {
-					logger.error("消息发送失败：   opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]", playerId, name, msg.getClass().getSimpleName(),
-							TextFormat.shortDebugString(msg), seqSend);
+					logger
+							.error("消息发送失败：   opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]cause[{}]", playerId, name,
+									msg.getClass().getSimpleName(),
+							TextFormat.shortDebugString(msg), seqSend, f.cause());
 				}
 			});
 			return future;

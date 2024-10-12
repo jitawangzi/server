@@ -108,7 +108,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 //							resp.setPassport_session_id(sessionId + "");
 //							resp.setUserId(user.getId());
 //							response.end(resp.toJSON().toString());
-					});
+					}, false);
 				}
 			});
 			break;
@@ -170,7 +170,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 								Buffer data = Buffer.buffer(byteArray);
 								response.end(data);
 								return;
-							}).onFailure(e -> {
+							}, false).onFailure(e -> {
 								log.error("", e);
 								HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("可能是账号创建失败")
 										.setErrorCode(AccountErrorCode.ACCOUNT_CREATE_FAIL).build();
@@ -262,7 +262,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 									.setUserId(user.getId() + "").build().toByteArray()));
 							return;
 
-						});
+						}, false);
 
 					}
 				});
