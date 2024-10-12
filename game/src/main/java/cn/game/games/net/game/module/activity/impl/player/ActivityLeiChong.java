@@ -49,7 +49,7 @@ public class ActivityLeiChong extends PlayerActivityBase {
 		moreRechargeNum = Math.max(0,moreRechargeNum - maxRechargeNum);
 		getActivityLeiChongConfigList().forEach(activityLeiChongConfig -> {
 					//删除旧任务
-					questModule.remove(activityLeiChongConfig.ID);
+			questModule.remove(activityLeiChongConfig.taskID);
 					//注册新任务
 					Quest newTask = questModule.open(activityLeiChongConfig.taskID,true);
 
