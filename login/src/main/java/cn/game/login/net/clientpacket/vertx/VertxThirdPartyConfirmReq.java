@@ -121,13 +121,13 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 				String errorcodestring = r.getString("errcode");
 				int errcode = Integer.parseInt(errorcodestring == null ? "0" : errorcodestring);
 				String errmsg = r.getString("errmsg");
-				log.debug("wechat login errcode", errcode) ; 
-				log.debug("wechat login errmsg", errmsg) ; 
+				log.debug("wechat login errcode {} ", errcode);
+				log.debug("wechat login errmsg {}", errmsg);
 				if (errcode == 0) { // 微信账号校验成功，执行后续本地账号逻辑
 					String openid = r.getString("openid");
 //					resp.setExt(openid);
 					String session_key = r.getString("session_key");
-					String unionid = r.getString("unionid");
+					String unionid = r.getString("unionid") == null ? openid : r.getString("unionid");
 					String username = openid;
 					RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 					future.onComplete((v, throwable) -> {
