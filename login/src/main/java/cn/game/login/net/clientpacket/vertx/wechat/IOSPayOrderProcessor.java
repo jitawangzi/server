@@ -309,7 +309,8 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
     @Override
     public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 req, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {
         Promise<PayOrder> promise = Promise.promise();
-
+//        int goodPrice = req.getGoodsPrice();
+        final  int goodPrice = 100;
         long playerId = req.getPlayerId();
         String sessionId = req.getSessionId();
         User user = UserHelper.getUserBySessionId(sessionId);
@@ -322,7 +323,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setEnv(cn.game.util.Config.wechat_midas_env);
         payOrder.setIsDeliver(false);
         payOrder.setPayState((byte) 1);
-        payOrder.setPrice(req.getGoodsPrice());
+        payOrder.setPrice(goodPrice);
         payOrder.setPlayerId(playerId);
         payOrder.setUserId(playerId);
         payOrder.setThirdUid(user.getUsername());
@@ -333,7 +334,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
           // request.setXxx(val)设置所需参数，具体参数可见Request定义
           PrepayRequest request = new PrepayRequest();
           Amount amount = new Amount();
-          amount.setTotal(req.getGoodsPrice());
+          amount.setTotal(goodPrice);
           Payer p = new Payer();
           p.setOpenid(user.getUsername());
           
