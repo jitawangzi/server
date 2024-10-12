@@ -13,6 +13,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.AssetRestoreConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.AssetRestoreManager;
 import cn.game.protocol.manual.OpType;
@@ -151,7 +152,9 @@ public class MoneyRecoverModule extends BasePlayerModule {
 //				max += assetRestoreConfig.maxValue;
 //			}
 //		}
-		max += player.getWelfareValue(WelfareTypeEnum.PlayerEnergy);
+		if (id == Asset.playerEnergy.ID) {
+			max += player.getWelfareValue(WelfareTypeEnum.PlayerEnergy);
+		}
 		max *= assetRestoreConfig.maxMultiple;
 		return max;
 	}
