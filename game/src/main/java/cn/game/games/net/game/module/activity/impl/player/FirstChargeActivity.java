@@ -71,6 +71,12 @@ public class FirstChargeActivity extends PlayerActivityBase {
 			if (nowDay - singleCharge.getDay() >= firstChargeConfig.Order - 1) {
 				status = 1;
 			}
+			if (firstChargeConfig.Preconditions > 0) {
+				FirstChargeConfig preConfig = FirstChargeManager.instance().get(firstChargeConfig.Preconditions);
+				if (!chargeMap.containsKey(preConfig.ActivityiD)) {
+					status = 0;
+				}
+			}
 		}
 		return status;
 	}
