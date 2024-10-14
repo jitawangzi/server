@@ -247,7 +247,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
 
         Map<String, String> sendBuildMap = new HashMap<>();
         try {
-            IOSPayOrderProcessor.refreshOnceAccessToken(System.currentTimeMillis());
+//            IOSPayOrderProcessor.refreshOnceAccessToken(System.currentTimeMillis());
             sendBuildMap.put("access_token", IOSPayOrderProcessor.accessToken);
             String sendUrl = HttpUtil.buildUrl(IOSPayOrderProcessor.SEND_URL, sendBuildMap);
             log.info("sendCustomer,sendUrl: " + sendUrl);

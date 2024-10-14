@@ -204,13 +204,15 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         response.end();
     }
 
-    //TODO  需要用 定时器做
     static String  tokenUrl =
             "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s&force_refresh=false";
     static String jsapiTicketUrl =
             "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi";
     public static void startRefreshAccessTokenTask(){
-
+        //正式环境的才会更新accessToken
+        if (!cn.game.util.Config.wechat_pay_page_url.endsWith("https://dhpartylogin.changyou.com/wx_pay")){
+            return;
+        }
         try {
             refreshOnceAccessToken(System.currentTimeMillis());
         } catch (Exception e) {
