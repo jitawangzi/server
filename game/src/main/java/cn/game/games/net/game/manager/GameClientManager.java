@@ -161,9 +161,10 @@ public class GameClientManager {
 
 		for (GameClient gc : idletimeouts) {
 			try {
+				log.warn("{}start logout by timeout", gc);
 				gc.getContext().runOnContext(r -> {
 					logout(gc);
-					log.info("{}logout by timeout", gc);
+//					log.info("{}logout by timeout", gc);
 				});
 
 			} catch (Exception e) {

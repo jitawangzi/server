@@ -943,6 +943,9 @@ public class PlayerHandler extends BaseHandler {
 		logout.onComplete(r -> {
 			client.sendProtocol(PlayerLogoutResponse_01000004.getDefaultInstance());
 		});
+		if (ServerContext.getInstance().getRunMode().isPressure()) {
+			log.warn(" client PlayerLogoutRequest_01000003 : " + client.getPlayerId());
+		}
 	}
 
 	public Future<PlayerData> createPlayer(Account account, NetClient client, long uid, String name, boolean isMan, int head, boolean isPc,
