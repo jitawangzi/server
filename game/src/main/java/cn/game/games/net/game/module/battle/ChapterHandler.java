@@ -512,7 +512,7 @@ public class ChapterHandler extends BaseHandler {
 		List<RewardInfo> rewardsList = new ArrayList<>(); 
 		
 		BattleConfig battleConfig = BattleManager.instance().getNullable(maxSweepBattle);
-		while (battleConfig != null) {
+		if (battleConfig != null) {
 			if (battleConfig.ClearGameReward > 0 && !rewardBattleIds.contains(battleConfig.ID)) {
 				List<RewardInfo> list = PlayerHelper
 						.addReward(player, battleConfig.ClearGameReward, player.getWelfareValue(WelfareTypeEnum.MengYanQuickBattleAward),
@@ -520,8 +520,17 @@ public class ChapterHandler extends BaseHandler {
 				rewardsList.addAll(list); 
 				rewardBattleIds.add(battleConfig.ID); 
 			}
-			battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
 		}
+//		while (battleConfig != null) {
+//			if (battleConfig.ClearGameReward > 0 && !rewardBattleIds.contains(battleConfig.ID)) {
+//				List<RewardInfo> list = PlayerHelper
+//						.addReward(player, battleConfig.ClearGameReward, player.getWelfareValue(WelfareTypeEnum.MengYanQuickBattleAward),
+//								OpType.MengYanMiJingFirst);
+//				rewardsList.addAll(list); 
+//				rewardBattleIds.add(battleConfig.ID); 
+//			}
+//			battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+//		}
 		resp.addAllRewards(rewardsList);
 		client.sendProtocol(resp);
 	}
