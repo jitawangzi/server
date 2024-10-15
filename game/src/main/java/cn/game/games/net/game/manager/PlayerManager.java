@@ -785,6 +785,7 @@ public class PlayerManager {
 	 * @param playerId
 	 * @return
 	 */
+	@Deprecated
 	public List<SimplePlayer> searchPlayers(long playerId) {
 
 		List<SimplePlayer> ret = new ArrayList<>();
@@ -869,7 +870,11 @@ public class PlayerManager {
 			Collections.sort(ret, (a, b) -> {
 				return (int) (b.offlineTime - a.offlineTime);
 			});
-			return ret.subList(0, 8);
+			List<SimplePlayer> subList = ret.subList(0, 8);
+			// 设置本次刷新的记录
+			List<Long> idList = subList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			friendModule.setLastRefreshPlayers(idList);
+			return subList;
 		});
 	}
 
