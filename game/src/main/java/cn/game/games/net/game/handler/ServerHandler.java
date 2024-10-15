@@ -3,8 +3,6 @@ package cn.game.games.net.game.handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.game.games.net.game.helper.MailHelper;
-import cn.game.protocol.protobuf.ServerMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +21,7 @@ import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.remote.DataGameServerInterface;
 import cn.game.games.net.game.db.DbTask;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -30,6 +29,7 @@ import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ServerMsg.CrossGameForwardPush_7d000003;
 import cn.game.protocol.protobuf.ServerMsg.DbTaskProto;
 import cn.game.protocol.protobuf.ServerMsg.GameCrossBroadcast_7d000008;
@@ -165,14 +165,26 @@ public class ServerHandler extends BaseHandler {
 			client.sendProtocol(resp.build());
 		} else {
 			PlayerHelper.addTask(playerId, r -> {
+				PayItem payItem = player.getPlayerModule().getPayItems(uid);
+				if (payItem != null && payItem.isFinish()) {
+					resp.setSuccess(false);
+					client.sendProtocol(resp.build());
+					return;
+				}
 				// 这里只是通知支付后的后续操作，不过一般也不会失败
 				player.getPlayerModule().execPayCallback(uid);
-				resp.setSuccess(true);
-				client.sendProtocol(resp.build());
-				PayItem payItem = player.getPlayerModule().getPayItems(uid);
-				player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
 				payItem.finish();
+				player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
 				GameLogger.recharge(player, payItem);
+				// 支付后先实时保存数据到数据库
+				PlayerHelper.saveClientCache(playerId).onSuccess(rr -> {
+					resp.setSuccess(true);
+					client.sendProtocol(resp.build());
+				}).onFailure(t -> {
+					player.fail(t);
+					resp.setSuccess(false);
+					client.sendProtocol(resp.build());
+				});
 			});
 		}
 	}

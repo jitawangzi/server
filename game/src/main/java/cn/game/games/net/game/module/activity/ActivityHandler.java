@@ -190,15 +190,16 @@ public class ActivityHandler extends BaseHandler {
     ActivityFirstChargeResponse_11000008.Builder resp =
         ActivityFirstChargeResponse_11000008.newBuilder();
     Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+	int id = req.getId();
     FirstChargeActivity activityBase =
-        (FirstChargeActivity) player.getActivityModule().get(req.getId());
+			(FirstChargeActivity) player.getActivityModule().get(id);
 
     if (activityBase == null) {
       client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
       return;
     }
 
-    client.sendProtocol(activityBase.buildActivityShowInfo());
+	client.sendProtocol(activityBase.buildActivityShowInfo(id));
   }
 
   private void singleChargeBuy(NetClient client, Object message) {
