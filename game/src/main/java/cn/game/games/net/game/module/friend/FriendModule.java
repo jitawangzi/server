@@ -163,6 +163,8 @@ public class FriendModule extends BasePlayerModule {
 						}*/
 			
 			FriendHelper.removeMyApplication(playerId, id);
+			FriendHelper.removeApplication(playerId, id);
+
 			return addFriend(id, delApplication.getApplyPlayerServer(), Friend.FRIEND);
 		}
 		return false;
