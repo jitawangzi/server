@@ -1,6 +1,5 @@
 package cn.game.simulation.client;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -118,7 +117,7 @@ public class ServerTestContext {
 							continue;
 						}
 						client.heartbeat();
-						Thread.sleep(10);
+						Thread.sleep(1);
 					}
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {
@@ -161,7 +160,7 @@ public class ServerTestContext {
 					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
 					System.err.println("shutdown hook execution completed");
 
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -225,47 +224,51 @@ public class ServerTestContext {
 		Iterator<Client> iterator = clients.iterator();
 		while (run) {
 
-			if (botRunTimeMax > 0 && System.currentTimeMillis() - startTime > botRunTimeMax * 60 * 1000) {
-				// 到运行时间上限，该停止了
-				System.err.println(" time to stop");
-				System.exit(0);
-			}
-			if (System.currentTimeMillis() - lastStatisticsTime > messageStatisticsInterval * 60 * 1000) {
-				Thread.sleep(5000); // 先等待一下回复消息
-				GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
-				lastStatisticsTime = System.currentTimeMillis();
-			}
-			if (System.currentTimeMillis() - lastSendTime < sendInterval) {
-				Thread.sleep(1);
-				continue;
-			}
-			if (iterator.hasNext()) {
-				Client client = iterator.next();
-				if (!client.getInit()) {
+			try {
+				if (botRunTimeMax > 0 && System.currentTimeMillis() - startTime > botRunTimeMax * 60 * 1000) {
+					// 到运行时间上限，该停止了
+					System.err.println(" time to stop");
+					System.exit(0);
+				}
+				if (System.currentTimeMillis() - lastStatisticsTime > messageStatisticsInterval * 60 * 1000) {
+					Thread.sleep(5000); // 先等待一下回复消息
+					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
+					lastStatisticsTime = System.currentTimeMillis();
+				}
+				if (System.currentTimeMillis() - lastSendTime < sendInterval) {
+					Thread.sleep(1);
 					continue;
 				}
-				if (!client.isLastMessageReturn()) {
-					client.resendLastMessage();
-					continue;
+				if (iterator.hasNext()) {
+					Client client = iterator.next();
+					if (!client.getInit()) {
+						continue;
+					}
+					if (!client.isLastMessageReturn()) {
+						client.resendLastMessage();
+						continue;
+					}
+					if (client.getLastSendMessageTime() > 0
+							&& System.currentTimeMillis() - client.getLastSendMessageTime() < botSendInterval) {
+						continue;
+					}
+					String randomMessage = CSVMessagesReader.randomMessage();
+					ServerTest serverTest = beansMap.get(randomMessage.toLowerCase());
+					if (serverTest == null) {
+						throw new IllegalArgumentException("test message not found : " + randomMessage);
+					}
+					Message message = serverTest.getMessage(client);
+					if (message != null) {
+						client.sendProtocol(message);
+						lastSendTime = System.currentTimeMillis();
+					}
+				} else {
+					iterator = clients.iterator();
 				}
-				if (client.getLastSendMessageTime() > 0 && System.currentTimeMillis() - client.getLastSendMessageTime() < botSendInterval) {
-					continue;
-				}
-				String randomMessage = CSVMessagesReader.randomMessage();
-				ServerTest serverTest = beansMap.get(randomMessage.toLowerCase());
-				if (serverTest == null) {
-					throw new IllegalArgumentException("test message not found : " + randomMessage);
-				}
-				Message message = serverTest.getMessage(client);
-				if (message != null) {
-					client.sendProtocol(message);
-					lastSendTime = System.currentTimeMillis();
-				}
-			} else {
-				iterator = clients.iterator();
+			} catch (Throwable e) {
+				e.printStackTrace();
 			}
 		}
-		
 		System.exit(0);
 	}
 

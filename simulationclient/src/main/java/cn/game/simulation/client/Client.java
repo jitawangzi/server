@@ -56,6 +56,7 @@ import cn.game.util.HttpUtil;
 import cn.game.util.IdWorker;
 import cn.game.util.Rnd;
 import cn.game.util.SpringContextLoader;
+import cn.game.util.log.CommonLogger;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
@@ -229,7 +230,7 @@ public class Client extends AbstractNetClient {
 		if (defaultChannel == "official") {
 			jsonObject.put("token", this.name + " " + this.pwd);
 		} else {
-			jsonObject.put("token", "a3ff21c81b41bf12f2f260f1c4f052f322191ff11ff3fe2fef31f2113ffc");
+			jsonObject.put("token", "0b1FJSll2terle4UMhll23wScx3FJSlu");
 		}
 		jsonObject.put("gameId", 0 + "");
 		String resp = HttpUtil.postJSON(url + "/account/third_party_confirm", jsonObject.toJSONString(), "UTF-8", null);
@@ -649,10 +650,15 @@ public class Client extends AbstractNetClient {
 	}
 
 	public void heartbeat() {
+		long currentTime = System.currentTimeMillis();
 		if (getInit() == false) {
+			long waitLoginTime = currentTime - startTime;
+			if (waitLoginTime > 60000) {
+				CommonLogger.error(this.name + " 登录Game初始化超时： " + waitLoginTime / 1000 + " s");
+				return;
+			}
 			return;
 		}
-		long currentTime = System.currentTimeMillis();
 		if (currentTime - lastHeartbeatTime > 15000) {
 			sendWsPack(PlayerHeartbeatRequest_01000005.getDefaultInstance());
 			lastHeartbeatTime = currentTime;

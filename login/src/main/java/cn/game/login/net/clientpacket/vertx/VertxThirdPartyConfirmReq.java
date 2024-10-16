@@ -125,7 +125,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 				log.debug("wechat login errmsg {}", errmsg);
 				if (errcode == 0) { // 微信账号校验成功，执行后续本地账号逻辑
 					String openid = r.getString("openid");
-//					resp.setExt(openid);
+					resp.setExt(openid);
 					String session_key = r.getString("session_key");
 					String unionid = r.getString("unionid") == null ? openid : r.getString("unionid");
 					String username = openid;

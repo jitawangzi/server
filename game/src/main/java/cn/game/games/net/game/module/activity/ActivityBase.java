@@ -3,26 +3,27 @@ package cn.game.games.net.game.module.activity;
 import java.util.Date;
 import java.util.List;
 
-import cn.game.games.net.game.helper.QuestHelper;
-import cn.game.games.net.game.module.quest.Quest;
-import cn.game.games.net.game.module.quest.QuestModule;
-import cn.game.protocol.manual.ErrorMsgEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.google.protobuf.Message;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventHandler;
+import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
+import cn.game.games.net.game.module.quest.Quest;
+import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import io.vertx.core.Future;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 基本的活动，这个活动可能是全体活动，也可能是玩家的活动
@@ -47,6 +48,10 @@ public abstract class ActivityBase implements EventHandler {
 	protected long startTime;
 
 	public abstract Message buildActivityShowInfo();
+
+	public Message buildActivityShowInfo(int id) {
+		return null;
+	}
 
 	public ActivityInfo buildActivityInfo() {
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();

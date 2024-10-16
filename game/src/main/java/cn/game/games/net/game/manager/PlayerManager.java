@@ -785,6 +785,7 @@ public class PlayerManager {
 	 * @param playerId
 	 * @return
 	 */
+	@Deprecated
 	public List<SimplePlayer> searchPlayers(long playerId) {
 
 		List<SimplePlayer> ret = new ArrayList<>();
@@ -841,9 +842,6 @@ public class PlayerManager {
 	}
 
 	public Future<List<SimplePlayer>> searchPlayersAsync(Player player) {
-
-		List<SimplePlayer> ret = new ArrayList<>();
-
 		FriendModule friendModule = player.getModule(FriendModule.class);
 		Set<Long> excludeIds = friendModule.excludeIds();
 		CompletionStage<Map<String, Long>> stage = PlayerNameManager
@@ -854,8 +852,13 @@ public class PlayerManager {
 		Future<List<SimplePlayer>> playersFuture = future
 				.map(r -> r.values().stream().map(String::valueOf).toArray(String[]::new))
 				.compose(r -> RedisLocalCache.getInstance().multiGetAsync(CacheType.PLAYER_SIMPLE, r));
-		playersFuture.map(r -> {
+		return playersFuture.map(r -> {
+			List<SimplePlayer> ret = new ArrayList<>();
+
 			for (SimplePlayer simplePlayer : r) {
+				if (simplePlayer == null) {
+					continue;
+				}
 				if (excludeIds.contains(simplePlayer.getId())) {
 					continue;
 				}
@@ -867,9 +870,12 @@ public class PlayerManager {
 			Collections.sort(ret, (a, b) -> {
 				return (int) (b.offlineTime - a.offlineTime);
 			});
-			return ret.subList(0, 5);
+			List<SimplePlayer> subList = ret.subList(0, 8);
+			// 设置本次刷新的记录
+			List<Long> idList = subList.stream().map(p -> p.getId()).collect(Collectors.toList());
+			friendModule.setLastRefreshPlayers(idList);
+			return subList;
 		});
-		return playersFuture;
 	}
 
 	private List<SimplePlayer> randomPlayer(List<SimplePlayer> list, int count, List<SimplePlayer> exclude) {

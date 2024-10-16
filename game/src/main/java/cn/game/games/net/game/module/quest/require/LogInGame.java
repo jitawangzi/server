@@ -15,7 +15,9 @@ public class LogInGame extends AbstractCondition {
 		return events;
 	}
 	public LogInGame() {
-		this.finishCount = 1;
+		if (this.finishCount == 0) {
+			this.finishCount = 1;
+		}
 	}
 	@Override
 	public boolean checkEventParam(GameEvent event) {

@@ -68,7 +68,7 @@ public class FriendHelper {
 
 	/**
 	 * 成为好友后，如果我也申请对方为好友了，删除这个申请
-	 * @param playerId
+	 * @param playerId  我
 	 * @param applyPlayerId 我申请的目标好友id
 	 * @return
 	 */

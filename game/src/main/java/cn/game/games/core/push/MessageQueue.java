@@ -28,6 +28,7 @@ public class MessageQueue {
 	private ScheduledExecutorService scheduler;
 	private ExecutorService immediateExecutor;
 	private final int BUFFER_TIME_MS = 1000;
+	private final int BATCH_COMBINE_SIZE = 100000;
 	private final int BATCH_SIZE = 10;
 	private BiConsumer<Long, Message> sendToPlayer;
 
@@ -57,7 +58,7 @@ public class MessageQueue {
 		for (Map.Entry<List<String>, Queue<PushMessage>> entry : delayedBuffer.entrySet()) {
 			List<String> tags = entry.getKey();
 			Queue<PushMessage> messages = entry.getValue();
-			if (messages.size() < BATCH_SIZE) {
+			if (messages.size() < BATCH_COMBINE_SIZE) {
 				PushMessage pushMessage = null;
 				while ((pushMessage = messages.poll()) != null) {
 					broadcastMessage(tags, pushMessage.protoMessage);

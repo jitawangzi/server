@@ -35,13 +35,19 @@ public class FirstChargeActivity extends PlayerActivityBase {
 	private Map<Integer, SingleCharge> chargeMap = new HashMap<Integer, SingleCharge>();
 
 	@Override
-	public Message buildActivityShowInfo() {
+	public Message buildActivityShowInfo(int id) {
 		ActivityFirstChargeResponse_11000008.Builder resp = ActivityFirstChargeResponse_11000008.newBuilder();
 		int nowDay = DateUtil.getDay();
 		Collection<FirstChargeConfig> list = FirstChargeManager.instance().list();
 		for (FirstChargeConfig firstChargeConfig : list) {
 			SingleCharge singleCharge = chargeMap.get(firstChargeConfig.ActivityiD);
 			if (singleCharge == null) {
+				continue;
+			}
+			if (firstChargeConfig.ActivityiDIndex != id) {
+				continue;
+			}
+			if (firstChargeConfig.Price.length == 0) {
 				continue;
 			}
 			cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo.Builder builder = FirstChargeActivityInfo.newBuilder();
@@ -71,6 +77,12 @@ public class FirstChargeActivity extends PlayerActivityBase {
 			if (nowDay - singleCharge.getDay() >= firstChargeConfig.Order - 1) {
 				status = 1;
 			}
+			if (firstChargeConfig.Preconditions > 0) {
+				FirstChargeConfig preConfig = FirstChargeManager.instance().get(firstChargeConfig.Preconditions);
+				if (!chargeMap.containsKey(preConfig.ActivityiD)) {
+					status = 0;
+				}
+			}
 		}
 		return status;
 	}
@@ -84,7 +96,9 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		}
 		if (firstChargeConfig.Preconditions > 0) {
 			FirstChargeConfig preConfig = FirstChargeManager.instance().get(firstChargeConfig.Preconditions);
-			if (!chargeMap.containsKey(preConfig.ActivityiD)) {
+
+			FirstChargeActivity otherActivity = (FirstChargeActivity) player.getActivityModule().get(preConfig.ActivityiDIndex);
+			if (otherActivity == null || !otherActivity.getChargeMap().containsKey(preConfig.ActivityiD)) {
 				return false;
 			}
 		}
@@ -132,6 +146,17 @@ public class FirstChargeActivity extends PlayerActivityBase {
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
+
+	@Override
+	public Message buildActivityShowInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Map<Integer, SingleCharge> getChargeMap() {
+		return chargeMap;
+	}
+
 }
 
 class SingleCharge {
@@ -155,5 +180,6 @@ class SingleCharge {
 	public void setSelectedIndex(List<Integer> selectedIndex) {
 		this.selectedIndex = selectedIndex;
 	}
+
 
 }
