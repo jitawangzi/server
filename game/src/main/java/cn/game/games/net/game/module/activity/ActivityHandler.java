@@ -314,13 +314,16 @@ public class ActivityHandler extends BaseHandler {
       return;
     }
     if (activityBase instanceof ActivityJQB) {
-      List<Future<List<RewardInfo>>> allFuture = new ArrayList<>();
+      List<CompletableFuture<List<RewardInfo>>> allFuture = new ArrayList<>();
       req.getTaskIdsList()
           .forEach(
               taskId -> {
                 Future<List<RewardInfo>> rewardFuture = activityBase.asyncReceive(taskId);
-                allFuture.add(rewardFuture);
-                rewardFuture.onSuccess(res::addAllRewards);
+                var completableFuture =  rewardFuture.toCompletionStage().toCompletableFuture();
+                allFuture.add(completableFuture);
+                completableFuture.whenComplete((v, t) -> {
+                      res.addAllRewards(v);
+                });
               });
       CompletableFuture.allOf(allFuture.toArray(new CompletableFuture[0]))
           .thenAccept(

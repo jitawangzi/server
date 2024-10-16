@@ -54,6 +54,11 @@ public class ActivityJQB extends PlayerActivityBase {
 		refreshActivity(1);
 	}
 
+	@Override
+	public void checkRefreshActivity() {
+		refreshActivity(curId);
+	}
+
 	private void refreshActivity(int maxLen) {
 		if (maxLen < 0 ) return;
 		curId ++;
@@ -61,7 +66,7 @@ public class ActivityJQB extends PlayerActivityBase {
 		if (jqbConfig == null){
 			curId = 0;
 			rewardIdList.clear();
-			refreshActivity(--maxLen);
+			refreshActivity(1);
 			return;
 		}
 		QuestModule questModule = player.getQuestModule();
