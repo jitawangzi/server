@@ -96,7 +96,9 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		}
 		if (firstChargeConfig.Preconditions > 0) {
 			FirstChargeConfig preConfig = FirstChargeManager.instance().get(firstChargeConfig.Preconditions);
-			if (!chargeMap.containsKey(preConfig.ActivityiD)) {
+
+			FirstChargeActivity otherActivity = (FirstChargeActivity) player.getActivityModule().get(preConfig.ActivityiDIndex);
+			if (otherActivity == null || !otherActivity.getChargeMap().containsKey(preConfig.ActivityiD)) {
 				return false;
 			}
 		}
@@ -150,6 +152,11 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Map<Integer, SingleCharge> getChargeMap() {
+		return chargeMap;
+	}
+
 }
 
 class SingleCharge {
@@ -173,5 +180,6 @@ class SingleCharge {
 	public void setSelectedIndex(List<Integer> selectedIndex) {
 		this.selectedIndex = selectedIndex;
 	}
+
 
 }
