@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.protocol.generated.config.AttrEffectConfigConfig;
@@ -246,8 +247,63 @@ public class BattleHelper {
 		return heroAttrMap;
 	}
 
-	public static int calcHeroCombat(Hero hero) {
-		return (int) calcCombat(makeHeroAttr(hero));
+	public static IntMapWrapper makeHeroAttr2(Hero hero) {
+		IntMapWrapper heroAttrMap = new IntMapWrapper();
+
+		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+		// 初始属性
+		AttributeVlalueConfig attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.InitialAttributeId);
+
+		Set<Entry<Integer, Integer>> entrySet = attributeVlalueConfig.AttributeVlalue.entrySet();
+		for (Entry<Integer, Integer> entry : entrySet) {
+			Integer attrId = entry.getKey();
+			Integer value = entry.getValue();
+			if (value == 0) {
+				continue;
+			}
+			AttrEffectConfigConfig attrEffectConfigConfig = AttrEffectConfigManager.instance().get(attrId);
+			if (attrEffectConfigConfig.CombatType == 1) {
+				heroAttrMap.add(attrId, value);
+			} else if (attrEffectConfigConfig.CombatType == 2 || attrEffectConfigConfig.CombatType == 3) {
+				// 成长属性
+				attributeVlalueConfig = AttributeVlalueManager.instance().get(heroConfig.GrowthAttributeId);
+				Integer growValue = attributeVlalueConfig.AttributeVlalue.get(attrId);
+				if (growValue == null) {
+					growValue = 0;
+				}
+				// 突破属性
+				HeroBreakConfig uiInitialQualityStar = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
+				attributeVlalueConfig = AttributeVlalueManager.instance().get(uiInitialQualityStar.BreakOneTime);
+//				heroAttrMap.addAll(attributeVlalueConfig.AttributeVlalue);
+				Integer breakValue = attributeVlalueConfig.AttributeVlalue.get(attrId + 1);
+				if (breakValue == null) {
+					breakValue = 0;
+				}
+				if (attrEffectConfigConfig.CombatType == 3) {
+					Integer breakValueYuanSu = attributeVlalueConfig.AttributeVlalue.get(162);
+					if (breakValueYuanSu != null) {
+						breakValue += breakValueYuanSu;
+					}
+				}
+				// 最终值=（初始值1+（lv-1）*成长值1）*（1+突破值2）
+				heroAttrMap.add(attrId, (int) ((value + (hero.getLevel() - 1) * growValue) * (1 + breakValue / 10000f)));
+			}
+		}
+		return heroAttrMap;
 	}
 
+	public static int calcHeroCombat(Hero hero) {
+		return (int) calcCombat(makeHeroAttr2(hero));
+	}
+
+	public static float calcHeroCombat(IntMapWrapper attrMap) {
+		float ret = 0;
+		Iterator<Entry<Integer, Integer>> it = attrMap.getMap().entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<java.lang.Integer, java.lang.Integer> entry = (Map.Entry<java.lang.Integer, java.lang.Integer>) it.next();
+			AttrEffectConfigConfig attrEffectConfigConfig = AttrEffectConfigManager.instance().get(entry.getKey());
+			ret += attrEffectConfigConfig.CombatEffectiveness / 10000f * entry.getValue();
+		}
+		return ret;
+	}
 }

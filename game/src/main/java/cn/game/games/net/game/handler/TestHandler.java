@@ -3,6 +3,7 @@ package cn.game.games.net.game.handler;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,18 +22,24 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
+import cn.game.games.net.game.module.develop.attr.AttrCalcType;
+import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
@@ -63,6 +70,7 @@ import cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029;
 import cn.game.protocol.protobuf.TestMsg.TestRequest_6f000020;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
+import cn.game.util.IntMapWrapper;
 import cn.game.util.ObjUtil;
 import cn.game.util.SpringContextLoader;
 
@@ -303,7 +311,8 @@ public class TestHandler extends BaseHandler {
 		TestRequest_6f000020 req = (TestRequest_6f000020) message;
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		player.getQuestModule().open(20101, false);
+
+		testcalcPower(player);
 //		List<RewardInfo> resources = PlayerHelper.addResources(player, 200032, 10);
 //		for (RewardInfo rewardInfo : resources) {
 //			System.out.println(rewardInfo);
@@ -378,9 +387,9 @@ public class TestHandler extends BaseHandler {
 //
 //		PlayerHelper.addResources(client.getPlayerId(), ResourceEnum.Gold.getId(), 500);
 //		IGCVersion_1046930.GetServerVersion(r -> {
-//			System.err.println("执行成功" + r);
+//			System.out.println("执行成功" + r);
 //		}, e -> {
-//			System.err.println("执行失败");
+//			System.out.println("执行失败");
 //			e.printStackTrace();
 //		});
 //		ExploreOp exploreOp = player.getModule(ExploreOp.class);
@@ -435,6 +444,82 @@ public class TestHandler extends BaseHandler {
 //			});
 	}
 
+	private void testcalcPower(Player player) {
+		// 神将属性
+		Map<Long, IntMapWrapper> heroAttrs = new HashMap<Long, IntMapWrapper>();
+		HeroModule heroModule = player.getHeroModule();
+		AttrModule attrModule = player.getAttrModule();
+		Collection<Hero> list = heroModule.getBattleHeroList();
+
+		System.out.println();
+		System.out.println();
+
+		PlayerAttrCalc playerAttrCalc = attrModule.getPlayerAttrCalcMap().get(AttrCalcType.HeroBook);
+		playerAttrCalc.reCalcAttr();
+		System.out.println("图鉴增加的属性： " + playerAttrCalc.getAttrMap().getMap());
+		System.out.println("图鉴增加的战力： " + BattleHelper.calcCombat(playerAttrCalc.getAttrMap()));
+
+		System.out.println();
+		System.out.println();
+
+		int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
+		System.out.println("天道修为等级： " + heavenlyDaoLevel);
+		playerAttrCalc = attrModule.getPlayerAttrCalcMap().get(AttrCalcType.HeavenlyDao);
+		playerAttrCalc.reCalcAttr();
+		System.out.println("天道修为增加的属性： " + playerAttrCalc.getAttrMap().getMap());
+		System.out.println("天道修为增加的战力： " + BattleHelper.calcCombat(playerAttrCalc.getAttrMap()));
+
+		System.out.println();
+		System.out.println();
+
+		playerAttrCalc = attrModule.getPlayerAttrCalcMap().get(AttrCalcType.Potential);
+		playerAttrCalc.reCalcAttr();
+		System.out.println("修炼增加的属性： " + playerAttrCalc.getAttrMap().getMap());
+		System.out.println("修炼增加的战力： " + BattleHelper.calcCombat(playerAttrCalc.getAttrMap()));
+
+		System.out.println();
+		System.out.println();
+
+		playerAttrCalc = attrModule.getPlayerAttrCalcMap().get(AttrCalcType.QiankunMirror);
+		playerAttrCalc.reCalcAttr();
+		System.out.println("乾坤镜增加的属性： " + playerAttrCalc.getAttrMap().getMap());
+		System.out.println("乾坤镜增加的战力： " + BattleHelper.calcCombat(playerAttrCalc.getAttrMap()));
+
+		System.out.println();
+		System.out.println();
+
+		playerAttrCalc = attrModule.getPlayerAttrCalcMap().get(AttrCalcType.FairyFriend);
+		playerAttrCalc.reCalcAttr();
+		System.out.println("仙友增加的属性： " + playerAttrCalc.getAttrMap().getMap());
+		System.out.println("仙友加增的战力： " + BattleHelper.calcCombat(playerAttrCalc.getAttrMap()));
+
+		System.out.println();
+		System.out.println();
+
+		playerAttrCalc = attrModule.getPlayerAttrCalcMap().get(AttrCalcType.Secretscript);
+		playerAttrCalc.reCalcAttr();
+		System.out.println("神通增加的属性： " + playerAttrCalc.getAttrMap().getMap());
+		System.out.println("神通增加的战力： " + BattleHelper.calcCombat(playerAttrCalc.getAttrMap()));
+
+		System.out.println();
+		System.out.println();
+
+		for (Hero hero : list) {
+//			if (hero.getLevel() == 1) {
+//				continue; ti
+//			}
+			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+			System.out.println("hero id : " + hero.getConfigId() + " name : " + heroConfig.name + " level : " + hero.getLevel());
+			System.out.println("基本属性： " + BattleHelper.makeHeroAttr2(hero));
+			IntMapWrapper heroAttr = BattleHelper.makeHeroAttr2(hero);
+			System.out.println("单英雄不算外围战力： " + BattleHelper.calcCombat(heroAttr));
+			System.out.println();
+
+			heroAttrs.put(hero.getId(), heroAttr);
+		}
+		System.out.println();
+	}
+
 	private void drawTest(Player player) {
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(300001);
 
@@ -463,7 +548,7 @@ public class TestHandler extends BaseHandler {
 			}
 		}
 
-		System.err.println(MessageFormat.format("循环{0}次，每次{1}连抽结果,紫:{2} 金:{3} 红:{4}", lp, count, r4, r5, r6));
+		System.out.println(MessageFormat.format("循环{0}次，每次{1}连抽结果,紫:{2} 金:{3} 红:{4}", lp, count, r4, r5, r6));
 	}
 
 	private void drawTest2(Player player) {
@@ -499,7 +584,7 @@ public class TestHandler extends BaseHandler {
 			}
 		}
 
-		System.err.println(MessageFormat.format("{0}次抽卡结果,蓝:{1} 紫:{2} 金:{3} 红:{4}", lp * count, r3, r4, r5, r6));
+		System.out.println(MessageFormat.format("{0}次抽卡结果,蓝:{1} 紫:{2} 金:{3} 红:{4}", lp * count, r3, r4, r5, r6));
 	}
 
 	/*
@@ -681,7 +766,7 @@ public class TestHandler extends BaseHandler {
 			e.printStackTrace();
 		}
 		log.info("创建玩家 " + intarg + " 个消耗时间：" + (System.currentTimeMillis() - start));
-		System.err.println("创建玩家 " + intarg + " 个消耗时间：" + (System.currentTimeMillis() - start));
+		System.out.println("创建玩家 " + intarg + " 个消耗时间：" + (System.currentTimeMillis() - start));
 
 	}
 

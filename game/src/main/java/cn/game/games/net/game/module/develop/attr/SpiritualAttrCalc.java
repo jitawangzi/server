@@ -22,6 +22,6 @@ public class SpiritualAttrCalc extends PlayerAttrCalc {
 
 	@Override
 	public AttrCalcType getAttrCalcType() {
-		return AttrCalcType.Spiritual;
+		return AttrCalcType.QiankunMirror;
 	}
 }

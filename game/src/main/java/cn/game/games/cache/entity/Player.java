@@ -508,6 +508,9 @@ public class Player  {
 			FairyFriendFavorabilityConfig favorabilityConfig = FairyFriendFavorabilityManager
 					.instance()
 					.getUIFairyListIDLV(fairyFriend.getConfigId(), fairyFriend.getLevel());
+			if (favorabilityConfig == null) {
+				continue;
+			}
 			if (favorabilityConfig.FavorabilityAward.containsKey(type.ID)) {
 				ret += favorabilityConfig.FavorabilityAward.get(type.ID);
 			}

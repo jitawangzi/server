@@ -80,11 +80,11 @@ public class AttrModule extends BasePlayerModule {
 	 * 计算所有属性，给客户端战斗时使用。
 	 */
 	public void calcAllAttr() {
-		calcAlchemyAttr();
-		calcDragonAttr();
-		calcDragonSkillAttr();
-		calcSwordAttr();
-		calcWallAttr();
+//		calcAlchemyAttr();
+//		calcDragonAttr();
+//		calcDragonSkillAttr();
+//		calcSwordAttr();
+//		calcWallAttr();
 
 		calcHeroAttr();
 

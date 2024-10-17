@@ -4,6 +4,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.protocol.generated.enume.InitialUI;
 
+@Deprecated
 public class SpiritualRootAttrCalc extends PlayerAttrCalc {
 
 	public SpiritualRootAttrCalc(Player player) {
@@ -17,11 +18,11 @@ public class SpiritualRootAttrCalc extends PlayerAttrCalc {
 	}
 	@Override
 	public InitialUI getFunction() {
-		return InitialUI.QiankunMirror;
+		return InitialUI.WenJuan;
 	}
 
 	@Override
 	public AttrCalcType getAttrCalcType() {
-		return AttrCalcType.SpiritualRoot;
+		return AttrCalcType.NONE;
 	}
 }

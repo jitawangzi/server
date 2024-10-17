@@ -123,6 +123,14 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 		return id_items.get(configId);
 	}
 
+	/** 
+	 * 获取 配置表id--对象集合 的映射
+	 * @return
+	 */
+	public Multimap<Integer, T> getId_items() {
+		return id_items;
+	}
+
 	public int getSizeDeduplication() {
 		return id_items.keys().size();
 	}
