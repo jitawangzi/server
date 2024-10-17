@@ -20,6 +20,7 @@ import com.google.protobuf.Message;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.BatchItem;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBatchPush_01100100;
+import cn.game.util.Config;
 
 public class MessageQueue {
 	private Map<List<String>, Queue<PushMessage>> delayedBuffer;
@@ -28,8 +29,8 @@ public class MessageQueue {
 	private ScheduledExecutorService scheduler;
 	private ExecutorService immediateExecutor;
 	private final int BUFFER_TIME_MS = 1000;
-	private final int BATCH_COMBINE_SIZE = 100000;
-	private final int BATCH_SIZE = 10;
+//	private final int MESSAGE_BATCH_COMBINE_SIZE = 100000;
+//	private final int BATCH_SIZE = 10;
 	private BiConsumer<Long, Message> sendToPlayer;
 
 	public MessageQueue(TagSystem tagSystem, BiConsumer<Long, Message> sendToPlayer) {
@@ -58,7 +59,7 @@ public class MessageQueue {
 		for (Map.Entry<List<String>, Queue<PushMessage>> entry : delayedBuffer.entrySet()) {
 			List<String> tags = entry.getKey();
 			Queue<PushMessage> messages = entry.getValue();
-			if (messages.size() < BATCH_COMBINE_SIZE) {
+			if (messages.size() < Config.PUSH_MESSAGE_BATCH_COMBINE_SIZE) {
 				PushMessage pushMessage = null;
 				while ((pushMessage = messages.poll()) != null) {
 					broadcastMessage(tags, pushMessage.protoMessage);
@@ -66,7 +67,7 @@ public class MessageQueue {
 			} else {
 				// 消息过多合并后在广播。
 				List<Message> batch = new ArrayList<>();
-				for (int i = 0; i < BATCH_SIZE; i++) {
+				for (int i = 0; i < Config.PUSH_MESSAGE_BATCH_SIZE; i++) {
 					batch.add(messages.poll().protoMessage);
 				}
 				if (!batch.isEmpty()) {

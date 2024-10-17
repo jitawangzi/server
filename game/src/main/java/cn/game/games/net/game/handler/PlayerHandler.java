@@ -1,8 +1,10 @@
 package cn.game.games.net.game.handler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -34,6 +36,7 @@ import cn.game.games.net.game.module.battle.DaoHeartBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.battle.WorldBossBattle;
 import cn.game.games.net.game.module.mail.MailModule;
+import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
@@ -43,9 +46,11 @@ import cn.game.games.util.DAO;
 import cn.game.games.util.KeywordFilter;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.QuestionnaireConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.QuestionnaireManager;
 import cn.game.protocol.generated.manager.WorldBossRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -78,6 +83,10 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerNameRequest_01000011;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerNameResponse_01000012;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolInfoRequest_01000070;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerPatrolInfoResponse_01000071;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerQuestionnaireRequest_01000300;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerQuestionnaireResponse_01000301;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerQuestionnaireRewardRequest_01000302;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerQuestionnaireRewardResponse_01000303;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecResponse_01000066;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075;
@@ -140,9 +149,49 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerRedPointRequest_01000075, this::red);
 		putInvoker(PbProtocol.PlayerSearchRequest_0100000b, this::searchPlayer);
 		putInvoker(PbProtocol.PlayerAssetDataRequest_01000200, this::assetData);
+		putInvoker(PbProtocol.PlayerQuestionnaireRequest_01000300, this::questionnaireInfo);
+		putInvoker(PbProtocol.PlayerQuestionnaireRewardRequest_01000302, this::questionnaireReward);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
 	}
 
+	private void questionnaireReward(NetClient client, Object message) {
+		PlayerQuestionnaireRewardRequest_01000302 request = (PlayerQuestionnaireRewardRequest_01000302) message;
+		PlayerQuestionnaireRewardResponse_01000303.Builder response = PlayerQuestionnaireRewardResponse_01000303.newBuilder();
+		int id = request.getId();
+
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.Questionnaire);
+		if (idsSet.contains(id)) {
+			client.sendProtocol(response, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		QuestionnaireConfig questionnaireConfig = QuestionnaireManager.instance().get(id);
+		if (!PlayerHelper.checkCondition(player, questionnaireConfig.Condition)) {
+			client.sendProtocol(response, ErrorMsgEnum.condition_check_error.getId());
+			return;
+		}
+		idsSet.add(id);
+		response.addAllRewards(PlayerHelper.addResources(player, questionnaireConfig.Reward, OpType.Questionnaire));
+		client.sendProtocol(response.build());
+	}
+	private void questionnaireInfo(NetClient client, Object message) {
+		PlayerQuestionnaireRequest_01000300 request = (PlayerQuestionnaireRequest_01000300) message;
+		PlayerQuestionnaireResponse_01000301.Builder response = PlayerQuestionnaireResponse_01000301.newBuilder();
+
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		Collection<QuestionnaireConfig> list = QuestionnaireManager.instance().list();
+		Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.Questionnaire);
+		for (QuestionnaireConfig questionnaireConfig : list) {
+			if (PlayerHelper.checkCondition(player, questionnaireConfig.Condition)) {
+				if (idsSet.contains(questionnaireConfig.ID)) {
+					response.putQuestionnaire(questionnaireConfig.ID, true);
+				} else {
+					response.putQuestionnaire(questionnaireConfig.ID, false);
+				}
+			}
+		}
+		client.sendProtocol(response.build());
+	}
 	private void assetData(NetClient client, Object message) {
 		PlayerAssetDataRequest_01000200 request = (PlayerAssetDataRequest_01000200) message;
 		PlayerAssetDataResponse_01000201.Builder response = PlayerAssetDataResponse_01000201.newBuilder();

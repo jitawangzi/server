@@ -47,12 +47,7 @@ public final class Config {
 	public static List<String> FILTER_LIST;
 	/** 替换字符 */
 	public static String CHAT_FILTER_CHARS = "^_^";
-	/** 服务器版本号 */
-	public static int min_vision;
-	public static int max_vision;
 
-	public static int generalPacketMin;
-	public static int generalPacketMax;
 	public static int generalPacketKeepAliveTime;
 	public static int generalPacketWorkQueueSize = 1024;
 	public static int generalScheduled = 3;
@@ -61,8 +56,6 @@ public final class Config {
 	public static boolean debugPackExecTime;
 	/** 是否打印客户超时日志 */
 	public static boolean printTimeOut;
-	/** 用户平台地址 */
-	public static String userplatformurl = "http://192.168.0.20:8888/Passport/ServerXML";
 	/** 死锁检测时间 */
 	public static int DEADLOCK_CHECK_INTERVAL;
 	/** 正常一个包的执行时间，超过这个值则记录。 */
@@ -70,7 +63,8 @@ public final class Config {
 	/** 运营管理ＩＰ */
 	public static String managerIp;
 
-	public static String vertxRedisUrl;
+	public static int PUSH_MESSAGE_BATCH_COMBINE_SIZE;
+	public static int PUSH_MESSAGE_BATCH_SIZE;
 
 	public static boolean useLog;
 	public static boolean oneLine;
@@ -92,8 +86,6 @@ public final class Config {
 
 	/** 服务器关闭时最大等待时间 */
 	public static int shutdownWaitTime = 60 * 60;
-
-	public static String redisPwd;
 
 //	public static boolean isTest;
 
@@ -127,20 +119,15 @@ public final class Config {
 //			Properties initialProp = new Properties();
 //			initialProp.load(path);
 //			path.close();
-			generalPacketMin = Integer.parseInt(initialProp.getProperty("generalPacketMin", "5"));
-			generalPacketMax = Integer.parseInt(initialProp.getProperty("generalPacketMax", "7"));
 			generalPacketKeepAliveTime = Integer.parseInt(initialProp.getProperty("generalPacketKeepAliveTime", "15"));
 			generalPacketWorkQueueSize = Integer.parseInt(initialProp.getProperty("generalPacketWorkQueueSize", "1024"));
 			generalScheduled = Integer.parseInt(initialProp.getProperty("generalScheduled", "10"));
 
 			debugPackExecTime = Boolean.parseBoolean(initialProp.getProperty("debugPackExecTime", "false"));
 
-			min_vision = Short.parseShort(initialProp.getProperty("min_vision", "10000"));
-			max_vision = Short.parseShort(initialProp.getProperty("max_vision", "10000"));
 			lastRecvPacketTime = Integer.parseInt(initialProp.getProperty("lastRecvPacketTime", "300")) * 1000;
 
 			printTimeOut = Boolean.parseBoolean(initialProp.getProperty("printTimeOut", "false"));
-			userplatformurl = initialProp.getProperty("userplatformurl", "http://192.168.0.20:8888/Passport/ServerXML");
 			managerIp = initialProp.getProperty("managerIp", "");
 
 			DEADLOCK_CHECK_INTERVAL = Integer.parseInt(initialProp.getProperty("deadlock_check_interval", "20"));
@@ -152,12 +139,12 @@ public final class Config {
 			oneLine = Boolean.parseBoolean(initialProp.getProperty("oneLine", "false"));
 			gmOpen = Boolean.parseBoolean(initialProp.getProperty("gmOpen", "false"));
 
-			vertxRedisUrl = initialProp.getProperty("vertxRedisUrl", "");
 			agentJar = initialProp.getProperty("agent.jar.addr", "");
 			hotUpdate = Boolean.parseBoolean(initialProp.getProperty("hot.update", "false"));
 			heart = Integer.parseInt(initialProp.getProperty("heart", "3000"));
 			ONLINE_SAVE = Integer.parseInt(initialProp.getProperty("online_save", "300"));
-			redisPwd = initialProp.getProperty("redisPwd", "");
+			PUSH_MESSAGE_BATCH_COMBINE_SIZE = Integer.parseInt(initialProp.getProperty("PUSH_MESSAGE_BATCH_COMBINE_SIZE", "100"));
+			PUSH_MESSAGE_BATCH_SIZE = Integer.parseInt(initialProp.getProperty("PUSH_MESSAGE_BATCH_SIZE", "10"));
 
 			remoteCallTimeOut = Integer.parseInt(initialProp.getProperty("remoteCallTimeOut", "5"));
 //			isTest = initialProp.getBooleanProperty("isTest", false);

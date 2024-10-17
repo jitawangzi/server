@@ -265,6 +265,23 @@ message PlayerAssetDataResponse_01000201{
 }
 
 
+/*** 请求玩家的调查问卷数据  **/
+message PlayerQuestionnaireRequest_01000300{
+}
+/*** 调查问卷数据 **/
+message PlayerQuestionnaireResponse_01000301{
+   map<uint32, bool> questionnaire = 1;   //当前可以看到的问卷id（Questionnaire表id），和是否领取过的状态。
+}
+
+/*** 领取问卷奖励  **/
+message PlayerQuestionnaireRewardRequest_01000302{
+	uint32 id = 1;  // Questionnaire 表id
+}
+/***  领取问卷奖励返回 **/
+message PlayerQuestionnaireRewardResponse_01000303{
+	repeated RewardInfo rewards = 1 ; 			// 获得的奖励
+}
+
 
 // 一次推送多个消息
 message PlayerBatchPush_01100100 {
