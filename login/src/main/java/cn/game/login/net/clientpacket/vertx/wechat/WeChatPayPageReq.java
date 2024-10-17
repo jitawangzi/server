@@ -5,12 +5,16 @@ import cn.game.login.LoginServer;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.util.Config;
+import cn.game.util.LockUtil;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.redisson.api.RLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -26,19 +30,31 @@ import java.util.UUID;
  * @create: 2024-09-29 10:08 @Version 1.0
  */
 public class WeChatPayPageReq implements Handler<RoutingContext> {
+    protected static final Logger log = LoggerFactory.getLogger(WeChatPayPageReq.class);
+
     @Override
     public void handle(RoutingContext ctx) {
         HttpServerRequest req = ctx.request();
         String orderId = req.getParam("orderId");
-        System.out.println(req.absoluteURI());
+        String openId = req.getParam("openId");
         PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
         PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(orderId));
         if (payOrder == null) {
-            ctx.response().setStatusCode(404).end("Not Found");
+            log.error(String.format("订单不存在 orderId = " + orderId));
+            failPage(ctx, "订单不存在");
             return;
         }
-//        Map<String,String> sign = sign(payOrder.getThirdOrderId(), UUID.randomUUID().toString().replace("-", ""), System.currentTimeMillis()/1000);
-
+        if (payOrder.getPayState() == 2){//该订单已经支付
+            log.error(String.format("订单已经支付 orderId = " + orderId));
+            failPage(ctx, "该订单已经完成支付");
+            return;
+        }
+        String runOrderId = WeChatCustomerServiceReq.getRunOrderId(openId);
+        if (runOrderId == null || !runOrderId.trim().equals(orderId.trim())){
+            log.error(String.format("订单与orderId不匹配 orderId =%s openId =%s, findRunOrderId:%s " , orderId,openId,runOrderId));
+            failPage(ctx, "该订单已经过期，请从新下单");
+            return;
+        }
         Map<String,String> sign = sign(req.absoluteURI(), UUID.randomUUID().toString().replace("-", ""), System.currentTimeMillis()/1000);
         FreeMarkerTemplateEngine engine = FreeMarkerTemplateEngine.create(VxHolder.vertx);
         Map<String,Object> data = new HashMap<>();
@@ -60,6 +76,20 @@ public class WeChatPayPageReq implements Handler<RoutingContext> {
         });
 
     }
+
+    private void failPage(RoutingContext ctx, String failMsg) {
+        FreeMarkerTemplateEngine engine = FreeMarkerTemplateEngine.create(VxHolder.vertx);
+        Map<String,Object> data = new HashMap<>();
+        data.put("failMsg", failMsg);
+        engine.render(data, "/template/pay_error.ftl", res -> {
+            if (res.succeeded()) {
+                ctx.response().end(res.result());
+            } else {
+                ctx.fail(res.cause());
+            }
+        });
+    }
+
     /**
      * 生成paySign
      */

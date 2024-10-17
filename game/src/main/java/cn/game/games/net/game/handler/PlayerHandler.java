@@ -788,44 +788,58 @@ public class PlayerHandler extends BaseHandler {
 		String newName = request.getName();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 
-		String oldName = player.getData().getName();
-		if (StringUtils.isEmpty(newName)) {
-			client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-			return;
-		}
-		int var = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
-		if (var > 0) {
-			// 检查消耗的资源TODO
-//			player.isEnough(var, var); 
-		}
+		Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
+		checkFuture.onSuccess(b -> {
+			if (!b) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
+				return;
+			}
+			String oldName = player.getData().getName();
+			if (StringUtils.isEmpty(newName)) {
+				client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+				return;
+			}
+			int var = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
+			if (var > 0) {
+				// 检查消耗的资源TODO
+//			player.isEnough(var, var);
+			}
 
-		boolean check = KeywordFilter.getInstance().check(newName);
-		if (!check) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
-			return;
-		}
+		/*	boolean check = KeywordFilter.getInstance().check(newName);
+			if (!check) {
+				client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
+				return;
+			}*/
 //		Player ofName = PlayerManager.getInstance().getOfName(newName);
 //		if (ofName != null) {
 //			client.sendProtocol(resp, ErrorMsgEnum.player_name_repeat.getId());
 //			return;
 //		}
-		if (var == 0) {
-			player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
-		}
-		PlayerNameManager.getInstance().tryCreateUser(newName).thenApply(r -> {
-			if (!r) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_name_repeat.getId());
-			} else {
-				PlayerNameManager
-						.getInstance()
-						.saveName2Id(newName, player.getData().getPlayerId())
-						.thenCompose(rr -> PlayerNameManager.getInstance().removeName(player.getData().getName()));
-
-				player.getData().setName(newName);
-				client.sendProtocol(resp);
+			if (var == 0) {
+				player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
 			}
-			return null;
-		}).exceptionally(player::failFunction);
+			PlayerNameManager.getInstance().tryCreateUser(newName).thenApply(r -> {
+				if (!r) {
+					client.sendProtocol(resp, ErrorMsgEnum.player_name_repeat.getId());
+				} else {
+					PlayerNameManager
+							.getInstance()
+							.saveName2Id(newName, player.getData().getPlayerId())
+							.thenCompose(rr -> PlayerNameManager.getInstance().removeName(player.getData().getName()));
+
+					player.getData().setName(newName);
+					client.sendProtocol(resp);
+				}
+				return null;
+			}).exceptionally(player::failFunction);
+
+		}).onFailure(err ->{
+			err.printStackTrace();
+			client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
+
+		});
+
+
 	}
 
 	protected void gender(NetClient client, Object message) {

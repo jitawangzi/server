@@ -13,6 +13,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.redisson.RedissonKeys;
+import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -114,6 +115,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
 
     private void doPost(HttpServerRequest request, HttpServerResponse response, RoutingContext ctx) {
         String rst = "1";
+        RLock lock = null;
         try{
             String postBodyStr = ctx.getBodyAsString();
             String msgSignature = request.getParam("msg_signature");
@@ -143,6 +145,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
                 if (content == null || "".equals(content)) {
                     return;
                 }
+                lock =  tryLockOrderData(openId);
                 JsonObject jsonObject = JsonUtil.parserJson(content);
                 isOrder = jsonObject.has("orderId");
                 if (isOrder) {
@@ -176,34 +179,97 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
             e.printStackTrace();
             log.error(e.getMessage());
         } finally{
+            if (lock != null) lock.unlock();
             log.info("customer_service,doPost,response: " + rst);
             response.end(rst);
         }
 
     }
 
-    //TODO 需要用分布式锁
     private PayOrder getPayOrderInfo(String openId) {
-        String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
-        String val = RedisUtil.get(key);
-        if (val != null) {
-            String[] strs = val.split("_");
-            if (strs.length == 2) {
-                long pid = Long.parseLong(strs[0]);
-                String orderId = strs[1];
-                PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-                PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(orderId));
-                RedisUtil.delete(key);
-                return payOrder;
+
+            String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
+            String val = RedisUtil.get(key);
+            if (val != null) {
+                String[] strs = val.split("_");
+                if (strs.length == 2) {
+                    long pid = Long.parseLong(strs[0]);
+                    String orderId = strs[1];
+                    PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+                    PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(orderId));
+                    return payOrder;
+                }
             }
+        return null;
+    }
+
+
+    public static String getRunOrderId(String openId){
+        RLock lock = tryLockOrderData(openId);
+        if (lock == null) return null;
+        try{
+            String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
+            String val = RedisUtil.get(key);
+            if (val != null) {
+                String[] strs = val.split("_");
+                if (strs.length == 2) {
+                    String orderId = strs[1];
+                    return orderId;
+                }
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally{
+            lock.unlock();
+        }
+
+        return null;
+    }
+
+    private static RLock tryLockOrderData(String openId) {
+        RLock lock = LockUtil.tryLockNoWait(2,CacheType.IOS_OPENID_ORDER_DATA_LOCK.key(openId));
+        if (lock == null){
+            log.error(String.format("获取订单信息锁失败,openId = " + openId));
+            return null;
+        }
+        return lock;
+    }
+
+    public static String delRunOrderData(String openId,String orderId){
+        RLock lock = tryLockOrderData(openId);
+        if (lock == null) return null;
+        try{
+            String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
+            String val = RedisUtil.get(key);
+            if (val != null) {
+                String[] strs = val.split("_");
+                if (strs.length == 2) {
+                    String findOrderId = strs[1];
+                    if (findOrderId.equals(orderId)){
+                        log.info("删除订单信息成功,openId = " + openId + ",orderId = " + orderId);
+                    } else {
+                        log.error("删除订单信息失败,openId = " + openId + ",orderId = " + orderId +", findOrderId = " + findOrderId);
+                    }
+                    return orderId;
+                }
+            }
+            RedisUtil.delete(key);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally{
+            lock.unlock();
         }
         return null;
     }
 
     private void saveOrderMsg(String openId, String orderId,long pid) {
-        String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
-        String val = String.format("%s_%s",pid,orderId);
-        RedisUtil.set(key,val,5, TimeUnit.MINUTES);
+            String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
+            String val = String.format("%s_%s",pid,orderId);
+            RedisUtil.set(key,val,5, TimeUnit.MINUTES);
     }
 
     private void sendCustomer(PayOrder receipt, String openId) {
@@ -217,34 +283,10 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
 //        linkMap.put("content","点我充值");
         linkMap.put("title", "点我充值");
         linkMap.put("description", "点我充值" + (double)receipt.getPrice() / 100 + "元");
-        linkMap.put("url", String.format(Config.wechat_pay_page_url+"?orderId=%s", receipt.getId()));
+        linkMap.put("url", String.format(Config.wechat_pay_page_url+"?orderId=%s", receipt.getId() +"&openId="+openId));
         //"https://ydxhxbjzmp.the3.changyou.com/release/Assets/PayImg/chongzhi-2.png";
         linkMap.put("thumb_url", thumb_url);
         paramMap.put("link", linkMap);
-
-      /*  {
-            "touser":"OPENID",
-                "msgtype":"news",
-                "news":{
-            "articles": [
-            {
-                "title":"Happy Day",
-                    "description":"Is Really A Happy Day",
-                    "url":"URL",
-                    "picurl":"PIC_URL"
-            }
-         ]
-        }
-        }*/
-       /* List<Map<String,String>> articles = new ArrayList<>();
-        Map<String, String> articleMap = new HashMap<>();
-        articleMap.put("title","点我充值");
-        articleMap.put("url",Config.wechat_pay_page_url);
-        articleMap.put("picurl",thumb_url);
-        articleMap.put("description","点我充值" + receipt.getPrice() / 100 + "元");
-        articles.add(articleMap);
-        linkMap.put("articles",articles);*/
-
         Map<String, String> sendBuildMap = new HashMap<>();
         try {
 //            IOSPayOrderProcessor.refreshOnceAccessToken(System.currentTimeMillis());

@@ -144,6 +144,7 @@ public enum ErrorMsgEnum {
 	da_dao_in_battle(401, "大道争锋要挑战正在进行中，不可再次挑战"),
 	da_dao_refresh_is_max(402, "大道争锋刷新次数已经达到最大"),
 	da_dao_free_refresh_is_max(403, "大道争锋免费刷新次数已经用完"),
+	we_chat_context_check_fail(404, "输入的文字包含屏蔽字，请检查之后在输入"),
 
 	;
 

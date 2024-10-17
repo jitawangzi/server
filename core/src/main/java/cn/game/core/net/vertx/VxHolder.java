@@ -320,13 +320,14 @@ public class VxHolder {
 	 */
 	public static void post(String requestURI, Handler<JsonObject> successHandler, Handler<Throwable> failedHandler, Object body) {
 
-		httpClient.post(requestURI)
+		httpClient.postAbs(requestURI)
 				.expect(ResponsePredicate.SC_SUCCESS)
 //				.expect(ResponsePredicate.JSON)
 				.sendJson(body)
 				.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));
 	}
+
 
 	public static ZookeeperClusterManager getZookeeperClusterManager() {
 		return zookeeperClusterManager;

@@ -666,4 +666,8 @@ public class Player  {
 	public long getCreateTimer() {
 		return DateUtil.parse(getData().getCreateDate()).getTime();
 	}
+
+	public String getOpenId(){
+		return account.deviceId;
+	}
 }

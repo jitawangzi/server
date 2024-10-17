@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.chat;
 
+import io.vertx.core.Future;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -109,51 +110,63 @@ public class ChatHandler extends BaseHandler {
 		ProtocolStringList atPlayerIdsList = req.getAtPlayerIdsList();
 		String targetPlayerId = req.getTargetPlayerId();
 
-		int errorCode = 0;
-		switch (chatType) {
-		case PRIVATE_CHAT: {
-			if (targetPlayerId == null || targetPlayerId.isEmpty()) {
-				errorCode = ErrorMsgEnum.player_not_exist.getId();
-				break;
+		Future<Boolean> checkFuture =  PlayerHelper.checkContextData(sendPlayer,content);
+		checkFuture.onSuccess( b -> {
+			if(!b) {
+				client.sendProtocol(resp, ErrorMsgEnum.we_chat_context_check_fail.getId());
+				return;
 			}
-			if (!PlayerManager.getInstance().isOnline(Long.valueOf(targetPlayerId))) {
-				errorCode = ErrorMsgEnum.player_not_online.getId();
-			}
-			ChatMessageInfo.Builder messageBuilder = ChatMessageInfo.newBuilder();
-			messageBuilder.setChatType(chatType);
-			messageBuilder.setContent(content);
-			messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
-			PlayerHelper.sendOnlinePlayer(Long.valueOf(targetPlayerId), ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
-			break;
-		}
-		case SYSTEM_CHAT: {
-			errorCode = ErrorMsgEnum.request_parameter_error.getId();
-			break;
-		}
-		case WORLD_CHAT: {
-			int lastChatTime = sendPlayer.getPlayerModule().getLastChatTime();
-			if (DateUtil.currentTimeSeconds() - lastChatTime < 5) {
-				errorCode = ErrorMsgEnum.operation_too_fast.getId();
-				break;
-			}
-			ServerChatMessagePush_31000010.Builder messageBuilder = ServerChatMessagePush_31000010.newBuilder();
-			messageBuilder.setChatType(chatType);
-			messageBuilder.setContent(content);
-			messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
-			messageBuilder.addAllAtPlayerIds(atPlayerIdsList);
-			VxHolder.broadcastRemoteServer(ServerType.Game, messageBuilder.build());
-			sendPlayer.getPlayerModule().setLastChatTime(DateUtil.currentTimeSeconds());
-			break;
-		}
-		case UNINON_CHAT: {
+			int errorCode = 0;
+			switch (chatType) {
+				case PRIVATE_CHAT: {
+					if (targetPlayerId == null || targetPlayerId.isEmpty()) {
+						errorCode = ErrorMsgEnum.player_not_exist.getId();
+						break;
+					}
+					if (!PlayerManager.getInstance().isOnline(Long.valueOf(targetPlayerId))) {
+						errorCode = ErrorMsgEnum.player_not_online.getId();
+					}
+					ChatMessageInfo.Builder messageBuilder = ChatMessageInfo.newBuilder();
+					messageBuilder.setChatType(chatType);
+					messageBuilder.setContent(content);
+					messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
+					PlayerHelper.sendOnlinePlayer(Long.valueOf(targetPlayerId), ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
+					break;
+				}
+				case SYSTEM_CHAT: {
+					errorCode = ErrorMsgEnum.request_parameter_error.getId();
+					break;
+				}
+				case WORLD_CHAT: {
+					int lastChatTime = sendPlayer.getPlayerModule().getLastChatTime();
+					if (DateUtil.currentTimeSeconds() - lastChatTime < 5) {
+						errorCode = ErrorMsgEnum.operation_too_fast.getId();
+						break;
+					}
+					ServerChatMessagePush_31000010.Builder messageBuilder = ServerChatMessagePush_31000010.newBuilder();
+					messageBuilder.setChatType(chatType);
+					messageBuilder.setContent(content);
+					messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
+					messageBuilder.addAllAtPlayerIds(atPlayerIdsList);
+					VxHolder.broadcastRemoteServer(ServerType.Game, messageBuilder.build());
+					sendPlayer.getPlayerModule().setLastChatTime(DateUtil.currentTimeSeconds());
+					break;
+				}
+				case UNINON_CHAT: {
 
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + chatType);
-		}
+					break;
+				}
+				default:
+					throw new IllegalArgumentException("Unexpected value: " + chatType);
+			}
 
-		client.sendProtocol(resp, errorCode);
+			client.sendProtocol(resp, errorCode);
+		}).onFailure(err ->{
+			err.printStackTrace();
+			client.sendProtocol(resp, ErrorMsgEnum.we_chat_context_check_fail.getId());
+		});
+
+
 	}
 }
 

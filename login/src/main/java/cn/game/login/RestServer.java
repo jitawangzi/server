@@ -21,6 +21,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.common.template.TemplateEngine;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 
 public class RestServer extends AbstractVerticle {
@@ -66,8 +67,8 @@ public class RestServer extends AbstractVerticle {
 
 		// 处理跨域
 		router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
-		// 配置JSP模板引擎
-
+		//处理静态资源
+		router.route("/*").handler(StaticHandler.create());
 		// 这里貌似只能这样写，不能加参数
 		router.route("/account/register").handler(new VertxRegisterReq());
 		router.route("/account/third_party_confirm").handler(new VertxThirdPartyConfirmReq());
