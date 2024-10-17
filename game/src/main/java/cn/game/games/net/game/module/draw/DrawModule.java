@@ -2,8 +2,10 @@ package cn.game.games.net.game.module.draw;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import cn.game.games.core.BasePlayerModule;
@@ -123,6 +125,14 @@ public class DrawModule extends BasePlayerModule {
 		DrawConfig drawConfig = DrawManager.instance().get(id);
 		if (id == 2) { // 至尊抽卡走特殊逻辑。首次十连给指定的卡，接下来走特殊卡池
 			Map<Integer, List<GuidanceRandomGroupConfig>> randomParameterGroupIds = GuidanceRandomGroupManager.instance().getRandomParameterGroupIds();
+			int guidanceDrawMax = 0;
+			Iterator<Entry<Integer, List<GuidanceRandomGroupConfig>>> iterator = randomParameterGroupIds.entrySet().iterator(); 
+			while (iterator.hasNext()) {
+				Map.Entry<java.lang.Integer, java.util.List<cn.game.protocol.generated.config.GuidanceRandomGroupConfig>> entry = (Map.Entry<java.lang.Integer, java.util.List<cn.game.protocol.generated.config.GuidanceRandomGroupConfig>>) iterator
+						.next();
+				guidanceDrawMax += entry.getValue().size();
+			}
+			
 			Set<Integer> guidanceKeySet = randomParameterGroupIds.keySet();
 			if (count == 10 && isFirstTen) {
 				for (int i = 0; i < count; i++) {
@@ -133,7 +143,7 @@ public class DrawModule extends BasePlayerModule {
 			} else {
 				for (int i = 0; i < count; i++) {
 					// 新手期
-					if (guidanceDrawCount < 100) {
+					if (guidanceDrawCount < guidanceDrawMax) {
 						GuidanceRandomGroupConfig guidanceRandomGroupConfig = null;
 						if (curGuidanceGroup == 0) {
 							int group = Rnd.randomElementExcluded(guidanceKeySet, guidanceGroupList);
