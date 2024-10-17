@@ -13,6 +13,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.redisson.RedissonKeys;
+import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -114,6 +115,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
 
     private void doPost(HttpServerRequest request, HttpServerResponse response, RoutingContext ctx) {
         String rst = "1";
+        RLock lock = null;
         try{
             String postBodyStr = ctx.getBodyAsString();
             String msgSignature = request.getParam("msg_signature");
@@ -143,6 +145,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
                 if (content == null || "".equals(content)) {
                     return;
                 }
+                lock =  tryLockOrderData(openId);
                 JsonObject jsonObject = JsonUtil.parserJson(content);
                 isOrder = jsonObject.has("orderId");
                 if (isOrder) {
@@ -176,6 +179,7 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
             e.printStackTrace();
             log.error(e.getMessage());
         } finally{
+            if (lock != null) lock.unlock();
             log.info("customer_service,doPost,response: " + rst);
             response.end(rst);
         }
@@ -183,77 +187,89 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
     }
 
     private PayOrder getPayOrderInfo(String openId) {
-        if (tryLockOrderData(openId)) return null;
-        String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
-        String val = RedisUtil.get(key);
-        if (val != null) {
-            String[] strs = val.split("_");
-            if (strs.length == 2) {
-                long pid = Long.parseLong(strs[0]);
-                String orderId = strs[1];
-                PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-                PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(orderId));
-//                RedisUtil.delete(key);
-                return payOrder;
+
+            String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
+            String val = RedisUtil.get(key);
+            if (val != null) {
+                String[] strs = val.split("_");
+                if (strs.length == 2) {
+                    long pid = Long.parseLong(strs[0]);
+                    String orderId = strs[1];
+                    PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+                    PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(orderId));
+                    return payOrder;
+                }
             }
-        }
         return null;
     }
 
 
     public static String getRunOrderId(String openId){
-        if (tryLockOrderData(openId)) return null;
-        String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
-        String val = RedisUtil.get(key);
-        if (val != null) {
-          String[] strs = val.split("_");
-          if (strs.length == 2) {
-            String orderId = strs[1];
-            return orderId;
-          }
+        RLock lock = tryLockOrderData(openId);
+        if (lock == null) return null;
+        try{
+            String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
+            String val = RedisUtil.get(key);
+            if (val != null) {
+                String[] strs = val.split("_");
+                if (strs.length == 2) {
+                    String orderId = strs[1];
+                    return orderId;
+                }
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         }
+        finally{
+            lock.unlock();
+        }
+
         return null;
     }
 
-    private static boolean tryLockOrderData(String openId) {
-        boolean lock = LockUtil.tryLockNoWaitSync(1,CacheType.IOS_OPENID_ORDER_DATA_LOCK.key(openId));
-        if (!lock){
+    private static RLock tryLockOrderData(String openId) {
+        RLock lock = LockUtil.tryLockNoWait(2,CacheType.IOS_OPENID_ORDER_DATA_LOCK.key(openId));
+        if (lock == null){
             log.error(String.format("获取订单信息锁失败,openId = " + openId));
-            return true;
+            return null;
         }
-        return false;
+        return lock;
     }
 
     public static String delRunOrderData(String openId,String orderId){
-        if (!tryLockOrderData(openId)) return null;
-        String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
-        String val = RedisUtil.get(key);
-        if (val != null) {
-            String[] strs = val.split("_");
-            if (strs.length == 2) {
-                String findOrderId = strs[1];
-                if (findOrderId.equals(orderId)){
-                    log.info("删除订单信息成功,openId = " + openId + ",orderId = " + orderId);
-                } else {
-                    log.error("删除订单信息失败,openId = " + openId + ",orderId = " + orderId +", findOrderId = " + findOrderId);
+        RLock lock = tryLockOrderData(openId);
+        if (lock == null) return null;
+        try{
+            String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
+            String val = RedisUtil.get(key);
+            if (val != null) {
+                String[] strs = val.split("_");
+                if (strs.length == 2) {
+                    String findOrderId = strs[1];
+                    if (findOrderId.equals(orderId)){
+                        log.info("删除订单信息成功,openId = " + openId + ",orderId = " + orderId);
+                    } else {
+                        log.error("删除订单信息失败,openId = " + openId + ",orderId = " + orderId +", findOrderId = " + findOrderId);
+                    }
+                    return orderId;
                 }
-                return orderId;
             }
+            RedisUtil.delete(key);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         }
-
-        RedisUtil.delete(key);
+        finally{
+            lock.unlock();
+        }
         return null;
     }
 
     private void saveOrderMsg(String openId, String orderId,long pid) {
-        boolean lock = LockUtil.tryLockNoWaitSync(2,CacheType.IOS_OPENID_ORDER_DATA_LOCK.key(openId));
-        if (!lock){
-            log.error(String.format("保存新的iOS订单信息失败 未获取到锁,openId=%s, orderId=%s, pid=%s ",  openId,orderId,pid));
-            return;
-        }
-        String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
-        String val = String.format("%s_%s",pid,orderId);
-        RedisUtil.set(key,val,5, TimeUnit.MINUTES);
+            String key = CacheType.IOS_OPENID_ORDER_DATA.key(openId);
+            String val = String.format("%s_%s",pid,orderId);
+            RedisUtil.set(key,val,5, TimeUnit.MINUTES);
     }
 
     private void sendCustomer(PayOrder receipt, String openId) {

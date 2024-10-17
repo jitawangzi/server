@@ -5,12 +5,14 @@ import cn.game.login.LoginServer;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.util.Config;
+import cn.game.util.LockUtil;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +50,8 @@ public class WeChatPayPageReq implements Handler<RoutingContext> {
             return;
         }
         String runOrderId = WeChatCustomerServiceReq.getRunOrderId(openId);
-        if (runOrderId == null || runOrderId.equals(orderId)){
-            log.error(String.format("订单与orderId不匹配 orderId =%s openId =%s, findRunOrderId:%s " , openId,orderId,runOrderId));
+        if (runOrderId == null || !runOrderId.trim().equals(orderId.trim())){
+            log.error(String.format("订单与orderId不匹配 orderId =%s openId =%s, findRunOrderId:%s " , orderId,openId,runOrderId));
             failPage(ctx, "该订单已经过期，请从新下单");
             return;
         }

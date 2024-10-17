@@ -82,6 +82,26 @@ public class LockUtil {
 		return tryLock;
 	}
 
+	/**
+	 * 尝试同步获取锁，如果获取不到立刻返回，可以利用过期时间自动释放锁， 也可以手动释放
+	 * @param leaseTime 锁过期时间(秒)
+	 * @param keys
+	 * @return lock lock !=null 则获取到锁，否则 未获取到锁
+	 */
+	public static RLock tryLockNoWait(int leaseTime, String... keys) {
+		RLock lock = initLock(keys);
+		boolean tryLock = false;
+		try {
+			tryLock = lock.tryLock(0, leaseTime, TimeUnit.SECONDS);
+		} catch (Exception e) {
+
+		}
+		if (tryLock){
+			return lock;
+		}
+		return null;
+	}
+
 	/** 
 	 * 获取一个不过期的锁，如果获取不到立刻返回。{@link #tryLockSync(String...)}
 	 * @param locks
