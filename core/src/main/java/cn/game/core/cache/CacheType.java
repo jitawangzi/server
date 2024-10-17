@@ -44,7 +44,11 @@ public enum CacheType {
 	IOS_WE_CHAT_ACCESS_TOKEN_REFRESH_LOCK,
 	/** SimplePlayer初始化锁 */
 	SERVER_SIMPLE_PLAYER_INIT,
-	IOS_OPENID_ORDER_DATA;
+	/**ios 平台支付订单的信息 key openid, val： pid_orderId */
+	IOS_OPENID_ORDER_DATA,
+	/** ios 平台支付订单的锁 */
+	IOS_OPENID_ORDER_DATA_LOCK,
+	;
 
 	public String key(Object... ks) {
 

@@ -134,6 +134,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
             onFail(response,500,"pay order is null");
             return;
         }
+        WeChatCustomerServiceReq.delRunOrderData(transaction.getPayer().getOpenid(),payOrder.getThirdOrderId());
         if (payOrder.getIsDeliver()){
             onSuccess(response);
             return;
@@ -312,7 +313,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
     public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 req, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {
         Promise<PayOrder> promise = Promise.promise();
 //        int goodPrice = req.getGoodsPrice();
-        final  int goodPrice = 100;
+        final  int goodPrice = 1;
         long playerId = req.getPlayerId();
         String sessionId = req.getSessionId();
         User user = UserHelper.getUserBySessionId(sessionId);
