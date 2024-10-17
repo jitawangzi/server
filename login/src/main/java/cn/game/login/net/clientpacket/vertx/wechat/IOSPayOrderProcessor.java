@@ -285,6 +285,15 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
                   .setJsapiTicket(jsapiTicket)
                   .setTickExpireTime(jsapiTicketExpiresTimer)
                   .build());
+
+            VxHolder.broadcastRemoteServer(
+                    ServerType.Game,
+                    ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074.newBuilder()
+                            .setAccessToken(accessToken)
+                            .setExpireTime(accessTokenExpiresTimer)
+                            .setJsapiTicket(jsapiTicket)
+                            .setTickExpireTime(jsapiTicketExpiresTimer)
+                            .build());
         }
         return false;
     }

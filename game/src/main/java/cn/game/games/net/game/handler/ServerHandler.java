@@ -3,6 +3,7 @@ package cn.game.games.net.game.handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.util.Config;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -92,9 +93,18 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.NotifyAddGlobalGmMailRequest_7d000060, this::ddGlobalGmMail);
 		putInvoker(PbProtocol.NotifyDelGlobalGmMailRequest_7d000062, this::delGlobalGmMail);
 
+		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000074, this::updateIOSAccessToken);
+		
+
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
+	}
+
+	private void updateIOSAccessToken(NetClient client, Object o) {
+		ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074 req = (ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074) o;
+		Config.wechatAccessToken = req.getAccessToken();
+		log.info(String.format("updateIOSAccessToken:%s", req.getAccessToken()));
 	}
 
 	private void delGlobalGmMail(NetClient client, Object o) {

@@ -104,6 +104,11 @@ public final class Config {
 	// 消息统计的时间间隔，分钟
 	public static int messageStatisticsInterval;
 
+  /**
+   * 微信access_token
+   */
+  public static String wechatAccessToken;
+
 	/** 游戏唯一表示 */
 	public static String APP_KEY;
 

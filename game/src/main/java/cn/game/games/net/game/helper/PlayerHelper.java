@@ -1,14 +1,11 @@
 package cn.game.games.net.game.helper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import io.vertx.core.Promise;
+import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -1572,5 +1569,53 @@ public class PlayerHelper {
 			});
 		}
 		return Future.failedFuture("没有传入playerId或者playerName");
+	}
+
+
+	/**
+	 * https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/msgSecCheck.html#HTTPS-%E8%B0%83%E7%94%A8
+	 * 检查玩家 的文本消息是否非法
+	 * @param player
+	 * @param msg
+	 * @return true 可以发送， false 不可以发送
+	 */
+	public static Future<Boolean> checkContextData(Player player, String msg){
+		Promise<Boolean> promise = Promise.promise();
+		if (Config.wechatAccessToken == null){
+			return Future.succeededFuture(true);
+		}
+		String url = String.format("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=%s", Config.wechatAccessToken);
+		/*{
+			"content": "毛泽东你好",
+				"version":2,
+				"scene":2,
+				"openid": "odN8m7fO2xG_3qneoOMxeWeOcmwQ"
+
+		}*/
+		Map<String,Object> data = new HashMap<>();
+		data.put("content",msg);
+		data.put("version",2);
+		data.put("scene",2);
+		data.put("openid",player.getOpenId());
+		VxHolder.post(url
+				, response ->{
+					if (response != null){
+						int errcode = response.getInteger("errcode");
+						if (errcode == 0){
+							JsonObject dataResult = response.getJsonObject("result");
+//							label	number	命中标签枚举值，100 正常；10001 广告；20001 时政；20002 色情；20003 辱骂；20006 违法犯罪；20008 欺诈；20012 低俗；20013 版权；21000 其他
+							if (dataResult.getInteger("label") == 100){
+								promise.complete(true);
+								return;
+							}
+						}
+					}
+					promise.complete(false);
+				}
+				,err->{
+			err.printStackTrace();
+			promise.fail(err);
+		},data);
+		return promise.future();
 	}
 }
