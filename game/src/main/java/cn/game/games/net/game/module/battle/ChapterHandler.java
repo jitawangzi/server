@@ -781,6 +781,14 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
 			return;
 		}
+
+		IBattleHandler battleHandler = chapterModule.getBattle(type);
+		int errorCode = battleHandler.check(id, 0);
+		if (errorCode > 0) {
+			client.sendProtocol(resp, errorCode);
+			return;
+		}
+
 		OpType opType = type == 2 ? OpType.DaoXinSweep : type == 3 ? OpType.XinMoSweep : OpType.YaoWangSweep;
 
 		int freeRemaning = daoHeartBattle.getMaxFreeSweepCount() - daoHeartBattle.getFreeSweep();

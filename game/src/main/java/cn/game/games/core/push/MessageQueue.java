@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
@@ -37,9 +38,18 @@ public class MessageQueue {
 		this.delayedBuffer = new ConcurrentHashMap<>();
 		this.immediateQueue = new LinkedBlockingQueue<>();
 		this.tagSystem = tagSystem;
-		this.scheduler = Executors.newScheduledThreadPool(1);
-		this.immediateExecutor = Executors.newSingleThreadExecutor();
-
+		this.scheduler = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
+				return new Thread(r, "DelayedMessagesProcess");
+			}
+		});
+		this.immediateExecutor = Executors.newSingleThreadExecutor(new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
+				return new Thread(r, "ImmediateMessagesProcess");
+			}
+		});
 		this.scheduler.scheduleAtFixedRate(this::processDelayedMessages, BUFFER_TIME_MS, BUFFER_TIME_MS, TimeUnit.MILLISECONDS);
 
 		this.immediateExecutor.submit(this::processImmediateMessages);
