@@ -430,6 +430,7 @@ public class Player  {
 			return Future.succeededFuture(true);
 		}
 		int costType = cost[0] ; 
+
 		Promise<Boolean> promise = Promise.promise(); 
 		
 		if (costType == ShopHelper.COST_TYPE_RESOURCE) {
@@ -449,8 +450,12 @@ public class Player  {
 			if (getAccount().getPlatform() == 1 || getAccount().getPlatform() == 3){
 				platform = "IOS";
 			}
+			final int rmbCost = Boolean.getBoolean("AllRecharge1") ? 1 : cost[1];
 			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId()).setPlatform(platform)
-					.setSessionId(getGameClient().getSessionId()).setGoodsPrice(cost[1] * 100).setItemId(PayManager.instance().get(cost[1]).Name).build();
+					.setSessionId(getGameClient().getSessionId())
+					.setGoodsPrice(rmbCost * 100)
+					.setItemId(PayManager.instance().get(rmbCost).Name)
+					.build();
 			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
 			requestRemoteServer.onSuccess(r -> {
 				PaymentOrderCreateResponse_7d000021 body = r.body();
@@ -461,7 +466,7 @@ public class Player  {
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
 					PayItem payItem = new PayItem();
 					payItem.setOrderId(body.getOrderId());
-					payItem.setRmb(cost[1]);
+					payItem.setRmb(rmbCost);
 					payItem.setPayType(payType);
 					payItem.setPayId(id);
 					getPlayerModule().addPayItems(payItem);
