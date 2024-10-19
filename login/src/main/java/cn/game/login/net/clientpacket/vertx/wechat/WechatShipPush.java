@@ -139,7 +139,7 @@ public class WechatShipPush implements Handler<RoutingContext> {
 			payOrder.setMchOrderNo(wechatPushBean.MiniGame.PayloadObj.WeChatPayInfo.MchOrderNo);
 		}
 		if (StringUtils.isEmpty(payOrder.getTransactionId())) {
-			payOrder.setMchOrderNo(wechatPushBean.MiniGame.PayloadObj.WeChatPayInfo.TransactionId);
+			payOrder.setTransactionId(wechatPushBean.MiniGame.PayloadObj.WeChatPayInfo.TransactionId);
 		}
 		if (payOrder.getPayState() == 1) {
 			payOrder.setPayState((byte) 2); 
