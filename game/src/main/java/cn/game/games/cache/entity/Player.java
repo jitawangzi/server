@@ -451,7 +451,7 @@ public class Player  {
 				platform = "IOS";
 			}
 			final int rmbCost = cost[1];
-			final int rmbCostFen = Boolean.getBoolean("AllRecharge1") ? 1 : rmbCost * 100;
+			final int rmbCostFen = Boolean.getBoolean("AllRecharge1") ? 100 : rmbCost * 100;
 			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId()).setPlatform(platform)
 					.setSessionId(getGameClient().getSessionId())
 					.setGoodsPrice(rmbCostFen)
