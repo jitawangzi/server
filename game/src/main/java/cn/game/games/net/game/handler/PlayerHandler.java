@@ -43,7 +43,6 @@ import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
-import cn.game.games.util.KeywordFilter;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.QuestionnaireConfig;
@@ -787,16 +786,16 @@ public class PlayerHandler extends BaseHandler {
 		PlayerNameResponse_01000012.Builder resp = PlayerNameResponse_01000012.newBuilder();
 		String newName = request.getName();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (StringUtils.isEmpty(newName)) {
+			client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+			return;
+		}
+		String oldName = player.getData().getName();
 
 		Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
 		checkFuture.onSuccess(b -> {
 			if (!b) {
 				client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
-				return;
-			}
-			String oldName = player.getData().getName();
-			if (StringUtils.isEmpty(newName)) {
-				client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
 				return;
 			}
 			int var = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
@@ -810,11 +809,6 @@ public class PlayerHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
 				return;
 			}*/
-//		Player ofName = PlayerManager.getInstance().getOfName(newName);
-//		if (ofName != null) {
-//			client.sendProtocol(resp, ErrorMsgEnum.player_name_repeat.getId());
-//			return;
-//		}
 			if (var == 0) {
 				player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
 			}
@@ -825,7 +819,7 @@ public class PlayerHandler extends BaseHandler {
 					PlayerNameManager
 							.getInstance()
 							.saveName2Id(newName, player.getData().getPlayerId())
-							.thenCompose(rr -> PlayerNameManager.getInstance().removeName(player.getData().getName()));
+							.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName));
 
 					player.getData().setName(newName);
 					client.sendProtocol(resp);
