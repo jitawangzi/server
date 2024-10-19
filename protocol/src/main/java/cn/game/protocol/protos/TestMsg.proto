@@ -48,6 +48,13 @@ message TestPlayerAssetDataResponse_6f000029{
 }
 
 
+// 清空资源和道具
+message TestClearResourceAndItemRequest_6f000040{
+}
+
+message TestClearResourceAndItemResponse_6f000041{
+}
+
 // 只是测试
 message TestRequest_6f000020{
 	uint32 id 	= 1 ;		//

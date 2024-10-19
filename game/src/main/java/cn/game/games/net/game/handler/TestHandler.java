@@ -62,6 +62,8 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.TestMsg;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemResponse_6f000009;
+import cn.game.protocol.protobuf.TestMsg.TestClearResourceAndItemRequest_6f000040;
+import cn.game.protocol.protobuf.TestMsg.TestClearResourceAndItemResponse_6f000041;
 import cn.game.protocol.protobuf.TestMsg.TestMessageRequest_6f000080;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishRequest_6f000022;
 import cn.game.protocol.protobuf.TestMsg.TestMissionFinishResponse_6f000023;
@@ -109,6 +111,7 @@ public class TestHandler extends BaseHandler {
 //		putInvoker(PbProtocol.TestDbRequest_6f000041, this::testDBinsert);
 		putInvoker(PbProtocol.TestMissionFinishRequest_6f000022, this::finishMission);
 		putInvoker(PbProtocol.TestPlayerAssetDataRequest_6f000028, this::assetData);
+		putInvoker(PbProtocol.TestClearResourceAndItemRequest_6f000040, this::clearResourceAndItem);
 //		putInvoker(PbProtocol.TestStoryFinishRequest_6f000024, this::finishStory);
 
 //		putInvoker(PbProtocol.TestAddOrDelBagItemRequest_6f000032, this::bagTest);
@@ -241,6 +244,17 @@ public class TestHandler extends BaseHandler {
 			client.sendProtocol(response.build());
 	
 		}*/
+	private void clearResourceAndItem(NetClient client, Object message) {
+		TestClearResourceAndItemRequest_6f000040 request = (TestClearResourceAndItemRequest_6f000040) message;
+		TestClearResourceAndItemResponse_6f000041.Builder response = TestClearResourceAndItemResponse_6f000041.newBuilder();
+
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		player.getCurrencyModule().getCurrencyMap().clear();
+		player.getItemModule().getId_items().clear();
+
+		client.sendProtocol(response.build());
+	}
+
 	private void assetData(NetClient client, Object message) {
 		TestPlayerAssetDataRequest_6f000028 request = (TestPlayerAssetDataRequest_6f000028) message;
 		TestPlayerAssetDataResponse_6f000029.Builder response = TestPlayerAssetDataResponse_6f000029.newBuilder();

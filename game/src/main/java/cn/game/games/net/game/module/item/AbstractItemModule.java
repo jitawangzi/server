@@ -126,6 +126,14 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 		return id_items.get(itemId);
 	}
 
+
+	/** 
+	 * 少用
+	 * @return
+	 */
+	public Map<Integer, T> getId_items() {
+		return id_items;
+	}
 	@Override
 	public T get(long uid) {
 		throw new UnsupportedOperationException("不支持通过uid获取Item");
