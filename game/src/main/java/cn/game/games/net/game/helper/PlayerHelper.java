@@ -1,11 +1,16 @@
 package cn.game.games.net.game.helper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import io.vertx.core.Promise;
-import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -87,7 +92,9 @@ import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.impl.ContextInternal;
+import io.vertx.core.json.JsonObject;
 
 public class PlayerHelper {
 
@@ -1581,7 +1588,7 @@ public class PlayerHelper {
 	 */
 	public static Future<Boolean> checkContextData(Player player, String msg){
 		Promise<Boolean> promise = Promise.promise();
-		if (Config.wechatAccessToken == null){
+		if (Config.wechatAccessToken == null || Config.DISABLE_WECHAT_CONTENT_CHECK) {
 			return Future.succeededFuture(true);
 		}
 		String url = String.format("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=%s", Config.wechatAccessToken);

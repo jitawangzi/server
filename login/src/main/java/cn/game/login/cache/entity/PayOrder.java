@@ -92,6 +92,16 @@ public class PayOrder implements Serializable {
 	 */
 	private String thirdOrderId;
 	/**
+	 * 支付商户单号
+	 * @mbg.generated
+	 */
+	private String mchOrderNo;
+	/**
+	 * 支付单号
+	 * @mbg.generated
+	 */
+	private String transactionId;
+	/**
 	 * 价格分
 	 * @mbg.generated
 	 */
@@ -361,6 +371,34 @@ public class PayOrder implements Serializable {
 	 */
 	public void setThirdOrderId(String thirdOrderId) {
 		this.thirdOrderId = thirdOrderId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getMchOrderNo() {
+		return mchOrderNo;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setMchOrderNo(String mchOrderNo) {
+		this.mchOrderNo = mchOrderNo;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 	/**

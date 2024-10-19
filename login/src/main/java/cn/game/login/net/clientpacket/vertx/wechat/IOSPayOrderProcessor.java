@@ -1,14 +1,7 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
-import cn.game.core.cache.CacheType;
-import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.util.IdUtil;
-import cn.game.login.cache.entity.PayOrder;
-import cn.game.login.cache.entity.User;
-import cn.game.login.mapper.PayOrderMapper;
-import cn.game.login.net.clientpacket.vertx.UserHelper;
-import cn.game.protocol.protobuf.ServerMsg;
-import cn.game.util.*;
+import org.apache.commons.lang3.StringUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
 import com.google.gson.JsonObject;
@@ -18,15 +11,32 @@ import com.wechat.pay.java.core.notification.NotificationConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
 import com.wechat.pay.java.service.payments.jsapi.JsapiService;
-import com.wechat.pay.java.service.payments.jsapi.model.*;
+import com.wechat.pay.java.service.payments.jsapi.model.Amount;
+import com.wechat.pay.java.service.payments.jsapi.model.Payer;
+import com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest;
+import com.wechat.pay.java.service.payments.jsapi.model.PrepayResponse;
 import com.wechat.pay.java.service.payments.model.Transaction;
+
+import cn.game.core.cache.CacheType;
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.IdUtil;
+import cn.game.login.cache.entity.PayOrder;
+import cn.game.login.cache.entity.User;
+import cn.game.login.mapper.PayOrderMapper;
+import cn.game.login.net.clientpacket.vertx.UserHelper;
+import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.util.DateUtil;
+import cn.game.util.HttpUtil;
+import cn.game.util.JsonUtil;
+import cn.game.util.LockUtil;
+import cn.game.util.ServerType;
+import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @ClassName IOSPayOrderProcessor
@@ -168,11 +178,11 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
                     payOrder.setCompleteTime(DateUtil.nowTimeStr()) ;
                 }
                 updatePayOrder(payOrder,requestBody);
-                mapper.updateByPrimaryKey(payOrder);
+				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
                 onSuccess(response);
             } else {
                 updatePayOrder(payOrder,requestBody);
-                mapper.updateByPrimaryKey(payOrder);
+				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
                 onFail(response,500,"发货失败");
             }
         }).onFailure(err->{});

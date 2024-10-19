@@ -65,6 +65,7 @@ public final class Config {
 
 	public static int PUSH_MESSAGE_BATCH_COMBINE_SIZE;
 	public static int PUSH_MESSAGE_BATCH_SIZE;
+	public static boolean DISABLE_WECHAT_CONTENT_CHECK;
 
 	public static boolean useLog;
 	public static boolean oneLine;
@@ -150,6 +151,7 @@ public final class Config {
 			ONLINE_SAVE = Integer.parseInt(initialProp.getProperty("online_save", "300"));
 			PUSH_MESSAGE_BATCH_COMBINE_SIZE = Integer.parseInt(initialProp.getProperty("PUSH_MESSAGE_BATCH_COMBINE_SIZE", "100"));
 			PUSH_MESSAGE_BATCH_SIZE = Integer.parseInt(initialProp.getProperty("PUSH_MESSAGE_BATCH_SIZE", "10"));
+			DISABLE_WECHAT_CONTENT_CHECK = Boolean.parseBoolean(initialProp.getProperty("DISABLE_WECHAT_CONTENT_CHECK", "false"));
 
 			remoteCallTimeOut = Integer.parseInt(initialProp.getProperty("remoteCallTimeOut", "5"));
 //			isTest = initialProp.getBooleanProperty("isTest", false);

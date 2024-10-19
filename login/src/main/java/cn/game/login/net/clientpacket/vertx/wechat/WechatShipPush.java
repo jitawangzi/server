@@ -116,17 +116,17 @@ public class WechatShipPush implements Handler<RoutingContext> {
 					payOrder.setCompleteTime(DateUtil.nowTimeStr()) ; 
 				}
 				updatePayOrder(wechatPushBean, payOrder);
-				mapper.updateByPrimaryKey(payOrder);
+				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
 			} else {
 				failConsumer.accept(null);
 				updatePayOrder(wechatPushBean, payOrder);
-				mapper.updateByPrimaryKey(payOrder);
+				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
 			}
 		}).onFailure(r -> {
 			log.info("wechat ship resp from game fail", r);
 			failConsumer.accept(null);
 			updatePayOrder(wechatPushBean, payOrder);
-			mapper.updateByPrimaryKey(payOrder);
+			mapper.updateByPrimaryKeyWithBLOBs(payOrder);
 		});
 
 	}
@@ -134,6 +134,12 @@ public class WechatShipPush implements Handler<RoutingContext> {
 	private void updatePayOrder(WechatPushBean wechatPushBean, PayOrder payOrder) {
 		if (payOrder.getCallback() == null) {
 			payOrder.setCallback(JSON.toJSONString(wechatPushBean));
+		}
+		if (StringUtils.isEmpty(payOrder.getMchOrderNo())) {
+			payOrder.setMchOrderNo(wechatPushBean.MiniGame.PayloadObj.WeChatPayInfo.MchOrderNo);
+		}
+		if (StringUtils.isEmpty(payOrder.getTransactionId())) {
+			payOrder.setMchOrderNo(wechatPushBean.MiniGame.PayloadObj.WeChatPayInfo.TransactionId);
 		}
 		if (payOrder.getPayState() == 1) {
 			payOrder.setPayState((byte) 2); 

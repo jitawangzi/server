@@ -24,6 +24,8 @@
     <result column="complete_time" jdbcType="CHAR" property="completeTime" />
     <result column="debug_text" jdbcType="VARCHAR" property="debugText" />
     <result column="third_order_id" jdbcType="VARCHAR" property="thirdOrderId" />
+    <result column="mch_order_no" jdbcType="VARCHAR" property="mchOrderNo" />
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
     <result column="price" jdbcType="INTEGER" property="price" />
     <result column="item_name" jdbcType="VARCHAR" property="itemName" />
   </resultMap>
@@ -41,7 +43,7 @@
     -->
     id, game_server_id, channel_code, channel_label, user_id, player_id, third_uid, env, 
     pay_state, is_deliver, create_date, create_time, pay_date, pay_time, complete_date, 
-    complete_time, debug_text, third_order_id, price, item_name
+    complete_time, debug_text, third_order_id, mch_order_no, transaction_id, price, item_name
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -81,16 +83,16 @@
       is_deliver, create_date, create_time, 
       pay_date, pay_time, complete_date, 
       complete_time, debug_text, third_order_id, 
-      price, item_name, callback
-      )
+      mch_order_no, transaction_id, price, 
+      item_name, callback)
     values (#{id,jdbcType=BIGINT}, #{gameServerId,jdbcType=VARCHAR}, #{channelCode,jdbcType=VARCHAR}, 
       #{channelLabel,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{playerId,jdbcType=BIGINT}, 
       #{thirdUid,jdbcType=VARCHAR}, #{env,jdbcType=TINYINT}, #{payState,jdbcType=TINYINT}, 
       #{isDeliver,jdbcType=BIT}, #{createDate,jdbcType=CHAR}, #{createTime,jdbcType=CHAR}, 
       #{payDate,jdbcType=CHAR}, #{payTime,jdbcType=CHAR}, #{completeDate,jdbcType=CHAR}, 
       #{completeTime,jdbcType=CHAR}, #{debugText,jdbcType=VARCHAR}, #{thirdOrderId,jdbcType=VARCHAR}, 
-      #{price,jdbcType=INTEGER}, #{itemName,jdbcType=VARCHAR}, #{callback,jdbcType=LONGVARCHAR}
-      )
+      #{mchOrderNo,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER}, 
+      #{itemName,jdbcType=VARCHAR}, #{callback,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.game.login.cache.entity.PayOrder">
     <!--
@@ -152,6 +154,12 @@
       </if>
       <if test="thirdOrderId != null">
         third_order_id,
+      </if>
+      <if test="mchOrderNo != null">
+        mch_order_no,
+      </if>
+      <if test="transactionId != null">
+        transaction_id,
       </if>
       <if test="price != null">
         price,
@@ -218,6 +226,12 @@
       <if test="thirdOrderId != null">
         #{thirdOrderId,jdbcType=VARCHAR},
       </if>
+      <if test="mchOrderNo != null">
+        #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        #{transactionId,jdbcType=VARCHAR},
+      </if>
       <if test="price != null">
         #{price,jdbcType=INTEGER},
       </if>
@@ -240,16 +254,16 @@
       is_deliver, create_date, create_time, 
       pay_date, pay_time, complete_date, 
       complete_time, debug_text, third_order_id, 
-      price, item_name, callback
-      )
+      mch_order_no, transaction_id, price, 
+      item_name, callback)
     values (#{id,jdbcType=BIGINT}, #{gameServerId,jdbcType=VARCHAR}, #{channelCode,jdbcType=VARCHAR}, 
       #{channelLabel,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{playerId,jdbcType=BIGINT}, 
       #{thirdUid,jdbcType=VARCHAR}, #{env,jdbcType=TINYINT}, #{payState,jdbcType=TINYINT}, 
       #{isDeliver,jdbcType=BIT}, #{createDate,jdbcType=CHAR}, #{createTime,jdbcType=CHAR}, 
       #{payDate,jdbcType=CHAR}, #{payTime,jdbcType=CHAR}, #{completeDate,jdbcType=CHAR}, 
       #{completeTime,jdbcType=CHAR}, #{debugText,jdbcType=VARCHAR}, #{thirdOrderId,jdbcType=VARCHAR}, 
-      #{price,jdbcType=INTEGER}, #{itemName,jdbcType=VARCHAR}, #{callback,jdbcType=LONGVARCHAR}
-      )
+      #{mchOrderNo,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER}, 
+      #{itemName,jdbcType=VARCHAR}, #{callback,jdbcType=LONGVARCHAR})
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.game.login.cache.entity.PayOrder">
     <!--
@@ -306,6 +320,12 @@
       <if test="thirdOrderId != null">
         third_order_id = #{thirdOrderId,jdbcType=VARCHAR},
       </if>
+      <if test="mchOrderNo != null">
+        mch_order_no = #{mchOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
       <if test="price != null">
         price = #{price,jdbcType=INTEGER},
       </if>
@@ -340,6 +360,8 @@
       complete_time = #{completeTime,jdbcType=CHAR},
       debug_text = #{debugText,jdbcType=VARCHAR},
       third_order_id = #{thirdOrderId,jdbcType=VARCHAR},
+      mch_order_no = #{mchOrderNo,jdbcType=VARCHAR},
+      transaction_id = #{transactionId,jdbcType=VARCHAR},
       price = #{price,jdbcType=INTEGER},
       item_name = #{itemName,jdbcType=VARCHAR},
       callback = #{callback,jdbcType=LONGVARCHAR}
@@ -367,6 +389,8 @@
       complete_time = #{completeTime,jdbcType=CHAR},
       debug_text = #{debugText,jdbcType=VARCHAR},
       third_order_id = #{thirdOrderId,jdbcType=VARCHAR},
+      mch_order_no = #{mchOrderNo,jdbcType=VARCHAR},
+      transaction_id = #{transactionId,jdbcType=VARCHAR},
       price = #{price,jdbcType=INTEGER},
       item_name = #{itemName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}

@@ -450,10 +450,11 @@ public class Player  {
 			if (getAccount().getPlatform() == 1 || getAccount().getPlatform() == 3){
 				platform = "IOS";
 			}
-			final int rmbCost = Boolean.getBoolean("AllRecharge1") ? 1 : cost[1];
+			final int rmbCost = cost[1];
+			final int rmbCostFen = Boolean.getBoolean("AllRecharge1") ? 1 : rmbCost * 100;
 			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId()).setPlatform(platform)
 					.setSessionId(getGameClient().getSessionId())
-					.setGoodsPrice(rmbCost * 100)
+					.setGoodsPrice(rmbCostFen)
 					.setItemId(PayManager.instance().get(rmbCost).Name)
 					.build();
 			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
