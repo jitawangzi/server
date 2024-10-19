@@ -485,7 +485,7 @@ public class ChapterHandler extends BaseHandler {
 			player.handleEvent(EventTypeEnum.WatchAds);
 
 		} else if (type == 3) {
-			if (!PlayerHelper.delResources(player, GlobalConst.RefreshConsum, OpType.Relive)) {
+			if (!PlayerHelper.delResources(player, GlobalConst.ResurrectionConsume, OpType.Relive)) {
 				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 				return;
 			}
