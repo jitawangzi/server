@@ -159,7 +159,8 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
             onFail(response,500,"User user");
             return;
         }
-
+        payOrder.setTransactionId(transaction.getTransactionId());
+        payOrder.setMchOrderNo(payOrder.getId()+"");
         String serverId = UserHelper.getServerId(user.getId());
         ServerMsg.PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = ServerMsg.PaymentOrderShipRequest_7d000022
                 .newBuilder().setPlayerId(user.getId()).setUid(payOrder.getId()).build();
