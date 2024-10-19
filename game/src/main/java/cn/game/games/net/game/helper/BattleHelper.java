@@ -138,10 +138,10 @@ public class BattleHelper {
 	}
 
 	/** 
-	 * 判断某关，是否是某关的前置关卡
-	 * @param id 当前关卡id
-	 * @param preId  需要判断的前置关卡id
-	 * @return
+	 * 判断当前关卡的id，前置关卡是否是 preId
+	 * @param id 当前要判断的关卡id
+	 * @param preId  需要判断的前置关卡id，一般是配置表中配置的数据
+	 * @return  true 是或者相同关卡  false 不是
 	 */
 	public static boolean isPreBattle(int id, int preId) {
 		if (id == 0) {

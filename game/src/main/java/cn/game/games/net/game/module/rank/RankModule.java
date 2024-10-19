@@ -48,7 +48,7 @@ public class RankModule extends BasePlayerModule {
 			RankConfig rankConfig = RankManager.instance().get(RankType.Battle.ID);
 			int battleId = event.getIntParameter(0);
 
-			if (battleId == rankConfig.Request || BattleHelper.isPreBattle(rankConfig.Request, battleId)) {
+			if (BattleHelper.isPreBattle(battleId, rankConfig.Request)) {
 				RankService.getInstance().setScoreAsync(player.getServerId(), RankType.Battle, playerId, battleId);
 			}
 			break;
