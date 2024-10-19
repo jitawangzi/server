@@ -324,6 +324,9 @@ public class FriendModule extends BasePlayerModule {
 
 			if (friend.getRelation() == Friend.BLACK) {
 				FriendHelper.removeApplication(playerId, friend.getFriendId());
+			} else if (friend.getRelation() == Friend.FRIEND) {
+				FriendHelper.removeMyApplication(playerId, friend.getFriendId());
+				FriendHelper.removeApplication(playerId, friend.getFriendId());
 			}
 		}
 //		if (applications!=null)

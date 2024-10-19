@@ -181,11 +181,15 @@ public class FriendHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 			return;
 		}
+
 		myFriendModule.setApplicationCount(myFriendModule.getApplicationCount() + friendIdList.size());
 
 		for (int i = 0; i < friendIdList.size(); i++) {
 			Long id = Long.valueOf(friendIdList.get(i));
 			if (id == playerId) {
+				continue;
+			}
+			if (myFriendModule.isFriend(id)) {
 				continue;
 			}
 			if (PlayerManager.getInstance().isOnline(id)) {
