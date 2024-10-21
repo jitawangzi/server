@@ -1,27 +1,27 @@
 package cn.game.games.net.game.helper;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.game.games.cache.entity.GmMail;
+import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.data.mapper.GmMailMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.gm.GmHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.util.DateUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cn.game.games.cache.entity.Mail;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.manager.MailManager;
+import cn.game.util.DateUtil;
 
 /**
  * 邮件帮助类
@@ -63,16 +63,15 @@ public class MailHelper {
 	public static void sendMail(long receiverId, int mailId, String sender, String title, String content, byte type, List<Goods> attachmentList,
 			boolean notify) {
 		Mail mail = Mail.valueOf(receiverId, mailId, sender, title, content, type, attachmentList);
-		// 先直接插库，不在先发送了
-//		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
-//			Player player = PlayerManager.getInstance().getPlayer(receiverId); 
-//			MailModule mailModule = player.getMailModule() ;
-//			mailModule.sendOnline(mail, notify);
-//		} else {
-//			DAO.insert(mail);
-//		}
+		// 先推本服的,其他服直接存库，跨服的一般实时性要求低一些
+		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
+			Player player = PlayerManager.getInstance().getPlayer(receiverId);
+			MailModule mailModule = player.getMailModule();
+			mailModule.sendOnline(mail, notify);
+		} else {
+			DAO.insert(mail);
+		}
 
-		DAO.insert(mail);
 	}
 
 	public static void sendMail2(long receiverId, String sender, String title, String content, byte type,
@@ -118,15 +117,14 @@ public class MailHelper {
 	public static void sendMail(long receiverId, int mailId, List<Goods> goods, boolean notify) {
 
 		Mail mail = Mail.valueOfMailId(receiverId, mailId, goods);
-		// 先直接插库，不在先发送了
-//		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
-//			Player player = PlayerManager.getInstance().getPlayer(receiverId);
-//			MailModule mailModule = player.getMailModule();
-//			mailModule.sendOnline(mail, notify);
-//		} else {
-//			DAO.insert(mail);
-//		}
-		DAO.insert(mail);
+		// 先推本服的,其他服直接存库，跨服的一般实时性要求低一些
+		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
+			Player player = PlayerManager.getInstance().getPlayer(receiverId);
+			MailModule mailModule = player.getMailModule();
+			mailModule.sendOnline(mail, notify);
+		} else {
+			DAO.insert(mail);
+		}
 	}
 
 	/** 
