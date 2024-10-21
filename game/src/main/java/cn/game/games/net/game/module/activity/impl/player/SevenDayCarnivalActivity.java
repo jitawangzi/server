@@ -19,20 +19,21 @@ import cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest;
 import cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
-import io.vertx.core.Future;
 
 @ActivityType(type = ActivityTypeEnum.SevenDaysCarnival)
 public class SevenDayCarnivalActivity extends PlayerActivityBase {
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 	/** 已经初始过任务的天  1 - 7 */
 	private List<Integer> initDays = new ArrayList<>();
+	/** 可以看到多少天的任务 */
+	private List<Integer> showDays = new ArrayList<>();
 
 	@Override
 	public Message buildActivityShowInfo() {
 		ActivitySevenDaysCarnivalResponse_11000021.Builder builder = ActivitySevenDaysCarnivalResponse_11000021.newBuilder();
 		QuestModule questModule = player.getQuestModule();
 		questModule.get(id);
-		for (Integer day : initDays) {
+		for (Integer day : showDays) {
 			Builder newBuilder = SevenDaysQuest.newBuilder(); 
 			newBuilder.setDay(day);
 			SevenDaysCarnivalConfig config = SevenDaysCarnivalManager.instance().getUITypeDay(ActivityHelper.SEVENDAYS_CARNIVAL, day);
@@ -48,7 +49,10 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 	@Override
 	public void startUp() {
 		super.startUp();
-		openDay(1);
+		for (int i = 1; i <= 7; i++) {
+			openDay(i);
+		}
+		showDays.add(1);
 	}
 
 	@Override
@@ -79,10 +83,10 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 	public boolean newDay() {
 		int days = DateUtil.diffDays(startTime) + 1;
 		for (int i = 1; i <= days; i++) {
-			if (initDays.contains(i)) {
+			if (showDays.contains(i)) {
 				continue;
 			}
-			openDay(i);
+//			openDay(i);
 		}
 		return true;
 	}
