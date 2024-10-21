@@ -31,6 +31,7 @@ import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
@@ -1204,7 +1205,7 @@ public class PlayerHelper {
 	/** 
 	 * 只是查询构造出来player对象，不做任何初始化操作
 	 * 注意这里将Player加入到PlayerManager中，某些模块初始化会用到
-	 * 如果查询出来Player不在使用，需要手动移除 @link PlayerHelper#clearPlayer(long)
+	 * 如果查询出来Player不在使用，需要手动移除 @link PlayerHelper#clearPlayer(long playerId) 
 	 * @param playerData
 	 * @return
 	 */
@@ -1215,6 +1216,26 @@ public class PlayerHelper {
 		player.setGameClient(gameClient);
 		PlayerManager.getInstance().initAdd(player);
 		return selectPlayerModuleData(player);
+	}
+
+	/** 
+	 * 从数据库中查询并构造出player对象，一般在操作玩家离线数据时使用
+	 * 确保在玩家不在线的时候调用，包括当前服务器和其他服务器
+	 * 例如gm修改资源，充值补单等等，正常游戏中不要使用。 
+	 * 一般查询出来，修改后，保存player到数据库，之后手动移除 @link PlayerHelper#clearPlayer(long playerId)
+	 * @param playerId
+	 * @return
+	 */
+	public static Future<Player> loadPlayerFromDb(long playerId) {
+
+		return getPlayerDistributedLock(playerId).compose(rr -> {
+			return DAO.<PlayerData>execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId).compose(r -> {
+				if (r == null) {
+					return Future.failedFuture(ErrorMsgEnum.player_not_exist.getId() + "");
+				}
+				return loadPlayerFromDb(r);
+			});
+		});
 	}
 
 	public static Player createPlayer(PlayerData playerData, Account account, GameClient client) {
