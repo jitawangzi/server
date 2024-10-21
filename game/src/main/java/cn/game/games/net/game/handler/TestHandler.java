@@ -22,6 +22,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
@@ -45,12 +46,14 @@ import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.util.DAO;
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.SoulPetConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
@@ -645,6 +648,15 @@ public class TestHandler extends BaseHandler {
 		} else if (id == 10000002) {
 			ChapterModule chapterModule = player.getChapterModule();
 			chapterModule.setMainBattleHighest(count);
+			BattleConfig battleConfig = BattleManager.instance().getNullable(count);
+
+			while (battleConfig != null) {
+				chapterModule.addChapter(count);
+				Chapter chapter = chapterModule.getChapter(count);
+				chapter.setBattleTime(30);
+				chapter.setPass(true);
+				battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+			}
 			return;
 		}
 
