@@ -35,6 +35,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
@@ -325,6 +326,8 @@ public class TestHandler extends BaseHandler {
 		TestRequest_6f000020 req = (TestRequest_6f000020) message;
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		PlayerHelper.addResources(player, 205103, 2);
 
 		testcalcPower(player);
 //		List<RewardInfo> resources = PlayerHelper.addResources(player, 200032, 10);
@@ -639,7 +642,12 @@ public class TestHandler extends BaseHandler {
 			developModule.setHeavenlyDaoLevel(count);
 			client.sendProtocol(resp.build(), 0);
 			return;
+		} else if (id == 10000002) {
+			ChapterModule chapterModule = player.getChapterModule();
+			chapterModule.setMainBattleHighest(count);
+			return;
 		}
+
 		int goodsType = ItemHelper.getGoodsType(id);
 		int error = 0;
 
