@@ -42,7 +42,7 @@ public class GameClient extends AbstractNetClient {
 	public static final String CLIENT_KEY = "CLIENT";
 	public static final String PLAYID_KEY = "PLAYID";
 
-	private long lastRecvPacketTime;
+	private volatile long lastRecvPacketTime;
 	/** 连接会话 */
 	private ServerWebSocket channel;
 
@@ -75,8 +75,8 @@ public class GameClient extends AbstractNetClient {
 		this.playerId = client.getPlayerId();
 		this.recentMessages = client.getRecentMessages();
 		this.context = client.getContext();
+		this.lastRecvPacketTime = client.lastRecvPacketTime;
 //		this.curMessageSeq = client.getCurMessageSeq();
-//		this.lastRecvPacketTime = client.lastRecvPacketTime;
 	}
 	/** 
 	 * 客户端登录时的属性复制
