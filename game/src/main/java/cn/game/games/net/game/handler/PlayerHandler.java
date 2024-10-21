@@ -870,7 +870,10 @@ public class PlayerHandler extends BaseHandler {
 		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
 		GameClient newGameClient = (GameClient) client;
 		newGameClient.setSessionId(passportSessionId);
-
+		if (PlayerManager.getInstance().isForbidAccount(newGameClient.getPlayerId())) {
+			client.sendProtocol( PlayerLoginResponse_01000002.getDefaultInstance(),ErrorMsgEnum.login_fail_player_is_forbid.getId());
+			return;
+		}
 		if (reconnect) { // 客户端主动重连
 			try {
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, oldGameClient == null ? 0 : oldGameClient.getPlayerId());

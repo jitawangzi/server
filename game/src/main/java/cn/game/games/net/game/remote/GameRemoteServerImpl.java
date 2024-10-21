@@ -129,7 +129,7 @@ public class GameRemoteServerImpl implements GameRemoteServerInterface {
 	public void notifyAddForbidAccount(List<Long> pids, String reason, String timer) {
 		pids.forEach(pid ->{
 			PlayerManager.getInstance()
-					.forbidAccount(pid, reason, timer+"");
+					.forbidAccount(pid, reason, timer+"",0);
 		});
 	}
 

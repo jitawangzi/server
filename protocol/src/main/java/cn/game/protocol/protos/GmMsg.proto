@@ -209,6 +209,7 @@ message ForbidAccountInfo{
 	int32 startTime = 4;  		//开始封停时间（秒时间戳）
 	int32 endTime = 5;  		//封停结束时间（秒时间戳），如果小于0表示永久封停
 	string reason 		= 8; //封禁原因
+	int32  type = 9; //封禁类型 0 所有， 1 封禁账号，2 禁言
 }
 
 
@@ -217,6 +218,7 @@ message GmAccountForbidRequest_77000005{
 	repeated string playerId 	= 1;
 	string reason 		= 2;//封禁原因
 	int32 endTime	= 3;//封停结束时间（秒时间戳），如果小于0表示永久封停
+	int32  type = 4; //封禁类型 0 所有， 1 封禁账号，2 禁言
 }
 // 响应封号
 message GmAccountForbidResponse_77000006{

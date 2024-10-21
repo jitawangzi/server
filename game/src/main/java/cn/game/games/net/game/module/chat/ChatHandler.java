@@ -106,6 +106,10 @@ public class ChatHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_null.getId());
 			return;
 		}
+		if (PlayerManager.getInstance().isForbidChat(sendPlayerId)){
+			client.sendProtocol(resp, ErrorMsgEnum.chat_fail_player_is_forbid.getId());
+			return;
+		}
 //		content = KeywordFilter.getInstance().filter(content);
 		ProtocolStringList atPlayerIdsList = req.getAtPlayerIdsList();
 		String targetPlayerId = req.getTargetPlayerId();

@@ -95,7 +95,7 @@ public class ActivityJQB extends PlayerActivityBase {
 		QuestModule questModule = player.getQuestModule();
 		ActivityJQBConfig activityJQBConfig = ActivityJQBManager.instance().get(curId);
 		Quest quest = questModule.get(activityJQBConfig.taskID);
-		player.pay(PayType.ActivityJQB, id, activityJQBConfig.price).onComplete(result -> {
+		player.pay(PayType.ActivityJQB, id, activityJQBConfig.price,0).onComplete(result -> {
 			if (result.result()){
 				QuestConfig config = QuestManager.instance().get(quest.getId());
 				promise.complete(new ArrayList<>(PlayerHelper.addReward(player,config.Reward, OpType.ActivityJQB)));

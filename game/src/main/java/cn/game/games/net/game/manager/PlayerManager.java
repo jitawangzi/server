@@ -935,8 +935,15 @@ public class PlayerManager {
 	 * @return
 	 */
 	public boolean isForbidAccount(long playerId) {
-		return this.forbidAccounts.containsKey(playerId);
+		ForbidAccount forbidAccount = forbidAccounts.get(playerId);
+		return forbidAccount != null &&  ForbidAccount.isForbidLogin(forbidAccount.getType());
 	}
+
+	public boolean isForbidChat(long pid){
+		ForbidAccount forbidAccount = forbidAccounts.get(pid);
+		return forbidAccount != null &&  ForbidAccount.isForbidChat(forbidAccount.getType());
+	}
+
 	
 	/***
 	 * 初始化被封禁的账号
@@ -985,7 +992,7 @@ public class PlayerManager {
 	 * @param unblockTime
 	 * @return 
 	 */
-	public ForbidAccount forbidAccount(long playerId, String reason, String unblockTime) {
+	public ForbidAccount forbidAccount(long playerId, String reason, String unblockTime,int type) {
 		Date now = new Date();
 		Date unblock = new Date(Long.parseLong(unblockTime));
 		// 解封时间不合法
@@ -996,6 +1003,7 @@ public class PlayerManager {
 		if (isForbidAccount(playerId)) {
 			ForbidAccount account = forbidAccounts.get(playerId);
 			account.setReason(reason);
+			account.updateType(type);
 			account.setUnblockTime(unblock);
 			account.update();
 			return account;
@@ -1007,6 +1015,7 @@ public class PlayerManager {
 				GameClientManager.getInstance().logout(playerId);
 			});
 			ForbidAccount insert = ForbidAccount.valueOf(player, reason, unblock);
+			insert.updateType(type);
 			DAO.insert(insert);
 			this.forbidAccounts.put(playerId, insert);
 			return insert;
@@ -1019,6 +1028,7 @@ public class PlayerManager {
 				return null;
 			}
 			ForbidAccount insert = ForbidAccount.valueOf(p, reason, unblock);
+			insert.updateType(type);
 			DAO.insert(insert);
 			this.forbidAccounts.put(playerId, insert);
 
