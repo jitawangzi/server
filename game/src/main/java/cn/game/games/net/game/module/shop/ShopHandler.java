@@ -213,7 +213,7 @@ public class ShopHandler extends BaseHandler {
 			return;
 		}
 		FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
-		Future<Boolean> pay = player.pay(PayType.FundPass, id, fundPassConfig.Price);
+		Future<Boolean> pay = player.pay(PayType.FundPass, id, fundPassConfig.Price,0);
 
 		pay.onComplete(t -> {
 			if (t.result()) {
@@ -290,7 +290,7 @@ public class ShopHandler extends BaseHandler {
 		int id = req.getId();
 		RechargeConfig rechargeConfig = RechargeManager.instance().get(id); 
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		Future<Boolean> pay = player.pay(PayType.Recharge, id, rechargeConfig.PurchaseParameter);
+		Future<Boolean> pay = player.pay(PayType.Recharge, id, rechargeConfig.PurchaseParameter,0);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				List<RewardInfo> resources = PlayerHelper.addResources(player, rechargeConfig.Item, OpType.ShopTrade);
@@ -338,7 +338,7 @@ public class ShopHandler extends BaseHandler {
 			return true;
 		};
 
-		Future<Boolean> pay = player.pay(PayType.ShopItem, itemId, shopItemConfig.PurchaseParameter);
+		Future<Boolean> pay = player.pay(PayType.ShopItem, itemId, shopItemConfig.PurchaseParameter,shopId);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				addItemAction.get();
@@ -414,7 +414,7 @@ public class ShopHandler extends BaseHandler {
 		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id); 
 		int[] cost = monthCardConfig.Price;
 		
-		Future<Boolean> pay = player.pay(PayType.MonthCard, id, cost);
+		Future<Boolean> pay = player.pay(PayType.MonthCard, id, cost,0);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
@@ -506,7 +506,7 @@ public class ShopHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_gift_repeated.getId());
 			return;
 		}
-		Future<Boolean> pay = player.pay(PayType.ChapterPacks, id, chapterPacksConfig.PurchaseParameter);
+		Future<Boolean> pay = player.pay(PayType.ChapterPacks, id, chapterPacksConfig.PurchaseParameter,0);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				playerModule.addId(IdConstant.CHAPTER_PACK, id);

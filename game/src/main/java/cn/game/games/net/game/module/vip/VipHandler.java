@@ -81,7 +81,7 @@ public class VipHandler extends BaseHandler {
             client.sendProtocol(res, ErrorMsgEnum.config_data_not_found.getId());
             return;
         }
-		player.pay(PayType.FundPass, buyId, buyConfig.Price).onComplete(result -> {
+		player.pay(PayType.VipGift, buyId, buyConfig.Price,0).onComplete(result -> {
             if (result.result()){
                 vipModule.getBuyGiftList().add(buyId);
                 res.addAllDrops(PlayerHelper.addReward(player,buyConfig.RandomGivenId,OpType.vipGiftReward));

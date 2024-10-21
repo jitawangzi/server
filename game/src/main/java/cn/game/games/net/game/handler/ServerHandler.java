@@ -143,7 +143,7 @@ public class ServerHandler extends BaseHandler {
 	private void gmAddForbidAccount(NetClient client, Object o) {
 		ServerMsg.NotifyGmAddForbidAccountRequest_7d000054 req = (ServerMsg.NotifyGmAddForbidAccountRequest_7d000054)o;
 		req.getPidsList().forEach(addPid ->{
-					PlayerManager.getInstance().forbidAccount(addPid, req.getReason(), req.getTimer()+"");
+					PlayerManager.getInstance().forbidAccount(addPid, req.getReason(), req.getTimer()+"",0);
 					log.info(String.format("gmAddForbidAccount pid=%d, reason=%s, timer=%s", addPid, req.getReason(), req.getTimer()));
 		});
 		ServerMsg.NotifyGmAddForbidAccountResponse_7d000055.Builder res = ServerMsg.NotifyGmAddForbidAccountResponse_7d000055.newBuilder().setResult(true);
@@ -170,12 +170,37 @@ public class ServerHandler extends BaseHandler {
 		long uid = request.getUid(); 
 		log.info("wechat ship push, playerId={}, uid={}", playerId, uid);
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		// 离线玩家单独处理 调用 payItem.getPayType().offlinePay(player,payItem); 处理
 		if (player == null || player.isIslogouting()) {
-			resp.setSuccess(false); 
-			client.sendProtocol(resp.build());
+			PlayerHelper.loadPlayerFromDb(playerId).onSuccess(offlinePlayer ->{
+				if (offlinePlayer != null){
+					PayItem payItem = offlinePlayer.getPlayerModule().getPayItems(uid);
+					payItem.getPayType().offlinePay(offlinePlayer,payItem);
+					payItem.finish();
+					player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
+					GameLogger.recharge(player, payItem);
+					// 支付后先实时保存数据到数据库
+					PlayerHelper.saveClientCache(playerId).onSuccess(rr -> {
+						resp.setSuccess(true);
+						client.sendProtocol(resp.build());
+					}).onFailure(t -> {
+						player.fail(t);
+						resp.setSuccess(false);
+						client.sendProtocol(resp.build());
+					});
+					PlayerManager.getInstance().deletePlayer(playerId);
+				}
+			}).onFailure((err)->{
+				err.printStackTrace();
+				resp.setSuccess(false);
+				client.sendProtocol(resp.build());
+			});
+
+
 		} else {
 			PlayerHelper.addTask(playerId, r -> {
 				PayItem payItem = player.getPlayerModule().getPayItems(uid);
+
 				if (payItem != null && payItem.isFinish()) {
 					resp.setSuccess(false);
 					client.sendProtocol(resp.build());
