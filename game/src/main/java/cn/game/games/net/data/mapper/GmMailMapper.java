@@ -35,11 +35,11 @@ public interface GmMailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int updateByPrimaryKey(GmMail row);
+	int updateByPrimaryKeyWithBLOBs(GmMail row);
 	/**
 	 * @mbg.generated
 	 */
-	List<GmMail> selectByOptFlagIndex(@Param("optFlag") Byte optFlag);
+	int updateByPrimaryKey(GmMail row);
 	/**
 	 * @mbg.generated
 	 */

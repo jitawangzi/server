@@ -46,11 +46,6 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<ForbidAccount> selectByRoleName(@Param("name") String name);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertBatch(List<ForbidAccount> records);
 
 	/**

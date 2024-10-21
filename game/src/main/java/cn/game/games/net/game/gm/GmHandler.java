@@ -117,10 +117,10 @@ public class GmHandler extends BaseHandler {
       gmMail.setMinLevel(req.getLevelStart());
       gmMail.setMaxLevel(req.getLevelEnd());
       gmMail.setOptFlag((byte) 0);
-      gmMail.setTimeCheckType(req.getTimeCheckType());
-      gmMail.setMailopttype(1);
+      gmMail.setTimeCheckType((int) req.getTimeCheckType());
+      gmMail.setMailopttype((int) 1);
     } else {
-      gmMail.setMailopttype(0);
+      gmMail.setMailopttype((int) 0);
       gmMail.setPids(req.getPlayerIdsList().toString());
     }
     DAO.insert(gmMail)
@@ -359,6 +359,7 @@ public class GmHandler extends BaseHandler {
     GmAccountForbidResponse_77000006.Builder response =
         GmAccountForbidResponse_77000006.newBuilder();
     String reason = request.getReason();
+    int type = request.getType();
     long unblockTime = request.getEndTime();
     List<Long> pids = new ArrayList<>();
     request
@@ -367,7 +368,7 @@ public class GmHandler extends BaseHandler {
             playerId -> {
               ForbidAccount forbidAccount =
                   PlayerManager.getInstance()
-                      .forbidAccount(Long.parseLong(playerId), reason, unblockTime * 1000L + "");
+                      .forbidAccount(Long.parseLong(playerId), reason, unblockTime * 1000L + "",type);
               if (forbidAccount != null) {
                 sendAndRecordOpt(client, request, response.build());
                 pids.add(forbidAccount.getPlayerId());

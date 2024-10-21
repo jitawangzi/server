@@ -9,10 +9,12 @@ import cn.game.games.cache.base.DbEntity;
 public class ForbidAccount implements Serializable, DbEntity {
 
 	/**
+	 * 封禁的玩家id
 	 * @mbg.generated
 	 */
 	private Long playerId;
 	/**
+	 * 封禁的玩家
 	 * @mbg.generated
 	 */
 	private String name;
@@ -31,6 +33,11 @@ public class ForbidAccount implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private String reason;
+	/**
+	 * 封禁类型 0 所有， 1 封禁账号，2 禁言
+	 * @mbg.generated
+	 */
+	private Integer type;
 	/**
 	 * @mbg.generated
 	 */
@@ -109,6 +116,20 @@ public class ForbidAccount implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
+	public Integer getType() {
+		return type;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
 	@Override
 	public Class<?> getMapperClass() {
 		return cn.game.games.net.data.mapper.ForbidAccountMapper.class;
@@ -141,4 +162,37 @@ public class ForbidAccount implements Serializable, DbEntity {
 		f.setUnblockTime(unblockTime);
 		return f;
 	}
+
+	public static boolean isForbidLogin(int type){
+//		 * 封禁类型 0 所有， 1 封禁账号，2 禁言
+		if (type == 0){
+			return true;
+		}
+		if (type == 1){
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isForbidChat(int type){
+		return type == 0 || type == 2;
+	}
+
+	public void updateType(int type){
+		if (this.type == type){
+			return;
+		}
+		if (this.type == 1 && type == 2){
+			this.type = 0;
+			return;
+		}
+		if (this.type == 2 && type == 1){
+			this.type = 0;
+			return;
+		}
+		this.type = type;
+	}
+
+
+
 }
