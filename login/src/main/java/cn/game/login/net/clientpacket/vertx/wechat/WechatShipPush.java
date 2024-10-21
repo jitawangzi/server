@@ -123,7 +123,7 @@ public class WechatShipPush implements Handler<RoutingContext> {
 				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
 			}
 		}).onFailure(r -> {
-			log.error("wechat ship resp from game fail", r);
+			log.error("wechat ship resp from game fail : " + wechatPushBean.MiniGame.PayloadObj.OutTradeNo, r);
 			failConsumer.accept(null);
 			updatePayOrder(wechatPushBean, payOrder);
 			mapper.updateByPrimaryKeyWithBLOBs(payOrder);
