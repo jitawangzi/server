@@ -64,6 +64,7 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 		startBattleId = nextBattleId();
 		this.randomBuff.clear();
 		this.rewardBattleIds.clear();
+		this.buffIdsMap.clear();
 		this.buffIds.clear();
 		buffRefreshTimes = GlobalConst.NightmareRealmInitialcnt;
 
