@@ -32,12 +32,10 @@ public class GlobalMessageStatistics {
 	private static final Logger log = LoggerFactory.getLogger(GlobalMessageStatistics.class);
 	private static final GlobalMessageStatistics instance = new GlobalMessageStatistics();
 
-	public MultiKeyMap<Long, Pair<String, Long>> globalSendMessages = new MultiKeyMap<Long, Pair<String, Long>>();
-	public MultiKeyMap<Long, Pair<String, Long>> globalRecvMessages = new MultiKeyMap<Long, Pair<String, Long>>();
 	// 全局消息发送记录： (客户端ID, 消息序号) => 消息名, 消息发送时间
-//	public Map<String, Pair<String, Long>> globalSendMessages = new ConcurrentHashMap<>();
+	public MultiKeyMap<Long, Pair<String, Long>> globalSendMessages = new MultiKeyMap<Long, Pair<String, Long>>();
 	// 全局消息接收记录： (客户端ID, 消息序号) => 消息名, 消息接收时间
-//	public Map<String, Pair<String, Long>> globalRecvMessages = new ConcurrentHashMap<>();
+	public MultiKeyMap<Long, Pair<String, Long>> globalRecvMessages = new MultiKeyMap<Long, Pair<String, Long>>();
 
 	public static GlobalMessageStatistics getInstance() {
 		return instance;
