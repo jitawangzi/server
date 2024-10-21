@@ -112,7 +112,7 @@ public class DrawHandler extends BaseHandler {
 			}
 		}
 		List<List<RewardInfo>> allRewards = drawModule.draw(id, drawCount, freeOnce);
-		player.handleEvent(EventTypeEnum.Draw, drawCount);
+		player.handleEvent(EventTypeEnum.Draw, drawCount,id);
 
 		resp.addAllRewards(allRewards.get(0));
 		resp.addAllHeros(allRewards.get(1));

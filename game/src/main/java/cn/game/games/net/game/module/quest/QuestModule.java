@@ -969,7 +969,10 @@ public class QuestModule extends BasePlayerModule {
 		}
 			case Draw:{
 				int count = event.getIntParameter(0);
-				addCumulativeCount(ConditionTypeEnum.SupremeGacha, count);
+				int typeId = event.getIntParameter(1);
+				if (typeId == 2) {
+					addCumulativeCount(ConditionTypeEnum.SupremeGacha, count);
+				}
 
 				break;
 			}

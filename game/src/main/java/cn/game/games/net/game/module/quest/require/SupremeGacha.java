@@ -30,4 +30,10 @@ public class SupremeGacha extends AbstractCondition {
         }
         return true;
     }
+
+    @Override
+    public void updateRequireCount(GameEvent event) {
+        int count = event.getIntParameter(0);
+        addCount(count);
+    }
 }

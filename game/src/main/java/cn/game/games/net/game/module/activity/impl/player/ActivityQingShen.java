@@ -29,7 +29,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	int round;
 	List<Integer> rewardIdList = new ArrayList<>();
 
-	private static transient EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.QuestFinish};
+	private static transient EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.QuestReward};
 
 	@Override
 	public Message buildActivityShowInfo() {
@@ -113,7 +113,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 
 	@Override
 	public void handleEvent(GameEvent event) {
-		if (event.getType() == EventTypeEnum.QuestFinish){
+		if (event.getType() == EventTypeEnum.QuestReward){
 			int taskId = event.getIntParameter(0);
 			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList();
 			if (!roundConfigList.isEmpty()) {
@@ -121,6 +121,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 				if (taskId == roundTaskId) {
 					log.info(String.format("open next round:%d, pid:%d, activityId:%d", round, player.getPlayerId(), id));
 					refreshActivity();
+					player.getGameClient().sendProtocol(buildActivityShowInfo());
 				}
 			}
 		}

@@ -112,7 +112,7 @@ public enum EventTypeEnum {
 	vipExpChange(77, "VIP 经验变动"),
 	vipLevelChange(78, "VIP 等级变动"),
 	QuestFinish(79,"任务完成"),
-	refresh(80, "只要是登录就会刷新的该事件")
+	refresh(80, "只要是登录就会刷新的该事件"),
 	;
 	private int id;
 	private String desc;
