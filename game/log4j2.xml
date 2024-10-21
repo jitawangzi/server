@@ -17,9 +17,7 @@
         <Property name="file_warn">warn</Property>
         <Property name="file_error">error</Property>
         <Property name="file_net">net</Property>
-        <Property name="file_elapsed">elapsed</Property>
-        <Property name="file_netcheck">netcheck</Property>
-        <Property name="file_combat">combat</Property>
+<!--         <Property name="file_netcheck">netcheck</Property> -->
 
         <!-- *********************** 一级 ************************* -->
         <Property name="file_heart">heart</Property>
@@ -82,36 +80,21 @@
             <AppenderRef ref="System"/>
         </AsyncLogger>
 
-        <AsyncLogger name="Info" level="info" includeLocation="false" additivity="true">
-            <AppenderRef ref="Info"/>
-        </AsyncLogger>
-
         <AsyncLogger name="Warn" level="warn" includeLocation="false" additivity="true">
             <AppenderRef ref="Warn"/>
-            <!--<AppenderRef ref="Info"/>-->
         </AsyncLogger>
 
         <AsyncLogger name="Error" level="error" includeLocation="false" additivity="true">
             <AppenderRef ref="Error"/>
-            <!--<AppenderRef ref="Warn"/>
-            <AppenderRef ref="Info"/>-->
         </AsyncLogger>
 
         <AsyncLogger name="Net" level="info" includeLocation="false" additivity="true">
             <AppenderRef ref="Net"/>
         </AsyncLogger>
 
-        <AsyncLogger name="Elapsed" level="info" includeLocation="false" additivity="true">
-            <AppenderRef ref="Elapsed"/>
-        </AsyncLogger>
-
-        <AsyncLogger name="Combat" level="info" includeLocation="false" additivity="true">
-            <AppenderRef ref="Combat"/>
-        </AsyncLogger>
-
-        <AsyncLogger name="NetCheck" level="info" includeLocation="false" additivity="false">
-            <AppenderRef ref="NetCheck"/>
-        </AsyncLogger>
+<!--         <AsyncLogger name="NetCheck" level="info" includeLocation="false" additivity="false"> -->
+<!--             <AppenderRef ref="NetCheck"/> -->
+<!--         </AsyncLogger> -->
 
         <!--  已处理的日志  ============================================================== start -->
 
@@ -280,29 +263,16 @@
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="System" fileName="${path_system}/system.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/${file_system}.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
         
-        <RollingRandomAccessFile name="System"
-                                 immediateFlush="true"
-                                 filePattern="${path_system}/${file_system}-${date_suffix}${extension}">
-            <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
-                <OnStartupTriggeringPolicy/>
-                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
-            </Policies>
-        </RollingRandomAccessFile>
-
-        <RollingRandomAccessFile name="Info"
-                                 immediateFlush="true"
-                                 filePattern="${path_system}/${file_info}-${date_suffix}${extension}">
-            <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
-                <OnStartupTriggeringPolicy/>
-                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
-            </Policies>
-        </RollingRandomAccessFile>
-
               <!-- 按天滚动的错误日志文件输出 -->
         <RollingRandomAccessFile name="Error" fileName="${path_system}/err.log"
                                  filePattern="${path_system}/%d{yyyy-MM-dd}/err.%d{yyyy-MM-dd}-%i.log">
@@ -343,38 +313,16 @@
         </RollingRandomAccessFile>
 
 
-        <RollingRandomAccessFile name="Elapsed"
-                                 immediateFlush="true"
-                                 filePattern="${path_system}/${file_elapsed}-${date_suffix}${extension}">
-            <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
-                <OnStartupTriggeringPolicy/>
-                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
-            </Policies>
-        </RollingRandomAccessFile>
-
-        <RollingRandomAccessFile name="Combat"
-                                 immediateFlush="true"
-                                 filePattern="${path_system}/${file_combat}-${date_suffix}${extension}">
-            <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
-                <OnStartupTriggeringPolicy/>
-                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
-            </Policies>
-        </RollingRandomAccessFile>
-
-        <RollingRandomAccessFile name="NetCheck"
-                                 immediateFlush="true"
-                                 filePattern="${path_system}/${file_netcheck}-${date_suffix}${extension}">
-            <PatternLayout charset="UTF-8" pattern="%m%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
-                <OnStartupTriggeringPolicy/>
-                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
-            </Policies>
-        </RollingRandomAccessFile>
+<!--         <RollingRandomAccessFile name="NetCheck" -->
+<!--                                  immediateFlush="true" -->
+<!--                                  filePattern="${path_system}/${file_netcheck}-${date_suffix}${extension}"> -->
+<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
+<!--             <Policies> -->
+<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
+<!--                 <OnStartupTriggeringPolicy/> -->
+<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
+<!--             </Policies> -->
+<!--         </RollingRandomAccessFile> -->
 
         <!--  已处理的日志  ============================================================== start -->
         <RollingRandomAccessFile name="heart"
