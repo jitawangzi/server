@@ -24,18 +24,32 @@ public class AccumulatedRechargeTotalDay extends AbstractCondition {
 
     @Override
     public boolean checkEventParam(GameEvent event) {
+//        日进斗金：第一天充值了10元，第二天充了30，相当于只完成了第一个的任务
         int activityId = getExtParam()[0];
         int day = getExtParam()[1];
+        int recharge = getExtParam()[2];
         if (player.getActivityModule().get(activityId) == null){
             return false;
         }
         ActivityMeiRiBaoLi meiRiBaoLi = (ActivityMeiRiBaoLi) player.getActivityModule().get(activityId);
-        meiRiBaoLi.addTotalRechargeNum(1);
-        return day == meiRiBaoLi.getTotalRechargeNum();
+        if (DateUtil.isSameDay(System.currentTimeMillis(), meiRiBaoLi.getFinishRechargeTimer())){
+            return false;
+        }
+        meiRiBaoLi.addTotalRecharge(event.getIntParameter(0),event);
+        boolean res = false;
+        if (meiRiBaoLi.getTotalRecharge() >= recharge){
+            meiRiBaoLi.addTotalRechargeNum(1);
+             res = day == meiRiBaoLi.getTotalRechargeNum();
+        }
+        return res;
   }
 
     @Override
     public void updateRequireCount(GameEvent event) {
-        addCount(event.getIntParameter(0));
+        addCount(1);
+        int activityId = getExtParam()[0];
+        ActivityMeiRiBaoLi meiRiBaoLi = (ActivityMeiRiBaoLi) player.getActivityModule().get(activityId);
+        meiRiBaoLi.setTotalRecharge(0);
+        meiRiBaoLi.setFinishRechargeTimer(System.currentTimeMillis());
     }
 }

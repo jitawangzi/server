@@ -3,7 +3,9 @@ package cn.game.games.net.game.module.activity.impl.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.games.core.event.GameEvent;
 import cn.game.util.DateUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
@@ -31,7 +33,14 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	 * 累计充值的天数
 	 */
 	private int totalRechargeNum;
+	/**
+	 * 累计充值的金额 完成一个任务则重置
+	 */
+	private int totalRecharge;
 	private long lastRechargeTimer;
+	private long finishRechargeTimer;
+	@JsonIgnore
+	private GameEvent oldRechargeEvent;
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 
 	@Override
@@ -63,8 +72,22 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 		long now = System.currentTimeMillis();
 		if (!DateUtil.isSameDay(lastRechargeTimer, now)){
 			this.totalRechargeNum += num;
-			setLastRechargeTimer(num);
+			setLastRechargeTimer(now);
 		}
+	}
+
+	public int getTotalRecharge() {
+		return totalRecharge;
+	}
+	public void addTotalRecharge(int recharge,GameEvent event){
+		if (oldRechargeEvent != event){
+			this.totalRecharge += recharge;
+			this.oldRechargeEvent = event;
+		}
+	}
+
+	public void setTotalRecharge(int totalRecharge) {
+		this.totalRecharge = totalRecharge;
 	}
 
 	public long getLastRechargeTimer() {
@@ -73,6 +96,14 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 
 	public void setLastRechargeTimer(long lastRechargeTimer) {
 		this.lastRechargeTimer = lastRechargeTimer;
+	}
+
+	public long getFinishRechargeTimer() {
+		return finishRechargeTimer;
+	}
+
+	public void setFinishRechargeTimer(long finishRechargeTimer) {
+		this.finishRechargeTimer = finishRechargeTimer;
 	}
 
 	@Override
