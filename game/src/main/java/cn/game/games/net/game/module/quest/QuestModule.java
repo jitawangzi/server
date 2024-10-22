@@ -786,10 +786,6 @@ public class QuestModule extends BasePlayerModule {
 		List<QuestGroupInfo> list = new ArrayList<>();
 
 		quests.forEach((k, v) -> {
-			// 七日狂欢不显示
-			if (k == QuestTypeEnum.SevenDaysCarniva.ID) {
-				return;
-			}
 			QuestGroupInfo.Builder groupInfo = QuestGroupInfo.newBuilder();
 			groupInfo.setGroup(k);
 			v.forEach((kk, vv) -> {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--级别:TRACE > DEBUG > INFO > WARN > ERROR > FATAL-->
-<Configuration status="info" shutdownHook="disable">
+<Configuration status="info" shutdownHook="disable" monitorInterval="60">
 
     <Properties>
          <Property name="shutdownCallbackRegistry">org.apache.logging.log4j.core.impl.Log4jContextFactory</Property>

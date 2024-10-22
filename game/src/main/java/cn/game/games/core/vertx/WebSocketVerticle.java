@@ -19,6 +19,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.Config;
+import cn.game.util.HexUtil;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.log.CommonLogger;
 import io.netty.buffer.ByteBuf;
@@ -82,7 +83,8 @@ public class WebSocketVerticle extends AbstractVerticle {
 //									.info("opType[recv]{}receive msg[{}]data[{}]seq[{}]", client, message.getClass().getSimpleName(),
 //											message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message) : message, seq);
 							CommonLogger
-									.net("opType[recv]" + client + " receive msg[" + message.getClass().getSimpleName() + "] data["
+									.net("opType[recv]" + client + "msgId[" + HexUtil.toHexString(msgID) + "]msgName["
+											+ message.getClass().getSimpleName() + "]msgValue["
 											+ (message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message)
 													: message)
 											+ "] seq[" + seq + "]");

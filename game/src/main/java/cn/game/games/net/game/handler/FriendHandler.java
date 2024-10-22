@@ -139,9 +139,10 @@ public class FriendHandler extends BaseHandler {
 				.map(r -> CacheType.PLAYER_SIMPLE.key(r))
 				.collect(Collectors.toList());
 		Future<List<SimplePlayer>> multiGetAsync = RedisLocalCache.getInstance().multiGetAsync(ids);
-		multiGetAsync.onSuccess(result -> {
+		multiGetAsync.map(result -> {
 			resp.addAllPlayers(PbBuilder.buildSimplePlayerInfos(result));
 			client.sendProtocol(resp.build());
+			return null;
 		}).onFailure(player::fail);
 	}
 
