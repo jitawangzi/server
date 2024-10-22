@@ -50,7 +50,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 //		return ActivityQingShenManager.instance().list().stream().filter(activityQingShenConfig -> activityQingShenConfig.ActivityiD == getId()).collect(Collectors.toList());
 		return ActivityQingShenManager.instance().getActivityiDList(id);
 	}
-	List<ActivityQingShenConfig> getRoundConfigList(){
+	public List<ActivityQingShenConfig> getRoundConfigList(){
 		return getConfigList().stream().filter(activityQingShenConfig -> activityQingShenConfig.Round == round).toList();
 	}
 	int getMaxRound(){
@@ -103,6 +103,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 		QuestModule questModule = player.getQuestModule();
 		newTaskIdList.forEach(activityQingShenConfig -> {
 			questModule.remove(activityQingShenConfig.taskID);
+			if (rewardIdList.contains(activityQingShenConfig.taskID)) rewardIdList.remove(Integer.valueOf(activityQingShenConfig.taskID));
 			questModule.open(activityQingShenConfig.taskID,true);
 			if (!ServerContext.getInstance().getRunMode().isProduction()){
 				log.info(String.format("create new taskId:%d, activityId:%d, round:%d  pid:%d,",activityQingShenConfig.taskID,id,round,player.getPlayerId()));

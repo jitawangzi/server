@@ -1,11 +1,9 @@
 package cn.game.games.net.game.module.activity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import cn.game.protocol.generated.config.ActivityQingShenConfig;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -332,7 +330,17 @@ public class ActivityHandler extends BaseHandler {
                 client.sendProtocol(res.build());
               });
     } else {
-		req.getTaskIdsList().forEach(taskId -> {
+
+      // 请神任务 每轮最后一个任务完成之后 自动领取每轮回奖励的任务
+      List<Integer> rewardTaskIds = new ArrayList<>(req.getTaskIdsList());
+      if (activityBase instanceof ActivityQingShen activityQingShen) {
+        List<ActivityQingShenConfig> roundConfigList = activityQingShen.getRoundConfigList();
+        if (rewardTaskIds.contains(roundConfigList.get(roundConfigList.size() - 2).taskID) && !rewardTaskIds.contains(roundConfigList.get(roundConfigList.size() - 1).taskID)){
+           rewardTaskIds.add(roundConfigList.get(roundConfigList.size() - 1).taskID);
+        }
+      }
+        Collections.sort(rewardTaskIds);
+		rewardTaskIds.forEach(taskId -> {
 			List<RewardInfo> reward = activityBase.receive(taskId);
 			if (reward == null) {
 				client.sendProtocol(res, ErrorMsgEnum.request_parameter_error.getId());
