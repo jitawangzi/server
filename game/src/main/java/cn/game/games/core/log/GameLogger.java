@@ -429,7 +429,9 @@ public class GameLogger extends Logger {
 					.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.recharge.name(), LoggerType.recharge.version, stepNum + "")),
 					payItem.getRmb(), player.getAccount().sdkPayChannel, payItem.getAddCount(), cur, player.getGameClient().getIp(),
-					payItem.getAddId() > 0 ? player.getCurrencyModule().get(payItem.getAddId()).getCount() : 0, player.getVipLevel(),
+					payItem.getAddId() > 0 ? player.getGoodsModule(payItem.getAddId()).getCount(payItem.getAddId())
+							: player.getCurrencyModule().getCount(Asset.diamond.ID),
+					player.getVipLevel(),
 					payItem.getPayId(),
 					payItem.getOrderId(),
 					player.getAccount().getPlatform() };
