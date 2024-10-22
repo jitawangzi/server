@@ -68,7 +68,7 @@
         <logger name="org.quartz" level="warn"/>
 
         <!--additivity,boolean,用来指定输出添加关系,子Logger的输出是否需要输出到父Logger中-->
-       <AsyncRoot level="info" includeLocation="false" additivity="true">
+       <AsyncRoot level="info" includeLocation="false" >
             <AppenderRef ref="Console"/>
             <AppenderRef ref="Stdout"/>
             <AppenderRef ref="Warn"/>
