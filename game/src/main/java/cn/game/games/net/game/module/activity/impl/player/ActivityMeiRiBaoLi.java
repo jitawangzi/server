@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.activity.impl.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.util.DateUtil;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
@@ -25,6 +26,12 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 @ActivityType(type = ActivityTypeEnum.ActivityMeiRiBaoLi)
 public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	List<Integer> rewardIdList = new ArrayList<>();
+
+	/**
+	 * 累计充值的天数
+	 */
+	private int totalRechargeNum;
+	private long lastRechargeTimer;
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 
 	@Override
@@ -47,6 +54,26 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	}
 
 
+
+	public int getTotalRechargeNum() {
+		return totalRechargeNum;
+	}
+
+   public void addTotalRechargeNum(int num) {
+		long now = System.currentTimeMillis();
+		if (!DateUtil.isSameDay(lastRechargeTimer, now)){
+			this.totalRechargeNum += num;
+			setLastRechargeTimer(num);
+		}
+	}
+
+	public long getLastRechargeTimer() {
+		return lastRechargeTimer;
+	}
+
+	public void setLastRechargeTimer(long lastRechargeTimer) {
+		this.lastRechargeTimer = lastRechargeTimer;
+	}
 
 	@Override
 	public  List<RewardInfo> receive(int id) {
