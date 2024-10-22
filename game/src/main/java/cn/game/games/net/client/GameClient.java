@@ -139,7 +139,8 @@ public class GameClient extends AbstractNetClient {
 //							HexUtil.toHexString(msgId),
 //							message.getClass().getSimpleName(), TextFormat.shortDebugString((Message) message),
 //							curMessageSeq);
-					CommonLogger.net("opType[send]errorCode[" + errorCode + "]msgId[" + HexUtil.toHexString(msgId) + "]msgName["
+					CommonLogger
+							.net("opType[send]" + this + "errorCode[" + errorCode + "]msgId[" + HexUtil.toHexString(msgId) + "]msgName["
                             + message.getClass().getSimpleName() + "]msgValue[" + TextFormat.shortDebugString((Message) message) + "]seq["
 							+ curMessageSeq + "]");
 				}
