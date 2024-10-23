@@ -83,6 +83,7 @@ public class RestServer extends AbstractVerticle {
     	router.route("/gm/delNotice").handler(new GmDelNoticeReq());
     	router.route("/gm/NoticeList").handler(new GmNoticeListReq());
     	router.route("/gm/optList").handler(new GmOptListReq());
+    	router.route("/gm/payOrderSuccess").handler(new GmPayOrderSuccessReq());
 
 		//微信IOS 支付跳转页面
     	router.route("/wx_pay").handler(new WeChatPayPageReq());
