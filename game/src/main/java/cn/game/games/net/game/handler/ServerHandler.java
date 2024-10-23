@@ -161,7 +161,7 @@ public class ServerHandler extends BaseHandler {
 		}
 		GmPlayerInfo gmProto = player.toGmProto();
 		resp.setPlayer(gmProto);
-		client.sendProtocol(resp.build(), ErrorMsgEnum.not_online.getId());
+		client.sendProtocol(resp.build());
 	}
 	protected void ship(NetClient client, Object message) {
 		PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;

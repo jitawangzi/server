@@ -399,7 +399,7 @@ public class Player  {
 		builder.setServerId(getData().getServerId()); 
 		builder.setPlantform("未知");
 		builder.setName(getData().getName()); 
-		builder.setLevel(getData().getLevel());
+		builder.setLevel(getLevel());
 		builder.putAllAssets(getCurrencyModule().getCurrencyMap().getMap());
 		builder.setUnionId("不存在");
 		builder.setUnionName("不存在"); 

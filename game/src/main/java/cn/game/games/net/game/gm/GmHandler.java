@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import cn.game.games.cache.entity.GmMail;
 import cn.game.games.cache.entity.GmOpt;
 import cn.game.games.net.data.mapper.GmMailMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GmMsg;
@@ -268,34 +270,68 @@ public class GmHandler extends BaseHandler {
     GmPlayerRequest_77000021 request = (GmPlayerRequest_77000021) message;
     GmPlayerResponse_77000022.Builder response = GmPlayerResponse_77000022.newBuilder();
     String channel = request.getChannel();
-    long playerId =
-        StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
     String name = request.getName();
-
-    if (PlayerManager.getInstance().isOnline(playerId)) {
-      Future<io.vertx.core.eventbus.Message<GameGmPlayerInfoResponse_7d000051>> respMessage =
-          VxHolder.requestRemoteServer(
-              PlayerManager.getInstance().getServerId(playerId),
-              GameGmPlayerInfoRequest_7d000050.newBuilder().setPlayerId(playerId).build());
-      respMessage.onComplete(
-          r -> {
-            response.setPlayer(r.result().body().getPlayer());
-            sendAndRecordOpt(client, request, response.build());
-          });
-    } else {
-      // 从本服务器载入玩家数据
-      GmHelper.getPlayerInfo(name, playerId)
-          .onSuccess(
-              r -> {
-                response.setPlayer(r);
-                sendAndRecordOpt(client, request, response.build());
-              })
-          .onFailure(
-              e -> {
-                sendAndRecordOpt(
-                    client, request, response.build(), ErrorMsgEnum.player_data_not_found, "");
-              });
-    }
+    VxHolder.vertx.executeBlocking(
+        f -> {
+          long playerId =
+              StringUtils.isEmpty(request.getPlayerId())
+                  ? 0
+                  : Long.parseLong(request.getPlayerId());
+          if (playerId == 0) {
+            if (name != null) {
+              try {
+                playerId =
+                    PlayerNameManager.getInstance()
+                        .getPlayerId(name)
+                        .toCompletionStage()
+                        .toCompletableFuture()
+                        .get();
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+            }
+          }
+          if (!PlayerManager.getInstance().isOnline(playerId)) {
+            Future<io.vertx.core.eventbus.Message<GameGmPlayerInfoResponse_7d000051>> respMessage =
+                VxHolder.requestRemoteServer(
+                    PlayerManager.getInstance().getServerId(playerId),
+                    GameGmPlayerInfoRequest_7d000050.newBuilder().setPlayerId(playerId).build());
+            respMessage
+                .onSuccess(
+                    r -> {
+                      response.setPlayer(r.body().getPlayer());
+                      sendAndRecordOpt(client, request, response.build());
+                    })
+                .onFailure(
+                    err -> {
+                      err.printStackTrace();
+                      sendAndRecordOpt(
+                          client,
+                          request,
+                          response.build(),
+                          ErrorMsgEnum.player_data_not_found,
+                          "");
+                    });
+          } else {
+            // 从本服务器载入玩家数据
+            GmHelper.getPlayerInfo(name, playerId)
+                .onSuccess(
+                    r -> {
+                      response.setPlayer(r);
+                      sendAndRecordOpt(client, request, response.build());
+                    })
+                .onFailure(
+                    e -> {
+                      sendAndRecordOpt(
+                          client,
+                          request,
+                          response.build(),
+                          ErrorMsgEnum.player_data_not_found,
+                          "");
+                    });
+          }
+          f.complete(null);
+        });
   }
 
   private void sendAndRecordOpt(NetClient client, Message request, Message response) {
