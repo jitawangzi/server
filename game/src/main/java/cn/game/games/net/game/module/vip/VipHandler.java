@@ -54,8 +54,13 @@ public class VipHandler extends BaseHandler {
             client.sendProtocol(res, ErrorMsgEnum.vip_free_gift_has_reward.getId());
             return;
         }
-        vipModule.setRewardFreeGiftTimer(now);
         VIPConfig vipConfig = vipModule.getCurVipConfig();
+        if (vipModule.getRewardFreeGiftList().contains(vipConfig.ID)){
+            client.sendProtocol(res, ErrorMsgEnum.vip_free_gift_has_reward.getId());
+            return;
+        }
+        vipModule.setRewardFreeGiftTimer(now);
+        vipModule.getRewardFreeGiftList().add(vipConfig.ID);
         res.addAllDrops(PlayerHelper.addReward(player,vipConfig.DailyBox,OpType.vipGiftReward));
 
         res.setRewardFreeGiftTimer((int) (vipModule.rewardFreeGiftTimer/1000L));

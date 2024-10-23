@@ -35,6 +35,8 @@ public class VipModule extends BasePlayerModule {
      * 免费礼包领取时间戳
      */
     long rewardFreeGiftTimer;
+    /**领取过的免费礼包id*/
+    List<Integer> rewardFreeGiftList = new ArrayList<>();
 
     @Override
     public void buildPlayerAllInfo(PlayerMsg.PlayerAllInfo.Builder builder) {
@@ -43,6 +45,14 @@ public class VipModule extends BasePlayerModule {
     @Override
     public void initFromDbAfter() {
 
+    }
+
+    public List<Integer> getRewardFreeGiftList() {
+        return rewardFreeGiftList;
+    }
+
+    public void setRewardFreeGiftList(List<Integer> rewardFreeGiftList) {
+        this.rewardFreeGiftList = rewardFreeGiftList;
     }
 
     @Override
@@ -64,12 +74,16 @@ public class VipModule extends BasePlayerModule {
                 long curExp = event.getLongParameter(2);
                 if (type == Asset.VIPExp.ID){
                     //旧的免费礼包未领取  在VIP升级后，没有领取的每日奖励通过邮件发送ID=8；
-                    if (!DateUtil.isSameDay(System.currentTimeMillis(), rewardFreeGiftTimer)){
-                        VIPConfig config = VIPManager.instance().get(level);
-						MailHelper.sendMail(playerId, 8, PlayerHelper.randomReward(config.DailyBox), true);
+                    if (level > 0 && !getRewardFreeGiftList().contains(level - 1)){
+                        sendFreeGiftMail(level -1);
+                        rewardFreeGiftTimer = 0;
+                        VipMsg.getVipInfoResponse_34000002.Builder res = VipMsg.getVipInfoResponse_34000002.newBuilder();
+                        res.setInfo(toPb());
+                        player.getGameClient().sendProtocol(res);
                     }
-                    rewardFreeGiftTimer = 0;
-                    log.info(String.format( "vip levelUp curLevel:%d, curExp:%d, pid:%d", level,curExp,player.getPlayerId()));
+                   /* if (!DateUtil.isSameDay(System.currentTimeMillis(), rewardFreeGiftTimer)){
+                        sendFreeGiftMail(level);
+                    }*/
                 }
                 break;
             }
@@ -77,6 +91,14 @@ public class VipModule extends BasePlayerModule {
                 log.error(String.format("VipModule handleEvent not found this type:%s, pid:%d",event.getType(),player.getPlayerId()));
             }
         }
+
+    }
+
+    private void sendFreeGiftMail(int level) {
+        VIPConfig config = VIPManager.instance().get(level);
+        MailHelper.sendMail(playerId, 8, PlayerHelper.randomReward(config.DailyBox), true);
+        rewardFreeGiftList.add(config.ID);
+        log.info(String.format( " sendFreeGiftMail vip levelUp curLevel:%d,  pid:%d", level,player.getPlayerId()));
 
     }
 
