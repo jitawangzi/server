@@ -26,8 +26,10 @@ public enum PayType {
 	FirstCharge(1){
 		@Override
 		public boolean offlinePay(Player player, PayItem payItem) {
-			FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(payItem.getPayId());
-			activityBase.buy(payItem.getAddId());
+			int activityId = payItem.getPaySubIds().get(0);
+			int chargeId = payItem.getPayId();
+			FirstChargeActivity activityBase = (FirstChargeActivity) player.getActivityModule().get(activityId);
+			activityBase.buy(chargeId);
 			return true;
 		}
 	},
@@ -75,7 +77,7 @@ public enum PayType {
 		@Override
 		public boolean offlinePay(Player player, PayItem payItem) {
 			int itemId = payItem.getPayId();
-			int shopId = payItem.getAddId();
+			int shopId = payItem.getPaySubIds().get(0);
 			ShopModule shopModule = player.getShopModule();
 			ShopItem shopItem = shopModule.getShopItem(shopId, itemId);
 			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);

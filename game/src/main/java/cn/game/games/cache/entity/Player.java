@@ -424,7 +424,7 @@ public class Player  {
 	 * @param cost   费用，第一个是支付类型，第二个是支付的id，第三个是支付的数量
 	 * @return
 	 */
-	public Future<Boolean> pay(PayType payType,int id, int[] cost,int otherId) {
+	public Future<Boolean> pay(PayType payType,int id, int[] cost,int... otherId) {
 		if (cost == null || cost.length == 0 || (cost.length == 1 && cost[0] == 0)) {
 			return Future.succeededFuture(true);
 		}
@@ -470,7 +470,9 @@ public class Player  {
 					payItem.setRmb(rmbCost);
 					payItem.setPayType(payType);
 					payItem.setPayId(id);
-					payItem.setAddId(otherId);
+					if (otherId != null){
+						payItem.addPaySubIds(otherId);
+					}
 					getPlayerModule().addPayItems(payItem);
 				}
 			}).onFailure(r -> {
