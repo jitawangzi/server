@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--级别:TRACE > DEBUG > INFO > WARN > ERROR > FATAL-->
-<Configuration status="DEBUG" shutdownHook="disable">
+<Configuration status="DEBUG" shutdownHook="disable" monitorInterval="60">
     <Properties>
         <Property name="path_system">./logs/</Property>
         <Property name="date_suffix">%d{yyyy-MM-dd}</Property>
