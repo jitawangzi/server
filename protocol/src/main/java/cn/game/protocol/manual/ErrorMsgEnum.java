@@ -33,6 +33,8 @@ public enum ErrorMsgEnum {
 	session_not_exist(12, "session错误，需要先登陆"),
 	requests_too_frequent(13, "请求太频繁"),
 	async_request_fail(14, "异步请求失败"),
+	/** 特别注意这个错误只是 客户端使用，服务器不用这个错误码，只是给客户端定义的。  */
+	request_timeout(15, "请求超时没有返回数据"),
 
 	// #通用错误 50 - 99
 	/** 玩家数据校验错误。 */
@@ -147,6 +149,7 @@ public enum ErrorMsgEnum {
 	we_chat_context_check_fail(404, "输入的文字包含屏蔽字，请检查之后在输入"),
 	login_fail_player_is_forbid(405,"玩家被封号 不可登录"),
 	chat_fail_player_is_forbid(406,"玩家被禁言 不可登录"),
+
 	;
 
 	/** id */
