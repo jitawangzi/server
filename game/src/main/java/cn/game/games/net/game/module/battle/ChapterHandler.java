@@ -1022,17 +1022,10 @@ public class ChapterHandler extends BaseHandler {
 			minute = seconds / 60;
 			hours = minute / 60;
 		}
+		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
 
-		PatrolConfig patrolConfig = PatrolManager.instance().get(chapterModule.getFightMainBattleId());
-
-		float incomeRate = player.getWelfareValue(WelfareTypeEnum.PatrolIncome);
-		float goldRate = player.getWelfareValue(WelfareTypeEnum.TravelTimeMoney);
-		float expRate = player.getWelfareValue(WelfareTypeEnum.TravelTimeExp);
-		float expRateAdd = 1 + ((expRate + incomeRate) / 10000f);
-		float goldRateAdd = 1 + ((goldRate + incomeRate) / 10000f);
-
-		int exp = (int) (patrolConfig.IncomeEXP * minute * expRateAdd);
-		int gold = (int) (patrolConfig.IncomeGold * minute * goldRateAdd);
+		int exp = BattleHelper.calcPatrolExpAdd(player, minute);
+		int gold = BattleHelper.calcPatrolGoldAdd(player, minute);
 
 		PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);
 		PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Patrol);

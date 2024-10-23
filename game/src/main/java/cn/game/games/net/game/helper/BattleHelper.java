@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
+import cn.game.games.cache.entity.Player;
 import cn.game.protocol.generated.config.AttrEffectConfigConfig;
 import cn.game.protocol.generated.config.AttributeVlalueConfig;
 import cn.game.protocol.generated.config.BattleConfig;
@@ -16,6 +17,8 @@ import cn.game.protocol.generated.config.GamePlayRandomBuffConfig;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.PatrolConfig;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.AttrEffectConfigManager;
 import cn.game.protocol.generated.manager.AttributeVlalueManager;
 import cn.game.protocol.generated.manager.BattleManager;
@@ -23,6 +26,7 @@ import cn.game.protocol.generated.manager.GamePlayRandomBuffManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
@@ -205,6 +209,57 @@ public class BattleHelper {
 		LocalTime start = LocalTime.of(23, 30);
 
 		return now.isAfter(start); 
+	}
+
+	/** 
+	 * 获取遨游的金币收益加成
+	 * @param player
+	 * @return
+	 */
+	public static float calcPatrolGoldRate(Player player) {
+
+		float incomeRate = player.getWelfareValue(WelfareTypeEnum.PatrolIncome);
+		float goldRate = player.getWelfareValue(WelfareTypeEnum.TravelTimeMoney);
+		float goldRateAdd = 1 + ((goldRate + incomeRate) / 10000f);
+		return goldRateAdd;
+	}
+
+	/** 
+	 * 获取遨游的经验收益加成
+	 * @param player
+	 * @return
+	 */
+	public static float calcPatrolExpRate(Player player) {
+
+		float incomeRate = player.getWelfareValue(WelfareTypeEnum.PatrolIncome);
+		float expRate = player.getWelfareValue(WelfareTypeEnum.TravelTimeExp);
+		float expRateAdd = 1 + ((expRate + incomeRate) / 10000f);
+		return expRateAdd;
+	}
+
+	/** 
+	 * 巡逻n分钟增加的经验数量
+	 * @param player
+	 * @param minute
+	 * @return
+	 */
+	public static int calcPatrolExpAdd(Player player, int minute) {
+		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
+		int exp = (int) (patrolConfig.IncomeEXP * minute * calcPatrolExpRate(player));
+
+		return exp;
+	}
+
+	/** 
+	 * 巡逻n分钟增加的金币数量
+	 * @param player
+	 * @param minute
+	 * @return
+	 */
+	public static int calcPatrolGoldAdd(Player player, int minute) {
+		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
+		int gold = (int) (patrolConfig.IncomeEXP * minute * calcPatrolGoldRate(player));
+		return gold;
 	}
 
 	/** 

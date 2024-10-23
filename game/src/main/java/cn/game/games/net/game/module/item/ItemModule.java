@@ -8,9 +8,9 @@ import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.ItemMapper;
+import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.currency.Currency;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -53,15 +53,15 @@ public class ItemModule extends AbstractItemModule<Item> {
 		ItemConfig itemConfig = ItemManager.instance().get(itemId);
 		if (itemConfig.ItemType == 6) {
 			// 给挂机金币
-			ChapterModule chapterModule = player.getModule(ChapterModule.class);
 			itemId = Asset.gold.ID ; 
-			count *= chapterModule.calcPatrolGold(itemConfig.Para[0]);
+			int gold = BattleHelper.calcPatrolGoldAdd(player, itemConfig.Para[0] * 60);
+			count *= gold;
 			return player.getCurrencyModule().add(itemId, count, opType);
 		} else if (itemConfig.ItemType == 5) {
 			// 给经验
-			ChapterModule chapterModule = player.getModule(ChapterModule.class);
+			int exp = BattleHelper.calcPatrolExpAdd(player, itemConfig.Para[0] * 60);
 			itemId = Asset.playerExp.ID;
-			count *= chapterModule.calcPatrolExp(itemConfig.Para[0]);
+			count *= exp;
 			return player.getCurrencyModule().add(itemId, count, opType);
 		} else if (itemConfig.ItemType == 7) {
 			List<Object> ret = new ArrayList<>();
