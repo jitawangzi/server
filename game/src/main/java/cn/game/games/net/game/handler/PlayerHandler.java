@@ -912,8 +912,7 @@ public class PlayerHandler extends BaseHandler {
 	}
 
 	private Future<PlayerData> loadOrCreatePlayerData(long playerId, Account account, GameClient client) {
-		return PlayerHelper
-				.getPlayerDistributedLock(playerId)
+		return PlayerHelper.getPlayerDistributedLock(playerId)
 				.compose(r -> DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId))
 				.compose(playerData -> {
 					if (playerData == null) {
@@ -924,9 +923,7 @@ public class PlayerHandler extends BaseHandler {
 	}
 
 	private Future<PlayerData> createNewPlayer(long playerId, Account account, GameClient client) {
-
-		return PlayerNameManager
-				.getInstance()
+		return PlayerNameManager.getInstance()
 				.createUserName()
 				.compose(name -> createPlayer(account, client, playerId, name, true, 0, false, true))
 				.compose(PlayerNameManager.getInstance()::saveName2Id);
@@ -938,8 +935,7 @@ public class PlayerHandler extends BaseHandler {
 
 	private Future<Player> handlePlayerData(PlayerData playerData, Account account, GameClient client) {
 		if (playerData.isNew()) {
-			return PlayerHelper
-					.initPlayerData(PlayerHelper.createPlayer(playerData, account, client))
+			return PlayerHelper.initPlayerData(PlayerHelper.createPlayer(playerData, account, client))
 					.compose(PlayerHelper::saveSimplePlayer);
 		}
 		return handleExistingPlayer(playerData, account, client);

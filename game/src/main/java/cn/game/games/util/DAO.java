@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.ctrip.framework.apollo.ConfigChangeListener;
 import com.ctrip.framework.apollo.ConfigService;
 import com.ctrip.framework.apollo.model.ConfigChange;
@@ -31,7 +32,8 @@ import io.vertx.core.Promise;
  * @author SYQ
  */
 public class DAO {
-	private static final Logger log = LoggerFactory.getLogger("dbLog");
+//	private static final Logger log = LoggerFactory.getLogger("dbLog");
+	private static final Logger log = LoggerFactory.getLogger("Db");
 
 	private static LinkedBlockingQueue<DbTask> dbTasksQueue = new LinkedBlockingQueue<DbTask>();
 	private static volatile boolean pauseUpdateDb = false;
@@ -119,6 +121,7 @@ public class DAO {
 	 * @return
 	 */
 	public static Future<List<Object>> execute(List<DbTask> tasks) {
+
 		Future<List<Object>> future = VxHolder.vertx.executeBlocking(promise -> {
 			List<Object> ret = new ArrayList<>();
 			try {
@@ -129,7 +132,7 @@ public class DAO {
 				promise.complete(ret);
 			} catch (Exception e) {
 				promise.fail(e);
-				log.error("db execute error", e);
+				log.error("db execute list error", e);
 			}
 		}, false);
 		return future;
@@ -182,6 +185,10 @@ public class DAO {
 	}
 
 	public static Object invoke(Class<?> mapperClass, String method, Object... args) {
+		if (log.isDebugEnabled()) {
+			log.debug("execute db operation: mapperClass[{}]method[{}]args[{}]", mapperClass.getSimpleName(), method,
+					JSON.toJSONString(args));
+		}
 		Object targetObject = SpringContextLoader.getContext().getBean(mapperClass);
 		Method method2 = MapperConstant.getMethod(mapperClass, method);
 		Object result = ReflectionUtils.invokeMethod(method2, targetObject, args);
