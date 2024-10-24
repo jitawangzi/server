@@ -23,8 +23,7 @@ public class SecretscriptAttrCalc extends PlayerAttrCalc {
 		SecretscriptModule module = player.getModule(SecretscriptModule.class);
 		Collection<Secretscript> list = module.list();
 		for (Secretscript secretscript : list) {
-			SecretscriptConfig config = SecretscriptManager
-					.instance()
+			SecretscriptConfig config = SecretscriptManager.instance()
 					.getUISecretscriptMarkSecretscriptStar(secretscript.getConfigId(), secretscript.getStar());
 
 			for (int i = 0; i < config.SecretscriptBase.length; i++) {
@@ -68,6 +67,7 @@ public class SecretscriptAttrCalc extends PlayerAttrCalc {
 		}
 
 	}
+
 	@Override
 	public InitialUI getFunction() {
 		return InitialUI.Avatar;

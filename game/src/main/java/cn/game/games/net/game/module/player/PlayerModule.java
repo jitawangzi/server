@@ -67,6 +67,7 @@ public class PlayerModule extends BasePlayerModule {
 	@JsonIgnore
 	@Deprecated
 	private Map<Long, Integer> payRmbs = new HashMap<Long, Integer>();
+	/** 订单记录 */
 	private Map<Long, PayItem> payItems = new HashMap<Long, PayItem>();
 	
 	/** 随机宝箱，小云宝箱 */

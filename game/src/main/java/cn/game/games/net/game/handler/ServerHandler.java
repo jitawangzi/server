@@ -171,38 +171,46 @@ public class ServerHandler extends BaseHandler {
 		long uid = request.getUid(); 
 		log.info("wechat ship push, playerId={}, uid={}", playerId, uid);
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player != null && player.isIslogouting()) {
+			resp.setSuccess(false);
+			client.sendProtocol(resp.build());
+			return;
+		}
 		// 离线玩家单独处理 调用 payItem.getPayType().offlinePay(player,payItem); 处理
-		if (player == null || player.isIslogouting()) {
+		if (player == null) {
 			PlayerHelper.loadPlayerFromDb(playerId).onSuccess(offlinePlayer ->{
 				if (offlinePlayer != null){
 					PayItem payItem = offlinePlayer.getPlayerModule().getPayItems(uid);
+					if (payItem == null || payItem.isFinish()) {
+						log.warn("PayItem offline ship fail : " + payItem);
+						resp.setSuccess(false);
+						client.sendProtocol(resp.build());
+						return;
+					}
 					payItem.getPayType().offlinePay(offlinePlayer,payItem);
 					payItem.finish();
-					player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
-					GameLogger.recharge(player, payItem);
+					offlinePlayer.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
+					GameLogger.recharge(offlinePlayer, payItem);
 					// 支付后先实时保存数据到数据库
 					PlayerHelper.saveClientCache(playerId).onSuccess(rr -> {
 						resp.setSuccess(true);
 						client.sendProtocol(resp.build());
 					}).onFailure(t -> {
-						player.handleFail(t);
 						resp.setSuccess(false);
 						client.sendProtocol(resp.build());
 					});
 					PlayerManager.getInstance().deletePlayer(playerId);
 				}
 			}).onFailure((err)->{
-				err.printStackTrace();
+				log.error("PayItem offline ship fail : ", err);
 				resp.setSuccess(false);
 				client.sendProtocol(resp.build());
 			});
-
-
 		} else {
 			PlayerHelper.addTask(playerId, r -> {
 				PayItem payItem = player.getPlayerModule().getPayItems(uid);
-
-				if (payItem != null && payItem.isFinish()) {
+				if (payItem == null || payItem.isFinish()) {
+					log.warn("PayItem online ship fail : " + payItem);
 					resp.setSuccess(false);
 					client.sendProtocol(resp.build());
 					return;
