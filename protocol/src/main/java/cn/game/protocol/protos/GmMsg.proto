@@ -45,7 +45,7 @@ message GmOrderReimburseResponse_77000028{
 }
 
 
-// gm给指定玩家发邮件
+// gm给指定玩家发邮件 已废弃
 message GmMailPlayerSendRequest_77000040{
 	string serverId = 14; // 服务器id，暂时用不到
 	repeated string playerId = 2;  // 接受邮件的玩家,类型是个人邮件时有效

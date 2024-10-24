@@ -98,7 +98,8 @@ public class GmHandler extends BaseHandler {
     GmMail gmMail = new GmMail();
     gmMail.setTitle(title);
     gmMail.setContext(content);
-    gmMail.setCreateTime(DateUtil.getStringDate());
+    gmMail.setOptFlag((byte)0);
+    gmMail.setCreateTime(new Date());
     if (!list.isEmpty()) {
       gmMail.setAttachment(JsonUtil.toJsonString(list));
     }
@@ -148,12 +149,13 @@ public class GmHandler extends BaseHandler {
     }
     DAO.execute(
             GmMailMapper.class,
-            "",
             "selectGmMailList",
+                    new java.sql.Date(req.getStartTime()*1000L),
+            new java.sql.Date(req.getEndTime()*1000L),
             req.getType(),
             req.getTitle() == null ? null : req.getTitle(),
             req.getContent() == null ? null : req.getContent(),
-            req.getStatus(),
+            req.getStatus() == 0 ? null : (req.getStatus() == 1 ? 0 : 2) ,//1 暂未审核 2 审核成功  3审核失败。0 全部状态
             (page - 1) * size,
             size)
         .onSuccess(
@@ -173,7 +175,8 @@ public class GmHandler extends BaseHandler {
             })
         .onFailure(
             e -> {
-              sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "");
+                e.printStackTrace();
+              sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, e.getMessage());
             });
   }
 
@@ -210,10 +213,10 @@ public class GmHandler extends BaseHandler {
 
                         // 个人邮件
                         if (gmMail.getPids() != null) {
-                          String[] pids = gmMail.getPids().split(";");
+                          String[] pids = gmMail.getPids().replace("[","").replace("]","").trim().split(",");
                           for (String pid : pids) {
                             MailHelper.sendMail(
-                                Long.parseLong(pid),
+                                Long.parseLong(pid.trim()),
                                 0,
                                 "系统管理员",
                                 gmMail.getTitle(),

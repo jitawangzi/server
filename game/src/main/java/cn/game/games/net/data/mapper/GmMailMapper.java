@@ -53,8 +53,11 @@ public interface GmMailMapper {
 	 */
 	int updateBatch(@Param("recordList") List<GmMail> recordList);
 	List<GmMail> selectGlobalMailList();
-	List<GmMail> selectGmMailList(@Param("mailOptType")int mailOptType
-	,@Param("title")String title, @Param("context") String context, @Param("status")int status
+	List<GmMail> selectGmMailList(
+			@Param("startTimer")Date startTimer,
+			@Param("endTimer")Date endTimer,
+			@Param("mailOptType")int mailOptType
+	,@Param("title")String title, @Param("context") String context, @Param("status")Integer status
     ,@Param("limit")int limit, @Param("offset")int offset
 	);
 }

@@ -14,7 +14,7 @@ public class GmMail implements Serializable, DbEntity {
 	 * 鍒涘缓鏃堕棿
 	 * @mbg.generated
 	 */
-	private String createTime;
+	private Date createTime;
 	/**
 	 * 邮件类型 0 个人邮件 1 全服邮件
 	 * @mbg.generated
@@ -102,14 +102,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public String getCreateTime() {
+	public Date getCreateTime() {
 		return createTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setCreateTime(String createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
