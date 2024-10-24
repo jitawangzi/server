@@ -312,23 +312,13 @@ public class ActivityHandler extends BaseHandler {
       return;
     }
     if (activityBase instanceof ActivityJQB) {
-      List<CompletableFuture<List<RewardInfo>>> allFuture = new ArrayList<>();
-      req.getTaskIdsList()
-          .forEach(
-              taskId -> {
-                Future<List<RewardInfo>> rewardFuture = activityBase.asyncReceive(taskId);
-                var completableFuture =  rewardFuture.toCompletionStage().toCompletableFuture();
-                allFuture.add(completableFuture);
-                completableFuture.whenComplete((v, t) -> {
-                      res.addAllRewards(v);
-                });
-              });
-      CompletableFuture.allOf(allFuture.toArray(new CompletableFuture[0]))
-          .thenAccept(
-              action -> {
-                activityBase.checkRefreshActivity();
-                client.sendProtocol(res.build());
-              });
+        List<CompletableFuture<List<RewardInfo>>> allFuture = new ArrayList<>();
+        int taskId = req.getTaskIds(0);
+        activityBase.asyncReceive(taskId).onSuccess(reward ->{
+          res.addAllRewards(reward);
+          activityBase.checkRefreshActivity();
+          client.sendProtocol(res.build());
+        });
     } else {
 
       // 请神任务 每轮最后一个任务完成之后 自动领取每轮回奖励的任务
@@ -338,8 +328,8 @@ public class ActivityHandler extends BaseHandler {
         if (rewardTaskIds.contains(roundConfigList.get(roundConfigList.size() - 2).taskID) && !rewardTaskIds.contains(roundConfigList.get(roundConfigList.size() - 1).taskID)){
            rewardTaskIds.add(roundConfigList.get(roundConfigList.size() - 1).taskID);
         }
-      }
         Collections.sort(rewardTaskIds);
+      }
 		rewardTaskIds.forEach(taskId -> {
 			List<RewardInfo> reward = activityBase.receive(taskId);
 			if (reward == null) {
