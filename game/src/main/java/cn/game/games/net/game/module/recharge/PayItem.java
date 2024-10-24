@@ -107,4 +107,11 @@ public class PayItem {
 			this.paySubIds.add(paySubId);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "PayItem [orderId=" + orderId + ", rmb=" + rmb + ", payType=" + payType + ", payId=" + payId + ", paySubIds=" + paySubIds
+				+ ", addId=" + addId + ", addCount=" + addCount + ", isFinish=" + isFinish + ", finishTime=" + finishTime + "]";
+	}
+
 }

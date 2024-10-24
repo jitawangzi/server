@@ -1,13 +1,7 @@
 package cn.game.util.log;
 
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
 
 
 
@@ -48,9 +42,6 @@ public class LoggerManager {
 		if (logPath == null) {
 			logPath = "..";
 		}
-//        if (Configuration.startupMode == Configuration.StartupMode.docker) {
-//            logPath = "";
-//        }
 		System.setProperty("SEVER_PATH", logPath);
 
 		String cylog = System.getProperty("CYLOG_PATH", System.getenv("CYLOG_PATH"));
@@ -65,14 +56,13 @@ public class LoggerManager {
 		}
         System.setProperty("SEVER_PATH_CYLOG", cylog);
 
-
         String fileName = "log4j2.xml";
-//        File file = new File(Configuration.contextPath + fileName);
 		String contextPath = System.getProperty("user.dir") + "/";
 		File file = new File(contextPath + fileName);
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
-        ConfigurationSource source = new ConfigurationSource(in);
-		LoggerContext initialize = Configurator.initialize(null, source);
+		// 设置配置文件路径
+		System.setProperty("log4j.configurationFile", file.getAbsolutePath());
+		// 使用异步日志
+		System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
 
         EmbeddedLogger.setLevelLogger(EmbeddedLogger.Level.trace, SystemLogger::trace);
         EmbeddedLogger.setLevelLogger(EmbeddedLogger.Level.debug, SystemLogger::debug);
@@ -82,11 +72,6 @@ public class LoggerManager {
         EmbeddedLogger.setLevelLogger(EmbeddedLogger.Level.fatal, SystemLogger::fatal);
 
         flushAll();
-		// 加载log4j2.xml配置文件
-//        LoggerContext context = (LoggerContext) LogManager.getContext(false);
-//        context.setConfigLocation(Main.class.getResource("/log4j2.xml").toURI());
-		// 获取 Root Logger 并设置为配置文件中的级别
-//		initialize.getRootLogger().setLevel(org.apache.logging.log4j.Level.getLevel(initialize.getConfiguration().getLoggerConfig("Root").getLevel().name()));
 
     }
 

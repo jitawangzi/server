@@ -330,7 +330,7 @@ public class TestHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		PlayerHelper.addResources(player, 205103, 2);
+//		PlayerHelper.addResources(player, 205103, 2);
 
 		testcalcPower(player);
 //		List<RewardInfo> resources = PlayerHelper.addResources(player, 200032, 10);
