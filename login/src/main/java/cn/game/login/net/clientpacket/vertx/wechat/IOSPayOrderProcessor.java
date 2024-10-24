@@ -144,7 +144,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
             onFail(response,500,"pay order is null");
             return;
         }
-        WeChatCustomerServiceReq.delRunOrderData(transaction.getPayer().getOpenid(),payOrder.getThirdOrderId());
+        WeChatCustomerServiceReq.delRunOrderData(transaction.getPayer().getOpenid(),payOrder.getId()+"");
         if (payOrder.getIsDeliver()){
             onSuccess(response);
             return;
