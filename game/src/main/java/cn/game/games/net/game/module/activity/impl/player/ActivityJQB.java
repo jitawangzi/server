@@ -37,7 +37,11 @@ public class ActivityJQB extends PlayerActivityBase {
 	@Override
 	public Message buildActivityShowInfo() {
 		ActivityMsg.ActivityJQBInfoResponse_11000082.Builder res = ActivityMsg.ActivityJQBInfoResponse_11000082.newBuilder();
-		res.setActivityId(id).setTaskId(ActivityJQBManager.instance().get(curId).taskID);
+		ActivityJQBConfig config = ActivityJQBManager.instance().getNullable(curId);
+		res.setActivityId(id);
+		if (config != null){
+			res.setTaskId(config.taskID);
+		}
 		return res.build();
 	}
 
@@ -62,7 +66,7 @@ public class ActivityJQB extends PlayerActivityBase {
 	private void refreshActivity(int maxLen) {
 		if (maxLen < 0 ) return;
 		curId ++;
-		ActivityJQBConfig jqbConfig = ActivityJQBManager.instance().get(curId);
+		ActivityJQBConfig jqbConfig = ActivityJQBManager.instance().getNullable(curId);
 		if (jqbConfig == null){
 			curId = 0;
 			rewardIdList.clear();
