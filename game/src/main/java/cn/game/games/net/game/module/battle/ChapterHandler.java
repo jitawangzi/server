@@ -752,7 +752,7 @@ public class ChapterHandler extends BaseHandler {
 		for (int i = 0; i < allCount; i++) {
 
 			if (type == DungeonTypeEnum.YaoWang.getId()) {
-				int welfareValue = player.getWelfareValue(WelfareTypeEnum.PaoPaoQuickBattleAward);
+				int welfareValue = player.getWelfareValue(WelfareTypeEnum.DemonKingFairy);
 				List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, welfareValue, opType);
 				resp.addAllRewards(reward);
 			} else {
@@ -809,12 +809,18 @@ public class ChapterHandler extends BaseHandler {
 		
 		BattleConfig battleConfig = BattleManager.instance().get(id);
 
-		WelfareTypeEnum welfareType = type == DungeonTypeEnum.DaoHeart.getId() ? WelfareTypeEnum.DaoHeartFairy
-				: type == DungeonTypeEnum.XinMo.getId() ? WelfareTypeEnum.InnerDemonsFairy : WelfareTypeEnum.DemonKingFairy;
-		int welfareValue = player.getWelfareValue(welfareType);
-		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, welfareValue, opType);
-		resp.addAllRewards(reward);
+//		WelfareTypeEnum welfareType = type == DungeonTypeEnum.DaoHeart.getId() ? WelfareTypeEnum.DaoHeartFairy
+//				: type == DungeonTypeEnum.XinMo.getId() ? WelfareTypeEnum.InnerDemonsFairy : WelfareTypeEnum.DemonKingFairy;
+//		int welfareValue = player.getWelfareValue(welfareType);
 
+		if (type == DungeonTypeEnum.YaoWang.getId()) {
+			int welfareValue = player.getWelfareValue(WelfareTypeEnum.DemonKingFairy);
+			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, welfareValue, opType);
+			resp.addAllRewards(reward);
+		} else {
+			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
+			resp.addAllRewards(reward);
+		}
 		client.sendProtocol(resp);
 	}
 
