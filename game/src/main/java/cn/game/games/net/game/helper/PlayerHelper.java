@@ -21,6 +21,7 @@ import com.google.protobuf.MessageLite.Builder;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
@@ -1164,7 +1165,7 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return  是否重连了
 	 */
-	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId) {
+	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId, Account account) {
 		if (playerId == 0) {
 			return false;
 		}
@@ -1181,11 +1182,12 @@ public class PlayerHelper {
 			} else {
 				newGameClient.copyClintLoign(oldGameClient);
 			}
-			GameClientManager.getInstance().removeGameClient(oldGameClient);
+			GameClientManager.getInstance().removeGameClient(oldGameClient, LogoutType.Reconnect);
 		}
 		GameClientManager.getInstance().addGameClientSession(newGameClient);
 		GameClientManager.getInstance().addGameClientPlayer(newGameClient);
 
+		player.setAccount(account);
 		player.setGameClient((GameClient) newGameClient);
 		PlayerHelper.refresh(player);
 		player.handleEvent(EventTypeEnum.Reconnect);

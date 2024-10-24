@@ -104,7 +104,7 @@ public class FriendHandler extends BaseHandler {
 				response.addFriends(friendBuilder);
 			}
 			client.sendProtocol(response.build());
-		}).onFailure(player::fail);
+		}).onFailure(player::handleFail);
 	}
 
 	protected void blackList(NetClient client, Object message) {
@@ -122,7 +122,7 @@ public class FriendHandler extends BaseHandler {
 				resp.addPlayers(simplePlayer.toSimplePlayerInfo());
 			}
 			client.sendProtocol(resp.build());
-		}).onFailure(player::fail);
+		}).onFailure(player::handleFail);
 	}
 
 	protected void applyList(NetClient client, Object message) {
@@ -143,7 +143,7 @@ public class FriendHandler extends BaseHandler {
 			resp.addAllPlayers(PbBuilder.buildSimplePlayerInfos(result));
 			client.sendProtocol(resp.build());
 			return null;
-		}).onFailure(player::fail);
+		}).onFailure(player::handleFail);
 	}
 
 	protected void recommend(NetClient client, Object message) {
@@ -166,7 +166,7 @@ public class FriendHandler extends BaseHandler {
 			resp.addAllPlayers(PbBuilder.buildSimplePlayerInfos(result));
 			client.sendProtocol(resp.build());
 			return null;
-		}).onFailure(player::fail);
+		}).onFailure(player::handleFail);
 
 	}
 	protected void apply(NetClient client, Object message) {

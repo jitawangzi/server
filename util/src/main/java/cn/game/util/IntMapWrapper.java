@@ -88,4 +88,8 @@ public class IntMapWrapper {
 		this.map.clear();
 	}
 
+	public void reset() {
+		this.map.clear();
+	}
+
 }

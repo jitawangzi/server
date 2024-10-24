@@ -28,6 +28,7 @@ import com.google.common.cache.CacheBuilder;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.ForbidAccount;
@@ -1012,7 +1013,7 @@ public class PlayerManager {
 		if (hasCache(playerId)) {
 			Player player = id_players.get(playerId);
 			PlayerHelper.addTask(playerId, r -> {
-				GameClientManager.getInstance().logout(playerId);
+				GameClientManager.getInstance().logout(playerId, LogoutType.ForbidAccount);
 			});
 			ForbidAccount insert = ForbidAccount.valueOf(player, reason, unblock);
 			insert.updateType(type);

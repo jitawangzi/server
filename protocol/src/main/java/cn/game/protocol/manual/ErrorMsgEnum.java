@@ -35,6 +35,7 @@ public enum ErrorMsgEnum {
 	async_request_fail(14, "异步请求失败"),
 	/** 特别注意这个错误只是 客户端使用，服务器不用这个错误码，只是给客户端定义的。  */
 	request_timeout(15, "请求超时没有返回数据"),
+	disable_ios_pay(16, "当前的客户端版本，禁用ios支付"),
 
 	// #通用错误 50 - 99
 	/** 玩家数据校验错误。 */

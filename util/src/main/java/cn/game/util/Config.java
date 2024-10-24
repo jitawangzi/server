@@ -105,6 +105,8 @@ public final class Config {
 	// 消息统计的时间间隔，分钟
 	public static int messageStatisticsInterval;
 
+	/** 禁用ios支付的客户端版本 */
+	public static String disableIosPayClientVersion;
   /**
    * 微信access_token
    */
@@ -166,6 +168,7 @@ public final class Config {
 			wechat_midas_AppKey = initialProp.getProperty("wechat_midas_AppKey", "");
 			wechat_pay_callback_url = initialProp.getProperty("wechat_pay_callback_url", "");
 			wechat_pay_page_url = initialProp.getProperty("wechat_pay_page_url", "");
+			disableIosPayClientVersion = initialProp.getProperty("disableIosPayClientVersion", "");
 
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
 

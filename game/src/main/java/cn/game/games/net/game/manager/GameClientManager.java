@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
@@ -70,8 +71,8 @@ public class GameClientManager {
 	 * 删除一个GameClient
 	 * @param gameClient
 	 */
-	public void removeGameClient(GameClient gameClient) {
-		log.info("removeGameClient " + gameClient.toDetailString());
+	public void removeGameClient(GameClient gameClient, LogoutType logoutType) {
+		log.info("removeGameClient LogoutType:" + logoutType + " " + gameClient.toDetailString());
 		if (gameClient.getSessionId() != null) {
 			GameClient gameClient2 = clients.get(gameClient.getSessionId());
 			if (gameClient2 != null && gameClient2 == gameClient) {
@@ -115,14 +116,14 @@ public class GameClientManager {
 	 * @param gameClient
 	 * @return 
 	 */
-	public Future<?> logout(GameClient gameClient) {
+	public Future<?> logout(GameClient gameClient, LogoutType logoutType) {
 		long playerId = gameClient.getPlayerId();
 		log.info("GameClient[{}]start logout", gameClient.toDetailString());
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {
 			player.setIslogouting(true);
 		}
-		removeGameClient(gameClient);
+		removeGameClient(gameClient, logoutType);
 		broadcastOnlineToOtherServer(playerId, false, null);
 		return PlayerHelper.logout(playerId);
 	}
@@ -132,10 +133,10 @@ public class GameClientManager {
 	 * @param playerId
 	 * @return 
 	 */
-	public Future<?> logout(long playerId) {
+	public Future<?> logout(long playerId, LogoutType logoutType) {
 		GameClient gameClient = getGameClientByPlayer(playerId);
 		if (gameClient != null) {
-			return logout(gameClient);
+			return logout(gameClient, logoutType);
 		}
 		return Future.succeededFuture();
 	}
@@ -163,7 +164,7 @@ public class GameClientManager {
 			try {
 				log.warn("{}start logout by timeout", gc);
 				gc.getContext().runOnContext(r -> {
-					logout(gc);
+					logout(gc, LogoutType.Timeout);
 //					log.info("{}logout by timeout", gc);
 				});
 
@@ -202,7 +203,7 @@ public class GameClientManager {
 		}
 		for (GameClient gameClient : lists) {
 			gameClient.getContext().runOnContext(r -> {
-				Future<?> logout = logout(gameClient);
+				Future<?> logout = logout(gameClient, LogoutType.ServerClose);
 //				futures.add(logout);
 				logout.onComplete(ar -> {
 					if (ar.succeeded()) {

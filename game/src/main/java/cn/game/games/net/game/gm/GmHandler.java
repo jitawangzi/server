@@ -5,39 +5,31 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-import cn.game.games.cache.entity.GmMail;
-import cn.game.games.cache.entity.GmOpt;
-import cn.game.games.net.data.mapper.GmMailMapper;
-import cn.game.games.net.game.GameServer;
-import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.net.game.manager.PlayerNameManager;
-import cn.game.games.util.DAO;
-import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.protobuf.GmMsg;
-import cn.game.protocol.protobuf.ServerMsg;
-import cn.game.util.DateUtil;
-import cn.game.util.JsonUtil;
-import cn.game.util.ServerType;
-import com.google.protobuf.Message;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import com.google.protobuf.Message;
+
+import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.ForbidAccount;
-import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.entity.GmMail;
+import cn.game.games.net.data.mapper.GmMailMapper;
+import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
+import cn.game.protocol.protobuf.GmMsg;
 import cn.game.protocol.protobuf.GmMsg.GmAccountForbidListResponse_77000004;
 import cn.game.protocol.protobuf.GmMsg.GmAccountForbidRequest_77000005;
 import cn.game.protocol.protobuf.GmMsg.GmAccountForbidResponse_77000006;
@@ -48,10 +40,13 @@ import cn.game.protocol.protobuf.GmMsg.GmPlayerLogouttResponse_7700000a;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerResponse_77000022;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoRequest_7d000050;
 import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoResponse_7d000051;
+import cn.game.util.DateUtil;
+import cn.game.util.JsonUtil;
+import cn.game.util.ServerType;
 import io.vertx.core.Future;
-import org.springframework.util.unit.DataUnit;
 
 /** gm处理器 */
 @Component
@@ -464,7 +459,7 @@ public class GmHandler extends BaseHandler {
     PlayerHelper.addTask(
         playerId,
         r -> {
-          GameClientManager.getInstance().logout(playerId);
+				GameClientManager.getInstance().logout(playerId, LogoutType.GMKick);
           client.sendProtocol(response);
         });
   }
