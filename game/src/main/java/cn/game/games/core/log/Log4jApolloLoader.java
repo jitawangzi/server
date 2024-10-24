@@ -33,7 +33,7 @@ public class Log4jApolloLoader extends ApolloLoader {
 	public void load(String externalConfigFileLocation) throws Exception {
 //		ServerEventManager.registerEventHandler(INSTANCE);
 
-		String logPath = "..";
+		String logPath = System.getProperty("SEVER_PATH", "..");
 //		if (Configuration.startupMode == Configuration.StartupMode.docker) {
 //			logPath = "";
 //		}
