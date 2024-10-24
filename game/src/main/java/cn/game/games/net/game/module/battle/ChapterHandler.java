@@ -550,7 +550,7 @@ public class ChapterHandler extends BaseHandler {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
 		int buffRefreshTimes = mengYanMiJingBattle.getBuffRefreshTimes();
-		if (buffRefreshTimes < 0) {
+		if (buffRefreshTimes <= 0) {
 			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 			return;
 		}
