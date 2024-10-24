@@ -172,6 +172,7 @@ public class PlayerManager {
 	 * @return
 	 * @throws Exception
 	 */
+	@Deprecated
 	public SimplePlayer getAndLoadSimplePlayer(long playerId) throws Exception {
 		return simplePlayers.get(playerId, () -> {
 			if (PlayerManager.getInstance().hasCache(playerId)) {
@@ -198,6 +199,7 @@ public class PlayerManager {
 	 * @return
 	 * @throws Exception
 	 */
+	@Deprecated
 	public List<SimplePlayer> getAndLoadSimplePlayers(List<Long> playerIds) {
 		List<Long> absentIds = new ArrayList<Long>();
 		List<SimplePlayer> presentPlayers = new ArrayList<SimplePlayer>();
@@ -234,6 +236,7 @@ public class PlayerManager {
 	 * @return
 	 * @throws Exception
 	 */
+	@Deprecated
 	public SimplePlayer getAndLoadSimplePlayer(long playerId, String serverId) throws Exception {
 		if (GameServer.getInstance().isLocalServer(serverId)) {
 			return getAndLoadSimplePlayer(playerId) ; 
@@ -249,6 +252,7 @@ public class PlayerManager {
 	 * @return
 	 * @throws Exception
 	 */
+	@Deprecated
 	public List<SimplePlayer> getAndLoadSimplePlayers(List<Long> playerIds, List<String> serverIds) throws Exception {
 
 		// 本地已经缓存的玩家
@@ -361,6 +365,7 @@ public class PlayerManager {
 //		}
 //		return cachePlayers;
 //	}
+	@Deprecated
 	public List<SimplePlayer> getAndLoadSimplePlayerPairs(List<Pair<Long, String>> players) throws Exception {
 
 		// 找出本服的玩家
@@ -392,6 +397,7 @@ public class PlayerManager {
 	 * @param playerId
 	 * @return null，玩家不在缓存
 	 */
+	@Deprecated
 	public SimplePlayer getSimplePlayer(long playerId) {
 		return simplePlayers.getIfPresent(playerId);
 	}
@@ -466,6 +472,7 @@ public class PlayerManager {
 	 *            玩家所在服务器id
 	 * @return
 	 */
+	@Deprecated
 	public Future<SimplePlayer> getSimplePlayerAsync(long playerId, String serverId) {
 		if (!GameServer.getInstance().isLocalServer(serverId)) {
 			return GameServer.getInstance().getGameServerRemoteAsync(serverId).getSimplePlayerAsync(playerId);
@@ -478,10 +485,12 @@ public class PlayerManager {
 	 * @param playerId
 	 * @return null，玩家不在缓存
 	 */
+	@Deprecated
 	public SimplePlayer getSimplePlayerOther(long playerId) {
 		return simplePlayersOtherServer.getIfPresent(playerId);
 	}
 
+	@Deprecated
 	public Future<SimplePlayer> getSimplePlayerOtherAsync(long playerId,String serverId) {
 		return GameServer.getInstance().getGameServerRemoteAsync(serverId).getSimplePlayerAsync(playerId) ; 
 	}
@@ -493,6 +502,7 @@ public class PlayerManager {
 	 *            玩家所在服务器id
 	 * @return null，玩家不在缓存
 	 */
+	@Deprecated
 	public SimplePlayer getSimplePlayer(long playerId, String serverId) {
 		if (GameServer.getInstance().isLocalServer(serverId)) {
 			return getSimplePlayer(playerId); 
@@ -503,6 +513,7 @@ public class PlayerManager {
 	 * 主动添加玩家简单数据到缓存，一般是添加其他服务器的玩家
 	 * @param simplePlayer
 	 */
+	@Deprecated
 	public void addSimplePlayer(SimplePlayer simplePlayer) {
 		if (GameServer.getInstance().isLocalServer(simplePlayer.getServerId())) {
 			this.simplePlayers.put(simplePlayer.getId(), simplePlayer);
@@ -514,6 +525,7 @@ public class PlayerManager {
 	 * 主动添加玩家简单数据到缓存，一般是添加其他服务器的玩家
 	 * @param simplePlayers
 	 */
+	@Deprecated
 	public void addSimplePlayers(List<SimplePlayer> simplePlayers) {
 		for (SimplePlayer simplePlayer : simplePlayers) {
 			addSimplePlayer(simplePlayer);
@@ -573,6 +585,7 @@ public class PlayerManager {
 	 * @param playerIds
 	 * @return
 	 */
+	@Deprecated
 	public List<SimplePlayerInfo> getSimplePlayerInfos(List<String> playerIds){		 
 		List<SimplePlayerInfo> sPlayerInfos = new ArrayList<>();
 		
@@ -595,6 +608,7 @@ public class PlayerManager {
 	 * @param serverIds
 	 * @return
 	 */
+	@Deprecated
 	public List<SimplePlayerInfo> getSimplePlayerOtherInfos(List<String> playerIds, List<String> serverIds){		
 		List<SimplePlayerInfo> sPlayerInfos = new ArrayList<>();
 		try {						
@@ -616,6 +630,7 @@ public class PlayerManager {
 	 * @param playerIds
 	 * @return
 	 */
+	@Deprecated
 	public Future<List<SimplePlayer>> getSimplePlayersAsync(List<Long> playerIds, List<String> serverIds) {
 		Promise<List<SimplePlayer>> ret = Promise.promise();
 		List<SimplePlayer> list = new ArrayList<>() ; 
@@ -644,6 +659,7 @@ public class PlayerManager {
 	 * @param playerIds
 	 * @return
 	 */
+	@Deprecated
 	public Future<List<SimplePlayer>> getSimplePlayersAsync(List<Long> playerIds) {
 		Promise<List<SimplePlayer>> ret = Promise.promise();
 		List<SimplePlayer> list = new ArrayList<>();
@@ -673,6 +689,7 @@ public class PlayerManager {
 	 * @param serverId
 	 * @return
 	 */
+	@Deprecated
 	public SimplePlayerInfo getSimpleOtherPlayerInfo(String playerId, String serverId) {
 		SimplePlayerInfo sPlayerInfo = null;
 		try {			
