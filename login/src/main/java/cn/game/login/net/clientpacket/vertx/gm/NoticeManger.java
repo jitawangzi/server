@@ -75,12 +75,12 @@ public class NoticeManger {
       mapper.updateByPrimaryKey(notice);
       sortNoticeList();
       // RPC 通知其他 login 节点 从新加载
-      VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
+      VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
     } else {
       mapper.insert(notice);
       refreshNoticeList();
       // RPC 通知其他 login 节点 从新加载
-      VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
+      VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
     }
     return true;
   }
@@ -99,7 +99,7 @@ public class NoticeManger {
         noticeList.remove(notice);
         mapper.deleteByPrimaryKey(notice.getId());
         //  RPC 通知其他 login 节点
-        VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
+        VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
         return true;
       }
     }

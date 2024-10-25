@@ -50,7 +50,7 @@ public class IpWhitelistManger {
         mapper.insert(ipWhitelist);
         refreshIpWhitelistList();
         //  RPC 通知其他 login 节点
-        VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_WHITE_LIST).build());
+        VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_WHITE_LIST).build());
 
         return true;
     }
@@ -72,7 +72,7 @@ public class IpWhitelistManger {
                 ipWhitelistList.remove(ipWhitelist);
                 mapper.deleteByPrimaryKey(ipWhitelist.getId());
                 //  RPC 通知其他 login 节点
-                VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_WHITE_LIST).build());
+                VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_WHITE_LIST).build());
                 return true;
             }
         }
