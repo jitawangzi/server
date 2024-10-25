@@ -6,6 +6,8 @@ import "BaseMsg.proto" ;
 import "RewardMsg.proto" ;
 //import "ItemMsg.proto" ;
 
+//@HandlerPackage cn.game.games.net.game.handler
+//@MessageModule 6f
 
 // gm指令
 message TestGmCmdRequest_6f000001{
@@ -53,6 +55,22 @@ message TestClearResourceAndItemRequest_6f000040{
 }
 
 message TestClearResourceAndItemResponse_6f000041{
+}
+
+// 将某人退出账号
+message TestPlayerLogoutRequest_6f000042{
+	uint64 playerId = 1;		// 玩家id
+}
+
+message TestPlayerLogoutResponse_6f000043{
+}
+
+// 将某人删档
+message TestPlayerDeleteRequest_6f000044{
+	uint64 playerId = 1;		// 玩家id
+}
+
+message TestPlayerDeleteResponse_6f000045{
 }
 
 // 只是测试

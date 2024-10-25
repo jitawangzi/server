@@ -516,7 +516,7 @@ public class ChapterHandler extends BaseHandler {
 			if (battleConfig.ClearGameReward > 0 && !rewardBattleIds.contains(battleConfig.ID)) {
 				List<RewardInfo> list = PlayerHelper
 						.addReward(player, battleConfig.ClearGameReward, player.getWelfareValue(WelfareTypeEnum.MengYanQuickBattleAward),
-								OpType.MengYanMiJingFirst);
+								OpType.MengYanMiJingSweep);
 				rewardsList.addAll(list); 
 				rewardBattleIds.add(battleConfig.ID); 
 			}

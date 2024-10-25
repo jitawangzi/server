@@ -21,6 +21,7 @@ message ActivityInfo{
 	uint32 id = 1; 		//活动id Activity 表的id
 	ActivityState state = 2;		// 活动状态
 	int32 startTime = 3;			// 距离活动正式开始的时间（秒），针对状态是VIEW的活动
+	int32 endTime = 4;			// 距离活动结束的时间（秒）,如果小于等于0 ，表示没有明确的结束时间，或者说一直存在
 }
 enum ActivityState{
 	NONE = 0;		// 不显示此活动

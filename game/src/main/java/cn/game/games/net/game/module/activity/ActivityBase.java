@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.activity;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -46,6 +45,7 @@ public abstract class ActivityBase implements EventHandler {
 
 	/** 活动实际开始/参加时间 */
 	protected long startTime;
+	protected long endTime;
 
 	public abstract Message buildActivityShowInfo();
 
@@ -57,6 +57,7 @@ public abstract class ActivityBase implements EventHandler {
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);
 		builder.setStateValue(state);
+		builder.setEndTime((int) (endTime <= 0 ? 0 : (System.currentTimeMillis() - endTime) / 1000));
 		return builder.build();
 	}
 
@@ -112,6 +113,7 @@ public abstract class ActivityBase implements EventHandler {
 //		player.getActivityModule().syncActivityState(id);
 		this.state = ActivityState.START_VALUE;
 		this.startTime = System.currentTimeMillis();
+		this.endTime = calcEndTime();
 	}
 
 	/** 活动结束,可能还保留，领取活动奖励等 */
@@ -162,15 +164,19 @@ public abstract class ActivityBase implements EventHandler {
 		this.state = state;
 	}
 
+	public long getEndTime() {
+		return endTime;
+	}
+
 	/** 
 	 * 获取活动的结束时间
 	 * @return
 	 */
-	public long getEndTime() {
+	public long calcEndTime() {
 		long endTime = 0 ; 
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
 		if (activityConfig.durationType > 0) {
-			if (startTime == 0) {
+			if (startTime == 0) { // 还没开始，默认返回0
 				return endTime;
 			}
 			if (activityConfig.durationType == 1) {
@@ -179,10 +185,7 @@ public abstract class ActivityBase implements EventHandler {
 				endTime = startTime + activityConfig.duration * 1000;
 			}
 		} else {
-			Date endDate = ActivityStateManager.getInstance().getEndDate(id);
-			if (endDate != null) {
-				endTime = endDate.getTime();
-			}
+			endTime = ActivityStateManager.getInstance().getEndTime(id);
 		}
 		return endTime;
 	}

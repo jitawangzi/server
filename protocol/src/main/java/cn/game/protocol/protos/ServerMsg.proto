@@ -179,6 +179,16 @@ message LoginUpdateIOSAccessTokenResponse_7d000075{
 	bool result = 1;
 }
 
+
+
+// 清档，一般只在测试时使用。
+message LoginPlayerDeleteRequest_7d000080{
+	int64 playerId = 1;
+}
+message LoginPlayerDeleteResponse_7d000081{
+}
+
+
 // ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 
 // Game向Cross发数据，请求转发消息给指定玩家
