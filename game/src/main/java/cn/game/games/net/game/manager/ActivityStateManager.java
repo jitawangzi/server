@@ -266,6 +266,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		return startDate;
 	}
 
+
 	/** 
 	 * 获取本期活动的结束时间(按照时间开启的活动)
 	 * @param id
@@ -277,11 +278,28 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 			return null;
 		}
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		if (activityConfig.endTime.isEmpty()) {
+			return null;
+		}
 		Date endDate = activityConfig.endTime.get(activity.first);
 		endDate = changeDateByPeriod(endDate, activityConfig.period, getPeriodPass(id));
 		return endDate;
 	}
 
+	public long getEndTime(int id) {
+		Date endDate = getEndDate(id); 
+		return endDate == null ? 0 : endDate.getTime();
+	}
+
+	/** 
+	 * 距离活动结束还有多少秒
+	 * @param id
+	 * @return
+	 */
+	public int getEndTimeRemaining(int id) {
+		long endTime = getEndTime(id); 
+		return (int) (endTime <= 0 ? 0 : (System.currentTimeMillis() - endTime) / 1000);
+	}
 	public Date changeDateByPeriod(Date date, int period, int periodPass) {
 		if (periodPass == 0) {
 			return date ; 
@@ -455,7 +473,12 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 	}
 
 	public ActivityInfo buildActivityInfo(int id) {
-		return ActivityInfo.newBuilder().setId(id).setStateValue(getState(id)).setStartTime(getOpenTimeRemaining(id)).build();
+		return ActivityInfo.newBuilder()
+				.setId(id)
+				.setStateValue(getState(id))
+				.setStartTime(getOpenTimeRemaining(id))
+				.setEndTime(getEndTimeRemaining(id))
+				.build();
 	}
 
 	/**
@@ -476,6 +499,7 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 
 	/** 
 	 * 活动还有多久开启
+	 * 根据时间开启的活动
 	 * @param id
 	 * @return
 	 */

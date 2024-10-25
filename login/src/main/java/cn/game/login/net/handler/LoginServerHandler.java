@@ -1,44 +1,41 @@
 package cn.game.login.net.handler;
 
-import cn.game.login.cache.entity.GmOpt;
-import cn.game.login.mapper.GmOptMapper;
-import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
-import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
-import cn.game.login.net.clientpacket.vertx.wechat.AndroidPayOrderProcessor;
-import cn.game.login.net.clientpacket.vertx.wechat.BasePayOrderProcessor;
-import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
-import cn.game.protocol.protobuf.ServerMsg;
-import cn.game.util.*;
-import io.vertx.core.Future;
-import org.springframework.stereotype.Component;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.alibaba.fastjson2.JSONObject;
+import org.springframework.stereotype.Component;
 
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.util.IdUtil;
+import cn.game.login.cache.entity.GmOpt;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
+import cn.game.login.mapper.GmOptMapper;
 import cn.game.login.mapper.PayOrderMapper;
-import cn.game.login.net.clientpacket.vertx.UserHelper;
-import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;
+import cn.game.login.mapper.UserMapper;
+import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
+import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
+import cn.game.login.net.clientpacket.vertx.wechat.AndroidPayOrderProcessor;
+import cn.game.login.net.clientpacket.vertx.wechat.BasePayOrderProcessor;
+import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto;
-import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto.Builder;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
+import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
+import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteResponse_7d000081;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidRequest_7d000018;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import cn.game.util.JsonUtil;
+import cn.game.util.RedisUtil;
+import cn.game.util.ServerType;
+import cn.game.util.SpringContextLoader;
+import io.vertx.core.Future;
 
 /**
  * 服务器之间的消息处理器
@@ -59,6 +56,7 @@ public class LoginServerHandler extends BaseHandler {
 
 		putInvoker(PbProtocol.GameStatusPublish_7d000017, this::gameStatus);
 		putInvoker(PbProtocol.LoginPlayerUidRequest_7d000018, this::uid);
+		putInvoker(PbProtocol.LoginPlayerDeleteRequest_7d000080, this::playerDelete);
 		putInvoker(PbProtocol.PaymentOrderCreateRequest_7d000020, this::paymentCreate);
 		putInvoker(PbProtocol.GmOptRecordRequest_7d000052, LoginServerHandler::addGmOptRecord);
 		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000074, LoginServerHandler::updateIOSAccessToken);
@@ -68,6 +66,13 @@ public class LoginServerHandler extends BaseHandler {
 		registerPayOrderProcessor(new IOSPayOrderProcessor());
 	}
 
+	private void playerDelete(NetClient client, Object o) {
+		LoginPlayerDeleteRequest_7d000080 req = (LoginPlayerDeleteRequest_7d000080) o;
+		long playerId = req.getPlayerId();
+		UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
+		userMapper.deleteByPrimaryKey(playerId);
+		client.sendProtocol(LoginPlayerDeleteResponse_7d000081.getDefaultInstance());
+	}
 	private void updateGmInfo(NetClient client, Object o) {
 		ServerMsg.LoginUpdateGmInfoRequest_7d000076 req = (ServerMsg.LoginUpdateGmInfoRequest_7d000076) o;
 		if (req.getType() == UPDATE_WHITE_LIST){

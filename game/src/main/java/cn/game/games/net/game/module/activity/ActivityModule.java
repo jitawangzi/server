@@ -127,7 +127,7 @@ public class ActivityModule extends BasePlayerModule {
 					deleteIds.add(cid);
 				}
 			} else {
-				long endTime = activityBase.getEndTime();
+				long endTime = activityBase.calcEndTime();
 				if (endTime > 0) {
 					long remaining = endTime - nowTime;
 					if (remaining > 0) {

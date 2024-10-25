@@ -1174,15 +1174,19 @@ public class PlayerHelper {
 			return false;
 		}
 		GameClient oldGameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-
-		if (oldGameClient != null && oldGameClient != newGameClient) {
-			// 可能不同设备登录同一账号,应该退出老的GameClient
-			if (reconnect) {
-				newGameClient.copy(oldGameClient);
-			} else {
-				newGameClient.copyClintLoign(oldGameClient);
+		if (oldGameClient == null) {
+			log.warn("reconnect warn, oldGameClient is null playerId:" + playerId);
+			newGameClient.setPlayerId(playerId);
+		} else {
+			if (oldGameClient != newGameClient) {
+				// 可能不同设备登录同一账号,应该退出老的GameClient
+				if (reconnect) {
+					newGameClient.copy(oldGameClient);
+				} else {
+					newGameClient.copyClintLoign(oldGameClient);
+				}
+				GameClientManager.getInstance().removeGameClient(oldGameClient, LogoutType.Reconnect);
 			}
-			GameClientManager.getInstance().removeGameClient(oldGameClient, LogoutType.Reconnect);
 		}
 		GameClientManager.getInstance().addGameClientSession(newGameClient);
 		GameClientManager.getInstance().addGameClientPlayer(newGameClient);

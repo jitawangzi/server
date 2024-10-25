@@ -95,10 +95,11 @@ public class ClassGenerator {
 		BlockStmt blockStmt = inititializeMethod.getBody().get();
 		List<Node> childNodes = blockStmt.getChildNodes();
 		for (Node node : childNodes) {
-			if (node.toString().contains("putInvoker")) {
-				int lastIndexOf = node.toString().lastIndexOf("PbProtocol.");
-				int indexOf = node.toString().indexOf(",");
-				String reqMessage = node.toString().substring(lastIndexOf + "PbProtocol.".length(), indexOf);
+			String nodeString = node.toString();
+			if (nodeString.contains("putInvoker")) {
+				int lastIndexOf = nodeString.lastIndexOf("PbProtocol.");
+				int indexOf = nodeString.indexOf(",");
+				String reqMessage = nodeString.substring(lastIndexOf + "PbProtocol.".length(), indexOf);
 				requestMessages.remove(reqMessage);
 			}
 		}

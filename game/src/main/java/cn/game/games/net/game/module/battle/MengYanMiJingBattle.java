@@ -274,13 +274,15 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		int attackingType = chapterModule.getAttackingType();
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
+		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.MengYanMiJingSweep);
+
 		boolean newRecord = this.battleCompleted(true);
 		if (newRecord) {
 			OpType opType = OpType.MengYanMiJingFirstFinish;
-			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
-			return ResultObject.success(reward);
+			List<RewardInfo> reward2 = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
+			reward.addAll(reward2);
 		}
-		return ResultObject.success();
+		return ResultObject.success(reward);
 	}
 
 	@Override
