@@ -36,8 +36,9 @@ public class MailHelper {
 	public static final byte NOTICE = 1;
 	/** 邮件类型，系统自动发的邮件 */
 	public static final byte SYSTEM = 2;
-	/** 邮件类型，gm手动发的邮件 */
-	public static final byte GM = 5;
+	/***GM 邮件的id*/
+	public static final int GM_MAIL_ID =18;
+
 
 	/**
 	 * 全服邮件
@@ -146,12 +147,17 @@ public class MailHelper {
 	}
 
 	public static void addGlobalMail(GmMail gmMail) {
+		for (GmMail mail : globalMailList){
+			if (mail.getId() == gmMail.getId()){
+				return;
+			}
+		}
 		globalMailList.add(gmMail);
 		List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
 		PlayerManager.getInstance().getAllPlayer().values().forEach(player -> {
 			try {
 				if (canAddMail(player, gmMail)) {
-					sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.GM, attachmentList, true);
+					sendMail(player.getPlayerId(), GM_MAIL_ID, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 				}
 			} catch (ParseException e) {
@@ -177,7 +183,7 @@ public class MailHelper {
 			try {
 				if (canAddMail(player,gmMail)){
 					List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
-					sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.GM, attachmentList, true);
+					sendMail(player.getPlayerId(), GM_MAIL_ID, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 				}
 			} catch (ParseException e) {
@@ -198,12 +204,12 @@ public class MailHelper {
 
 		List<String> serverids = new ArrayList<>();
 		if (gmMail.getServerids() != null){
-			String[] serveridStr = gmMail.getServerids().replace("[","").replace("]","").split(";");
+			String[] serveridStr = gmMail.getServerids().replace("[","").replace("]","").split(",");
             for (String serverid : serveridStr) {
 				if (serverid.isEmpty()) continue;
                 serverids.add(serverid);
             }
-			if (!serverids.contains(player.getServerId())){
+			if (!serverids.isEmpty() && !serverids.contains(player.getServerId())){
 				return false;
 	        }
 		}

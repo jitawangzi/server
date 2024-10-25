@@ -434,7 +434,7 @@
     <if test="endTimer != null">
       and create_time &lt;= #{endTimer}
     </if>
-      <if test="mailOptType != 2">
+      <if test="mailOptType != null">
         and mailOptType=#{mailOptType}
       </if>
       <if test="title != null">

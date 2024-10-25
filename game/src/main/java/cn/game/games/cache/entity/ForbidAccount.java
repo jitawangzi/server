@@ -179,14 +179,14 @@ public class ForbidAccount implements Serializable, DbEntity {
 	}
 
 	public void updateType(int type){
-		if (this.type == type){
+		if (this.type !=null &&  this.type == type){
 			return;
 		}
-		if (this.type == 1 && type == 2){
+		if (this.type !=null &&  this.type == 1 && type == 2){
 			this.type = 0;
 			return;
 		}
-		if (this.type == 2 && type == 1){
+		if ( this.type !=null && this.type == 2 && type == 1){
 			this.type = 0;
 			return;
 		}

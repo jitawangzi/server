@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import cn.game.games.cache.entity.Player;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -145,9 +146,9 @@ public class GmHandler extends BaseHandler {
     DAO.execute(
             GmMailMapper.class,
             "selectGmMailList",
-                    new java.sql.Date(req.getStartTime()*1000L),
-            new java.sql.Date(req.getEndTime()*1000L),
-            req.getType(),
+            req.getStartTime()== 0 ? null : new java.sql.Date(req.getStartTime()*1000L),
+            req.getEndTime() == 0 ? null : new java.sql.Date(req.getEndTime()*1000L),
+            req.getType() == 0 ? null : (req.getType() == 1 ? 0 : 1),
             req.getTitle() == null ? null : req.getTitle(),
             req.getContent() == null ? null : req.getContent(),
             req.getStatus() == 0 ? null : (req.getStatus() == 1 ? 0 : 2) ,//1 暂未审核 2 审核成功  3审核失败。0 全部状态
@@ -212,11 +213,11 @@ public class GmHandler extends BaseHandler {
                           for (String pid : pids) {
                             MailHelper.sendMail(
                                 Long.parseLong(pid.trim()),
-                                0,
+                                MailHelper.GM_MAIL_ID,
                                 "系统管理员",
                                 gmMail.getTitle(),
                                 gmMail.getContext(),
-                                MailHelper.GM,
+                                MailHelper.NOTICE,
                                 attachment,
                                 true);
                           }
@@ -396,33 +397,40 @@ public class GmHandler extends BaseHandler {
     int type = request.getType();
     long unblockTime = request.getEndTime();
     List<Long> pids = new ArrayList<>();
-    request
-        .getPlayerIdList()
-        .forEach(
-            playerId -> {
-              ForbidAccount forbidAccount =
-                  PlayerManager.getInstance()
-                      .forbidAccount(Long.parseLong(playerId), reason, unblockTime * 1000L + "",type);
-              if (forbidAccount != null) {
-                sendAndRecordOpt(client, request, response.build());
-                pids.add(forbidAccount.getPlayerId());
-              } else {
-                sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.unknown, reason);
-              }
-            });
-    //  通知其他game节点添加封号记录
-    if (!pids.isEmpty()) {
-      VxHolder.broadcastRemoteServer(
-          ServerType.Game,
-          ServerMsg.NotifyGmAddForbidAccountRequest_7d000054.newBuilder()
-              .setReason(request.getReason())
-                  .setTimer(unblockTime*1000L)
-                  .addAllPids(pids)
-                  .build());
-//      GameServer.getInstance()
-//          .getCrossGameServerInterfaceSync()
-//          .notifyBroadcastAddForbidAccount(pids, reason, unblockTime * 1000L + "");
-    }
+    VxHolder.vertx.executeBlocking((hand)->{
+        request
+                .getPlayerIdList()
+                .forEach(
+                        playerId -> {
+                            ForbidAccount forbidAccount =
+                                    PlayerManager.getInstance()
+                                            .forbidAccount(Long.parseLong(playerId), reason, unblockTime * 1000L + "",type);
+                            if (forbidAccount != null) {
+                                sendAndRecordOpt(client, request, response.build());
+                                pids.add(forbidAccount.getPlayerId());
+                            } else {
+                                sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.unknown, reason);
+                            }
+                            if (PlayerManager.getInstance().isForbidAccount(Long.parseLong(playerId))){
+                                Player optPlayer = PlayerManager.getInstance().getPlayer(Long.parseLong(playerId));
+                                if (optPlayer != null){
+                                    GameClientManager.getInstance().logout(Long.parseLong(playerId),LogoutType.GMKick);
+                                }
+                            }
+
+                        });
+        //  通知其他game节点添加封号记录
+        if (!pids.isEmpty()) {
+            VxHolder.broadcastRemoteServer(
+                    ServerType.Game,
+                    ServerMsg.NotifyGmAddForbidAccountRequest_7d000054.newBuilder()
+                            .setReason(request.getReason())
+                            .setTimer(unblockTime*1000L)
+                            .addAllPids(pids)
+                            .build());
+        }
+    });
+
   }
 
   /** 解封账号 */

@@ -56,7 +56,7 @@ public interface GmMailMapper {
 	List<GmMail> selectGmMailList(
 			@Param("startTimer")Date startTimer,
 			@Param("endTimer")Date endTimer,
-			@Param("mailOptType")int mailOptType
+			@Param("mailOptType")Integer mailOptType
 	,@Param("title")String title, @Param("context") String context, @Param("status")Integer status
     ,@Param("limit")int limit, @Param("offset")int offset
 	);

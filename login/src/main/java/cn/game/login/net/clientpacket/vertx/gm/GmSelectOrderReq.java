@@ -1,6 +1,7 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.mapper.UserMapper;
 import cn.game.util.JsonUtil;
@@ -9,6 +10,8 @@ import com.alibaba.fastjson.JSONObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
+
+import java.util.List;
 
 /**
  * @ClassName GmSelectOrderReq
@@ -35,7 +38,8 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         JSONObject result = getResultData();
         VxHolder.vertx.executeBlocking(future -> {
             try {
-                future.complete(mapper.selectOrderList(playerId == null ? null : Long.parseLong(playerId), status, selfOrderId, finalPage, finalPageSize));
+                List<PayOrder> list = mapper.selectOrderList(playerId == null ? null : Long.parseLong(playerId), status, selfOrderId==null?null : selfOrderId, finalPage, finalPageSize);
+                 future.complete(list);
             } catch (Exception e) {
                 e.printStackTrace();
                 future.fail(e);
@@ -44,7 +48,7 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
             if (res.succeeded()) {
                 String resJson = "";
                 if (res.result() != null) {
-                    resJson = JsonUtil.toJsonString(res.result());
+                    resJson = JsonUtil.toJsonStr(res.result());
                 }
                 result.put("data", resJson);
                 response.end(result.toString());

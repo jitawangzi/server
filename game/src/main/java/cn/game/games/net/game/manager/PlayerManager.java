@@ -954,12 +954,12 @@ public class PlayerManager {
 	 */
 	public boolean isForbidAccount(long playerId) {
 		ForbidAccount forbidAccount = forbidAccounts.get(playerId);
-		return forbidAccount != null &&  ForbidAccount.isForbidLogin(forbidAccount.getType());
+		return forbidAccount != null && forbidAccount.getUnblockTime().getTime() > System.currentTimeMillis() &&  ForbidAccount.isForbidLogin(forbidAccount.getType());
 	}
 
 	public boolean isForbidChat(long pid){
 		ForbidAccount forbidAccount = forbidAccounts.get(pid);
-		return forbidAccount != null &&  ForbidAccount.isForbidChat(forbidAccount.getType());
+		return forbidAccount != null && forbidAccount.getUnblockTime().getTime() > System.currentTimeMillis() &&  ForbidAccount.isForbidChat(forbidAccount.getType());
 	}
 
 	
@@ -1041,7 +1041,7 @@ public class PlayerManager {
 		
 		// 玩家不在线
 		try {
-			SimplePlayer p = getAndLoadSimplePlayer(playerId);
+			SimplePlayer p = RedisLocalCache.getInstance().get(CacheType.PLAYER_SIMPLE.key(playerId));
 			if (p == null) {
 				return null;
 			}
@@ -1051,7 +1051,7 @@ public class PlayerManager {
 			this.forbidAccounts.put(playerId, insert);
 
 			return insert;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

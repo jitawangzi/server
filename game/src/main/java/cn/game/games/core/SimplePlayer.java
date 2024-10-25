@@ -413,4 +413,23 @@ public class SimplePlayer implements Serializable {
         return builder.build();
     }
 
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
+	}
+
+	public void setAccountAdChannel(Object accountAdChannel) {
+		this.accountAdChannel = accountAdChannel;
+	}
+
+	public void setBattleId(int battleId) {
+		this.battleId = battleId;
+	}
+
+	public void setHeros(List<Hero> heros) {
+		this.heros = heros;
+	}
+
+	public void setBattleAttrs(byte[] battleAttrs) {
+		this.battleAttrs = battleAttrs;
+	}
 }
