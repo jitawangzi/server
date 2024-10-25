@@ -26,11 +26,12 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
 //        String orderId = context.request().getParam("orderId"); //第三方订单id
         String selfOrderId = context.request().getParam("selfOrderId"); //自己订单id
-        String playerId = context.request().getParam("playerId"); //玩家id
+        String playerId = context.request().getParam("playerId").isEmpty() ? null : context.request().getParam("playerId"); //玩家id
+
         Integer status = Integer.parseInt(context.request().getParam("status")); //订单状态
         Integer page = Integer.parseInt(context.request().getParam("page")); //页数
         Integer pageSize = Integer.parseInt(context.request().getParam("pageSize")); //每页数量
-        page = page == null ? 0 : page;
+        page = page == null ? 0 : page - 1;
         pageSize = pageSize == null ? 10 : pageSize;
         PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
         Integer finalPage = page;
@@ -50,7 +51,7 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
                 if (res.result() != null) {
                     resJson = JsonUtil.toJsonStr(res.result());
                 }
-                result.put("data", resJson);
+                result.put("data", res.result());
                 response.end(result.toString());
             } else {
                 result.put("result","fail");
