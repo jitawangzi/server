@@ -24,6 +24,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
@@ -66,6 +67,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
 import cn.game.protocol.protobuf.TestMsg;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemResponse_6f000009;
@@ -86,6 +88,7 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.ObjUtil;
+import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
@@ -739,9 +742,9 @@ public class TestHandler extends BaseHandler {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
 			// 保存数据
-			Future<?> logout = GameClientManager.getInstance().logout((GameClient) client, LogoutType.TestRequest);
+			Future<?> logout = GameClientManager.getInstance().logout((GameClient) gameClientByPlayer, LogoutType.TestRequest);
 			logout.onComplete(r -> {
-				client.sendProtocol(PlayerLogoutResponse_01000004.getDefaultInstance());
+				gameClientByPlayer.sendProtocol(PlayerLogoutResponse_01000004.getDefaultInstance());
 			});
 		} else {
 			client.sendProtocol(defaultInstance);
@@ -755,10 +758,17 @@ public class TestHandler extends BaseHandler {
         TestPlayerDeleteResponse_6f000045 defaultInstance = TestPlayerDeleteResponse_6f000045.getDefaultInstance();
 		Player playerDelete = PlayerManager.getInstance().getPlayer(playerId);
 		if (playerDelete != null) {
+			GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+			if (gameClientByPlayer != null) {
+				GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
+			}
 			PlayerHelper.clearPlayer(playerId);
 		}
 		// 删除数据库
 		DAO.execute(PlayerDataMapper.class, MapperConstant.deleteByPrimaryKey, playerId);
+		// 删除login账号
+		VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerDeleteRequest_7d000080.newBuilder().setPlayerId(playerId).build());
+
         client.sendProtocol(defaultInstance);
     }
 
