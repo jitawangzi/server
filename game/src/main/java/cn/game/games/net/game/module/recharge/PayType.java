@@ -1,6 +1,9 @@
 package cn.game.games.net.game.module.recharge;
 
-import cn.game.games.cache.entity.MonthCard;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.event.EventTypeEnum;
@@ -13,13 +16,21 @@ import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.net.game.module.vip.VipModule;
-import cn.game.protocol.generated.config.*;
-import cn.game.protocol.generated.manager.*;
+import cn.game.protocol.generated.config.ActivityJQBConfig;
+import cn.game.protocol.generated.config.ChapterPacksConfig;
+import cn.game.protocol.generated.config.MonthCardConfig;
+import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.config.RechargeConfig;
+import cn.game.protocol.generated.config.ShopItemConfig;
+import cn.game.protocol.generated.config.VIPConfig;
+import cn.game.protocol.generated.manager.ActivityJQBManager;
+import cn.game.protocol.generated.manager.ChapterPacksManager;
+import cn.game.protocol.generated.manager.MonthCardManager;
+import cn.game.protocol.generated.manager.QuestManager;
+import cn.game.protocol.generated.manager.RechargeManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.VIPManager;
 import cn.game.protocol.manual.OpType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public enum PayType {
 	/** 首次充值 */
@@ -67,7 +78,7 @@ public enum PayType {
 			MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
 			monthCardModule.buyMonthCard(payItem.getPayId());
 			PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
-			monthCardModule.sendRewardMail(true);
+			monthCardModule.sendRewardMail(false);
 			return true;
 		}
 	},
