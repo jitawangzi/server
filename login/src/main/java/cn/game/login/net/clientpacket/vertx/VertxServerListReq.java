@@ -15,6 +15,7 @@ import cn.game.core.base.ServerList;
 import cn.game.core.base.ServerListManager;
 import cn.game.core.cache.CacheType;
 import cn.game.login.cache.entity.User;
+import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.protocol.custom.ServerItem;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountServerList;
@@ -26,6 +27,7 @@ import cn.game.util.ServerType;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.net.SocketAddress;
 import io.vertx.ext.web.RoutingContext;
 
 public class VertxServerListReq implements Handler<RoutingContext> {
@@ -41,6 +43,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 //		String passportSessionId = bodyAsJson.getString("passport_session_id");
 //		log.info("服务器列表，sessionId: " + passportSessionId);
 		HttpServerResponse response = context.response().putHeader("content-type", "application/octet-stream");
+		SocketAddress remoteAddress = context.request().remoteAddress(); 
 		byte[] bytes = context.getBody().getBytes();
 		AccountServerList from = null;
 		try {
@@ -95,6 +98,12 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 					// 停服状态的先不发下去
 					if (status == ServerList.STATUS_SHUTDOWN) {
 						continue; 
+					}
+					// 维护，仅ip白名单可进
+					if (status == ServerList.STATUS_MAINTANCE) {
+						if (!IpWhitelistManger.getInstance().isIpWhitelist(remoteAddress.hostAddress())) {
+							continue;
+						}
 					}
 					boolean isGm = false;
 					if (u != null) {
