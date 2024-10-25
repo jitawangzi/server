@@ -1,7 +1,11 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.cache.entity.Notice;
 import cn.game.login.mapper.NoticeMapper;
+import cn.game.login.net.handler.LoginServerHandler;
+import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 
 import java.util.Date;
@@ -30,7 +34,7 @@ public class NoticeManger {
     refreshNoticeList();
   }
 
-  private void refreshNoticeList() {
+  public void refreshNoticeList() {
     List<Notice> list = mapper.selectAll();
     if (list != null && !list.isEmpty()) {
       long now = System.currentTimeMillis();
@@ -70,11 +74,13 @@ public class NoticeManger {
     if (id > 0) {
       mapper.updateByPrimaryKey(notice);
       sortNoticeList();
-      //TODO RPC 通知其他 login 节点 从新加载
+      // RPC 通知其他 login 节点 从新加载
+      VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
     } else {
       mapper.insert(notice);
       refreshNoticeList();
-      //TODO RPC 通知其他 login 节点 从新加载
+      // RPC 通知其他 login 节点 从新加载
+      VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
     }
     return true;
   }
@@ -92,7 +98,8 @@ public class NoticeManger {
       if (notice.getId() == id) {
         noticeList.remove(notice);
         mapper.deleteByPrimaryKey(notice.getId());
-        //TODO  RPC 通知其他 login 节点
+        //  RPC 通知其他 login 节点
+        VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
         return true;
       }
     }

@@ -1,8 +1,12 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.cache.entity.IpWhitelist;
 import cn.game.login.mapper.IpWhitelistMapper;
+import cn.game.login.net.handler.LoginServerHandler;
+import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.DateUtil;
+import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 
 import java.util.Date;
@@ -45,7 +49,9 @@ public class IpWhitelistManger {
 
         mapper.insert(ipWhitelist);
         refreshIpWhitelistList();
-        //TODO  RPC 通知其他 login 节点
+        //  RPC 通知其他 login 节点
+        VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_WHITE_LIST).build());
+
         return true;
     }
 
@@ -65,7 +71,8 @@ public class IpWhitelistManger {
             if (ipWhitelist.getIp().equals(ip)) {
                 ipWhitelistList.remove(ipWhitelist);
                 mapper.deleteByPrimaryKey(ipWhitelist.getId());
-                //TODO  RPC 通知其他 login 节点
+                //  RPC 通知其他 login 节点
+                VxHolder.requestRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_WHITE_LIST).build());
                 return true;
             }
         }
