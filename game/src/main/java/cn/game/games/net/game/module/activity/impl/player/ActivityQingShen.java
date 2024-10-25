@@ -47,7 +47,6 @@ public class ActivityQingShen extends PlayerActivityBase {
 	}
 
 	List<ActivityQingShenConfig> getConfigList() {
-//		return ActivityQingShenManager.instance().list().stream().filter(activityQingShenConfig -> activityQingShenConfig.ActivityiD == getId()).collect(Collectors.toList());
 		return ActivityQingShenManager.instance().getActivityiDList(id);
 	}
 	public List<ActivityQingShenConfig> getRoundConfigList(){
@@ -90,6 +89,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 		super.startUp();
 		round = 0;
 		refreshActivity();
+		initActivityTask();
 	}
 
 	private void refreshActivity() {
@@ -99,7 +99,12 @@ public class ActivityQingShen extends PlayerActivityBase {
 			round = maxRound;
 			return;
 		}
-		List<ActivityQingShenConfig> newTaskIdList = getConfigList().stream().filter(activityQingShenConfig -> activityQingShenConfig.Round == round).toList();
+		GameLogger.activity(player, id, round);
+	}
+
+	private void initActivityTask() {
+		List<ActivityQingShenConfig> newTaskIdList = getConfigList();
+//		List<ActivityQingShenConfig> newTaskIdList = getConfigList().stream().filter(activityQingShenConfig -> activityQingShenConfig.Round == round).toList();
 		QuestModule questModule = player.getQuestModule();
 		newTaskIdList.forEach(activityQingShenConfig -> {
 			questModule.remove(activityQingShenConfig.taskID);
@@ -109,7 +114,6 @@ public class ActivityQingShen extends PlayerActivityBase {
 				log.info(String.format("create new taskId:%d, activityId:%d, round:%d  pid:%d,",activityQingShenConfig.taskID,id,round,player.getPlayerId()));
 			}
 		});
-		GameLogger.activity(player, id, round);
 	}
 
 	@Override

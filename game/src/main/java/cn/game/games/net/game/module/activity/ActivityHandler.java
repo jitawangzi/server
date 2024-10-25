@@ -325,9 +325,12 @@ public class ActivityHandler extends BaseHandler {
       List<Integer> rewardTaskIds = new ArrayList<>(req.getTaskIdsList());
       if (activityBase instanceof ActivityQingShen activityQingShen) {
         List<ActivityQingShenConfig> roundConfigList = activityQingShen.getRoundConfigList();
+        List<Integer> roundIds = new ArrayList<>();
+        roundConfigList.forEach(roundConfig -> roundIds.add(roundConfig.taskID));
         if (rewardTaskIds.contains(roundConfigList.get(roundConfigList.size() - 2).taskID) && !rewardTaskIds.contains(roundConfigList.get(roundConfigList.size() - 1).taskID)){
            rewardTaskIds.add(roundConfigList.get(roundConfigList.size() - 1).taskID);
         }
+        rewardTaskIds.removeIf(taskId-> !roundIds.contains(taskId));
         Collections.sort(rewardTaskIds);
       }
 		rewardTaskIds.forEach(taskId -> {
