@@ -180,7 +180,6 @@ message LoginUpdateIOSAccessTokenResponse_7d000075{
 }
 
 
-
 // 清档，一般只在测试时使用。
 message LoginPlayerDeleteRequest_7d000080{
 	int64 playerId = 1;
@@ -188,6 +187,13 @@ message LoginPlayerDeleteRequest_7d000080{
 message LoginPlayerDeleteResponse_7d000081{
 }
 
+//login 通知 其他 login 节点 更新 GM 白名单或者 维护公告
+message LoginUpdateGmInfoRequest_7d000076{
+	int32  type = 1; // 1 更新IP白名单列表， 2 更新维护公告
+}
+message LoginUpdateGmInfoResponse_7d000077{
+	bool result = 1;
+}
 
 // ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 

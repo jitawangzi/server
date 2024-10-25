@@ -16,6 +16,8 @@ import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.GmOptMapper;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.mapper.UserMapper;
+import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
+import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
 import cn.game.login.net.clientpacket.vertx.wechat.AndroidPayOrderProcessor;
 import cn.game.login.net.clientpacket.vertx.wechat.BasePayOrderProcessor;
 import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
@@ -40,6 +42,10 @@ import io.vertx.core.Future;
  */
 @Component
 public class LoginServerHandler extends BaseHandler {
+
+	public static final int UPDATE_WHITE_LIST = 1;
+	public static final int UPDATE_NOTICE = 2;
+
 	Map<String,BasePayOrderProcessor> payOrderProcessorMap = new HashMap<>();
 	@Override
 	protected int getModule() {
@@ -54,6 +60,7 @@ public class LoginServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PaymentOrderCreateRequest_7d000020, this::paymentCreate);
 		putInvoker(PbProtocol.GmOptRecordRequest_7d000052, LoginServerHandler::addGmOptRecord);
 		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000074, LoginServerHandler::updateIOSAccessToken);
+		putInvoker(PbProtocol.LoginUpdateGmInfoRequest_7d000076, this::updateGmInfo);
 
 		registerPayOrderProcessor(new AndroidPayOrderProcessor());
 		registerPayOrderProcessor(new IOSPayOrderProcessor());
@@ -66,6 +73,21 @@ public class LoginServerHandler extends BaseHandler {
 		userMapper.deleteByPrimaryKey(playerId);
 		client.sendProtocol(LoginPlayerDeleteResponse_7d000081.getDefaultInstance());
 	}
+	private void updateGmInfo(NetClient client, Object o) {
+		ServerMsg.LoginUpdateGmInfoRequest_7d000076 req = (ServerMsg.LoginUpdateGmInfoRequest_7d000076) o;
+		if (req.getType() == UPDATE_WHITE_LIST){
+			IpWhitelistManger.getInstance().refreshIpWhitelistList();
+			log.info(String.format("updateGmInfo refreshIpWhitelistList"));
+		}else if (req.getType() == UPDATE_NOTICE){
+			NoticeManger.getInstance().refreshNoticeList();
+			log.info(String.format("updateGmInfo refreshNoticeList"));
+		}
+		ServerMsg.LoginUpdateGmInfoResponse_7d000077.Builder res = ServerMsg.LoginUpdateGmInfoResponse_7d000077.newBuilder() ;
+		res.setResult(true);
+		client.sendProtocol(res);
+
+	}
+
 	private static void updateIOSAccessToken(NetClient client, Object o) {
 		ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074 req = (ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074) o;
     	IOSPayOrderProcessor.updateAccessToken(req.getAccessToken(), req.getExpireTime());
