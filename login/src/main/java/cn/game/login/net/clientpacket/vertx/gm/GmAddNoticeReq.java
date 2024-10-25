@@ -37,8 +37,8 @@ public class GmAddNoticeReq implements Handler<RoutingContext> {
             response.end(result.toString());
             return;
         }
-        long startTime = Long.parseLong(showStartTimer);
-        long endTime = Long.parseLong(showEndTimer);
+        long startTime = Long.parseLong(showStartTimer)*1000L;
+        long endTime = Long.parseLong(showEndTimer)*1000L;
         if (startTime > endTime) {
             result.put("result", "param error");
             response.end(result.toString());

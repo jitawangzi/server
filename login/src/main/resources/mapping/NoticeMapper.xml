@@ -200,7 +200,8 @@
   </update>
   <select id="selectAll" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List" />,
+    <include refid="Blob_Column_List" />
     from t_notice
   </select>
 </mapper>
