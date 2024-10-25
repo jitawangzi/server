@@ -109,6 +109,8 @@ public class TestHandler extends BaseHandler {
 
     @Override
     protected void inititialize() {
+		// 这个先保留，紧急情况下可以使用。
+		putInvoker(PbProtocol.TestPlayerLogoutRequest_6f000042, this::playerLogout);
         if (ServerContext.getInstance().getRunMode().isProduction()) {
             return;
         }
@@ -119,7 +121,6 @@ public class TestHandler extends BaseHandler {
         putInvoker(PbProtocol.TestMissionFinishRequest_6f000022, this::finishMission);
         putInvoker(PbProtocol.TestPlayerAssetDataRequest_6f000028, this::assetData);
         putInvoker(PbProtocol.TestClearResourceAndItemRequest_6f000040, this::clearResourceAndItem);
-        putInvoker(PbProtocol.TestPlayerLogoutRequest_6f000042, this::playerLogout);
         putInvoker(PbProtocol.TestPlayerDeleteRequest_6f000044, this::playerDelete);
         putInvoker(PbProtocol.TestMessageRequest_6f000080, this::message);
     }
