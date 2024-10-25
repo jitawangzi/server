@@ -1216,6 +1216,7 @@ public class PlayerHelper {
 		gameClient.setContext((ContextInternal) VxHolder.vertx.getOrCreateContext());
 		Player player = new Player(playerData);
 		player.setGameClient(gameClient);
+		player.setOnline(false);
 		PlayerManager.getInstance().initAdd(player);
 		return selectPlayerModuleData(player);
 	}

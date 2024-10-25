@@ -6,10 +6,10 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 
 	/**  */
 	private static final long serialVersionUID = -5416232579959359423L;
-	public static final int STATUS_RUN = 1;		//正常运行
-	public static final int STATUS_MAINTANCE = 2;//维护
+	public static final int STATUS_RUN = 1; // 正常运行,所有人可进。
+	public static final int STATUS_MAINTANCE = 2;// 维护，仅ip白名单可进
 	public static final int STATUS_NEW_SERVER = 3;//开新服
-	public static final int STATUS_SHUTDOWN = 4;//停服
+	public static final int STATUS_SHUTDOWN = 4;// 停服，服务器关闭状态，都不可进
 	
     private String serverId;
 
