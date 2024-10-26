@@ -86,6 +86,7 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 			if (showDays.contains(i)) {
 				continue;
 			}
+			showDays.add(i);
 //			openDay(i);
 		}
 		return true;
