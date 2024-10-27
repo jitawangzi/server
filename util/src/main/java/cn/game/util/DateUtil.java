@@ -484,11 +484,20 @@ public final class DateUtil {
 	 * @return
 	 */
 	public static int diffDays(long timeMillis) {
+		return diffDays(timeMillis, System.currentTimeMillis());
+	}
 
-		LocalDate currentDate = LocalDate.now();
-		Instant instant = Instant.ofEpochMilli(timeMillis);
-		LocalDate specificDate = instant.atZone(ZoneOffset.UTC).toLocalDate();
-		return (int) ChronoUnit.DAYS.between(specificDate, currentDate);
+	/** 
+	 * 计算两个时间戳之间相隔的天数
+	 * @param t1
+	 * @param t2
+	 * @return
+	 */
+	public static int diffDays(long t1, long t2) {
+
+		LocalDate d1 = Instant.ofEpochMilli(t1).atZone(ZoneOffset.UTC).toLocalDate();
+		LocalDate d2 = Instant.ofEpochMilli(t2).atZone(ZoneOffset.UTC).toLocalDate();
+		return (int) ChronoUnit.DAYS.between(d1, d2);
 	}
 
 	/** 

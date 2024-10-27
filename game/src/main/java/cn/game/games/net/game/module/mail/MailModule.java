@@ -42,11 +42,13 @@ public class MailModule extends BasePlayerModule  {
 	@JsonIgnore
 	private Mail notice;
 
-	public void sendOnline(Mail mail) {
+	public void sendOnline(Mail mail, boolean notify) {
 
 		addMail(mail);
-		MailInfo mailInfo = PbBuilder.buildMailInfo(mail);
-		player.getGameClient().sendProtocol(MailNewPush_12010001.newBuilder().setMail(mailInfo).build());
+		if (notify) {
+			MailInfo mailInfo = PbBuilder.buildMailInfo(mail);
+			player.getGameClient().sendProtocol(MailNewPush_12010001.newBuilder().setMail(mailInfo).build());
+		}
 	}
 
 	private void addMail(Mail mail) {

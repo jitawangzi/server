@@ -11,6 +11,8 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.MonthCardMapper;
+import cn.game.games.net.game.helper.MailHelper;
+import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -24,7 +26,7 @@ public class MonthCardModule extends BasePlayerModule {
 	/** 双月卡期间，是否领取过奖励 */
 	private boolean doubleBonus;
 
-	private Map<Integer, MonthCard> monthCards = new HashMap<>();;
+	private Map<Integer, MonthCard> monthCards = new HashMap<>();
 
 	public MonthCard getMonthCard(int cardId) {
 		return monthCards.get(cardId);
@@ -59,7 +61,7 @@ public class MonthCardModule extends BasePlayerModule {
 		switch (event.getType()) {
 		// 正常应该是在功能开启时初始化商店。
 		case NewDay: {
-			resetDayReward();
+//			resetDayReward();
 			checkExpire();
 		}
 		}
@@ -94,6 +96,9 @@ public class MonthCardModule extends BasePlayerModule {
 	}
 
 	private void checkExpire() {
+		// 检查过期之间，先发奖励
+		sendRewardMail(false);
+
 		long nowTime = System.currentTimeMillis();
 		Collection<MonthCard> values = monthCards.values(); 
 		List<Integer> removeList = new ArrayList<>();
@@ -109,6 +114,29 @@ public class MonthCardModule extends BasePlayerModule {
 		}
 	};
 
+	public void sendRewardMail(boolean notify) {
+		long rewardTime = System.currentTimeMillis();
+		for (MonthCard monthCard : monthCards.values()) {
+			long expireTime = monthCard.getExpireTime();
+			if (expireTime > 0) {
+				if (expireTime < rewardTime) {
+					rewardTime = expireTime;
+				}
+			}
+			long diffInDays = DateUtil.diffDays(monthCard.getLastRewardTime(), rewardTime);
+
+			if (diffInDays <= 0) {
+				continue;
+			}
+			MonthCardConfig monthCardConfig = MonthCardManager.instance().get(monthCard.getMonthCardId());
+			List<Goods> attachmentList = new ArrayList<>();
+			for (int i = 0; i < diffInDays; i++) {
+				attachmentList.add(Goods.valueOf(monthCardConfig.DailyRewards));
+			}
+			MailHelper.sendMail(playerId, 7, attachmentList, notify);
+			monthCard.setLastRewardTime(System.currentTimeMillis());
+		}
+	}
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		for (MonthCard monthCard : monthCards.values()) {

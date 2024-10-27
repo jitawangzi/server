@@ -398,6 +398,9 @@ public class ShopHandler extends BaseHandler {
 				resp.setMonthCard(newMonthCard.toProto());
 				List<RewardInfo> resources = PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
 				resp.addAllRewards(resources);
+
+				monthCardModule.sendRewardMail(true);
+
 				client.sendProtocol(resp.build());
 			}else {
 				client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());
@@ -431,8 +434,10 @@ public class ShopHandler extends BaseHandler {
 		client.sendProtocol(resp.build());
 
 	}
-	private void monthCardDayReward(NetClient client, Object message) {
 
+	@Deprecated
+	private void monthCardDayReward(NetClient client, Object message) {
+		// 直接发邮件了
 		MonthCardDayRewardRequest_15000014 req = (MonthCardDayRewardRequest_15000014) message;
 		MonthCardDayRewardResponse_15000015.Builder resp = MonthCardDayRewardResponse_15000015.newBuilder();
 

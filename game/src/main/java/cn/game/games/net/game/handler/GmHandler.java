@@ -92,7 +92,7 @@ public class GmHandler extends BaseHandler {
 		for (GoodsInfo goods : attachmentsList) {
 			list.add(new Goods(goods.getId(), goods.getCount()));
 		}
-		MailHelper.sendMail(playerId, id, "", title, content, MailHelper.GM, list);
+		MailHelper.sendMail(playerId, id, "", title, content, MailHelper.GM, list, true);
 		client.sendProtocol(GmPlayerMailResponse_77000011.getDefaultInstance());
 	}
 	private void shutdown(NetClient client, Object message) {

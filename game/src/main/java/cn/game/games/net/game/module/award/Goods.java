@@ -19,6 +19,10 @@ public class Goods {
 		this.count = count;
 	}
 
+	public static Goods valueOf(int[] goods) {
+		return new Goods(goods[0], goods[1]);
+	}
+
 	public Goods() {
 		
 	}

@@ -37,6 +37,8 @@ public class MonthCard implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private Long expireTime;
+	private long lastRewardTime;
+
 	/**
 	 * @mbg.generated
 	 */
@@ -126,6 +128,14 @@ public class MonthCard implements Serializable, DbEntity {
 		this.expireTime = expireTime;
 	}
 
+	public long getLastRewardTime() {
+		return lastRewardTime;
+	}
+
+	public void setLastRewardTime(long lastRewardTime) {
+		this.lastRewardTime = lastRewardTime;
+	}
+
 	/**
 	 * @mbg.generated
 	 */
@@ -150,6 +160,7 @@ public class MonthCard implements Serializable, DbEntity {
 		card.setExpireTime(expireTime);
 		card.setIsBuyRewards(false);
 		card.setIsDayRewards(false);
+		card.setLastRewardTime(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
 		return card;
 	}
 

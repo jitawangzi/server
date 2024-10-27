@@ -32,13 +32,14 @@ public class MailHelper {
 	/** 邮件类型，gm手动发的邮件 */
 	public static final byte GM = 5;
 
-	public static void sendMail(long receiverId, int mailId, String sender, String title, String content, byte type, List<Goods> attachmentList) {
+	public static void sendMail(long receiverId, int mailId, String sender, String title, String content, byte type, List<Goods> attachmentList,
+			boolean notify) {
 
 		Mail mail = Mail.valueOf(receiverId, mailId, sender, title, content, type, attachmentList);
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
 			Player player = PlayerManager.getInstance().getPlayer(receiverId); 
 			MailModule mailModule = player.getMailModule() ;
-			mailModule.sendOnline(mail);
+			mailModule.sendOnline(mail, notify);
 		} else {
 //			mail.insert() ; 
 			DAO.insert(mail);
@@ -46,7 +47,7 @@ public class MailHelper {
 	}
 
 	public static void sendMail2(long receiverId, String sender, String title, String content, byte type,
-			List<Entry<Integer, Integer>> rewards) {
+			List<Entry<Integer, Integer>> rewards, boolean notify) {
 		List<Goods> attachmentList = new ArrayList<Goods>();
 		for (Entry<Integer, Integer> entry : rewards) {
 			Goods goods = new Goods();
@@ -54,7 +55,7 @@ public class MailHelper {
 			goods.setCount(entry.getValue());
 			attachmentList.add(goods);
 		}
-		sendMail(receiverId, 0, sender, title, content, type, attachmentList);
+		sendMail(receiverId, 0, sender, title, content, type, attachmentList, notify);
 	}
 	/**
 	 * 发送多语言版的邮件
@@ -71,12 +72,12 @@ public class MailHelper {
 	 */
 	public static void sendMailMultiLanguage(long receiverId, int senderId, int titleId, int contentId, byte type,
 			List<Entry<Integer, Integer>> rewards) {
-		sendMail2(receiverId, senderId + "", titleId + "", contentId + "", type, rewards);
+		sendMail2(receiverId, senderId + "", titleId + "", contentId + "", type, rewards, true);
 	}
 
-	public static void sendMail(long receiverId, int mailId) {
+	public static void sendMail(long receiverId, int mailId, boolean notify) {
 
-		sendMail(receiverId, mailId, null);
+		sendMail(receiverId, mailId, null, notify);
 	}
 
 	/** 
@@ -85,13 +86,13 @@ public class MailHelper {
 	 * @param mailId
 	 * @param goods
 	 */
-	public static void sendMail(long receiverId, int mailId, List<Goods> goods) {
+	public static void sendMail(long receiverId, int mailId, List<Goods> goods, boolean notify) {
 
-		Mail mail = Mail.valueOfMailId(receiverId, mailId);
+		Mail mail = Mail.valueOfMailId(receiverId, mailId, goods);
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
 			Player player = PlayerManager.getInstance().getPlayer(receiverId);
 			MailModule mailModule = player.getMailModule();
-			mailModule.sendOnline(mail);
+			mailModule.sendOnline(mail, notify);
 		} else {
 //			mail.insert();
 			DAO.insert(mail);
