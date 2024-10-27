@@ -52,6 +52,7 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 	private Map<Integer, Integer> buffIdsMap = new HashMap<Integer, Integer>();
 	/** 是否可以扫荡,功能开启第二天才可以扫 */
 	private boolean canQuick = false;
+	private boolean todayCanQuick = false;
 	/** 今天有没有打过 */
 	private boolean isTodayBattle = false;
 	/** 今天打过关卡，则明天减两关打，否则不变 */
@@ -95,6 +96,16 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 			randomBuff.addAll(BattleHelper.randomBuffs(startBattleId, 2));
 		}
 		setCanQuick(true);
+
+		int maxSweepBattle = maxSweepBattle();
+		BattleConfig battleConfig = BattleManager.instance().getNullable(maxSweepBattle);
+		while (battleConfig != null) {
+			if (battleConfig.ClearGameReward > 0) {
+				todayCanQuick = true;
+				break;
+			}
+			battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+		}
 	}
 
 	public boolean battleCompleted(boolean win) {
@@ -236,6 +247,10 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 
 	public void setCanQuick(boolean canQuick) {
 		this.canQuick = canQuick;
+	}
+
+	public boolean isTodayCanQuick() {
+		return todayCanQuick;
 	}
 
 	@Override
