@@ -141,6 +141,11 @@ public class MailHelper {
 		return typeList.get(typeList.size() - 1).ID;
 	}
 
+	/** 
+	 * 是否是公告类型的邮件，通过配置表的邮件类型区分。 
+	 * @param mail
+	 * @return
+	 */
 	public static boolean isNoticeMail(Mail mail) {
 		MailConfig mailConfig = MailManager.instance().getNullable(mail.getMailId());
 		return mailConfig != null && mailConfig.Type == 1;
