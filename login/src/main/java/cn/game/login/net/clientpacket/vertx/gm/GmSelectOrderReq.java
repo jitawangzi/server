@@ -26,7 +26,10 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
 //        String orderId = context.request().getParam("orderId"); //第三方订单id
         String selfOrderId = context.request().getParam("selfOrderId"); //自己订单id
-        String playerId = context.request().getParam("playerId").isEmpty() ? null : context.request().getParam("playerId"); //玩家id
+        String playerId = context.request().getParam("playerId"); //玩家id
+        if (playerId == null || playerId.trim().isEmpty()){
+            playerId = null;
+        }
 
         Integer status = Integer.parseInt(context.request().getParam("status")); //订单状态
         Integer page = Integer.parseInt(context.request().getParam("page")); //页数
@@ -37,9 +40,10 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         Integer finalPage = page;
         Integer finalPageSize = pageSize;
         JSONObject result = getResultData();
+        String finalPlayerId = playerId;
         VxHolder.vertx.executeBlocking(future -> {
             try {
-                List<PayOrder> list = mapper.selectOrderList(playerId == null ? null : Long.parseLong(playerId), status, selfOrderId==null?null : selfOrderId, finalPage, finalPageSize);
+                List<PayOrder> list = mapper.selectOrderList(finalPlayerId == null ? null : Long.parseLong(finalPlayerId), status, selfOrderId==null?null : selfOrderId, finalPage, finalPageSize);
                  future.complete(list);
             } catch (Exception e) {
                 e.printStackTrace();
