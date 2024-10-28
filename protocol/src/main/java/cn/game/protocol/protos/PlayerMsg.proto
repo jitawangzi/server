@@ -231,9 +231,9 @@ message PlayerPatrolInfoResponse_01000071{
 	PatrolInfo patrol = 1;//巡逻/挂机
 }
 
-/*** 通知客户端，重置一些本地的数据，大多是一些简单次数之类，对于复杂数据的刷新，通过单独定义协议，服务端推送来刷新 ****/
+/*** 通知客户端，需要重置跨天的一些数据，一般在接受到这个协议后，可以简单发送PlayerLoginRequest_01000001协议，reconnect设置为true，重新刷新一下所有数据  ****/
 message PlayerResetPush_01100016{
-	int32 type = 1 ; 	// 1 表示12点的刷新，  2表示5点的刷新
+	int32 type = 1 ; 	// （这个字段暂时用不到，先保留）1 表示0点的刷新，  2表示5点的刷新（这个字段暂时用不到，先保留）
 }
 //@NotUseEnd
 

@@ -62,7 +62,7 @@ public class GameUtil {
 	/** 
 	 * 给数量做加成
 	 * @param array 0：id 1：数量
-	 * @param addition
+	 * @param addition,加成值，除10000使用
 	 * @return
 	 */
 	public static int[] arrayAddition(int[] array, int addition) {

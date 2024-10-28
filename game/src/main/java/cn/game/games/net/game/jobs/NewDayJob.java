@@ -13,6 +13,7 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerResetPush_01100016;
 
 public class NewDayJob implements Job
 {
@@ -35,7 +36,8 @@ public class NewDayJob implements Job
 			Player player = PlayerManager.getInstance().getPlayer(gameClient.getPlayerId());
 			PlayerHelper.addTask(gameClient.getPlayerId(), r -> {
 				PlayerHelper.refresh(player);
-				// TODO 通知客户端跨天了， 使用登陆来刷新所有数据。
+				// 通知客户端跨天了， 使用登陆来刷新所有数据。
+				gameClient.sendProtocol(PlayerResetPush_01100016.getDefaultInstance());
 			});
 		}
 	}
