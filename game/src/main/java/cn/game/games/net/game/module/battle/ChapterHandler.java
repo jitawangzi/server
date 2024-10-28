@@ -1018,8 +1018,8 @@ public class ChapterHandler extends BaseHandler {
 		}
 		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
 
-		int exp = BattleHelper.calcPatrolExpAdd(player, minute);
-		int gold = BattleHelper.calcPatrolGoldAdd(player, minute);
+		int exp = BattleHelper.calcPatrolExpAdd(player, minute, true);
+		int gold = BattleHelper.calcPatrolGoldAdd(player, minute, true);
 
 		PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);
 		PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Patrol);

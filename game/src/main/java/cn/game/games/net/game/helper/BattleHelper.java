@@ -243,10 +243,10 @@ public class BattleHelper {
 	 * @param minute
 	 * @return
 	 */
-	public static int calcPatrolExpAdd(Player player, int minute) {
+	public static int calcPatrolExpAdd(Player player, int minute, boolean useWelfareValue) {
 		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
-		int exp = (int) (patrolConfig.IncomeEXP * minute * calcPatrolExpRate(player));
-
+		float rate = !useWelfareValue ? 1 : calcPatrolExpRate(player);
+		int exp = (int) (patrolConfig.IncomeEXP * minute * rate);
 		return exp;
 	}
 
@@ -254,11 +254,13 @@ public class BattleHelper {
 	 * 巡逻n分钟增加的金币数量
 	 * @param player
 	 * @param minute
+	 * @param useWelfareValue,是否使用加成
 	 * @return
 	 */
-	public static int calcPatrolGoldAdd(Player player, int minute) {
+	public static int calcPatrolGoldAdd(Player player, int minute, boolean useWelfareValue) {
 		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
-		int gold = (int) (patrolConfig.IncomeEXP * minute * calcPatrolGoldRate(player));
+		float rate = !useWelfareValue ? 1 : calcPatrolGoldRate(player);
+		int gold = (int) (patrolConfig.IncomeGold * minute * rate);
 		return gold;
 	}
 
