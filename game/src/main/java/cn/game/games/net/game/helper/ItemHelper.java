@@ -1,7 +1,6 @@
 package cn.game.games.net.game.helper;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -147,21 +146,6 @@ public class ItemHelper {
 		return passid;
 	}
 
-	/**
-	 * battlepass开启天数
-	 * @param battlepassId
-	 * @return
-	 */
-	public static int getBattlePassOpenDays(int battlepassId) {
-		BattlePassConfig battlePassConfig = BattlePassManager.getInstance().getBattlePassConfigNullable(battlepassId);
-		if (battlePassConfig == null) {
-			return 0;
-		}
-		Date upTime = battlePassConfig.getUpTime();
-		Date date = new Date(System.currentTimeMillis());
-		// day = DateUtil.calcBetweenDays(date, upTime);
-		return DateUtil.calcBetweenDays(date, upTime) + 1;
-	}
 
 	public static BattlePassPrizeConfig getBattlePassConfig(int battlepassid, int level) {
 		int cycleid = battlepassid * 100 + level;

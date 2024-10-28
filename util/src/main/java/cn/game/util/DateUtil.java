@@ -1,6 +1,5 @@
 package cn.game.util;
 
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -488,7 +487,7 @@ public final class DateUtil {
 	}
 
 	/** 
-	 * 计算两个时间戳之间相隔的天数
+	 * 计算两个时间戳之间相隔的天数（日期数）
 	 * @param t1
 	 * @param t2
 	 * @return
@@ -513,33 +512,6 @@ public final class DateUtil {
 		return (int) ChronoUnit.DAYS.between(specificDate, currentDate);
 	}
 
-	public static int calcBetweenDays(Date startDate, Date endDate) {
-		if (startDate != null && endDate != null) {
-			Date startDate0AM = getAM0Date(startDate);
-			Date endDate0AM = getAM0Date(endDate);
-			long v1 = startDate0AM.getTime() - endDate0AM.getTime();
-			BigDecimal bd1 = new BigDecimal(v1);
-			BigDecimal bd2 = new BigDecimal(86400000L);
-			return Math.abs((int) bd1.divide(bd2, 0, 0).doubleValue());
-		} else {
-			return 0;
-		}
-	}
-
-	/** 
-	 * 获取指定日期的0点时间
-	 * @param date
-	 * @return
-	 */
-	public static Date getAM0Date(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		return calendar.getTime();
-	}
 	
 	public static int currentTimeSeconds() {
 		
