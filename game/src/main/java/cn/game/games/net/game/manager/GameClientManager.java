@@ -72,7 +72,7 @@ public class GameClientManager {
 	 * @param gameClient
 	 */
 	public void removeGameClient(GameClient gameClient, LogoutType logoutType) {
-		log.info("removeGameClient " + gameClient.toDetailString() + " LogoutType:" + logoutType);
+		log.info("removeGameClient LogoutType:" + logoutType + " " + gameClient.toDetailString());
 		if (gameClient.getSessionId() != null) {
 			GameClient gameClient2 = clients.get(gameClient.getSessionId());
 			if (gameClient2 != null && gameClient2 == gameClient) {

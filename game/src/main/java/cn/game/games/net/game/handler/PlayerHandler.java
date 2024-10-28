@@ -870,31 +870,30 @@ public class PlayerHandler extends BaseHandler {
 		}
 		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
 		GameClient newGameClient = (GameClient) client;
-		newGameClient.setSessionId(passportSessionId);
-		if (PlayerManager.getInstance().isForbidAccount(newGameClient.getPlayerId())) {
-			client.sendProtocol( PlayerLoginResponse_01000002.getDefaultInstance(),ErrorMsgEnum.login_fail_player_is_forbid.getId());
-			return;
-		}
-		if (reconnect) { // 客户端主动重连
-			try {
-				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, oldGameClient == null ? 0 : oldGameClient.getPlayerId());
+
+		Account account = new Account(req);
+		Future<LoginPlayerUidResponse_7d000019> playerUid = getPlayerUid(passportSessionId);
+		Future<Long> uidFuture =  playerUid.compose(r -> checkPlayerUnlock(r)).map(r -> {
+			account.accountId = r.getAccountId();
+			account.deviceId = r.getDeviceId();
+			return r.getUid();
+		});
+		uidFuture.map(uid -> {
+			newGameClient.setSessionId(passportSessionId);
+			if (PlayerManager.getInstance().isForbidAccount(newGameClient.getPlayerId())) {
+				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.login_fail_player_is_forbid.getId());
+				return null;
+			}
+			if (reconnect) { // 客户端主动重连
+				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect,
+						oldGameClient == null ? 0 : oldGameClient.getPlayerId(), account);
 				if (!isReallyReconnect) {
 					client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
-					GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.Reconnect);
+					GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.WrongReconnection);
 				}
-			} catch (Exception e) {
-				handleLoginFailure(e, 0, newGameClient, passportSessionId);
-			}
-		} else {
-			// 客户端新登陆
-			Account account = new Account(req);
-			Future<LoginPlayerUidResponse_7d000019> playerUid = getPlayerUid(passportSessionId);
-			playerUid.compose(r -> checkPlayerUnlock(r)).map(r -> {
-				account.accountId = r.getAccountId();
-				account.deviceId = r.getDeviceId();
-				return r.getUid();
-			}).map(uid -> {
-				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid);
+			} else {
+				// 客户端新登陆
+				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid, account);
 				if (!isReallyReconnect) {
 					loadOrCreatePlayerData(uid, account, newGameClient)
 							.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
@@ -902,9 +901,9 @@ public class PlayerHandler extends BaseHandler {
 							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
-				return uid;
-			}).onFailure(t -> handleLoginFailure(t, ErrorMsgEnum.request_remote_server.getId(), newGameClient, passportSessionId));
-		}
+			}
+			return null;
+		}).onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 	}
 
 	private Future<LoginPlayerUidResponse_7d000019> getPlayerUid(String passportSessionId) {

@@ -441,10 +441,10 @@ public class Player  {
 				promise.complete(true);
 			}
 		} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
-			if (Boolean.getBoolean("DisableRecharge")) {
-				handleEvent(EventTypeEnum.Charge, cost[1]);
-				return Future.succeededFuture(true);
-			}
+//			if (Boolean.getBoolean("DisableRecharge")) {
+//				handleEvent(EventTypeEnum.Charge, cost[1]);
+//				return Future.succeededFuture(true);
+//			}
 
 //			String platform = "Android";
 //			if (getAccount().getPlatform() == 1 || getAccount().getPlatform() == 3){

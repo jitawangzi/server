@@ -15,7 +15,8 @@ public enum LogoutType {
     
     ForbidAccount(7, "ForbidAccount", "封号被踢"),
 	Reconnect(8, "Reconnect", "重连时踢掉老的连接"),
-	LoginOtherServer(9, "LoginOtherServer", "登录了其他服务器,退出当前服务器"),
+	WrongReconnection(9, "WrongReconnection", "错误的重连，一般出现在，缓存已经清理了，客户端还重连"),
+	LoginOtherServer(10, "LoginOtherServer", "登录了其他服务器,退出当前服务器"),
 	;
 
 	private int ID;

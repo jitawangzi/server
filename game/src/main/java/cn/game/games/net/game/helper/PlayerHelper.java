@@ -1165,7 +1165,7 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return  是否重连了
 	 */
-	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId) {
+	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId, Account account) {
 		if (playerId == 0) {
 			return false;
 		}
@@ -1187,6 +1187,7 @@ public class PlayerHelper {
 		GameClientManager.getInstance().addGameClientSession(newGameClient);
 		GameClientManager.getInstance().addGameClientPlayer(newGameClient);
 
+		player.setAccount(account);
 		player.setGameClient((GameClient) newGameClient);
 		PlayerHelper.refresh(player);
 		player.handleEvent(EventTypeEnum.Reconnect);
