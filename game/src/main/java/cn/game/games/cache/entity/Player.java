@@ -461,7 +461,7 @@ public class Player  {
 					.setItemId(chargeItemId + "")
 					.build();
 			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
-			requestRemoteServer.onSuccess(r -> {
+			requestRemoteServer.map(r -> {
 				PaymentOrderCreateResponse_7d000021 body = r.body();
 				if (body.getOrderId() == 0) {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.getDefaultInstance(), ErrorMsgEnum.payment_order_create_fail.getId());
@@ -478,6 +478,7 @@ public class Player  {
 					}
 					getPlayerModule().addPayItems(payItem);
 				}
+				return null;
 			}).onFailure(r -> {
 				log.error("登录服创建充值订单失败： ", r);
 				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.unknown.getId()); 
