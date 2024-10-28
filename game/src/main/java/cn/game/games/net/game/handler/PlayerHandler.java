@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
@@ -582,7 +583,7 @@ public class PlayerHandler extends BaseHandler {
 			newGameClient.setSessionId(passportSessionId);
 			newGameClient.copy(oldGameClient);
 
-			GameClientManager.getInstance().removeGameClient(oldGameClient);
+			GameClientManager.getInstance().removeGameClient(oldGameClient, LogoutType.Reconnect);
 
 			GameClientManager.getInstance().addGameClientSession(newGameClient);
 			GameClientManager.getInstance().addGameClientPlayer(newGameClient);
@@ -825,7 +826,7 @@ public class PlayerHandler extends BaseHandler {
 					client.sendProtocol(resp);
 				}
 				return null;
-			}).exceptionally(player::failFunction);
+			}).exceptionally(player::handleFailFunction);
 
 		}).onFailure(err ->{
 			err.printStackTrace();
@@ -879,7 +880,7 @@ public class PlayerHandler extends BaseHandler {
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, oldGameClient == null ? 0 : oldGameClient.getPlayerId());
 				if (!isReallyReconnect) {
 					client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
-					GameClientManager.getInstance().removeGameClient(newGameClient);
+					GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.Reconnect);
 				}
 			} catch (Exception e) {
 				handleLoginFailure(e, 0, newGameClient, passportSessionId);
@@ -978,7 +979,7 @@ public class PlayerHandler extends BaseHandler {
 			errorCode = Integer.parseInt(throwable.getMessage());
 		}
 		client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), errorCode);
-		GameClientManager.getInstance().removeGameClient((GameClient) client);
+		GameClientManager.getInstance().removeGameClient((GameClient) client, LogoutType.ClientLoginFail);
 		if (client.getPlayerId() > 0) {
 			PlayerHelper.clearPlayer(client.getPlayerId());
 		}
@@ -995,7 +996,7 @@ public class PlayerHandler extends BaseHandler {
 //		PlayerMsg.PlayerLogoutRequest_01000003 req = (PlayerLogoutRequest_01000003) message;
 //		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		// 保存数据
-		Future<?> logout = GameClientManager.getInstance().logout((GameClient) client);
+		Future<?> logout = GameClientManager.getInstance().logout((GameClient) client, LogoutType.ClientRequest);
 		logout.onComplete(r -> {
 			client.sendProtocol(PlayerLogoutResponse_01000004.getDefaultInstance());
 		});

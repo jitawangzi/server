@@ -2,7 +2,6 @@ package cn.game.core.net.socket.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.PostConstruct;
 
@@ -17,11 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
+import cn.game.core.util.LogicException;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.HexUtil;
-import cn.game.util.MailUtil;
 
 public abstract class BaseHandler implements Handler {
 
@@ -72,20 +71,22 @@ public abstract class BaseHandler implements Handler {
 						client.afterProcess(protocol);
 					}
 
+				} catch (LogicException e) {
+					client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), e.getErrorCode());
 				} catch (Throwable e) {
 					log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(),
 							e);
-					client.sendProtocol(PlayerErrorPush_01000099.newBuilder().setError(e.getMessage() != null ? e.getMessage()
-							: ExceptionUtils.getFullStackTrace(e)).build(),
-							ErrorMsgEnum.unknown.getId());
+					client.sendProtocol(PlayerErrorPush_01000099.newBuilder()
+							.setError(e.getMessage() != null ? e.getMessage() : ExceptionUtils.getFullStackTrace(e))
+							.build(), ErrorMsgEnum.unknown.getId());
+//					CompletableFuture.runAsync(() -> {
+//						try {
+//							MailUtil.reportException("玩家:" + client + "请求处理异常", ExceptionUtils.getFullStackTrace(e));
+//						} catch (Exception e1) {
+//							e1.printStackTrace();
+//						}
+//					});
 
-					CompletableFuture.runAsync(() -> {
-						try {
-							MailUtil.reportException("玩家:" + client + "请求处理异常", ExceptionUtils.getFullStackTrace(e));
-						} catch (Exception e1) {
-							e1.printStackTrace();
-						}
-					}) ; 
 				}
 			} else {
 				this.log.warn(String.format("No Invoker for cmd:[%d]", cmd));

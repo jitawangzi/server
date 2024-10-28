@@ -47,9 +47,9 @@ public class FirstChargeActivity extends PlayerActivityBase {
 			if (firstChargeConfig.ActivityiDIndex != id) {
 				continue;
 			}
-			if (firstChargeConfig.Price.length == 0) {
-				continue;
-			}
+//			if (firstChargeConfig.Price.length == 0) {
+//				continue;
+//			}
 			cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo.Builder builder = FirstChargeActivityInfo.newBuilder();
 			builder.setId(firstChargeConfig.ID);
 			int status = getFirstChargeStatus(nowDay, firstChargeConfig, singleCharge);

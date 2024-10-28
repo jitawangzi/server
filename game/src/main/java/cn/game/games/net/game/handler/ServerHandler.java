@@ -3,7 +3,6 @@ package cn.game.games.net.game.handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.game.util.Config;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +10,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.ProtocolStringList;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -52,6 +52,7 @@ import cn.game.protocol.protobuf.ServerMsg.GameTestResponse_7d000501;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
 import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
+import cn.game.util.Config;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
@@ -184,7 +185,7 @@ public class ServerHandler extends BaseHandler {
 						resp.setSuccess(true);
 						client.sendProtocol(resp.build());
 					}).onFailure(t -> {
-						player.fail(t);
+						player.handleFail(t);
 						resp.setSuccess(false);
 						client.sendProtocol(resp.build());
 					});
@@ -216,7 +217,7 @@ public class ServerHandler extends BaseHandler {
 					resp.setSuccess(true);
 					client.sendProtocol(resp.build());
 				}).onFailure(t -> {
-					player.fail(t);
+					player.handleFail(t);
 					resp.setSuccess(false);
 					client.sendProtocol(resp.build());
 				});
@@ -245,7 +246,7 @@ public class ServerHandler extends BaseHandler {
 		GamePlayerLogoutRequest_7d000101 request = (GamePlayerLogoutRequest_7d000101) message;
 		long playerId = request.getPlayerId();
 		PlayerHelper.addTask(playerId, v -> {
-			Future<?> logout = GameClientManager.getInstance().logout(playerId);
+			Future<?> logout = GameClientManager.getInstance().logout(playerId, LogoutType.ClientRequest);
 			logout.onComplete(r -> {
 				Throwable cause = r.cause();
 				client.sendProtocol(cause != null ? cause : GamePlayerLogoutResponse_7d000102.getDefaultInstance());
@@ -381,7 +382,7 @@ public class ServerHandler extends BaseHandler {
 				requestRemoteServer.onFailure(ee -> {
 					PlayerHelper.addTask(playerId, r -> {
 						log.warn("multi player found, notify other fail, logout current " + playerId) ; 
-						GameClientManager.getInstance().logout(playerId);
+						GameClientManager.getInstance().logout(playerId, LogoutType.LoginOtherServer);
 					});
 				}).onSuccess(r -> {
 					TaskManager.getInstance().scheduleGeneral(() -> {

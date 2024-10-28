@@ -21,6 +21,7 @@ import com.google.protobuf.MessageLite.Builder;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
@@ -1181,7 +1182,7 @@ public class PlayerHelper {
 			} else {
 				newGameClient.copyClintLoign(oldGameClient);
 			}
-			GameClientManager.getInstance().removeGameClient(oldGameClient);
+			GameClientManager.getInstance().removeGameClient(oldGameClient, LogoutType.Reconnect);
 		}
 		GameClientManager.getInstance().addGameClientSession(newGameClient);
 		GameClientManager.getInstance().addGameClientPlayer(newGameClient);

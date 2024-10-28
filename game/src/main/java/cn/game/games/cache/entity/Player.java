@@ -16,13 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.LogicException;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
-import cn.game.games.net.game.exception.LogicException;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.account.Account;
@@ -446,9 +446,13 @@ public class Player  {
 				return Future.succeededFuture(true);
 			}
 
-			String platform = "Android";
-			if (getAccount().getPlatform() == 1 || getAccount().getPlatform() == 3){
-				platform = "IOS";
+//			String platform = "Android";
+//			if (getAccount().getPlatform() == 1 || getAccount().getPlatform() == 3){
+//				platform = "IOS";
+//			}
+			String platform = getAccount().sdkPayChannel.equals("0010") ? "Android" : "IOS";
+			if (platform.equals("IOS") && getAccount().version.equals(cn.game.util.Config.disableIosPayClientVersion)) {
+				fail(ErrorMsgEnum.disable_ios_pay);
 			}
 			final int rmbCost = Boolean.getBoolean("AllRecharge1") ? 1 : cost[1];
 			final int chargeItemId = Boolean.getBoolean("AllRecharge1") ? 1007 : cost[2];
@@ -580,19 +584,37 @@ public class Player  {
 		return getPlayerModule().getExpLevelMap().getValue(exp.ID);
 	}
 
-	public void fail(Throwable t) {
+	/** 
+	 * 处理客户端请求出现的异常 ，发送默认错误返回并记录异常日志。 
+	 * 一般用在异步调用的异常处理
+	 * @param t
+	 */
+	public void handleFail(Throwable t) {
 		if (t instanceof LogicException) {
 			LogicException logicException = (LogicException) t;
-			getGameClient().sendProtocol(logicException.getErrorCode());
+			getGameClient().sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), logicException.getErrorCode());
 		} else {
 			getGameClient().sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
+			log.error("", t);
 		}
-		log.error("", t);
 	}
 
-	public String failFunction(Throwable t) {
-		fail(t);
+	/** 
+	 * 处理function类型的异步调用异常
+	 * @param t
+	 * @return
+	 */
+	public String handleFailFunction(Throwable t) {
+		handleFail(t);
 		return "";
+	}
+
+	/** 
+	 * 主动抛出一个错误，中断当前流程。 
+	 * @param errorMsgEnum
+	 */
+	public void fail(ErrorMsgEnum errorMsgEnum) {
+		throw new LogicException(errorMsgEnum.ID);
 	}
 
 	public long getPlayerId() {
