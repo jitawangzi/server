@@ -6,7 +6,9 @@ import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.mapper.UserMapper;
 import cn.game.util.JsonUtil;
 import cn.game.util.SpringContextLoader;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
@@ -52,10 +54,15 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         }, res -> {
             if (res.succeeded()) {
                 String resJson = "";
+                JSONArray arrJson = new JSONArray();
                 if (res.result() != null) {
-                    resJson = JsonUtil.toJsonStr(res.result());
+                    List<PayOrder> list = (List<PayOrder>) res.result();
+                    list.forEach(payOrder -> {
+                        arrJson.add(jsonPayPrder(payOrder));
+                    });
+                    resJson = JsonUtil.toJsonStr(arrJson);
                 }
-                result.put("data", res.result());
+                result.put("data", resJson);
                 response.end(result.toString());
             } else {
                 result.put("result","fail");
@@ -64,9 +71,26 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         });
     }
 
+    private static JsonObject jsonPayPrder(PayOrder payOrder) {
+        JsonObject json =  new JsonObject();
+        try {
+            json = JsonUtil.parserJson(JsonUtil.toJsonStr(payOrder));
+            json.addProperty("id",payOrder.getId()+"");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
     static JSONObject getResultData(){
         JSONObject result = new JSONObject();
         result.put("result","success");
         return result;
+    }
+
+    public static void main(String[] args){
+        PayOrder order = new PayOrder();
+        order.setId(12312312313123123L);
+    System.out.println(JsonUtil.toJsonStr(jsonPayPrder(order)));
     }
 }
