@@ -217,7 +217,7 @@ public class GmHandler extends BaseHandler {
                                 "系统管理员",
                                 gmMail.getTitle(),
                                 gmMail.getContext(),
-                                MailHelper.NOTICE,
+                                MailHelper.SYSTEM,
                                 attachment,
                                 true);
                           }
