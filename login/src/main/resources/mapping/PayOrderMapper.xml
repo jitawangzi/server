@@ -407,6 +407,8 @@
             and id = #{selfOrderId,jdbcType=BIGINT}
         </if>
 
+        order by id desc
+
         limit #{start},#{end}
     </select>
 </mapper>

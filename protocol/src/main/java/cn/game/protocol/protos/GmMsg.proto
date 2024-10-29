@@ -192,7 +192,8 @@ message GmShutdownServerResponse_77000002{
 
 // 请求封号列表
 message GmAccountForbidListRequest_77000003{
-		// 分页显示
+	// 分页显示
+	int32  type = 1; //封禁类型 0 所有， 1 封禁账号，2 禁言
 	int32  pageNum = 20;		// 第几页
 	int32  pageSize = 21;   // 每页记录数
 }

@@ -320,6 +320,7 @@ public class PbBuilder {
 			builder.setPlayerId(f.getPlayerId() + "");
 			builder.setName(f.getName());
 			builder.setReason(f.getReason());
+			builder.setType(f.getType());
 //			builder.setEndTime(f.getEndTime());)
 //			builder.setUnblockTime(DateUtil.getTimeByPattern(f.getUnblockTime()));
 

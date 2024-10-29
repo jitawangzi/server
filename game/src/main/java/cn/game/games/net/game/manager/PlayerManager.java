@@ -1064,10 +1064,10 @@ public class PlayerManager {
 	 * @return
 	 */
 	public int unblockAccount(long playerId) {
-		//没有被封
+		/*//没有被封
 		if (!isForbidAccount(playerId)) {
 			return 0;
-		}
+		}*/
 		ForbidAccount remove = this.forbidAccounts.remove(playerId);
 		DAO.delete(remove);
 		return 0;

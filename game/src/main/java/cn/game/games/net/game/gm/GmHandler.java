@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import cn.game.games.cache.entity.Player;
 import org.apache.commons.lang3.StringUtils;
@@ -380,10 +381,10 @@ public class GmHandler extends BaseHandler {
 
   /** 封号列表 */
   private void forbidAccountList(NetClient client, Object message) {
+      GmMsg.GmAccountForbidListRequest_77000003 request = (GmMsg.GmAccountForbidListRequest_77000003) message;
     GmAccountForbidListResponse_77000004.Builder response =
         GmAccountForbidListResponse_77000004.newBuilder();
-    List<ForbidAccount> accounts = PlayerManager.getInstance().getForbidAccount();
-
+    List<ForbidAccount> accounts = PlayerManager.getInstance().getForbidAccount().stream().filter(forbidAccount -> forbidAccount.getType() == request.getType()).collect(Collectors.toList());
     response.addAllAccounts(PbBuilder.buildForbidAccount(accounts));
     client.sendProtocol(response);
   }
