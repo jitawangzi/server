@@ -89,7 +89,6 @@ public class SimplePlayer implements Serializable {
 	public SimplePlayer(Player player) {
 		this.id = player.getData().getPlayerId();
 		this.name = player.getData().getName();
-		this.level = player.getData().getLevel();
 		this.combatEffectiveness = player.getAttrModule().getPower();
 		this.head = player.getData().getHead();
 		this.headFrame = player.getData().getHeadFrame();

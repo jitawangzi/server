@@ -16,16 +16,6 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
 import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
-import cn.game.games.net.game.module.develop.dragon.Dragon;
-import cn.game.games.net.game.module.develop.skill.DragonSkill;
-import cn.game.games.net.game.module.develop.sword.Sword;
-import cn.game.games.net.game.module.develop.sword.SwordModule;
-import cn.game.protocol.generated.config.DragonConfig;
-import cn.game.protocol.generated.config.DragonSkillConfig;
-import cn.game.protocol.generated.config.HeroSwordConfig;
-import cn.game.protocol.generated.manager.DragonManager;
-import cn.game.protocol.generated.manager.DragonSkillManager;
-import cn.game.protocol.generated.manager.HeroSwordManager;
 import cn.game.protocol.protobuf.BattleMsg.HeroAttr;
 import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -41,35 +31,10 @@ import cn.game.util.reflect.ClassHelper;
 public class AttrModule extends BasePlayerModule {
 
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginFinish };
-
-	// 这里先保留不删除，只是暂时不想修复数据库数据
-	@JsonIgnore
-	private IntMapWrapper wallAttr = new IntMapWrapper();
-
+	/** 武将属性 */
 	@JsonIgnore
 	private Map<Long, IntMapWrapper> heroAttrs = new HashMap<Long, IntMapWrapper>();
-
-	@JsonIgnore
-	private IntMapWrapper dragonAttr = new IntMapWrapper();
-	@JsonIgnore
-	private IntMapWrapper dragonSkillAttr = new IntMapWrapper();
-
-	@JsonIgnore
-	private IntMapWrapper swordAttr = new IntMapWrapper();
-	@JsonIgnore
-	private IntMapWrapper fashionAttr = new IntMapWrapper();
-	@JsonIgnore
-	private IntMapWrapper equipAttr = new IntMapWrapper();
-	@JsonIgnore
-	private IntMapWrapper gemAttr = new IntMapWrapper();
-	@JsonIgnore
-	private IntMapWrapper alchemyAttr = new IntMapWrapper();
-	@JsonIgnore
-	private IntMapWrapper bookAttr = new IntMapWrapper();
-	@JsonIgnore
-	private IntMapWrapper heavenlyDaoAttr = new IntMapWrapper();
-	@JsonIgnore
-	private IntMapWrapper potentialAttr = new IntMapWrapper();
+	/** 作用所有上阵的武将，也称为外围属性 */
 	@JsonIgnore
 	private Map<AttrCalcType, PlayerAttrCalc> playerAttrCalcMap = new HashMap<AttrCalcType, PlayerAttrCalc>();
 
@@ -80,11 +45,6 @@ public class AttrModule extends BasePlayerModule {
 	 * 计算所有属性，给客户端战斗时使用。
 	 */
 	public void calcAllAttr() {
-//		calcAlchemyAttr();
-//		calcDragonAttr();
-//		calcDragonSkillAttr();
-//		calcSwordAttr();
-//		calcWallAttr();
 
 		calcHeroAttr();
 
@@ -103,14 +63,10 @@ public class AttrModule extends BasePlayerModule {
 
 	public PlayerBattleAttrs buildBattleAttrs() {
 		cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs.Builder builder = PlayerBattleAttrs.newBuilder();
-		builder.putAllWallAttrs(wallAttr.getMap());
 
 		for (Entry<Long, IntMapWrapper> entry : heroAttrs.entrySet()) {
 			builder.addHeroAttrs(HeroAttr.newBuilder().setHeroUid(entry.getKey().toString()).putAllHeroAttrs(entry.getValue().getMap()));
 		}
-
-		IntMapWrapper dragon = new IntMapWrapper();
-		builder.putAllDragonAttrs(dragon.addAll(dragonAttr.getMap()).addAll(dragonSkillAttr.getMap()).getMap());
 
 		IntMapWrapper playerMap = getPlayerAttrMap();
 
@@ -145,54 +101,6 @@ public class AttrModule extends BasePlayerModule {
 		}
 	}
 
-	public void calcDragonAttr() {
-		dragonAttr.clear();
-		Dragon o = player.getDragonModule().getCurDragon();
-		if (o == null) {
-			return;
-		}
-		DragonConfig dragonConfig = DragonManager.instance().get(o.getConfigId());
-		dragonAttr.addAll(dragonConfig.DragonStarValve);
-		// TODO
-	}
-
-	public void calcDragonSkillAttr() {
-		dragonSkillAttr.clear();
-		DragonSkill o = player.getDragonSkillModule().getCurDragonSkill();
-		if (o != null) {
-			DragonSkillConfig dragonSkillConfig = DragonSkillManager.instance().get(o.getConfigId());
-			dragonSkillAttr.add(dragonSkillConfig.UpgradeAttributeAward[0], dragonSkillConfig.UpgradeAttributeAward[1] * o.getLevel());
-		}
-	}
-
-	public void calcWallAttr() {
-//		wallAttr.clear();
-//		int level = player.getVarModule().getVar(VarConstant.WALL_LEVEL);
-//		if (level == 0) {
-//			return;
-//		}
-//		WallConfig config = WallManager.instance().get(level);
-//		wallAttr.add(config.WallAttribute[0], config.WallAttribute[1] * level);
-	}
-
-	public void calcSwordAttr() {
-		swordAttr.clear();
-		SwordModule module = player.getModule(SwordModule.class);
-		Sword curSword = module.getCurSword();
-		if (curSword == null) {
-			return;
-		}
-		HeroSwordConfig config = HeroSwordManager.instance().get(curSword.getConfigId());
-		swordAttr.add(config.SwordValve);
-		// TODO 星级属性
-	}
-
-	public void calcAlchemyAttr() {
-		alchemyAttr.clear();
-		IntMapWrapper alchemysMap = player.getPlayerModule().getAlchemysMap();
-
-//		alchemyAttr.add(config.WallAttribute[0], config.WallAttribute[1] * level);
-	}
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		// TODO Auto-generated method stub
