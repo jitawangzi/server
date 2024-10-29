@@ -47,6 +47,13 @@ public abstract class ActivityBase implements EventHandler {
 	protected long startTime;
 	protected long endTime;
 
+	/** 
+	 * 当前活动是否有红点显示
+	 * @return
+	 */
+	public boolean hasRed() {
+		return false;
+	}
 	public abstract Message buildActivityShowInfo();
 
 	public Message buildActivityShowInfo(int id) {
