@@ -1,9 +1,7 @@
 package cn.game.games.net.game.module.rank;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.BasePlayerModule;
@@ -11,8 +9,6 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.module.develop.AttrModule;
-import cn.game.games.net.game.module.develop.attr.AttrCalcType;
-import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.protocol.generated.config.RankConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -70,41 +66,22 @@ public class RankModule extends BasePlayerModule {
 
 	/** 
 	 * 1、已上阵神将排行榜 = 已上阵5个神将养成（升级+突破+图鉴）+所有外围养成
-	2、最强神将战力榜 = Max（最强神将，仅算升级+突破）
-	3、所有神将战力榜=已拥有的所有神将（升级+突破+图鉴）之和
+	2、最强神将战力榜 = Max（最强神将，仅算升级+突破）--先算上阵的。 
 	 */
 	public void updateHeroCombatRank() {
-		// 神将属性
-		Map<Long, IntMapWrapper> heroAttrs = new HashMap<Long, IntMapWrapper>();
 		HeroModule heroModule = player.getHeroModule();
 		AttrModule attrModule = player.getAttrModule();
-		Collection<Hero> list = heroModule.list();
-		for (Hero hero : list) {
-			IntMapWrapper heroAttr = BattleHelper.makeHeroAttr(hero);
-			heroAttrs.put(hero.getId(), heroAttr);
-		}
-		// 所有外围属性
+		Collection<Hero> battleHeros = heroModule.getBattleHeroList();
+		// 计算所有所有属性
 		attrModule.calcAllAttr();
+
+		// 外围属性
 		IntMapWrapper playerAttrMap = attrModule.getPlayerAttrMap();
-
-		// 单独的图鉴属性
-		IntMapWrapper bookAttrMap = null;
-		PlayerAttrCalc bookAttrCalc = attrModule.getPlayerAttrCalcMap().get(AttrCalcType.HeroBook);
-		if (bookAttrCalc != null) {
-			bookAttrMap = bookAttrCalc.getAttrMap();
-		}
-		//
-		// 所有神将战力
-		IntMapWrapper allHeroAttrMap = new IntMapWrapper();
-		heroAttrs.forEach((id, attrMap) -> {
-			allHeroAttrMap.addAll(attrMap.getMap());
-		});
-		if (bookAttrMap != null) {
-			allHeroAttrMap.addAll(bookAttrMap.getMap());
-		}
-		float allHeroCombat = BattleHelper.calcCombat(allHeroAttrMap);
-		RankService.getInstance().updateMaxValueAsync(player.getServerId(), RankType.AllHeroCombat, playerId, allHeroCombat);
-
+		// 外围战力
+		float playerAttrCombat = BattleHelper.calcCombat(playerAttrMap);
+		// 神将属性
+		Map<Long, IntMapWrapper> heroAttrs = attrModule.getHeroAttrs();
+		float allHeroCombat = 0;
 		// 最强神将战力
 		float maxHeroCombat = 0;
 		for (IntMapWrapper attrMap : heroAttrs.values()) {
@@ -112,23 +89,32 @@ public class RankModule extends BasePlayerModule {
 			if (combat > maxHeroCombat) {
 				maxHeroCombat = combat;
 			}
+			allHeroCombat += combat;
 		}
-		RankService.getInstance().updateMaxValueAsync(player.getServerId(), RankType.HeroCombat, playerId, maxHeroCombat);
-
-		// 上阵神将战力
-		float allBattleCombat = 0;
-		Set<Long> battleHeroIds = heroModule.getBattleHeroIds();
-		for (Long id : battleHeroIds) {
-			IntMapWrapper attrMap = heroAttrs.get(id);
-			if (attrMap == null) {
-				continue;
-			}
-			allBattleCombat += BattleHelper.calcCombat(attrMap);
+		RankConfig rankConfig = RankManager.instance().get(RankType.HeroCombat.ID);
+		if (maxHeroCombat >= rankConfig.Request) {
+			RankService.getInstance().updateMaxValueAsync(player.getServerId(), RankType.HeroCombat, playerId, maxHeroCombat);
 		}
-		allBattleCombat += BattleHelper.calcCombat(playerAttrMap);
-		attrModule.setPower((int) allBattleCombat);
+		rankConfig = RankManager.instance().get(RankType.CurrentHeroCombat.ID);
+		float allCombat = allHeroCombat + playerAttrCombat * battleHeros.size();
+		if (allCombat >= rankConfig.Request) {
+			RankService.getInstance().updateMaxValueAsync(player.getServerId(), RankType.CurrentHeroCombat, playerId, allCombat);
+		}
+		attrModule.setPower((int) allCombat);
 
-		RankService.getInstance().updateMaxValueAsync(player.getServerId(), RankType.CurrentHeroCombat, playerId, allBattleCombat);
+	}
+
+	public String getScore(RankType rankType) {
+		switch (rankType) {
+		case Battle: {
+
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + rankType);
+		}
+
+		return "";
 
 	}
 }
