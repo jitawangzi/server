@@ -25,7 +25,7 @@ public class GmOptListReq implements Handler<RoutingContext> {
         String page = context.request().getParam("page");
         String pageSize = context.request().getParam("pageSize");
         GmOptMapper mapper = SpringContextLoader.getContext().getBean(GmOptMapper.class);
-        List<GmOpt> list = mapper.selectByPage(page == null ? 0 : Integer.parseInt(page), pageSize == null ? 10 : (Integer.parseInt(pageSize)*Integer.parseInt(page)));
+        List<GmOpt> list = mapper.selectByPage(page == null ? 0 : Integer.parseInt(page) - 1, pageSize == null ? 12 : (Integer.parseInt(pageSize)*Integer.parseInt(page)));
         result.put("data", list);
         result.put("count", mapper.count());
         response.end(result.toString());
