@@ -18,6 +18,7 @@ public enum LogoutType {
 	WrongReconnection(9, "WrongReconnection", "错误的重连，一般出现在，缓存已经清理了，客户端还重连"),
 	LoginOtherServer(10, "LoginOtherServer", "登录了其他服务器,退出当前服务器"),
 	TestRequest(11, "TestRequest", "测试命令退出的"),
+	TimeChange(12, "TimeChange", "修改时间测试的，踢出客户端"),
 	;
 
 	private int ID;

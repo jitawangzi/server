@@ -57,7 +57,7 @@ public abstract class ActivityBase implements EventHandler {
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);
 		builder.setStateValue(state);
-		builder.setEndTime((int) (endTime <= 0 ? 0 : (System.currentTimeMillis() - endTime) / 1000));
+		builder.setEndTime((int) (endTime <= 0 ? 0 : (endTime - System.currentTimeMillis()) / 1000));
 		return builder.build();
 	}
 

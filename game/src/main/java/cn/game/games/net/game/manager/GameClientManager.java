@@ -176,7 +176,7 @@ public class GameClientManager {
 	}
 
 	/**
-	 * 持久化所有玩家的数据
+	 * 同步持久化所有玩家的数据，一般用在服务器关闭时
 	 */
 	public void storeAllPlayers() {
 
@@ -230,9 +230,20 @@ public class GameClientManager {
 		log.info("Store GameClient Total Size : [{}] usedTime[{}]ms", lists.size(), watch.getTime());
 	}
 
-	public void logoutAll() {
+	public void notifyLogoutAllClients() {
 		for (GameClient gameClient : clients.values()) {
 			gameClient.sendProtocol(PlayerLogoutPush_01100030.getDefaultInstance());
+		}
+	}
+
+	/** 
+	 * 退出所有玩家，一般测试使用。
+	 * @param logoutType
+	 */
+	public void logoutAll(LogoutType logoutType) {
+		log.info("All GameClient[{}]start logout," + logoutType);
+		for (GameClient gameClient : clients.values()) {
+			logout(gameClient, logoutType);
 		}
 	}
 

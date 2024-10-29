@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -28,12 +29,14 @@ import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
+import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.mq.RocketMQRpcClient;
 import cn.game.core.net.remote.LoginGameServerInterface;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
@@ -193,6 +196,7 @@ public class GameServer implements GameServerMBean {
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 		initSimplePlayers();
+		kickClientsAfterChangeTime();
 
 		MailHelper.initLoadGlobalMail();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
@@ -273,6 +277,22 @@ public class GameServer implements GameServerMBean {
 		} finally {
 			lock.unlock();
 		}
+	}
+
+	/** 
+	 * 当修改时间测试某些和时间相关的功能时，如果时间往后调了超过一个小时，则自动踢出客户端
+	 * 主要方便测试跨天的一些逻辑。 
+	 */
+	private void kickClientsAfterChangeTime() {
+		AtomicLong lastCheckTime = new AtomicLong(System.currentTimeMillis());
+		SchedulerService.getInstance().scheduleAtFixedRate(() -> {
+			long now = System.currentTimeMillis();
+			if (Math.abs(now - lastCheckTime.get()) > 60 * 60 * 1000) {
+				GameClientManager.getInstance().logoutAll(LogoutType.TimeChange);
+			}
+			lastCheckTime.set(now);
+
+		}, 1, TimeUnit.SECONDS);
 	}
 
 	/** 
@@ -431,7 +451,7 @@ public class GameServer implements GameServerMBean {
 //		socketServer.shutdown();
 
 		// 通知玩家退出
-		GameClientManager.getInstance().logoutAll();
+		GameClientManager.getInstance().notifyLogoutAllClients();
 		try {
 			// 关闭websocket
 			VxHolder.vertx.undeploy(wsVerticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
