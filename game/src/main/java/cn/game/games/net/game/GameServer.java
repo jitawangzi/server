@@ -53,6 +53,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.manager.PressureTestManager;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.net.game.remote.GameRemoteServerInterface;
@@ -215,6 +216,7 @@ public class GameServer implements GameServerMBean {
 
 	/** 
 	 * 如果redis中清空数据了，则重新把数据库中的数据同步到redis
+	 * 同步SimplePlayer和名字
 	 */
 	private void initSimplePlayers() {
 		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.SERVER_SIMPLE_PLAYER_INIT.name());
@@ -263,6 +265,11 @@ public class GameServer implements GameServerMBean {
 							Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
 							Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
 							PlayerHelper.saveSimplePlayerToRedisSync(player);
+
+							// 初始化名字，名字--id
+							PlayerNameManager.getInstance().addExistingUsername(playerData.getName());
+							PlayerNameManager.getInstance().saveName2IdSync(playerData.getName(), playerData.getPlayerId());
+
 							PlayerHelper.clearPlayer(player.getPlayerId());
 						} catch (Exception e) {
 							SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());

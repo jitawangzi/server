@@ -143,6 +143,12 @@ public class PlayerNameManager {
 		return putAsync;
 	}
 
+	public Long saveName2IdSync(String name, long playerId) {
+		String key = getUsernameIdKey(name);
+		RMap<String, Long> map = RedisUtil.getRedis().getMap(key);
+		return map.put(name, playerId);
+	}
+
 	/** 
 	 * 删除某个存在的名字
 	 * @param name
