@@ -129,6 +129,7 @@ message NotifyGmAddForbidAccountRequest_7d000054{
 	repeated int64 pids = 1;
 	string reason = 2;
 	int64 timer = 3;
+	int32 type = 4;//封禁类型 0 所有， 1 封禁账号，2 禁言
 }
 //GM 添加封禁账号响应
 message NotifyGmAddForbidAccountResponse_7d000055{
