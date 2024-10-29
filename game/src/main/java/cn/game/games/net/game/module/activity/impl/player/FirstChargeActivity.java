@@ -118,10 +118,16 @@ public class FirstChargeActivity extends PlayerActivityBase {
 	public void buy(int cid) {
 
 		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(cid);
-		SingleCharge charge = new SingleCharge();
-		charge.setDay(DateUtil.getDay());
-		chargeMap.put(firstChargeConfig.ID, charge);
-		GameLogger.activity(player, id, cid);
+		Collection<FirstChargeConfig> list = FirstChargeManager.instance().list();
+		for (FirstChargeConfig config : list) {
+			if (firstChargeConfig.ActivityiDIndex == config.ActivityiDIndex && firstChargeConfig.ActivityiD == config.ActivityiD) {
+				SingleCharge charge = new SingleCharge();
+				charge.setDay(DateUtil.getDay());
+				chargeMap.put(config.ID, charge);
+			}
+		}
+
+		GameLogger.activity(player, id, firstChargeConfig.ActivityiD);
 	}
 
 	public List<RewardInfo> reward(int cid) {
@@ -168,7 +174,7 @@ public class FirstChargeActivity extends PlayerActivityBase {
 class SingleCharge {
 	/** 购买日期 */
 	private int day;
-	/** 领过的id */
+	/** 领过的id，后来修改了，这里只能有一个 */
 	private List<Integer> selectedIndex = new ArrayList<>();
 
 	public int getDay() {
