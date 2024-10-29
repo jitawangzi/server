@@ -22,10 +22,11 @@ public class GmOptListReq implements Handler<RoutingContext> {
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
         JSONObject result = GmSelectOrderReq.getResultData();
-        String page = context.request().getParam("page");
-        String pageSize = context.request().getParam("pageSize");
+        int page = context.request().getParam("page") == null ? 0 : Integer.parseInt(context.request().getParam("page"));
+        int pageSize =  context.request().getParam("pageSize") == null ? 10 : Integer.parseInt(context.request().getParam("pageSize"));
+
         GmOptMapper mapper = SpringContextLoader.getContext().getBean(GmOptMapper.class);
-        List<GmOpt> list = mapper.selectByPage(page == null ? 0 : Integer.parseInt(page) - 1, pageSize == null ? 12 : (Integer.parseInt(pageSize)*Integer.parseInt(page)));
+        List<GmOpt> list = mapper.selectByPage((page - 1)*pageSize, pageSize);
         result.put("data", list);
         result.put("count", mapper.count());
         response.end(result.toString());
