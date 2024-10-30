@@ -4,7 +4,9 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.stereotype.Component;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
@@ -23,12 +25,12 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptBreakUpRequest_38000005;
 import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptBreakUpResponse_38000006;
+import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPRequest_38000011;
+import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPResponse_38000012;
 import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionRequest_38000007;
 import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionResponse_38000008;
 import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptUpLevelRequest_38000003;
 import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptUpLevelResponse_38000004;
-import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPRequest_38000011;
-import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPResponse_38000012;
 
 @Component
 public class SecretscriptHandler extends BaseHandler {
@@ -73,8 +75,22 @@ public class SecretscriptHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.level_limit.getId());
             return;
         }
+		int costId = 0;
+		if (config.SecretscriptType == 1) {
+			costId = 207001;
+		} else if (config.SecretscriptType == 2) {
+			costId = 207002;
+		} else if (config.SecretscriptType == 3) {
+			costId = 207003;
+		} else if (config.SecretscriptType == 4) {
+			costId = 207004;
+		} else if (config.SecretscriptType == 5) {
+			costId = 207005;
+		} else {
+			throw new IllegalArgumentException("神通类型错误: " + config.SecretscriptType);
+		}
         List<SimpleEntry<Integer, Integer>> costEntries = new ArrayList<>();
-        costEntries.add(new SimpleEntry<>(207001, lvConfig.LvConsumeSpecialItem));
+		costEntries.add(new SimpleEntry<>(costId, lvConfig.LvConsumeSpecialItem));
         costEntries.add(new SimpleEntry<>(207008, lvConfig.LvConsumeNormalItem));
         costEntries.add(new SimpleEntry<>(Asset.gold.ID, lvConfig.LvConsumeMoney));
         if (!PlayerHelper.delResources(player, costEntries, OpType.Secretscript)) {
