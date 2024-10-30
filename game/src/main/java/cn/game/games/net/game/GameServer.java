@@ -357,29 +357,44 @@ public class GameServer implements GameServerMBean {
 		if (!Config.hotUpdate) {
 			return;
 		}
-		if (ServerContext.getInstance().getRunMode().isProduction()) {
-			String className = ManagementFactory.getRuntimeMXBean().getName();
-			String pid = className.split("@")[0];
-			Thread attachThread = new Thread(() -> {
-				try {
-					// 尝试从 classpath 中获取 JAR 文件
-					URL jarUrl = getClass().getClassLoader().getResource("hotupdate-1.0.jar");
-					String agentPath = jarUrl.getPath();
-					VirtualMachine vm = VirtualMachine.attach(pid);
-					vm.loadAgent(agentPath);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
+		String className = ManagementFactory.getRuntimeMXBean().getName();
+		String pid = className.split("@")[0];
+		Thread attachThread = new Thread(() -> {
+			try {
+				// 获取当前类的类加载器
+				ClassLoader classLoader = GameServer.class.getClassLoader();
+				// 获取资源的URL
+				URL jarResource = classLoader.getResource("hotupdate-1.0.jar");
+				if (jarResource == null) {
+					throw new RuntimeException("Hot Update Agent JAR : hotupdate-1.0.jar  not found at classpath");
 				}
-			}, "CodeHotUpdate");
+				// 将URL转换为文件路径,URL可能是file协议，且需要转换为URI再转为File
+				String agentPath = new File(new java.net.URI(jarResource.toString())).getAbsolutePath();
+				// 获取程序运行目录
+//				String userDir = System.getProperty("user.dir");
+//				String agentPath = userDir + "/lib/hotupdate-1.0.jar";
+//				File agentFile = new File(agentPath);
+//
+//				if (!agentFile.exists()) {
+//					throw new RuntimeException("Agent JAR not found at: " + agentPath);
+//				}
+				VirtualMachine vm = VirtualMachine.attach(pid);
+				vm.loadAgent(agentPath);
+				CommonLogger.info("hotUpdate agent loaded, pid: " + pid + ", agentPath: " + agentPath);
+			} catch (Exception e) {
+				throw new RuntimeException("hotUpdate agent start failed", e);
+			}
+		}, "CodeHotUpdate");
 
-			// 设置未捕获异常处理器
-			attachThread.setUncaughtExceptionHandler((t, e) -> {
-				ServerContext.getInstance().handleStartFail(e);
-			});
-			attachThread.setDaemon(true);
-			attachThread.start();
-		}
+		// 设置未捕获异常处理器
+		attachThread.setUncaughtExceptionHandler((t, e) -> {
+			ServerContext.getInstance().handleStartFail(e);
+		});
+		attachThread.setDaemon(true);
+		attachThread.start();
+
 	}
+
 
 	private void initScheduleTask() {
 		TaskManager.getInstance().scheduleGeneralAtFixedRate(() -> {
