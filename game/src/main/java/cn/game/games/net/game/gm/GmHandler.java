@@ -214,7 +214,7 @@ public class GmHandler extends BaseHandler {
                           for (String pid : pids) {
                             MailHelper.sendMail(
                                 Long.parseLong(pid.trim()),
-                                MailHelper.GM_MAIL_ID,
+                                    0,
                                 "系统管理员",
                                 gmMail.getTitle(),
                                 gmMail.getContext(),

@@ -162,7 +162,7 @@ public class MailHelper {
 		PlayerManager.getInstance().getAllPlayer().values().forEach(player -> {
 			try {
 				if (canAddMail(player, gmMail)) {
-					sendMail(player.getPlayerId(), GM_MAIL_ID, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList, true);
+					sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 				}
 			} catch (ParseException e) {
@@ -188,7 +188,7 @@ public class MailHelper {
 			try {
 				if (canAddMail(player,gmMail)){
 					List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
-					sendMail(player.getPlayerId(), GM_MAIL_ID, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList, true);
+					sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 				}
 			} catch (ParseException e) {

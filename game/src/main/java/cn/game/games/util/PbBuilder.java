@@ -45,6 +45,7 @@ import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.UnionMsg;
+import cn.game.util.DateUtil;
 import cn.game.util.Pair;
 
 public class PbBuilder {
@@ -226,7 +227,7 @@ public class PbBuilder {
 		MailInfo.Builder builder = MailInfo.newBuilder();
 		builder.setUid(mail.getId() + "");
 		builder.setContent(mail.getContent()) ; 
-		builder.setExpireTime(mailConfig != null ? (int) (mail.getCreateTime() + mailConfig.Expiration) : 0);
+		builder.setExpireTime(mailConfig != null ? (int) (mail.getCreateTime() + mailConfig.Expiration) : (int)(mail.getCreateTime() + (365* DateUtil.DAY_SECONDS)));
 		builder.setReceive(mail.getReceive());
 		builder.setSee(mail.getSee());
 		builder.setSender(mail.getSender());
