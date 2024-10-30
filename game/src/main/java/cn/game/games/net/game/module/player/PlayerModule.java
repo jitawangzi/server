@@ -37,6 +37,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxPush_01100040;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
@@ -252,6 +253,7 @@ public class PlayerModule extends BasePlayerModule {
 		builder.setFirstLogin(isFirstLoign);
 		isFirstLoign = false;
 		builder.putAllGuide(guideMap);
+		builder.setDisableIosPayVersion(Config.disableIosPayClientVersion);
 		
 		builder.addAllHeadboxs(getOrCreateIdSet(IdConstant.HEAD_BOX));
 	}

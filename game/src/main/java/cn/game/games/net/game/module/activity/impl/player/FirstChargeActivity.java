@@ -31,7 +31,7 @@ import cn.game.util.DateUtil;
 public class FirstChargeActivity extends PlayerActivityBase {
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 
-	/** key  ActivityiD  */
+	/** key  FirstCharge表id  */
 	private Map<Integer, SingleCharge> chargeMap = new HashMap<Integer, SingleCharge>();
 
 	@Override
@@ -40,13 +40,13 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		int nowDay = DateUtil.getDay();
 		Collection<FirstChargeConfig> list = FirstChargeManager.instance().list();
 		for (FirstChargeConfig firstChargeConfig : list) {
-			SingleCharge singleCharge = chargeMap.get(firstChargeConfig.ActivityiD);
-			if (singleCharge == null) {
-				continue;
-			}
 			if (firstChargeConfig.ActivityiDIndex != id) {
 				continue;
 			}
+			SingleCharge singleCharge = chargeMap.get(firstChargeConfig.ID);
+//			if (singleCharge == null && firstChargeConfig.Preconditions > 0) {
+//				continue;
+//			}
 //			if (firstChargeConfig.Price.length == 0) {
 //				continue;
 //			}
@@ -71,19 +71,21 @@ public class FirstChargeActivity extends PlayerActivityBase {
 
 	private int getFirstChargeStatus(int nowDay, FirstChargeConfig firstChargeConfig, SingleCharge singleCharge) {
 		int status = 0;
-		if (singleCharge.getSelectedIndex().contains(firstChargeConfig.ID)) {
-			status = 2;
-		} else {
-			if (nowDay - singleCharge.getDay() >= firstChargeConfig.Order - 1) {
-				status = 1;
-			}
-			if (firstChargeConfig.Preconditions > 0) {
-				FirstChargeConfig preConfig = FirstChargeManager.instance().get(firstChargeConfig.Preconditions);
-				if (!chargeMap.containsKey(preConfig.ActivityiD)) {
-					status = 0;
+		if (singleCharge != null) {
+			if (singleCharge.getSelectedIndex().contains(firstChargeConfig.ID)) {
+				status = 2;
+			} else {
+				if (nowDay - singleCharge.getDay() >= firstChargeConfig.Order - 1) {
+					status = 1;
 				}
 			}
 		}
+//		if (firstChargeConfig.Preconditions > 0) {
+//			FirstChargeConfig preConfig = FirstChargeManager.instance().get(firstChargeConfig.Preconditions);
+//			if (!chargeMap.containsKey(preConfig.ID)) {
+//				status = 0;
+//			}
+//		}
 		return status;
 	}
 
@@ -97,12 +99,16 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		if (firstChargeConfig.Preconditions > 0) {
 			FirstChargeConfig preConfig = FirstChargeManager.instance().get(firstChargeConfig.Preconditions);
 
-			FirstChargeActivity otherActivity = (FirstChargeActivity) player.getActivityModule().get(preConfig.ActivityiDIndex);
-			if (otherActivity == null || !otherActivity.getChargeMap().containsKey(preConfig.ActivityiD)) {
+//			FirstChargeActivity otherActivity = (FirstChargeActivity) player.getActivityModule().get(preConfig.ActivityiDIndex);
+//			if (otherActivity == null || !otherActivity.getChargeMap().containsKey(preConfig.ActivityiD)) {
+//				return false;
+//			}
+			if (!chargeMap.containsKey(preConfig.ID)) {
 				return false;
 			}
 		}
-		if (chargeMap.containsKey(firstChargeConfig.ActivityiD)) {
+
+		if (chargeMap.containsKey(firstChargeConfig.ID)) {
 			return false;
 
 		}
@@ -114,13 +120,13 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(cid);
 		SingleCharge charge = new SingleCharge();
 		charge.setDay(DateUtil.getDay());
-		chargeMap.put(firstChargeConfig.ActivityiD, charge);
+		chargeMap.put(firstChargeConfig.ID, charge);
 		GameLogger.activity(player, id, cid);
 	}
 
 	public List<RewardInfo> reward(int cid) {
 		FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(cid);
-		SingleCharge singleCharge = chargeMap.get(firstChargeConfig.ActivityiD);
+		SingleCharge singleCharge = chargeMap.get(cid);
 		if (singleCharge == null) {
 			return null;
 		}
