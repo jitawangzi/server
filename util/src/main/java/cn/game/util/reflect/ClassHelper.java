@@ -1,5 +1,7 @@
 package cn.game.util.reflect;
 
+import java.io.File;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,4 +33,55 @@ public class ClassHelper {
 		return subclasses;
 	}
 
+	/** 
+	 * 从获取一个jar文件的绝对路径，优先从classpath中查找
+	 * @param jarName
+	 * @return jar文件的绝对路径 ，null 不存在
+	 */
+	public static String findJarPath(String jarName) {
+		// 1. 尝试直接从 classpath 获取
+		String classPath = System.getProperty("java.class.path");
+		String[] paths = classPath.split(File.pathSeparator);
+		for (String path : paths) {
+			if (path.endsWith(jarName)) {
+				File file = new File(path);
+				if (file.exists()) {
+					return file.getAbsolutePath();
+				}
+			}
+		}
+		// 2. 尝试使用不同的类加载器
+		ClassLoader[] loaders = new ClassLoader[] { Thread.currentThread().getContextClassLoader(), ClassLoader.getSystemClassLoader(),
+				ClassHelper.class.getClassLoader() };
+
+		for (ClassLoader loader : loaders) {
+			if (loader != null) {
+				// 尝试不同的路径组合
+				String[] pathPrefixes = { "", "lib/", "../lib/" };
+				for (String prefix : pathPrefixes) {
+					try {
+						URL resource = loader.getResource(prefix + jarName);
+						if (resource != null) {
+							return new File(resource.toURI()).getAbsolutePath();
+						}
+					} catch (Exception e) {
+						// 记录异常但继续尝试
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		// 3. 回退到文件系统直接查找
+		String userDir = System.getProperty("user.dir");
+		String[] searchDirs = { userDir + "/lib", userDir + "/../lib", userDir };
+
+		for (String dir : searchDirs) {
+			File jarFile = new File(dir, jarName);
+			if (jarFile.exists()) {
+				return jarFile.getAbsolutePath();
+			}
+		}
+		return null;
+	}
 }

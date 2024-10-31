@@ -3,7 +3,6 @@ package cn.game.games.net.game;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
@@ -74,6 +73,7 @@ import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
+import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 
@@ -130,6 +130,7 @@ public class GameServer implements GameServerMBean {
       //			CommonLogger.info("启动逻辑服。。");
       //			instance.log.info("启动逻辑服。。");
 //      System.setProperty("user.dir", "D:\\Party\\server\\server\\game");
+
 			instance.start(args);
 		} catch (Throwable e) {
 			ServerContext.getInstance().handleStartFail(e);
@@ -140,7 +141,7 @@ public class GameServer implements GameServerMBean {
 	public void start(String[] args) throws Exception {
 		String serverId = parseGameServerId(args);
 		LoggerManager.init();
-//		System.err.println(System.getProperty("log4j2.level"));
+		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 
@@ -362,25 +363,9 @@ public class GameServer implements GameServerMBean {
 		Thread attachThread = new Thread(() -> {
 			try {
 				String jarName = "hotupdate-1.0.jar";
-				// 获取当前类的类加载器
-				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-				if (classLoader == null) {
-					classLoader = getClass().getClassLoader();
-				}
-				LoggerType.Stdout.logger.debug("classpath: ");
-				LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
-				String agentPath = null;
-				// 获取资源的URL
-				URL jarResource = classLoader.getResource(jarName);
-				if (jarResource == null) {
-					LoggerType.Stdout.logger.warn("Hot Update Agent JAR : {}  not found at classpath", jarName);
-					agentPath = System.getProperty("user.dir") + "/lib/" + jarName;
-				} else {
-					// 将URL转换为文件路径,URL可能是file协议，且需要转换为URI再转为File
-					agentPath = new File(new java.net.URI(jarResource.toString())).getAbsolutePath();
-				}
-				if (!new File(agentPath).exists()) {
-					throw new RuntimeException("Agent JAR not found at: " + agentPath);
+				String agentPath = ClassHelper.findJarPath(jarName);
+				if (agentPath == null) {
+					throw new RuntimeException("Agent JAR not found : " + jarName);
 				}
 				VirtualMachine vm = VirtualMachine.attach(pid);
 				vm.loadAgent(agentPath);
@@ -388,7 +373,7 @@ public class GameServer implements GameServerMBean {
 			} catch (Exception e) {
 				throw new RuntimeException("hotUpdate agent start failed", e);
 			}
-		}, "CodeHotUpdate");
+		}, "CodeHotUpdateThread");
 
 		// 设置未捕获异常处理器
 		attachThread.setUncaughtExceptionHandler((t, e) -> {
