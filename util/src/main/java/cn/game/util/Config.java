@@ -76,7 +76,6 @@ public final class Config {
 	public static boolean gmOpen;
 
 	public static boolean hotUpdate;
-	public static String agentJar;
 
 	/** 服务器心跳包间隔 */
 	public static int heart;
@@ -147,7 +146,6 @@ public final class Config {
 			oneLine = Boolean.parseBoolean(initialProp.getProperty("oneLine", "false"));
 			gmOpen = Boolean.parseBoolean(initialProp.getProperty("gmOpen", "false"));
 
-			agentJar = initialProp.getProperty("agent.jar.addr", "");
 			hotUpdate = Boolean.parseBoolean(initialProp.getProperty("hot.update", "false"));
 			heart = Integer.parseInt(initialProp.getProperty("heart", "3000"));
 			ONLINE_SAVE = Integer.parseInt(initialProp.getProperty("online_save", "300"));

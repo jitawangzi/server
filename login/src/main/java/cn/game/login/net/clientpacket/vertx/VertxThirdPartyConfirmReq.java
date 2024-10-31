@@ -1,5 +1,7 @@
 package cn.game.login.net.clientpacket.vertx;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -8,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.steam.SteamAPI;
 import cn.game.core.net.vertx.VxHolder;
@@ -15,6 +18,7 @@ import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;
+import cn.game.login.util.PasswordUtil;
 import cn.game.protocol.protobuf.Account.AccountChannelType;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountLogin;
@@ -63,7 +67,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 		case OFFICIAL: {
 			String[] split = token.split(" ");
 			String username = split[0];
-			String pwd = split[1];
+			String pwd = split.length > 1 ? split[1] : null;
 
 			RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 			future.onComplete((v, throwable) -> {
@@ -87,8 +91,13 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 							user.setSessionId(sessionId);
 							UserHelper.setUserNewCache(user); 
 						}
-
-						if (pwd != null && !pwd.equals(user.getPass())) {
+						boolean checkPwd = false ; 
+						if (ServerContext.getInstance().getRunMode().isProduction()) {
+							checkPwd = PasswordUtil.checkPassword(pwd, user.getPass());
+						} else {
+							checkPwd = Objects.equals(pwd, user.getPass());
+						}
+						if (!checkPwd) {
 							HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("密码错误")
 									.setErrorCode(AccountErrorCode.PASSWORD_ERROR).build();
 							response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));

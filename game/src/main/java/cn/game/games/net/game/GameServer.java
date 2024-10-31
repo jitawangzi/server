@@ -24,7 +24,6 @@ import org.redisson.api.RLock;
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
 import com.google.protobuf.Message;
-import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
@@ -73,7 +72,6 @@ import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
-import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 
@@ -146,6 +144,7 @@ public class GameServer implements GameServerMBean {
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 
 //		instance.log.info("启动逻辑服。。");
+		Config.load();
 
 		long start = System.currentTimeMillis();
 		RedisUtil.getInstance().init();
@@ -155,7 +154,6 @@ public class GameServer implements GameServerMBean {
 
 //		util.SpringContextLoader.main(args);
 		// init with apollo config
-		Config.load();
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();
 		initQuartz();
@@ -172,7 +170,6 @@ public class GameServer implements GameServerMBean {
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 		mBeanServer.registerMBean(instance,
 				new ObjectName("net.game:type=GameServer,name=GameServer_" + ServerContext.getInstance().getServerId()));
-		initHotUpdate();
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
@@ -353,37 +350,6 @@ public class GameServer implements GameServerMBean {
 		System.setProperty(gameServerKey, serverId);
 		return serverId;
 	}
-
-	private void initHotUpdate() {
-		if (!Config.hotUpdate) {
-			return;
-		}
-		String className = ManagementFactory.getRuntimeMXBean().getName();
-		String pid = className.split("@")[0];
-		Thread attachThread = new Thread(() -> {
-			try {
-				String jarName = "hotupdate-1.0.jar";
-				String agentPath = ClassHelper.findJarPath(jarName);
-				if (agentPath == null) {
-					throw new RuntimeException("Agent JAR not found : " + jarName);
-				}
-				VirtualMachine vm = VirtualMachine.attach(pid);
-				vm.loadAgent(agentPath);
-				LoggerType.Stdout.logger.info("hotUpdate agent loaded, pid: " + pid + ", agentPath: " + agentPath);
-			} catch (Exception e) {
-				throw new RuntimeException("hotUpdate agent start failed", e);
-			}
-		}, "CodeHotUpdateThread");
-
-		// 设置未捕获异常处理器
-		attachThread.setUncaughtExceptionHandler((t, e) -> {
-			ServerContext.getInstance().handleStartFail(e);
-		});
-		attachThread.setDaemon(true);
-		attachThread.start();
-
-	}
-
 
 	private void initScheduleTask() {
 		TaskManager.getInstance().scheduleGeneralAtFixedRate(() -> {

@@ -4,10 +4,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RAtomicLong;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
+import cn.game.login.util.PasswordUtil;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
@@ -32,7 +34,11 @@ public class UserHelper {
 		user.setThirdUid(thirdUid);
 		user.setSessionKey(sessionKey);
 //			user.setChannelCode(channel);
-		user.setPass(pwd);
+		if (ServerContext.getInstance().getRunMode().isProduction()) {
+			user.setPass(PasswordUtil.hashPassword(pwd));
+		} else {
+			user.setPass(pwd);
+		}
 		user.setCreateDate(DateUtil.nowDateStr());
 		user.setCreateTime(DateUtil.nowTimeStr());
 		user.setIsGm(false);
