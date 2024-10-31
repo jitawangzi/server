@@ -56,7 +56,7 @@ import cn.game.util.HttpUtil;
 import cn.game.util.IdWorker;
 import cn.game.util.Rnd;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.log.CommonLogger;
+import cn.game.util.log.LoggerType;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
@@ -654,7 +654,7 @@ public class Client extends AbstractNetClient {
 		if (getInit() == false) {
 			long waitLoginTime = currentTime - startTime;
 			if (waitLoginTime > 60000) {
-				CommonLogger.error(this.name + " 登录Game初始化超时： " + waitLoginTime / 1000 + " s");
+				LoggerType.Stdout.logger.error(this.name + " 登录Game初始化超时： " + waitLoginTime / 1000 + " s");
 				return;
 			}
 			return;

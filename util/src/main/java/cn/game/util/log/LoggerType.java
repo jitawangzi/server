@@ -20,6 +20,7 @@ public enum LoggerType {
     Combat,                                                                     // 战斗日志
     NetCheck,                                                                     // 网络监控
 	SystemOut,
+	Stdout,
 
     /* *********************** 一级 ************************* */
     heart("v3"),                                                     // 心跳

@@ -21,7 +21,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.Config;
 import cn.game.util.HexUtil;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.log.CommonLogger;
+import cn.game.util.log.LoggerType;
 import io.netty.buffer.ByteBuf;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServerOptions;
@@ -82,12 +82,11 @@ public class WebSocketVerticle extends AbstractVerticle {
 //							this.gamerecvLog
 //									.info("opType[recv]{}receive msg[{}]data[{}]seq[{}]", client, message.getClass().getSimpleName(),
 //											message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message) : message, seq);
-							CommonLogger
-									.net("opType[recv]" + client + "msgId[" + HexUtil.toHexString(msgID) + "]msgName["
-											+ message.getClass().getSimpleName() + "]msgValue["
-											+ (message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message)
-													: message)
-											+ "] seq[" + seq + "]");
+							LoggerType.Net.logger.info("opType[recv]" + client + "msgId[" + HexUtil.toHexString(msgID) + "]msgName["
+									+ message.getClass().getSimpleName() + "]msgValue["
+									+ (message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message)
+											: message)
+									+ "] seq[" + seq + "]");
 						}
 					}
 

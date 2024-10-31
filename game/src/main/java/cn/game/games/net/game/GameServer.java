@@ -71,9 +71,8 @@ import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.ZkHelper;
 import cn.game.util.file.WatchServiceManager;
-import cn.game.util.log.CommonLogger;
 import cn.game.util.log.LoggerManager;
-import cn.game.util.log.SystemLogger;
+import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
@@ -142,7 +141,7 @@ public class GameServer implements GameServerMBean {
 		String serverId = parseGameServerId(args);
 		LoggerManager.init();
 //		System.err.println(System.getProperty("log4j2.level"));
-		CommonLogger.info("启动逻辑服。。");
+		LoggerType.Stdout.logger.info("启动逻辑服。。");
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 
 //		instance.log.info("启动逻辑服。。");
@@ -205,7 +204,7 @@ public class GameServer implements GameServerMBean {
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
-		CommonLogger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", serverId, (System.currentTimeMillis() - start) / 1000));
+		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", serverId, (System.currentTimeMillis() - start) / 1000));
 
 		// 记录bi
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
@@ -272,7 +271,8 @@ public class GameServer implements GameServerMBean {
 
 							PlayerHelper.clearPlayer(player.getPlayerId());
 						} catch (Exception e) {
-							SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+							LoggerType.Stdout.logger
+									.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
 							ServerContext.getInstance().handleStartFail(e);
 						}
 					});
@@ -361,26 +361,30 @@ public class GameServer implements GameServerMBean {
 		String pid = className.split("@")[0];
 		Thread attachThread = new Thread(() -> {
 			try {
+				String jarName = "hotupdate-1.0.jar";
 				// 获取当前类的类加载器
-				ClassLoader classLoader = GameServer.class.getClassLoader();
-				// 获取资源的URL
-				URL jarResource = classLoader.getResource("hotupdate-1.0.jar");
-				if (jarResource == null) {
-					throw new RuntimeException("Hot Update Agent JAR : hotupdate-1.0.jar  not found at classpath");
+				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+				if (classLoader == null) {
+					classLoader = getClass().getClassLoader();
 				}
-				// 将URL转换为文件路径,URL可能是file协议，且需要转换为URI再转为File
-				String agentPath = new File(new java.net.URI(jarResource.toString())).getAbsolutePath();
-				// 获取程序运行目录
-//				String userDir = System.getProperty("user.dir");
-//				String agentPath = userDir + "/lib/hotupdate-1.0.jar";
-//				File agentFile = new File(agentPath);
-//
-//				if (!agentFile.exists()) {
-//					throw new RuntimeException("Agent JAR not found at: " + agentPath);
-//				}
+				LoggerType.Stdout.logger.debug("classpath: ");
+				LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
+				String agentPath = null;
+				// 获取资源的URL
+				URL jarResource = classLoader.getResource(jarName);
+				if (jarResource == null) {
+					LoggerType.Stdout.logger.warn("Hot Update Agent JAR : {}  not found at classpath", jarName);
+					agentPath = System.getProperty("user.dir") + "/lib/" + jarName;
+				} else {
+					// 将URL转换为文件路径,URL可能是file协议，且需要转换为URI再转为File
+					agentPath = new File(new java.net.URI(jarResource.toString())).getAbsolutePath();
+				}
+				if (!new File(agentPath).exists()) {
+					throw new RuntimeException("Agent JAR not found at: " + agentPath);
+				}
 				VirtualMachine vm = VirtualMachine.attach(pid);
 				vm.loadAgent(agentPath);
-				CommonLogger.info("hotUpdate agent loaded, pid: " + pid + ", agentPath: " + agentPath);
+				LoggerType.Stdout.logger.info("hotUpdate agent loaded, pid: " + pid + ", agentPath: " + agentPath);
 			} catch (Exception e) {
 				throw new RuntimeException("hotUpdate agent start failed", e);
 			}
@@ -459,8 +463,7 @@ public class GameServer implements GameServerMBean {
 	public void shutdown() {
 		long start = System.currentTimeMillis();
 //		log.info("Game Server starts to shutdown ...");
-		CommonLogger.info("Game Server starts to shutdown ...");
-
+		LoggerType.Stdout.logger.info("Game Server starts to shutdown ...");
 		// 停止超时维护线程
 		// ClientMaintaining clientMaintaining =
 		// ClientManage.getInstance().getClientMaintaining();
@@ -479,7 +482,7 @@ public class GameServer implements GameServerMBean {
 			VxHolder.vertx.undeploy(wsVerticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
 		} catch (Exception e) {
 //			log.error("", e);
-			CommonLogger.error(e);
+			LoggerType.Stdout.logger.error(e);
 		}
 		TaskManager.getInstance().shutdown();
 		try {
@@ -496,7 +499,7 @@ public class GameServer implements GameServerMBean {
 			VxHolder.vertx.close().toCompletionStage().toCompletableFuture().get(300, TimeUnit.SECONDS);
 
 //			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
-			CommonLogger.warn("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
+			LoggerType.Stdout.logger.warn("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
 			String.format("Game Server  safe  shutdown, use  time %d ms ", System.currentTimeMillis() - start);
 			// 安全关闭log
 //			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -504,7 +507,7 @@ public class GameServer implements GameServerMBean {
 
 		} catch (Throwable e) {
 //			log.error("Game Server Shutdown err ", e);
-			SystemLogger.error("Game Server Shutdown err ", e);
+			LoggerType.Stdout.logger.error("Game Server Shutdown err ", e);
 			e.printStackTrace();
 		}
 

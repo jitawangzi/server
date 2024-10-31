@@ -24,7 +24,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.util.Config;
 import cn.game.util.HexUtil;
-import cn.game.util.log.CommonLogger;
+import cn.game.util.log.LoggerType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
@@ -139,10 +139,9 @@ public class GameClient extends AbstractNetClient {
 //							HexUtil.toHexString(msgId),
 //							message.getClass().getSimpleName(), TextFormat.shortDebugString((Message) message),
 //							curMessageSeq);
-					CommonLogger
-							.net("opType[send]" + this + "errorCode[" + errorCode + "]msgId[" + HexUtil.toHexString(msgId) + "]msgName["
-                            + message.getClass().getSimpleName() + "]msgValue[" + TextFormat.shortDebugString((Message) message) + "]seq["
-							+ curMessageSeq + "]");
+					LoggerType.Net.logger.info("opType[send]" + this + "errorCode[" + errorCode + "]msgId[" + HexUtil.toHexString(msgId)
+							+ "]msgName[" + message.getClass().getSimpleName() + "]msgValue["
+							+ TextFormat.shortDebugString((Message) message) + "]seq[" + curMessageSeq + "]");
 				}
 			}
 			if (ServerContext.getInstance().getRunMode().isPressure() && ServerContext.getInstance().isPressureDev()) {
