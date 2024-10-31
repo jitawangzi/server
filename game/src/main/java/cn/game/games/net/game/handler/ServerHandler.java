@@ -144,7 +144,7 @@ public class ServerHandler extends BaseHandler {
 	private void gmAddForbidAccount(NetClient client, Object o) {
 		ServerMsg.NotifyGmAddForbidAccountRequest_7d000054 req = (ServerMsg.NotifyGmAddForbidAccountRequest_7d000054)o;
 		req.getPidsList().forEach(addPid ->{
-					PlayerManager.getInstance().forbidAccount(addPid, req.getReason(), req.getTimer()+"",0);
+					PlayerManager.getInstance().forbidAccount(addPid, req.getReason(), req.getTimer()+"",req.getType());
 					log.info(String.format("gmAddForbidAccount pid=%d, reason=%s, timer=%s", addPid, req.getReason(), req.getTimer()));
 		});
 		ServerMsg.NotifyGmAddForbidAccountResponse_7d000055.Builder res = ServerMsg.NotifyGmAddForbidAccountResponse_7d000055.newBuilder().setResult(true);

@@ -93,7 +93,7 @@ public class PlayerManager {
 
 	/** 初始化一些数据 */
 	public void init() {
-//		initForbidAccount();
+		initForbidAccount();
 
 	}
 
@@ -1080,18 +1080,7 @@ public class PlayerManager {
 	 * @return 没有被封/到期解封成功 true ;被封且没有到解封时间  false 
 	 */
 	public boolean checkUnlock(long playerId) {
-
-		ForbidAccount account = this.forbidAccounts.get(playerId);
-		if (account == null) {
-			return true;
-		}
-		Date unlockDate = account.getUnblockTime();
-		Date now = new Date();
-		if (now.before(unlockDate)) {
-			return false;
-		}
-		unblockAccount(playerId);
-		return true;
+		return !isForbidAccount(playerId);
 
 	}
 	
