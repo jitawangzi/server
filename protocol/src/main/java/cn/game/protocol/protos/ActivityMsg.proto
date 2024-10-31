@@ -7,6 +7,8 @@ package Protos;
 import "RewardMsg.proto" ;
 import "QuestMsg.proto" ;
 // 活动协议
+//@HandlerPackage cn.game.games.net.game.module.activity
+//@MessageModule 11
 
 //查看有哪些显示的活动
 message ActivityListRequest_11000001{
@@ -29,6 +31,16 @@ enum ActivityState{
 	START = 2  ;	// 活动正式开始，可以参加活动
 	CLOSE = 3;		// 活动过期关闭，不能参加，只能查看，或者领奖等操作。
 }
+
+//查看某个活动，是否有红点
+message ActivityRedPointRequest_11000003{
+	repeated int32 ids = 1;  // Activity 表id。
+}
+//查看的活动，是否有红点。
+message ActivityRedPointResponse_11000004{
+	repeated bool isRed = 1;
+}
+
 
 //活动状态改变推送，看具体情况选择性推送
 message ActivityStatePush_11100006{

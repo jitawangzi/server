@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.github.javaparser.ParserConfiguration.LanguageLevel;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -45,6 +46,8 @@ public class ClassGenerator {
 	 * @throws IOException
 	 */
 	public static void createHandlerJavaFile(String handlerPath, String pkg, String className, String moduleCode) throws IOException {
+		// 首先设置语言级别
+		StaticJavaParser.getConfiguration().setLanguageLevel(LanguageLevel.JAVA_17);
 		CompilationUnit cu = new CompilationUnit();
 		cu.setPackageDeclaration(pkg);
 
@@ -82,7 +85,8 @@ public class ClassGenerator {
 	 */
 	public static void updateHandlerJavaFile(String handlerPath, String className, String module, List<String> requestMessages,
 			String function) throws Exception {
-
+		// 首先设置语言级别
+		StaticJavaParser.getConfiguration().setLanguageLevel(LanguageLevel.JAVA_17);
 		Path filePath = Paths.get(handlerPath);
 		// 在解析代码时保存原始格式信息
 		CompilationUnit cu = StaticJavaParser.parse(filePath);
