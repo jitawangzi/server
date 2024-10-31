@@ -22,7 +22,6 @@ import cn.game.core.net.protocol.bytes.BaseByteProtocol;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
-import cn.game.util.Config;
 import cn.game.util.HexUtil;
 import cn.game.util.log.LoggerType;
 import io.netty.buffer.ByteBuf;
@@ -132,16 +131,11 @@ public class GameClient extends AbstractNetClient {
 		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
 		boolean flag = sendProtocol(msgId, seq > 0 ? seq : curMessageSeq, message.toByteArray(), errorCode, record);
 		if (flag) {
-			if (Config.recordSendData) {
-				if (msgId != PbProtocol.PlayerHeartbeatResponse_01000006) {
-//					gamesendLog.info("opType[send]{}errorCode[{}]msgId[{}]msgName[{}]msgValue[{}]seq[{}]", this,
-//							errorCode,
-//							HexUtil.toHexString(msgId),
-//							message.getClass().getSimpleName(), TextFormat.shortDebugString((Message) message),
-//							curMessageSeq);
-					LoggerType.Net.logger.info("opType[send]" + this + "errorCode[" + errorCode + "]msgId[" + HexUtil.toHexString(msgId)
-							+ "]msgName[" + message.getClass().getSimpleName() + "]msgValue["
-							+ TextFormat.shortDebugString((Message) message) + "]seq[" + curMessageSeq + "]");
+			if (msgId != PbProtocol.PlayerHeartbeatResponse_01000006) {
+				if (LoggerType.Net.logger.isInfoEnabled()) {
+					LoggerType.Net.logger.info("opType[send]{}errorCode[{}]msgId[{}]msgName[{}]msgValue[{}]seq[{}]", this, errorCode,
+							HexUtil.toHexString(msgId), message.getClass().getSimpleName(), TextFormat.shortDebugString((Message) message),
+							curMessageSeq);
 				}
 			}
 			if (ServerContext.getInstance().getRunMode().isPressure() && ServerContext.getInstance().isPressureDev()) {

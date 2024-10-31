@@ -16,7 +16,6 @@ import cn.game.games.net.client.GateClient;
 import cn.game.games.net.gateway.GateClientManager;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.ByteHelp;
-import cn.game.util.Config;
 
 public class ZmqGateHandler implements Runnable {
 
@@ -108,22 +107,20 @@ public class ZmqGateHandler implements Runnable {
 				byte[] data = msg.pop().getData();
 //				WebSocketCodecPacket resp = WebSocketCodecPacket.buildPacket(IoBuffer.wrap(data), msgID, errorCode);
 //				gateClient.sendProtocol(resp);
+				try {
 
-				if (Config.recordSendData) {
-					try {
-
-						if (msgID != PbProtocol.PlayerHeartbeatResponse_01000006) {
-//							Message parseFrom = PbProtocol.getInstance().parseFrom(msgID, resp.getPacket().array());
-//							sendLog.info("opType[send][{}]code[{}]msgName[{}]msgValue[{}]", gateClient, errorCode,
-//									parseFrom.getClass().getSimpleName(), TextFormat.shortDebugString(parseFrom));
-//							if (errorCode > 0) {
-//								System.err.println("msgName :" + parseFrom.getClass().getSimpleName() + "  errorCode: " + errorCode);
-//							}
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
+					if (msgID != PbProtocol.PlayerHeartbeatResponse_01000006) {
+//						Message parseFrom = PbProtocol.getInstance().parseFrom(msgID, resp.getPacket().array());
+//						sendLog.info("opType[send][{}]code[{}]msgName[{}]msgValue[{}]", gateClient, errorCode,
+//								parseFrom.getClass().getSimpleName(), TextFormat.shortDebugString(parseFrom));
+//						if (errorCode > 0) {
+//							System.err.println("msgName :" + parseFrom.getClass().getSimpleName() + "  errorCode: " + errorCode);
+//						}
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+
 			} else {
 				log.error("gate client is null, send message[{}]err sessionId[{}]", msgID, sessionId);
 			}

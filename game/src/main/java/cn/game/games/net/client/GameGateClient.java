@@ -16,7 +16,6 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.zmq.ZmqPairSender;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.ByteHelp;
-import cn.game.util.Config;
 
 /**
  * game---gate客户端
@@ -72,13 +71,12 @@ public class GameGateClient extends AbstractNetClient {
 		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
 
 		send(msgId, errorCode, message.toByteArray());
-		if (Config.recordSendData) {
-			if (msgId != PbProtocol.PlayerHeartbeatResponse_01000006) {
-				gamesendLog.info("opType[send]{}errorCode[{}]msgName[{}]msgValue[{}]", this, errorCode,
-						message.getClass().getSimpleName(),
-						TextFormat.shortDebugString((Message) message));
-			}
+
+		if (msgId != PbProtocol.PlayerHeartbeatResponse_01000006) {
+			gamesendLog.info("opType[send]{}errorCode[{}]msgName[{}]msgValue[{}]", this, errorCode, message.getClass().getSimpleName(),
+					TextFormat.shortDebugString((Message) message));
 		}
+
 
 		return true;
 	}

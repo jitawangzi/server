@@ -18,7 +18,6 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
-import cn.game.util.Config;
 import cn.game.util.HexUtil;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.log.LoggerType;
@@ -77,16 +76,12 @@ public class WebSocketVerticle extends AbstractVerticle {
 						client.sendMessages.putIfAbsent(seq, Pair.of(message.getClass().getSimpleName(), System.nanoTime()));
 					}
 
-					if (Config.recordRecvData) {
-						if (msgID != PbProtocol.PlayerHeartbeatRequest_01000005) {
-//							this.gamerecvLog
-//									.info("opType[recv]{}receive msg[{}]data[{}]seq[{}]", client, message.getClass().getSimpleName(),
-//											message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message) : message, seq);
-							LoggerType.Net.logger.info("opType[recv]" + client + "msgId[" + HexUtil.toHexString(msgID) + "]msgName["
-									+ message.getClass().getSimpleName() + "]msgValue["
-									+ (message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message)
-											: message)
-									+ "] seq[" + seq + "]");
+					if (msgID != PbProtocol.PlayerHeartbeatRequest_01000005) {
+						if (LoggerType.Net.logger.isInfoEnabled()) {
+							LoggerType.Net.logger.info("opType[recv]{}msgId[{}]msgName[{}]msgValue[{}]seq[{}]", client,
+									HexUtil.toHexString(msgID), message.getClass().getSimpleName(),
+									message instanceof MessageOrBuilder ? TextFormat.shortDebugString((MessageOrBuilder) message) : message,
+									seq);
 						}
 					}
 

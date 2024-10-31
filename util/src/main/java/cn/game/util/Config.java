@@ -69,8 +69,6 @@ public final class Config {
 
 	public static boolean useLog;
 	public static boolean oneLine;
-	public static boolean recordSendData;
-	public static boolean recordRecvData;
 
 	/** 是否开启gm命令 */
 	public static boolean gmOpen;
@@ -140,9 +138,6 @@ public final class Config {
 			DEADLOCK_CHECK_INTERVAL = Integer.parseInt(initialProp.getProperty("deadlock_check_interval", "20"));
 			packetExecTime = Integer.parseInt(initialProp.getProperty("packetExecTime", "30"));
 			useLog = Boolean.parseBoolean(initialProp.getProperty("useLog", "false"));
-			oneLine = Boolean.parseBoolean(initialProp.getProperty("oneLine", "false"));
-			recordSendData = Boolean.parseBoolean(initialProp.getProperty("recordSendData", "false"));
-			recordRecvData = Boolean.parseBoolean(initialProp.getProperty("recordRecvData", "false"));
 			oneLine = Boolean.parseBoolean(initialProp.getProperty("oneLine", "false"));
 			gmOpen = Boolean.parseBoolean(initialProp.getProperty("gmOpen", "false"));
 
