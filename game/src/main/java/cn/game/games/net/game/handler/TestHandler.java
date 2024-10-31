@@ -491,13 +491,17 @@ public class TestHandler extends BaseHandler {
             //			}
             HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
             System.out.println("hero id : " + hero.getConfigId() + " name : " + heroConfig.name + " level : " + hero.getLevel());
-            System.out.println("基本属性： " + BattleHelper.makeHeroAttr2(hero));
-            IntMapWrapper heroAttr = BattleHelper.makeHeroAttr2(hero);
+			System.out.println("基本属性： " + BattleHelper.makeHeroAttr(hero));
+			IntMapWrapper heroAttr = BattleHelper.makeHeroAttr(hero);
             System.out.println("单英雄不算外围战力： " + BattleHelper.calcCombat(heroAttr));
             System.out.println();
             heroAttrs.put(hero.getId(), heroAttr);
         }
         System.out.println();
+
+		AttrModule module = player.getModule(AttrModule.class);
+		module.calcAllAttr();
+		System.out.println("所有外围增加的战力： " + BattleHelper.calcCombat(module.getPlayerAttrMap()));
     }
 
     private void drawTest(Player player) {

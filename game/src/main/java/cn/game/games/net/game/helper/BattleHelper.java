@@ -283,7 +283,8 @@ public class BattleHelper {
 		return combat;
 	}
 
-	public static IntMapWrapper makeHeroAttr(Hero hero) {
+	@Deprecated
+	public static IntMapWrapper makeHeroAttrOld(Hero hero) {
 		IntMapWrapper heroAttrMap = new IntMapWrapper();
 
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
@@ -304,7 +305,7 @@ public class BattleHelper {
 		return heroAttrMap;
 	}
 
-	public static IntMapWrapper makeHeroAttr2(Hero hero) {
+	public static IntMapWrapper makeHeroAttr(Hero hero) {
 		IntMapWrapper heroAttrMap = new IntMapWrapper();
 
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
@@ -350,7 +351,7 @@ public class BattleHelper {
 	}
 
 	public static int calcHeroCombat(Hero hero) {
-		return (int) calcCombat(makeHeroAttr2(hero));
+		return (int) calcCombat(makeHeroAttr(hero));
 	}
 
 	public static float calcHeroCombat(IntMapWrapper attrMap) {

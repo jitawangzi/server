@@ -52,13 +52,14 @@ public class AttrModule extends BasePlayerModule {
 			v.reCalcAttr();
 		});
 		logAllAttr();
-//		log.info("calcAllAttr ： " + toString());
 	}
 
 	private void logAllAttr() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("heroAttrs=").append(heroAttrs).append(" playerAttrs=").append(playerAttrCalcMap);
-		log.debug("calcAllAttr ： " + sb.toString());
+		if (log.isDebugEnabled()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("heroAttrs=").append(heroAttrs).append(" playerAttrs=").append(playerAttrCalcMap);
+			log.debug("calcAllAttr ： " + sb.toString());
+		}
 	}
 
 	public PlayerBattleAttrs buildBattleAttrs() {
@@ -156,5 +157,9 @@ public class AttrModule extends BasePlayerModule {
 
 	public Map<AttrCalcType, PlayerAttrCalc> getPlayerAttrCalcMap() {
 		return playerAttrCalcMap;
+	}
+
+	public Map<Long, IntMapWrapper> getHeroAttrs() {
+		return heroAttrs;
 	}
 }
