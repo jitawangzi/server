@@ -195,12 +195,12 @@ class SecurityHandler implements Handler<RoutingContext> {
 			}
 
 			// 添加安全响应头
-			ctx.response()
-					.putHeader("X-Content-Type-Options", "nosniff")
-					.putHeader("X-Frame-Options", "DENY")
-					.putHeader("X-XSS-Protection", "1; mode=block")
-					.putHeader("Strict-Transport-Security", "max-age=31536000")
-					.putHeader("Content-Security-Policy", "default-src 'self'");
+//			ctx.response()
+//					.putHeader("X-Content-Type-Options", "nosniff")
+//					.putHeader("X-Frame-Options", "DENY")
+//					.putHeader("X-XSS-Protection", "1; mode=block")
+//					.putHeader("Strict-Transport-Security", "max-age=31536000")
+//					.putHeader("Content-Security-Policy", "default-src 'self'");
 
 			ctx.next();
 
