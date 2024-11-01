@@ -89,7 +89,7 @@ public class GmHandler extends BaseHandler {
       list.add(g);
     }
     if (title.isEmpty() || content.isEmpty()) {
-      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "");
+      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "gmSendMail");
       return;
     }
     GmMail gmMail = new GmMail();
@@ -105,7 +105,7 @@ public class GmHandler extends BaseHandler {
       if (req.getSendEndTime() <= req.getSendStartTime()
           || req.getLevelEnd() <= req.getLevelStart()
           || (req.getTimeCheckType() != 0 && req.getTimeCheckType() != 1)) {
-        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "");
+        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "gmSendMail");
         return;
       }
       gmMail.setServerids(req.getServerIdList().toString());
@@ -131,7 +131,7 @@ public class GmHandler extends BaseHandler {
         .onFailure(
             e -> {
               e.printStackTrace();
-              sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "");
+              sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "gmSendMail");
             });
   }
 
@@ -141,7 +141,7 @@ public class GmHandler extends BaseHandler {
     int page = req.getPageNum();
     int size = req.getPageSize();
     if (page < 1 || size < 1) {
-      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "");
+      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "selectGmMailList");
       return;
     }
     DAO.execute(
@@ -182,7 +182,7 @@ public class GmHandler extends BaseHandler {
     GmMsg.GmMailCheckResponse_77000045.Builder res =
         GmMsg.GmMailCheckResponse_77000045.newBuilder();
     if (req.getUidCount() <= 0) {
-      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "");
+      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "checkMail");
       return;
     }
     req.getUidList()
@@ -200,7 +200,7 @@ public class GmHandler extends BaseHandler {
                         GmMail gmMail = (GmMail) r;
                         if (gmMail.getApprovalTimer() != null) {
                           sendAndRecordOpt(
-                              client, req, res.build(), ErrorMsgEnum.request_parameter_null, "");
+                              client, req, res.build(), ErrorMsgEnum.request_parameter_null, "checkMail");
                           return;
                         }
                         gmMail.setApprovalTimer(DateUtil.getStringDate());
@@ -233,7 +233,7 @@ public class GmHandler extends BaseHandler {
                   .onFailure(
                       e -> {
                         e.printStackTrace();
-                        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "");
+                        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "checkMail");
                       });
             });
   }
@@ -243,7 +243,7 @@ public class GmHandler extends BaseHandler {
     GmMsg.GmMailDeleteResponse_77000047.Builder res =
         GmMsg.GmMailDeleteResponse_77000047.newBuilder();
     if (req.getUidCount() <= 0) {
-      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "");
+      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "delGmMail");
       return;
     }
     req.getUidList()
@@ -261,7 +261,7 @@ public class GmHandler extends BaseHandler {
                       })
                   .onFailure(
                       e -> {
-                        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "");
+                        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "delGmMail");
                       });
             });
   }
@@ -309,7 +309,7 @@ public class GmHandler extends BaseHandler {
                           client,
                           request,
                           response.build(),
-                          ErrorMsgEnum.player_data_not_found,
+                          ErrorMsgEnum.player_data_not_found  ,
                           "");
                     });
           } else {
