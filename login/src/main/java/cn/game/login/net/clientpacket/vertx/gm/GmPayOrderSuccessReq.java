@@ -5,6 +5,7 @@ import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.clientpacket.vertx.wechat.BasePayOrderProcessor;
+import cn.game.login.net.handler.LoginServerHandler;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
@@ -42,7 +43,7 @@ public class GmPayOrderSuccessReq implements Handler<RoutingContext> {
             response.end(result.toString());
             return;
         }
-        if (payOrder.getPayState() == 2 || payOrder.getIsDeliver()){
+        if (payOrder.getIsDeliver()){
             result.put("result","order has pay");
             log.error(String.format("该订单已完成，不可再次补单 payOrder:%s",payOrder.toString()));
             response.end(result.toString());
@@ -72,10 +73,13 @@ public class GmPayOrderSuccessReq implements Handler<RoutingContext> {
                 payOrder.setPayDate(DateUtil.nowDateStr());
                 payOrder.setPayTime(DateUtil.nowTimeStr()) ;
                 mapper.updateByPrimaryKeyWithBLOBs(payOrder);
+                LoginServerHandler.addGmOptRecord("payOrderSuccess", id,"补单成功:" +id,"");
+
             } else {
                 result.put("result", "fail");
                 mapper.updateByPrimaryKeyWithBLOBs(payOrder);
                 log.error(String.format("补单失败 payOrder：%s",payOrder.toString()));
+                LoginServerHandler.addGmOptRecord("payOrderSuccess", id,"补单失败:"+id,"");
             }
             response.end(result.toString());
         }).onFailure(err->{
