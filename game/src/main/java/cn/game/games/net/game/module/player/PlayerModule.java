@@ -23,11 +23,13 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.recharge.PayItem;
+import cn.game.protocol.generated.config.FuncOpenConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeadPortraitConfig;
 import cn.game.protocol.generated.config.UserUpgradeConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.FuncOpenManager;
 import cn.game.protocol.generated.manager.HeadPortraitManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.OpType;
@@ -256,6 +258,10 @@ public class PlayerModule extends BasePlayerModule {
 		builder.setDisableIosPayVersion(Config.disableIosPayClientVersion);
 		
 		builder.addAllHeadboxs(getOrCreateIdSet(IdConstant.HEAD_BOX));
+		List<FuncOpenConfig> lockHideList = FuncOpenManager.instance().getLockHideList(false);
+		if (lockHideList != null) {
+			builder.addAllCloseFuncs(lockHideList.stream().map(f -> f.ID).collect(Collectors.toList()));
+		}
 	}
 	@Override
 	public void handleEvent(GameEvent event) {

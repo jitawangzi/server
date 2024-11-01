@@ -387,7 +387,7 @@ message PlayerAllInfo{
 
 //︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼合并游戏独有的数据︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼︼
    string disableIosPayVersion  = 200;        //禁用ios充值的客户端版本，一般在提审中使用。
-
+   repeated int32 closeFuncs = 202;  // 关闭的功能列表， FuncOpen表id
 
 }
 
