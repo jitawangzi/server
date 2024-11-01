@@ -30,13 +30,14 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
-import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterModule;
@@ -51,18 +52,12 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
-import cn.game.protocol.generated.config.SoulPetConfig;
-import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
-import cn.game.protocol.generated.manager.SoulPetManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
@@ -142,10 +137,11 @@ public class TestHandler extends BaseHandler {
         String cmd = req.getCmd();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        String[] params = cmd.split(" ");
-        switch(params[0]) {
+		GameEvent params = new GameEvent(cmd.split(" "));
+		switch (params.getStringParameter(0)) {
             case "item":
                 {
+//					TestHelper.addItems(player, params);
                     break;
                 }
             default:
@@ -581,9 +577,6 @@ public class TestHandler extends BaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.unknown.getId());
             return;
         }
-        List<RewardInfo> allRewards = new ArrayList<>();
-        List<RewardInfo> rewardItems = null;
-        List<RewardInfo> buildRewardInfo = null;
         int id = req.getId();
         int count = req.getCount();
         long playerId = client.getPlayerId();
@@ -606,68 +599,9 @@ public class TestHandler extends BaseHandler {
             }
             return;
         }
-        int goodsType = ItemHelper.getGoodsType(id);
-        int error = 0;
-        try {
-            if (count == 0) {
-                if (goodsType == 0) {
-                    goodsType = (byte) id;
-                }
-                boolean typeCheck = false;
-                for (GoodsTypeEnum rewardInfo : GoodsTypeEnum.values()) {
-                    if (rewardInfo.getId() == goodsType) {
-                        typeCheck = true;
-                        break;
-                    }
-                }
-                if (!typeCheck) {
-                    client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
-                    return;
-                }
-                if (goodsType == GoodsTypeEnum.Resource.getId()) {
-                    for (Asset resourceEnum : Asset.values()) {
-                        //						if (resourceEnum.getType() == 2 && !inExplore) {
-                        //							continue;
-                        //						}
-                        rewardItems = PlayerHelper.addResources(player, resourceEnum.ID, 1000000, OpType.Test);
-                        allRewards.addAll(rewardItems);
-                    }
-                } else if (goodsType == GoodsTypeEnum.Item.getId()) {
-                    Collection<ItemConfig> list = ItemManager.instance().list();
-                    for (ItemConfig e : list) {
-                        rewardItems = PlayerHelper.addResources(player, e.ID, 999, OpType.Test);
-                        allRewards.addAll(rewardItems);
-                    }
-                } else if (goodsType == GoodsTypeEnum.Hero.getId()) {
-                    Collection<HeroConfig> list = HeroManager.instance().list();
-                    for (HeroConfig e : list) {
-                        rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
-                        allRewards.addAll(rewardItems);
-                    }
-                } else if (goodsType == GoodsTypeEnum.Pet.getId()) {
-                    Collection<SoulPetConfig> list = SoulPetManager.instance().list();
-                    for (SoulPetConfig e : list) {
-                        rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
-                        allRewards.addAll(rewardItems);
-                    }
-                } else {
-                    List<RewardInfo> tmp = PlayerHelper.addResources(player, id, count, OpType.Test);
-                    allRewards.addAll(tmp);
-                }
-            } else {
-                rewardItems = PlayerHelper.addResources(player, id, count, OpType.Test);
-                allRewards.addAll(rewardItems);
-            }
-            buildRewardInfo = allRewards;
-            resp.addAllResource(buildRewardInfo);
-        } catch (IllegalArgumentException e) {
-            log.error("", e);
-            error = ErrorMsgEnum.config_data_not_found.getId();
-        } catch (Exception e) {
-            log.error("", e);
-            error = ErrorMsgEnum.unknown.getId();
-        }
-        client.sendProtocol(resp.build(), error);
+		List<RewardInfo> items = TestHelper.addItems(player, id, count);
+		resp.addAllResource(items);
+		client.sendProtocol(resp.build());
     }
 
     protected void ssit(NetClient client, Object message) {

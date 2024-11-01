@@ -24,6 +24,7 @@ import io.vertx.redis.client.Response;
  * 2020年8月26日 下午2:53:14
  * @author SYQ
  */
+@Deprecated
 public class VxRedisUtil extends AbstractVerticle {
 
 	private static Logger logger = LoggerFactory.getLogger(VxRedisUtil.class);
