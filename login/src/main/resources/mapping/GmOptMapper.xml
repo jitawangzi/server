@@ -178,7 +178,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-     from t_gm_opt where 1=1 limit #{begin},#{end}
+     from t_gm_opt where 1=1 order by id desc limit #{begin},#{end}
   </select>
   <select id="count" resultType="Int">
     select count(*) as num from t_notice;
