@@ -206,7 +206,7 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		if (battleType == DungeonTypeEnum.MengYanMiJing.getId()) {
 			MengYanMiJingBattle battle = getBattle(battleType);
-			return battle != null && BattleHelper.isComplete(battle.getCompleteBattleId(), battleId);
+			return battle != null && BattleHelper.isComplete(battle.getMaxBattleId(), battleId);
 		}
 		if (battleType == DungeonTypeEnum.ShiLuoZhenJing.getId()) {
 			ShiLuoZhenJingBattle battle = getBattle(battleType);

@@ -20,9 +20,6 @@ public class FashionModule extends AbstractItemNoStackModule<Fashion> {
 	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
-		case PLAYER_CREATE: {
-			break;
-		}
 		}
 	}
 

@@ -106,10 +106,6 @@ public class DevelopModule extends BasePlayerModule {
 		case LoginFinish: {
 			break;
 		}
-//		case PLAYER_CREATE: {
-//			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
-//			break;
-//		}
 		case FuncOpen: {
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.HeavenlyDaoCultivation) {
