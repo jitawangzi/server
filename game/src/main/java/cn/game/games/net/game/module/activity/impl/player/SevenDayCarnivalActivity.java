@@ -75,7 +75,7 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 		}
 		// 开启任务
 		QuestModule questModule = player.getQuestModule();
-		questModule.open(config.TaskID, false);
+		questModule.open(config.TaskID, true);
 		initDays.add(day);
 	}
 

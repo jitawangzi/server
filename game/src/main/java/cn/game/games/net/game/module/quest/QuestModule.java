@@ -963,15 +963,15 @@ public class QuestModule extends BasePlayerModule {
 			addCumulativeCount(ConditionTypeEnum.QuickHangUpCumulation, 1);
 			break;
 		}
-			case Draw:{
-				int count = event.getIntParameter(0);
-				int typeId = event.getIntParameter(1);
-				if (typeId == 2) {
-					addCumulativeCount(ConditionTypeEnum.SupremeGacha, count);
-				}
-
-				break;
+		case Draw: {
+			int count = event.getIntParameter(0);
+			int typeId = event.getIntParameter(1);
+			if (typeId == 2) {
+				addCumulativeCount(ConditionTypeEnum.SupremeGacha, count);
 			}
+
+			break;
+		}
 		}
 	}
 }
