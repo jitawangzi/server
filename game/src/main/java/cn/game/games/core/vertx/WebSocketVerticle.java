@@ -36,6 +36,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 
 	public WebSocketVerticle() {
 	}
+
 	@Override
 	public void start() throws Exception {
 		log.debug("Starting WebSocketVerticle on thread: " + Thread.currentThread().getName());
@@ -96,14 +97,17 @@ public class WebSocketVerticle extends AbstractVerticle {
 
 			}).textMessageHandler(r -> {
 				log.error("not support ws text message " + r);
-			}).closeHandler(v -> GameClientManager.getInstance().removeGameClientConnection(ws.binaryHandlerID()))
-					.exceptionHandler(r -> {
-						log.error("ws error", r);
-						ws.close();
-					});
+			}).closeHandler(v -> GameClientManager.getInstance().removeGameClientConnection(ws.binaryHandlerID())).exceptionHandler(r -> {
+				ws.close();
+				if (r instanceof java.net.SocketException && r.getMessage().contains("Connection reset")) {
+					return;
+				}
+				log.error("ws error", r);
+			});
 		}).connectionHandler(r -> {
 			if (log.isDebugEnabled()) {
-				log.debug("websocket connection create success , remoteAddress[{}] threadName[{}] ", r.remoteAddress(), Thread.currentThread().getName());
+				log.debug("websocket connection create success , remoteAddress[{}] threadName[{}] ", r.remoteAddress(),
+						Thread.currentThread().getName());
 			}
 		}).listen(port).onSuccess(r -> {
 			log.debug("websocket listen on {} success ", port);

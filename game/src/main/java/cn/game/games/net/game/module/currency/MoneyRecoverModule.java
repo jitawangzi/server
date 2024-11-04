@@ -25,13 +25,12 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
  * @author SYQ
  */
 public class MoneyRecoverModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE,
-			EventTypeEnum.LoginFinish,
-			EventTypeEnum.ResourceRemove, EventTypeEnum.ResourceAdd };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LoginFinish,
+			EventTypeEnum.ResourceRemove, EventTypeEnum.ResourceAdd, EventTypeEnum.GetItem, EventTypeEnum.CostItem };
 
 	@JsonIgnore
 	private Map<Integer, Long> timerTask = new HashMap<Integer, Long>();
-	
+
 	/** 资源恢复时间 */
 	private Map<Integer, Long> idUpdateTimeMap = new HashMap<Integer, Long>();
 
@@ -86,6 +85,32 @@ public class MoneyRecoverModule extends BasePlayerModule {
 			}
 			break;
 		}
+		case GetItem: {
+			int id = event.getIntParameter(0);
+			AssetRestoreConfig assetRestoreConfig = AssetRestoreManager.instance().getNullable(id);
+			if (assetRestoreConfig == null) {
+				return;
+			}
+			// 满了停止。
+			if (isRecoverMax(id)) {
+				stopRecoveryTask(id);
+			}
+			break;
+		}
+		case CostItem: {
+			int id = event.getIntParameter(0);
+			AssetRestoreConfig assetRestoreConfig = AssetRestoreManager.instance().getNullable(id);
+			if (assetRestoreConfig == null) {
+				return;
+			}
+			// 不满启动。
+			if (!isRecoverMax(id)) {
+				if (!timerTask.containsKey(id)) {
+					startRecoveryTask(id, 0);
+				}
+			}
+			break;
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + event.getType());
 		}
@@ -122,12 +147,22 @@ public class MoneyRecoverModule extends BasePlayerModule {
 		PlayerHelper.addResources(player, id, 1, OpType.TimerRecovery);
 	}
 
+	private void stopRecoveryTask(int id) {
+		AssetRestoreConfig recoveryConfig = AssetRestoreManager.instance().getNullable(id);
+		if (recoveryConfig != null) {
+			Long timer = timerTask.remove(id);
+			if (timer != null) {
+				player.cancelTimer(timer);
+			}
+		}
+	}
+
 	private void startAllRecoveryTask() {
 		Collection<AssetRestoreConfig> list = AssetRestoreManager.instance().list();
 		for (AssetRestoreConfig moneyRecoveryConfig : list) {
 			if (player.getCurrencyModule().has(moneyRecoveryConfig.ID)) {
 				if (idUpdateTimeMap.containsKey(moneyRecoveryConfig.ID)) {
-					continue; 
+					continue;
 				}
 				if (timerTask.containsKey(moneyRecoveryConfig.ID)) {
 					continue;
@@ -165,6 +200,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	 * @return
 	 */
 	private boolean isRecoverMax(int id) {
+
 		return player.getCurrencyModule().getCount(id) >= getRecoverMax(id);
 	}
 
@@ -177,6 +213,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	public void initFromDbAfter() {
 
 	};
+
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.putAllAssetRecover(idUpdateTimeMap);

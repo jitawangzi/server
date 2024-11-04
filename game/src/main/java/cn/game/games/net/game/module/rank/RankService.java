@@ -11,6 +11,8 @@ import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.client.codec.LongCodec;
 import org.redisson.client.protocol.ScoredEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
@@ -36,6 +38,7 @@ import io.vertx.core.Future;
  * @author SYQ
  */
 public class RankService {
+	private static final Logger log = LoggerFactory.getLogger(RankService.class);
 
 	private static final RankService INSTANCE = new RankService();
 	/** 缩放次要分数 */
@@ -506,6 +509,7 @@ public class RankService {
 			}
 		}
 		if (rankConfig.ResetRank) {
+			log.info("removeRank, rankId:{}", rankId);
             removeRank(rankType);
 		}
 	}
