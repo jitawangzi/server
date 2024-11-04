@@ -726,6 +726,7 @@ public class GameLogger extends Logger {
 	public static void newstages(Player player, int big, int small) {
 		try {
 			int step = 4000 + big * 10;
+			small = big * 1000 + small;
 			String stepNum = String.valueOf(step);
 			Object[] array = new Object[] { LoggerType
 					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.newstages.name(), LoggerType.newstages.version, stepNum)),
