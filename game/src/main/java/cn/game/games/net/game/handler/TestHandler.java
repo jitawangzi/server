@@ -62,6 +62,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
 import cn.game.protocol.protobuf.TestMsg;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008;
@@ -131,25 +132,49 @@ public class TestHandler extends BaseHandler {
     //		putInvoker(PbProtocol.TestRolePromotionRequest_6f00010b, this::rolePromotion);
     //		putInvoker(PbProtocol.TestRoleUnlockOccupationTalentNodeRequest_6f00010d, this::unlockOccupationTalentNode);
     //角色晋升
-    private void gmCmd(NetClient client, Object message) {
-        TestMsg.TestGmCmdRequest_6f000001 req = (TestMsg.TestGmCmdRequest_6f000001) message;
-        TestMsg.TestGmCmdResponse_6f000002.Builder resp = TestMsg.TestGmCmdResponse_6f000002.newBuilder();
-        String cmd = req.getCmd();
-        long playerId = client.getPlayerId();
-        Player player = PlayerManager.getInstance().getPlayer(playerId);
+	private void gmCmd(NetClient client, Object message) {
+		TestMsg.TestGmCmdRequest_6f000001 req = (TestMsg.TestGmCmdRequest_6f000001) message;
+		TestMsg.TestGmCmdResponse_6f000002.Builder resp = TestMsg.TestGmCmdResponse_6f000002.newBuilder();
+		String cmd = req.getCmd();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		GameEvent params = new GameEvent(cmd.split(" "));
 		switch (params.getStringParameter(0)) {
-            case "item":
-                {
-//					TestHelper.addItems(player, params);
-                    break;
-                }
-            default:
-                client.sendProtocol(resp.build(), ErrorMsgEnum.unknown.getId());
-                break;
-        }
-        client.sendProtocol(resp.build());
-    }
+		case "item": {
+			List<RewardInfo> items = TestHelper.addItems(player, params.get(1), params.get(2));
+			client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
+			break;
+		}
+		case "tdlv": { // 设置天道修为等级
+			DevelopModule developModule = player.getDevelopModule();
+			developModule.setHeavenlyDaoLevel(params.get(1));
+			break;
+		}
+		case "btmain": { // 设置主线关卡id
+			ChapterModule chapterModule = player.getChapterModule();
+			chapterModule.setMainBattleHighest(params.get(1));
+			BattleConfig battleConfig = BattleManager.instance().getNullable(params.get(1));
+			while (battleConfig != null) {
+				chapterModule.addChapter(battleConfig.ID);
+				Chapter chapter = chapterModule.getChapter(battleConfig.ID);
+				chapter.setBattleTime(30);
+				chapter.setPass(true);
+				battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+			}
+			break;
+		}
+		case "quest": { // 完成某个任务
+			QuestModule module = player.getQuestModule();
+			List<RewardInfo> items = module.finish(params.get(1), 0);
+			client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
+			break;
+		}
+		default:
+			client.sendProtocol(resp.build(), ErrorMsgEnum.gm_cmd_not_exist.getId());
+			break;
+		}
+		client.sendProtocol(resp.build());
+	}
 
     /*
 		// 角色晋升1

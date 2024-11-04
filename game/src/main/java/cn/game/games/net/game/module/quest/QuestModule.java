@@ -271,15 +271,12 @@ public class QuestModule extends BasePlayerModule {
 		if (!quest.receive()) {
 			return null;
 		}
-		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
+		return finish(id, index);
 		/*		// 先执行结束命令
 				if (questConfig instanceof MainlineMissionConfig) {
 					MainlineMissionConfig missionConfig = (MainlineMissionConfig) questConfig;
 					PlayerHelper.command(playerId, missionConfig.getEndCommand());
 				}*/
-
-		setState(quest, QuestHelper.REWARDED, true);
-
 		/*		List<Entry<Integer, Integer>> reward = questConfig.getReward();
 				int chooseRewardType = questConfig.getChooseRewardType();
 				if (chooseRewardType == 0) {
@@ -292,6 +289,16 @@ public class QuestModule extends BasePlayerModule {
 				}*/
 
 //		addChallengeScore(id);
+	}
+
+	public List<RewardInfo> finish(int id, int index) {
+
+		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
+		Quest quest = get(id);
+		if (quest == null) {
+			return null;
+		}
+		setState(quest, QuestHelper.REWARDED, true);
 
 		if (questConfig.IsDeleteOnFinish) {
 			remove(id);
@@ -302,7 +309,6 @@ public class QuestModule extends BasePlayerModule {
 		if (questConfig.OpenQuests.length > 0) {
 			open(questConfig.OpenQuests, true);
 		}
-
 		// 发起完成任务事件
 		player.handleEvent(EventTypeEnum.QuestReward, quest.getId());
 
