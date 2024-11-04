@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.InitConfig;
+import cn.game.protocol.generated.enume.InitialUI;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.games.cache.entity.Hero;
@@ -405,7 +408,15 @@ public class SimplePlayer implements Serializable {
 
 	public BattleMsg.BattleSecretscriptInfo toSecretscriptPbInfo(DungeonTypeEnum dungeonTypeEnum ) {
         BattleMsg.BattleSecretscriptInfo.Builder builder = BattleMsg.BattleSecretscriptInfo.newBuilder();
-		builder.putAllSecretscriptPosMap(secretscripMap.get(dungeonTypeEnum.getId()));
+//		DaDaoNotFought	【大道争锋】未发起战斗的默认神通	给程序使用
+		Map<Integer,Integer> secretscriptPosMap = secretscripMap.getOrDefault(dungeonTypeEnum.getId(), new HashMap<>());
+		if (  secretscriptPosMap.isEmpty()){
+			for (int i=0; i < GlobalConst.DaDaoNotFought.length; i++){
+				int id = GlobalConst.DaDaoNotFought[i];
+				secretscriptPosMap.put(id,i+1);
+			}
+		}
+		builder.putAllSecretscriptPosMap(secretscriptPosMap);
 		secretscripInfos.forEach(secretscript -> {
             builder.addSecretscriptList(secretscript.toProtoInfo());
         });
