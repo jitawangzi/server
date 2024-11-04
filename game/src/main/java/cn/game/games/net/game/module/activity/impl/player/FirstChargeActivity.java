@@ -21,6 +21,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeResponse_1100000
 import cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import cn.game.util.Pair;
 
 /**    
  * 单充活动
@@ -35,8 +36,18 @@ public class FirstChargeActivity extends PlayerActivityBase {
 	private Map<Integer, SingleCharge> chargeMap = new HashMap<Integer, SingleCharge>();
 
 	@Override
-	public Message buildActivityShowInfo(int id) {
-		ActivityFirstChargeResponse_11000008.Builder resp = ActivityFirstChargeResponse_11000008.newBuilder();
+	public boolean hasRed() {
+		List<Pair<Integer, Integer>> status = getStatus();
+		for (Pair<Integer, Integer> pair : status) {
+			if (pair.second == 1) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private List<Pair<Integer, Integer>> getStatus() {
+		List<Pair<Integer, Integer>> retList = new ArrayList<>();
 		int nowDay = DateUtil.getDay();
 		Collection<FirstChargeConfig> list = FirstChargeManager.instance().list();
 		for (FirstChargeConfig firstChargeConfig : list) {
@@ -44,18 +55,22 @@ public class FirstChargeActivity extends PlayerActivityBase {
 				continue;
 			}
 			SingleCharge singleCharge = chargeMap.get(firstChargeConfig.ID);
-//			if (singleCharge == null && firstChargeConfig.Preconditions > 0) {
-//				continue;
-//			}
-//			if (firstChargeConfig.Price.length == 0) {
-//				continue;
-//			}
-			cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo.Builder builder = FirstChargeActivityInfo.newBuilder();
-			builder.setId(firstChargeConfig.ID);
 			int status = getFirstChargeStatus(nowDay, firstChargeConfig, singleCharge);
-			builder.setStatus(status);
-			resp.addSingleCharges(builder.build());
+			Pair<Integer, Integer> pair = new Pair(firstChargeConfig.ID, status);
+			retList.add(pair);
+		}
+		return retList;
+	}
 
+	@Override
+	public Message buildActivityShowInfo(int id) {
+		ActivityFirstChargeResponse_11000008.Builder resp = ActivityFirstChargeResponse_11000008.newBuilder();
+		List<Pair<Integer, Integer>> statusList = getStatus();
+		for (Pair<Integer, Integer> pair : statusList) {
+			cn.game.protocol.protobuf.ActivityMsg.FirstChargeActivityInfo.Builder builder = FirstChargeActivityInfo.newBuilder();
+			builder.setId(pair.first);
+			builder.setStatus(pair.second);
+			resp.addSingleCharges(builder.build());
 		}
 //		for (Entry<Integer, SingleCharge> entry : chargeMap.entrySet()) {
 //			Integer key = entry.getKey();
@@ -68,6 +83,7 @@ public class FirstChargeActivity extends PlayerActivityBase {
 //		}
 		return resp.build();
 	}
+
 
 	private int getFirstChargeStatus(int nowDay, FirstChargeConfig firstChargeConfig, SingleCharge singleCharge) {
 		int status = 0;
@@ -142,7 +158,27 @@ public class FirstChargeActivity extends PlayerActivityBase {
 			return null;
 		}
 		singleCharge.getSelectedIndex().add(cid);
+
+		if (isAllReward()) {
+			player.getActivityModule().destroy(id, true);
+		}
+
 		return PlayerHelper.addResources(player, firstChargeConfig.Item, OpType.FirstCharge);
+	}
+
+	/** 
+	 * 首冲的奖励，是否已经都领取完毕了。 
+	 * @return
+	 */
+	private boolean isAllReward() {
+		List<FirstChargeConfig> activityiDIndexList = FirstChargeManager.instance().getActivityiDIndexList(id);
+		for (FirstChargeConfig firstChargeConfig : activityiDIndexList) {
+			SingleCharge singleCharge = chargeMap.get(firstChargeConfig.ID);
+			if (singleCharge == null || singleCharge.getSelectedIndex().isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 //	public SingleCharge getSingleCharge(int chargeId) {
