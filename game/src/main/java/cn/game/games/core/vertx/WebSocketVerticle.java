@@ -114,7 +114,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 		}).onFailure(e -> {
 			log.error("websocket start error : port  " + port, e);
 			ServerContext.getInstance().handleStartFail(e);
-			throw new RuntimeException("websocket start error");
+//			throw new RuntimeException("websocket start error");
 		});
 	}
 

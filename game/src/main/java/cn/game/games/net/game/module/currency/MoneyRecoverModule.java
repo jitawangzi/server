@@ -121,18 +121,20 @@ public class MoneyRecoverModule extends BasePlayerModule {
 		if (recoveryConfig != null) {
 			if (nextUpdataTime == 0) {
 				idUpdateTimeMap.put(id, System.currentTimeMillis());
-				player.setPeriodicTask(recoveryConfig.interval * 60 * 1000, r -> {
+				long timer = player.setPeriodicTask(recoveryConfig.interval * 60 * 1000, r -> {
 					timeToRecovery(id);
 				});
+				timerTask.put(id, timer);
 
 			} else {
-				player.setTimerTask(nextUpdataTime, l -> {
+				long timer1 = player.setTimerTask(nextUpdataTime, l -> {
 					timeToRecovery(id);
 					long timer = player.setPeriodicTask(recoveryConfig.interval * 60 * 1000, r -> {
 						timeToRecovery(id);
 					});
 					timerTask.put(id, timer);
 				});
+				timerTask.put(id, timer1);
 			}
 
 		}

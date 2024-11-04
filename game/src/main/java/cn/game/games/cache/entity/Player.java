@@ -130,12 +130,24 @@ public class Player  {
 		return (T) this.modules.get(clazz.getName());
 	}
 
+	/** 
+	 * 周期性的运行某一任务
+	 * @param delay 间隔时间（ms）
+	 * @param handler
+	 * @return
+	 */
 	public long setPeriodicTask(long delay, Handler<Long> handler) {
 		long timer = gameClient.getContext().setPeriodic(delay, handler);
 		timerTask.add(timer);
 		return timer;
 	}
 
+	/** 
+	 * 延迟一段时间后，执行一个任务
+	 * @param delay 延迟时间（ms）
+	 * @param handler
+	 * @return
+	 */
 	public long setTimerTask(long delay, Handler<Long> handler) {
 		if (delay <= 0) {
 			gameClient.getContext().runOnContext(v -> handler.handle(0L));
