@@ -56,7 +56,8 @@ public class RankHandler extends BaseHandler {
 
 				rb.setRank(entry.getRankEntry().getRank());
 				rb.setPlayer(entry.getPlayer().toSimplePlayerInfo());
-				rb.setScore(entry.getRankEntry().getScore() + "");
+				long score = entry.getRankEntry().getScore();
+				rb.setScore((score < 0 ? 0 : score) + "");
 				rankInfo.addPlayers(rb);
 			});
 			rankInfo.setRank(rank == null ? -1 : rank.getRank());
