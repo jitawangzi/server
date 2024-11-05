@@ -2,16 +2,17 @@ package cn.game.games.net.game.remote;
 
 import java.util.List;
 
+import cn.game.core.net.remote.RemoteGameServerInterface;
 import cn.game.games.core.SimplePlayer;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 
 /**
- * GameServer提供给其他服务器调用的接口
+ * GameServer提供给其他服务器（Game、Cross）调用的接口
  * 2020年11月30日 上午10:35:37
  * @author SYQ
  */
-public interface GameRemoteServerInterface {
+public interface GameServerInterface extends RemoteGameServerInterface {
 
 	public SimplePlayer getSimplePlayer(long id) throws Exception;
 

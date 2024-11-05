@@ -17,7 +17,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 
-public class GameRemoteServerImpl implements GameRemoteServerInterface {
+public class GameServerImpl implements GameServerInterface {
 
 	@Override
 	public SimplePlayer getSimplePlayer(long id) throws Exception {
@@ -150,5 +150,11 @@ public class GameRemoteServerImpl implements GameRemoteServerInterface {
           PlayerManager.getInstance().unblockAccount(pid);
         });
 
+	}
+
+	@Override
+	public Object invoke(String methodName, Object... args) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

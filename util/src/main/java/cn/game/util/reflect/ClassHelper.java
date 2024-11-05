@@ -1,6 +1,7 @@
 package cn.game.util.reflect;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.Set;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
+import org.springframework.util.ReflectionUtils;
 
 public class ClassHelper {
 	public static <T> Set<Class<? extends T>> findSubclasses(String basePackage, Class<? extends T> superClass) {
@@ -83,5 +85,28 @@ public class ClassHelper {
 			}
 		}
 		return null;
+	}
+
+	/** 
+	 * 反射查找Method，通过spring ReflectionUtils 缓存的Method加速查找
+	 * @param clazz
+	 * @param methodName
+	 * @param args
+	 * @return
+	 */
+	public static Method findMethod(Class<?> clazz, String methodName, Object... args) {
+
+		Class<?>[] paramTypes = null;
+		if (args != null) {
+			paramTypes = new Class[args.length];
+			for (int i = 0; i < args.length; i++) {
+				paramTypes[i] = args[i] == null ? null : args[i].getClass();
+			}
+		}
+		Method method = ReflectionUtils.findMethod(clazz, methodName, paramTypes);
+		if (method == null) {
+			throw new NoSuchMethodError("Method " + methodName + " not found in " + clazz.getName());
+		}
+		return method;
 	}
 }

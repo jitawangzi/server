@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.cross.CrossServer;
-import cn.game.games.net.game.remote.GameRemoteServerInterface;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.net.game.remote.ServerStatus;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.Pair;
@@ -27,7 +27,7 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 
 		for (int i = 0; i < serverIds.size(); i++) {
 
-			GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverIds.get(i));
+			GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverIds.get(i));
 			try {
 				SimplePlayer simplePlayer = gameServerInterface.getSimplePlayer(playerIds.get(i));
 				if (simplePlayer != null) {
@@ -44,7 +44,7 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 
 	@Override
 	public SimplePlayer getSimplePlayer(long playerId, String serverId) throws Exception {
-		GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
 		return gameServerInterface.getSimplePlayer(playerId);
 
 	}
@@ -56,7 +56,7 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 
 		for (Pair<Long, String> pair : players) {
 
-			GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(pair.second);
+			GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(pair.second);
 			try {
 				SimplePlayer simplePlayer = gameServerInterface.getSimplePlayer(pair.first);
 				if (simplePlayer != null) {
@@ -73,27 +73,27 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 
 	@Override
 	public SimplePlayer searchFriendPlayer(long playerId, long searchPlayerId, String serverId) throws Exception {
-		GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
 		return gameServerInterface.searchFriendPlayer(playerId, searchPlayerId);
 
 	}
 
 	@Override
 	public boolean addFriend(long playerId, long friendId, String serverId) {
-		GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
 		return gameServerInterface.addFriend(playerId, friendId, serverId);
 	}
 
 	@Override
 	public List<RewardInfo> addResources(long playerId, int id, int value, String serverId) {
-		GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
 		return gameServerInterface.addResources(playerId, id, value);
 
 	}
 	
 	@Override
 	public boolean addMail(long playerId, String serverId, int titleId, int contentId, int typeId, String resourceText) {
-		GameRemoteServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
 		gameServerInterface.addMail(playerId, serverId, titleId, contentId, typeId, resourceText);
 		return false;
 	}

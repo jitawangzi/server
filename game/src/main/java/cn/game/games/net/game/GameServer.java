@@ -29,7 +29,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.mq.RocketMQRpcClient;
-import cn.game.core.net.remote.LoginGameServerInterface;
+import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
@@ -54,7 +54,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.manager.PressureTestManager;
 import cn.game.games.net.game.module.rank.RankService;
-import cn.game.games.net.game.remote.GameRemoteServerInterface;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.KeywordFilter;
 import cn.game.protocol.generated.helper.ManagerHelper;
@@ -99,15 +99,15 @@ public class GameServer implements GameServerMBean {
 	private static final GameServer instance = new GameServer();
 
 	@Deprecated
-	private LoginGameServerInterface loginGameServerInterface;
+	private RemoteLoginServerInterface loginGameServerInterface;
 	@Deprecated
 	private CrossRemoteServerInterface crossGameServerInterface;
 	@Deprecated
 	private CrossRemoteServerInterface crossGameServerInterfaceSync;
 	@Deprecated
-	private ConcurrentMap<String, GameRemoteServerInterface> gameServerInterfacesSync = new ConcurrentHashMap<String, GameRemoteServerInterface>();
+	private ConcurrentMap<String, GameServerInterface> gameServerInterfacesSync = new ConcurrentHashMap<String, GameServerInterface>();
 	@Deprecated
-	private ConcurrentMap<String, GameRemoteServerInterface> gameServerInterfacesAsync = new ConcurrentHashMap<String, GameRemoteServerInterface>();
+	private ConcurrentMap<String, GameServerInterface> gameServerInterfacesAsync = new ConcurrentHashMap<String, GameServerInterface>();
 
 	private RpcClient rpcClient;
 	private String[] serverIds = new String[ServerType.values().length];
@@ -383,7 +383,7 @@ public class GameServer implements GameServerMBean {
 		}
 
 		this.loginGameServerInterface = RpcFactory
-				.getImplLoadBalancer(LoginGameServerInterface.class, rpcClient, ServerType.Login);
+				.getImplLoadBalancer(RemoteLoginServerInterface.class, rpcClient, ServerType.Login);
 		this.crossGameServerInterface = RpcFactory.getImpl(CrossRemoteServerInterface.class, rpcClient, false,
 				crossServerId);
 		this.crossGameServerInterfaceSync = RpcFactory.getImpl(CrossRemoteServerInterface.class, rpcClient, true,
@@ -471,7 +471,7 @@ public class GameServer implements GameServerMBean {
 //		return this.dbMaxPlayerId.incrementAndGet();
 //	}
 
-	public LoginGameServerInterface getLoginGameServerInterface() {
+	public RemoteLoginServerInterface getLoginGameServerInterface() {
 		return loginGameServerInterface;
 	}
 
@@ -518,11 +518,11 @@ public class GameServer implements GameServerMBean {
 	 *            逻辑服id
 	 * @return
 	 */
-	public GameRemoteServerInterface getGameServerRemoteAsync(String serverId) {
-		GameRemoteServerInterface gameCrossServerInterface = gameServerInterfacesAsync.get(serverId);
+	public GameServerInterface getGameServerRemoteAsync(String serverId) {
+		GameServerInterface gameCrossServerInterface = gameServerInterfacesAsync.get(serverId);
 		if (gameCrossServerInterface == null) {
-			gameCrossServerInterface = RpcFactory.getImpl(GameRemoteServerInterface.class, rpcClient, false, serverId);
-			GameRemoteServerInterface put = gameServerInterfacesAsync.put(serverId, gameCrossServerInterface);
+			gameCrossServerInterface = RpcFactory.getImpl(GameServerInterface.class, rpcClient, false, serverId);
+			GameServerInterface put = gameServerInterfacesAsync.put(serverId, gameCrossServerInterface);
 			if (put != null) {
 				gameCrossServerInterface = put;
 			}
@@ -536,11 +536,11 @@ public class GameServer implements GameServerMBean {
 	 *            逻辑服id
 	 * @return
 	 */
-	public GameRemoteServerInterface getGameServerRemoteSync(String serverId) {
-		GameRemoteServerInterface gameCrossServerInterface = gameServerInterfacesSync.get(serverId);
+	public GameServerInterface getGameServerRemoteSync(String serverId) {
+		GameServerInterface gameCrossServerInterface = gameServerInterfacesSync.get(serverId);
 		if (gameCrossServerInterface == null) {
-			gameCrossServerInterface = RpcFactory.getImpl(GameRemoteServerInterface.class, rpcClient, true, serverId);
-			GameRemoteServerInterface put = gameServerInterfacesSync.put(serverId, gameCrossServerInterface);
+			gameCrossServerInterface = RpcFactory.getImpl(GameServerInterface.class, rpcClient, true, serverId);
+			GameServerInterface put = gameServerInterfacesSync.put(serverId, gameCrossServerInterface);
 			if (put != null) {
 				gameCrossServerInterface = put;
 			}

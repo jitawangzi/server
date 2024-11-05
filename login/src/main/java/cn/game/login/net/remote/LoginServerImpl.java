@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSON;
 
 import cn.game.core.cache.CacheType;
-import cn.game.core.net.remote.LoginGameServerInterface;
 import cn.game.login.cache.CacheManager;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
@@ -18,10 +17,11 @@ import io.reactivex.rxjava3.annotations.Nullable;
 import io.vertx.core.Future;
 import io.vertx.redis.client.Response;
 
-public class LoginGameServerInterfaceImpl implements LoginGameServerInterface {
+@Deprecated
+public class LoginServerImpl implements LoginServerInterface {
 
 	/**  */
-	private static final Logger log = LoggerFactory.getLogger(LoginGameServerInterfaceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(LoginServerImpl.class);
 	@Autowired
 	private UserMapper userMapper;
 
