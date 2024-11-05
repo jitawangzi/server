@@ -169,6 +169,14 @@ public class TestHandler extends BaseHandler {
 			client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
 			break;
 		}
+		case "playerquit": { // 把某人退出
+			TestHelper.logoutPlayer(params.getLong(1), LogoutType.GMTestRequest);
+			break;
+		}
+		case "playerdel": { // 将某人删档
+			TestHelper.deletePlayer(params.getLong(1));
+			break;
+		}
 		default:
 			client.sendProtocol(resp.build(), ErrorMsgEnum.gm_cmd_not_exist.getId());
 			break;
@@ -340,7 +348,8 @@ public class TestHandler extends BaseHandler {
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         //		PlayerHelper.addResources(player, 205103, 2);
-        testcalcPower(player);
+		PlayerHelper.delResources(player, 100303, 5, OpType.None);
+//        testcalcPower(player);
         //		List<RewardInfo> resources = PlayerHelper.addResources(player, 200032, 10);
         //		for (RewardInfo rewardInfo : resources) {
         //			System.out.println(rewardInfo);

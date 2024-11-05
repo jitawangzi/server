@@ -164,6 +164,13 @@ public class GameEvent {
 		return Integer.parseInt(params[i].toString());
 	}
 
+	public final long getLong(int i) {
+		if (params[i] instanceof Long) {
+			return ((Long) params[i]).longValue();
+		}
+		return Long.parseLong(params[i].toString());
+	}
+
 	/**
 	 * 获取long型参数
 	 * 

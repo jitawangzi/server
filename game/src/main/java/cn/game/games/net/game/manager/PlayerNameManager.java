@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -24,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.druid.util.StringUtils;
 
+import cn.game.core.async.retry.AsyncRetry;
+import cn.game.core.async.retry.RetryConfig;
 import cn.game.core.cache.CacheType;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.protocol.generated.config.RandomNameConfig;
@@ -103,25 +104,46 @@ public class PlayerNameManager {
 	}
 
 	/** 
-	 * 创建一个用户名，如果重复了，则添加数字后缀，确保名字创建成功。 
+	 * 创建一个用户名，如果重复了，最多重试3次，添加数字后缀，确保名字创建成功。 
 	 * @param username 想要创建的用户名
 	 * @return  创建成功的用户名
 	 */
 	public CompletionStage<String> createUserName(String username) {
-		String key = getUsernameKey(username);
-		AtomicBoolean retry = new AtomicBoolean(false);
+		return tryCreateUsername(username, 0);
+	}
+
+	private CompletionStage<String> tryCreateUsername(String baseUsername, int attempts) {
+		if (attempts >= 3) {
+			return CompletableFuture.failedFuture(new IllegalStateException("Failed to create unique username: " + baseUsername));
+		}
+		String attemptUsername = attempts == 0 ? baseUsername : baseUsername + ThreadLocalRandom.current().nextInt(10000);
+		String key = getUsernameKey(attemptUsername);
 		RSetAsync<String> set = RedisUtil.getRedis().getSet(key);
-		RFuture<Boolean> async = set.addAsync(username);
-		return async.thenComposeAsync(success -> {
+
+		return set.addAsync(attemptUsername).thenComposeAsync(success -> {
 			if (success) {
-				return CompletableFuture.completedFuture(username);
+				return CompletableFuture.completedFuture(attemptUsername);
 			}
-			if (!retry.get()) {
-				retry.set(true);
-				String newName = username + ThreadLocalRandom.current().nextInt(10000);
-				return createUserName(newName);
+			return tryCreateUsername(baseUsername, attempts + 1);
+		});
+	}
+
+	public CompletionStage<String> createUserNameRetry(String username) {
+		RetryConfig config = new RetryConfig.Builder().maxAttempts(3)
+				.retryIf(success -> !((Boolean) success)) // 当添加失败时重试
+				.build();
+
+		return AsyncRetry.execute(attempt -> {
+			String attemptUsername = attempt == 0 ? username : username + ThreadLocalRandom.current().nextInt(10000);
+			String key = getUsernameKey(attemptUsername);
+			RSetAsync<String> set = RedisUtil.getRedis().getSet(key);
+			return set.addAsync(attemptUsername).thenApply(success -> success ? attemptUsername : null);
+		}, config).thenCompose(result -> {
+			if (result.isSuccess() && result.getData() != null) {
+				return CompletableFuture.completedFuture(result.getData());
 			}
-			throw new IllegalStateException("Failed to create unique username :" + username);
+			return CompletableFuture.failedFuture(new IllegalStateException(
+					String.format("Failed to create unique username after %d attempts", result.getAttemptCount())));
 		});
 	}
 

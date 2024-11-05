@@ -311,14 +311,6 @@ public class QuestModule extends BasePlayerModule {
 		}
 		// 发起完成任务事件
 		player.handleEvent(EventTypeEnum.QuestReward, quest.getId());
-
-		/*		if (QuestHelper.autoRewardUseMail(id)) {
-					MailHelper.sendMailMultiLanguage(playerId, 208011, 208009, 208010, MailHelper.SYSTEM, reward);
-					return null;
-				} else {
-					return PlayerHelper.addResources(player, reward);
-				}*/
-
 		return PlayerHelper.addReward(player, questConfig.Reward, OpType.Quest);
 
 	}

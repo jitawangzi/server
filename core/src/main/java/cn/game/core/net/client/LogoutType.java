@@ -19,6 +19,9 @@ public enum LogoutType {
 	LoginOtherServer(10, "LoginOtherServer", "登录了其他服务器,退出当前服务器"),
 	TestRequest(11, "TestRequest", "测试命令退出的"),
 	TimeChange(12, "TimeChange", "修改时间测试的，踢出客户端"),
+	GMTestRequest(13, "GMTestRequest", "GM测试命令退出的"),
+	Delete(14, "Delete", "删号退出"),
+
 	;
 
 	private int ID;
