@@ -1262,6 +1262,7 @@ public class PlayerHelper {
 
 		if (player.getData().isNew()) {
 			// 初始的资源
+			System.out.println(1 / 0);
 			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 			PlayerHelper.initNewPlayerData(player);
 		}
@@ -1303,6 +1304,18 @@ public class PlayerHelper {
 	public static Future<Player> saveSimplePlayer(Player player) {
 		Future<Void> future = saveSimplePlayerToRedis(player);
 		return future.map(player);
+	}
+
+	public static Future<Player> savePlayerToDb(Player player) {
+		PlayerData data = player.getData();
+		data.beforeSave();
+		data.setModules(JsonUtil.toJsonString(player.getModules()));
+
+		Promise<Player> promise = Promise.promise();
+		DAO.execute(PlayerDataMapper.class, MapperConstant.insert, data)
+				.onSuccess(r -> promise.complete(player))
+				.onFailure(t -> promise.fail(t));
+		return promise.future();
 	}
 
 	/** 

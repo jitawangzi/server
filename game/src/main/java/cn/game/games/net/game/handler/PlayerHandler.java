@@ -106,7 +106,6 @@ import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 /**
  * 用户处理器
@@ -925,7 +924,7 @@ public class PlayerHandler extends BaseHandler {
 	private Future<PlayerData> createNewPlayer(long playerId, Account account, GameClient client) {
 		return PlayerNameManager.getInstance()
 				.createUserName()
-				.compose(name -> createPlayer(account, client, playerId, name, true, 0, false, true))
+				.compose(name -> createPlayerData(account, client, playerId, name, true, 0))
 				.compose(PlayerNameManager.getInstance()::saveName2Id);
 	}
 
@@ -935,7 +934,9 @@ public class PlayerHandler extends BaseHandler {
 
 	private Future<Player> handlePlayerData(PlayerData playerData, Account account, GameClient client) {
 		if (playerData.isNew()) {
-			return PlayerHelper.initPlayerData(PlayerHelper.createPlayer(playerData, account, client))
+			Player player = PlayerHelper.createPlayer(playerData, account, client);
+			return PlayerHelper.initPlayerData(player)
+					.compose(PlayerHelper::savePlayerToDb)
 					.compose(PlayerHelper::saveSimplePlayer);
 		}
 		return handleExistingPlayer(playerData, account, client);
@@ -980,6 +981,14 @@ public class PlayerHandler extends BaseHandler {
 		client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), errorCode);
 		GameClientManager.getInstance().removeGameClient((GameClient) client, LogoutType.ClientLoginFail);
 		if (client.getPlayerId() > 0) {
+			Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+			if (player != null) {
+				PlayerData data = player.getData();
+				if (data != null && data.isNew()) {
+					// 新创建的角色失败了，回收名字
+					PlayerNameManager.getInstance().removeName(data.getName());
+				}
+			}
 			PlayerHelper.clearPlayer(client.getPlayerId());
 		}
 	}
@@ -1004,8 +1013,7 @@ public class PlayerHandler extends BaseHandler {
 		}
 	}
 
-	public Future<PlayerData> createPlayer(Account account, NetClient client, long uid, String name, boolean isMan, int head, boolean isPc,
-			boolean autoCreate) {
+	public Future<PlayerData> createPlayerData(Account account, NetClient client, long uid, String name, boolean isMan, int head) {
 		PlayerData playerData = new PlayerData();
 
 		long id = uid;
@@ -1067,9 +1075,12 @@ public class PlayerHandler extends BaseHandler {
 
 		ObjUtil.setDefaultValue(playerData);
 
+		/*	
+		// 这里先不插入数据库，等完全初始化之后后再插入,防止初始化失败，造成数据不一致
 		Promise<PlayerData> promise = Promise.promise();
-		DAO.execute(PlayerDataMapper.class, MapperConstant.insert, playerData).onSuccess(r -> promise.complete(playerData)).onFailure(t -> promise.fail(t));
-		return promise.future();
+			DAO.execute(PlayerDataMapper.class, MapperConstant.insert, playerData).onSuccess(r -> promise.complete(playerData)).onFailure(t -> promise.fail(t));
+				return promise.future();*/
+		return Future.succeededFuture(playerData);
 	}
 
 }
