@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
+import cn.game.core.async.BlockingCode;
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.vertx.codec.CustomMessageCodec;
@@ -417,31 +418,63 @@ public class VxHolder {
 		return Future.fromCompletionStage(future);
 	}
 
-	/**
-	* 执行带超时的阻塞操作
-	* @param blockingHandler 阻塞操作的处理器
-	* @param timeoutMs 超时时间(毫秒)
-	* @param ordered 是否按顺序执行
-	* @return 返回Future
-	*/
-	public static <T> Future<T> executeBlockingWithTimeout(Handler<Promise<T>> blockingHandler, long timeoutMs,
+	/** 
+	 * worker线程池中执行阻塞代码，带超时
+	 * @param <T>
+	 * @param blockingCode 阻塞逻辑
+	 * @param timeoutMs 超时时间（ms）
+	 * @param ordered 是否按顺序执行，一般为false
+	 * @return 异步执行结果
+	 */
+	public static <T> Future<T> executeBlockingWithTimeout(BlockingCode<T> blockingCode, long timeoutMs, boolean ordered) {
+
+		return executeBlockingWithTimeoutInternal(promise -> {
+			try {
+				T result = blockingCode.execute();
+				promise.complete(result);
+			} catch (Throwable e) {
+				promise.fail(e);
+			}
+		}, timeoutMs, ordered);
+	}
+
+	/** 
+	 * 默认30秒超时，执行阻塞逻辑
+	 * @param <T>
+	 * @param blockingCode
+	 * @param ordered
+	 * @return
+	 */
+	public static <T> Future<T> executeBlockingWithTimeout(BlockingCode<T> blockingCode) {
+		return executeBlockingWithTimeout(blockingCode, 30000, false);
+	}
+
+	/** 
+	 * 对executeBlocking的超时封装
+	 * @param <T>
+	 * @param blockingHandler
+	 * @param timeoutMs
+	 * @param ordered
+	 * @return
+	 */
+	private static <T> Future<T> executeBlockingWithTimeoutInternal(Handler<Promise<T>> blockingHandler, long timeoutMs,
 			boolean ordered) {
 
 		Promise<T> promise = Promise.promise();
 
 		// 执行阻塞操作
 		Future<T> executionFuture = vertx.executeBlocking(blockingHandler, ordered);
-
+		
 		// 设置超时定时器
 		long timerId = vertx.setTimer(timeoutMs, id -> {
 			if (!promise.future().isComplete()) {
 				promise.fail(new TimeoutException("Operation timed out after " + timeoutMs + " ms"));
 			}
 		});
-
+		
 		// 处理执行结果
 		executionFuture.onComplete(ar -> {
-			vertx.cancelTimer(timerId); // 取消定时器
+			vertx.cancelTimer(timerId);
 			if (ar.succeeded()) {
 				promise.complete(ar.result());
 			} else {
@@ -450,12 +483,5 @@ public class VxHolder {
 		});
 
 		return promise.future();
-	}
-
-	/**
-	 * 使用默认30秒超时的阻塞操作
-	 */
-	public static <T> Future<T> executeBlockingWithTimeout(Handler<Promise<T>> blockingHandler, boolean ordered) {
-		return executeBlockingWithTimeout(blockingHandler, 30000, ordered);
 	}
 }

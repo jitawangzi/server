@@ -119,21 +119,15 @@ public class DAO {
 	 * @return
 	 */
 	public static Future<List<Object>> execute(List<DbTask> tasks) {
-
-		Future<List<Object>> future = VxHolder.vertx.executeBlocking(promise -> {
+		return VxHolder.executeBlockingWithTimeout(() -> {
 			List<Object> ret = new ArrayList<>();
-			try {
-				for (DbTask dbTask : tasks) {
-					Object result = invoke(dbTask.getMapper(), dbTask.getMethod(), dbTask.getArg());
-					ret.add(result);
-				}
-				promise.complete(ret);
-			} catch (Exception e) {
-				promise.fail(e);
-				log.error("db execute list error", e);
+			for (DbTask dbTask : tasks) {
+				Object result = invoke(dbTask.getMapper(), dbTask.getMethod(), dbTask.getArg());
+				ret.add(result);
 			}
-		}, false);
-		return future;
+			return ret;
+		});
+
 	}
 
 	public static <T> Future<@Nullable T> execute(Class<?> mapperClass, String method, Object... args) {
@@ -145,16 +139,7 @@ public class DAO {
 //
 //			}
 //		}
-		return VxHolder.executeBlockingWithTimeout(promise -> {
-			Object result;
-			try {
-				result = invoke(mapperClass, method, args);
-				promise.complete((T) result);
-			} catch (Throwable e) {
-				promise.fail(e);
-				log.error("db execute error", e);
-			}
-		}, false);
+		return VxHolder.executeBlockingWithTimeout(() -> (T) invoke(mapperClass, method, args));
 	}
 
 	public static Object invoke(Class<?> mapperClass, String method, Object... args) {
@@ -167,30 +152,6 @@ public class DAO {
 		Object result = ReflectionUtils.invokeMethod(method2, targetObject, args);
 		return result;
 	}
-
-	@Deprecated
-	public static Future<List<Object>> update(List<DbTask> tasks) {
-
-//		if (pauseUpdateDb) {
-//			dbTasksQueue.addAll(tasks);
-//			return Future.succeededFuture();
-//		}
-
-		Future<List<Object>> future = VxHolder.vertx.executeBlocking(promise -> {
-			List<Object> ret = new ArrayList<>();
-			for (DbTask dbTask : tasks) {
-				Object result = invoke(dbTask.getMapper(), dbTask.getMethod(), dbTask.getArg());
-				ret.add(result);
-			}
-			promise.complete(ret);
-		}, false);
-		future.onFailure(r -> {
-			r.printStackTrace();
-			log.error("db update error", r);
-		});
-		return future;
-	}
-
 	@Deprecated
 	public static void listenPauseUpdateDb() {
 
