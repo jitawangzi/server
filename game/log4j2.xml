@@ -90,7 +90,7 @@
         <AsyncLogger name="Net" level="info" includeLocation="false" additivity="true">
             <AppenderRef ref="Net"/>
         </AsyncLogger>
-        <AsyncLogger name="Db" level="info" includeLocation="false" additivity="false">
+        <AsyncLogger name="Db" level="debug" includeLocation="false" additivity="false">
             <AppenderRef ref="Db"/>
         </AsyncLogger>
 

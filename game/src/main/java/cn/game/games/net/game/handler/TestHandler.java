@@ -170,7 +170,13 @@ public class TestHandler extends BaseHandler {
 			break;
 		}
 		case "playerquit": { // 把某人退出
-			TestHelper.logoutPlayer(params.getLong(1), LogoutType.GMTestRequest);
+			if (params.getParams().length == 1) {
+				// 退出所有人
+				GameClientManager.getInstance().logoutAll(LogoutType.GMTestRequest);
+			} else {
+				// 退出某人
+				TestHelper.logoutPlayer(params.getLong(1), LogoutType.GMTestRequest);
+			}
 			break;
 		}
 		case "playerdel": { // 将某人删档

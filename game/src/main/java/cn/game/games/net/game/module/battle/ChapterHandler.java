@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.net.game.module.pvp.OfflineBattleHandler;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HCBattleConfig;
@@ -29,6 +31,7 @@ import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
@@ -247,9 +250,15 @@ public class ChapterHandler extends BaseHandler {
 		resp.setCumulativeDamage(battle.getCumulativeDamage() + "");
 		resp.setMaxDamageToday(battle.getMaxDamageToday() + "");
 		resp.setRewardId(battle.getRewardId());
-//		resp.setRank(0);
-
-		client.sendProtocol(resp.build());
+		CompletionStage<Integer> rankAsync = RankService.getInstance().getRankAsync(player.getServerId(), RankType.WorldBoss, playerId);
+		rankAsync.whenComplete((rank, t) -> {
+			if (t != null) {
+				player.handleFailFunction(t);
+			} else {
+				resp.setRank(rank);
+				client.sendProtocol(resp.build());
+			}
+		});
 	}
 
 	protected void lostDayReward(NetClient client, Object message) {
