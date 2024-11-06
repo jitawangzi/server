@@ -82,7 +82,7 @@ public class ServerContext {
 
 	public void checkServerId(String serverId) {
 		if (getRunMode().isProduction()) {
-			lock = LockUtil.tryLockNoExpiredNoWaitSync(CacheType.SERVER_LOCK.key(serverId));
+			lock = LockUtil.tryLockNoExpiredNoWaitSync(CacheType.SERVER_ID_LOCK.key(serverId));
 			if (lock == null) {
 				throw new RuntimeException(serverId + " Server启动失败，可能有其他服务器使用这个id了，或者这个id的服务器关闭和启动的间隔太短，可以等待30秒后在试");
 			}

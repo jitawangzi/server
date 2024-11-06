@@ -641,10 +641,6 @@ public class Player  {
 		return data;
 	}
 
-	public void setData(PlayerData data) {
-		this.data = data;
-	}
-
 	public boolean isActive() {
 		return isActive;
 	}

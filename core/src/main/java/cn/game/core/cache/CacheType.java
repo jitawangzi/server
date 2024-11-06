@@ -39,7 +39,9 @@ public enum CacheType {
 	SET_RANK,
 	// 一些分布式锁定义
 	// 服务器id分布式锁，防止同时多个同样id的服务器运行
-	SERVER_LOCK,
+	SERVER_ID_LOCK,
+	/** 只能有一个GameServer执行某段逻辑时，使用这个锁。  */
+	GAME_SERVER_LOCK,
 	/**ios 微信 access_token 请求分布式锁*/
 	IOS_WE_CHAT_ACCESS_TOKEN_REFRESH_LOCK,
 	/** SimplePlayer初始化锁 */

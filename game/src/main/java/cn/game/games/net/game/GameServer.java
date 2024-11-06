@@ -216,7 +216,7 @@ public class GameServer implements GameServerMBean {
 	 * 同步SimplePlayer和名字
 	 */
 	private void initSimplePlayers() {
-		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.SERVER_SIMPLE_PLAYER_INIT.name());
+		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.GAME_SERVER_LOCK.name());
 		if (lock == null) {
 			return;
 		}
@@ -228,24 +228,6 @@ public class GameServer implements GameServerMBean {
 			if (keyStream.count() > 0) {
 				found = true;
 			}
-//		for (String key : keys.getKeysByPattern(CacheType.PLAYER_SIMPLE.name() + "*")) {
-//			found = true;
-//			break;
-//		}
-//		if (!found) {
-//			// 重新初始化PLAYER_SIMPLE
-//			PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-//			try (Cursor<PlayerData> cursor = mapper.streamAll()) {
-//				for (PlayerData playerData : cursor) {
-//					Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-//					Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
-//					PlayerHelper.saveSimplePlayerToRedisSync(player);
-//				}
-//			} catch (Exception e) {
-//				SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
-//				ServerContext.getInstance().handleStartFail(e);
-//			}
-//		}
 
 			if (!found) {
 				PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
@@ -259,6 +241,13 @@ public class GameServer implements GameServerMBean {
 					}
 					batch.parallelStream().forEach(playerData -> {
 						try {
+							if (playerData.getHead() == 0) {
+								Player player = new Player(playerData);
+								PlayerManager.getInstance().initAdd(player);
+
+								PlayerHelper.initPlayerData(player).compose(PlayerHelper::saveSimplePlayer);
+
+							}
 							Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
 							Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
 							PlayerHelper.saveSimplePlayerToRedisSync(player);
@@ -276,6 +265,45 @@ public class GameServer implements GameServerMBean {
 					});
 					offset += batchSize;
 				}
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private void deleteErrorPlayers() {
+		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.GAME_SERVER_LOCK.name());
+		if (lock == null) {
+			return;
+		}
+		try {
+			PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
+			int batchSize = 100;
+			int offset = 0;
+
+			while (true) {
+				List<PlayerData> batch = mapper.getBatch(offset, batchSize);
+				if (batch.isEmpty()) {
+					break;
+				}
+				batch.parallelStream().forEach(playerData -> {
+					try {
+						Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
+						Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+						if (playerData.getHead() == 0) {
+							PlayerNameManager.getInstance().removeName(playerData.getName());
+							RedisUtil.delete(CacheType.PLAYER_SIMPLE.key(playerData.getPlayerId()));
+						}
+						PlayerHelper.clearPlayer(player.getPlayerId());
+					} catch (Exception e) {
+						LoggerType.Stdout.logger
+								.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+						ServerContext.getInstance().handleStartFail(e);
+					}
+				});
+				offset += batchSize;
 			}
 		} catch (Exception e) {
 			throw e;
