@@ -1064,8 +1064,8 @@ public class PlayerHandler extends BaseHandler {
 //		playerData.setImage(Rnd.randomOne(HeadBoxManager.instance().list()).ID);
 		playerData.setRegion(AddressUtil.getCityInfo(client.getIp()));
 		playerData.setLoginDate(DateUtil.getStringDate());
-		playerData.setVipExpTotal(0);
-		playerData.setVipLevel(1); // 好感度默认1级
+		playerData.setVipExpTotal(0);// 废弃待删除
+		playerData.setVipLevel(1); // 废弃待删除
 		playerData.setRefreshDay(DateUtil.getDay(0));
 		playerData.setRefreshFiveDay(DateUtil.getDay(5));
 		playerData.setRefreshWeek(DateUtil.getWeek());
@@ -1074,7 +1074,6 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setModules("[]");
 
 		ObjUtil.setDefaultValue(playerData);
-
 		/*	
 		// 这里先不插入数据库，等完全初始化之后后再插入,防止初始化失败，造成数据不一致
 		Promise<PlayerData> promise = Promise.promise();

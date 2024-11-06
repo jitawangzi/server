@@ -88,6 +88,7 @@ public final class Config {
 //	public static boolean isTest;
 
 	public static int[] modulesDisabled;
+	public static int[] protocolsDisabled;
 	
 	/** 微信发货消息推送相关参数 */
 	public static String  wechat_push_token;
@@ -151,6 +152,7 @@ public final class Config {
 			remoteCallTimeOut = Integer.parseInt(initialProp.getProperty("remoteCallTimeOut", "5"));
 //			isTest = initialProp.getBooleanProperty("isTest", false);
 			String[] modules = initialProp.getArrayProperty("modulesDisabled", ",", new String[] {});
+			String[] protocols = initialProp.getArrayProperty("protocolsDisabled", ",", new String[] {});
 			
 			wechat_push_token = initialProp.getProperty("wechat_push_token", "");
 			wechat_push_EncodingAESKey = initialProp.getProperty("wechat_push_EncodingAESKey", "");
@@ -173,6 +175,15 @@ public final class Config {
 					String parse = modules[i].trim().toLowerCase().replaceAll("0x", "");
 					if (parse.length() > 0) {
 						modulesDisabled[i] = Integer.parseInt(parse, 16);
+					}
+				}
+			}
+			if (protocols.length > 0) {
+				protocolsDisabled = new int[protocols.length];
+				for (int i = 0; i < protocols.length; i++) {
+					String parse = modules[i].trim().toLowerCase().replaceAll("0x", "");
+					if (parse.length() > 0) {
+						protocolsDisabled[i] = Integer.parseInt(parse, 16);
 					}
 				}
 			}
@@ -280,5 +291,17 @@ public final class Config {
 			}
 		}
 		return false ; 
+	}
+
+	public static boolean isProtocolDisabled(int reqMsgId) {
+		if (protocolsDisabled == null || protocolsDisabled.length == 0) {
+			return false;
+		}
+		for (int i = 0; i < protocolsDisabled.length; i++) {
+			if (protocolsDisabled[i] == reqMsgId) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

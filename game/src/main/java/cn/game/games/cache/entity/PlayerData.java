@@ -633,7 +633,7 @@ public class PlayerData implements Serializable, DbEntity {
 
 	/** 是否是新注册的玩家 */
 	@JsonIgnore
-	private boolean isNew;
+	private transient boolean isNew;
 	public boolean isNew() {
 		return isNew;
 	}

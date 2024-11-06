@@ -1262,7 +1262,6 @@ public class PlayerHelper {
 
 		if (player.getData().isNew()) {
 			// 初始的资源
-			System.out.println(1 / 0);
 			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 			PlayerHelper.initNewPlayerData(player);
 		}

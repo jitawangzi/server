@@ -35,7 +35,11 @@ public class DispatcherImpl implements Dispatcher {
 
 		int module = protocol.getMsgID() >> 24;
 		if (Config.isModuleDisabled(module)) {
-			client.sendProtocol(PlayerErrorPush_01000099.newBuilder().setError("该功能暂不可用").build(), ErrorMsgEnum.unknown.getId());
+			client.sendProtocol(PlayerErrorPush_01000099.newBuilder().setError("该功能暂不可用").build(), ErrorMsgEnum.module_disabled.getId());
+			return;
+		}
+		if (Config.isProtocolDisabled(protocol.getMsgID())) {
+			client.sendProtocol(PlayerErrorPush_01000099.newBuilder().setError("该功能暂不可用").build(), ErrorMsgEnum.module_disabled.getId());
 			return;
 		}
 		Handler handler = MODULE_HANDLERS.get(module);
