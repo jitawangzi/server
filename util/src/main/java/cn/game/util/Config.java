@@ -151,9 +151,9 @@ public final class Config {
 
 			remoteCallTimeOut = Integer.parseInt(initialProp.getProperty("remoteCallTimeOut", "5"));
 //			isTest = initialProp.getBooleanProperty("isTest", false);
-			String[] modules = initialProp.getArrayProperty("modulesDisabled", ",", new String[] {});
-			String[] protocols = initialProp.getArrayProperty("protocolsDisabled", ",", new String[] {});
-			
+			modulesDisabled = StrUtil.toIntArray(initialProp.getProperty("modulesDisabled", "").trim(), 16);
+			protocolsDisabled = StrUtil.toIntArray(initialProp.getProperty("protocolsDisabled", "").trim(), 16);
+
 			wechat_push_token = initialProp.getProperty("wechat_push_token", "");
 			wechat_push_EncodingAESKey = initialProp.getProperty("wechat_push_EncodingAESKey", "");
 			wechat_appid = initialProp.getProperty("wechat_appid", "");
@@ -169,24 +169,6 @@ public final class Config {
 
 			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
 
-			if (modules.length > 0) {
-				modulesDisabled = new int[modules.length];
-				for (int i = 0; i < modules.length; i++) {
-					String parse = modules[i].trim().toLowerCase().replaceAll("0x", "");
-					if (parse.length() > 0) {
-						modulesDisabled[i] = Integer.parseInt(parse, 16);
-					}
-				}
-			}
-			if (protocols.length > 0) {
-				protocolsDisabled = new int[protocols.length];
-				for (int i = 0; i < protocols.length; i++) {
-					String parse = modules[i].trim().toLowerCase().replaceAll("0x", "");
-					if (parse.length() > 0) {
-						protocolsDisabled[i] = Integer.parseInt(parse, 16);
-					}
-				}
-			}
 			initialProp.addChangeListener(new ConfigChangeListener() {
 				@Override
 				public void onChange(ConfigChangeEvent changeEvent) {

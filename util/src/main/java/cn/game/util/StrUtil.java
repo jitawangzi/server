@@ -34,13 +34,18 @@ public class StrUtil {
 		}
 		return list;
 	}
-	public static int[] toArray(String string) {
+
+	public static int[] toIntArray(String string) {
+		return toIntArray(string, 10);
+	}
+
+	public static int[] toIntArray(String string, int radix) {
 		int[] ret = null;
 		if (string != null && string.length() > 0) {
 			String[] split = string.split(",");
 			ret = new int[split.length];
 			for (int i = 0; i < split.length; i++) {
-				ret[i] = Integer.parseInt(split[i]);
+				ret[i] = Integer.parseInt(split[i], radix);
 			}
 		}
 		return ret == null ? new int[] {} : ret;
