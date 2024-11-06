@@ -416,4 +416,46 @@ public class VxHolder {
 	public static <T> Future<T> toVertxFuture(CompletionStage<T> future) {
 		return Future.fromCompletionStage(future);
 	}
+
+	/**
+	* 执行带超时的阻塞操作
+	* @param blockingHandler 阻塞操作的处理器
+	* @param timeoutMs 超时时间(毫秒)
+	* @param ordered 是否按顺序执行
+	* @return 返回Future
+	*/
+	public static <T> Future<T> executeBlockingWithTimeout(Handler<Promise<T>> blockingHandler, long timeoutMs,
+			boolean ordered) {
+
+		Promise<T> promise = Promise.promise();
+
+		// 执行阻塞操作
+		Future<T> executionFuture = vertx.executeBlocking(blockingHandler, ordered);
+
+		// 设置超时定时器
+		long timerId = vertx.setTimer(timeoutMs, id -> {
+			if (!promise.future().isComplete()) {
+				promise.fail(new TimeoutException("Operation timed out after " + timeoutMs + " ms"));
+			}
+		});
+
+		// 处理执行结果
+		executionFuture.onComplete(ar -> {
+			vertx.cancelTimer(timerId); // 取消定时器
+			if (ar.succeeded()) {
+				promise.complete(ar.result());
+			} else {
+				promise.fail(ar.cause());
+			}
+		});
+
+		return promise.future();
+	}
+
+	/**
+	 * 使用默认30秒超时的阻塞操作
+	 */
+	public static <T> Future<T> executeBlockingWithTimeout(Handler<Promise<T>> blockingHandler, boolean ordered) {
+		return executeBlockingWithTimeout(blockingHandler, 30000, ordered);
+	}
 }

@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import cn.game.util.SpringContextLoader;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 /**    
  * 一些数据库操作的方便封装
@@ -147,41 +145,16 @@ public class DAO {
 //
 //			}
 //		}
-		Promise<@Nullable T> promise = Promise.promise();
-		Future<@Nullable T> executionFuture = VxHolder.vertx.executeBlocking(blockingPromise -> {
+		return VxHolder.executeBlockingWithTimeout(promise -> {
 			Object result;
 			try {
 				result = invoke(mapperClass, method, args);
-				blockingPromise.complete((T) result);
+				promise.complete((T) result);
 			} catch (Throwable e) {
-				blockingPromise.fail(e);
+				promise.fail(e);
 				log.error("db execute error", e);
 			}
 		}, false);
-
-		// 设置30秒的超时定时器
-		long timerId = VxHolder.vertx.setTimer(30000, id -> {
-			if (!promise.future().isComplete()) {
-				promise.fail(new TimeoutException("Operation timed out after 30 seconds"));
-			}
-		});
-
-		executionFuture.onComplete(ar -> {
-			VxHolder.vertx.cancelTimer(timerId); // 取消定时器
-			if (ar.succeeded()) {
-				promise.complete(ar.result());
-			} else {
-				promise.fail(ar.cause());
-			}
-		});
-
-		return promise.future().recover(throwable -> {
-			if (throwable instanceof TimeoutException) {
-				log.error("db operation timed out after 30 seconds, mapperClass:{}, method:{}", mapperClass, method);
-				return Future.failedFuture(new RuntimeException("db operation timed out"));
-			}
-			return Future.failedFuture(throwable);
-		});
 	}
 
 	public static Object invoke(Class<?> mapperClass, String method, Object... args) {
