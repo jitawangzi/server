@@ -185,6 +185,9 @@ public class PlayerNameManager {
 		
 		return set.removeAsync(name).thenCompose(r -> {
 			return map.removeAsync(name);
+		}).exceptionally(t -> {
+			log.error("removeName: " + name + "error", t);
+			return 0L;
 		});
 	}
 

@@ -14,7 +14,8 @@ import cn.game.core.task.SchedulerService;
  * 先使用SchedulerService执行重试任务
  */
 public class AsyncRetry {
-
+	private static final Duration delay = Duration.ofSeconds(5);
+	private static RetryConfig defaultConfig = new RetryConfig.Builder().maxAttempts(3).delay(delay).build();
 	/**
 	 * 执行异步重试操作
 	 * @param operation 要重试的操作
@@ -24,6 +25,17 @@ public class AsyncRetry {
 	public static <T> CompletableFuture<AttemptResult<T>> execute(Function<Integer, CompletionStage<T>> operation, RetryConfig config) {
 
 		return executeWithRetryInternal(operation, config, 0);
+	}
+
+	/** 
+	 * 默认带间隔时间的重试操作
+	 * @param <T>
+	 * @param operation
+	 * @return
+	 */
+	public static <T> CompletableFuture<AttemptResult<T>> executeWithDelay(Function<Integer, CompletionStage<T>> operation) {
+
+		return executeWithRetryInternal(operation, defaultConfig, 0);
 	}
 
 	/** 
