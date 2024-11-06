@@ -1,9 +1,5 @@
 package cn.game.login;
 
-import cn.game.core.task.TaskManager;
-import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
-import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
-import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +15,9 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.login.mapper.UserMapper;
+import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
+import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
+import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.util.Config;
 import cn.game.util.MailUtil;
@@ -164,6 +163,7 @@ public class LoginServer {
 
 	public void shutdown() {
 		log.info("Login Server Shutdown...");
+		ServerContext.getInstance().shutdown();
 		SpringContextLoader.getContext().close();
 		log.info("Login Server Shutdown success...");
 	}
