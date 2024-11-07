@@ -17,7 +17,7 @@ public class GateServer {
 //		LogbackConfig.init(true, "res/config/logback-gatewayServer.xml");
 		log.info("正在启动网关服。。");
 		
-		SpringContextLoader.main(args);
+		SpringContextLoader.loadWithFile(args);
 		
 		log.info("网关服启动成功");
 

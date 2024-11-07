@@ -239,7 +239,7 @@ public class ServerTestContextJiJjia {
 
 		EnvConfig.init(initialProp);
 
-		SpringContextLoader.main(new String[] { args });
+		SpringContextLoader.loadWithFile(new String[] { args });
 
 		init = true;
 		return true;

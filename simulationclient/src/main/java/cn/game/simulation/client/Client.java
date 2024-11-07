@@ -436,7 +436,7 @@ public class Client extends AbstractNetClient {
 
 	public static void main(String args[]) throws Exception {
 
-		SpringContextLoader.main(args);
+		SpringContextLoader.loadWithFile(args);
 
 		Client client = new Client();
 		client.connect("localhost", 7011, null);

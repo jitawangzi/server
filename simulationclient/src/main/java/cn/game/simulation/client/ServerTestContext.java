@@ -339,7 +339,7 @@ public class ServerTestContext {
 //		LogbackConfig.init(initLogback, logbackFile);
 		readEnv(initialProp);
 
-		SpringContextLoader.main(new String[] { args });
+		SpringContextLoader.loadWithFile(new String[] { args });
 
 		init = true;
 		return true;

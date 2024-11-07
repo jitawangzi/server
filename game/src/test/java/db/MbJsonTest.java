@@ -19,7 +19,7 @@ public class MbJsonTest {
 	static JsonTestMapper mapper;
 
 	public static void main(String[] args) throws Exception {
-		SpringContextLoader.main(new String[] { "src/main/resources/applicationContext-dataserver.xml",
+		SpringContextLoader.loadWithFile(new String[] { "src/main/resources/applicationContext-dataserver.xml",
 				"src/main/resources/applicationContext-gameserver.xml" });
 		mapper = SpringContextLoader.getContext().getBean(JsonTestMapper.class);
 //		addToArray();

@@ -7,14 +7,16 @@ import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.ConfigService;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 
-/**    
- * 使用Appllo中的配置来初始化Spring
- * 2024年11月7日 14:29:42
+/**
+ * 初始化spring
+ * 
+ * 2021年11月9日 下午5:42:23
  * @author SYQ
  */
-public class SpringApolloLoader extends ApolloLoader {
+@Deprecated
+public class LocalFileSpringApolloLoader extends ApolloLoader {
 
-	private static Logger logger = LoggerFactory.getLogger(SpringApolloLoader.class);
+	private static Logger logger = LoggerFactory.getLogger(LocalFileSpringApolloLoader.class);
 	private String fileName;
 
 	@Override
@@ -23,14 +25,18 @@ public class SpringApolloLoader extends ApolloLoader {
 		if (args == null) { 
 			throw new IllegalArgumentException("spring 配置文件没有指定"); 
 		}
-		String[] contents = new String[args.length];
 		for (int i = 0; i < args.length; i++) {
-			ConfigFile configFile = ConfigService.getConfigFile(args[i].substring(0, args[i].indexOf(".")), ConfigFileFormat.XML);
+			fileName = args[i];
+			// 先把配置文件缓存到本地
+			ConfigFile configFile = ConfigService.getConfigFile(fileName.substring(0, fileName.indexOf(".")), ConfigFileFormat.XML);
 			String content = configFile.getContent();
 			logger.debug(content);
-			contents[i] = content;
+			String pathName = getPathName();
+			String xmlPath = prop2Xml(pathName);
+			args[i] = xmlPath; // 转绝对路径
 		}
-		SpringContextLoader.loadWithContent(contents);
+		// 通过本地文件初始化spring
+		SpringContextLoader.loadWithFile(args);
 	}
 
 	@Override
