@@ -28,6 +28,11 @@ public class SpringContextLoader extends ThreadGroup
 		super("SpringContextLoader");
 	}
 
+	/** 
+	 * 使用xml文件初始化
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void loadWithFile(final String[] args) throws Exception
 	{
 		Runnable addStarter = new Runnable()
@@ -78,6 +83,11 @@ public class SpringContextLoader extends ThreadGroup
 		log.info("SPRING INIT COMPLETE. USE XML FILE ");
 	}
 
+	/** 
+	 * 使用spring配置文件内容初始化
+	 * @param xmlContent
+	 * @throws Exception
+	 */
 	public static void loadWithContent(String... xmlContent) throws Exception {
 		Runnable addStarter = new Runnable() {
 			@Override
@@ -137,7 +147,7 @@ public class SpringContextLoader extends ThreadGroup
 	}
 
 	/**
-	 * 获取Spring的配置文件，应用加载上下文对象
+	 * 获取Spring容器上下文对象
 	 * 
 	 * @return 上下文对象
 	 */

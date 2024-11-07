@@ -5,6 +5,8 @@ import java.lang.management.ManagementFactory;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.tools.attach.VirtualMachine;
 
@@ -17,8 +19,10 @@ import cn.game.util.log.LoggerType;
 import cn.game.util.reflect.ClassHelper;
 
 public class ServerContext {
+	private static final Logger log = LoggerFactory.getLogger(ServerContext.class);
+
 	private static final ServerContext instance = new ServerContext();
-	private static final String serverKey = "server.run.mode";
+	public static final String SERVER_RUN_MODE = "server.run.mode";
 	private boolean pressureDev = Boolean.getBoolean("pressureDev");
 	private RunMode runMode = RunMode.PRODUCTION;
 	private RLock lock;
@@ -66,9 +70,9 @@ public class ServerContext {
 	}
 
 	private void setRunMode() {
-		String mode = System.getProperty(serverKey);
+		String mode = System.getProperty(SERVER_RUN_MODE);
 		if (mode == null) {
-			mode = System.getenv(serverKey);
+			mode = System.getenv(SERVER_RUN_MODE);
 		}
 		if (mode != null) {
 			this.runMode = RunMode.valueOf(mode.toUpperCase());
@@ -103,7 +107,7 @@ public class ServerContext {
 		try {
 			MailUtil.reportException(serverType.name() + "服务器【 " + serverId + " 】启动失败", ExceptionUtils.getFullStackTrace(e));
 		} catch (Exception e1) {
-			System.err.println("发送邮件失败," + e1.getMessage());
+			log.error("发送邮件失败", e1);
 		}
 		e.printStackTrace();
 		System.exit(1);

@@ -3,7 +3,7 @@ import java.nio.file.Paths;
 
 import io.vertx.core.Vertx;
 
-public class GG2 {
+public class GT2 {
 
 
 	public static void main(String[] args) throws Exception {

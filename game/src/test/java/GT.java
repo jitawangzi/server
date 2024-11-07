@@ -12,7 +12,7 @@ import com.google.common.io.Files;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.util.Rnd;
 
-public class GG {
+public class GT {
 	public static int x = 0;
 	public static long firstTime = System.currentTimeMillis();
 

@@ -8,13 +8,13 @@ import com.ctrip.framework.apollo.ConfigService;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 
 /**
- * 初始化spring
+ * 初始化spring,将 apollo中的配置文件内容转换为本地的spring的配置文件并加载
  * 
  * 2021年11月9日 下午5:42:23
  * @author SYQ
  */
 @Deprecated
-public class LocalFileSpringApolloLoader extends ApolloLoader {
+public class LocalFileSpringApolloLoader extends SpringApolloLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(LocalFileSpringApolloLoader.class);
 	private String fileName;

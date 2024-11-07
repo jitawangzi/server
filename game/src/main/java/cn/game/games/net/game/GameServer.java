@@ -68,6 +68,7 @@ import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.ZkHelper;
+import cn.game.util.db.BatchQueryUtil;
 import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
@@ -228,53 +229,24 @@ public class GameServer implements GameServerMBean {
 			if (keyStream.count() > 0) {
 				found = true;
 			}
-//			for (String key : keys.getKeysByPattern(CacheType.PLAYER_SIMPLE.name() + "*")) {
-//			found = true;
-//			break;
-//		}
-//		if (!found) {
-//			// 重新初始化PLAYER_SIMPLE
-//			PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-//			try (Cursor<PlayerData> cursor = mapper.streamAll()) {
-//				for (PlayerData playerData : cursor) {
-//					Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-//					Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
-//					PlayerHelper.saveSimplePlayerToRedisSync(player);
-//				}
-//			} catch (Exception e) {
-//				SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
-//				ServerContext.getInstance().handleStartFail(e);
-//			}
-//		}
 			if (!found) {
 				PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-				int batchSize = 100;
-				int offset = 0;
+				BatchQueryUtil.processBatch((offset, limit) -> mapper.getBatch(offset, limit), playerData -> {
+					try {
+						Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
+						Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+						PlayerHelper.saveSimplePlayerToRedisSync(player);
 
-				while (true) {
-					List<PlayerData> batch = mapper.getBatch(offset, batchSize);
-					if (batch.isEmpty()) {
-						break;
+						// 初始化名字，名字--id
+						PlayerNameManager.getInstance().addExistingUsername(playerData.getName());
+						PlayerNameManager.getInstance().saveName2IdSync(playerData.getName(), playerData.getPlayerId());
+
+						PlayerHelper.clearPlayer(player.getPlayerId());
+					} catch (Exception e) {
+						LoggerType.Stdout.logger
+								.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
 					}
-					batch.parallelStream().forEach(playerData -> {
-						try {
-							Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-							Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
-							PlayerHelper.saveSimplePlayerToRedisSync(player);
-
-							// 初始化名字，名字--id
-							PlayerNameManager.getInstance().addExistingUsername(playerData.getName());
-							PlayerNameManager.getInstance().saveName2IdSync(playerData.getName(), playerData.getPlayerId());
-
-							PlayerHelper.clearPlayer(player.getPlayerId());
-						} catch (Exception e) {
-							LoggerType.Stdout.logger
-									.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
-							ServerContext.getInstance().handleStartFail(e);
-						}
-					});
-					offset += batchSize;
-				}
+				});
 			}
 		} catch (Exception e) {
 			throw e;

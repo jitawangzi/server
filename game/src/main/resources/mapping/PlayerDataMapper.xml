@@ -751,7 +751,7 @@
     )
   </update>
   
-  <select id="streamAll" resultMap="ResultMapWithBLOBs">
+  <select id="streamAll" resultMap="ResultMapWithBLOBs" fetchSize="100">
     SELECT * FROM t_player_data
 </select>
   <select id="getBatch" resultMap="ResultMapWithBLOBs">
