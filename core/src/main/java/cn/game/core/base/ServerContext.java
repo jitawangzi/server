@@ -93,9 +93,7 @@ public class ServerContext {
 	 */
 	public void handleStartFail(Throwable e) {
 		try {
-			MailUtil
-					.reportException(serverType.name() + "服务器【 " + serverId + " 】启动失败",
-							ExceptionUtils.getFullStackTrace(e));
+			MailUtil.reportException(serverType.name() + "服务器【 " + serverId + " 】启动失败", ExceptionUtils.getFullStackTrace(e));
 		} catch (Exception e1) {
 			System.err.println("发送邮件失败," + e1.getMessage());
 		}
