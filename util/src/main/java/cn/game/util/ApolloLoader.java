@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -23,7 +25,24 @@ public abstract class ApolloLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(ApolloLoader.class);
 
-	protected static String appId = System.getProperty("app.id");
+	protected static String appId = System.getProperty("app.id", System.getenv("APP_ID"));
+	static {
+		if (appId == null) {
+			Properties properties = new Properties();
+			// 使用 ClassLoader 加载文件
+			try (InputStream inputStream = ApolloLoader.class.getClassLoader().getResourceAsStream("META-INF/app.properties")) {
+				if (inputStream == null) {
+					throw new IOException(" unable to find META-INF/app.properties");
+				}
+				// 加载属性
+				properties.load(inputStream);
+				appId = properties.getProperty("app.id");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 
 	/**
 	 * 载入某种配置
@@ -71,7 +90,7 @@ public abstract class ApolloLoader {
 			pathName = "/opt/data/" + appId + "/config-cache/";
 		}
 
-		String cluster = "";
+		String cluster = "default";
 		List<String> inputArgs = ManagementFactory.getRuntimeMXBean().getInputArguments();
 		for (String in : inputArgs) {
 			if (in.contains("Dapollo") && in.contains("cluster")) {
@@ -117,7 +136,7 @@ public abstract class ApolloLoader {
 		if (!file.exists()) {
 			file.createNewFile();
 		} else {
-			//先删除再重新创建不然会报错
+			// 先删除再重新创建不然会报错
 			file.delete();
 			file.createNewFile();
 		}

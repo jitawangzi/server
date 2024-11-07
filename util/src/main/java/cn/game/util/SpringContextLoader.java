@@ -70,7 +70,7 @@ public class SpringContextLoader extends ThreadGroup
 			list.add("file:" + (isWin ? "///" : "") + args[i]);
 		}
 		appContext = new FileSystemXmlApplicationContext(list.toArray(new String[0]));
-		log.info("SERVER START COMPLETE. ");
+		log.info("SPRING INIT COMPLETE. ");
 	}
 
 	/**

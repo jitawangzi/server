@@ -228,7 +228,24 @@ public class GameServer implements GameServerMBean {
 			if (keyStream.count() > 0) {
 				found = true;
 			}
-
+//			for (String key : keys.getKeysByPattern(CacheType.PLAYER_SIMPLE.name() + "*")) {
+//			found = true;
+//			break;
+//		}
+//		if (!found) {
+//			// 重新初始化PLAYER_SIMPLE
+//			PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
+//			try (Cursor<PlayerData> cursor = mapper.streamAll()) {
+//				for (PlayerData playerData : cursor) {
+//					Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
+//					Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+//					PlayerHelper.saveSimplePlayerToRedisSync(player);
+//				}
+//			} catch (Exception e) {
+//				SystemLogger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+//				ServerContext.getInstance().handleStartFail(e);
+//			}
+//		}
 			if (!found) {
 				PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
 				int batchSize = 100;
@@ -241,13 +258,6 @@ public class GameServer implements GameServerMBean {
 					}
 					batch.parallelStream().forEach(playerData -> {
 						try {
-							if (playerData.getHead() == 0) {
-								Player player = new Player(playerData);
-								PlayerManager.getInstance().initAdd(player);
-
-								PlayerHelper.initPlayerData(player).compose(PlayerHelper::saveSimplePlayer);
-
-							}
 							Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
 							Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
 							PlayerHelper.saveSimplePlayerToRedisSync(player);
