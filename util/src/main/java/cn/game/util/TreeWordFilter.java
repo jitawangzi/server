@@ -14,6 +14,7 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+@Deprecated
 public class TreeWordFilter {
 
 	private static Map<Character, WordTree> wordTrees;

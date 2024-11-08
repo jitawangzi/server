@@ -1,4 +1,4 @@
-package cn.game.core.util;
+package cn.game.core.exception;
 
 /**    
  * 逻辑异常，一般是服务器主动抛出的，设置错误码，代表某种错误。 
