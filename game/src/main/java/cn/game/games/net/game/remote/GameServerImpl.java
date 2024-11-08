@@ -121,9 +121,4 @@ public class GameServerImpl implements GameServerInterface {
 
 	}
 
-	@Override
-	public Object invoke(String methodName, Object... args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
