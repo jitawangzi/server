@@ -2,8 +2,9 @@ package cn.game.login.mapper;
 
 import java.util.List;
 
-import cn.game.login.cache.entity.IpWhitelist;
 import org.apache.ibatis.annotations.Param;
+
+import cn.game.login.cache.entity.IpWhitelist;
 
 public interface IpWhitelistMapper {
 
@@ -42,5 +43,13 @@ public interface IpWhitelistMapper {
 	 */
 	int updateByPrimaryKey(IpWhitelist row);
 
-	public List<IpWhitelist> selectAll();
+	/**
+	 * @mbg.generated
+	 */
+	List<IpWhitelist> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<IpWhitelist> getBatch(@Param("offset") int offset, @Param("limit") int limit);
 }

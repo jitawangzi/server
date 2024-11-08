@@ -2,8 +2,9 @@ package cn.game.login.mapper;
 
 import java.util.List;
 
-import cn.game.login.cache.entity.Notice;
 import org.apache.ibatis.annotations.Param;
+
+import cn.game.login.cache.entity.Notice;
 
 public interface NoticeMapper {
 
@@ -47,5 +48,13 @@ public interface NoticeMapper {
 	 */
 	int updateByPrimaryKey(Notice row);
 
-	public List<Notice> selectAll();
+	/**
+	 * @mbg.generated
+	 */
+	List<Notice> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<Notice> getBatch(@Param("offset") int offset, @Param("limit") int limit);
 }

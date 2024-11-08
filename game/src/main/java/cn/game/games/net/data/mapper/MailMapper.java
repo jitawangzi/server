@@ -51,6 +51,16 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
+	List<Mail> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<Mail> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
 	int insertBatch(List<Mail> records);
 
 	/**

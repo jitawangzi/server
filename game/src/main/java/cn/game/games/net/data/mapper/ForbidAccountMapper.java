@@ -46,6 +46,16 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
+	List<ForbidAccount> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<ForbidAccount> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
 	int insertBatch(List<ForbidAccount> records);
 
 	/**
@@ -58,5 +68,4 @@ public interface ForbidAccountMapper {
 	 */
 	int updateBatch(@Param("recordList") List<ForbidAccount> recordList);
 
-	List<ForbidAccount> selectAll();
 }

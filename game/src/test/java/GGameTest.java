@@ -1,8 +1,9 @@
 import java.io.IOException;
-
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import cn.game.core.base.ServerContext;
+import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -19,14 +20,11 @@ public class GGameTest {
 
 	public static void main(String[] args) throws Exception {
 		initEnv();
-//		GGameTest test = new GGameTest();
-		GGameTest test = SpringContextLoader.getContext().getBean(GGameTest.class);
-		test.runTest();
+		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
+		List<PlayerData> batch = mapper.selectAll();
+		System.err.println(batch.size());
 	}
 
-	@Transactional(readOnly = true)
-	private void runTest() {
-	}
 
 	/** 
 	 * 初始化GameServer运行环境

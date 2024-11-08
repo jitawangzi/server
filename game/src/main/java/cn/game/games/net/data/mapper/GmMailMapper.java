@@ -43,6 +43,14 @@ public interface GmMailMapper {
 	/**
 	 * @mbg.generated
 	 */
+	List<GmMail> selectAll();
+	/**
+	 * @mbg.generated
+	 */
+	List<GmMail> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	/**
+	 * @mbg.generated
+	 */
 	int insertBatch(List<GmMail> records);
 	/**
 	 * @mbg.generated

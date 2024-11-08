@@ -443,8 +443,6 @@ public class PayOrder implements Serializable {
 		this.callback = callback;
 	}
 
-
-
 	@Override
 	public String toString() {
 		return "PayOrder{" +

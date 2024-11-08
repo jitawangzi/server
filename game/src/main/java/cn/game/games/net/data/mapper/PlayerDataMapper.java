@@ -58,6 +58,16 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
+	List<PlayerData> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<PlayerData> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
 	int insertBatch(List<PlayerData> records);
 
 	/**
@@ -69,8 +79,6 @@ public interface PlayerDataMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<PlayerData> recordList);
-
-	List<PlayerData> getBatch(@Param("offset") int offset, @Param("limit") int limit);
 
 	List<Player> selectPlayersByUid(Long uid);
 

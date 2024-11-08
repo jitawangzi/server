@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.apache.ibatis.annotations.Param;
 
 import cn.game.login.cache.entity.User;
+import java.util.List;
 
 public interface UserMapper {
 	/**
@@ -41,6 +42,16 @@ public interface UserMapper {
 	 * @mbg.generated
 	 */
 	int updateByPrimaryKey(User row);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<User> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<User> getBatch(@Param("offset") int offset, @Param("limit") int limit);
 
 	User selectByNameAndChannel(@Param("username") String username, @Param("channel") String channel);
 

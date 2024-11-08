@@ -46,6 +46,16 @@ public interface GmOptMapper {
 	 */
 	int updateByPrimaryKey(GmOpt row);
 
+	/**
+	 * @mbg.generated
+	 */
+	List<GmOpt> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<GmOpt> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+
 	List<GmOpt> selectByPage(@Param("begin") int begin, @Param("end") int end);
 
 	int count();

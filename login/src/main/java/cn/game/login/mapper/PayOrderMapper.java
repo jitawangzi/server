@@ -47,6 +47,16 @@ public interface PayOrderMapper {
 	 */
 	int updateByPrimaryKey(PayOrder row);
 
+	/**
+	 * @mbg.generated
+	 */
+	List<PayOrder> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<PayOrder> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+
 	public List<PayOrder> selectOrderList(
 			@Param("playerId") Long playerId,
             @Param("status") Integer status,

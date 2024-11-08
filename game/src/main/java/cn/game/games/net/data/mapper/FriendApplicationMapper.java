@@ -56,6 +56,16 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
+	List<FriendApplication> selectAll();
+
+	/**
+	 * @mbg.generated
+	 */
+	List<FriendApplication> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
 	int insertBatch(List<FriendApplication> records);
 
 	/**
