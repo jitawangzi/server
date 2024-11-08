@@ -18,6 +18,7 @@ import cn.game.core.task.TaskManager;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.util.MailUtil;
 import cn.game.util.SpringContextLoader;
+import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -35,40 +36,10 @@ public class DataGameServerImpl implements DataGameServerInterface {
 		Object ret = null;
 		long start = System.currentTimeMillis();
 		long start1 = start;
-
 		try {
 			Object mapper = SpringContextLoader.getContext().getBean(mapperClass);
-			if (args == null) {
-				Method m = mapper.getClass().getDeclaredMethod(method);
-				// dbPre = watch.getTime() ;
-				// watch.stop();
-				start1 = System.currentTimeMillis() - start1;
-				ret = m.invoke(mapper);
-			} else {
-				if (args.getClass() == Object[].class) {
-					Object[] objects = (Object[]) args;
-					Class<?>[] cls = new Class[objects.length];
-					for (int i = 0; i < cls.length; i++) {
-						cls[i] = objects[i].getClass();
-					}
-					// TODO 缓存优化
-					Method m = mapper.getClass().getDeclaredMethod(method, cls);
-					// long elapsedMillis = watch.elapsedMillis();
-					// log.debug("反射调用时间: "+elapsedMillis) ;
-					// dbPre = watch.getTime() ;
-					// watch.stop();
-					start1 = System.currentTimeMillis() - start1;
-					ret = m.invoke(mapper, objects);
-
-				} else {
-					Method m = mapper.getClass().getDeclaredMethod(method, args.getClass());
-					// dbPre = watch.getTime() ;
-					start1 = System.currentTimeMillis() - start1;
-					// watch.stop();
-					ret = m.invoke(mapper, args);
-				}
-			}
-
+			Method me = ClassHelper.findMethod(mapper.getClass(), method, args);
+			ret = me.invoke(mapper, args);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("调用mapper:" + mapperClass.getSimpleName() + " 异常Method:" + method + " args:"

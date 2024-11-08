@@ -2,6 +2,7 @@ package cn.game.games.net.data.remote;
 
 import java.util.List;
 
+import cn.game.core.net.remote.RemoteProxy;
 import cn.game.games.net.game.db.DbTask;
 import io.vertx.core.Future;
 
@@ -10,7 +11,7 @@ import io.vertx.core.Future;
  * 2020年11月2日 下午12:55:18
  * @author SYQ
  */
-public interface DataGameServerInterface {
+public interface DataGameServerInterface extends RemoteProxy {
 
 	/**
 	 * 执行数据库操作

@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
@@ -70,7 +69,6 @@ public class VxHolder {
 	public static final DeliveryOptions protobufOptions = new DeliveryOptions().setCodecName(protobufMessageCodec.name());
 	public static final DeliveryOptions customOptions = new DeliveryOptions().setCodecName(customMessageCodec.name());
 	public static final DeliveryOptions defaultOptions = new DeliveryOptions();
-	@Autowired
 	private static List<Verticle> verticles;
 	public static ZookeeperClusterManager zookeeperClusterManager;
 
