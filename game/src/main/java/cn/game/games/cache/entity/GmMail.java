@@ -11,7 +11,7 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private Integer id;
 	/**
-	 * 鍒涘缓鏃堕棿
+	 * 创建时间
 	 * @mbg.generated
 	 */
 	private Date createTime;
@@ -19,34 +19,24 @@ public class GmMail implements Serializable, DbEntity {
 	 * 邮件类型 0 个人邮件 1 全服邮件
 	 * @mbg.generated
 	 */
-	private Integer mailopttype;
-	/**
-	 * 邮件给那些人发送 ; 分割
-	 * @mbg.generated
-	 */
-	private String pids;
+	private Byte mailopttype;
 	/**
 	 * 邮件标题
 	 * @mbg.generated
 	 */
 	private String title;
 	/**
-	 * 邮件内容
-	 * @mbg.generated
-	 */
-	private String context;
-	/**
 	 * 审核标识 0 未审核; 1 已审核
 	 * @mbg.generated
 	 */
 	private Byte optFlag;
 	/**
-	 * 閸忋劍婀囬柇顔绘 閻㈢喐鏅ラ惃鍕磻婵妞傞梻?
+	 * 该类型邮件操作的开始时间
 	 * @mbg.generated
 	 */
 	private String sendStartTimer;
 	/**
-	 * 閸忋劍婀囬柇顔绘閻㈢喐鏅ラ惃鍕波閺夌喐妞傞梻?
+	 * 该类型邮件操作的结束时间
 	 * @mbg.generated
 	 */
 	private String sendEndTimer;
@@ -61,7 +51,7 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private Integer maxLevel;
 	/**
-	 * 閭欢闄勪欢
+	 * 附件
 	 * @mbg.generated
 	 */
 	private String attachment;
@@ -69,7 +59,7 @@ public class GmMail implements Serializable, DbEntity {
 	 * 全服邮件 时间校验方式 0 登录时间 1 注册时间
 	 * @mbg.generated
 	 */
-	private Integer timeCheckType;
+	private Byte timeCheckType;
 	/**
 	 * 包含的服务器id
 	 * @mbg.generated
@@ -80,6 +70,16 @@ public class GmMail implements Serializable, DbEntity {
 	 * @mbg.generated
 	 */
 	private String approvalTimer;
+	/**
+	 * 邮件给那些人发送 ; 分割
+	 * @mbg.generated
+	 */
+	private String pids;
+	/**
+	 * 邮件内容
+	 * @mbg.generated
+	 */
+	private String context;
 	/**
 	 * @mbg.generated
 	 */
@@ -116,29 +116,15 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getMailopttype() {
+	public Byte getMailopttype() {
 		return mailopttype;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setMailopttype(Integer mailopttype) {
+	public void setMailopttype(Byte mailopttype) {
 		this.mailopttype = mailopttype;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public String getPids() {
-		return pids;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setPids(String pids) {
-		this.pids = pids;
 	}
 
 	/**
@@ -153,20 +139,6 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public String getContext() {
-		return context;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setContext(String context) {
-		this.context = context;
 	}
 
 	/**
@@ -256,14 +228,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getTimeCheckType() {
+	public Byte getTimeCheckType() {
 		return timeCheckType;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setTimeCheckType(Integer timeCheckType) {
+	public void setTimeCheckType(Byte timeCheckType) {
 		this.timeCheckType = timeCheckType;
 	}
 
@@ -293,6 +265,34 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	public void setApprovalTimer(String approvalTimer) {
 		this.approvalTimer = approvalTimer;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getPids() {
+		return pids;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setPids(String pids) {
+		this.pids = pids;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getContext() {
+		return context;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setContext(String context) {
+		this.context = context;
 	}
 
 	/**

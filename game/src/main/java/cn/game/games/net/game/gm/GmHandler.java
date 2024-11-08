@@ -117,10 +117,10 @@ public class GmHandler extends BaseHandler {
       gmMail.setMinLevel(req.getLevelStart());
       gmMail.setMaxLevel(req.getLevelEnd());
       gmMail.setOptFlag((byte) 0);
-      gmMail.setTimeCheckType((int) req.getTimeCheckType());
-      gmMail.setMailopttype((int) 1);
+      gmMail.setTimeCheckType((byte) req.getTimeCheckType());
+      gmMail.setMailopttype((byte) 1);
     } else {
-      gmMail.setMailopttype((int) 0);
+      gmMail.setMailopttype((byte) 0);
       gmMail.setPids(req.getPlayerIdsList().toString());
     }
     DAO.insert(gmMail)
