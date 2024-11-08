@@ -16,7 +16,6 @@ import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -60,9 +59,7 @@ import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataRequest_01000200;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataResponse_01000201;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
-import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherResponse_0100000a;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
-import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoResponse_01000008;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017;
@@ -692,14 +689,6 @@ public class PlayerHandler extends BaseHandler {
 	protected void getPlayerBriefInfo(NetClient client, Object message) {
 		PlayerBriefInfoRequest_01000007 request = (PlayerBriefInfoRequest_01000007) message;
 		List<Long> playerIds = ConversionUtil.toLongList(request.getPlayerIdsList());
-
-		TaskManager.getInstance().addWorkerTask(() -> {
-			PlayerBriefInfoResponse_01000008.Builder response = PlayerBriefInfoResponse_01000008.newBuilder();
-			List<SimplePlayer> sPlayerInfos = PlayerManager.getInstance().getAndLoadSimplePlayers(playerIds);
-			// 发送协议
-			response.addAllPlayers(PbBuilder.buildSimplePlayerInfos(sPlayerInfos));
-			client.sendProtocol(response);
-		});
 	}
 
 	protected void getPlayerOtherBriefInfo(NetClient client, Object message) {
@@ -707,18 +696,6 @@ public class PlayerHandler extends BaseHandler {
 		List<String> playerStringIds = request.getPlayerIdsList();
 		List<String> servers = new ArrayList<>(request.getServerIdsList());
 		List<Long> playerIds = ConversionUtil.toLongList(playerStringIds);
-		TaskManager.getInstance().addWorkerTask(() -> {
-			PlayerBriefInfoOtherResponse_0100000a.Builder response = PlayerBriefInfoOtherResponse_0100000a.newBuilder();
-			int error = 0;
-			try {
-				List<SimplePlayer> sPlayerInfos = PlayerManager.getInstance().getAndLoadSimplePlayers(playerIds, servers);
-				response.addAllPlayers(PbBuilder.buildSimplePlayerInfos(sPlayerInfos));
-			} catch (Exception e) {
-				e.printStackTrace();
-				error = ErrorMsgEnum.player_not_found.getId();
-			}
-			client.sendProtocol(response.build(), error);
-		});
 	}
 
 	protected void show(NetClient client, Object message) {

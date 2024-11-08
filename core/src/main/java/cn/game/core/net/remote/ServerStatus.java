@@ -1,4 +1,4 @@
-package cn.game.games.net.game.remote;
+package cn.game.core.net.remote;
 
 import java.io.Serializable;
 

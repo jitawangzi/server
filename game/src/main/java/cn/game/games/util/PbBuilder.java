@@ -12,7 +12,6 @@ import java.util.Map;
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.ForbidAccount;
-import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Member;
 import cn.game.games.cache.entity.Player;
@@ -33,9 +32,7 @@ import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
-import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
-import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
@@ -76,30 +73,6 @@ public class PbBuilder {
 		return list;
 	}
 
-	public static FriendInfo buildFriendInfo(Friend friend) throws Exception {
-
-		FriendInfo.Builder friendBuilder = FriendInfo.newBuilder();
-
-		SimplePlayerInfo simplePlayerInfo = buildSimplePlayerInfo(friend.getFriendId(), friend.getServerId());
-		friendBuilder.setPlayer(simplePlayerInfo);
-
-//		FriendRelationInfo.Builder relationBuilder = FriendRelationInfo.newBuilder();
-//		relationBuilder.setIntimate(friend.getIntimate());
-//		relationBuilder.setIntimateLevel(friend.getIntimateLevel());
-//		relationBuilder.setRelation(friend.getRelation());
-//
-//		friendBuilder.setRelation(relationBuilder.build());
-
-//		FriendGiftInfo.Builder giftBuilder = FriendGiftInfo.newBuilder();
-//		giftBuilder.setGift(friend.getGift());
-//		giftBuilder.setGifted(friend.getGifted());
-//		giftBuilder.setReceive(friend.getReceive());
-//		friendBuilder.setGiftInfo(giftBuilder.build());
-
-		return friendBuilder.build();
-
-	}
-
 	/**
 	 * 根据在线玩家对象构建玩家数据，需要保证参数不能为空
 	 * @param player
@@ -120,58 +93,13 @@ public class PbBuilder {
 		return builder.build();
 
 	}
-
 	
-	public static SimplePlayerInfo buildSimplePlayerInfo(long playerId, String serverId) throws Exception {
-
-		SimplePlayerInfo.Builder builder = SimplePlayerInfo.newBuilder();
-
-		SimplePlayer simplePlayer = PlayerManager.getInstance().getAndLoadSimplePlayer(playerId, serverId);
-
-		if (simplePlayer != null) {
-
-			builder.setId(playerId + "");
-			builder.setLevel(simplePlayer.getLevel());
-			builder.setName(simplePlayer.getName());
-			builder.setOnline(simplePlayer.isOnline());
-			builder.setOfflineTime((int) (simplePlayer.getOfflineTime() / 1000));
-			builder.setHead(simplePlayer.getHead());
-			builder.setHeadFrame(simplePlayer.getHeadFrame());
-			builder.setServerId(serverId);
-		}
-		return builder.build();
-
-	}
 	public static List<SimplePlayerInfo> buildSimplePlayerInfos(List<SimplePlayer> players) {
 		List<SimplePlayerInfo> list = new ArrayList<BaseMsg.SimplePlayerInfo>();
 		for (SimplePlayer simplePlayer : players) {
 			list.add(simplePlayer.toSimplePlayerInfo());
 		}
 		return list;
-	}
-
-	@Deprecated
-	public static SimplePlayerInfo buildSimplePlayerInfo(long playerId) throws Exception {
-		SimplePlayerInfo builder = null;
-
-		if (PlayerManager.getInstance().hasCache(playerId)) {
-			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			builder = buildSimplePlayerInfo(player);
-		} else {
-			SimplePlayer simplePlayer = PlayerManager.getInstance().getAndLoadSimplePlayer(playerId);
-//			builder = buildSimplePlayerInfo(simplePlayer);
-		}
-		return builder;
-
-	}
-
-	public static ItemInfo buildItemInfo(int k, long v) {
-
-		ItemInfo.Builder itemInfo = ItemInfo.newBuilder();
-		itemInfo.setId(k);
-		itemInfo.setCount((int) v);
-		return itemInfo.build();
-
 	}
 
 	public static RewardPush_55000501 buildRewardPush(List<RewardInfo> rewardItems) {
@@ -282,7 +210,7 @@ public class PbBuilder {
 		UnionMsg.MemberInfo.Builder builder = UnionMsg.MemberInfo.newBuilder();
 		builder.setTitle(member.getTitle());
 		builder.setContribution(member.getContribution().intValue());
-		builder.setPlayer(buildSimplePlayerInfo(member.getPlayerId()));
+//		builder.setPlayer(buildSimplePlayerInfo(member.getPlayerId()));
 		return builder.build();
 	}
 	

@@ -1,5 +1,9 @@
 package cn.game.core.net.remote;
 
+import java.util.List;
+
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+
 /**    
  * Game服务器提供给其他服务器调用的远程接口
  * 这里的其他服务器，一般指没有直接依赖关系的两个服务。 
@@ -8,6 +12,15 @@ package cn.game.core.net.remote;
  * @author SYQ
  */
 public interface RemoteGameServerInterface extends RemoteProxy {
-	// 可以定义一些通用方法
-	public boolean addFriend(long playerId, long friendId, String serverId);
+
+	public List<RewardInfo> addResources(long playerId, int id, int value);
+
+	public boolean delResources(long playerId, int id, int value);
+
+	public boolean alive();
+
+	public void shutdown();
+
+	public ServerStatus status();
+
 }

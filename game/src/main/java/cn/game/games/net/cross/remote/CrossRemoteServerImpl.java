@@ -8,75 +8,15 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.games.core.SimplePlayer;
+import cn.game.core.net.remote.ServerStatus;
 import cn.game.games.net.cross.CrossServer;
 import cn.game.games.net.game.remote.GameServerInterface;
-import cn.game.games.net.game.remote.ServerStatus;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.Pair;
 
 
 public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 	
 	private static final Logger	log	= LoggerFactory.getLogger(CrossRemoteServerImpl.class);
-
-	@Override
-	public List<SimplePlayer> getSimplePlayers(List<Long> playerIds, List<String> serverIds) {
-
-		List<SimplePlayer> retList = new ArrayList<SimplePlayer>();
-
-		for (int i = 0; i < serverIds.size(); i++) {
-
-			GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverIds.get(i));
-			try {
-				SimplePlayer simplePlayer = gameServerInterface.getSimplePlayer(playerIds.get(i));
-				if (simplePlayer != null) {
-					retList.add(simplePlayer);
-				} else {
-					log.warn("player not found :  id [{}]  serverId [{}]", playerIds.get(i), serverIds.get(i));
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return retList;
-	}
-
-	@Override
-	public SimplePlayer getSimplePlayer(long playerId, String serverId) throws Exception {
-		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
-		return gameServerInterface.getSimplePlayer(playerId);
-
-	}
-
-	@Override
-	public List<SimplePlayer> getSimplePlayers(List<Pair<Long, String>> players) {
-
-		List<SimplePlayer> retList = new ArrayList<SimplePlayer>();
-
-		for (Pair<Long, String> pair : players) {
-
-			GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(pair.second);
-			try {
-				SimplePlayer simplePlayer = gameServerInterface.getSimplePlayer(pair.first);
-				if (simplePlayer != null) {
-					retList.add(simplePlayer);
-				} else {
-					log.warn("player not found :  id [{}]  serverId [{}]", pair.first, pair.second);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return retList;
-	}
-
-	@Override
-	public SimplePlayer searchFriendPlayer(long playerId, long searchPlayerId, String serverId) throws Exception {
-		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
-		return gameServerInterface.searchFriendPlayer(playerId, searchPlayerId);
-
-	}
 
 	@Override
 	public boolean addFriend(long playerId, long friendId, String serverId) {

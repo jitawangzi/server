@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 
+import cn.game.core.net.remote.ServerStatus;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -15,28 +15,8 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import io.vertx.core.Future;
 
 public class GameServerImpl implements GameServerInterface {
-
-	@Override
-	public SimplePlayer getSimplePlayer(long id) throws Exception {
-		return PlayerManager.getInstance().getAndLoadSimplePlayer(id);
-	}
-
-	@Override
-	public List<SimplePlayer> getSimplePlayers(List<Long> ids) {
-		return PlayerManager.getInstance().getAndLoadSimplePlayers(ids);
-	}
-
-	@Override
-	public SimplePlayer searchFriendPlayer(long playerId, long searchPlayerId) throws Exception {
-
-		if (FriendHelper.isBlack(playerId, searchPlayerId)) { 
-			return null; 
-		}
-		return PlayerManager.getInstance().getAndLoadSimplePlayer(playerId);
-	}
 
 	@Override
 	public boolean addFriend(long playerId, long friendId, String serverId) {
@@ -112,17 +92,6 @@ public class GameServerImpl implements GameServerInterface {
 		
 		MailHelper.sendMailMultiLanguage(playerId, 0, titleId, contentId, (byte) typeId, rewards);
 		return true;
-	}
-
-	@Override
-	public Future<SimplePlayer> getSimplePlayerAsync(long id) {
-		return PlayerManager.getInstance().getSimplePlayerAsync(id);
-	}
-
-	@Override
-	public List<Object> getExploreMap(long playerId) {
-		List<Object> list = new ArrayList<>();
-		return list;
 	}
 
 	@Override
