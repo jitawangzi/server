@@ -75,6 +75,14 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 		}
 		isTodayBattle = false;
 		startBattleId = nextBattleId();
+		// 充值buff刷新次数
+		this.buffRefreshTimes = 0;
+		BattleConfig buffRefreshBattle = BattleManager.instance().getNullable(completeBattleId);
+		while (buffRefreshBattle != null) {
+			this.buffRefreshTimes++;
+			buffRefreshBattle = BattleManager.instance().getNullable(buffRefreshBattle.preBattle);
+		}
+
 		this.randomBuff.clear();
 		this.rewardBattleIds.clear();
 		this.buffIdsMap.clear();
@@ -131,12 +139,6 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 					completeBattleId = preBattle.ID;
 				} else {
 					completeBattleId = prepreBattle.ID;
-				}
-				this.buffRefreshTimes = 0;
-				BattleConfig buffRefreshBattle = BattleManager.instance().getNullable(completeBattleId);
-				while (buffRefreshBattle != null) {
-					this.buffRefreshTimes++;
-					buffRefreshBattle = BattleManager.instance().getNullable(buffRefreshBattle.preBattle);
 				}
 //				this.buffRefreshTimes = this.buffRefreshTimesMax - 2;
 //				if (this.buffRefreshTimes < 0) {
