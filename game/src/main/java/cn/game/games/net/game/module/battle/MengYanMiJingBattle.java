@@ -75,6 +75,14 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 		}
 		isTodayBattle = false;
 		startBattleId = nextBattleId();
+		// 充值buff刷新次数
+		this.buffRefreshTimes = 0;
+		BattleConfig buffRefreshBattle = BattleManager.instance().getNullable(completeBattleId);
+		while (buffRefreshBattle != null) {
+			this.buffRefreshTimes++;
+			buffRefreshBattle = BattleManager.instance().getNullable(buffRefreshBattle.preBattle);
+		}
+
 		this.randomBuff.clear();
 		this.rewardBattleIds.clear();
 		this.buffIdsMap.clear();
@@ -89,23 +97,26 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 		setCanQuick(true);
 	}
 
-	public boolean battleCompleted() {
+	public boolean battleCompleted(boolean win) {
 		isTodayBattle = true;
-		boolean newReward = false;
-		this.completeBattleId = startBattleId;
-		this.randomBuff.clear();
-		startBattleId = nextBattleId();
-		if (completeBattleId > maxBattleId) {
-			maxBattleId = completeBattleId;
-			newReward = true;
-		}
-		BattleConfig next = BattleManager.instance().getNullable(startBattleId);
-		if (next != null) {
-			randomBuff.addAll(BattleHelper.randomBuffs(startBattleId, 2));
-		}
-		this.buffRefreshTimes++;
+		if (win) {
+			boolean newReward = false;
+			this.completeBattleId = startBattleId;
+			this.randomBuff.clear();
+			startBattleId = nextBattleId();
+			if (completeBattleId > maxBattleId) {
+				maxBattleId = completeBattleId;
+				newReward = true;
+			}
+			BattleConfig next = BattleManager.instance().getNullable(startBattleId);
+			if (next != null) {
+				randomBuff.addAll(BattleHelper.randomBuffs(startBattleId, 2));
+			}
+			this.buffRefreshTimes++;
 //		this.buffRefreshTimesMax = buffRefreshTimes;
-		return newReward;
+			return newReward;
+		}
+		return false;
 	}
 
 	private int nextBattleId() {
@@ -131,12 +142,6 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 					completeBattleId = preBattle.ID;
 				} else {
 					completeBattleId = prepreBattle.ID;
-				}
-				this.buffRefreshTimes = 0;
-				BattleConfig buffRefreshBattle = BattleManager.instance().getNullable(completeBattleId);
-				while (buffRefreshBattle != null) {
-					this.buffRefreshTimes++;
-					buffRefreshBattle = BattleManager.instance().getNullable(buffRefreshBattle.preBattle);
 				}
 //				this.buffRefreshTimes = this.buffRefreshTimesMax - 2;
 //				if (this.buffRefreshTimes < 0) {
@@ -248,12 +253,13 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
 
 		if (!request.getWin()) {
+			this.battleCompleted(false);
 			return ResultObject.success();
 		}
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 		int attackingType = chapterModule.getAttackingType();
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
-		boolean newRecord = this.battleCompleted();
+		boolean newRecord = this.battleCompleted(true);
 		if (newRecord) {
 			OpType opType = OpType.MengYanMiJingFirstFinish;
 			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
