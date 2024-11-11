@@ -308,7 +308,7 @@ public class Player  {
 		HashMap<String, BasePlayerModule> modules = null;
 		String modules2 = getData().getModules();
 		if (!StringUtils.isEmpty(modules2) && !"[]".equals(modules2)) {
-			modules = JsonUtil.parseObject(modules2, HashMap.class);
+			modules = JsonUtil.parseObjectWithType(modules2);
 		}
 		initModule(modules);
 	}

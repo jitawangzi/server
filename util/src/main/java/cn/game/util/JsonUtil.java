@@ -3,8 +3,6 @@ package cn.game.util;
 import java.io.IOException;
 import java.util.BitSet;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.MultiKeyMap;
 
@@ -15,6 +13,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -29,7 +28,8 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.google.protobuf.Message;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**    
  * 对jackson的一个封装
@@ -38,15 +38,26 @@ import com.google.protobuf.Message;
  */
 public class JsonUtil {
 	private static ObjectMapper objectMapper = new ObjectMapper();
+	/** 启用类型信息 */
+	private static ObjectMapper objectMapperWithType = new ObjectMapper();
 
 	static {
+		configureMapper(objectMapper);
+		configureMapper(objectMapperWithType);
 
-		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-		objectMapper.disable(SerializationFeature.FAIL_ON_SELF_REFERENCES);
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+		// 启用类型信息
+		PolymorphicTypeValidator ptv = LaissezFaireSubTypeValidator.instance;
+		objectMapperWithType.activateDefaultTyping(ptv, DefaultTyping.NON_FINAL);
+	}
+
+	private static void configureMapper(ObjectMapper mapper) {
+
+		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+		mapper.disable(SerializationFeature.FAIL_ON_SELF_REFERENCES);
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//		mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 		// 忽略不存在的属性
-//		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		SimpleModule module = new SimpleModule();
 		module.addSerializer(BitSet.class, new BitSetSerializer());
@@ -55,20 +66,25 @@ public class JsonUtil {
 		module.addDeserializer(MultiKeyMap.class, new MultiKeyMapDeserializer());
 		module.addSerializer(org.apache.commons.collections4.map.MultiKeyMap.class, new MultiKeyMapSerializer4());
 		module.addDeserializer(org.apache.commons.collections4.map.MultiKeyMap.class, new MultiKeyMapDeserializer4());
-		objectMapper.registerModule(module);
-		objectMapper.registerModule(new GuavaModule()); // 注册 Guava 模块
-		objectMapper.registerModule(new com.hubspot.jackson.datatype.protobuf.ProtobufModule()); // 注册 Guava 模块
-		// 写入类名
-		PolymorphicTypeValidator ptv = LaissezFaireSubTypeValidator.instance;
-		objectMapper.activateDefaultTyping(ptv, DefaultTyping.NON_FINAL);
-		objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker().withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-				.withGetterVisibility(JsonAutoDetect.Visibility.NONE).withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-				.withCreatorVisibility(JsonAutoDetect.Visibility.NONE).withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
+		mapper.registerModule(module);
+		mapper.registerModule(new GuavaModule()); // 注册 Guava 模块
+		mapper.registerModule(new com.hubspot.jackson.datatype.protobuf.ProtobufModule()); // 注册 Guava 模块
+		mapper.setVisibility(objectMapper.getSerializationConfig()
+				.getDefaultVisibilityChecker()
+				.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+				.withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+				.withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+				.withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
+				.withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
 
 	}
 
+	/** 
+	 * 对象转成json字符串，默认不带类型信息的序列化（常用）
+	 * @param value
+	 * @return
+	 */
 	public static String toJsonString(Object value) {
-		// 将 Map 对象序列化成 JSON 字符串
 		try {
 			String json = objectMapper.writeValueAsString(value);
 			return json;
@@ -76,24 +92,72 @@ public class JsonUtil {
 			throw new RuntimeException("json 序列化异常:" + value, e);
 		}
 	}
-	static final Gson gson = new Gson();
 
-	public static String toJsonStr(Object val){
-		return  gson.toJson(val).toString();
+	/** 
+	 * 对象转成json字符串，带有类的类型信息
+	 * 方便反序列化时获取精确类型。 （特殊场景使用）
+	 * @param value
+	 * @return
+	 */
+	public static String toJsonStringWithType(Object value) {
+		try {
+			String json = objectMapperWithType.writeValueAsString(value);
+			return json;
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("json 序列化异常:" + value, e);
+		}
 	}
 
-  public static <T> T parseObject(String value, Class<T> valueType) {
-    try {
-      return objectMapper.readValue(value, valueType);
-    } catch (JsonMappingException e) {
-      throw new RuntimeException("json 反序列化异常:" + value, e);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("json 反序列化异常:" + value, e);
-    }
-}
-public static JsonObject parserJson(String jsonStr) throws Exception {
-	return  gson.fromJson(jsonStr, JsonObject.class);
-}
+	@Deprecated
+	static final Gson gson = new Gson();
+
+	public static String toJsonStr(Object val) {
+		return gson.toJson(val).toString();
+	}
+
+	/** 
+	 * 解析json字符串成对象，需要注意正确的对象类型
+	 * @param <T>
+	 * @param value
+	 * @param valueType
+	 * @return
+	 */
+	public static <T> T parseObject(String value, Class<T> valueType) {
+		try {
+			return objectMapper.readValue(value, valueType);
+		} catch (JsonMappingException e) {
+			throw new RuntimeException("json 反序列化异常:" + value, e);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("json 反序列化异常:" + value, e);
+		}
+	}
+
+	public static <T> T parseObject(String value, TypeReference<T> typeReference) {
+		try {
+			return objectMapper.readValue(value, typeReference);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("json 反序列化异常:" + value, e);
+		}
+	}
+
+	/**
+	 * 反序列化带有类型信息的json字符串
+	 * @param value json字符串
+	 * @return 反序列化后的对象
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T parseObjectWithType(String value) {
+		try {
+			return (T) objectMapperWithType.readValue(value, Object.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("json 反序列化异常:" + value, e);
+		}
+	}
+
+
+	public static JsonObject parserJson(String jsonStr) throws Exception {
+		return gson.fromJson(jsonStr, JsonObject.class);
+	}
 
 	// 自定义 BitSet 序列化器
 	public static class BitSetSerializer extends JsonSerializer<BitSet> {
@@ -103,7 +167,8 @@ public static JsonObject parserJson(String jsonStr) throws Exception {
 		}
 
 		@Override
-		public void serializeWithType(BitSet value, JsonGenerator g, SerializerProvider provider, TypeSerializer typeSer) throws IOException {
+		public void serializeWithType(BitSet value, JsonGenerator g, SerializerProvider provider, TypeSerializer typeSer)
+				throws IOException {
 			serialize(value, g, provider);
 		}
 	}
@@ -115,7 +180,8 @@ public static JsonObject parserJson(String jsonStr) throws Exception {
 			return BitSet.valueOf(p.getBinaryValue());
 		}
 
-		public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer) throws IOException, JacksonException {
+		public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer)
+				throws IOException, JacksonException {
 			return deserialize(p, ctxt);
 		}
 	}
@@ -134,7 +200,8 @@ public static JsonObject parserJson(String jsonStr) throws Exception {
 		}
 
 		@Override
-		public void serializeWithType(MultiKeyMap value, JsonGenerator gen, SerializerProvider provider, TypeSerializer typeSer) throws IOException {
+		public void serializeWithType(MultiKeyMap value, JsonGenerator gen, SerializerProvider provider, TypeSerializer typeSer)
+				throws IOException {
 			serialize(value, gen, provider);
 		}
 	}
@@ -159,7 +226,8 @@ public static JsonObject parserJson(String jsonStr) throws Exception {
 			return multiKeyMap;
 		}
 
-		public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer) throws IOException, JacksonException {
+		public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer)
+				throws IOException, JacksonException {
 			return deserialize(p, ctxt);
 		}
 	}
@@ -167,8 +235,8 @@ public static JsonObject parserJson(String jsonStr) throws Exception {
 	public static class MultiKeyMapSerializer4<K, V> extends JsonSerializer<org.apache.commons.collections4.map.MultiKeyMap<K, V>> {
 
 		@Override
-		public void serialize(org.apache.commons.collections4.map.MultiKeyMap<K, V> value, JsonGenerator gen, SerializerProvider serializers)
-				throws IOException {
+		public void serialize(org.apache.commons.collections4.map.MultiKeyMap<K, V> value, JsonGenerator gen,
+				SerializerProvider serializers) throws IOException {
 			gen.writeStartArray();
 			for (org.apache.commons.collections4.keyvalue.MultiKey<? extends K> key : value.keySet()) {
 				gen.writeObject(key.getKeys());
@@ -178,8 +246,8 @@ public static JsonObject parserJson(String jsonStr) throws Exception {
 		}
 
 		@Override
-		public void serializeWithType(org.apache.commons.collections4.map.MultiKeyMap<K, V> value, JsonGenerator gen, SerializerProvider provider,
-				TypeSerializer typeSer) throws IOException {
+		public void serializeWithType(org.apache.commons.collections4.map.MultiKeyMap<K, V> value, JsonGenerator gen,
+				SerializerProvider provider, TypeSerializer typeSer) throws IOException {
 			serialize(value, gen, provider);
 		}
 	}
@@ -187,7 +255,8 @@ public static JsonObject parserJson(String jsonStr) throws Exception {
 	public static class MultiKeyMapDeserializer4<K, V> extends JsonDeserializer<org.apache.commons.collections4.map.MultiKeyMap<K, V>> {
 
 		@Override
-		public org.apache.commons.collections4.map.MultiKeyMap<K, V> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+		public org.apache.commons.collections4.map.MultiKeyMap<K, V> deserialize(JsonParser p, DeserializationContext ctxt)
+				throws IOException {
 			org.apache.commons.collections4.map.MultiKeyMap<K, V> multiKeyMap = new org.apache.commons.collections4.map.MultiKeyMap<K, V>();
 
 			// 遍历JSON数组中的元素
@@ -198,69 +267,16 @@ public static JsonObject parserJson(String jsonStr) throws Exception {
 				Object value = p.readValueAs(Object.class);
 
 				// 创建 MultiKey 对象并添加到 MultiKeyMap 中
-				org.apache.commons.collections4.keyvalue.MultiKey<? extends K> mKey = new org.apache.commons.collections4.keyvalue.MultiKey(keys);
+				org.apache.commons.collections4.keyvalue.MultiKey<? extends K> mKey = new org.apache.commons.collections4.keyvalue.MultiKey(
+						keys);
 				multiKeyMap.put(mKey, (V) value);
 			}
 			return multiKeyMap;
 		}
 
-		public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer) throws IOException, JacksonException {
+		public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer)
+				throws IOException, JacksonException {
 			return deserialize(p, ctxt);
 		}
 	}
-
-	static class MyProtobufModule1 extends SimpleModule {
-		public MyProtobufModule1() {
-			super("MyProtobufModule1");
-
-	        addSerializer(Message.class, new JsonSerializer<Message>() {
-	            @Override
-	            public void serialize(Message value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-//					gen.writeString(JsonFormat.printer().print(value));
-//	            	pbpro
-//	            	gen.writeNumber(0);
-					gen.writeBinary(value.toByteArray());
-	            }
-	        });
-
-	        addDeserializer(Message.class, new JsonDeserializer<Message>() {
-	            @Override
-	            public Message deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-//				       // 在这里实现将 JSON 反序列化为 Protobuf 对象的逻辑
-					byte[] bytes = p.getBinaryValue();
-//					Message.Builder builder = Message.newBuilder();
-//					builder.mergeFrom(bytes);
-//					return builder.build();
-					return null;
-	            }
-	        });
-	    }
-	}
-
-//	class MyProtobufModule extends SimpleModule {
-
-//		@Override
-//		public void setupModule(SetupContext context) {
-//			context.addSerializer(Message.class, new ProtobufJsonSerializer());
-//			context.addDeserializer(Message.class, new ProtobufJsonDeserializer());
-//		}
-
-//		class ProtobufJsonSerializer extends JsonSerializer<Message> {
-//
-//			@Override
-//			public void serialize(Message value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-//				gen.writeString(JsonFormat.printer().print(value));
-//			}
-//		}
-
-//		class ProtobufJsonDeserializer extends JsonDeserializer<Message> {
-//
-//			@Override
-//			public Message deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-//				Message.Builder builder = ((Message.Builder) ctxt.constructType(ctxt.getContextualType()).newInstance());
-//				JsonFormat.parser().merge(p.readValueAsTree(), builder);
-//				return builder.build();
-//			}
-//		}
-//	}
 }

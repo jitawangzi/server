@@ -1308,7 +1308,7 @@ public class PlayerHelper {
 	public static Future<Player> savePlayerToDb(Player player) {
 		PlayerData data = player.getData();
 		data.beforeSave();
-		data.setModules(JsonUtil.toJsonString(player.getModules()));
+		data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
 
 		Promise<Player> promise = Promise.promise();
 		DAO.execute(PlayerDataMapper.class, MapperConstant.insert, data)
@@ -1493,7 +1493,7 @@ public class PlayerHelper {
 			PlayerData data = player.getData();
 			if (GameServer.getInstance().isSinglePlayerTable()) {
 				data.beforeSave();
-				data.setModules(JsonUtil.toJsonString(player.getModules()));
+				data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
 				List<DbTask> dbTasks = new ArrayList<>(1);
 				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKeyWithBLOBs, data));
 				return DAO.execute(dbTasks);

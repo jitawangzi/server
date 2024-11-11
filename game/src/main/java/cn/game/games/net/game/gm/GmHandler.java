@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import cn.game.games.cache.entity.Player;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +18,7 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.GmMail;
+import cn.game.games.cache.entity.Player;
 import cn.game.games.net.data.mapper.GmMailMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.MailHelper;
@@ -98,7 +98,7 @@ public class GmHandler extends BaseHandler {
     gmMail.setOptFlag((byte)0);
     gmMail.setCreateTime(new Date());
     if (!list.isEmpty()) {
-      gmMail.setAttachment(JsonUtil.toJsonString(list));
+		gmMail.setAttachment(JsonUtil.toJsonStringWithType(list));
     }
     // 全服邮件
     if (req.getPlayerIdsCount() == 0) {

@@ -138,6 +138,7 @@ public class GameServer implements GameServerMBean {
 	}
 
 	public void start(String[] args) throws Exception {
+
 		String serverId = parseGameServerId(args);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
@@ -322,16 +323,16 @@ public class GameServer implements GameServerMBean {
 
 			Player player = null;
 			try {
-				player = JsonUtil.parseObject(json, Player.class);
+				player = JsonUtil.parseObjectWithType(json);
 			} catch (Exception e) {
 				throw new RuntimeException("Player结构有变化，json反序列化失败，修正数据兼容后重试", e); // 反序列化失败，
 			}
-			Files.write(JsonUtil.toJsonString(player), file, Charset.defaultCharset());
+			Files.write(JsonUtil.toJsonStringWithType(player), file, Charset.defaultCharset());
 //			FileUtils.writeStringToFile(file, JsonUtil.toJsonString(player), Charset.defaultCharset());
 		} else {
 			Player player = new Player();
 			player.initModule(null);
-			Files.write(JsonUtil.toJsonString(player), file, Charset.defaultCharset());
+			Files.write(JsonUtil.toJsonStringWithType(player), file, Charset.defaultCharset());
 //			FileUtils.writeStringToFile(file, JsonUtil.toJsonString(player), Charset.defaultCharset());
 		}
 	}
