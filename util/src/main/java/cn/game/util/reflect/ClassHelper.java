@@ -87,7 +87,8 @@ public class ClassHelper {
 	}
 
 	/** 
-	 * 通过方法参数值反射查找Method，通过spring ReflectionUtils 缓存的Method加速查找
+	 * 通过方法参数值反射查找Method
+	 * 对于复杂参数类型支持不够完善，尽量使用参数类型精确查找
 	 * @param clazz
 	 * @param methodName
 	 * @param args 注意是方法参数值

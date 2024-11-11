@@ -27,6 +27,7 @@ public class RpcFactory {
 		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
 		return instance;
 	}
+
 	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, boolean block, String serverId) {
 		Invocation invocation = new Invocation();
 		invocation.setBlock(block);
@@ -37,8 +38,7 @@ public class RpcFactory {
 		return instance;
 	}
 
-	public static <T> T getImplCallback(RpcClient rpcClient, Class<T> rpcInterfaceClass, Consumer<?> callBackTask,
-			String serverId) {
+	public static <T> T getImplCallback(RpcClient rpcClient, Class<T> rpcInterfaceClass, Consumer<?> callBackTask, String serverId) {
 		Invocation invocation = new Invocation();
 		invocation.setRpcClient(rpcClient);
 		invocation.setCallBackTask(callBackTask);
@@ -98,8 +98,7 @@ public class RpcFactory {
 				if (objectMethods.get(mname) != null) {
 					return method.invoke(proxy, args);
 				}
-				return rpcClient
-						.invoke(callType, method.getName(), method.getParameterTypes(), method.getReturnType(), args, callBackTask,
+				return rpcClient.invoke(callType, method.getName(), method.getParameterTypes(), method.getReturnType(), args, callBackTask,
 						block, serverId, serverType);
 
 			} catch (Exception e) {
