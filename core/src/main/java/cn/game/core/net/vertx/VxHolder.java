@@ -254,10 +254,15 @@ public class VxHolder {
 	public static String rpcServiceAddr(String serverId) {
 		return serverId + ".rpc.service";
 	}
-//
+
+	public static String rpcServiceAddr(ServerType serverType) {
+		return serverType.name() + ".rpc.service";
+	}
+
 //	public static String reqServerAddr(String serverId) {
 //		return serverId + ".req";
 //	}
+
 //	public static String subServerAddr(String serverType) {
 //		return serverType + ".sub";
 //	}

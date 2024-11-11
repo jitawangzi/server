@@ -19,8 +19,7 @@ public class ClassHelper {
 		provider.addIncludeFilter(filter);
 
 		Set<Class<? extends T>> subclasses = new HashSet<>();
-		for (org.springframework.beans.factory.config.BeanDefinition candidate : provider
-				.findCandidateComponents(basePackage)) {
+		for (org.springframework.beans.factory.config.BeanDefinition candidate : provider.findCandidateComponents(basePackage)) {
 			try {
 				Class<? extends T> cls = (Class<? extends T>) Class.forName(candidate.getBeanClassName());
 				boolean b = subclasses.add(cls);
@@ -88,22 +87,100 @@ public class ClassHelper {
 	}
 
 	/** 
-	 * 反射查找Method，通过spring ReflectionUtils 缓存的Method加速查找
+	 * 通过方法参数值反射查找Method，通过spring ReflectionUtils 缓存的Method加速查找
 	 * @param clazz
 	 * @param methodName
-	 * @param args
+	 * @param args 注意是方法参数值
 	 * @return
 	 */
-	public static Method findMethod(Class<?> clazz, String methodName, Object... args) {
+	public static Method findMethodByArgs(Class<?> clazz, String methodName, Object... args) {
+		if (args == null) {
+			return ReflectionUtils.findMethod(clazz, methodName);
+		}
 
-		Class<?>[] paramTypes = null;
-		if (args != null) {
-			paramTypes = new Class[args.length];
-			for (int i = 0; i < args.length; i++) {
-				paramTypes[i] = args[i] == null ? null : args[i].getClass();
+		// 1. 先尝试精确匹配
+		Class<?>[] paramTypes = new Class[args.length];
+		for (int i = 0; i < args.length; i++) {
+			if (args[i] == null) {
+				paramTypes[i] = null;
+				continue;
+			}
+			paramTypes[i] = args[i].getClass();
+		}
+
+		Method method = ReflectionUtils.findMethod(clazz, methodName, paramTypes);
+		if (method != null) {
+			return method;
+		}
+
+		// 2. 获取所有同名方法
+		Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
+		for (Method m : methods) {
+			if (!m.getName().equals(methodName)) {
+				continue;
+			}
+
+			Class<?>[] parameterTypes = m.getParameterTypes();
+			if (parameterTypes.length != args.length) {
+				continue;
+			}
+
+			boolean match = true;
+			for (int i = 0; i < parameterTypes.length; i++) {
+				if (args[i] == null) {
+					continue;
+				}
+
+				// 处理基本类型
+				if (parameterTypes[i].isPrimitive()) {
+					if (!isPrimitiveWrapperType(args[i].getClass(), parameterTypes[i])) {
+						match = false;
+						break;
+					}
+				}
+				// 处理继承关系
+				else if (!parameterTypes[i].isAssignableFrom(args[i].getClass())) {
+					match = false;
+					break;
+				}
+			}
+
+			if (match) {
+				return m;
 			}
 		}
+
+		throw new NoSuchMethodError("Method " + methodName + " not found in " + clazz.getName());
+	}
+
+	private static boolean isPrimitiveWrapperType(Class<?> wrapperType, Class<?> primitiveType) {
+		return (primitiveType == int.class && wrapperType == Integer.class) || (primitiveType == long.class && wrapperType == Long.class)
+				|| (primitiveType == double.class && wrapperType == Double.class)
+				|| (primitiveType == float.class && wrapperType == Float.class)
+				|| (primitiveType == boolean.class && wrapperType == Boolean.class)
+				|| (primitiveType == char.class && wrapperType == Character.class)
+				|| (primitiveType == byte.class && wrapperType == Byte.class)
+				|| (primitiveType == short.class && wrapperType == Short.class);
+	}
+
+	/** 
+	 * 反射查找Method，通过spring ReflectionUtils 缓存的Method加速查找
+	 * 通过参数类型精确匹配
+	 * @param clazz
+	 * @param methodName 方法名
+	 * @param paramTypes 方法类型
+	 * @return
+	 */
+	public static Method findMethod(Class<?> clazz, String methodName, Class<?>... paramTypes) {
 		Method method = ReflectionUtils.findMethod(clazz, methodName, paramTypes);
+		if (method == null) {
+			throw new NoSuchMethodError("Method " + methodName + " not found in " + clazz.getName());
+		}
+		return method;
+	}
+
+	public static Method findMethod(Class<?> clazz, String methodName) {
+		Method method = ReflectionUtils.findMethod(clazz, methodName);
 		if (method == null) {
 			throw new NoSuchMethodError("Method " + methodName + " not found in " + clazz.getName());
 		}

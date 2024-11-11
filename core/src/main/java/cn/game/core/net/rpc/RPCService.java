@@ -9,7 +9,7 @@ public interface RPCService<T> {
 
 	void init();
 
-	void start();
+//	void start();
 
 	T getWrappedService();
 

@@ -13,9 +13,7 @@ import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
 import cn.game.util.DateUtil;
 import cn.game.util.SpringContextLoader;
-import io.reactivex.rxjava3.annotations.Nullable;
 import io.vertx.core.Future;
-import io.vertx.redis.client.Response;
 
 @Deprecated
 public class LoginServerImpl implements LoginServerInterface {
@@ -44,12 +42,7 @@ public class LoginServerImpl implements LoginServerInterface {
 	@Override
 	public Future<Long> getUid2(String passportSessionId) {
 		log.info("get uid , passportSessionId[{}]", passportSessionId);
-
-		Future<@Nullable Response> future = CacheManager.getInstance().loadAsync(CacheType.PASSPORT_SESSION, passportSessionId);
-		return future.map(t -> {
-			User user = JSON.parseObject(t.toString(), User.class);
-			return user.getId();
-		});
+		return Future.succeededFuture(666L);
 	}
 
 //	@Override

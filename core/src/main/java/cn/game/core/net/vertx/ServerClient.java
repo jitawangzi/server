@@ -33,7 +33,7 @@ public class ServerClient extends AbstractNetClient {
 			this.message.reply(new ServiceException(500, HelperUtils.generateDebugInfo((Throwable) message).toString()),
 					VxHolder.defaultOptions);
 		} else {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Unsupported message type: " + message.getClass().getName());
 		}
 	}
 

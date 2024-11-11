@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.transport.Result;
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
@@ -48,45 +49,36 @@ public interface RpcClient {
 	/** 
 	 * 发送协议给远程服务器，需要有消息返回
 	 * @param <T>
-	 * @param serverId 远程服务器id
+	 * @param addr 远程地址
 	 * @param message 消息
 	 * @param replyHandler 消息返回时的回调处理器
 	 */
-	public <T> void request(String serverId, T message, Handler<AsyncResult<Message<T>>> replyHandler);
+	public <T> void request(String addr, T message, Handler<AsyncResult<Message<T>>> replyHandler);
 	
 	/** 
 	 * 发送协议给远程服务器，需要有消息返回
 	 * @param <T>
-	 * @param serverId 远程服务器id
+	 * @param addr 远程地址
 	 * @param message 消息
 	 * @return  
 	 */
-	public <T> Future<Message<T>> request(String serverId, T message);
+	public <T> Future<Message<T>> request(String addr, T message);
 
 	/** 
-	 * 发送协议给某类远程服务器，如果某类服务器有多个，则只有一个服务器会受到消息， 需要有消息返回
+	 * 给某地址广播消息
 	 * @param <T>
-	 * @param serverType 远程服务器类型
-	 * @param message 消息
-	 * @return  
-	 */
-	public <T> Future<Message<T>> request(ServerType serverType, T message);
-	
-	/** 
-	 * 给某类服务器广播消息
-	 * @param <T>
-	 * @param serverType
+	 * @param addr
 	 * @param message
 	 */
-	public <T> void broadcast(ServerType serverType, T message);
+	public <T> void broadcast(String addr, T message);
 
 	/** 
-	 * 给指定服务器发送消息，不用返回值。
+	 * 给指定地址发送消息，不用返回值。
 	 * @param <T>
+	 * @param addr
 	 * @param message
-	 * @param serverId
 	 */
-	public <T> void send(String serverId, T message);
+	public <T> void send(String addr, T message);
 
 	/** 
 	 * 发送消息，不用返回值。  某些类型的消息里包含消息的目的地址
@@ -113,6 +105,7 @@ public interface RpcClient {
 			ServerType serverType) {
 
 		byte[] datas = KryoUtils.serialize(command);
+		String targetAddr = serverType == null ? VxHolder.rpcServiceAddr(serverId) : VxHolder.rpcServiceAddr(serverType);
 		// vertx的 Future方式异步
 		if (Future.class.isAssignableFrom(returnType)) {
 			long startLong = System.currentTimeMillis();
@@ -120,7 +113,7 @@ public interface RpcClient {
 				if (serverType == null) {
 					throw new IllegalArgumentException("serverType can not be null when callType is LoadBalancer");
 				}
-				Future<Message<byte[]>> request = request(serverType, datas);
+				Future<Message<byte[]>> request = request(targetAddr, datas);
 				return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult()).onFailure(t -> {
 					log.error(MessageFormat
 									.format("request message to serverType[{0}] failed ,command[{1}]usetime[{2}]", serverType, command,
@@ -131,23 +124,22 @@ public interface RpcClient {
 					throw new IllegalArgumentException("serverType can not be null when callType is Broadcast");
 				}
 				// 广播一般不需要返回值,默认成功
-				broadcast(serverType, datas);
+				broadcast(targetAddr, datas);
 				return Future.succeededFuture();
 			} else if (callType == CallType.PointToPoint) {
 				if (serverId == null) {
 					throw new IllegalArgumentException("serverId can not be null when callType is PointToPoint");
 				}
-				Future<Message<byte[]>> request = request(serverId, datas);
+				Future<Message<byte[]>> request = request(targetAddr, datas);
 				return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult()).onFailure(t -> {
 					log.error(MessageFormat.format("request message to serverId[{0}] failed ,command[{1}]usetime[{2}]", serverId, command,
 							(System.currentTimeMillis() - startLong) / 1000), t);
 				});
 			}
-			
 		}
 		// callBack方式异步。
 		if (callBackTask != null || !sync) {
-			request(serverId, datas, r -> {
+			request(targetAddr, datas, r -> {
 				if (r instanceof Throwable) {
 					log.error("put message to serverId[{}] failed ,command[{}]exception[{}]", serverId, command, r);
 				} else {
@@ -162,7 +154,7 @@ public interface RpcClient {
 		// vertx中一般只允许在worker线程中调用
 		checkAllowSync();
 
-		Future<Message<byte[]>> request = request(serverId, datas);
+		Future<Message<byte[]>> request = request(targetAddr, datas);
 		byte[] result = null;
 		try {
 			// 默认等待5秒

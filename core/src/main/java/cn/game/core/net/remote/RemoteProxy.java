@@ -9,7 +9,7 @@ import cn.game.util.reflect.ClassHelper;
 public interface RemoteProxy {
 	default Object invoke(String methodName, Object... args) {
 		try {
-			Method method = ClassHelper.findMethod(this.getClass(), methodName, args);
+			Method method = ClassHelper.findMethodByArgs(this.getClass(), methodName, args);
 			// 可以调用非public方法
 			ReflectionUtils.makeAccessible(method);
 			return method.invoke(this, args);

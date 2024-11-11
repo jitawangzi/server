@@ -38,7 +38,7 @@ public class DataGameServerImpl implements DataGameServerInterface {
 		long start1 = start;
 		try {
 			Object mapper = SpringContextLoader.getContext().getBean(mapperClass);
-			Method me = ClassHelper.findMethod(mapper.getClass(), method, args);
+			Method me = ClassHelper.findMethodByArgs(mapper.getClass(), method, args);
 			ret = me.invoke(mapper, args);
 		} catch (Exception e) {
 			e.printStackTrace();

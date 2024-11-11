@@ -2,7 +2,6 @@ package cn.game.core.net.rpc;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 
@@ -11,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.transport.Command;
 import cn.game.util.ServerType;
+import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 
@@ -20,14 +20,12 @@ public class RPCServiceImpl<T> implements RPCService<T> {
     protected T wrappedService;
 	public String serverId;
 	public ServerType serverType;
-    protected ConcurrentHashMap<String, Method> methodCache = new ConcurrentHashMap<>();
 	public Vertx vertx;
 
-	public RPCServiceImpl(T wrappedService, String serverId, ServerType serverType, Vertx vertx) {
+	public RPCServiceImpl(T wrappedService, String serverId, ServerType serverType) {
         this.wrappedService = wrappedService;
         this.serverId = serverId;
 		this.serverType = serverType;
-        this.vertx = vertx;
     }
 
     @Override
@@ -40,25 +38,13 @@ public class RPCServiceImpl<T> implements RPCService<T> {
         // 默认实现，可以被子类覆盖
     }
 
-    @Override
-    public void start() {
-        // 默认实现，可以被子类覆盖
-    }
+//    @Override
+//    public void start() {
+//        // 默认实现，可以被子类覆盖
+//    }
 
     public Object invokeWithCache(Command command) throws Throwable {
-        String methodKey = command.getMethodName() + "_" + command.getClassName();
-        Method method = methodCache.computeIfAbsent(methodKey, k -> {
-            try {
-                if (command.getArgs() != null && command.getArgs().length > 0) {
-                    return wrappedService.getClass().getMethod(command.getMethodName(), command.getClazz());
-                } else {
-                    return wrappedService.getClass().getMethod(command.getMethodName());
-                }
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException("Method not found: " + k, e);
-            }
-        });
-
+		Method method = ClassHelper.findMethod(wrappedService.getClass(), command.getMethodName(), command.getParameterType());
         return method.invoke(wrappedService, command.getArgs());
     }
 

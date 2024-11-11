@@ -1,32 +1,35 @@
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
-import cn.game.games.net.game.module.award.Goods;
 import cn.game.util.Rnd;
+import cn.game.util.reflect.ClassHelper;
 
-public class GT {
+public class GTT {
 	public static int x = 0;
 	public static long firstTime = System.currentTimeMillis();
 
-	public static void main(String[] args) throws IOException {
-		List<Goods> list = new ArrayList<Goods>();
-		for (int i = 0; i < 10; i++) {
-			Goods goods = new Goods();
-			goods.setId(i * 100000);
-			goods.setCount(i);
-			list.add(goods);
-		}
-		String jsonString = JSON.toJSONString(list);
-		System.out.println(jsonString);
-		System.out.println(jsonString.length());
+	public static void main(String[] args) throws Exception {
+//		Method method = GTT.class.getDeclaredMethod("test", Integer.class);
+
+		Method method = ClassHelper.findMethod(GTT.class, "test", Integer.class);
+		method.invoke(null, 1);
+	}
+
+	public static void test(Integer c) {
+
+		System.out.println(c);
+	}
+
+	public static void test(int c) {
+		System.out.println("hb");
+		System.out.println(c);
 	}
 	private static void loginCount() throws IOException {
 		List<String> lines22 = Files.readLines(new File("D:/22.txt"), Charset.defaultCharset());

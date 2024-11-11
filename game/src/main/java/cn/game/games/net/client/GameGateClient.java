@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zeromq.ZMsg;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
@@ -13,9 +12,7 @@ import com.google.protobuf.TextFormat;
 
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.zmq.ZmqPairSender;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.util.ByteHelp;
 
 /**
  * game---gate客户端
@@ -83,21 +80,21 @@ public class GameGateClient extends AbstractNetClient {
 
 	private boolean send(int msgId, int errorCode, byte[] datas) {
 
-		ZMsg msg = new ZMsg();
-		msg.add(gateServerAddr);
-		msg.add("");
-		msg.add(sessionAddr);
-		msg.add(ByteHelp.toByteArrayB(msgId));
-		msg.add(ByteHelp.toByteArrayB(errorCode));
-		msg.add(datas);
-
-		try {
-			ZmqPairSender.getInstance().put(msg);
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error(this + "send message to gate error", e);
-			return false;
-		}
+//		ZMsg msg = new ZMsg();
+//		msg.add(gateServerAddr);
+//		msg.add("");
+//		msg.add(sessionAddr);
+//		msg.add(ByteHelp.toByteArrayB(msgId));
+//		msg.add(ByteHelp.toByteArrayB(errorCode));
+//		msg.add(datas);
+//
+//		try {
+//			ZmqPairSender.getInstance().put(msg);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			log.error(this + "send message to gate error", e);
+//			return false;
+//		}
 		return true;
 
 	}

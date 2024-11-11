@@ -15,7 +15,6 @@ import cn.game.core.net.rpc.RpcClient;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
-import cn.game.util.ServerType;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -162,19 +161,13 @@ public class RocketMQRpcClient implements RpcClient {
 	}
 
 	@Override
-	public <T> Future<io.vertx.core.eventbus.Message<T>> request(ServerType serverType, T message) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> void broadcast(ServerType serverType, T message) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public <T> void send(String serverId, T message) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public <T> void broadcast(String addr, T message) {
 		// TODO Auto-generated method stub
 
 	}

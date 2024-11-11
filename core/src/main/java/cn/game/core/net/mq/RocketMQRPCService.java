@@ -18,13 +18,6 @@ public class RocketMQRPCService<T> implements RPCService<T> {
 	}
 
 	@Override
-	public void start() {
-
-		// TODO 
-		log.info("rocketmq rpc service start ...");
-
-	}
-	@Override
 	public void init() {
 	}
 

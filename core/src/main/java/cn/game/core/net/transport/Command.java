@@ -16,14 +16,14 @@ public class Command implements Serializable {
 	private static final long serialVersionUID = 8797909840036157425L;
 	private String methodName;
 	private Object[] args;
-	private Class<?>[] clazz;
+	private Class<?>[] parameterType;
 
 	public Command() {
 	}
 
-	public Command(String methodName, Class<?>[] clazz, Object[] args) {
+	public Command(String methodName, Class<?>[] parameterType, Object[] args) {
 		this.methodName = methodName;
-		this.clazz = clazz;
+		this.parameterType = parameterType;
 		this.args = args;
 	}
 
@@ -43,27 +43,28 @@ public class Command implements Serializable {
 		this.args = args;
 	}
 
-	public Class<?>[] getClazz() {
-		return clazz;
+	public Class<?>[] getParameterType() {
+		return parameterType;
 	}
 
-	public void setClazz(Class<?>[] clazz) {
-		this.clazz = clazz;
+	public void setParameterType(Class<?>[] parameterType) {
+		this.parameterType = parameterType;
 	}
 
 	public String getClassName() {
-		if (this.clazz == null) {
+		if (this.parameterType == null) {
 			return "" ; 
 		}
 		StringBuilder sb = new StringBuilder();
-		for (Class clazz : this.clazz) {
+		for (Class clazz : this.parameterType) {
 			sb.append(clazz.getName()).append("_");
 		}
 		return sb.toString();
 	}
 	@Override
 	public String toString() {
-		return "Command [methodName=" + methodName + ", args=" + JSON.toJSONString(args) + ", clazz=" + Arrays.toString(clazz) + "]";
+		return "Command [methodName=" + methodName + ", args=" + JSON.toJSONString(args) + ", parameterType="
+				+ Arrays.toString(parameterType) + "]";
 	}
 
 }

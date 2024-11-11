@@ -33,6 +33,7 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -353,8 +354,12 @@ public class TestHandler extends BaseHandler {
         TestRequest_6f000020 req = (TestRequest_6f000020) message;
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
+		Future<Long> future = GameServer.getInstance().getLoginGameServerInterface().getUid2("323323");
+		future.onComplete(r -> {
+			System.out.println(r);
+		});
         //		PlayerHelper.addResources(player, 205103, 2);
-		PlayerHelper.delResources(player, 100303, 5, OpType.None);
+//		PlayerHelper.delResources(player, 100303, 5, OpType.None);
 //        testcalcPower(player);
         //		List<RewardInfo> resources = PlayerHelper.addResources(player, 200032, 10);
         //		for (RewardInfo rewardInfo : resources) {
@@ -377,7 +382,6 @@ public class TestHandler extends BaseHandler {
         //		PlayerHelper.addReward(player, 20011, OpType.None);
         //		player.handleEvent(EventTypeEnum.CostItem, Asset.diamond.ID, 3000);
         //		Iterator<Hero> iterator = list.iterator();
-        long uid = 0;
         //		while (iterator.hasNext()) {
         //			Hero hero = (Hero) iterator.next();
         //			if (hero.getConfigId() == 354001) {
