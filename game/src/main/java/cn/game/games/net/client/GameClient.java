@@ -288,7 +288,14 @@ public class GameClient extends AbstractNetClient {
 			}
 			return false;
 		}
-		if (curMessageSeq > 0 && seq <= curMessageSeq) {
+		// 正在处理中,这个时候客户端不应该重复发请求,也有可能是服务端没有返回对应seq的包，注意观察上下文日志
+		if (seq == curMessageSeq) {
+			log.warn("GameClient[{}] msgId[{}] seq[{}] is processing", this, protocol.getMsgID(), seq);
+			return false;
+		}
+		// seq小于当前处理的消息序号，不处理
+		if (curMessageSeq > 0 && seq < curMessageSeq) {
+			log.warn("GameClient[{}] msgId[{}] seq[{}] is less than curMessageSeq[{}]", this, protocol.getMsgID(), seq, curMessageSeq);
 			return false;
 		}
 		this.curMessageSeq = seq;
