@@ -166,69 +166,57 @@ public class VxHolder {
 		VxHolder.verticles = verticles;
 	}
 
-	/**
-	 * 给指定id的服务器发送消息
-	 * 
-	 * @param <T>
-	 * @param serverId 服务器唯一id
-	 * @param message
-	 * @return
-	 */
-	public static <T> Future<Message<T>> requestRemoteServer(String serverId, com.google.protobuf.Message message) {
-		return vertx.eventBus().request(serverId, message, protobufOptions);
-	}
-
 	/** 
 	 * 给某类服务器发送消息，消息会负载到某个节点中。 
 	 * @param <T>
 	 * @param serverType
-	 * @param message
+	 * @param message 实际的消息，目前支持protobuf的Message和IProtocol两种类型
+	 * IProtocol 的类型注意设置msgId
 	 * @return
 	 */
-	public static <T> Future<Message<T>> requestRemoteServer(ServerType serverType, com.google.protobuf.Message message) {
-		return vertx.eventBus().request(serverType.name(), message, protobufOptions);
+	public static <T> Future<Message<T>> requestRemoteServer(ServerType serverType, Object message) {
+		return requestRemoteServer(serverType.name(), message);
 	}
 
 	/** 
-	 * 给某类服务器发送IProtocol类型消息，消息会负载到某个节点中。 
+	 * 给某id的服务器发送消息。 
 	 * @param <T>
-	 * @param serverType
-	 * @param protocol,消息协议
+	 * @param serverId 服务器地址
+	 * @param message 实际的消息，目前支持protobuf的Message和IProtocol类型
+	 * IProtocol 的类型注意设置msgId
 	 * @return
 	 */
-	public static <T> Future<Message<T>> requestRemoteServer(ServerType serverType, IProtocol<T> protocol) {
-		return vertx.eventBus().request(serverType.name(), protocol, protocolOptions);
-	}
-
-	/** 
-	 * 给某个id的服务器发送消息
-	 * @param <T>
-	 * @param serverId 服务器唯一id
-	 * @param protocol,消息协议
-	 * @return
-	 */
-	public static <T> Future<Message<T>> requestRemoteServer(String serverId, IProtocol<T> protocol) {
-		return vertx.eventBus().request(serverId, protocol, protocolOptions);
+	public static <T> Future<Message<T>> requestRemoteServer(String serverId, Object message) {
+		if (message instanceof com.google.protobuf.Message) {
+			return vertx.eventBus().request(serverId, message, protobufOptions);
+		} else if (message instanceof com.google.protobuf.MessageLite.Builder) {
+			return vertx.eventBus()
+					.request(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions);
+		} else if (message instanceof IProtocol) {
+			return vertx.eventBus().request(serverId, message, protocolOptions);
+		} else {
+			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
+		}
 	}
 
 	/**
 	 * 给某类服务器广播消息
 	 * 
 	 * @param serverType
-	 * @param message
+	 * @param message 实际的消息，目前支持protobuf的Message和IProtocol类型
+	 * IProtocol 的类型注意设置msgId
 	 */
-	public static void broadcastRemoteServer(ServerType serverType, com.google.protobuf.Message message) {
-		vertx.eventBus().publish(serverType.name(), message, protobufOptions);
-	}
-
-	/**
-	 * 给某类服务器广播消息
-	 * 
-	 * @param serverType
-	 * @param protocol
-	 */
-	public static <T> void broadcastRemoteServer(ServerType serverType, IProtocol<T> protocol) {
-		vertx.eventBus().publish(serverType.name(), protocol, protocolOptions);
+	public static void broadcastRemoteServer(ServerType serverType, Object message) {
+		String serverAddr = serverType.name();
+		if (message instanceof com.google.protobuf.Message) {
+			vertx.eventBus().publish(serverAddr, message, protobufOptions);
+		} else if (message instanceof com.google.protobuf.MessageLite.Builder) {
+			vertx.eventBus().publish(serverAddr, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions);
+		} else if (message instanceof IProtocol) {
+			vertx.eventBus().publish(serverAddr, message, protocolOptions);
+		} else {
+			new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
+		}
 	}
 
 	public static Buffer toBuffer(int msgId, byte[] byteArray) {
