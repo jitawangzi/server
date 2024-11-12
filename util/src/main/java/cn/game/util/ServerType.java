@@ -11,4 +11,13 @@ public enum ServerType {
 	World(),
 	;
 	
+	private String serverIdKey;
+
+	private ServerType() {
+		this.serverIdKey = this.name().toLowerCase() + ".server.id";
+	}
+
+	public String getServerIdKey() {
+		return serverIdKey;
+	}
 }

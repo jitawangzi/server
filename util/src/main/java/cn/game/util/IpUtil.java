@@ -18,11 +18,12 @@ public class IpUtil {
 	 */
 	public static String defaultAddress() throws SocketException, UnknownHostException {
 
-		String network = System.getProperty("defaultNetworkInterface");
-		if (network == null) {
-			network = System.getenv("defaultNetworkInterface");
+		String defaultIp = System.getProperty("defaultNetworkIp", System.getenv("defaultNetworkIp"));
+		if (defaultIp != null) {
+			return defaultIp;
 		}
-		return defaultAddress(network);
+		String defaulInterface = System.getProperty("defaultNetworkInterface", System.getenv("defaultNetworkInterface"));
+		return defaultAddress(defaulInterface);
 	}
 
 	/**

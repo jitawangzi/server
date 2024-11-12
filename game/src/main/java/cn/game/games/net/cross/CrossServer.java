@@ -34,12 +34,12 @@ public class CrossServer {
 	
 	public void start(String args[]) throws Exception {
 
+		ServerContext.getInstance().init(args, ServerType.Cross);
 		long start = System.currentTimeMillis();
 		RedisUtil.getInstance().init();
 		ZkHelper.init();
 
 		String serverId = parseServerId(args);
-		ServerContext.getInstance().init(ServerType.Cross, serverId);
 		IdUtil.init();
 
 		// init with apollo config

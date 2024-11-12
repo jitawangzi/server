@@ -3,7 +3,6 @@ package cn.game.core.base;
 import java.lang.management.ManagementFactory;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +53,14 @@ public class ServerContext {
 		this.serverType = serverType;
 	}
 
-	public void init(ServerType serverType, String serverId) throws Exception {
-		if (StringUtils.isEmpty(serverId)) {
-			throw new IllegalArgumentException("serverId can not be null");
-		}
-		this.serverId = serverId;
+	/** 
+	 * 
+	 * @param args 服务器启动参数，第一个参数为服务器id
+	 * @param serverType
+	 * @throws Exception
+	 */
+	public void init(String[] args, ServerType serverType) throws Exception {
+		this.serverId = parseServerId(args, serverType);
 		this.serverType = serverType;
 		setRunMode();
 		checkServerId(serverId);
@@ -141,5 +143,29 @@ public class ServerContext {
 		attachThread.setDaemon(true);
 		attachThread.start();
 
+	}
+
+	/** 
+	 * 解析服务器唯一id
+	 * @param args 服务器启动参数
+	 * @param serverType 服务器类型
+	 * @return
+	 */
+	private String parseServerId(String[] args, ServerType serverType) {
+		String serverId = null;
+		String serverIdKey = serverType.getServerIdKey();
+		if (args.length == 0) {
+			serverId = System.getProperty(serverIdKey);
+			if (serverId == null) {
+				serverId = System.getenv(serverIdKey);
+			}
+		} else {
+			serverId = args[0];
+		}
+		if (serverId == null) {
+			throw new IllegalArgumentException("没有设置 serverId");
+		}
+		System.setProperty(serverIdKey, serverId);
+		return serverId;
 	}
 }

@@ -52,6 +52,7 @@ public class LoginServer {
 	private static final Logger log = LoggerFactory.getLogger(LoginServer.class);
 
 	private static LoginServer instance = new LoginServer();
+	private static final String loginServerKey = "game.server.id";
 
 	public static LoginServer getInstance() {
 		return instance;
@@ -66,14 +67,16 @@ public class LoginServer {
 
 		long start = System.currentTimeMillis();
 		log.info("正在启动登录服...");
+
+		ServerContext.getInstance().init(args, ServerType.Login);
+
 		Config.load();
 		ZkHelper.init();
 		RedisUtil.getInstance().init();
 		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig(); // config instance is singleton for
 																					// each namespace and is never null
 		int vertHttpPort = config.getIntProperty("vertx.http.port", 0);
-		serverId = config.getProperty("login.server.id", "");
-		ServerContext.getInstance().init(ServerType.Login, serverId);
+//		serverId = config.getProperty("login.server.id", "");
 		IdUtil.init();
 //		LogbackConfig.init(config.getBooleanProperty("initLogback", false),
 //				config.getProperty("logbackFile", "config/logback-loginServer.xml"));

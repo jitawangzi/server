@@ -28,8 +28,7 @@ public class DbExcute {
 	public static void main(String[] args) throws Exception {
 		RedisUtil.getInstance().init();
 		ZkHelper.init();
-
-		ServerContext.getInstance().init(ServerType.Data, "SYQ");
+		ServerContext.getInstance().init(new String[] { "SYQ" }, ServerType.Data);
 		VxHolder.init();
 
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();

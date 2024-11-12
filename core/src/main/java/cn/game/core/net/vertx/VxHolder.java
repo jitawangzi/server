@@ -137,14 +137,20 @@ public class VxHolder {
 	 * @throws ExecutionException
 	 */
 	public static String deployVerticleSync(Verticle verticle) throws Exception {
-		String string = vertx.deployVerticle(verticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
+		String string = vertx.deployVerticle(verticle)
+				.toCompletionStage()
+				.toCompletableFuture()
+				.get(getDeployVerticleWaitTime(), TimeUnit.SECONDS);
 		log.info("部署Verticle[{}]成功： ", verticle);
 		return string;
 	}
 
 	public static String deployVerticleSync(Class<? extends Verticle> verticleClass, DeploymentOptions options)
 			throws InterruptedException, ExecutionException, TimeoutException {
-		String string = vertx.deployVerticle(verticleClass, options).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
+		String string = vertx.deployVerticle(verticleClass, options)
+				.toCompletionStage()
+				.toCompletableFuture()
+				.get(getDeployVerticleWaitTime(), TimeUnit.SECONDS);
 		log.info("部署Verticle[{}]成功： ", verticleClass);
 		return string;
 	}
@@ -154,6 +160,13 @@ public class VxHolder {
 		deployVerticle.onSuccess(r -> {
 			log.info("部署Verticle[{}]成功： ", verticle);
 		});
+	}
+
+	private static int getDeployVerticleWaitTime() {
+		if (ServerContext.getInstance().getRunMode().isProduction()) {
+			return 10;
+		}
+		return 300;
 	}
 
 	public static Future<String> deployVerticleFuture(Verticle verticle) {

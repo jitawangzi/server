@@ -33,6 +33,7 @@ public class GGameTest {
 	 */
 	private static void initEnv() throws IOException, Exception {
 		String serverId = "SYQ";
+		String[] args = new String[] { serverId };
 		System.setProperty(ServerContext.SERVER_RUN_MODE, "test");
 
 //		LoggerManager.init();
@@ -40,7 +41,7 @@ public class GGameTest {
 
 //		RedisUtil.getInstance().init();
 		ZkHelper.init();
-		ServerContext.getInstance().init(ServerType.Game, serverId);
+		ServerContext.getInstance().init(args, ServerType.Game);
 //		IdUtil.init();
 
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();

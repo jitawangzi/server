@@ -54,7 +54,7 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 	public void initConsumer(Handler<Message<Object>> handler) {
 		vertx.eventBus().consumer(VxHolder.rpcServiceAddr(rpcService.serverId), handler);
 		if (serverType != null) {
-			vertx.eventBus().consumer(VxHolder.rpcServiceAddr(rpcService.serverType.name()), handler);
+			vertx.eventBus().consumer(VxHolder.rpcServiceAddr(rpcService.serverType), handler);
 		}
 	}
 }

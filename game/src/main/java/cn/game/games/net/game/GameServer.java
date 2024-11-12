@@ -78,7 +78,6 @@ import io.vertx.core.Future;
  * @author SYQ
  */
 public class GameServer implements GameServerMBean {
-	private static final String gameServerKey = "game.server.id";
 
 //	private final Logger log = LoggerFactory.getLogger(GameServer.class);
 	private Properties initialProp;
@@ -115,19 +114,18 @@ public class GameServer implements GameServerMBean {
 
 	public void start(String[] args) throws Exception {
 
-		String serverId = parseGameServerId(args);
+
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
-
+		ServerContext.getInstance().init(args, ServerType.Game);
 //		instance.log.info("启动逻辑服。。");
 		Config.load();
 
 		long start = System.currentTimeMillis();
 		RedisUtil.getInstance().init();
 		ZkHelper.init();
-		ServerContext.getInstance().init(ServerType.Game, serverId);
 		IdUtil.init();
 
 //		util.SpringContextLoader.main(args);
@@ -181,7 +179,8 @@ public class GameServer implements GameServerMBean {
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
-		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", serverId, (System.currentTimeMillis() - start) / 1000));
+		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
+				(System.currentTimeMillis() - start) / 1000));
 
 		// 记录bi
 //		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
@@ -320,23 +319,6 @@ public class GameServer implements GameServerMBean {
 					"GameServerInfo is null，cant find serverId from zookeeper ,serverId "
 							+ ServerContext.getInstance().getServerId());
 		}
-	}
-
-	private String parseGameServerId(String[] args) {
-		String serverId = null;
-		if (args.length == 0) {
-			serverId = System.getProperty(gameServerKey);
-			if (serverId == null) {
-				serverId = System.getenv(gameServerKey);
-			}
-		} else {
-			serverId = args[0];
-		}
-		if (serverId == null) {
-			throw new IllegalArgumentException("没有设置 gameServerId");
-		}
-		System.setProperty(gameServerKey, serverId);
-		return serverId;
 	}
 
 	private void initScheduleTask() {
