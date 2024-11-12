@@ -375,65 +375,13 @@ public class TestHandler extends BaseHandler {
 //		future.onComplete(r -> {
 //			System.out.println(r);
 //		});
-        //		PlayerHelper.addResources(player, 205103, 2);
-//		PlayerHelper.delResources(player, 100303, 5, OpType.None);
 //        testcalcPower(player);
-        //		List<RewardInfo> resources = PlayerHelper.addResources(player, 200032, 10);
-        //		for (RewardInfo rewardInfo : resources) {
-        //			System.out.println(rewardInfo);
-        //		}
-        //		PayItem payItem = new PayItem();
-        //		payItem.setOrderId(System.currentTimeMillis());
-        //		payItem.setRmb(30);
-        //		payItem.setPayType(PayType.MonthCard);
-        //		payItem.setPayId(1);
-        //		GameLogger.recharge(player, payItem);
-        //		GameClientManager.getInstance().logout((GameClient) client);
-        //		SecretscriptModule module = player.getModule(SecretscriptModule.class);
-        //		module.add(101, OpType.None);
-        //		GameClientManager.getInstance().logout((GameClient)client);
-        //		List<Goods> list = new ArrayList<Goods>();
-        //		list.add(new Goods(1,66666)) ;
-        //		MailHelper.sendMail(playerId, "", "", "content", MailHelper.SYSTEM, list);
-        //		Collection<Hero> list = player.getHeroModule().list();
-        //		PlayerHelper.addReward(player, 20011, OpType.None);
-        //		player.handleEvent(EventTypeEnum.CostItem, Asset.diamond.ID, 3000);
-        //		Iterator<Hero> iterator = list.iterator();
-        //		while (iterator.hasNext()) {
-        //			Hero hero = (Hero) iterator.next();
-        //			if (hero.getConfigId() == 354001) {
-        //				uid = hero.getId();
-        //				break;
-        //			}
-        //		}
-        //		player.getHeroModule().del(uid, OpType.None);
         //		drawTest2(player);
-        //		long uid = 0;
-        //		for (Hero hero : list) {
-        //			uid = hero.getId();
-        //			break;
-        //		}
-        //		player.getHeroModule().del(uid, OpType.None);
         //		drawTest(player);
         //		CommonLogger.error("what the fuck by common logger");
         //		log.error("what the fuck by log");
-        //		GameLogger.heart();
         //		player.getQuestModule().addConditionCount(ConditionTypeEnum.ChapterFinish, 3, 1, 2);
-        //		AttrModule module = player.getModule(AttrModule.class);
-        //		module.calcAllAttr();
-        //		module.buildBattleAttrs();
         //		System.exit(0);
-        //		QuestOp questOp = PlayerCacheFactory.getCache(client.getPlayerId(), QuestOp.class);
-        //		questOp.open(47101, false);
-        //
-        //		PlayerHelper.addResources(client.getPlayerId(), ResourceEnum.Gold.getId(), 500);
-        //		IGCVersion_1046930.GetServerVersion(r -> {
-        //			System.out.println("执行成功" + r);
-        //		}, e -> {
-        //			System.out.println("执行失败");
-        //			e.printStackTrace();
-        //		});
-        //		System.gc();
     }
 
     private void testcalcPower(Player player) {
