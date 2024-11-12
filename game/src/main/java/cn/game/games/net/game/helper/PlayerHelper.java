@@ -916,7 +916,7 @@ public class PlayerHelper {
 		builder.setId(msgId);
 		builder.setPlayerId(playerId);
 
-		VxHolder.sendToRemoteServer(serverId, PbProtocol.GamePlayerPush_7d000100, builder.build().toByteArray());
+		VxHolder.requestRemoteServer(serverId, builder.build());
 
 	}
 
@@ -935,7 +935,7 @@ public class PlayerHelper {
 			builder.setData(message.toByteString());
 			builder.setId(msgId);
 			builder.setPlayerId(playerIds.get(i));
-			VxHolder.sendToRemoteServer(serverIds.get(i), msgId, builder.build().toByteArray());
+			VxHolder.requestRemoteServer(serverIds.get(i), builder.build());
 		}
 	}
 

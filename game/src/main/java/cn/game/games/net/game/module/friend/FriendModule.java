@@ -142,7 +142,7 @@ public class FriendModule extends BasePlayerModule {
 						.setFriendId(playerId)
 						.setFriendServer(ServerContext.getInstance().getServerId())
 						.build();
-				VxHolder.sendToRemoteServer(serverId, build);
+				VxHolder.requestRemoteServer(serverId, build);
 			}
 			/*			if (!GameServer.getInstance().isLocalServer(delApplication.getApplyPlayerServer())) {
 			//				FriendAddPush_30000023 build = FriendAddPush_30000023.newBuilder().setPlayerId(id).setFriendId(playerId)

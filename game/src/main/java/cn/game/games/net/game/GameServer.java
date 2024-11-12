@@ -6,11 +6,8 @@ import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import javax.management.MBeanServer;
@@ -30,6 +27,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.mq.RocketMQRpcClient;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
+import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
@@ -44,9 +42,7 @@ import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
-import cn.game.games.net.cross.remote.CrossRemoteServerInterface;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
-import cn.game.games.net.data.remote.DataGameServerInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
@@ -82,15 +78,6 @@ import io.vertx.core.Future;
  * @author SYQ
  */
 public class GameServer implements GameServerMBean {
-
-//	static {
-//		// 在这里初始化log，为了下面定义的log实例，能够正常被初始化。
-//		try {
-//			LoggerManager.init();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 	private static final String gameServerKey = "game.server.id";
 
 //	private final Logger log = LoggerFactory.getLogger(GameServer.class);
@@ -98,17 +85,6 @@ public class GameServer implements GameServerMBean {
 	private QuartzInitializer quartzInitializer;
 //	private String serverId;
 	private static final GameServer instance = new GameServer();
-
-	@Deprecated
-	private RemoteLoginServerInterface loginGameServerInterface;
-	@Deprecated
-	private CrossRemoteServerInterface crossGameServerInterface;
-	@Deprecated
-	private CrossRemoteServerInterface crossGameServerInterfaceSync;
-	@Deprecated
-	private ConcurrentMap<String, GameServerInterface> gameServerInterfacesSync = new ConcurrentHashMap<String, GameServerInterface>();
-	@Deprecated
-	private ConcurrentMap<String, GameServerInterface> gameServerInterfacesAsync = new ConcurrentHashMap<String, GameServerInterface>();
 
 	private RpcClient rpcClient;
 	private String[] serverIds = new String[ServerType.values().length];
@@ -161,7 +137,8 @@ public class GameServer implements GameServerMBean {
 		initQuartz();
 		initGameServerConfig();
 		initVerticle();
-		initRemoteInterface();
+
+//		initRemoteInterface();
 //		DAO.listenPauseUpdateDb();
 //		TreeWordFilter.init("filterWord.txt");
 //		this.maxPlayerId = initialProp.getIntProperty("player.max.id", 0);
@@ -392,13 +369,6 @@ public class GameServer implements GameServerMBean {
 			if (string.equals(""))
 				throw new IllegalArgumentException("serverId can not be null");
 		}
-
-		this.loginGameServerInterface = RpcFactory
-				.getImplLoadBalancer(RemoteLoginServerInterface.class, rpcClient, ServerType.Login);
-		this.crossGameServerInterface = RpcFactory.getImpl(CrossRemoteServerInterface.class, rpcClient, false,
-				crossServerId);
-		this.crossGameServerInterfaceSync = RpcFactory.getImpl(CrossRemoteServerInterface.class, rpcClient, true,
-				crossServerId);
 	}
 
 	private void initVerticle() throws Exception {
@@ -481,30 +451,6 @@ public class GameServer implements GameServerMBean {
 //		}
 //		return this.dbMaxPlayerId.incrementAndGet();
 //	}
-
-	public RemoteLoginServerInterface getLoginGameServerInterface() {
-		return loginGameServerInterface;
-	}
-
-
-	public CrossRemoteServerInterface getCrossGameServerInterface() {
-		return crossGameServerInterface;
-	}
-
-
-	public CrossRemoteServerInterface getCrossGameServerInterfaceSync() {
-		return crossGameServerInterfaceSync;
-	}
-
-	public DataGameServerInterface getDataGameCallback(Consumer<?> callBackTask) {
-		return RpcFactory.getImplCallback(rpcClient, DataGameServerInterface.class, callBackTask,
-				getServerId(ServerType.Data));
-	}
-
-//	public void setDataServerSyncDefault() {
-//		this.dataGameServerInterface = dataGameServerInterfaceSync;
-//	}
-
 	/**
 	 * 是否是本地服务器
 	 * @param serverId
@@ -524,39 +470,22 @@ public class GameServer implements GameServerMBean {
 	}
 
 	/**
-	 * 获取逻辑服远程调用接口,异步的
-	 * @param serverId
-	 *            逻辑服id
+	 * 获取逻辑服远程调用接口
+	 * @param serverId 逻辑服id,如果不是指定某个id的服务器,则传null
 	 * @return
 	 */
-	public GameServerInterface getGameServerRemoteAsync(String serverId) {
-		GameServerInterface gameCrossServerInterface = gameServerInterfacesAsync.get(serverId);
-		if (gameCrossServerInterface == null) {
-			gameCrossServerInterface = RpcFactory.getImpl(GameServerInterface.class, rpcClient, false, serverId);
-			GameServerInterface put = gameServerInterfacesAsync.put(serverId, gameCrossServerInterface);
-			if (put != null) {
-				gameCrossServerInterface = put;
-			}
-		}
-		return gameCrossServerInterface;
+	public GameServerInterface getGameServerInterface(CallType callType, String serverId) {
+		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, callType, serverId, ServerType.Game);
 	}
 
-	/**
-	 * 获取逻辑服远程调用接口,同步的
-	 * @param serverId
-	 *            逻辑服id
+	/** 
+	 * 获取登陆远程通讯接口，一般不需要指定具体的登陆服id，也就是不使用 PointToPoint 方式
+	 * @param callType
 	 * @return
 	 */
-	public GameServerInterface getGameServerRemoteSync(String serverId) {
-		GameServerInterface gameCrossServerInterface = gameServerInterfacesSync.get(serverId);
-		if (gameCrossServerInterface == null) {
-			gameCrossServerInterface = RpcFactory.getImpl(GameServerInterface.class, rpcClient, true, serverId);
-			GameServerInterface put = gameServerInterfacesSync.put(serverId, gameCrossServerInterface);
-			if (put != null) {
-				gameCrossServerInterface = put;
-			}
-		}
-		return gameCrossServerInterface;
+	public RemoteLoginServerInterface getRemoteLoginServerInterface(CallType callType) {
+		return RpcFactory.getImpl(RemoteLoginServerInterface.class, rpcClient, callType, null, ServerType.Login);
+
 	}
 
 	public void requestDataServer(Message message, RequestCallback callback) {

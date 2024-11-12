@@ -10,7 +10,12 @@ import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerListManager;
 import cn.game.core.cache.CacheType;
+import cn.game.core.net.remote.RemoteGameServerInterface;
+import cn.game.core.net.rpc.CallType;
+import cn.game.core.net.rpc.RpcClient;
+import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRPCService;
+import cn.game.core.net.rpc.vertx.VertxRpcClient;
 import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
@@ -55,6 +60,7 @@ public class LoginServer {
 	}
 
 	private String serverId;
+	private RpcClient rpcClient;
 
 	public void start(String[] args) throws Exception {
 
@@ -90,6 +96,9 @@ public class LoginServer {
 		VxHolder.deployVerticleSync(SpringContextLoader.getContext().getBean(VertxRPCService.class));
 		VxHolder.deployVerticleSync(SpringContextLoader.getContext().getBean(MsgConsumerVerticle.class));
 
+		rpcClient = new VertxRpcClient();
+		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
+
 		ServerListManager.getInstance().start();
 		ActiveServerListManager.getInstance().start(ServerType.Game);
 		GlobalConst.instance().load();
@@ -115,6 +124,11 @@ public class LoginServer {
 				shutdown();
 			}
 		});
+
+		boolean alive = getRemoteGameServerInterface(CallType.LoadBalancer, null).alive();
+		System.err.println(alive);
+		alive = getRemoteGameServerInterface(CallType.LoadBalancer, null).alive();
+		System.err.println(alive);
 
 		log.info("登录服启动成功。耗时[{}]s", (System.currentTimeMillis() - start) / 1000);
 	}
@@ -166,6 +180,15 @@ public class LoginServer {
 		ServerContext.getInstance().shutdown();
 		SpringContextLoader.getContext().close();
 		log.info("Login Server Shutdown success...");
+	}
+
+	/**
+	 * 获取逻辑服远程调用接口
+	 * @param serverId 逻辑服id,如果不是指定某个id的服务器,则传null
+	 * @return
+	 */
+	public RemoteGameServerInterface getRemoteGameServerInterface(CallType callType, String serverId) {
+		return RpcFactory.getImpl(RemoteGameServerInterface.class, rpcClient, callType, serverId, ServerType.Game);
 	}
 
 }

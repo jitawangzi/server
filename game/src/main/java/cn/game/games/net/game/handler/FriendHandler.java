@@ -201,7 +201,7 @@ public class FriendHandler extends BaseHandler {
 						.setPlayerId(id)
 						.setApplyPlayerServer(ServerContext.getInstance().getServerId())
 						.build();
-				VxHolder.sendToRemoteServer(serverId, build);
+				VxHolder.requestRemoteServer(serverId, build);
 				continue;
 			}
 //			FriendHelper.receiveApplication(id, playerId, ServerContext.getInstance().getServerId());

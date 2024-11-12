@@ -22,6 +22,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
+import cn.game.core.net.protocol.object.ObjectProtocol;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
@@ -33,7 +34,6 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
-import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -48,6 +48,7 @@ import cn.game.games.net.game.module.develop.attr.AttrCalcType;
 import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.draw.DrawModule;
+import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.util.DAO;
@@ -354,10 +355,15 @@ public class TestHandler extends BaseHandler {
         TestRequest_6f000020 req = (TestRequest_6f000020) message;
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-		Future<Long> future = GameServer.getInstance().getLoginGameServerInterface().getUid2("323323");
-		future.onComplete(r -> {
-			System.out.println(r);
-		});
+        ItemModule itemModule = player.getItemModule(); 
+		System.err.println(itemModule);
+		System.err.println(itemModule.getId_items());
+		VxHolder.requestRemoteServer("game_test", new ObjectProtocol(PbProtocol.ServerObjectTestRequest_7d000033, itemModule));
+
+//		Future<Long> future = GameServer.getInstance().getRemoteLoginServerInterface(CallType.LoadBalancer).getUid2("323323");
+//		future.onComplete(r -> {
+//			System.out.println(r);
+//		});
         //		PlayerHelper.addResources(player, 205103, 2);
 //		PlayerHelper.delResources(player, 100303, 5, OpType.None);
 //        testcalcPower(player);
@@ -405,20 +411,6 @@ public class TestHandler extends BaseHandler {
         //		AttrModule module = player.getModule(AttrModule.class);
         //		module.calcAllAttr();
         //		module.buildBattleAttrs();
-        //		PlayerHelper.addResources(player, 610001, 1);
-        //		System.out.println();
-        //		System.out.println();
-        //		PlayerHelper.refresh(player);
-        //		for (int i = 0; i < 100000; i++) {
-        //			player.getData().setLevel(1001 + i);
-        //			DAO.update(PlayerDataMapper.class, player.getData());
-        //			try {
-        //				Thread.sleep(1000);
-        //			} catch (InterruptedException e) {
-        //				// TODO Auto-generated catch block
-        //				e.printStackTrace();
-        //			}
-        //		}
         //		System.exit(0);
         //		QuestOp questOp = PlayerCacheFactory.getCache(client.getPlayerId(), QuestOp.class);
         //		questOp.open(47101, false);
@@ -430,53 +422,7 @@ public class TestHandler extends BaseHandler {
         //			System.out.println("执行失败");
         //			e.printStackTrace();
         //		});
-        //		ExploreOp exploreOp = player.getModule(ExploreOp.class);
-        //		IExploreObjectContainer objectContainer = exploreOp.getObjectContainer();
-        //		BuffOp buffOp = PlayerCacheFactory.getCache(client.getPlayerId(), BuffOp.class);
-        //		List<Integer> target = new ArrayList<>();
-        //		target.add((int) client.getPlayerId());
-        //		buffOp.add(501050, target, false);
-        //		BuffValue buffValue = buffOp.getBuffValue(EffectTargetTypeEnum.AllTeam, client.getPlayerId(),
-        //				EffectEnum.RecoveryStopInStateRecovery);
-        //		System.out.println(buffValue.getValue(BuffValue.CHANGE_BY_VALUE, 1));
-        //
         //		System.gc();
-        //		long playerId = client.getPlayerId(); Player player = PlayerManager.getInstance().getPlayer(playerId);
-        //
-        //		long other = playerId - 1;
-        //
-        //		System.out.println("当前线程： " + Thread.currentThread());
-        //		Context context = VxHolder.vertx.getOrCreateContext();
-        //
-        //		GameClient otherClient = GameClientManager.getInstance().getGameClientByPlayer(other);
-        //		if (otherClient != null) {
-        //
-        //			Promise<Object> promise = Promise.promise();
-        //
-        //			otherClient.getContext().runOnContext(v -> {
-        //				System.out.println("当前线程： " + Thread.currentThread());
-        //
-        //				Player otherPlayer = PlayerManager.getInstance().getPlayer(other);
-        //				otherPlayer.setCoin(3900L);
-        //				promise.complete(true);
-        //			});
-        //			Future<Object> future = promise.future();
-        //			future.onComplete(r -> {
-        ////				context.runOnContext(v -> {
-        //
-        //					System.out.println("当前线程： " + Thread.currentThread());
-        //					System.out.println(r);
-        ////				});
-        //			});
-        //			res.addListener(r -> {
-        //				Boolean boolean1 = (Boolean) r.get();
-        //				TaskManager.getInstance().addMainTask(() -> {
-        //					System.out.println(boolean1);
-        //					if (boolean1) {
-        //						System.out.println(Thread.currentThread().getName() + " 进行后续操作");
-        //					}
-        //				});
-        //			});
     }
 
     private void testcalcPower(Player player) {

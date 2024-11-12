@@ -196,6 +196,12 @@ message LoginUpdateGmInfoResponse_7d000077{
 	bool result = 1;
 }
 
+// 一个测试的协议，这里只使用了消息id，消息的内容由发送时指定，不在proto中定义
+message ServerObjectTestRequest_7d000033{
+}
+
+message ServerObjectTestResponse_7d000034{
+}
 // ︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻旧协议，不用了︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻︻
 
 // Game向Cross发数据，请求转发消息给指定玩家

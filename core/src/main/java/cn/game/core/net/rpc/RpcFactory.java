@@ -5,65 +5,48 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.ServerType;
 
 public class RpcFactory {
-
 	private static Logger log = LoggerFactory.getLogger(RpcFactory.class);
+
+	private static final Map<Key, Object> instanceCache = new ConcurrentHashMap<>();
 
 	private RpcFactory() {
 	}
 
-	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, boolean block) {
-		Invocation invocation = new Invocation();
-		invocation.setBlock(block);
-		invocation.setRpcClient(rpcClient);
-		invocation.setCallType(CallType.PointToPoint);
-		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
-		return instance;
-	}
+	/** 
+	 * 获取远程接口动态代理实例
+	 * @param <T>
+	 * @param rpcInterfaceClass	远程接口class
+	 * @param rpcClient	远程调用网络客户端
+	 * @param callType 调用类型
+	 * @param serverId	当调用类型是点对点时，需要此参数，远程节点的唯一地址。 
+	 * @param serverType 当调用类型是负载均衡或广播时，需要此参数，远程节点的类型
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, CallType callType, String serverId,
+			ServerType serverType) {
+		String targetAddr = callType == CallType.PointToPoint ? VxHolder.rpcServiceAddr(serverId) : VxHolder.rpcServiceAddr(serverType);
+		Key key = new Key(rpcInterfaceClass, targetAddr, callType);
 
-	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, boolean block, String serverId) {
-		Invocation invocation = new Invocation();
-		invocation.setBlock(block);
-		invocation.setRpcClient(rpcClient);
-		invocation.setServerId(serverId);
-		invocation.setCallType(CallType.PointToPoint);
-		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
-		return instance;
-	}
+		return (T) instanceCache.computeIfAbsent(key, k -> {
+			Invocation invocation = new Invocation();
+			invocation.setRpcClient(rpcClient);
+			invocation.setBlock(false);
+			invocation.setTargetAddr(targetAddr);
+			invocation.setCallType(callType);
 
-	public static <T> T getImplCallback(RpcClient rpcClient, Class<T> rpcInterfaceClass, Consumer<?> callBackTask, String serverId) {
-		Invocation invocation = new Invocation();
-		invocation.setRpcClient(rpcClient);
-		invocation.setCallBackTask(callBackTask);
-		invocation.setServerId(serverId);
-		invocation.setCallType(CallType.PointToPoint);
-		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
-		return instance;
-	}
-
-	public static <T> T getImplLoadBalancer(Class<T> rpcInterfaceClass, RpcClient rpcClient, ServerType serverType) {
-		Invocation invocation = new Invocation();
-		invocation.setRpcClient(rpcClient);
-		invocation.setServerType(serverType);
-		invocation.setCallType(CallType.LoadBalancer);
-		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
-		return instance;
-	}
-
-	public static <T> T getImplLoadBroadcast(Class<T> rpcInterfaceClass, RpcClient rpcClient, ServerType serverType) {
-		Invocation invocation = new Invocation();
-		invocation.setRpcClient(rpcClient);
-		invocation.setServerType(serverType);
-		invocation.setCallType(CallType.Broadcast);
-		T instance = (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
-		return instance;
+			return Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
+		});
 	}
 
 	private static Map<String, String> objectMethods;
@@ -80,12 +63,11 @@ public class RpcFactory {
 		private RpcClient rpcClient;
 		/** 回调任务，只有在异步调用时才有用 */
 		private Consumer<?> callBackTask;
-		/** 是否同步阻塞调用 */
+		/** 是否同步阻塞调用 ,暂时不用了，使用 返回值类型和 callBackTask 来区分异步*/
+		@Deprecated
 		private boolean block;
-		/** 点对点通讯的地址 */
-		private String serverId;
-		/** 负载均衡或者广播时的地址 */
-		private ServerType serverType;
+		/** 服务器id/类型 */
+		private String targetAddr;
 		/** 调用类型 */
 		private CallType callType;
 
@@ -99,7 +81,7 @@ public class RpcFactory {
 					return method.invoke(proxy, args);
 				}
 				return rpcClient.invoke(callType, method.getName(), method.getParameterTypes(), method.getReturnType(), args, callBackTask,
-						block, serverId, serverType);
+						block, targetAddr);
 
 			} catch (Exception e) {
 				log.error("rpc invoke 调用出现异常", e);
@@ -119,12 +101,9 @@ public class RpcFactory {
 			this.block = block;
 		}
 
-		public void setServerId(String serverId) {
-			this.serverId = serverId;
-		}
 
-		public void setServerType(ServerType serverType) {
-			this.serverType = serverType;
+		public void setTargetAddr(String targetAddr) {
+			this.targetAddr = targetAddr;
 		}
 
 		public void setCallType(CallType callType) {
@@ -132,4 +111,35 @@ public class RpcFactory {
 		}
 
 	}
+
+	private static class Key {
+		private final Class<?> rpcInterfaceClass;
+		private final String serverId;
+		private final CallType callType;
+
+		public Key(Class<?> rpcInterfaceClass, String serverId, CallType callType) {
+			this.rpcInterfaceClass = rpcInterfaceClass;
+			this.serverId = serverId;
+			this.callType = callType;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!(obj instanceof Key))
+				return false;
+			Key other = (Key) obj;
+			return rpcInterfaceClass.equals(other.rpcInterfaceClass) && serverId.equals(other.serverId) && callType == other.callType;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = rpcInterfaceClass.hashCode();
+			result = 31 * result + serverId.hashCode();
+			result = 31 * result + callType.hashCode();
+			return result;
+		}
+	}
+
 }

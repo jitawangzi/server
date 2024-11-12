@@ -53,19 +53,6 @@ public abstract class BaseHandler implements Handler {
 
 				try {
 					Object message = protocol.getData();
-//					if (protocol instanceof ProtobufProtocol) {
-//
-//						ProtobufProtocol protobufProtocol = (ProtobufProtocol) protocol;
-//						message = protobufProtocol.getData() == null ? protocolParser.parseFrom(cmd, protobufProtocol.getData())
-//								: protobufProtocol.getData();
-//
-//					} else if (protocol instanceof RocketMqProtocol) {
-//						message = protocol.getData();
-//					} else if (protocol instanceof DefaultJsonProtocol) {
-//						message = protocol.getData();
-//					} else {
-//						throw new IllegalArgumentException("no support protocol " + protocol.getClass().getSimpleName());
-//					}
 					if (client.needProcess(protocol)) {
 						invoker.invoke(client, message);
 						client.afterProcess(protocol);
@@ -86,7 +73,6 @@ public abstract class BaseHandler implements Handler {
 //							e1.printStackTrace();
 //						}
 //					});
-
 				}
 			} else {
 				this.log.warn(String.format("No Invoker for cmd:[%d]", cmd));

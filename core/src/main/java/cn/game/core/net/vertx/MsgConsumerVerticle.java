@@ -3,7 +3,7 @@ package cn.game.core.net.vertx;
 import cn.game.core.net.message.AbstractMessageHandlerService;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.IProtocol;
-import cn.game.core.net.protocol.bytes.DefaultByteProtocol;
+import cn.game.core.net.protocol.bytes.ByteArrayProtocol;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.ServerType;
@@ -27,6 +27,9 @@ public class MsgConsumerVerticle extends AbstractMessageHandlerService {
 	}
 
 	private IProtocol convertToProtocol(Object body) {
+		if (IProtocol.class.isAssignableFrom(body.getClass())) {
+			return (IProtocol) body;
+		}
 		if (body instanceof com.google.protobuf.Message) {
 			int id = PbProtocol.getInstance().getMsgId(body.getClass().getSimpleName());
 			return new ProtobufProtocol(id, (com.google.protobuf.Message) body);
@@ -34,9 +37,7 @@ public class MsgConsumerVerticle extends AbstractMessageHandlerService {
 			Buffer buffer = (Buffer) body;
 			int id = buffer.getInt(0);
 			byte[] data = buffer.getBytes(4, buffer.length());
-			return new DefaultByteProtocol(id, data);
-		} else if (body instanceof ProtobufProtocol) {
-			return (ProtobufProtocol) body;
+			return new ByteArrayProtocol(id, data);
 		} else {
 			throw new UnsupportedOperationException("Unsupported message type: " + body);
 		}

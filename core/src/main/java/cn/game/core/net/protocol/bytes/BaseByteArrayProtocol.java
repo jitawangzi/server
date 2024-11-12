@@ -2,21 +2,21 @@ package cn.game.core.net.protocol.bytes;
 
 import cn.game.core.net.protocol.BaseProtocol;
 
-public class BaseByteProtocol extends BaseProtocol<byte[]> {
+public abstract class BaseByteArrayProtocol extends BaseProtocol<byte[]> {
 
 	protected byte[] datas;
 
-	public BaseByteProtocol() {
+	public BaseByteArrayProtocol() {
 	}
 
-	public BaseByteProtocol(int msgID, byte[] datas) {
+	public BaseByteArrayProtocol(int msgID, byte[] datas) {
 		super(msgID, datas);
 	}
 
-	public BaseByteProtocol(int msgID, byte[] data, int seq) {
+	public BaseByteArrayProtocol(int msgID, byte[] data, int seq) {
 		super(msgID, data, seq);
 	}
-	public BaseByteProtocol(int msgID, byte[] data, int seq, int errorCode) {
+	public BaseByteArrayProtocol(int msgID, byte[] data, int seq, int errorCode) {
 		super(msgID, data, seq, errorCode);
 	}
 

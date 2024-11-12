@@ -1,13 +1,11 @@
 package cn.game.games.net.cross;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.util.IdUtil;
@@ -26,7 +24,6 @@ public class CrossServer {
 
 	/** 唯一实例 */
 	private static CrossServer instance = new CrossServer();
-	private ConcurrentMap<String, GameServerInterface> gameServerInterfaces = new ConcurrentHashMap<String, GameServerInterface>();
 
 	private CrossServer() {
 	};
@@ -68,19 +65,13 @@ public class CrossServer {
 	}
 
 	/**
-	 * 获取逻辑服远程调用接口,同步的
-	 * @param serverId
-	 *            逻辑服id
+	 * 获取逻辑服远程调用接口
+	 * @param serverId 逻辑服id,如果不是指定某个id的服务器,则传null
 	 * @return
 	 */
-	public GameServerInterface getGameServer(String serverId) {
-		GameServerInterface gameCrossServerInterface = gameServerInterfaces.get(serverId);
-		if (gameCrossServerInterface == null) {
-			RpcClient crossRpcClient = (RpcClient) SpringContextLoader.getContext().getBean("crossRpcClient");
-			gameCrossServerInterface = RpcFactory.getImpl(GameServerInterface.class, crossRpcClient, true, serverId);
-			gameServerInterfaces.put(serverId, gameCrossServerInterface);
-		}
-		return gameCrossServerInterface;
+	public GameServerInterface getGameServerInterface(CallType callType, String serverId) {
+		RpcClient crossRpcClient = (RpcClient) SpringContextLoader.getContext().getBean("crossRpcClient");
+		return RpcFactory.getImpl(GameServerInterface.class, crossRpcClient, callType, serverId, ServerType.Game);
 	}
 
 	private String parseServerId(String[] args) {
@@ -100,7 +91,4 @@ public class CrossServer {
 		return serverId;
 	}
 
-	public ConcurrentMap<String, GameServerInterface> getGameServerInterfaces() {
-		return gameServerInterfaces;
-	}
 }

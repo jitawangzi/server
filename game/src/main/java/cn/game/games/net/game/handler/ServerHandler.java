@@ -12,6 +12,8 @@ import com.google.protobuf.ProtocolStringList;
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
+import cn.game.core.net.protocol.bytes.ByteArrayProtocol;
+import cn.game.core.net.protocol.object.ByteStringProtocol;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
@@ -26,6 +28,7 @@ import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
@@ -95,6 +98,7 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.NotifyDelGlobalGmMailRequest_7d000062, this::delGlobalGmMail);
 
 		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000074, this::updateIOSAccessToken);
+		putInvoker(PbProtocol.ServerObjectTestRequest_7d000033, this::objectMessageTest);
 		
 
 
@@ -102,6 +106,11 @@ public class ServerHandler extends BaseHandler {
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
 	}
 
+	private void objectMessageTest(NetClient client, Object o) {
+		ItemModule itemModule = (ItemModule) o;
+		log.info(itemModule.toString());
+		log.info(itemModule.getId_items().toString());
+	}
 	private void updateIOSAccessToken(NetClient client, Object o) {
 		ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074 req = (ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074) o;
 		Config.wechatAccessToken = req.getAccessToken();
@@ -421,10 +430,10 @@ public class ServerHandler extends BaseHandler {
 		ByteString data = req.getData();
 
 		if (serverIdList.isEmpty()) {
-			VxHolder.broadcastRemoteServer(ServerType.Game, id, data.toByteArray());
+			VxHolder.broadcastRemoteServer(ServerType.Game, new ByteArrayProtocol(id, data.toByteArray()));
 		} else {
 			for (String server : serverIdList) {
-				VxHolder.sendToRemoteServer(server, id, data.toByteArray());
+				VxHolder.requestRemoteServer(server, new ByteStringProtocol(id, data));
 			}
 		}
 
@@ -446,9 +455,8 @@ public class ServerHandler extends BaseHandler {
 			resp.setData(data);
 			resp.setErrorCode(errorCode);
 			resp.setPlayerId(playerIdList.get(i));
-			byte[] byteArray = resp.build().toByteArray();
 
-			VxHolder.sendToRemoteServer(serverIdList.get(i), PbProtocol.CrossGameForwardPush_7d000003, byteArray);
+			VxHolder.requestRemoteServer(serverIdList.get(i), resp.build());
 		}
 
 	}
@@ -468,7 +476,7 @@ public class ServerHandler extends BaseHandler {
 		resp.setErrorCode(errorCode);
 		resp.setPlayerId(playerId);
 
-		VxHolder.sendToRemoteServer(serverId, PbProtocol.CrossGameForwardPush_7d000003, resp.build().toByteArray());
+		VxHolder.requestRemoteServer(serverId, resp.build());
 
 	}
 

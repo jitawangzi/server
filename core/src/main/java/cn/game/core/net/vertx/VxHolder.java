@@ -17,10 +17,12 @@ import com.ctrip.framework.apollo.ConfigService;
 
 import cn.game.core.async.BlockingCode;
 import cn.game.core.base.ServerContext;
+import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.vertx.codec.CustomMessageCodec;
 import cn.game.core.net.vertx.codec.ProtobufMessageCodec;
 import cn.game.core.net.vertx.codec.ProtobufProtocolCodec;
+import cn.game.core.net.vertx.codec.ProtocolCodec;
 import cn.game.util.IpUtil;
 import cn.game.util.LockUtil;
 import cn.game.util.ServerType;
@@ -28,7 +30,6 @@ import cn.game.util.ZkHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
@@ -65,9 +66,12 @@ public class VxHolder {
 	public static Vertx vertx;
 	private static final ProtobufMessageCodec protobufMessageCodec = new ProtobufMessageCodec();
 	private static final CustomMessageCodec customMessageCodec = new CustomMessageCodec();
+	private static final ProtocolCodec<?> protocolCodec = new ProtocolCodec<IProtocol<?>>();
 	/** 如果直接发protobuf类型的消息，需要指定这个 */
 	public static final DeliveryOptions protobufOptions = new DeliveryOptions().setCodecName(protobufMessageCodec.name());
 	public static final DeliveryOptions customOptions = new DeliveryOptions().setCodecName(customMessageCodec.name());
+	/** IProtocol类型消息 */
+	public static final DeliveryOptions protocolOptions = new DeliveryOptions().setCodecName(protocolCodec.name());
 	public static final DeliveryOptions defaultOptions = new DeliveryOptions();
 	private static List<Verticle> verticles;
 	public static ZookeeperClusterManager zookeeperClusterManager;
@@ -90,10 +94,8 @@ public class VxHolder {
 		zookeeperClusterManager = new ZookeeperClusterManager(ZkHelper.curator);
 		zookeeperClusterManager.setConfig(conf);
 
-		eventBusOptions.setClusterNodeMetadata(
-				new JsonObject().put("serverId", serverId).put("serverType", serverType.name()));
-		VertxOptions options = new VertxOptions().setClusterManager(zookeeperClusterManager).setEventBusOptions(
-				eventBusOptions);
+		eventBusOptions.setClusterNodeMetadata(new JsonObject().put("serverId", serverId).put("serverType", serverType.name()));
+		VertxOptions options = new VertxOptions().setClusterManager(zookeeperClusterManager).setEventBusOptions(eventBusOptions);
 		options.setMetricsOptions(new DropwizardMetricsOptions().setEnabled(true).setJmxEnabled(true).setJmxDomain("vertx-metrics"));
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {
 			options.setBlockedThreadCheckInterval(Integer.MAX_VALUE);
@@ -111,6 +113,7 @@ public class VxHolder {
 		vertx.eventBus().registerDefaultCodec(ServiceException.class, new ServiceExceptionMessageCodec());
 		vertx.eventBus().registerDefaultCodec(ProtobufProtocol.class, new ProtobufProtocolCodec());
 		vertx.eventBus().registerCodec(protobufMessageCodec);
+		vertx.eventBus().registerCodec(protocolCodec);
 		vertx.eventBus().registerCodec(customMessageCodec);
 
 		deployVerticles();
@@ -125,6 +128,7 @@ public class VxHolder {
 			}
 		}
 	}
+
 	/**
 	 * 同步部署Verticle，只在服务器启动时使用
 	 * @param verticle
@@ -138,52 +142,30 @@ public class VxHolder {
 		log.info("部署Verticle[{}]成功： ", verticle);
 		return string;
 	}
+
 	public static String deployVerticleSync(Class<? extends Verticle> verticleClass, DeploymentOptions options)
 			throws InterruptedException, ExecutionException, TimeoutException {
 		String string = vertx.deployVerticle(verticleClass, options).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
 		log.info("部署Verticle[{}]成功： ", verticleClass);
 		return string;
 	}
+
 	public static void deployVerticle(Verticle verticle) {
 		Future<String> deployVerticle = vertx.deployVerticle(verticle);
 		deployVerticle.onSuccess(r -> {
 			log.info("部署Verticle[{}]成功： ", verticle);
 		});
 	}
+
 	public static Future<String> deployVerticleFuture(Verticle verticle) {
 		Future<String> deployVerticle = vertx.deployVerticle(verticle);
 		return deployVerticle;
 	}
 
-
 	public static void setVerticles(List<Verticle> verticles) {
 		VxHolder.verticles = verticles;
 	}
 
-	/**
-	 * 给指定服务器发送消息，不需要返回消息
-	 * 
-	 * @param serverId
-	 *            服务器id
-	 * @param msgId
-	 *            消息id
-	 * @param byteArray
-	 *            消息序列化后的数据
-	 */
-	@Deprecated
-	public static void sendToRemoteServer(String serverId, int msgId, byte[] byteArray) {
-		vertx.eventBus().send(serverId, toBuffer(msgId, byteArray), defaultOptions);
-	}
-	/**
-	 * 给指定服务器发送消息，不需要返回消息
-	 * 
-	 * @param serverId
-	 *            服务器id
-	 * @param message
-	 */
-	public static void sendToRemoteServer(String serverId, com.google.protobuf.Message message) {
-		vertx.eventBus().send(serverId, message, protobufOptions);
-	}
 	/**
 	 * 给指定服务器发送消息,需要有返回消息
 	 * 
@@ -203,33 +185,32 @@ public class VxHolder {
 	 * @param message
 	 * @return
 	 */
-	public static <T> Future<Message<T>> requestRemoteServer(ServerType serverType,
-			com.google.protobuf.Message message) {
+	public static <T> Future<Message<T>> requestRemoteServer(ServerType serverType, com.google.protobuf.Message message) {
 		return vertx.eventBus().request(serverType.name(), message, protobufOptions);
 	}
-	/**
-	 * 给指定服务器发送消息,消息返回触发回调
-	 * 
-	 * @param serverId
-	 * @param message
-	 * @param replyHandler
-	 *            回调消息
-	 */
-	public static void requestRemoteServer(String serverId, com.google.protobuf.Message message,
-			Handler<AsyncResult<Message<com.google.protobuf.Message>>> replyHandler) {
-		vertx.eventBus().request(serverId, message, protobufOptions, replyHandler);
-	}
-	/**
-	 * 给某类服务器广播消息
-	 * @param serverId
-	 * @param msgId
-	 * @param byteArray
-	 */
-	@Deprecated
-	public static void broadcastRemoteServer(ServerType serverType, int msgId, byte[] byteArray) {
 
-		vertx.eventBus().publish(serverType.name(), toBuffer(msgId, byteArray));
+	/** 
+	 * 给某类服务器发送IProtocol类型消息，需要有返回，消息会负载到某个节点中。 
+	 * @param <T>
+	 * @param serverType
+	 * @param protocol,消息协议
+	 * @return
+	 */
+	public static <T> Future<Message<T>> requestRemoteServer(ServerType serverType, IProtocol<T> protocol) {
+		return vertx.eventBus().request(serverType.name(), protocol, protocolOptions);
 	}
+
+	/** 
+	 * 给某个服务器发送消息，需要有返回
+	 * @param <T>
+	 * @param serverId 服务器唯一id
+	 * @param protocol,消息协议
+	 * @return
+	 */
+	public static <T> Future<Message<T>> requestRemoteServer(String serverId, IProtocol<T> protocol) {
+		return vertx.eventBus().request(serverId, protocol, protocolOptions);
+	}
+
 	/**
 	 * 给某类服务器广播消息
 	 * 
@@ -238,6 +219,16 @@ public class VxHolder {
 	 */
 	public static void broadcastRemoteServer(ServerType serverType, com.google.protobuf.Message message) {
 		vertx.eventBus().publish(serverType.name(), message, protobufOptions);
+	}
+
+	/**
+	 * 给某类服务器广播消息
+	 * 
+	 * @param serverType
+	 * @param protocol
+	 */
+	public static <T> void broadcastRemoteServer(ServerType serverType, IProtocol<T> protocol) {
+		vertx.eventBus().publish(serverType.name(), protocol, protocolOptions);
 	}
 
 	public static Buffer toBuffer(int msgId, byte[] byteArray) {
@@ -259,14 +250,6 @@ public class VxHolder {
 		return serverType.name() + ".rpc.service";
 	}
 
-//	public static String reqServerAddr(String serverId) {
-//		return serverId + ".req";
-//	}
-
-//	public static String subServerAddr(String serverType) {
-//		return serverType + ".sub";
-//	}
-
 	/** 
 	 * http 请求
 	 * @param method
@@ -287,11 +270,10 @@ public class VxHolder {
 				param.stream().forEach(entry -> request.addQueryParam(entry.getKey(), entry.getValue().toString()));
 			}
 			responseFutrue = request.send();
-		}else if (method == HttpMethod.POST) {
+		} else if (method == HttpMethod.POST) {
 			responseFutrue = request.sendJsonObject(param);
-		} 
-		else {
-			throw new IllegalArgumentException("没有实现的http方法:  "+ method);
+		} else {
+			throw new IllegalArgumentException("没有实现的http方法:  " + method);
 		}
 		responseFutrue.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));
@@ -305,8 +287,7 @@ public class VxHolder {
 	 */
 	public static void get(String requestURI, Handler<JsonObject> successHandler, Handler<Throwable> failedHandler) {
 
-		httpClient.getAbs(requestURI)
-				.expect(ResponsePredicate.SC_SUCCESS)
+		httpClient.getAbs(requestURI).expect(ResponsePredicate.SC_SUCCESS)
 //				.expect(ResponsePredicate.JSON)
 				.send()
 				.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
@@ -316,6 +297,7 @@ public class VxHolder {
 	public static Future<HttpResponse<Buffer>> get(String requestURI) {
 		return httpClient.getAbs(requestURI).expect(ResponsePredicate.SC_SUCCESS).expect(ResponsePredicate.JSON).send();
 	}
+
 	/** 
 	 * 发送http post 请求
 	 * @param requestURI     请求地址
@@ -324,14 +306,12 @@ public class VxHolder {
 	 */
 	public static void post(String requestURI, Handler<JsonObject> successHandler, Handler<Throwable> failedHandler, Object body) {
 
-		httpClient.postAbs(requestURI)
-				.expect(ResponsePredicate.SC_SUCCESS)
+		httpClient.postAbs(requestURI).expect(ResponsePredicate.SC_SUCCESS)
 //				.expect(ResponsePredicate.JSON)
 				.sendJson(body)
 				.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));
 	}
-
 
 	public static ZookeeperClusterManager getZookeeperClusterManager() {
 		return zookeeperClusterManager;
@@ -349,7 +329,8 @@ public class VxHolder {
 	 * @param lockKeys 锁的key，支持多个key。
 	 * @return
 	 */
-	public static <T> Future<T> runWithLock(long waitTime, long leaseTime, TimeUnit unit, Supplier<Future<T>> operations, String... lockKeys) {
+	public static <T> Future<T> runWithLock(long waitTime, long leaseTime, TimeUnit unit, Supplier<Future<T>> operations,
+			String... lockKeys) {
 		Promise<T> promise = Promise.promise();
 		RLock lock = LockUtil.initLock(lockKeys);
 		Context context = VxHolder.vertx.getOrCreateContext();
@@ -362,8 +343,8 @@ public class VxHolder {
 				return;
 			}
 			if (!locked) {
-	            log.warn("Failed to acquire lock for keys: " + Arrays.toString(lockKeys));
-	            promise.fail("Failed to acquire lock");
+				log.warn("Failed to acquire lock for keys: " + Arrays.toString(lockKeys));
+				promise.fail("Failed to acquire lock");
 				return;
 			}
 			log.debug("Lock acquired for keys: {}", Arrays.toString(lockKeys));
@@ -460,21 +441,20 @@ public class VxHolder {
 	 * @param ordered
 	 * @return
 	 */
-	private static <T> Future<T> executeBlockingWithTimeoutInternal(Handler<Promise<T>> blockingHandler, long timeoutMs,
-			boolean ordered) {
+	private static <T> Future<T> executeBlockingWithTimeoutInternal(Handler<Promise<T>> blockingHandler, long timeoutMs, boolean ordered) {
 
 		Promise<T> promise = Promise.promise();
 
 		// 执行阻塞操作
 		Future<T> executionFuture = vertx.executeBlocking(blockingHandler, ordered);
-		
+
 		// 设置超时定时器
 		long timerId = vertx.setTimer(timeoutMs, id -> {
 			if (!promise.future().isComplete()) {
 				promise.fail(new TimeoutException("Operation timed out after " + timeoutMs + " ms"));
 			}
 		});
-		
+
 		// 处理执行结果
 		executionFuture.onComplete(ar -> {
 			vertx.cancelTimer(timerId);

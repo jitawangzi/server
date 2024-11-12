@@ -18,7 +18,7 @@ import com.google.protobuf.TextFormat;
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.core.net.protocol.IProtocol;
-import cn.game.core.net.protocol.bytes.BaseByteProtocol;
+import cn.game.core.net.protocol.bytes.ByteArrayProtocol;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
@@ -179,7 +179,7 @@ public class GameClient extends AbstractNetClient {
 //			}
 			if (recored && seq > 0) {
 				// 记录seq对应下发的数据，相同的seq直接返回老数据
-				IProtocol<byte[]> protocol = new BaseByteProtocol(msgId, data, seq, errorCode);
+				IProtocol<byte[]> protocol = new ByteArrayProtocol(msgId, data, seq, errorCode);
 				List<IProtocol<byte[]>> list = this.recentMessages.get(seq);
 				if (list == null) {
 					list = new ArrayList<>();

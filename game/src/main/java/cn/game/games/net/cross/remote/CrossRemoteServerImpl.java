@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.remote.ServerStatus;
+import cn.game.core.net.rpc.CallType;
 import cn.game.games.net.cross.CrossServer;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -20,48 +21,42 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 
 	@Override
 	public boolean addFriend(long playerId, long friendId, String serverId) {
-		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServerInterface(CallType.PointToPoint, serverId);
 		return gameServerInterface.addFriend(playerId, friendId, serverId);
 	}
 
 	@Override
 	public List<RewardInfo> addResources(long playerId, int id, int value, String serverId) {
-		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServerInterface(CallType.PointToPoint, serverId);
 		return gameServerInterface.addResources(playerId, id, value);
 
 	}
 	
 	@Override
 	public boolean addMail(long playerId, String serverId, int titleId, int contentId, int typeId, String resourceText) {
-		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServer(serverId);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServerInterface(CallType.PointToPoint, serverId);
 		gameServerInterface.addMail(playerId, serverId, titleId, contentId, typeId, resourceText);
 		return false;
 	}
 	@Override
 	public void notifyBroadcastAddForbidAccount(List<Long> pids, String reason, String timer ){
-		CrossServer.getInstance().getGameServerInterfaces().values().forEach(
-				gameServerInterface -> gameServerInterface.notifyAddForbidAccount(pids, reason, timer)
-		);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServerInterface(CallType.Broadcast, null);
+		gameServerInterface.notifyAddForbidAccount(pids, reason, timer);
 	}
 	@Override
 	public void notifyBroadcastDelForbidAccount(List<Long> pids ){
-		CrossServer.getInstance().getGameServerInterfaces().values().forEach(
-				gameServerInterface -> gameServerInterface.notifyDelForbidAccount(pids)
-		);
+		GameServerInterface gameServerInterface = CrossServer.getInstance().getGameServerInterface(CallType.Broadcast, null);
+		gameServerInterface.notifyDelForbidAccount(pids);
 	}
 
 	@Override
 	public void notifyBroadcastAddGlobalGmMail(int mailId) {
-		CrossServer.getInstance().getGameServerInterfaces().values().forEach(
-				gameServerInterface -> gameServerInterface.addGlobalGmMail(mailId)
-		);
+		CrossServer.getInstance().getGameServerInterface(CallType.Broadcast, null).addGlobalGmMail(mailId);
 	}
 
 	@Override
 	public void notifyBroadcastDelGlobalGmMail(int mailId) {
-		CrossServer.getInstance().getGameServerInterfaces().values().forEach(
-				gameServerInterface -> gameServerInterface.delGlobalGmMail(mailId)
-		);
+		CrossServer.getInstance().getGameServerInterface(CallType.Broadcast, null).delGlobalGmMail(mailId);
 	}
 
 	@Override
@@ -72,7 +67,7 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 
 		int i = 0;
 		for (String string : serverIds) {
-			suppliers[i] = () -> CrossServer.getInstance().getGameServer(string).status();
+			suppliers[i] = () -> CrossServer.getInstance().getGameServerInterface(CallType.PointToPoint, string).status();
 			futrues[i] = CompletableFuture.supplyAsync(suppliers[i]);
 			i++;
 
@@ -99,7 +94,7 @@ public class CrossRemoteServerImpl implements CrossRemoteServerInterface {
 		
 		try {
 			for (String string : serverIds) {
-				CrossServer.getInstance().getGameServer(string).shutdown();
+				CrossServer.getInstance().getGameServerInterface(CallType.PointToPoint, string).shutdown();
 			}
 		} catch (Exception e) {
 		}

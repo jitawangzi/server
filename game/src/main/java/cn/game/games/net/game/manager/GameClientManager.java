@@ -18,16 +18,10 @@ import com.google.protobuf.Message;
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.client.GameClient;
-import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutPush_01100030;
-import cn.game.protocol.protobuf.ServerMsg.GameCrossBroadcast_7d000008;
-import cn.game.protocol.protobuf.ServerMsg.GameCrossForwardPush_7d000002;
-import cn.game.protocol.protobuf.ServerMsg.GameCrossPlayerBroadcast_7d000005;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerOnlinePush_7d000010;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
@@ -248,146 +242,6 @@ public class GameClientManager {
 	}
 
 	/**
-	 * 给所有在线玩家广播消息
-	 * @param message
-	 */
-	public void broadcast(Object message) {
-
-		broadcast(message, null);
-	}
-
-	/**
-	 * 给指定的一些玩家广播消息
-	 * @param message
-	 * @param playerIds
-	 */
-	public void broadcast(Object message, List<Long> playerIds) {
-
-		TaskManager.getInstance().addWorkerTask(() -> {
-			if (playerIds == null) {
-
-				for (GameClient gameClient : clients.values()) {
-					gameClient.sendProtocol(message);
-				}
-			} else {
-
-				for (Long id : playerIds) {
-					noticeOne(message, id);
-				}
-			}
-		});
-	}
-	
-	/**
-	 * 将消息发送给指定服务器的玩家，通过cross服务器转发
-	 * @param playerId
-	 *            目标玩家id
-	 * @param message
-	 * @param serverId
-	 *            目标服务器id
-	 */
-	@Deprecated
-	public void sendToRemotePlayerOld(long playerId, String serverId, Message message) {
-		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-		GameCrossForwardPush_7d000002.Builder builder = GameCrossForwardPush_7d000002.newBuilder();
-		int forwardMsgId = PbProtocol.GameCrossForwardPush_7d000002;
-
-		builder.setData(message.toByteString());
-		builder.setId(msgId);
-		builder.setPlayerId(playerId);
-		builder.setServerId(serverId);
-
-		VxHolder.sendToRemoteServer(GameServer.getInstance().getServerId(ServerType.Cross), forwardMsgId, builder.build()
-				.toByteArray());
-
-	}
-	/**
-	 * 将消息发送给指定Game服务器
-	 * @param serverId
-	 *            目标服务器id
-	 * @param message
-	 */
-	public void sendToGameServer(String serverId, Message message) {
-		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-		VxHolder.sendToRemoteServer(serverId, msgId, message.toByteArray());
-	}
-	/**
-	 * 将消息发送给指定Game服务器，通过cross转发
-	 * @param serverId
-	 *            目标服务器id
-	 * @param message
-	 */
-	@Deprecated
-	public void sendToGameServerOld(String serverId, Message message) {
-		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-		GameCrossBroadcast_7d000008.Builder builder = GameCrossBroadcast_7d000008.newBuilder();
-		int forwardMsgId = PbProtocol.GameCrossBroadcast_7d000008;
-
-		builder.setData(message.toByteString());
-		builder.setId(msgId);
-		builder.addServerId(serverId);
-
-		VxHolder.sendToRemoteServer(GameServer.getInstance().getServerId(ServerType.Cross), forwardMsgId, builder.build()
-				.toByteArray());
-	}
-
-	/**
-	 * 给本服玩家和跨服玩家广播消息
-	 * @param message
-	 * @param playerIds
-	 * @param serverIds
-	 */
-	public void broadcast(Message message, List<Long> playerIds, List<String> serverIds) {
-
-		if (playerIds != null && serverIds != null) {
-
-			TaskManager.getInstance().addWorkerTask(() -> {
-
-				List<Long> localPlayers = new ArrayList<Long>();
-				List<String> localServers = new ArrayList<String>();
-
-				for (int i = 0; i < serverIds.size(); i++) {
-					String serverId = serverIds.get(i);
-					if (GameServer.getInstance().isLocalServer(serverId)) {
-						localPlayers.add(playerIds.get(i));
-						localServers.add(serverId);
-					}
-				}
-				if (!localPlayers.isEmpty()) {
-					broadcast(message, localPlayers);
-					playerIds.removeAll(localPlayers);
-					serverIds.removeAll(localServers);
-				}
-
-				PlayerHelper.sendToRemotePlayers(message, playerIds, serverIds);
-
-			});
-		}
-
-	}
-
-	/**
-	 * 将消息广播给跨服玩家
-	 * @param message
-	 * @param playerIds
-	 * @param serverIds
-	 */
-	@Deprecated
-	public void sendToRemotePlayersOld(Message message, List<Long> playerIds, List<String> serverIds) {
-		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-		GameCrossPlayerBroadcast_7d000005.Builder builder = GameCrossPlayerBroadcast_7d000005.newBuilder();
-		int forwardMsgId = PbProtocol.GameCrossPlayerBroadcast_7d000005;
-
-		builder.setData(message.toByteString());
-		builder.setId(msgId);
-		builder.addAllPlayerId(playerIds);
-		builder.addAllServerId(serverIds);
-
-		VxHolder.sendToRemoteServer(GameServer.getInstance().getServerId(ServerType.Cross), forwardMsgId, builder.build()
-				.toByteArray());
-
-	}
-	/**
 	 * 将消息广播给其他GameServer服务器
 	 * @param message
 	 *            待广播消息
@@ -400,32 +254,9 @@ public class GameClientManager {
 			VxHolder.broadcastRemoteServer(ServerType.Game, message);
 		} else {
 			for (String string : serverIds) {
-				VxHolder.sendToRemoteServer(string, message);
+				VxHolder.requestRemoteServer(string, message);
 			}
 		}
-	}
-	/**
-	 * 将消息广播给其他GameServer服务器,通过cross服务器
-	 * @param message
-	 *            待广播消息
-	 * @param serverIds
-	 *            接收消息的服务器id，如果是null，广播给所有的服务器
-	 */
-	@Deprecated
-	public void broadcastGameServersOld(Message message, List<String> serverIds) {
-		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-		GameCrossBroadcast_7d000008.Builder builder = GameCrossBroadcast_7d000008.newBuilder();
-		int forwardMsgId = PbProtocol.GameCrossBroadcast_7d000008;
-
-		builder.setData(message.toByteString());
-		builder.setId(msgId);
-		if (serverIds != null) {
-			builder.addAllServerId(serverIds);
-		}
-
-		VxHolder.sendToRemoteServer(GameServer.getInstance().getServerId(ServerType.Cross), forwardMsgId, builder.build()
-				.toByteArray());
-
 	}
 	/**
 	 * 将玩家的在线状态广播给其他服务器，暂时广播给所有服务器，以后根据系统，广播给指定服务器

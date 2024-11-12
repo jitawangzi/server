@@ -148,7 +148,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 
 	@Override
 	public String toString() {
-		return super.toString() + "[playerId=" + player.getData().getPlayerId() + "]";
+		return super.toString() + "[playerId=" + playerId + "]";
 	}
 
 	@Override
