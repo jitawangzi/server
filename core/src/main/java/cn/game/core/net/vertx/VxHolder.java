@@ -203,7 +203,7 @@ public class VxHolder {
 		if (body instanceof com.google.protobuf.Message) {
 			return (T)body;
 		}
-		if (IProtocol.class.isAssignableFrom(body.getClass())) {
+		if (body instanceof IProtocol) {
 			return (T)((IProtocol) body).getData();
 		}
 		throw new UnsupportedOperationException("Unsupported ResponseObject message type: " + body);

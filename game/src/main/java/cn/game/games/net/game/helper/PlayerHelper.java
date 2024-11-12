@@ -806,6 +806,7 @@ public class PlayerHelper {
 	 * @param discardWhenOffline true，如果玩家不在线，就丢弃消息。 false，玩家离线也需要处理，一般是记录下来上线处理
 	 * @return Future,如果发到别的服务器处理，null，不用后续处理。
 	 */
+	@Deprecated
 	public static Future<io.vertx.core.eventbus.Message<GamePlayerResponse_7d000016>> sendRemotePlayer(long playerId, Object message,
 			boolean discardWhenOffline) {
 		if (!PlayerManager.getInstance().isOnline(playerId) && discardWhenOffline) {
@@ -887,6 +888,7 @@ public class PlayerHelper {
 	 * @param message
 	 * @param serverId
 	 */
+	@Deprecated
 	public void sendProtcolCrossServer(long playerId, String serverId, com.google.protobuf.Message message) {
 		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) { // 本服务器玩家
 			GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);

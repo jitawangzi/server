@@ -27,7 +27,7 @@ public class MsgConsumerVerticle extends AbstractMessageHandlerService {
 	}
 
 	private IProtocol convertToProtocol(Object body) {
-		if (IProtocol.class.isAssignableFrom(body.getClass())) {
+		if (body instanceof IProtocol) {
 			return (IProtocol) body;
 		}
 		if (body instanceof com.google.protobuf.Message) {
