@@ -167,10 +167,10 @@ public class VxHolder {
 	}
 
 	/**
-	 * 给指定服务器发送消息,需要有返回消息
+	 * 给指定id的服务器发送消息
 	 * 
 	 * @param <T>
-	 * @param serverId
+	 * @param serverId 服务器唯一id
 	 * @param message
 	 * @return
 	 */
@@ -179,7 +179,7 @@ public class VxHolder {
 	}
 
 	/** 
-	 * 给某类服务器发送消息，需要有返回，消息会负载到某个节点中。 
+	 * 给某类服务器发送消息，消息会负载到某个节点中。 
 	 * @param <T>
 	 * @param serverType
 	 * @param message
@@ -190,7 +190,7 @@ public class VxHolder {
 	}
 
 	/** 
-	 * 给某类服务器发送IProtocol类型消息，需要有返回，消息会负载到某个节点中。 
+	 * 给某类服务器发送IProtocol类型消息，消息会负载到某个节点中。 
 	 * @param <T>
 	 * @param serverType
 	 * @param protocol,消息协议
@@ -201,7 +201,7 @@ public class VxHolder {
 	}
 
 	/** 
-	 * 给某个服务器发送消息，需要有返回
+	 * 给某个id的服务器发送消息
 	 * @param <T>
 	 * @param serverId 服务器唯一id
 	 * @param protocol,消息协议
