@@ -110,6 +110,8 @@ public class ServerHandler extends BaseHandler {
 		ItemModule itemModule = (ItemModule) o;
 		log.info(itemModule.toString());
 		log.info(itemModule.getId_items().toString());
+		// 返回数据，针对服务器之间的消息通讯，不需要msgId
+		client.sendProtocol(itemModule);
 	}
 	private void updateIOSAccessToken(NetClient client, Object o) {
 		ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074 req = (ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074) o;

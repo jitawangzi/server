@@ -3,6 +3,8 @@ package cn.game.core.net.vertx;
 import com.google.protobuf.MessageLite.Builder;
 
 import cn.game.core.net.client.AbstractNetClient;
+import cn.game.core.net.protocol.IProtocol;
+import cn.game.core.net.protocol.object.ObjectProtocol;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import io.vertx.core.eventbus.Message;
 import io.vertx.serviceproxy.HelperUtils;
@@ -29,11 +31,14 @@ public class ServerClient extends AbstractNetClient {
 			this.message.reply(message);
 		} else if (message instanceof com.google.protobuf.Message) {
 			this.message.reply(message, VxHolder.protobufOptions);
+		} else if (message instanceof IProtocol) {
+			this.message.reply(message, VxHolder.protocolOptions);
 		}else if (message instanceof Throwable) {
 			this.message.reply(new ServiceException(500, HelperUtils.generateDebugInfo((Throwable) message).toString()),
 					VxHolder.defaultOptions);
 		} else {
-			throw new UnsupportedOperationException("Unsupported message type: " + message.getClass().getName());
+			// 这里返回自定义对象数据，只是返回数据，不需要msgId
+			this.message.reply(new ObjectProtocol(0, message), VxHolder.protocolOptions);
 		}
 	}
 

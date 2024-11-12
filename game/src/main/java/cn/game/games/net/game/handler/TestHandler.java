@@ -358,7 +358,18 @@ public class TestHandler extends BaseHandler {
         ItemModule itemModule = player.getItemModule(); 
 		System.err.println(itemModule);
 		System.err.println(itemModule.getId_items());
-		VxHolder.requestRemoteServer("game_test", new ObjectProtocol(PbProtocol.ServerObjectTestRequest_7d000033, itemModule));
+		Future<ItemModule> requestRemoteServer = VxHolder.requestRemoteServer("game_test",
+				new ObjectProtocol(PbProtocol.ServerObjectTestRequest_7d000033, itemModule));
+		requestRemoteServer.onComplete(r -> {
+			if (r.succeeded()) {
+				ItemModule result = r.result();
+
+				System.err.println("返回值： " + result);
+				System.err.println("返回值： " + result.getId_items());
+			} else {
+				System.err.println("失败");
+			}
+		});
 
 //		Future<Long> future = GameServer.getInstance().getRemoteLoginServerInterface(CallType.LoadBalancer).getUid2("323323");
 //		future.onComplete(r -> {

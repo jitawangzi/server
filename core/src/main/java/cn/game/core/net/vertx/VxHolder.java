@@ -41,7 +41,6 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBusOptions;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
@@ -174,29 +173,40 @@ public class VxHolder {
 	 * IProtocol 的类型注意设置msgId
 	 * @return
 	 */
-	public static <T> Future<Message<T>> requestRemoteServer(ServerType serverType, Object message) {
+	public static <T> Future<T> requestRemoteServer(ServerType serverType, Object message) {
 		return requestRemoteServer(serverType.name(), message);
 	}
 
 	/** 
-	 * 给某id的服务器发送消息。 
+	 * 给某地址的服务器发送消息。 
 	 * @param <T>
 	 * @param serverId 服务器地址
 	 * @param message 实际的消息，目前支持protobuf的Message和IProtocol类型
 	 * IProtocol 的类型注意设置msgId
 	 * @return
 	 */
-	public static <T> Future<Message<T>> requestRemoteServer(String serverId, Object message) {
+	public static <T> Future<T> requestRemoteServer(String serverId, Object message) {
 		if (message instanceof com.google.protobuf.Message) {
-			return vertx.eventBus().request(serverId, message, protobufOptions);
+			return vertx.eventBus().request(serverId, message, protobufOptions).map(msg -> convertResponseObject(msg.body()));
 		} else if (message instanceof com.google.protobuf.MessageLite.Builder) {
 			return vertx.eventBus()
-					.request(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions);
+					.request(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions)
+					.map(msg -> convertResponseObject(msg.body()));
 		} else if (message instanceof IProtocol) {
-			return vertx.eventBus().request(serverId, message, protocolOptions);
+			return vertx.eventBus().request(serverId, message, protocolOptions).map(msg -> convertResponseObject(msg.body()));
 		} else {
 			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
 		}
+	}
+
+	private static <T> T convertResponseObject(Object body) {
+		if (body instanceof com.google.protobuf.Message) {
+			return (T)body;
+		}
+		if (IProtocol.class.isAssignableFrom(body.getClass())) {
+			return (T)((IProtocol) body).getData();
+		}
+		throw new UnsupportedOperationException("Unsupported ResponseObject message type: " + body);
 	}
 
 	/**
