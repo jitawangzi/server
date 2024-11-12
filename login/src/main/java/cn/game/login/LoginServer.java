@@ -125,11 +125,6 @@ public class LoginServer {
 			}
 		});
 
-		boolean alive = getRemoteGameServerInterface(CallType.LoadBalancer, null).alive();
-		System.err.println(alive);
-		alive = getRemoteGameServerInterface(CallType.LoadBalancer, null).alive();
-		System.err.println(alive);
-
 		log.info("登录服启动成功。耗时[{}]s", (System.currentTimeMillis() - start) / 1000);
 	}
 
