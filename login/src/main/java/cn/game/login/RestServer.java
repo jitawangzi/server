@@ -17,6 +17,7 @@ import cn.game.login.net.clientpacket.vertx.gm.GmNoticeListReq;
 import cn.game.login.net.clientpacket.vertx.gm.GmOptListReq;
 import cn.game.login.net.clientpacket.vertx.gm.GmPayOrderSuccessReq;
 import cn.game.login.net.clientpacket.vertx.gm.GmSelectOrderReq;
+import cn.game.login.net.clientpacket.vertx.sojump.SojumpCallbackReq;
 import cn.game.login.net.clientpacket.vertx.wechat.PayCallbackSuccessReq;
 import cn.game.login.net.clientpacket.vertx.wechat.WeChatCustomerServiceReq;
 import cn.game.login.net.clientpacket.vertx.wechat.WeChatPayPageReq;
@@ -113,6 +114,7 @@ public class RestServer extends AbstractVerticle {
 		router.route("/wx_pay").handler(new WeChatPayPageReq());
 		router.route("/wx_customer").handler(new WeChatCustomerServiceReq());
 		router.route("/wx_pay_callback").handler(new PayCallbackSuccessReq());
+		router.route("/sojump_callback").handler(new SojumpCallbackReq());
 
 		// 错误处理
 		router.route().failureHandler(ctx -> {
