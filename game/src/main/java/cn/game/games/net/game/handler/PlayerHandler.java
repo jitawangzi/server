@@ -312,11 +312,14 @@ public class PlayerHandler extends BaseHandler {
 					if (battle.isHistoryMaxReward()) {
 						continue;
 					}
-					int startBattleId = battle.getStartBattleId();
-
-					if (startBattleId == 0) {
+					if (battle.getHistoryMaxBattleId() == 0) {
 						continue;
 					}
+//					int startBattleId = battle.getStartBattleId();
+//
+//					if (startBattleId == 0) {
+//						continue;
+//					}
 					ret = true;
 					break;
 				}

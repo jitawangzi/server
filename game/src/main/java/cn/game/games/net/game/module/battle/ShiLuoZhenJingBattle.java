@@ -173,10 +173,6 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		return historyMaxBattleId;
 	}
 
-	public void setHistoryMaxBattleId(int historyMaxBattleId) {
-		this.historyMaxBattleId = historyMaxBattleId;
-	}
-
 	public boolean isHistoryMaxReward() {
 		return historyMaxReward;
 	}
