@@ -67,8 +67,7 @@ public class SojumpCallbackReq implements Handler<RoutingContext> {
           JsonObject json = null;
             json = JsonUtil.parserJson(jsonString);
           if (json != null) {
-            JsonElement answerStr = json.get("answer");
-            JsonObject answer = answerStr.getAsJsonObject();
+              JsonObject answer = json.get("answer").getAsJsonObject();
             long pid =  answer.get("sojumpparm").getAsLong();
             int type = answer.get("type").getAsInt();
             //TODO  通知gameServer 发放奖励
