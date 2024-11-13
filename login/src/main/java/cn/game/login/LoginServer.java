@@ -68,11 +68,10 @@ public class LoginServer {
 		long start = System.currentTimeMillis();
 		log.info("正在启动登录服...");
 
-		ServerContext.getInstance().init(args, ServerType.Login);
-
 		Config.load();
 		ZkHelper.init();
 		RedisUtil.getInstance().init();
+		ServerContext.getInstance().init(args, ServerType.Login);
 		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig(); // config instance is singleton for
 																					// each namespace and is never null
 		int vertHttpPort = config.getIntProperty("vertx.http.port", 0);
@@ -153,6 +152,7 @@ public class LoginServer {
 				e1.printStackTrace();
 			}
 			log.error("登录服启动失败", e);
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}

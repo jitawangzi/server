@@ -1,24 +1,24 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONObject;
+
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
-import cn.game.login.net.clientpacket.vertx.wechat.BasePayOrderProcessor;
 import cn.game.login.net.handler.LoginServerHandler;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
-import com.alibaba.fastjson.JSONObject;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @ClassName GmPayOrderSuccessReq
@@ -55,14 +55,14 @@ public class GmPayOrderSuccessReq implements Handler<RoutingContext> {
             .setPlayerId(payOrder.getPlayerId())
             .setUid(payOrder.getId())
             .build();
-        Future<Message<ServerMsg.PaymentOrderShipResponse_7d000023>> future;
+			Future<ServerMsg.PaymentOrderShipResponse_7d000023> future;
         if (StringUtils.isEmpty(serverId)) {
             future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);
         } else {
             future = VxHolder.requestRemoteServer(serverId, paymentOrderShipRequest_7d000022);
         }
         future.onSuccess(r -> {
-            if (r.body().getSuccess()) {
+			if (r.getSuccess()) {
                 if (!payOrder.getIsDeliver()) {
                     payOrder.setIsDeliver(true);
                     payOrder.setCompleteDate(DateUtil.nowDateStr());

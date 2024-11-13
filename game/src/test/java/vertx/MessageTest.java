@@ -39,11 +39,11 @@ public class MessageTest {
 
 	public static void testProtobufMessageFutrue() {
 
-		Future<io.vertx.core.eventbus.Message<Object>> future = VxHolder.requestRemoteServer("GAME_SYQ", GameTestRequest_7d000500
+		Future<Object> future = VxHolder.requestRemoteServer("GAME_SYQ", GameTestRequest_7d000500
 				.newBuilder().setId(100).build());
 
 		future.onSuccess(r -> {
-			Object body = r.body();
+			Object body = r;
 			System.out.println(body);
 		}).onFailure(r -> {
 			System.err.println(r);

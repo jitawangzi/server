@@ -119,12 +119,12 @@ public class GameServer implements GameServerMBean {
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
-		ServerContext.getInstance().init(args, ServerType.Game);
 //		instance.log.info("启动逻辑服。。");
 		Config.load();
 
 		long start = System.currentTimeMillis();
 		RedisUtil.getInstance().init();
+		ServerContext.getInstance().init(args, ServerType.Game);
 		ZkHelper.init();
 		IdUtil.init();
 

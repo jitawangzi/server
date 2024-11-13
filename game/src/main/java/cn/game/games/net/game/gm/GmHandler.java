@@ -292,14 +292,14 @@ public class GmHandler extends BaseHandler {
             }
           }
           if (!PlayerManager.getInstance().isOnline(playerId)) {
-            Future<io.vertx.core.eventbus.Message<GameGmPlayerInfoResponse_7d000051>> respMessage =
+					Future<GameGmPlayerInfoResponse_7d000051> respMessage =
                 VxHolder.requestRemoteServer(
                     PlayerManager.getInstance().getServerId(playerId),
                     GameGmPlayerInfoRequest_7d000050.newBuilder().setPlayerId(playerId).build());
             respMessage
                 .onSuccess(
                     r -> {
-                      response.setPlayer(r.body().getPlayer());
+										response.setPlayer(r.getPlayer());
                       sendAndRecordOpt(client, request, response.build());
                     })
                 .onFailure(

@@ -81,7 +81,6 @@ import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
-import io.vertx.core.eventbus.Message;
 
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class Player  {
@@ -472,9 +471,10 @@ public class Player  {
 					.setGoodsPrice(rmbCost * 100)
 					.setItemId(chargeItemId + "")
 					.build();
-			Future<Message<PaymentOrderCreateResponse_7d000021>> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login, paymentOrderCreate);
+			Future<PaymentOrderCreateResponse_7d000021> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login,
+					paymentOrderCreate);
 			requestRemoteServer.map(r -> {
-				PaymentOrderCreateResponse_7d000021 body = r.body();
+				PaymentOrderCreateResponse_7d000021 body = r;
 				if (body.getOrderId() == 0) {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.getDefaultInstance(), ErrorMsgEnum.payment_order_create_fail.getId());
 				} else {

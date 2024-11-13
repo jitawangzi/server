@@ -23,7 +23,6 @@ import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
@@ -100,15 +99,15 @@ public class WechatShipPush implements Handler<RoutingContext> {
 		PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = PaymentOrderShipRequest_7d000022
 				.newBuilder().setPlayerId(user.getId()).setUid(payOrder.getId()).build();
 		String serverId = UserHelper.getServerId(user.getId());
-		Future<Message<PaymentOrderShipResponse_7d000023>> future;
+		Future<PaymentOrderShipResponse_7d000023> future;
 		if (StringUtils.isEmpty(serverId)) {
 			future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);
 		} else {
 			future = VxHolder.requestRemoteServer(serverId, paymentOrderShipRequest_7d000022);
 		}
 		future.onSuccess(r -> {
-			log.info("wechat ship resp from game ret[{}]", r.body().getSuccess());
-			if (r.body().getSuccess()) {
+			log.info("wechat ship resp from game ret[{}]", r.getSuccess());
+			if (r.getSuccess()) {
 				successConsumer.accept(null);
 				if (!payOrder.getIsDeliver()) {
 					payOrder.setIsDeliver(true);

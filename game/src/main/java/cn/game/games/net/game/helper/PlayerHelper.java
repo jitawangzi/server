@@ -807,7 +807,7 @@ public class PlayerHelper {
 	 * @return Future,如果发到别的服务器处理，null，不用后续处理。
 	 */
 	@Deprecated
-	public static Future<io.vertx.core.eventbus.Message<GamePlayerResponse_7d000016>> sendRemotePlayer(long playerId, Object message,
+	public static Future<GamePlayerResponse_7d000016> sendRemotePlayer(long playerId, Object message,
 			boolean discardWhenOffline) {
 		if (!PlayerManager.getInstance().isOnline(playerId) && discardWhenOffline) {
 			return null;
@@ -834,10 +834,10 @@ public class PlayerHelper {
 					.setId(msgId)
 					.setData(m.toByteString())
 					.build();
-			Future<io.vertx.core.eventbus.Message<GamePlayerResponse_7d000016>> requestRemoteServer = VxHolder
+			Future<GamePlayerResponse_7d000016> requestRemoteServer = VxHolder
 					.requestRemoteServer(serverId, gamePlayerRequest_7d000015);
 			requestRemoteServer.onSuccess(resp -> {
-				int errorCode = resp.body().getErrorCode();
+				int errorCode = resp.getErrorCode();
 				if (errorCode == ErrorMsgEnum.not_online.getId()) {
 					PlayerManager.getInstance().resetOnline(playerId);
 				}

@@ -33,7 +33,6 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
@@ -165,14 +164,14 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         ServerMsg.PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = ServerMsg.PaymentOrderShipRequest_7d000022
                 .newBuilder().setPlayerId(user.getId()).setUid(payOrder.getId()).build();
         log.info(String.format("充值成功 通知 game：%s ",paymentOrderShipRequest_7d000022.toString()));
-        Future<Message<ServerMsg.PaymentOrderShipResponse_7d000023>> future;
+		Future<ServerMsg.PaymentOrderShipResponse_7d000023> future;
         if (StringUtils.isEmpty(serverId)) {
             future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);
         } else {
             future = VxHolder.requestRemoteServer(serverId, paymentOrderShipRequest_7d000022);
         }
         future.onSuccess(r -> {
-            if (r.body().getSuccess()) {
+			if (r.getSuccess()) {
                 if (!payOrder.getIsDeliver()) {
                     payOrder.setIsDeliver(true);
                     payOrder.setCompleteDate(DateUtil.nowDateStr());
