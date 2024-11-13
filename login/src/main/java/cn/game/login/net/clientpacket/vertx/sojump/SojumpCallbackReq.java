@@ -84,16 +84,18 @@ public class SojumpCallbackReq implements Handler<RoutingContext> {
           } else {
             logger.info("sojump param json is empty.");
             response.end("fail");
+            return;
           }
         } else {
           logger.info("sojump aes decrypt result is empty.");
             response.end("fail");
+            return;
         }
+          response.end("success");
       } else {
         logger.info("sojump not found content.");
           response.end("fail");
       }
-      response.end("success");
     } catch (Exception e) {
       e.printStackTrace();
     }
