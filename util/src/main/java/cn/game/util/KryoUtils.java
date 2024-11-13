@@ -54,8 +54,6 @@ public class KryoUtils {
 			kryo.setRegistrationRequired(false); // 关闭注册行为
 			kryo.setReferences(true); // 支持循环引用,关闭可以提升性能
 			registerSerializer(kryo);
-//			kryo.register(ArrayListMultimap.class, new JavaSerializer());
-//			kryo.register(ArrayListMultimap.class, new ArrayListMultimapSerializer());
 
 //			kryo.register(Object[].class);
 //			kryo.register(Class.class);
@@ -82,8 +80,6 @@ public class KryoUtils {
 			// 序列化增加版本控制
 			kryo.setDefaultSerializer(VersionFieldSerializer.class);
 			registerSerializer(kryo);
-//			kryo.register(ArrayListMultimap.class, new JavaSerializer());
-//			kryo.register(ArrayListMultimap.class, new ArrayListMultimapSerializer());
 			//Fix the NPE bug when deserializing Collections. ? 
 //			((Kryo.DefaultInstantiatorStrategy) kryo.getInstantiatorStrategy()).setFallbackInstantiatorStrategy(
 //					new StdInstantiatorStrategy());

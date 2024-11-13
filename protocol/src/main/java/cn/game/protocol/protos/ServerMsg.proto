@@ -181,6 +181,14 @@ message LoginUpdateIOSAccessTokenResponse_7d000075{
 }
 
 
+// 问卷调查推送
+message LoginGameQuestionnairePush_7d000090{
+	int64 playerId = 1;
+	int32 type = 2;  // 问卷id
+}
+
+
+
 // 清档，一般只在测试时使用。
 message LoginPlayerDeleteRequest_7d000080{
 	int64 playerId = 1;

@@ -378,11 +378,11 @@ public class GameServer implements GameServerMBean {
 		long start = System.currentTimeMillis();
 //		log.info("Game Server starts to shutdown ...");
 		LoggerType.Stdout.logger.info("Game Server starts to shutdown ...");
+		// 通知玩家退出
+		GameClientManager.getInstance().notifyLogoutAllClients();
 		// 关闭websocket服务
 //		WebSocketServer socketServer = SpringContextLoader.getContext().getBean(WebSocketServer.class);
 //		socketServer.shutdown();
-		// 通知玩家退出
-		GameClientManager.getInstance().notifyLogoutAllClients();
 		/*		try {
 					// 关闭websocket
 					VxHolder.vertx.undeploy(wsVerticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);

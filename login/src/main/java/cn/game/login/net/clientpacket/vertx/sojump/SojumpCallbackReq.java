@@ -1,31 +1,29 @@
 package cn.game.login.net.clientpacket.vertx.sojump;
 
-import cn.game.core.net.vertx.VxHolder;
-import cn.game.login.LoginServer;
-import cn.game.login.cache.entity.PayOrder;
-import cn.game.login.mapper.PayOrderMapper;
-import cn.game.util.JsonUtil;
-import cn.game.util.SpringContextLoader;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.ext.web.RoutingContext;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.login.net.clientpacket.vertx.UserHelper;
+import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
+import cn.game.util.JsonUtil;
+import cn.game.util.ServerType;
+import io.vertx.core.Handler;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.ext.web.RoutingContext;
 
 /**
  * @ClassName SojumpCallbackReq
@@ -74,7 +72,16 @@ public class SojumpCallbackReq implements Handler<RoutingContext> {
             long pid =  answer.get("sojumpparm").getAsLong();
             int type = answer.get("type").getAsInt();
             //TODO  通知gameServer 发放奖励
-
+			String serverId = UserHelper.getServerId(pid);
+			LoginGameQuestionnairePush_7d000090 loginGameQuestionnairePush_7d000090 = LoginGameQuestionnairePush_7d000090.newBuilder()
+					.setPlayerId(pid)
+					.setType(type)
+					.build();
+			if (StringUtils.isEmpty(serverId)) {
+				VxHolder.sendRemoteServer(ServerType.Game, loginGameQuestionnairePush_7d000090);
+			} else {
+				VxHolder.sendRemoteServer(serverId, loginGameQuestionnairePush_7d000090);
+			}
           } else {
             logger.info("sojump param json is empty.");
             response.end("fail");

@@ -1510,18 +1510,11 @@ public class PlayerHelper {
 			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
 		} else if (playerName != null){
 			return PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
-				long searchPlayerId = 0;
-				if (r == null) {
-					searchPlayerId = playerId;
-				} else {
-					searchPlayerId = r;
-				}
-				return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(searchPlayerId));
+				return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(r));
 			});
 		}
 		return Future.failedFuture("没有传入playerId或者playerName");
 	}
-
 
 	/**
 	 * https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/sec-center/sec-check/msgSecCheck.html#HTTPS-%E8%B0%83%E7%94%A8

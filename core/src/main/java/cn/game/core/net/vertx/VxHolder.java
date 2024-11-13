@@ -212,6 +212,32 @@ public class VxHolder {
 		}
 	}
 
+	/** 
+	 * 发送消息到远程服务器，不需要返回消息
+	 * @param serverType
+	 * @param message
+	 */
+	public static void sendRemoteServer(ServerType serverType, Object message) {
+		sendRemoteServer(serverType.name(), message);
+	}
+
+	/** 
+	 * 发送消息到远程服务器，不需要返回消息
+	 * @param serverId
+	 * @param message
+	 */
+	public static void sendRemoteServer(String serverId, Object message) {
+		if (message instanceof com.google.protobuf.Message) {
+			vertx.eventBus().send(serverId, message, protobufOptions);
+		} else if (message instanceof com.google.protobuf.MessageLite.Builder) {
+			vertx.eventBus().send(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions);
+		} else if (message instanceof IProtocol) {
+			vertx.eventBus().send(serverId, message, protocolOptions);
+		} else {
+			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
+		}
+	}
+
 	private static <T> T convertResponseObject(Object body) {
 		if (body instanceof com.google.protobuf.Message) {
 			return (T)body;

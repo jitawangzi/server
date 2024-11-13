@@ -2,6 +2,8 @@ package cn.game.games.net.game.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,10 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.item.ItemModule;
+import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.recharge.PayItem;
+import cn.game.protocol.generated.config.QuestionnaireConfig;
+import cn.game.protocol.generated.manager.QuestionnaireManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -52,6 +57,7 @@ import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
 import cn.game.protocol.protobuf.ServerMsg.GameTestRequest_7d000500;
 import cn.game.protocol.protobuf.ServerMsg.GameTestResponse_7d000501;
+import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
 import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
@@ -99,6 +105,7 @@ public class ServerHandler extends BaseHandler {
 
 		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000074, this::updateIOSAccessToken);
 		putInvoker(PbProtocol.ServerObjectTestRequest_7d000033, this::objectMessageTest);
+		putInvoker(PbProtocol.LoginGameQuestionnairePush_7d000090, this::questionnairePush);
 		
 
 
@@ -106,6 +113,39 @@ public class ServerHandler extends BaseHandler {
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
 	}
 
+	private void questionnairePush(NetClient client, Object o) {
+		LoginGameQuestionnairePush_7d000090 req = (LoginGameQuestionnairePush_7d000090) o;
+		long playerId = req.getPlayerId();
+		int id = req.getType();
+		QuestionnaireConfig questionnaireConfig = QuestionnaireManager.instance().get(id);
+
+		Consumer<Player> consumer = player -> {
+			Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.Questionnaire);
+			if (idsSet.contains(id)) {
+				return;
+			}
+			if (!PlayerHelper.checkCondition(player, questionnaireConfig.Condition)) {
+				return;
+			}
+			idsSet.add(id);
+			MailHelper.sendMail(playerId, questionnaireConfig.MailID, true);
+		};
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player != null) {
+			consumer.accept(player);
+		} else {
+			PlayerHelper.loadPlayerFromDb(playerId).onSuccess(offlinePlayer -> {
+				if (offlinePlayer != null) {
+					consumer.accept(offlinePlayer);
+					PlayerHelper.saveClientCache(playerId).onComplete(r -> {
+						PlayerManager.getInstance().deletePlayer(playerId);
+					});
+				}
+			}).onFailure(err -> {
+				log.error("", err);
+			});
+		}
+	}
 	private void objectMessageTest(NetClient client, Object o) {
 		ItemModule itemModule = (ItemModule) o;
 		log.info(itemModule.toString());
