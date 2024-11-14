@@ -2,6 +2,7 @@ package cn.game.login.net.clientpacket.vertx;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import cn.game.protocol.protobuf.Account.AccountServerList;
 import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.protocol.protobuf.Account.ServerInfo;
+import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Handler;
@@ -43,7 +45,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 //		String passportSessionId = bodyAsJson.getString("passport_session_id");
 //		log.info("服务器列表，sessionId: " + passportSessionId);
 		HttpServerResponse response = context.response().putHeader("content-type", "application/octet-stream");
-		SocketAddress remoteAddress = context.request().remoteAddress(); 
+		SocketAddress remoteAddress = context.request().remoteAddress();
 		byte[] bytes = context.getBody().getBytes();
 		AccountServerList from = null;
 		try {
@@ -56,17 +58,19 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 		// 查询用户
 		RedisUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), user -> {
 			if (user == null) {
-				HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("可能未登陆")
-						.setErrorCode(AccountErrorCode.PASSPORT_SESSION_ERROR).build();
+				HttpResult httpResult = HttpResult.newBuilder()
+						.setErrorMsg("可能未登陆")
+						.setErrorCode(AccountErrorCode.PASSPORT_SESSION_ERROR)
+						.build();
 				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 				return;
 			}
-			User u = (User) user ; 
+			User u = (User) user;
 			RedisUtil.getAndRunAsync(CacheType.PLAYER_SERVER_ID.key(u.getId()), serverId -> {
 				String myServerId = (String) serverId;
+				// 所有配置的服务器
 				Collection<ServerList> serversList = ServerListManager.getInstance().getServerList();
-				Collection<String> activeServerSet = ActiveServerListManager.getInstance()
-						.getServerSet(ServerType.Game);
+				Collection<String> activeServerSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Game);
 
 				List<ServerInfo> serverItems = new ArrayList<>();
 				List<ServerItem> myServerItems = new ArrayList<>();
@@ -87,7 +91,13 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 //					if (type != server.getType()) {
 //						continue;
 //					}
+					// 检查开服时间：当前时间在开服时间之后的服务器才显示
+					Date openTime = DateUtil.parse(server.getServerOpenTime());
+					if (openTime.after(new Date())) {
+						continue;
+					}
 					int status = server.getStatus();
+					// 实际没有启动的服务器，不下发。
 					if (!activeServerSet.contains(server.getServerId())) {
 						if (ServerContext.getInstance().getRunMode().isTest()) {
 							status = ServerList.STATUS_SHUTDOWN;
@@ -95,11 +105,11 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 							continue;
 						}
 					}
-					// 停服状态的先不发下去
+					// 设置为停服状态的先不发下去
 					if (status == ServerList.STATUS_SHUTDOWN) {
-						continue; 
+						continue;
 					}
-					// 维护，仅ip白名单可进
+					// 设置为维护状态的，仅ip白名单可进
 					if (status == ServerList.STATUS_MAINTANCE) {
 						if (!IpWhitelistManger.getInstance().isIpWhitelist(remoteAddress.hostAddress())) {
 							continue;
@@ -124,7 +134,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 					}
 				}
 				response.end(Buffer.buffer(resp.addAllServers(serverItems).build().toByteArray()));
-			}); 
+			});
 		});
 	}
 
@@ -145,7 +155,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 
 			item.setVisible(1);
 			item.setCanEnter(1);
-				item.setName(item.getName());
+			item.setName(item.getName());
 			item.setNameColor(0x00ff00);
 			break;
 		// 维护
@@ -154,9 +164,9 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 			if (isGm)
 				item.setCanEnter(1);
 			else
-					item.setCanEnter(0);
+				item.setCanEnter(0);
 
-				item.setName(item.getName());
+			item.setName(item.getName());
 			item.setNameColor(0xefefef);
 			break;
 
@@ -172,7 +182,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 			else
 				item.setCanEnter(0);
 
-				item.setName(item.getName());
+			item.setName(item.getName());
 			item.setNameColor(0xffffff);
 			break;
 
@@ -180,7 +190,7 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 		case ServerList.STATUS_SHUTDOWN:
 			item.setVisible(1);
 			item.setCanEnter(0);
-				item.setName(item.getName());
+			item.setName(item.getName());
 			item.setNameColor(0xefefefe);
 			break;
 		default:

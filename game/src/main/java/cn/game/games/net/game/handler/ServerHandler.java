@@ -117,6 +117,7 @@ public class ServerHandler extends BaseHandler {
 		LoginGameQuestionnairePush_7d000090 req = (LoginGameQuestionnairePush_7d000090) o;
 		long playerId = req.getPlayerId();
 		int id = req.getType();
+		log.info("questionnairePush playerId={}, id={}", playerId, id);
 		QuestionnaireConfig questionnaireConfig = QuestionnaireManager.instance().get(id);
 
 		Consumer<Player> consumer = player -> {
