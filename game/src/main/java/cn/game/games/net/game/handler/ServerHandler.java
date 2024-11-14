@@ -268,7 +268,9 @@ public class ServerHandler extends BaseHandler {
 					return;
 				}
 				// 这里只是通知支付后的后续操作，不过一般也不会失败
-				player.getPlayerModule().execPayCallback(uid);
+				if (!player.getPlayerModule().execPayCallback(uid)){//玩家重新登录之前的订单 没有callback 需要走离线补单逻辑
+					payItem.getPayType().offlinePay(player,payItem);
+				}
 				payItem.finish();
 				player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
 				GameLogger.recharge(player, payItem);
