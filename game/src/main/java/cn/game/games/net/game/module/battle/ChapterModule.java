@@ -27,12 +27,10 @@ import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleChapterConfig;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.BattleLevelConfig;
-import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleChapterManager;
 import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.generated.manager.BattleManager;
-import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupInfo;
 import cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo;
@@ -237,21 +235,6 @@ public class ChapterModule extends BasePlayerModule  {
 	public boolean isExploreActPass(int id) {
 
 		return false;
-	}
-
-	/** 
-	 * 计算巡逻n小时金币,当前在哪一关，也就是已经通关的下一关。 
-	 * @param hours
-	 * @return
-	 */
-	public int calcPatrolGold(int hours) {
-		PatrolConfig patrolConfig = PatrolManager.instance().get(getFightMainBattleId());
-		return patrolConfig.IncomeGold * 60 * hours;
-	}
-
-	public int calcPatrolExp(int hours) {
-		PatrolConfig patrolConfig = PatrolManager.instance().get(getFightMainBattleId());
-		return patrolConfig.IncomeEXP * 60 * hours;
 	}
 
 	/** 
