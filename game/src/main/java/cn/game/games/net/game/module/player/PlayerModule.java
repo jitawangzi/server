@@ -204,9 +204,13 @@ public class PlayerModule extends BasePlayerModule {
 		return guideMap;
 	}
 
-	public void execPayCallback(long uid) {
-		Promise<Boolean> callback = this.payCallback.remove(uid); 
-		callback.complete(true);; 
+	public boolean execPayCallback(long uid) {
+		Promise<Boolean> callback = this.payCallback.remove(uid);
+		if(callback != null){
+			callback.complete(true);
+			return true;
+		}
+		return false;
 	}
 
 	public int getLastChatTime() {

@@ -224,6 +224,7 @@ public class ServerHandler extends BaseHandler {
 		log.info("wechat ship push, playerId={}, uid={}", playerId, uid);
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null && player.isIslogouting()) {
+			log.error(String.format("充值失败:%b",player.isIslogouting()));
 			resp.setSuccess(false);
 			client.sendProtocol(resp.build());
 			return;
@@ -262,13 +263,15 @@ public class ServerHandler extends BaseHandler {
 			PlayerHelper.addTask(playerId, r -> {
 				PayItem payItem = player.getPlayerModule().getPayItems(uid);
 				if (payItem == null || payItem.isFinish()) {
-					log.warn("PayItem online ship fail : " + payItem);
+					log.error("PayItem online ship fail : " + payItem);
 					resp.setSuccess(false);
 					client.sendProtocol(resp.build());
 					return;
 				}
 				// 这里只是通知支付后的后续操作，不过一般也不会失败
-				player.getPlayerModule().execPayCallback(uid);
+				if (!player.getPlayerModule().execPayCallback(uid)){//玩家重新登录之前的订单 没有callback 需要走离线补单逻辑
+					payItem.getPayType().offlinePay(player,payItem);
+				}
 				payItem.finish();
 				player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
 				GameLogger.recharge(player, payItem);
@@ -277,6 +280,8 @@ public class ServerHandler extends BaseHandler {
 					resp.setSuccess(true);
 					client.sendProtocol(resp.build());
 				}).onFailure(t -> {
+					t.printStackTrace();
+					log.error(String.format("充值失败:%s",t.getMessage() ));
 					player.handleFail(t);
 					resp.setSuccess(false);
 					client.sendProtocol(resp.build());
