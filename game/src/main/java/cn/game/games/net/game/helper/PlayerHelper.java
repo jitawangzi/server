@@ -31,6 +31,7 @@ import cn.game.games.core.GoodsModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
+import cn.game.games.core.push.PushService;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
@@ -1360,6 +1361,7 @@ public class PlayerHelper {
 		return saveClientCache(playerId).onSuccess(r -> {
 			clearPlayer(playerId);
 			GameLogger.logout(player);
+			PushService.getInstance().delPlayerTags(playerId);
 		}).compose(v -> {
 			RFuture<Boolean> deleteAsync = RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
 			return Future.fromCompletionStage(deleteAsync);

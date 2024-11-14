@@ -23,7 +23,7 @@ public class TagSystem {
     }
 
 	public void delPlayerTags(long playerId, String... tags) {
-		if (tags.length == 0) {
+		if (tags == null || tags.length == 0) {
 			// 如果没有传入标签，删除该玩家的所有标签
 			Set<List<String>> allTagLists = playerToTags.remove(playerId);
 			if (allTagLists != null) {
