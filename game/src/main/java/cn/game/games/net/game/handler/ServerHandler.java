@@ -223,6 +223,7 @@ public class ServerHandler extends BaseHandler {
 		log.info("wechat ship push, playerId={}, uid={}", playerId, uid);
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null && player.isIslogouting()) {
+			log.error(String.format("充值失败:%b",player.isIslogouting()));
 			resp.setSuccess(false);
 			client.sendProtocol(resp.build());
 			return;
@@ -261,7 +262,7 @@ public class ServerHandler extends BaseHandler {
 			PlayerHelper.addTask(playerId, r -> {
 				PayItem payItem = player.getPlayerModule().getPayItems(uid);
 				if (payItem == null || payItem.isFinish()) {
-					log.warn("PayItem online ship fail : " + payItem);
+					log.error("PayItem online ship fail : " + payItem);
 					resp.setSuccess(false);
 					client.sendProtocol(resp.build());
 					return;
@@ -276,6 +277,8 @@ public class ServerHandler extends BaseHandler {
 					resp.setSuccess(true);
 					client.sendProtocol(resp.build());
 				}).onFailure(t -> {
+					t.printStackTrace();
+					log.error(String.format("充值失败:%s",t.getMessage() ));
 					player.handleFail(t);
 					resp.setSuccess(false);
 					client.sendProtocol(resp.build());
