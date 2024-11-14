@@ -378,29 +378,20 @@ public class GameServer implements GameServerMBean {
 		long start = System.currentTimeMillis();
 //		log.info("Game Server starts to shutdown ...");
 		LoggerType.Stdout.logger.info("Game Server starts to shutdown ...");
-		// 停止超时维护线程
-		// ClientMaintaining clientMaintaining =
-		// ClientManage.getInstance().getClientMaintaining();
-		// if (clientMaintaining != null)
-		// {
-		// clientMaintaining.setShutdown(true);
-		// }
 		// 关闭websocket服务
 //		WebSocketServer socketServer = SpringContextLoader.getContext().getBean(WebSocketServer.class);
 //		socketServer.shutdown();
-
 		// 通知玩家退出
 		GameClientManager.getInstance().notifyLogoutAllClients();
-		try {
-			// 关闭websocket
-			VxHolder.vertx.undeploy(wsVerticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
-		} catch (Exception e) {
-//			log.error("", e);
-			LoggerType.Stdout.logger.error(e);
-		}
+		/*		try {
+					// 关闭websocket
+					VxHolder.vertx.undeploy(wsVerticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
+				} catch (Exception e) {
+					LoggerType.Stdout.logger.error("undeploy wsVerticle fail", e);
+				}*/
 		TaskManager.getInstance().shutdown();
 		try {
-
+			LoggerType.Stdout.logger.warn("storeAllPlayers on shutdown");
 			// 同步存储所有玩家的数据
 			Config.remoteCallTimeOut = Config.shutdownWaitTime;
 //			setDataServerSyncDefault();
@@ -409,20 +400,22 @@ public class GameServer implements GameServerMBean {
 			quartzInitializer.destroyed();
 
 			ServerContext.getInstance().shutdown();
-
+			LoggerType.Stdout.logger.warn("close vertx on shutdown");
 			VxHolder.vertx.close().toCompletionStage().toCompletableFuture().get(300, TimeUnit.SECONDS);
 
 //			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
-			LoggerType.Stdout.logger.warn("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
-			String.format("Game Server  safe  shutdown, use  time %d ms ", System.currentTimeMillis() - start);
+			String shutdownSucess = String.format("Game Server  safe  shutdown, use  time %d ms ", System.currentTimeMillis() - start);
+			LoggerType.Stdout.logger.warn(shutdownSucess);
+			System.err.println(shutdownSucess);
 			// 安全关闭log
 //			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 //			context.stop();
 
 		} catch (Throwable e) {
 //			log.error("Game Server Shutdown err ", e);
-			LoggerType.Stdout.logger.error("Game Server Shutdown err ", e);
 			e.printStackTrace();
+			System.err.println("Game Server Shutdown err ");
+			LoggerType.Stdout.logger.error("Game Server Shutdown err ", e);
 		}
 
 	}

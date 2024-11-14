@@ -123,16 +123,6 @@ public class TestHandler extends BaseHandler {
         putInvoker(PbProtocol.TestPlayerDeleteRequest_6f000044, this::playerDelete);
         putInvoker(PbProtocol.TestMessageRequest_6f000080, this::message);
     }
-    //		putInvoker(PbProtocol.TestMailRequest_6f000010, this::mail);
-    //		putInvoker(PbProtocol.TestDbRequest_6f000041, this::testDBinsert);
-    //		putInvoker(PbProtocol.TestStoryFinishRequest_6f000024, this::finishStory);
-    //		putInvoker(PbProtocol.TestAddOrDelBagItemRequest_6f000032, this::bagTest);
-    //		putInvoker(PbProtocol.TestMessageRequest_6f000080, this::testMessage);
-    //		putInvoker(PbProtocol.TestCommandRequest_6f000095, this::command);
-    //		putInvoker(PbProtocol.TestRoleAttributeRequest_6f000100, this::getRoleAttribute);
-    //		putInvoker(PbProtocol.TestGameEventTriggerRequest_6f000105, this::triggerEvent);
-    //		putInvoker(PbProtocol.TestRolePromotionRequest_6f00010b, this::rolePromotion);
-    //		putInvoker(PbProtocol.TestRoleUnlockOccupationTalentNodeRequest_6f00010d, this::unlockOccupationTalentNode);
     //角色晋升
 	private void gmCmd(NetClient client, Object message) {
 		TestMsg.TestGmCmdRequest_6f000001 req = (TestMsg.TestGmCmdRequest_6f000001) message;

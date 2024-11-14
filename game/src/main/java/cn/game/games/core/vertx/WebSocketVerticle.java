@@ -98,11 +98,13 @@ public class WebSocketVerticle extends AbstractVerticle {
 			}).textMessageHandler(r -> {
 				log.error("not support ws text message " + r);
 			}).closeHandler(v -> GameClientManager.getInstance().removeGameClientConnection(ws.binaryHandlerID())).exceptionHandler(r -> {
-				ws.close();
+				if (ws != null) {
+					ws.close();
+				}
 				if (r instanceof java.net.SocketException && r.getMessage().contains("Connection reset")) {
 					return;
 				}
-				log.error("ws error", r);
+				log.info("ws error", r);
 			});
 		}).connectionHandler(r -> {
 			if (log.isDebugEnabled()) {
