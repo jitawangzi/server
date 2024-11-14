@@ -9,8 +9,6 @@ import cn.game.games.cache.entity.Story;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.protocol.generated.config.StoryConfig;
-import cn.game.protocol.generated.manager.StoryManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 public class StoryModule extends BasePlayerModule {
@@ -33,10 +31,10 @@ public class StoryModule extends BasePlayerModule {
 			this.storys.put(id, story);
 		} else {
 			if (story.getFinish()) {
-				StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
-				if (!storyConfig.getRepeat()) { 
-					return false; 
-				}
+//				StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
+//				if (!storyConfig.getRepeat()) { 
+//					return false; 
+//				}
 			}
 			story.setFinish(finish);
 			if (count > 0) {

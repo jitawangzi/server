@@ -1,14 +1,9 @@
 package cn.game.simulation.client.handler;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.protocol.generated.config.GameEventActionConfig;
-import cn.game.protocol.generated.manager.GameEventActionManager;
-import cn.game.protocol.protobuf.GameEventMsg.GameEventStageRequest_23000003;
 import cn.game.simulation.client.Client;
 
 
@@ -38,18 +33,18 @@ public class ClientGameEventHandler extends BaseHandler {
 //			TestGameEventTriggerRequest_6f000105 request = (TestGameEventTriggerRequest_6f000105) curRequest;
 //			id = request.getId();
 //		}
-		int actionCount = 8;
-		List<GameEventActionConfig> actions = GameEventActionManager.getInstance().getEventIdList(id);
-		if (actions != null) {
-//			actionCount = actions.size();
-		}
-		// 触发事件后，开启各个阶段。 
-		for (int i = 0; i < actionCount; i++) {
-			GameEventStageRequest_23000003.Builder builder = GameEventStageRequest_23000003.newBuilder();
-			builder.setStage(i);
-			builder.setId(id);
-			client.sendProtocol(builder.build());
-		}
+		/*		int actionCount = 8;
+				List<GameEventActionConfig> actions = GameEventActionManager.getInstance().getEventIdList(id);
+				if (actions != null) {
+		//			actionCount = actions.size();
+				}
+				// 触发事件后，开启各个阶段。 
+				for (int i = 0; i < actionCount; i++) {
+					GameEventStageRequest_23000003.Builder builder = GameEventStageRequest_23000003.newBuilder();
+					builder.setStage(i);
+					builder.setId(id);
+					client.sendProtocol(builder.build());
+				}*/
 	}
 
 }

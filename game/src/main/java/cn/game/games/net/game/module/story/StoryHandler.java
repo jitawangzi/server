@@ -5,11 +5,7 @@ import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.Story;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.config.StoryConfig;
-import cn.game.protocol.generated.manager.StoryManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.StoryMsg.StoryFinishRequest_14000003;
@@ -40,28 +36,28 @@ public class StoryHandler extends BaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
+//		StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
 
-		boolean checkCondition = PlayerHelper.checkCondition(player, storyConfig.getCondition());
-		if (!checkCondition) {
+//		boolean checkCondition = PlayerHelper.checkCondition(player, storyConfig.getCondition());
+//		if (!checkCondition) {
 //			client.sendProtocol(resp.build(), ErrorMsgEnum.story_unlock_condition_err.getId());
-			return;
-		}
-		StoryModule storyModule = player.getModule(StoryModule.class);
+//			return;
+//		}
+//		StoryModule storyModule = player.getModule(StoryModule.class);
 
-		if (!storyModule.isFinish(storyConfig.getStoryCondition())) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.story_pre_not_finish.getId());
-			return;
-		}
-		boolean update = storyModule.update(id, 1, false);
-		if (!update) {
+//		if (!storyModule.isFinish(storyConfig.getStoryCondition())) {
+//			client.sendProtocol(resp.build(), ErrorMsgEnum.story_pre_not_finish.getId());
+//			return;
+//		}
+//		boolean update = storyModule.update(id, 1, false);
+//		if (!update) {
 //			client.sendProtocol(resp.build(), ErrorMsgEnum.story_start_repeated.getId());
-			return;
-		}
+//			return;
+//		}
 
-		Story story = storyModule.get(id);
+//		Story story = storyModule.get(id);
 
-		client.sendProtocol(resp.setStory(story.toStoryInfo()));
+//		client.sendProtocol(resp.setStory(story.toStoryInfo()));
 
 	}
 	private void finish(NetClient client, Object message) {
@@ -76,7 +72,7 @@ public class StoryHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
+//		StoryConfig storyConfig = StoryManager.getInstance().getStoryConfig(id);
 
 //		List<RewardInfo> addResources = PlayerHelper.addResources(player, storyConfig.getReward());
 //		resp.addAllRewards(addResources);

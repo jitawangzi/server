@@ -3,7 +3,6 @@ package cn.game.games.net.game.helper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +11,7 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.protocol.generated.config.BattlePassConfig;
-import cn.game.protocol.generated.config.BattlePassPrizeConfig;
 import cn.game.protocol.generated.enume.Asset;
-import cn.game.protocol.generated.manager.BattlePassManager;
-import cn.game.protocol.generated.manager.BattlePassPrizeManager;
 import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.EquipManager;
@@ -27,7 +22,6 @@ import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.HeroSwordManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
-import cn.game.util.DateUtil;
 
 public class ItemHelper {
 
@@ -133,27 +127,6 @@ public class ItemHelper {
 
 		GoodsModule goodsModule = player.getGoodsModule(id);
 		return goodsModule.getCount(id);
-	}
-
-	public static int getBattlePassId() {
-		int passid = 0;
-		List<BattlePassConfig> collect = BattlePassManager.getInstance().list().stream()
-				.filter(e -> DateUtil.between(e.getUpTime(), e.getDownTime())).collect(Collectors.toList());
-		if (collect != null && collect.size() > 0) {
-			// 设置周期
-			passid = collect.get(0).getId();
-		}
-		return passid;
-	}
-
-
-	public static BattlePassPrizeConfig getBattlePassConfig(int battlepassid, int level) {
-		int cycleid = battlepassid * 100 + level;
-		BattlePassPrizeConfig config = BattlePassPrizeManager.getInstance().getBattlePassPrizeConfigNullable(cycleid);
-		/*if (config == null) {
-			throw new IllegalArgumentException("battlepass id不存在: " + cycleid);
-		}*/
-		return config;
 	}
 
 	public static List<Map.Entry<Integer, Integer>> getExtraRewardList(List<Map.Entry<Integer, Integer>> rewards,

@@ -15,7 +15,7 @@ import com.alibaba.fastjson.TypeReference;
 
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.net.game.module.award.UnionApply;
-import cn.game.protocol.generated.enume.UnionBuildingType;
+import cn.game.protocol.manual.UnionBuildingType;
 import cn.game.util.DateUtil;
 
 public class Union implements Serializable, DbEntity {

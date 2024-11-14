@@ -2,7 +2,6 @@ package cn.game.games.net.game.helper;
 
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.protocol.generated.config.QuestConfig;
-import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
 import cn.game.protocol.protobuf.QuestMsg.QuestPush_20200008;
@@ -99,9 +98,6 @@ public class QuestHelper {
 //		if (missionConfig == null) {
 //			missionConfig = ExploreMissionManager.getInstance().getExploreMissionConfigNullable(id);
 //		}
-		if (missionConfig == null) {
-			missionConfig = AchievementMissionManager.getInstance().getAchievementMissionConfigNullable(id);
-		}
 		return missionConfig;
 	}
 	

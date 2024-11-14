@@ -49,26 +49,20 @@ import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.ConsumeConfig;
 import cn.game.protocol.generated.config.ExpConfig;
-import cn.game.protocol.generated.config.GameCommandConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RandomGroupConfig;
-import cn.game.protocol.generated.config.RewardConfig;
-import cn.game.protocol.generated.config.versionConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.ConsumeManager;
 import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
-import cn.game.protocol.generated.manager.GameCommandManager;
 import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
-import cn.game.protocol.generated.manager.RewardManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.VIPManager;
-import cn.game.protocol.generated.manager.versionManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
@@ -1048,40 +1042,6 @@ public class PlayerHelper {
 			}
 		}
 		throw new IllegalArgumentException(" not suport condition  " + type);
-
-//		switch (type) {
-//		// 直接根据当前数据获取的：
-//		case PlayerLevel: {
-//			return player.getLevel();
-//		}
-//		case ChapterFinish: {
-//			ChapterModule chapterModule = player.getModule(ChapterModule.class);
-//			return chapterModule.isBattlePass(id) ? 1 : 0;
-//		}
-//		case CultivatesImmortals: {
-//			return player.getDevelopModule().getHeavenlyDaoLevel();
-//		}
-//		// 累计计数带有额外参数的：
-//		case EarnHeroCumulation: {
-//			return player.getQuestModule().getCumulativeCount(type, extParam);
-//		}
-//
-//		// 累计计数不带额外参数直接获取的
-//		case RechargeCnt:
-//		case ConsumesDiamonds:
-//		case CumulativeLogins:
-//		case EliteFinish:
-//		case KillBoss:
-//		case KillMonsters:
-//		case WatchAdsCumulation:
-//		case AccumulatedRecharge:
-//		case BreakHeroCumulation: {
-//			return player.getQuestModule().getCumulativeCount(type);
-//		}
-//		default:
-//			throw new IllegalArgumentException(" not suport condition  " + type);
-//		}
-
 	}
 
 	public static boolean operator(int value, int configValue, int operator) {
@@ -1101,58 +1061,6 @@ public class PlayerHelper {
 		default:
 			return false;
 		}
-	}
-
-	public static boolean command(long playerId, List<Integer> command) {
-		for (Integer oneCommand : command) {
-			if (!command(playerId, oneCommand))
-				return false;
-		}
-
-		return true;
-	}
-
-	public static boolean command(long playerId, int[] command) {
-		for (int oneCommand : command) {
-			if (!command(playerId, oneCommand))
-				return false;
-		}
-		return true;
-	}
-
-	public static boolean command(long playerId, int command) {
-		log.info("Player[{}] execute command[{}]", playerId, command);
-		GameCommandConfig gameCommandConfig = GameCommandManager.getInstance().getGameCommandConfig(command);
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		List<Integer> parameterList = gameCommandConfig.getParameterList();
-
-		switch (gameCommandConfig.getType()) {
-		case RewardItem:
-			RewardConfig rewardConfig = RewardManager.getInstance().getRewardConfig(parameterList.get(0));
-			if (rewardConfig == null)
-				return false;
-
-//				List<RewardInfo> addResources = addResources(playerId, rewardConfig.getInfo());
-//				RewardShowPush_55002501 build = RewardShowPush_55002501.newBuilder()
-//						.addAllRewards(PbBuilder.buildRewardInfo(addResources))
-//						.build();
-//				PlayerHelper.sendProtcol(playerId, build);
-			break;
-
-//			case AddBuff: {
-//				int id = parameterList.get(0);
-//				BuffOp buffOp = player.getModule(BuffOp.class);
-//				buffOp.add(id, null);
-//				break;
-//			}
-		case DeductionRandomItem: {
-			break;
-		}
-		default:
-			return false;
-		}
-
-		return true;
 	}
 
 	public static List<DbTask> genPlayerDbTask(long uid) {
@@ -1407,12 +1315,6 @@ public class PlayerHelper {
 			}
 		}
 		return Future.succeededFuture(player);
-	}
-
-	public static String getServerConfigVersion() {
-		List<versionConfig> list = versionManager.getInstance().list();
-		return list.get(0).getVersion();
-
 	}
 
 	/**

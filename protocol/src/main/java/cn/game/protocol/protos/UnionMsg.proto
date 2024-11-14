@@ -1,0 +1,113 @@
+syntax = "proto3";
+option java_package = "cn.game.protocol.protobuf";
+//option optimize_for = LITE_RUNTIME;
+package Protos;
+import "BaseMsg.proto" ;
+
+// 请求工会列表。当打开工会页面时，如果有工会显示所在工会信息，不在工会显示工会列表
+message UnionListRequest_33000001{
+	int32 page = 1;   // 打开工会页面默认0，大于0表示请求某页的工会列表
+}
+
+message UnionListResponse_33000002{
+	repeated  UnionInfo unions = 1;   // 所在工会数据，没有工会的话，只用到里面的 UnionBaseInfo 
+}
+
+// 申请创建工会
+message UnionCreateRequest_33000003{
+	string name = 1;   // 工会名
+}	
+message UnionCreateResponse_33000004{
+	UnionInfo union = 1;   // 工会数据
+}
+
+
+// 申请加入工会
+message UnionApplyRequest_33000005{
+	string uid = 1;   // 工会id
+}	
+message UnionApplyResponse_33000006{
+}
+
+// 退出所在工会
+message UnionQuitRequest_33000007{
+}	
+message UnionQuitResponse_33000008{
+}
+
+// 将某人踢出公会
+message UnionKickRequest_33000009{
+	string uid = 1; 
+}	
+message UnionKickResponse_3300000a{
+}
+
+// 处理工会的申请
+message UnionApplicationProcessRequest_33000010{
+	string uid = 1; 
+	bool agree  = 2 ;   // 是否同意加入工会
+}	
+message UnionApplicationProcessResponse_33000011{
+}
+
+
+// 变更成员职位
+message UnionTitleChangeRequest_33000012{
+	string uid = 1; 	 // 被变更职位的人id
+	int32 title = 2 ;   // 变更后的职位
+}	
+message UnionTitleChangeResponse_33000013{
+}
+
+// 转让会长
+message UnionMasterChangeRequest_33000014{
+	string uid = 1; 	 // 被转让人
+}	
+message UnionMasterChangeResponse_33000015{
+}
+	
+// 修改工会公告内容
+message UnionNoticeRequest_33000016{
+	string content = 1; 	 // 公告内容
+}	
+message UnionNoticeResponse_33000017{
+}
+		
+// 所在工会信息
+message UnionInfo{
+	int32 title = 1 ; 
+	int32 contribution = 2   ; 
+	UnionBaseInfo union = 3  ; 
+	repeated MemberInfo members = 4 ;  
+	repeated JournalInfo journals = 5 ;  
+	repeated MemberInfo applications = 6 ;  
+
+}
+// 工会基本信息
+message UnionBaseInfo{
+	string uid = 1 ; 	// 工会唯一id
+	int32 level = 2 ; // 工会等级 
+	string name = 3;  // 名称
+	int32 resouce = 4  ; // 资源
+	string masterName = 5 ; // 会长名字
+	string notice  = 6 ;   // 公告
+	int32 members  = 7 ;   // 当前会员人数
+	int32 status  = 8 ;   // 申请状态：0可申请  1已申请 2条件不够，不能申请，当不在工会时，查看工会列表时使用
+}
+
+// 工会成员基本信息
+message MemberInfo{
+	int32 title  = 1 ;  		 // 职位
+	int32 contribution  = 2 ;   // 贡献
+	SimplePlayerInfo player = 3 ;  // 玩家基本信息 
+}
+
+// 工会分日期的 日志信息
+message JournalInfo{
+	string date = 1 ;  				// 日志日期
+	repeated string content = 2 ;  // 此日期下的所有日志。
+}
+message UnionApplicationInfo{
+	int32 title = 1 ; 
+
+}

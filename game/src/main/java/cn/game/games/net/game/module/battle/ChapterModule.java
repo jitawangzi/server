@@ -22,14 +22,9 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.BattleLevelMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.util.DAO;
-import cn.game.protocol.generated.config.BattleChapterConfig;
 import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.BattleLevelConfig;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.protocol.generated.manager.BattleChapterManager;
-import cn.game.protocol.generated.manager.BattleLevelManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupInfo;
@@ -262,19 +257,6 @@ public class ChapterModule extends BasePlayerModule  {
 		return getFightBattleId(DungeonTypeEnum.BattleChapter.getId());
 	}
 
-	@Deprecated
-	public boolean isChapterPass(int chapterId) {
-		BattleChapterConfig battleChapterConfig = BattleChapterManager.getInstance().getBattleChapterConfig(chapterId);
-		List<BattleLevelConfig> battleChapterIdList = BattleLevelManager.getInstance().getBattleChapterIdList(battleChapterConfig
-				.getId());
-		for (BattleLevelConfig config : battleChapterIdList) {
-			if (!isBattleLevelPass(config.getId())) { 
-				return false; 
-			}
-		}
-		return true;
-	}
-
 	public void setAttackingData(int lineupId, int type, int dungeonId, int id, long uid, long randomSeed) {
 		this.type = type;
 		this.id = id;
@@ -367,19 +349,6 @@ public class ChapterModule extends BasePlayerModule  {
 		this.lastBattleRewards = lastBattleRewards;
 	}
 
-	public int getStars(int zoneId) {
-
-		int ret = 0;
-		List<BattleLevelConfig> battleChapterIdList = BattleLevelManager.getInstance().getBattleChapterIdList(zoneId);
-		for (BattleLevelConfig levelConfig : battleChapterIdList) {
-			BattleLevel battleLevel = getBattleLevel(levelConfig.getId());
-			if (battleLevel != null) {
-				ret += ByteHelp.binary1Count(battleLevel.getStar());
-			}
-		}
-		return ret;
-	}
-
 	public Chapter getChapter(int chapterId) {
 		return this.chapters.get(chapterId);
 	}
@@ -413,37 +382,6 @@ public class ChapterModule extends BasePlayerModule  {
 	public boolean checkProfession(long playerId, int profession, int lineupId, int type) {
 
 		return true;
-	}
-
-
-	public int getNewChapter() {
-		// 当前打过的章节里，如果没有通关的，就是最新章节 
-		for (Chapter chapter : this.chapters.values()) {
-			List<BattleLevelConfig> battleChapterIdList = BattleLevelManager.getInstance().getBattleChapterIdList(chapter
-					.getBattleId());
-			for (BattleLevelConfig levelConfig : battleChapterIdList) {
-				if (levelConfig == null || levelConfig.getType() != 1) {
-					continue;
-				}
-				boolean battleLevelPass = isBattleLevelPass(levelConfig.getId());
-				if (!battleLevelPass) {
-					return chapter.getBattleId();
-				}
-			}
-		}
-		
-		// 如果打过的都通关了，没有打过的，并且可以解锁的，是最新章节
-		Collection<BattleChapterConfig> list = BattleChapterManager.getInstance().list();
-		for (BattleChapterConfig battleChapterConfig : list) {
-			Chapter chapter = this.chapters.get(battleChapterConfig.getId());
-			if (chapter != null) {
-				continue;
-			}
-			boolean checkCondition = PlayerHelper.checkCondition(player, battleChapterConfig.getCondition());
-			if (checkCondition) { return battleChapterConfig.getId(); }
-		}
-		
-		return 0;
 	}
 
 	public boolean addStoreStaminas(int time) {

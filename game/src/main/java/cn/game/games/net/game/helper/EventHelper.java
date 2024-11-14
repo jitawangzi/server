@@ -1,15 +1,10 @@
 package cn.game.games.net.game.helper;
 
-import java.util.List;
-
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventHandler;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.config.EventOptionConfig;
-import cn.game.protocol.generated.enume.EffectEnum;
-import cn.game.protocol.generated.manager.EventOptionManager;
 
 public class EventHelper {
 	
@@ -53,21 +48,16 @@ public class EventHelper {
 	 * @param type	  效果类型
 	 * @return
 	 */
-	public static boolean maybeHappen(int eventId, EffectEnum type) {
-		List<EventOptionConfig> eventIdList = EventOptionManager.getInstance().getEventIdList(eventId);
-		if (eventIdList == null) {
-			return false;
-		}
-		for (EventOptionConfig eventOptionConfig : eventIdList) {
-			int[] buffIds = eventOptionConfig.getBuffId();
-			for (int buffId : buffIds) {
-//				OldBuffConfig buffConfig = OldBuffManager.getInstance().getBuffConfig(buffId);
-//				EffectEnum effectType = buffConfig.getEffectType();
-//				if (effectType == type) {
-//					return true;
-//				}
+	/*	public static boolean maybeHappen(int eventId, EffectEnum type) {
+			List<EventOptionConfig> eventIdList = EventOptionManager.getInstance().getEventIdList(eventId);
+			if (eventIdList == null) {
+				return false;
 			}
-		}
-		return false;
-	}
+			for (EventOptionConfig eventOptionConfig : eventIdList) {
+				int[] buffIds = eventOptionConfig.getBuffId();
+				for (int buffId : buffIds) {
+				}
+			}
+			return false;
+		}*/
 }

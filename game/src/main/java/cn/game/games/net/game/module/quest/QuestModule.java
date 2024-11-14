@@ -1,12 +1,10 @@
 package cn.game.games.net.game.module.quest;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,26 +14,18 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.ConditionCountMapper;
-import cn.game.games.net.data.mapper.QuestChallengeMapper;
 import cn.game.games.net.data.mapper.QuestMapper;
-import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
-import cn.game.games.util.DAO;
-import cn.game.protocol.generated.config.AchievementMissionConfig;
 import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.MainlineMissionConfig;
-import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
-import cn.game.protocol.generated.manager.AchievementMissionManager;
 import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
@@ -338,22 +328,6 @@ public class QuestModule extends BasePlayerModule {
 				}
 			}
 		}*/
-
-	public void addChallenge(int group) {
-		QuestChallenge add = new QuestChallenge();
-		add.setId(group);
-		add.setFinish(false);
-		add.setPlayerId(playerId);
-		add.setScore(0);
-		add.setTime((int) System.currentTimeMillis());
-		DAO.execute(QuestChallengeMapper.class, MapperConstant.insert, add);
-		this.challenges.put(add.getId(), add);
-
-		MissionChallengeGroupConfig config = MissionChallengeGroupManager.getInstance().getMissionChallengeGroupConfig(group);
-		List<Integer> missionId = config.getMissionId();
-		open(missionId);
-	}
-
 	public List<RewardInfo> receive(List<Integer> id) {
 
 		List<RewardInfo> ret = new ArrayList<>();
@@ -570,26 +544,26 @@ public class QuestModule extends BasePlayerModule {
 				}
 			}
 		} else if (config.Type == QuestTypeEnum.BranchLine.ID) {
-			Map<Integer, Quest> group = getGroup(QuestTypeEnum.BranchLine);
-			MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) config;
-			int groupId = mainlineMissionConfig.Group;
-			Set<Entry<Integer, Quest>> entrySet = group.entrySet();
-			for (Entry<Integer, Quest> entry : entrySet) {
-				int k = entry.getKey();
-				Quest v = entry.getValue();
-
-				QuestConfig c = QuestHelper.getQuestConfig(k);
-				if (c.Group == groupId) {
-					if (id < k) {
-						return true;
-					} else if (id == k) {
-						return QuestHelper.isFinished(v);
-					} else {
-						return false;
-					}
-				}
-
-			}
+			/*		Map<Integer, Quest> group = getGroup(QuestTypeEnum.BranchLine);
+					MainlineMissionConfig mainlineMissionConfig = (MainlineMissionConfig) config;
+					int groupId = mainlineMissionConfig.Group;
+					Set<Entry<Integer, Quest>> entrySet = group.entrySet();
+					for (Entry<Integer, Quest> entry : entrySet) {
+						int k = entry.getKey();
+						Quest v = entry.getValue();
+			
+						QuestConfig c = QuestHelper.getQuestConfig(k);
+						if (c.Group == groupId) {
+							if (id < k) {
+								return true;
+							} else if (id == k) {
+								return QuestHelper.isFinished(v);
+							} else {
+								return false;
+							}
+						}
+			
+					}*/
 		}
 
 		return false;
@@ -815,10 +789,10 @@ public class QuestModule extends BasePlayerModule {
 		Map<Integer, Quest> group = getGroup(type);
 		if (group == null || group.isEmpty()) {
 			if (type == QuestTypeEnum.Achievement) {
-				Collection<AchievementMissionConfig> list = AchievementMissionManager.getInstance().list();
-				for (AchievementMissionConfig config : list) {
-					open(config, notify);
-				}
+//				Collection<AchievementMissionConfig> list = AchievementMissionManager.getInstance().list();
+//				for (AchievementMissionConfig config : list) {
+//					open(config, notify);
+//				}
 			}
 		} else {
 			for (Entry<Integer, Quest> entry : group.entrySet()) {

@@ -1,55 +1,22 @@
 package cn.game.games.net.game.module.develop.hero;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.games.cache.entity.Hero;
-import cn.game.protocol.generated.config.EquipAttributeConfig;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.ParameterConsumeConfig;
-import cn.game.protocol.generated.config.PlayerLevelConfig;
-import cn.game.protocol.generated.manager.EquipAttributeManager;
 import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.ParameterConsumeManager;
-import cn.game.protocol.generated.manager.PlayerLevelManager;
 import cn.game.util.Rnd;
 
 public class HeroHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(HeroHelper.class);
 	
-	/** 
-	 * 计算某职业英雄升级需要消耗的物品
-	 * @param level 英雄等级
-	 * @param Career 英雄职业
-	 * @return
-	 */
-	public static List<Entry<Integer, Integer>> calcUpLevelCost(int level, int Career) {
-		List<Entry<Integer, Integer>> ret = new ArrayList<>(3);
-		ParameterConsumeConfig uiTypetypeParam = ParameterConsumeManager.instance().getUITypetypeParam(1, Career);
-		if (uiTypetypeParam.item1 > 0) {
-			ret.add(new SimpleEntry<Integer, Integer>(uiTypetypeParam.item1,
-					calcCostCount(level, uiTypetypeParam.item1Param)));
-		}
-		if (uiTypetypeParam.item2 > 0) {
-			ret.add(new SimpleEntry<Integer, Integer>(uiTypetypeParam.item2,
-					calcCostCount(level, uiTypetypeParam.item2Param)));
-		}
-		if (uiTypetypeParam.item3 > 0) {
-			ret.add(new SimpleEntry<Integer, Integer>(uiTypetypeParam.item3,
-					calcCostCount(level, uiTypetypeParam.item3Param)));
-		}
-		return ret;
-	}
-
 	/** 
 	 * 根据参数变量，计算增量消耗数值
 	 * @param level
@@ -61,29 +28,6 @@ public class HeroHelper {
 		int ret = itemParam[0] + (level * itemParam[1]);
 		return max == 0 ? ret : Math.min(ret, max);
 	}
-
-	public static int randomEquipAttr(List<Entry<Integer, Integer>> list, List<Integer> excludeTypes) {
-
-		int total = 0;
-		for (Entry<Integer, Integer> entry : list) {
-			total += entry.getValue();
-		}
-		int rand = Rnd.nextInt(total);
-		int current = 0;
-
-		for (Entry<Integer, Integer> entry : list) {
-			current += entry.getValue();
-			EquipAttributeConfig equipAttributeConfig = EquipAttributeManager.getInstance().getEquipAttributeConfig(entry.getKey());
-			if (excludeTypes.contains(equipAttributeConfig.getAtr())) {
-				continue;
-			}
-			if (rand < current) {
-				return entry.getKey();
-			}
-		}
-		return 0;
-	}
-
 	/*public static List<EquipAttrInfo> buildEquipAttrInfo(List<EquipAttr> list) {
 	
 		List<EquipAttrInfo> ret = new ArrayList<>(list.size());
@@ -128,18 +72,6 @@ public class HeroHelper {
 		return 0;
 	}
 
-	public static boolean checkProf(int level, int prof) {
-		Collection<PlayerLevelConfig> list = PlayerLevelManager.getInstance().list();
-
-		for (PlayerLevelConfig e : list) {
-			if (e.getUnlockProf() == prof) {
-				if (level >= e.getId()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 	/**
 	 *  设置主角星级
 	 * @param playerId

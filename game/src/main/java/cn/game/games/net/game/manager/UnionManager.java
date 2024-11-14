@@ -26,7 +26,7 @@ import cn.game.games.net.data.mapper.UnionApplicationMapper;
 import cn.game.games.net.data.mapper.UnionMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.util.DAO;
-import cn.game.protocol.generated.enume.UnionTitleEnum;
+import cn.game.protocol.manual.UnionTitleEnum;
 import cn.game.util.ObjUtil;
 
 public class UnionManager {

@@ -17,10 +17,8 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.util.PbBuilder;
-import cn.game.protocol.generated.config.MissionChallengeGroupConfig;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
-import cn.game.protocol.generated.manager.MissionChallengeGroupManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -144,15 +142,16 @@ public class QuestHandler extends BaseHandler {
 		Map<Integer, QuestChallenge> challenges = questModule.getChallenges();
 		QuestChallenge questChallenge = challenges.get(id);
 		if (questChallenge != null) {
+			/*
 			MissionChallengeGroupConfig mission = MissionChallengeGroupManager.getInstance().getMissionChallengeGroupConfig(id);
 			List<Integer> ids = mission.getMissionId();
 			for (Integer qid : ids) {
-				Quest quest = questModule.get(qid);
-				if (quest != null) {
-					resp.addQuests(quest.toQuestInfo());
-				}
+			Quest quest = questModule.get(qid);
+			if (quest != null) {
+			resp.addQuests(quest.toQuestInfo());
 			}
-		}
+			}
+			*/}
 
 		client.sendProtocol(resp);
 	}
@@ -165,13 +164,13 @@ public class QuestHandler extends BaseHandler {
 		QuestModule questModule = player.getModule(QuestModule.class);
 		Map<Integer, QuestChallenge> challenges = questModule.getChallenges();
 
-		List<MissionChallengeGroupConfig> typeList = MissionChallengeGroupManager.getInstance().getTypeList(type);
-		for (MissionChallengeGroupConfig config : typeList) {
-			QuestChallenge questChallenge = challenges.get(config.getId());
-			if (questChallenge != null) {
-				resp.addGroups(PbBuilder.buildQuestChallengeGroupInfo(questChallenge));
-			}
-		}
+		/*		List<MissionChallengeGroupConfig> typeList = MissionChallengeGroupManager.getInstance().getTypeList(type);
+				for (MissionChallengeGroupConfig config : typeList) {
+					QuestChallenge questChallenge = challenges.get(config.getId());
+					if (questChallenge != null) {
+						resp.addGroups(PbBuilder.buildQuestChallengeGroupInfo(questChallenge));
+					}
+				}*/
 		client.sendProtocol(resp.build());
 	}
 
