@@ -196,7 +196,7 @@ public class PlayerManager {
 	}
 
 	public Player deletePlayer(long id) {
-		return id_players.get(id);
+		return id_players.remove(id);
 	}
 	
 	public ConcurrentHashMap<Long, Player> getAllPlayer() {

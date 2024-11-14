@@ -137,6 +137,7 @@ public class Player  {
 	 */
 	public long setPeriodicTask(long delay, Handler<Long> handler) {
 		long timer = gameClient.getContext().setPeriodic(delay, handler);
+//		log.info("player : " + playerId + "添加定时任务：" + timer);
 		timerTask.add(timer);
 		return timer;
 	}
@@ -165,12 +166,14 @@ public class Player  {
 //	}
 
 	public void cancelTimer(long id) {
+//		log.info("player : " + playerId + "取消定时器：" + id);
 		timerTask.remove(id);
 		VxHolder.vertx.cancelTimer(id);
 	}
 
 	public void cancelAllTimer() {
 		for (Long id : timerTask) {
+//			log.info("player : " + playerId + "取消定时器：" + id);
 			VxHolder.vertx.cancelTimer(id);
 		}
 		timerTask.clear();

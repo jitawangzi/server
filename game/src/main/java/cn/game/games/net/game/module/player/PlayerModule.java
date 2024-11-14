@@ -225,6 +225,8 @@ public class PlayerModule extends BasePlayerModule {
 		int[] randomCLoud = GlobalConst.RandomCLoud;
 		if (randomCLoud[0] == 1) {
 			player.setPeriodicTask(randomCLoud[1]*1000, r -> {
+//				log.info("playerId:{} startCloudBoxTask at:{}", playerId, DateUtil.getTimeByPattern(new Date()));
+//				System.err.println("playerId:" + playerId + " startCloudBoxTask at ss" + DateUtil.getTimeByPattern(new Date()));
 				if (cloudBoxCount >= GlobalConst.RandomCLoudCnt) {
 					return;
 				}
