@@ -15,7 +15,7 @@ public class TestPlayerDeleteRequest_6f000044Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.Builder builder = cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.newBuilder() ; 
 		
-		builder.setPlayerId(240200003);
+		builder.setPlayerId(240200002);
 		
 		return builder.build() ; 
 	}
