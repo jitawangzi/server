@@ -1,7 +1,11 @@
 package cn.game.games.core;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -65,6 +69,7 @@ public class SimplePlayer implements Serializable {
 	Map<Integer,Map<Integer,Integer>> secretscripMap = new HashMap<Integer,Map<Integer,Integer>>();
 	List<Secretscript> secretscripInfos = new ArrayList<>();
 
+	@Deprecated
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
 			String unionName, long offLinetime) {
 		this.id = id;
