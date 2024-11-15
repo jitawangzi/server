@@ -80,7 +80,7 @@ public class GmHelper {
 
   public static List<Goods> getAttachment(GmMail gmMail) {
     if (gmMail.getAttachment() != null) {
-      List<Goods> goodsList = JsonUtil.parseObject(gmMail.getAttachment(), List.class);
+      List<Goods> goodsList = JsonUtil.parseObjectWithType(gmMail.getAttachment());
       return goodsList;
     }
     return new ArrayList<>();
