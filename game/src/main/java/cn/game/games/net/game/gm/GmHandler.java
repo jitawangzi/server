@@ -271,7 +271,23 @@ public class GmHandler extends BaseHandler {
     GmPlayerResponse_77000022.Builder response = GmPlayerResponse_77000022.newBuilder();
     String channel = request.getChannel();
     String name = request.getName();
-    VxHolder.vertx.executeBlocking(
+    PlayerHelper.seachPlayer(name,Long.parseLong(request.getPlayerId()))
+            .onSuccess(result ->{
+                response.setPlayer(result.toGmPlayerInfo());
+                sendAndRecordOpt(client, request, response.build());
+            })
+            .onFailure(err ->{
+                err.printStackTrace();
+                sendAndRecordOpt(
+                    client,
+                    request,
+                    response.build(),
+                    ErrorMsgEnum.player_data_not_found,
+                    err.getMessage()
+                );
+            });
+
+    /*VxHolder.vertx.executeBlocking(
         f -> {
           long playerId =
               StringUtils.isEmpty(request.getPlayerId())
@@ -291,6 +307,7 @@ public class GmHandler extends BaseHandler {
               }
             }
           }
+
           if (!PlayerManager.getInstance().isOnline(playerId)) {
 					Future<GameGmPlayerInfoResponse_7d000051> respMessage =
                 VxHolder.requestRemoteServer(
@@ -331,7 +348,7 @@ public class GmHandler extends BaseHandler {
                     });
           }
           f.complete(null);
-        });
+        });*/
   }
 
   private void sendAndRecordOpt(NetClient client, Message request, Message response) {
