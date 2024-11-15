@@ -16,7 +16,7 @@ import cn.game.games.net.game.manager.GameClientManager;
 @Component
 public class ScheduleJob {
 
-	@Scheduled(cron = "0 * * * * ?")
+	@Scheduled(cron = "30 * * * * ?")
 	public void onlineCheck() {
 		GameClientManager.getInstance().checkClient();
 	}
