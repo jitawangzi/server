@@ -135,7 +135,7 @@ public class VipModule extends BasePlayerModule {
     return VipMsg.VipInfo.newBuilder()
             .setRewardFreeGiftTimer((int) (rewardFreeGiftTimer / 1000L))
             .addAllBuyGiftIdList(buyGiftList)
-            .setCanRewardFreeGift(DateUtil.isSameDay(now,rewardFreeGiftTimer))
+            .setCanRewardFreeGift(!DateUtil.isSameDay(now,rewardFreeGiftTimer))
         .build();
     }
 }
