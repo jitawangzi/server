@@ -548,6 +548,7 @@ public class Client extends AbstractNetClient {
 		return promise;
 	}
 
+	@SuppressWarnings("unchecked")
 	private ChannelFuture sendWsPack(Message msg) {
 
 		byte[] byteArray = msg.toByteArray();
