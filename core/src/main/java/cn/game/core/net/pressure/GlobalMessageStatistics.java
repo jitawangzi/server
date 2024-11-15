@@ -30,7 +30,7 @@ public class GlobalMessageStatistics {
 	private static final GlobalMessageStatistics instance = new GlobalMessageStatistics();
 
 	// 消息统计窗口大小(毫秒)
-	private static final long STATISTICS_WINDOW = 5 * 60 * 1000;
+	private static long STATISTICS_WINDOW = 5 * 60 * 1000;
 
 	// 消息记录：消息名 -> 时间窗口 -> 统计数据
 	private final Map<String, NavigableMap<Long, MessageStats>> messageStatsMap = new ConcurrentHashMap<>();
@@ -95,7 +95,9 @@ public class GlobalMessageStatistics {
 		});
 	}
 
-	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients) throws IOException {
+	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients, int messageStatisticsInterval)
+			throws IOException {
+		STATISTICS_WINDOW = messageStatisticsInterval;
 		Calendar c = Calendar.getInstance();
 		String fileName = String.format("%s_%02d-%02d", System.getProperty("botIdStart"), c.get(Calendar.HOUR_OF_DAY),
 				c.get(Calendar.MINUTE));
