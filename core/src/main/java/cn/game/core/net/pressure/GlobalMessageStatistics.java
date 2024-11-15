@@ -95,9 +95,8 @@ public class GlobalMessageStatistics {
 		});
 	}
 
-	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients, int messageStatisticsInterval)
+	public void calculateStatisticsAndSaveResult(Collection<? extends AbstractNetClient> clients)
 			throws IOException {
-		STATISTICS_WINDOW = messageStatisticsInterval;
 		Calendar c = Calendar.getInstance();
 		String fileName = String.format("%s_%02d-%02d", System.getProperty("botIdStart"), c.get(Calendar.HOUR_OF_DAY),
 				c.get(Calendar.MINUTE));

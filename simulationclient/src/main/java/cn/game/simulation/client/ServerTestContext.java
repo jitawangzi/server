@@ -29,7 +29,6 @@ import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003;
 import cn.game.simulation.test.base.ServerTest;
 import cn.game.simulation.util.CSVMessagesReader;
-import cn.game.util.Config;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.log.LoggerManager;
 import io.netty.channel.ChannelFuture;
@@ -159,7 +158,7 @@ public class ServerTestContext {
 					}
 
 					GlobalMessageStatistics.getInstance()
-							.calculateStatisticsAndSaveResult(clients, Config.messageStatisticsInterval * 60 * 1000);
+							.calculateStatisticsAndSaveResult(clients);
 					System.err.println("shutdown hook execution completed");
 
 				} catch (Exception e) {
@@ -234,7 +233,7 @@ public class ServerTestContext {
 				}
 				if (System.currentTimeMillis() - lastStatisticsTime > messageStatisticsInterval * 60 * 1000) {
 					Thread.sleep(5000); // 先等待一下回复消息
-					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients, messageStatisticsInterval * 60 * 1000);
+					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
 
 					lastStatisticsTime = System.currentTimeMillis();
 				}

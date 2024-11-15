@@ -26,7 +26,7 @@ public class PressureTestManager {
 				Collection<GameClient> gameClients = GameClientManager.getInstance().getGameClients();
 				try {
 					GlobalMessageStatistics.getInstance()
-							.calculateStatisticsAndSaveResult(gameClients, Config.messageStatisticsInterval * 60 * 1000);
+							.calculateStatisticsAndSaveResult(gameClients);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
