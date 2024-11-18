@@ -268,6 +268,7 @@ public class PlayerModule extends BasePlayerModule {
 		if (lockHideList != null) {
 			builder.addAllCloseFuncs(lockHideList.stream().map(f -> f.ID).collect(Collectors.toList()));
 		}
+		builder.setShabiyincangguanggao(Config.shabiyincangguanggao);
 	}
 	@Override
 	public void handleEvent(GameEvent event) {

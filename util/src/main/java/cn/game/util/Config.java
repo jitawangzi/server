@@ -75,6 +75,8 @@ public final class Config {
 
 	public static boolean hotUpdate;
 
+	public static boolean shabiyincangguanggao;
+
 	/** 服务器心跳包间隔 */
 	public static int heart;
 	/** 同步远程调用的超时时间,5s */
@@ -143,6 +145,7 @@ public final class Config {
 			gmOpen = Boolean.parseBoolean(initialProp.getProperty("gmOpen", "false"));
 
 			hotUpdate = Boolean.parseBoolean(initialProp.getProperty("hot.update", "false"));
+			shabiyincangguanggao = Boolean.parseBoolean(initialProp.getProperty("shabiyincangguanggao", "false"));
 			heart = Integer.parseInt(initialProp.getProperty("heart", "3000"));
 			ONLINE_SAVE = Integer.parseInt(initialProp.getProperty("online_save", "300"));
 			PUSH_MESSAGE_BATCH_COMBINE_SIZE = Integer.parseInt(initialProp.getProperty("PUSH_MESSAGE_BATCH_COMBINE_SIZE", "100"));
