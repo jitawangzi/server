@@ -64,7 +64,7 @@ public class LoginServer {
 	private RpcClient rpcClient;
 
 	public void start(String[] args) throws Exception {
-		ServerContext.getInstance().parseServerId(args, ServerType.Login);
+		serverId = parseServerId(args, ServerType.Login);
 
 		long start = System.currentTimeMillis();
 		log.info("正在启动登录服...");
@@ -72,7 +72,7 @@ public class LoginServer {
 		Config.load();
 		ZkHelper.init();
 		RedisUtil.getInstance().init();
-		ServerContext.getInstance().init();
+		ServerContext.getInstance().init(serverId, ServerType.Login);
 		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig(); // config instance is singleton for
 																					// each namespace and is never null
 		int vertHttpPort = config.getIntProperty("vertx.http.port", 0);
@@ -188,6 +188,25 @@ public class LoginServer {
 	 */
 	public RemoteGameServerInterface getRemoteGameServerInterface(CallType callType, String serverId) {
 		return RpcFactory.getImpl(RemoteGameServerInterface.class, rpcClient, callType, serverId, ServerType.Game);
+	}
+
+	private String parseServerId(String[] args, ServerType serverType) {
+		String serverId = null;
+		String serverIdKey = serverType.getServerIdKey();
+		if (args.length == 0) {
+			serverId = System.getProperty(serverIdKey);
+			if (serverId == null) {
+				serverId = System.getenv(serverIdKey);
+			}
+		} else {
+			serverId = args[0];
+		}
+		if (serverId == null) {
+			throw new IllegalArgumentException("没有设置 serverId");
+		}
+		System.setProperty(serverIdKey, serverId);
+
+		return serverId;
 	}
 
 }

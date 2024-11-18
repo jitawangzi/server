@@ -114,7 +114,7 @@ public class GameServer implements GameServerMBean {
 
 	public void start(String[] args) throws Exception {
 
-		ServerContext.getInstance().parseServerId(args, ServerType.Game);
+		String serverId = parseServerId(args, ServerType.Game);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
@@ -124,7 +124,7 @@ public class GameServer implements GameServerMBean {
 
 		long start = System.currentTimeMillis();
 		RedisUtil.getInstance().init();
-		ServerContext.getInstance().init();
+		ServerContext.getInstance().init(serverId, ServerType.Game);
 		ZkHelper.init();
 		IdUtil.init();
 
@@ -473,6 +473,25 @@ public class GameServer implements GameServerMBean {
 	public boolean isSinglePlayerTable() {
 //		return false ; 
 		return  ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
+	}
+
+	private String parseServerId(String[] args, ServerType serverType) {
+		String serverId = null;
+		String serverIdKey = serverType.getServerIdKey();
+		if (args.length == 0) {
+			serverId = System.getProperty(serverIdKey);
+			if (serverId == null) {
+				serverId = System.getenv(serverIdKey);
+			}
+		} else {
+			serverId = args[0];
+		}
+		if (serverId == null) {
+			throw new IllegalArgumentException("没有设置 serverId");
+		}
+		System.setProperty(serverIdKey, serverId);
+
+		return serverId;
 	}
 
 }
