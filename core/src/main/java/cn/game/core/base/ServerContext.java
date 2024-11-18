@@ -55,16 +55,24 @@ public class ServerContext {
 
 	/** 
 	 * 
-	 * @param args 服务器启动参数，第一个参数为服务器id
-	 * @param serverType
 	 * @throws Exception
 	 */
-	public void init(String[] args, ServerType serverType) throws Exception {
-		this.serverId = parseServerId(args, serverType);
-		this.serverType = serverType;
+	public void init() throws Exception {
 		setRunMode();
 		checkServerId(serverId);
 		initHotUpdate();
+	}
+
+	/** 
+	 * 直接初始化，一般测试时使用，待优化。 
+	 * @param serverId
+	 * @param serverType
+	 * @throws Exception
+	 */
+	public void init(String serverId, ServerType serverType) throws Exception {
+		setServerId(serverId);
+		setServerType(serverType);
+		init();
 	}
 
 	public RunMode getRunMode() {
@@ -151,7 +159,7 @@ public class ServerContext {
 	 * @param serverType 服务器类型
 	 * @return
 	 */
-	private String parseServerId(String[] args, ServerType serverType) {
+	public String parseServerId(String[] args, ServerType serverType) {
 		String serverId = null;
 		String serverIdKey = serverType.getServerIdKey();
 		if (args.length == 0) {
@@ -166,6 +174,10 @@ public class ServerContext {
 			throw new IllegalArgumentException("没有设置 serverId");
 		}
 		System.setProperty(serverIdKey, serverId);
+
+		this.serverId = serverId;
+		this.serverType = serverType;
+
 		return serverId;
 	}
 }

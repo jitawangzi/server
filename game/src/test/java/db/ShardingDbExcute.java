@@ -27,7 +27,7 @@ public class ShardingDbExcute {
 	public static void main(String[] args) throws Exception {
 		RedisUtil.getInstance().init();
 		ZkHelper.init();
-		ServerContext.getInstance().init(new String[] { "SYQ" }, ServerType.Data);
+		ServerContext.getInstance().init("SYQ", ServerType.Data);
 		VxHolder.init();
 
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();

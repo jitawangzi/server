@@ -31,7 +31,7 @@ public class mysql单字段多字段更新区别 {
 		RedisUtil.getInstance().init();
 		ZkHelper.init();
 
-		ServerContext.getInstance().init(new String[] { "SYQ" }, ServerType.Game);
+		ServerContext.getInstance().init("SYQ", ServerType.Game);
 
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();

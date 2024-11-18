@@ -64,6 +64,7 @@ public class LoginServer {
 	private RpcClient rpcClient;
 
 	public void start(String[] args) throws Exception {
+		ServerContext.getInstance().parseServerId(args, ServerType.Login);
 
 		long start = System.currentTimeMillis();
 		log.info("正在启动登录服...");
@@ -71,7 +72,7 @@ public class LoginServer {
 		Config.load();
 		ZkHelper.init();
 		RedisUtil.getInstance().init();
-		ServerContext.getInstance().init(args, ServerType.Login);
+		ServerContext.getInstance().init();
 		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig(); // config instance is singleton for
 																					// each namespace and is never null
 		int vertHttpPort = config.getIntProperty("vertx.http.port", 0);

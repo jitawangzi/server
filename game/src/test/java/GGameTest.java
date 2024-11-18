@@ -41,7 +41,9 @@ public class GGameTest {
 
 //		RedisUtil.getInstance().init();
 		ZkHelper.init();
-		ServerContext.getInstance().init(args, ServerType.Game);
+		ServerContext.getInstance().setServerId(serverId);
+		ServerContext.getInstance().setServerType(ServerType.Game);
+
 //		IdUtil.init();
 
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();

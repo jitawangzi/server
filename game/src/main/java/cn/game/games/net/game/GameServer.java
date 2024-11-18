@@ -114,7 +114,7 @@ public class GameServer implements GameServerMBean {
 
 	public void start(String[] args) throws Exception {
 
-
+		ServerContext.getInstance().parseServerId(args, ServerType.Game);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
@@ -124,7 +124,7 @@ public class GameServer implements GameServerMBean {
 
 		long start = System.currentTimeMillis();
 		RedisUtil.getInstance().init();
-		ServerContext.getInstance().init(args, ServerType.Game);
+		ServerContext.getInstance().init();
 		ZkHelper.init();
 		IdUtil.init();
 
