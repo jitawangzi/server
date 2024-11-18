@@ -130,7 +130,7 @@ public class MailModule extends BasePlayerModule  {
 	}
 
 	public List<RewardInfo> receive(long id) {
-		List<RewardInfo> list = null;
+		List<RewardInfo> list = new ArrayList<>();
 
 		Mail mail = get(id);
 		if (mail != null && !mail.getReceive()) {
