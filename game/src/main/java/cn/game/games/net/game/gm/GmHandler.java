@@ -249,7 +249,7 @@ public class GmHandler extends BaseHandler {
     req.getUidList()
         .forEach(
             mailId -> {
-              DAO.execute(GmMailMapper.class, MapperConstant.deleteByPrimaryKey, mailId)
+              DAO.execute(GmMailMapper.class, MapperConstant.deleteByPrimaryKey,  Integer.parseInt(mailId))
                   .onSuccess(
                       r -> {
                         if (r != null &&  MailHelper.removeGlobalMail(mailId)) {
@@ -261,6 +261,7 @@ public class GmHandler extends BaseHandler {
                       })
                   .onFailure(
                       e -> {
+                          e.printStackTrace();
                         sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "delGmMail");
                       });
             });
