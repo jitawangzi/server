@@ -72,7 +72,7 @@ public class NoticeManger {
     notice.setShowStartTimer(new java.util.Date(showStartTimer));
     notice.setShowEndTimer(new java.util.Date(showEndTimer));
     if (id > 0) {
-      mapper.updateByPrimaryKey(notice);
+      mapper.updateByPrimaryKeyWithBLOBs(notice);
       sortNoticeList();
       // RPC 通知其他 login 节点 从新加载
       VxHolder.broadcastRemoteServer(ServerType.Login, ServerMsg.LoginUpdateGmInfoRequest_7d000076.newBuilder().setType(LoginServerHandler.UPDATE_NOTICE).build());
