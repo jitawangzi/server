@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -19,7 +20,8 @@ public class CSVMessagesReader {
 	public static float[] messageWeights;
 
 	public static void main(String[] args) {
-		read();
+		String filePath = System.getProperty("user.dir") + "/messages" + ".csv";
+		read(filePath);
 	}
 
 	public static String randomMessage() {
@@ -28,13 +30,14 @@ public class CSVMessagesReader {
 		return messageNames[randomIndex];
 	}
 
-	public static void read() {
-		String filePath = System.getProperty("user.dir") + "/messages" + ".csv";
+	public static List<Map<String, String>> read(String filePath) {
 
 		CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader("序号", "模块", "协议", "协议号", "权重", "描述").withSkipHeaderRecord();
 
 		List<String> namesList = new ArrayList<>();
 		List<Float> weightList = new ArrayList<>();
+
+		List<Map<String, String>> ret = new ArrayList<>();
 
 		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8);
 				CSVParser csvParser = new CSVParser(reader, csvFormat)) {
@@ -46,8 +49,10 @@ public class CSVMessagesReader {
 				String weight = csvRecord.get("权重");
 				String description = csvRecord.get("描述");
 
+				csvRecord.toMap();
 				namesList.add(protocol);
 				weightList.add(Float.parseFloat(weight));
+				ret.add(csvRecord.toMap());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -57,5 +62,6 @@ public class CSVMessagesReader {
 		for (int i = 0; i < weightList.size(); i++) {
 			messageWeights[i] = weightList.get(i);
 		}
+		return ret;
 	}
 }

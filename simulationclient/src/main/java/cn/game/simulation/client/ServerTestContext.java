@@ -74,7 +74,8 @@ public class ServerTestContext {
 	private static List<String> sourceIps;
 
 	public static void main(String args[]) throws Exception {
-		CSVMessagesReader.read();
+		String filePath = System.getProperty("user.dir") + "/messages" + ".csv";
+		CSVMessagesReader.read(filePath);
 		ManagerHelper.init();
 		init();
 		initEnvFromArgs(args);

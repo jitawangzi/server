@@ -34,7 +34,7 @@ public class CrossServer {
 	
 	public void start(String args[]) throws Exception {
 
-		ServerContext.getInstance().init(args, ServerType.Cross);
+		ServerContext.getInstance().init();
 		long start = System.currentTimeMillis();
 		RedisUtil.getInstance().init();
 		ZkHelper.init();
