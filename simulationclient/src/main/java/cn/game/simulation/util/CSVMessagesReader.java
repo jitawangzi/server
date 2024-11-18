@@ -1,67 +1,114 @@
 package cn.game.simulation.util;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 
+import cn.game.util.CSVUtil;
 import cn.game.util.Rnd;
 
 public class CSVMessagesReader {
 
 	public static String[] messageNames;
+	public static int[] messageIds;
 	public static float[] messageWeights;
+
+	public static List<CSVMessage> messages = new ArrayList<>();
+	/** 按权重找到某个排序后的组，组内按顺序请求消息 */
+	public static Map<Integer, List<CSVMessage>> groupMessageMap = new java.util.HashMap<>();
 
 	public static void main(String[] args) {
 		String filePath = System.getProperty("user.dir") + "/messages" + ".csv";
 		read(filePath);
 	}
 
-	public static String randomMessage() {
+	/** 
+	 * @param sendingGroup 正在发送的组
+	 * @param msgIdSend  组中已经发过的消息id
+	 * @return
+	 */
+	public static CSVMessage randomMessage(int sendingGroup, String msgNameSend) {
 
-		int randomIndex = Rnd.randomIndex(messageWeights);
-		return messageNames[randomIndex];
+//		int randomIndex = Rnd.randomIndex(messageWeights);
+//		return messageNames[randomIndex];
+		if (sendingGroup == 0) {
+			CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
+			List<CSVMessage> list = groupMessageMap.get(randomMessage.group);
+			return list.get(0);
+		}
+		List<CSVMessage> list = groupMessageMap.get(sendingGroup);
+//		if (StringUtils.isEmpty(msgNameSend)) {
+//			return list.get(0);
+//		}
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).msgName == msgNameSend && i != list.size() - 1) {
+				return list.get(i + 1);
+			}
+		}
+		//
+		CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
+		list = groupMessageMap.get(randomMessage.group);
+		return list.get(0);
 	}
 
-	public static List<Map<String, String>> read(String filePath) {
+	public static void read(String filePath) {
 
-		CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader("序号", "模块", "协议", "协议号", "权重", "描述").withSkipHeaderRecord();
-
+		String[] headers = new String[] { "序号", "协议名", "协议号", "模块", "功能组", "组顺序", "权重", "描述" };
 		List<String> namesList = new ArrayList<>();
 		List<Float> weightList = new ArrayList<>();
 
-		List<Map<String, String>> ret = new ArrayList<>();
+		List<List<String>> list = CSVUtil.read(filePath, headers);
+		for (List<String> csvRecord : list) {
 
-		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8);
-				CSVParser csvParser = new CSVParser(reader, csvFormat)) {
-			for (CSVRecord csvRecord : csvParser) {
-				String serialNumber = csvRecord.get("序号");
-				String module = csvRecord.get("模块");
-				String protocol = csvRecord.get("协议");
-				String protocolNumber = csvRecord.get("协议号");
-				String weight = csvRecord.get("权重");
-				String description = csvRecord.get("描述");
+//			String serialNumber = csvRecord.get("序号");
+//			String module = csvRecord.get("模块");
+//			String protocol = csvRecord.get("协议");
+//			String protocolNumber = csvRecord.get("协议号");
+//			String weight = csvRecord.get("权重");
+//			String description = csvRecord.get("描述");
 
-				csvRecord.toMap();
-				namesList.add(protocol);
-				weightList.add(Float.parseFloat(weight));
-				ret.add(csvRecord.toMap());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+//			String serialNumber = csvRecord.get("序号");
+//			String module = csvRecord.get("模块");
+			String protocol = csvRecord.get(1);
+			String protocolNumber = csvRecord.get(2);
+
+//			String description = csvRecord.get("描述");
+			CSVMessage message = new CSVMessage();
+			message.msgName = protocol;
+			message.msgId = Integer.parseInt(protocolNumber.substring(2), 16);
+			message.group = Integer.parseInt(csvRecord.get(4));
+			message.order = StringUtils.isEmpty(csvRecord.get(5)) ? Integer.MAX_VALUE : Integer.parseInt(csvRecord.get(5));
+			message.weight = StringUtils.isEmpty(csvRecord.get(6)) ? 0 : Integer.parseInt(csvRecord.get(6));
+
+			messages.add(message);
+			groupMessageMap.computeIfAbsent(message.group, k -> new ArrayList<>()).add(message);
+//			namesList.add(protocol);
+//			weightList.add(Float.parseFloat(weight));
 		}
-		messageNames = namesList.toArray(new String[] {});
-		messageWeights = new float[weightList.size()];
-		for (int i = 0; i < weightList.size(); i++) {
-			messageWeights[i] = weightList.get(i);
-		}
-		return ret;
+		groupMessageMap.forEach((k, v) -> {
+			v.sort(new Comparator<CSVMessage>() {
+				@Override
+				public int compare(CSVMessage o1, CSVMessage o2) {
+					return o1.order - o2.order;
+				}
+			});
+		});
+
+//		messageNames = namesList.toArray(new String[] {});
+//		messageWeights = new float[weightList.size()];
+//		for (int i = 0; i < weightList.size(); i++) {
+//			messageWeights[i] = weightList.get(i);
+//		}
+	}
+
+	public static class CSVMessage {
+		public int msgId;
+		public String msgName;
+		public int group;
+		public int order;
+		public int weight;
 	}
 }

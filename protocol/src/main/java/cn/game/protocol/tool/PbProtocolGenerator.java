@@ -10,7 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,8 +20,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -35,6 +32,7 @@ import com.google.common.collect.Multimap;
 
 import cn.game.protocol.tool.MessageObject.MessageField;
 import cn.game.protocol.tool.obj.HandlerParam;
+import cn.game.util.CSVUtil;
 import cn.game.util.ExcelUtil;
 
 /**
@@ -256,29 +254,52 @@ public class PbProtocolGenerator {
 	}
 
 	private static void genMessageDescCSV(List<MessageObject> messages) throws FileNotFoundException {
+		String[] headers = new String[] { "序号", "协议名", "协议号", "模块", "功能组", "组顺序", "权重", "描述" };
 		String filePath = System.getProperty("user.dir") + "/messages" + ".csv";
-		CSVFormat csvFormat = CSVFormat.DEFAULT.builder().setHeader("序号", "模块", "协议", "协议号", "权重", "描述").build();
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8)) {
-			writer.write('\ufeff'); // 写入UTF-8 BOM，避免Excel打开csv文件时乱码
-			try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat)) {
-				int i = 1;
-				for (MessageObject obj : messages) {
-					if (isNotRequestMessage(obj) || obj.getShortName().startsWith("Test")) {
-						continue;
-					}
-					List<Object> list = new ArrayList<>();
-					list.add(i++);
-					list.add("模块");
-					list.add(obj.getShortName());
-					list.add(obj.getId());
-					list.add(1);
-					list.add(obj.getComment());
-					csvPrinter.printRecord(list);
+		Set<String> protoNameSet = new HashSet<String>();
+		List<List<String>> oldDataList = new ArrayList<>();;
+		if (new File(filePath).exists()) {
+			oldDataList = CSVUtil.read(filePath, headers);
+			for (List<String> list : oldDataList) {
+				protoNameSet.add(list.get(1));
+			}
+		}
+		List<List<String>> dataList = new ArrayList<>();
+		// 老数据保留
+		dataList.addAll(oldDataList);
+
+		int i = 1;
+		if (!oldDataList.isEmpty()) {
+			for (List<String> list : dataList) {
+				int seq = Integer.parseInt(list.get(0));
+				if (seq > i) {
+					i = seq;
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			i++;
 		}
+		for (MessageObject obj : messages) {
+			if (isNotRequestMessage(obj) || obj.getShortName().startsWith("Test")) {
+				continue;
+			}
+			List<String> list = new ArrayList<>();
+			if (protoNameSet.contains(obj.getShortName())) {
+				continue;
+			}
+
+			list.add(i++ + "");
+			list.add(obj.getShortName());
+			list.add(obj.getId());
+			list.add("");
+			list.add("");
+			list.add("");
+			list.add("");
+			list.add(obj.getComment());
+
+			dataList.add(list);
+		}
+
+		CSVUtil.write(dataList, filePath, headers);
 
 	}
 

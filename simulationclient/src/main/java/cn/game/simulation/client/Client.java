@@ -147,6 +147,9 @@ public class Client extends AbstractNetClient {
 
 	private volatile int resendCount = 0;
 
+	public int sendingGroup;
+	public String msgNameSend;
+
 	// 消息序号: 消息名，消息发送时间，纳秒
 //	public Map<Integer, Pair<String, Long>> sendMessages = new ConcurrentHashMap<>();
 //	 消息序号: 消息名，消息接收时间，纳秒

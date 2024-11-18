@@ -29,6 +29,7 @@ import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003;
 import cn.game.simulation.test.base.ServerTest;
 import cn.game.simulation.util.CSVMessagesReader;
+import cn.game.simulation.util.CSVMessagesReader.CSVMessage;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.log.LoggerManager;
 import io.netty.channel.ChannelFuture;
@@ -255,14 +256,17 @@ public class ServerTestContext {
 							&& System.currentTimeMillis() - client.getLastSendMessageTime() < botSendInterval) {
 						continue;
 					}
-					String randomMessage = CSVMessagesReader.randomMessage();
-					ServerTest serverTest = beansMap.get(randomMessage.toLowerCase());
+					CSVMessage randomMessage = CSVMessagesReader.randomMessage(client.sendingGroup, client.msgNameSend);
+					ServerTest serverTest = beansMap.get(randomMessage.msgName.toLowerCase());
 					if (serverTest == null) {
 						throw new IllegalArgumentException("test message not found : " + randomMessage);
 					}
 					Message message = serverTest.getMessage(client);
 					if (message != null) {
 						client.sendProtocol(message);
+						client.sendingGroup = randomMessage.group;
+						client.msgNameSend = randomMessage.msgName;
+
 						lastSendTime = System.currentTimeMillis();
 					}
 				} else {
