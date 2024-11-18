@@ -39,6 +39,28 @@
 			</cron>
 		</trigger>
 	</job>
+	<job>
+		<job-detail>
+			<name>NewDayJob</name>
+			<group>group1</group>
+			<description>跨天重置数据</description>
+			<job-class>cn.game.games.net.game.jobs.NewDayJob
+			</job-class>
+			<volatility>false</volatility>
+			<durability>false</durability>
+			<recover>false</recover>
+		</job-detail>
+		<trigger>
+			<cron>
+				<name>NewDayJob</name>
+				<group>group1</group>
+				<description>每日0点</description>
+				<job-name>Job-NewDayJob</job-name>
+				<job-group>job-group1</job-group>
+				<cron-expression>1 0 0 * * ?</cron-expression>
+			</cron>
+		</trigger>
+	</job>
 <!-- 	<JOB> -->
 <!-- 		<JOB-DETAIL> -->
 <!-- 			<NAME>SHOPJOB</NAME> -->

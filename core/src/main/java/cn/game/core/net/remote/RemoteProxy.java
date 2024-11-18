@@ -21,7 +21,6 @@ public interface RemoteProxy {
 	 * @param args
 	 * @return
 	 */
-	@Deprecated
 	default Object invoke(String methodName, Class<?>[] paramTypes, Object... args) {
 		try {
 			Method method = ClassHelper.findMethod(this.getClass(), methodName, paramTypes);

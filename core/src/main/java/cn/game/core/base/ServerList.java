@@ -25,6 +25,7 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 
     private Integer internalPort;
 
+	/** 开服时间，通常用来判断开服xx天的逻辑，后期不应该改变。  */
 	private String ServerOpenTime;
 
     private Integer seq;

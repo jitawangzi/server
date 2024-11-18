@@ -214,6 +214,8 @@ public class Quest implements Serializable, DbEntity {
 		QuestModule questModule = player.getQuestModule();
 		questModule.setState(this, QuestHelper.CAN_ACCEPT, true);
 		setStartTime(System.currentTimeMillis());
+		// 检查任务是否可以完成
+		checkFinish();
 
 	}
 

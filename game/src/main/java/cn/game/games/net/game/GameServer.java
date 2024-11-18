@@ -171,7 +171,7 @@ public class GameServer implements GameServerMBean {
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 		initSimplePlayers();
-		kickClientsAfterChangeTime();
+//		kickClientsAfterChangeTime();
 
 		MailHelper.initLoadGlobalMail();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
