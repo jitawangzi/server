@@ -131,9 +131,11 @@ public class VipModule extends BasePlayerModule {
     }
 
     public VipMsg.VipInfo toPb() {
+        long now = System.currentTimeMillis();
     return VipMsg.VipInfo.newBuilder()
-        .setRewardFreeGiftTimer((int) (rewardFreeGiftTimer / 1000L))
-        .addAllBuyGiftIdList(buyGiftList)
+            .setRewardFreeGiftTimer((int) (rewardFreeGiftTimer / 1000L))
+            .addAllBuyGiftIdList(buyGiftList)
+            .setCanRewardFreeGift(DateUtil.isSameDay(now,rewardFreeGiftTimer))
         .build();
     }
 }

@@ -7,6 +7,7 @@ import "RewardMsg.proto" ;
 message VipInfo{
   int32 rewardFreeGiftTimer = 1; //免费礼包上一次领取时间戳 每日刷新
   repeated int32 buyGiftIdList = 2; // 已经购买的 一次性购买礼包id集合
+  bool canRewardFreeGift = 3; //能否领取当前免费礼包
 }
 
 //获取VIP 信息 请求
