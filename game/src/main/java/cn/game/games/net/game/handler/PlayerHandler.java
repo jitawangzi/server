@@ -1,5 +1,8 @@
 package cn.game.games.net.game.handler;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -1018,9 +1021,15 @@ public class PlayerHandler extends BaseHandler {
 //		}
 		// player.getData().setSeq(seq) ;
 		// 这里先按照开服时间来设置区服，后续会改成按人数。
-		int days = GameServerStatus.getInstance().getOpenDays();
-		if (days > 3) {
-			days = 4;
+		String openTime = GameServerStatus.getInstance().getServerInfo().getServerOpenTime();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime dateTime = LocalDateTime.parse(openTime, formatter);
+		// 获取下一天的 10 点
+		LocalDateTime nextDayAtTen = dateTime.plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0);
+		long timestamp = nextDayAtTen.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		int days = 1;
+		if (System.currentTimeMillis() > timestamp) {
+			days = 2;
 		}
 		playerData.setServerId("server" + days);
 
