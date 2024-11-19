@@ -1,141 +1,141 @@
 ﻿序号,协议名,协议号,模块,功能组,组顺序,权重,描述
-1,ActivityBaoLiInfoRequest_11000061,0x11000061,活动,100,,,每日豹利信息请求
-2,ActivityFirstChargeBuyRequest_11000010,0x11000010,活动,100,,1,购买首冲礼包，只能购买有售价的礼包。
-3,ActivityFirstChargeRequest_11000007,0x11000007,活动,100,,,查看首冲活动数据
-4,ActivityFirstChargeRewardRequest_11000012,0x11000012,活动,100,,,领取首冲礼包奖励
-5,ActivityJQBInfoRequest_11000081,0x11000081,活动,100,,1,金钱豹爆爆信息请求
-6,ActivityLeiChongInfoRequest_11000051,0x11000051,活动,100,,,累充豪礼信息请求
-7,ActivityListRequest_11000001,0x11000001,活动,100,,,查看有哪些显示的活动
-8,ActivityQingShenInfoRequest_11000071,0x11000071,活动,100,,,风云聚义信息请求
-9,ActivityRedPointRequest_11000003,0x11000003,活动,100,1,,查看某个活动，是否有红点
-10,ActivitySevenDaysCarnivalRequest_11000020,0x11000020,活动,100,,,七日狂欢
-11,ActivitySevenDaysSigninInfoRequest_11000024,0x11000024,活动,100,,,"七日签到,查看七日签到数据"
-12,ActivitySevenDaysSigninRequest_11000026,0x11000026,活动,100,,33,"七日签到,签到领奖 请求"
-13,ActivityTaskRewardRequest_11000041,0x11000041,活动,100,,,活动任务奖励领取 请求
-14,BattleBuyPvPTimeRequest_13000121,0x13000121,PVE,200,,1,购买挑战券 请求
-15,BattleDaoHeartRequest_13000055,0x13000055,PVE,210,,,查看道心磨砺 心魔试炼数据
-16,BattleDaoHeartSweepBatchRequest_13000062,0x13000062,PVE,210,,,一键扫荡道心磨砺 心魔试炼关卡
-17,BattleDaoHeartSweepRequest_13000060,0x13000060,PVE,210,,3,扫荡道心磨砺 心魔试炼关卡
-18,BattleDaoHeartSweepRequest_13000064,0x13000064,PVE,210,,,查看道心磨砺 心魔试炼通关奖励领取情况
-19,BattleDaoHeartSweepRequest_13000066,0x13000066,PVE,210,,,领取道心磨砺 心魔试炼关卡通关奖励
-20,BattleDayChallengeReceiveActivePointRequest_13000070,0x13000070,PVE,220,,,领取每日挑战活跃积分奖励
-21,BattleFieldStartRequest_13000001,0x13000001,PVE,230,1,,开始关卡战斗请求
-22,BattleFieldEndRequest_13000003,0x13000003,PVE,230,2,,结束关卡战斗请求
-23,BattleFieldQuickEndRequest_13000005,0x13000005,PVE,231,,,"关卡快速战斗请求,也可以当扫荡来使用"
-24,BattleLineupRequest_13000048,0x13000048,PVE,232,,,保存阵容
-25,BattleLostDayRewardRequest_13000203,0x13000203,PVE,240,,,领取失落真经历史最高关卡奖励
-26,BattleLostInfoRequest_13000201,0x13000201,PVE,240,,,请求失落真经数据
-27,BattleNightmareRealmBuffUpdateRequest_13000082,0x13000082,PVE,241,2,,梦魇秘境更新buff
-28,BattleNightmareRealmQuickRequest_13000084,0x13000084,PVE,241,3,,梦魇秘境快速战斗
-29,BattleNightmareRealmRequest_13000080,0x13000080,PVE,241,1,,请求梦魇秘境数据
-30,BattlePatrolRewardRequest_13000044,0x13000044,PVP,243,,,领取巡逻奖励
-31,BattlePvPEndRequest_13000115,0x13000115,PVP,250,4,,结算战斗请求
-32,BattlePvPInfoRequest_13000117,0x13000117,PVP,250,1,,获取大道争锋信息 请求
-33,BattlePvPStartRequest_13000113,0x13000113,PVP,250,3,,开始战斗请求
-34,BattlePvPTargetListRequest_13000111,0x13000111,PVE,250,2,,目标列表刷新 请求
-35,BattleReliveRequest_13000010,0x13000010,PVE,260,,,复活
-36,BattleRewardRequest_13000022,0x13000022,PVE,261,,,"领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。"
-37,BattleRougeRefreshRequest_13000052,0x13000052,PVE,262,,,"肉鸽刷新,每天前3次免费，第四次看广告。"
-38,BattleShareRequest_13000007,0x13000007,PVE,263,,,看广告并分享之后额外获得xx倍奖励
-39,BattleSpiritualChangeBattleRequest_13000098,0x13000098,灵魄之战,270,,,提升或者降低难度
-40,BattleSpiritualGetPointRequest_13000096,0x13000096,灵魄之战,270,,,补满积分。
-41,BattleSpiritualGetTimesRequest_13000094,0x13000094,灵魄之战,270,,,看广告获取灵魄之战挑战次数
-42,BattleSpiritualInfoRequest_13000090,0x13000090,灵魄之战,270,1,,请求灵魄之战数据
-43,BattleSpiritualReceiveActivePointRequest_13000092,0x13000092,灵魄之战,270,,,领取灵魄之战活跃积分奖励
-44,BattleStaminaRequest_13000050,0x13000050,PVE,280,,,领取体力
-45,BattleSweepRequest_13000024,0x13000024,PVE,282,,,关卡扫荡
-46,BattleWorldBossBuyTimesRequest_13000303,0x13000303,世界boss,290,,,购买世界boss挑战次数
-47,BattleWorldBossInfoRequest_13000301,0x13000301,世界boss,290,1,,请求世界boss数据
-48,BattleWorldRewardRequest_13000305,0x13000305,世界boss,290,,,领取世界boss伤害宝箱奖励
-49,ChatRequest_31000001,0x31000001,聊天,400,,,请求聊天
-50,DevelopHeavenlyDaoLvUpRequest_25000010,0x25000010,修炼,450,,,天道修为晋升，提升等级。
-51,DevelopPotentialBreakRequest_25000003,0x25000003,修炼,460,,,潜力修炼，突破
-52,DevelopPotentialLvUpRequest_25000001,0x25000001,修炼,460,,,潜力修炼，升级
-53,DevelopRescueLvUpRequest_25000007,0x25000007,修炼,460,,,强援修炼，升级
-54,DrawListRequest_37000001,0x37000001,抽卡,500,,,请求卡池界面数据
-55,DrawRequest_37000003,0x37000003,抽卡,510,,,请求抽卡
-56,FairyFriendFightRequest_27000003,0x27000003,仙友,550,1,,仙友 切磋
-57,FairyFriendFightRewardRequest_27000005,0x27000005,仙友,550,2,,领取仙友切磋奖励
-58,FairyFriendGiftRequest_27000001,0x27000001,仙友,550,3,,仙友 送礼
-59,FairyFriendTravelRequest_27000007,0x27000007,仙友,550,4,,仙友寻缘、游历
-60,FriendApplicationRequest_30000007,0x30000007,好友,600,5,,"处理好友申请,包含批量处理"
-61,FriendApplyListRequest_30000053,0x30000053,好友,600,4,,请求好友申请列表
-62,FriendApplyRequest_30000005,0x30000005,好友,600,6,,"申请成为对方好友,支持批量"
-63,FriendBlackListRequest_30000051,0x30000051,好友,600,3,,请求黑名单列表
-64,FriendBlackRequest_30000010,0x30000010,好友,600,,,将好友加入到黑名单
-65,FriendDeleteRequest_30000009,0x30000009,好友,600,,,"删除好友,从黑名单里移除也用这个协议"
-66,FriendGiftReceiveRequest_30000014,0x30000014,好友,600,,,领取好友赠送的友情点，包含一键领取，注意人数不要领多了，超过每日次数限制。
-67,FriendGiftRequest_30000012,0x30000012,好友,600,,,赠送好友友情点，注意人数不要发多了，超过每日次数限制。
-68,FriendListRequest_30000001,0x30000001,好友,600,2,,请求好友列表
-69,FriendRecommendRequest_30000003,0x30000003,好友,600,1,,搜索符合条件的推荐好友
-70,HeroBattleDismissRequest_16000009,0x16000009,英雄,700,,,英雄下阵
-71,HeroBattleRequest_16000005,0x16000005,英雄,700,,,英雄上阵
-72,HeroBattleUpLevelBatchRequest_16000025,0x16000025,英雄,700,,,批量升级上阵的英雄，按照品质和星级的顺序
-73,HeroConflateRequest_16000003,0x16000003,英雄,700,,,"英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。"
-74,HeroFreeDayRentChooseRequest_16000032,0x16000032,英雄,700,,,选择某个英雄日租卡。
-75,HeroFreeDayRentRequest_16000030,0x16000030,英雄,700,,,请求免费英雄日租卡，这个只有在功能开启的时候请求一下，不能重复请求
-76,HeroIllustrationsListRequest_16000040,0x16000040,英雄,700,,,查看图鉴数据
-77,HeroIllustrationsRewardRequest_16000042,0x16000042,英雄,700,,,一键领取英雄的图鉴奖励
-78,HeroLevelResetRequest_16000007,0x16000007,英雄,700,,,"英雄等级重置,返还升级材料"
-79,HeroQualityResetRequest_16000011,0x16000011,英雄,700,,,英雄品质重置
-80,HeroUpLevelBatchRequest_16000023,0x16000023,英雄,700,,,批量英雄升级，能升级哪个升级哪个
-81,HeroUpLevelMaxRequest_16000021,0x16000021,英雄,700,,,"英雄一键升级,自动升级到最高级。"
-82,HeroUpLevelRequest_16000001,0x16000001,英雄,700,,,英雄升级
-83,ItemUseRequest_0b000003,0x0b000003,道具,799,,,使用道具
-84,MailDeleteRequest_12000007,0x12000007,邮件,800,4,,删除邮件
-85,MailListRequest_12000001,0x12000001,邮件,800,1,,请求邮件列表。
-86,MailReceiveRequest_12000005,0x12000005,邮件,800,3,,领取邮件奖励
-87,MailSeeRequest_12000003,0x12000003,邮件,800,2,,查看未读邮件
-88,MonthCardBuyRequest_15000010,0x15000010,,830,1,,购买月卡
-89,MonthCardBuyRewardRequest_15000012,0x15000012,,830,2,,领取月卡购买奖励，每个月卡只能领取一次
-90,MonthCardDayRewardRequest_15000014,0x15000014,,830,3,,领取月卡每日奖励
-91,MonthCardDoubleBonusRequest_15000016,0x15000016,,830,4,,领取双月卡一次性奖励
-92,NoticeRequest_01000050,0x01000050,,860,,,请求公告数据
-93,PetBattleRequest_19000011,0x19000011,宠物,900,,,宠物上阵
-94,PetBondsActivateRequest_19000013,0x19000013,宠物,900,,,激活宠物羁绊
-95,PetBondsUpLevelRequest_19000015,0x19000015,宠物,900,,,升级宠物羁绊
-96,PetBreakUpRequest_19000005,0x19000005,宠物,900,,,宠物突破
-97,PetCompositeRequest_19000001,0x19000001,宠物,900,,,碎片合成宠物
-98,PetRefineRequest_19000007,0x19000007,宠物,900,,,宠物洗练
-99,PetRefineSaveRequest_19000009,0x19000009,宠物,900,,,实际保存上一次刷新出来的技能
-100,PetUpLevelRequest_19000003,0x19000003,宠物,900,,,宠物升级
-101,PlayerAssetDataRequest_01000200,0x01000200,玩家,1000,,,请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。
-102,PlayerCloudBoxRequest_01000042,0x01000042,玩家,1100,,,领取小云宝箱奖励
-103,PlayerGenderRequest_01000017,0x01000017,玩家,1200,,,修改性别
-104,PlayerGuideRequest_01000060,0x01000060,玩家,1300,,,保存新手引导步骤
-105,PlayerHeadFrameRequest_01000015,0x01000015,玩家,1200,,,修改头像框
-106,PlayerHeadRequest_01000013,0x01000013,玩家,1200,,,修改头像
-107,PlayerHeartbeatRequest_01000005,0x01000005,玩家,1400,,,心跳
-108,PlayerImageRequest_01000019,0x01000019,玩家,1200,,,修改形象
-109,PlayerLoginRequest_01000001,0x01000001,玩家,1500,,0,登陆
-110,PlayerLogoutRequest_01000003,0x01000003,玩家,1500,,0,退出登陆
-111,PlayerNameRequest_01000011,0x01000011,玩家,1200,,,修改名字
-112,PlayerQuestionnaireRequest_01000300,0x01000300,玩家,1501,1,,请求玩家的调查问卷数据
-113,PlayerQuestionnaireRewardRequest_01000302,0x01000302,玩家,1502,2,,领取问卷奖励
-114,PlayerReconnecRequest_01000065,0x01000065,玩家,1550,,,断线重连，和手机端通用
-115,PlayerRedPointRequest_01000075,0x01000075,玩家,1600,,,请求红点，判断所有功能红点的状态。
-116,PlayerSearchRequest_0100000b,0x0100000b,玩家,1650,,,搜索玩家
-117,PlayerShowRequest_01000039,0x01000039,玩家,1660,,,获取一个玩家的展示数据
-118,QianKunMirrorReplaceRequest_25000022,0x25000022,乾坤镜,2000,2,,替换或者丢弃灵魄
-119,QianKunMirrorReversalRequest_25000020,0x25000020,乾坤镜,2000,1,,乾坤逆转请求
-120,QianKunMirrorSpiritualRootUnlockRequest_25000024,0x25000024,乾坤镜,2100,,,点亮 解锁 灵根淬炼
-121,QuestListAllRequest_20000051,0x20000051,任务,2200,1,,请求所有任务数据，一般在任务功能开启的时候请求一下。
-122,QuestListRequest_20000001,0x20000001,任务,2200,2,,"查看某类任务数据,一般在任务功能开启时，客户端请求一下。"
-123,QuestReceiveActivePointRequest_20000008,0x20000008,任务,2200,3,,领取任务活跃积分奖励
-124,QuestReceiveRequest_20000004,0x20000004,任务,2200,4,,领取任务奖励
-125,RankListRequest_35000001,0x35000001,排行榜,2300,,,请求排行榜数据
-126,SecretscriptBreakUpRequest_38000005,0x38000005,神通,2400,,,神通突破，合成新神通也用这个
-127,SecretscriptFusionPvPRequest_38000011,0x38000011,神通,2400,,,神通融汇 PVP
-128,SecretscriptFusionRequest_38000007,0x38000007,神通,2400,,,神通融汇
-129,SecretscriptUpLevelRequest_38000003,0x38000003,神通,2400,,,神通升级
-130,ShopBoxOpenRequest_15000040,0x15000040,商店,2500,,,==================================开宝箱===============================
-131,ShopChapterPacksBuyRequest_15000020,0x15000020,商店,2500,,,购买章节礼包
-132,ShopFundPassBuyRequest_15000030,0x15000030,商店,2500,,,购买通行证
-133,ShopFundPassRewardRequest_15000032,0x15000032,商店,2500,,,领取通行证奖励
-134,ShopHeishiRefreshRequest_15000005,0x15000005,商店,2500,,,手动刷新黑市请求
-135,ShopItemBuyRequest_15000003,0x15000003,商店,2500,,,购买商品
-136,ShopItemListRequest_15000001,0x15000001,商店,2500,1,,查看商店里面的商品列表
-137,ShopRechargeRequest_15000022,0x15000022,商店,2500,,,充值
-147,buyVipGiftRequest_34000005,0x34000005,VIP,2600,,,购买一次性礼包奖励请求
-148,getVipInfoRequest_34000001,0x34000001,VIP,2600,,,获取VIP 信息 请求
-149,rewardFreeVipGiftRequest_34000003,0x34000003,VIP,2600,,,领取每日免费奖励请求
+1,ActivityBaoLiInfoRequest_11000061,0x11000061,活动,1000,,,每日豹利信息请求
+2,ActivityFirstChargeBuyRequest_11000010,0x11000010,活动,1000,,1,购买首冲礼包，只能购买有售价的礼包。
+3,ActivityFirstChargeRequest_11000007,0x11000007,活动,1000,,,查看首冲活动数据
+4,ActivityFirstChargeRewardRequest_11000012,0x11000012,活动,1000,,,领取首冲礼包奖励
+5,ActivityJQBInfoRequest_11000081,0x11000081,活动,1000,,1,金钱豹爆爆信息请求
+6,ActivityLeiChongInfoRequest_11000051,0x11000051,活动,1000,,,累充豪礼信息请求
+7,ActivityListRequest_11000001,0x11000001,活动,1000,,,查看有哪些显示的活动
+8,ActivityQingShenInfoRequest_11000071,0x11000071,活动,1000,,,风云聚义信息请求
+9,ActivityRedPointRequest_11000003,0x11000003,活动,1000,1,,查看某个活动，是否有红点
+10,ActivitySevenDaysCarnivalRequest_11000020,0x11000020,活动,1000,,,七日狂欢
+11,ActivitySevenDaysSigninInfoRequest_11000024,0x11000024,活动,1000,,,"七日签到,查看七日签到数据"
+12,ActivitySevenDaysSigninRequest_11000026,0x11000026,活动,1000,,33,"七日签到,签到领奖 请求"
+13,ActivityTaskRewardRequest_11000041,0x11000041,活动,1000,,,活动任务奖励领取 请求
+14,BattlePatrolRewardRequest_13000044,0x13000044,PVP,2100,,,领取巡逻奖励
+15,BattleBuyPvPTimeRequest_13000121,0x13000121,PVP,2100,3,1,购买挑战券 请求
+16,BattlePvPEndRequest_13000115,0x13000115,PVP,2100,5,,结算战斗请求
+17,BattlePvPInfoRequest_13000117,0x13000117,PVP,2100,1,,获取大道争锋信息 请求
+18,BattlePvPStartRequest_13000113,0x13000113,PVP,2100,4,,开始战斗请求
+19,BattlePvPTargetListRequest_13000111,0x13000111,PVP,2100,2,,目标列表刷新 请求
+20,BattleDaoHeartRequest_13000055,0x13000055,PVE,2200,,,查看道心磨砺 心魔试炼数据
+21,BattleDaoHeartSweepBatchRequest_13000062,0x13000062,PVE,2200,,,一键扫荡道心磨砺 心魔试炼关卡
+22,BattleDaoHeartSweepRequest_13000060,0x13000060,PVE,2200,,3,扫荡道心磨砺 心魔试炼关卡
+23,BattleDaoHeartSweepRequest_13000064,0x13000064,PVE,2200,,,查看道心磨砺 心魔试炼通关奖励领取情况
+24,BattleDaoHeartSweepRequest_13000066,0x13000066,PVE,2200,,,领取道心磨砺 心魔试炼关卡通关奖励
+25,BattleDayChallengeReceiveActivePointRequest_13000070,0x13000070,PVE,2250,,,领取每日挑战活跃积分奖励
+26,BattleFieldStartRequest_13000001,0x13000001,PVE,2300,1,,开始关卡战斗请求
+27,BattleFieldEndRequest_13000003,0x13000003,PVE,2300,2,,结束关卡战斗请求
+28,BattleFieldQuickEndRequest_13000005,0x13000005,PVE,2350,,,"关卡快速战斗请求,也可以当扫荡来使用"
+29,BattleLineupRequest_13000048,0x13000048,PVE,2400,,,保存阵容
+30,BattleLostDayRewardRequest_13000203,0x13000203,PVE,2450,,,领取失落真经历史最高关卡奖励
+31,BattleLostInfoRequest_13000201,0x13000201,PVE,2450,,,请求失落真经数据
+32,BattleNightmareRealmBuffUpdateRequest_13000082,0x13000082,PVE,2500,2,,梦魇秘境更新buff
+33,BattleNightmareRealmQuickRequest_13000084,0x13000084,PVE,2500,3,,梦魇秘境快速战斗
+34,BattleNightmareRealmRequest_13000080,0x13000080,PVE,2500,1,,请求梦魇秘境数据
+35,BattleReliveRequest_13000010,0x13000010,PVE,2550,,,复活
+36,BattleRewardRequest_13000022,0x13000022,PVE,2560,,,"领取战役  首次胜利奖励	首次半血胜利奖励	首次无损胜利奖励,可以一次领多个战役的。"
+37,BattleRougeRefreshRequest_13000052,0x13000052,PVE,2570,,,"肉鸽刷新,每天前3次免费，第四次看广告。"
+38,BattleShareRequest_13000007,0x13000007,PVE,2580,,,看广告并分享之后额外获得xx倍奖励
+39,BattleSpiritualChangeBattleRequest_13000098,0x13000098,灵魄之战,2600,,,提升或者降低难度
+40,BattleSpiritualGetPointRequest_13000096,0x13000096,灵魄之战,2600,,,补满积分。
+41,BattleSpiritualGetTimesRequest_13000094,0x13000094,灵魄之战,2600,,,看广告获取灵魄之战挑战次数
+42,BattleSpiritualInfoRequest_13000090,0x13000090,灵魄之战,2600,1,,请求灵魄之战数据
+43,BattleSpiritualReceiveActivePointRequest_13000092,0x13000092,灵魄之战,2600,,,领取灵魄之战活跃积分奖励
+44,BattleStaminaRequest_13000050,0x13000050,PVE,2650,,,领取体力
+45,BattleSweepRequest_13000024,0x13000024,PVE,2660,,,关卡扫荡
+46,BattleWorldBossBuyTimesRequest_13000303,0x13000303,世界boss,2700,,,购买世界boss挑战次数
+47,BattleWorldBossInfoRequest_13000301,0x13000301,世界boss,2700,1,,请求世界boss数据
+48,BattleWorldRewardRequest_13000305,0x13000305,世界boss,2700,,,领取世界boss伤害宝箱奖励
+49,ChatRequest_31000001,0x31000001,聊天,2999,,,请求聊天
+50,DevelopHeavenlyDaoLvUpRequest_25000010,0x25000010,修炼,3000,,,天道修为晋升，提升等级。
+51,DevelopPotentialBreakRequest_25000003,0x25000003,修炼,3100,,,潜力修炼，突破
+52,DevelopPotentialLvUpRequest_25000001,0x25000001,修炼,3100,,,潜力修炼，升级
+53,DevelopRescueLvUpRequest_25000007,0x25000007,修炼,3100,,,强援修炼，升级
+54,DrawListRequest_37000001,0x37000001,抽卡,3150,,,请求卡池界面数据
+55,DrawRequest_37000003,0x37000003,抽卡,3160,,,请求抽卡
+56,FairyFriendFightRequest_27000003,0x27000003,仙友,3200,1,,仙友 切磋
+57,FairyFriendFightRewardRequest_27000005,0x27000005,仙友,3200,2,,领取仙友切磋奖励
+58,FairyFriendGiftRequest_27000001,0x27000001,仙友,3200,3,,仙友 送礼
+59,FairyFriendTravelRequest_27000007,0x27000007,仙友,3200,4,,仙友寻缘、游历
+60,FriendApplicationRequest_30000007,0x30000007,好友,3300,5,,"处理好友申请,包含批量处理"
+61,FriendApplyListRequest_30000053,0x30000053,好友,3300,4,,请求好友申请列表
+62,FriendApplyRequest_30000005,0x30000005,好友,3300,6,,"申请成为对方好友,支持批量"
+63,FriendBlackListRequest_30000051,0x30000051,好友,3300,3,,请求黑名单列表
+64,FriendBlackRequest_30000010,0x30000010,好友,3300,,,将好友加入到黑名单
+65,FriendDeleteRequest_30000009,0x30000009,好友,3300,,,"删除好友,从黑名单里移除也用这个协议"
+66,FriendGiftReceiveRequest_30000014,0x30000014,好友,3300,,,领取好友赠送的友情点，包含一键领取，注意人数不要领多了，超过每日次数限制。
+67,FriendGiftRequest_30000012,0x30000012,好友,3300,,,赠送好友友情点，注意人数不要发多了，超过每日次数限制。
+68,FriendListRequest_30000001,0x30000001,好友,3300,2,,请求好友列表
+69,FriendRecommendRequest_30000003,0x30000003,好友,3300,1,,搜索符合条件的推荐好友
+70,HeroBattleDismissRequest_16000009,0x16000009,英雄,3400,,,英雄下阵
+71,HeroBattleRequest_16000005,0x16000005,英雄,3400,,,英雄上阵
+72,HeroBattleUpLevelBatchRequest_16000025,0x16000025,英雄,3400,,,批量升级上阵的英雄，按照品质和星级的顺序
+73,HeroConflateRequest_16000003,0x16000003,英雄,3400,,,"英雄合成,也就是升星，突破。当前品质下可以升星，星级升满之后进行突破，改变品质。"
+74,HeroFreeDayRentChooseRequest_16000032,0x16000032,英雄,3400,,,选择某个英雄日租卡。
+75,HeroFreeDayRentRequest_16000030,0x16000030,英雄,3400,,,请求免费英雄日租卡，这个只有在功能开启的时候请求一下，不能重复请求
+76,HeroIllustrationsListRequest_16000040,0x16000040,英雄,3400,,,查看图鉴数据
+77,HeroIllustrationsRewardRequest_16000042,0x16000042,英雄,3400,,,一键领取英雄的图鉴奖励
+78,HeroLevelResetRequest_16000007,0x16000007,英雄,3400,,,"英雄等级重置,返还升级材料"
+79,HeroQualityResetRequest_16000011,0x16000011,英雄,3400,,,英雄品质重置
+80,HeroUpLevelBatchRequest_16000023,0x16000023,英雄,3400,,,批量英雄升级，能升级哪个升级哪个
+81,HeroUpLevelMaxRequest_16000021,0x16000021,英雄,3400,,,"英雄一键升级,自动升级到最高级。"
+82,HeroUpLevelRequest_16000001,0x16000001,英雄,3400,,,英雄升级
+83,ItemUseRequest_0b000003,0x0b000003,道具,3450,,,使用道具
+84,MailDeleteRequest_12000007,0x12000007,邮件,3500,4,,删除邮件
+85,MailListRequest_12000001,0x12000001,邮件,3500,1,,请求邮件列表。
+86,MailReceiveRequest_12000005,0x12000005,邮件,3500,3,,领取邮件奖励
+87,MailSeeRequest_12000003,0x12000003,邮件,3500,2,,查看未读邮件
+88,MonthCardBuyRequest_15000010,0x15000010,月卡,3550,1,,购买月卡
+89,MonthCardBuyRewardRequest_15000012,0x15000012,月卡,3550,2,,领取月卡购买奖励，每个月卡只能领取一次
+90,MonthCardDayRewardRequest_15000014,0x15000014,月卡,3550,3,,领取月卡每日奖励
+91,MonthCardDoubleBonusRequest_15000016,0x15000016,月卡,3550,4,,领取双月卡一次性奖励
+92,NoticeRequest_01000050,0x01000050,公告,3580,,,请求公告数据
+93,PetBattleRequest_19000011,0x19000011,宠物,3600,,,宠物上阵
+94,PetBondsActivateRequest_19000013,0x19000013,宠物,3600,,,激活宠物羁绊
+95,PetBondsUpLevelRequest_19000015,0x19000015,宠物,3600,,,升级宠物羁绊
+96,PetBreakUpRequest_19000005,0x19000005,宠物,3600,,,宠物突破
+97,PetCompositeRequest_19000001,0x19000001,宠物,3600,,,碎片合成宠物
+98,PetRefineRequest_19000007,0x19000007,宠物,3600,,,宠物洗练
+99,PetRefineSaveRequest_19000009,0x19000009,宠物,3600,,,实际保存上一次刷新出来的技能
+100,PetUpLevelRequest_19000003,0x19000003,宠物,3600,,,宠物升级
+101,PlayerAssetDataRequest_01000200,0x01000200,玩家,4000,,,请求玩家资产，测试使用，一般用来比对前后端资源，检查资源不同步的操作。
+102,PlayerCloudBoxRequest_01000042,0x01000042,玩家,4050,,,领取小云宝箱奖励
+103,PlayerGuideRequest_01000060,0x01000060,玩家,4060,,,保存新手引导步骤
+104,PlayerGenderRequest_01000017,0x01000017,玩家,4100,,,修改性别
+105,PlayerHeadFrameRequest_01000015,0x01000015,玩家,4100,,,修改头像框
+106,PlayerHeadRequest_01000013,0x01000013,玩家,4100,,,修改头像
+107,PlayerNameRequest_01000011,0x01000011,玩家,4100,,,修改名字
+108,PlayerImageRequest_01000019,0x01000019,玩家,4100,,,修改形象
+109,PlayerHeartbeatRequest_01000005,0x01000005,玩家,4150,,,心跳
+110,PlayerLoginRequest_01000001,0x01000001,玩家,4200,,0,登陆
+111,PlayerLogoutRequest_01000003,0x01000003,玩家,4200,,0,退出登陆
+112,PlayerQuestionnaireRequest_01000300,0x01000300,玩家,4250,1,,请求玩家的调查问卷数据
+113,PlayerQuestionnaireRewardRequest_01000302,0x01000302,玩家,4250,2,,领取问卷奖励
+114,PlayerReconnecRequest_01000065,0x01000065,玩家,4300,,,断线重连，和手机端通用
+115,PlayerRedPointRequest_01000075,0x01000075,玩家,4350,,,请求红点，判断所有功能红点的状态。
+116,PlayerSearchRequest_0100000b,0x0100000b,玩家,4400,,,搜索玩家
+117,PlayerShowRequest_01000039,0x01000039,玩家,4450,,,获取一个玩家的展示数据
+118,QianKunMirrorReplaceRequest_25000022,0x25000022,乾坤镜,4500,2,,替换或者丢弃灵魄
+119,QianKunMirrorReversalRequest_25000020,0x25000020,乾坤镜,4500,1,,乾坤逆转请求
+120,QianKunMirrorSpiritualRootUnlockRequest_25000024,0x25000024,乾坤镜,4550,,,点亮 解锁 灵根淬炼
+121,QuestListAllRequest_20000051,0x20000051,任务,5000,1,,请求所有任务数据，一般在任务功能开启的时候请求一下。
+122,QuestListRequest_20000001,0x20000001,任务,5000,2,,"查看某类任务数据,一般在任务功能开启时，客户端请求一下。"
+123,QuestReceiveActivePointRequest_20000008,0x20000008,任务,5000,3,,领取任务活跃积分奖励
+124,QuestReceiveRequest_20000004,0x20000004,任务,5000,4,,领取任务奖励
+125,RankListRequest_35000001,0x35000001,排行榜,5050,,,请求排行榜数据
+126,SecretscriptBreakUpRequest_38000005,0x38000005,神通,5100,,,神通突破，合成新神通也用这个
+127,SecretscriptFusionPvPRequest_38000011,0x38000011,神通,5100,,,神通融汇 PVP
+128,SecretscriptFusionRequest_38000007,0x38000007,神通,5100,,,神通融汇
+129,SecretscriptUpLevelRequest_38000003,0x38000003,神通,5100,,,神通升级
+130,ShopBoxOpenRequest_15000040,0x15000040,商店,5200,,,==================================开宝箱===============================
+131,ShopChapterPacksBuyRequest_15000020,0x15000020,商店,5200,,,购买章节礼包
+132,ShopFundPassBuyRequest_15000030,0x15000030,商店,5200,,,购买通行证
+133,ShopFundPassRewardRequest_15000032,0x15000032,商店,5200,,,领取通行证奖励
+134,ShopHeishiRefreshRequest_15000005,0x15000005,商店,5200,,,手动刷新黑市请求
+135,ShopItemBuyRequest_15000003,0x15000003,商店,5200,,,购买商品
+136,ShopItemListRequest_15000001,0x15000001,商店,5200,1,,查看商店里面的商品列表
+137,ShopRechargeRequest_15000022,0x15000022,商店,5200,,,充值
+138,buyVipGiftRequest_34000005,0x34000005,VIP,5300,,,购买一次性礼包奖励请求
+139,getVipInfoRequest_34000001,0x34000001,VIP,5300,,,获取VIP 信息 请求
+140,rewardFreeVipGiftRequest_34000003,0x34000003,VIP,5300,,,领取每日免费奖励请求
