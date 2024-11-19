@@ -70,6 +70,7 @@ public class ServerTestContext {
 	public static int messageStatisticsInterval;
 	public static int botSendInterval;
 	public static int botRunTimeMax;
+	public static int msgGroup;
 
 	public static boolean init = false;
 
@@ -80,7 +81,7 @@ public class ServerTestContext {
 	private static List<String> sourceIps;
 
 	public static void main(String args[]) throws Exception {
-		String filePath = System.getProperty("user.dir") + "/messages" + ".csv";
+		String filePath = System.getProperty("user.dir") + "/messages.csv";
 		CSVMessagesReader.read(filePath);
 		ManagerHelper.init();
 		init();
@@ -384,6 +385,7 @@ public class ServerTestContext {
 		botSendInterval = Integer.parseInt(initialProp.getProperty("botSendInterval"));
 		messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval"));
 		botRunTimeMax = Integer.parseInt(initialProp.getProperty("botRunTimeMax"));
+		msgGroup = Integer.parseInt(initialProp.getProperty("msgGroup"));
 		String sourceIpsString = initialProp.getProperty("sourceIps");
 		if (!StringUtils.isEmpty(sourceIpsString)) {
 			sourceIps = new ArrayList<>();
