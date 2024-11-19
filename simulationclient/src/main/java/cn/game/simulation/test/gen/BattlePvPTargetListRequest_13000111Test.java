@@ -21,6 +21,16 @@ public class BattlePvPTargetListRequest_13000111Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattlePvPTargetListRequest_13000111.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPTargetListRequest_13000111.newBuilder() ; 
+		
+		builder.setRefreshFlag(RandomUtils.nextBoolean());
+		builder.setUseCost(RandomUtils.nextBoolean());
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

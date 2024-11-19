@@ -19,6 +19,15 @@ public class PlayerHeartbeatRequest_01000005Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

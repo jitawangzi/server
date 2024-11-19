@@ -20,6 +20,15 @@ public class HCHeroAdsRequest_26000009Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009.Builder builder = cn.game.protocol.protobuf.HCHeroMsg.HCHeroAdsRequest_26000009.newBuilder() ; 
+		builder.setId(900001);
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

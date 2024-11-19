@@ -19,6 +19,15 @@ public class QianKunMirrorReversalRequest_25000020Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.Builder builder = cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

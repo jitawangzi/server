@@ -19,6 +19,15 @@ public class BattleBuyPvPTimeRequest_13000121Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleBuyPvPTimeRequest_13000121.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleBuyPvPTimeRequest_13000121.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

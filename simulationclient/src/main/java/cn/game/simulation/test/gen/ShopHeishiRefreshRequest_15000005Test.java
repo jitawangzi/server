@@ -20,6 +20,15 @@ public class ShopHeishiRefreshRequest_15000005Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.newBuilder() ; 
+		
+		builder.setShopId(2);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

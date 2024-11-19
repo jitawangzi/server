@@ -34,6 +34,25 @@ public class PlayerSearchRequest_0100000bTest extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.newBuilder() ; 
+		
+		List<SimplePlayerInfo> recommendList = client.recommendList;
+		if (recommendList != null && recommendList.size() > 0) {
+			SimplePlayerInfo playerInfo = Rnd.randomOne(recommendList);
+			if (Rnd.nextBoolean()) {
+				builder.setPlayerId(playerInfo.getId());
+			} else {
+				builder.setPlayerName(playerInfo.getName());
+			}
+			builder.setPlayerId(playerInfo.getId());
+		} else {
+			builder.setPlayerName("浩瀚青龙剑侠");
+		}
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

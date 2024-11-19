@@ -19,6 +19,15 @@ public class UnionTitleChangeRequest_33000012Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.UnionMsg.UnionTitleChangeRequest_33000012.Builder builder = cn.game.protocol.protobuf.UnionMsg.UnionTitleChangeRequest_33000012.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -18,6 +18,15 @@ public class TestMessageRequest_6f000080Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.TestMsg.TestMessageRequest_6f000080.Builder builder = cn.game.protocol.protobuf.TestMsg.TestMessageRequest_6f000080.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -18,6 +18,15 @@ public class ShopBoxOpenRequest_15000040Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.newBuilder() ; 
+		
+		builder.setWatchAds(false);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -15,11 +15,25 @@ public abstract class ServerTest {
 			e.printStackTrace();
 		}
 	}
+
+	/** 
+	 * 生成协议数据
+	 * @param client
+	 * @return
+	 */
 	public abstract Message getMessage(Client client);
+
+	/** 
+	 * 压测模式下的协议数据生成
+	 * @param client
+	 * @return
+	 */
+	public abstract Message getMessagePressure(Client client);
 
 	public String getHexStringMessage(Client client) {
 		Message message = getMessage(client);
 		return JmeterUtil.toHexString(message);
-	};
+	}
+
 
 }

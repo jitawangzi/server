@@ -21,6 +21,15 @@ public class BattleReliveRequest_13000010Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.newBuilder() ; 
+		
+		builder.setType(2);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

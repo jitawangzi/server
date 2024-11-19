@@ -19,6 +19,15 @@ public class SecretscriptFusionPvPRequest_38000011Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPRequest_38000011.Builder builder = cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPRequest_38000011.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

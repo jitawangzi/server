@@ -19,6 +19,15 @@ public class HCBattleSpeedAdsRequest_28000020Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HCCommonMsg.HCBattleSpeedAdsRequest_28000020.Builder builder = cn.game.protocol.protobuf.HCCommonMsg.HCBattleSpeedAdsRequest_28000020.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

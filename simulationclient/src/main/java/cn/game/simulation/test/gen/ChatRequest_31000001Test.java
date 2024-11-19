@@ -22,6 +22,17 @@ public class ChatRequest_31000001Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.Builder builder = cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.newBuilder() ; 
+		
+		builder.setChatType(ChatType.WORLD_CHAT);
+		builder.setContent("你好啊");
+//		builder.setTargetPlayerId(251220055 + "");
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

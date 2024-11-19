@@ -19,6 +19,15 @@ public class FairyFriendFightRewardRequest_27000005Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRewardRequest_27000005.Builder builder = cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendFightRewardRequest_27000005.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

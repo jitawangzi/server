@@ -19,6 +19,15 @@ public class BattleNightmareRealmQuickRequest_13000084Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmQuickRequest_13000084.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmQuickRequest_13000084.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -29,6 +29,19 @@ public class HeroBattleRequest_16000005Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005.newBuilder() ; 
+		
+		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
+		List<HeroInfo> herosList = playerAllInfo.getHerosList();
+		builder.setUid(Rnd.randomOne(herosList).getUid());
+//		builder.setUid("7707204458765123072");
+		builder.setPos(Rnd.get(1, 5));
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

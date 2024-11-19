@@ -20,6 +20,15 @@ public class ActivityLeiChongInfoRequest_11000051Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ActivityMsg.ActivityLeiChongInfoRequest_11000051.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityLeiChongInfoRequest_11000051.newBuilder() ; 
+		
+		builder.setActivityId(23);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

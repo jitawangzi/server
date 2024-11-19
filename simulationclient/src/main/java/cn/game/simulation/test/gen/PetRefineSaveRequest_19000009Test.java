@@ -20,6 +20,15 @@ public class PetRefineSaveRequest_19000009Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.Builder builder = cn.game.protocol.protobuf.PetMsg.PetRefineSaveRequest_19000009.newBuilder() ; 
+		
+		builder.setId(640001);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

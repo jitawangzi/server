@@ -20,6 +20,15 @@ public class PetBondsUpLevelRequest_19000015Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PetMsg.PetBondsUpLevelRequest_19000015.Builder builder = cn.game.protocol.protobuf.PetMsg.PetBondsUpLevelRequest_19000015.newBuilder() ; 
+		
+		builder.setId(1);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

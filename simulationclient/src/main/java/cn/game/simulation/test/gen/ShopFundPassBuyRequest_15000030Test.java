@@ -20,6 +20,15 @@ public class ShopFundPassBuyRequest_15000030Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.newBuilder() ; 
+		builder.setId(2);
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

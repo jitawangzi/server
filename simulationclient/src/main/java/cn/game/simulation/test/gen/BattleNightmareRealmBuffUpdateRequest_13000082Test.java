@@ -19,6 +19,13 @@ public class BattleNightmareRealmBuffUpdateRequest_13000082Test extends ServerTe
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateRequest_13000082.newBuilder() ; 
+		builder.putBuffIds(1, 1);
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

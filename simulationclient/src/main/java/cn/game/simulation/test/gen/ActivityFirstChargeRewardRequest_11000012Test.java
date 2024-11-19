@@ -20,6 +20,16 @@ public class ActivityFirstChargeRewardRequest_11000012Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRewardRequest_11000012.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRewardRequest_11000012.newBuilder() ;
+
+		builder.setId(10);
+		builder.setChargeId(1);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

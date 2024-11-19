@@ -27,6 +27,17 @@ public class HeroFreeDayRentChooseRequest_16000032Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032.newBuilder() ; 
+
+		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
+		List<HeroInfo> herosList = playerAllInfo.getHerosList();
+		builder.setUid(Rnd.randomOne(herosList).getUid());
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

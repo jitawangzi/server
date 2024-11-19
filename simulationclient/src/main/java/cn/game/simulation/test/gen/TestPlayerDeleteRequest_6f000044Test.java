@@ -20,6 +20,15 @@ public class TestPlayerDeleteRequest_6f000044Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.Builder builder = cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.newBuilder() ; 
+		
+		builder.setPlayerId(240200002);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

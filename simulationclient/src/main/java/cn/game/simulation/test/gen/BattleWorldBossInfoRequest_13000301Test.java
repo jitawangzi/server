@@ -19,6 +19,15 @@ public class BattleWorldBossInfoRequest_13000301Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

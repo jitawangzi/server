@@ -19,6 +19,15 @@ public class PlayerLogoutRequest_01000003Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

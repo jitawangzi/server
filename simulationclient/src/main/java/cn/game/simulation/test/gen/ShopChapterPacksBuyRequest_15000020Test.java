@@ -30,6 +30,21 @@ public class ShopChapterPacksBuyRequest_15000020Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.newBuilder() ; 
+		Collection<ChapterPacksConfig> list = ChapterPacksManager.instance().list();
+		if (list != null) {
+			for (ChapterPacksConfig chapterPacksConfig : list) {
+				builder.setId(chapterPacksConfig.ID);
+				break;
+			}
+		} else {
+			builder.setId(1);
+		}
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

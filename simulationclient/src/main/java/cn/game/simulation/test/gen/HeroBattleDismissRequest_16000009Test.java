@@ -27,6 +27,17 @@ public class HeroBattleDismissRequest_16000009Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.newBuilder() ; 
+		
+		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
+		List<HeroInfo> herosList = playerAllInfo.getHerosList();
+		builder.setUid(Rnd.randomOne(herosList).getUid());
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

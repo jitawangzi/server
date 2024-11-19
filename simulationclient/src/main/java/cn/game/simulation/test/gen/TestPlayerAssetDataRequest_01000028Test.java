@@ -21,6 +21,16 @@ public class TestPlayerAssetDataRequest_01000028Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.Builder builder = cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029
+				.newBuilder();
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

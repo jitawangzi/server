@@ -19,6 +19,15 @@ public class GmMailDeleteRequest_77000046Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.GmMsg.GmMailDeleteRequest_77000046.Builder builder = cn.game.protocol.protobuf.GmMsg.GmMailDeleteRequest_77000046.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

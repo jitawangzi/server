@@ -22,6 +22,15 @@ public class PlayerNameRequest_01000011Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerNameRequest_01000011.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerNameRequest_01000011.newBuilder() ; 
+		
+		builder.setName(UUID.randomUUID().toString());
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

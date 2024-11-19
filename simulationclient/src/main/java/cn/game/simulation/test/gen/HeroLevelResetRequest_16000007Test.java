@@ -27,6 +27,17 @@ public class HeroLevelResetRequest_16000007Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HeroMsg.HeroLevelResetRequest_16000007.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroLevelResetRequest_16000007.newBuilder() ; 
+		
+		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
+		List<HeroInfo> herosList = playerAllInfo.getHerosList();
+		builder.addUid(Rnd.randomOne(herosList).getUid());
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

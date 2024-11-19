@@ -19,6 +19,15 @@ public class HeroIllustrationsRewardRequest_16000042Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

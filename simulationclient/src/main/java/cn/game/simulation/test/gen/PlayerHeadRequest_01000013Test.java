@@ -29,6 +29,19 @@ public class PlayerHeadRequest_01000013Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013.newBuilder() ; 
+		List<HeadPortraitConfig> list = HeadPortraitManager.instance().list(); 
+		if (list != null) {
+			HeadPortraitConfig randomOne = Rnd.randomOne(list); 
+			builder.setHead(randomOne.ID); 
+		}else {
+			builder.setHead(1);
+		}
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

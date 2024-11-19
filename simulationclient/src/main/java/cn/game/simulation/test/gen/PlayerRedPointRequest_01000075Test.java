@@ -21,6 +21,15 @@ public class PlayerRedPointRequest_01000075Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.newBuilder() ; 
+		
+		builder.addType(InitialUI.YaoWangBiePao.ID);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

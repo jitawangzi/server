@@ -19,6 +19,15 @@ public class BattleSpiritualChangeBattleRequest_13000098Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.newBuilder() ; 
+		
+		builder.setBattleId(31002);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -20,6 +20,15 @@ public class SecretscriptBreakUpRequest_38000005Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptBreakUpRequest_38000005.Builder builder = cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptBreakUpRequest_38000005.newBuilder() ; 
+		builder.setId(101);
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -27,6 +27,22 @@ public class PlayerGuideRequest_01000060Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060.newBuilder() ; 
+
+		int guideType = client.guideType;
+		int guideStep = client.guideStep++;
+		if (client.guideStep >= 10) {
+			client.guideType++;
+			client.guideStep = 1;
+		}
+		builder.setType(guideType > 10 ? 10 : guideType);
+		builder.setStep(guideStep > 10 ? 10 : guideStep);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

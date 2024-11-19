@@ -20,6 +20,15 @@ public class ActivityQingShenInfoRequest_11000071Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ActivityMsg.ActivityQingShenInfoRequest_11000071.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityQingShenInfoRequest_11000071.newBuilder() ; 
+		builder.setActivityId(25);
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

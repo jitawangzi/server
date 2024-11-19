@@ -31,6 +31,23 @@ public class BattleDaoHeartSweepRequest_13000066Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000066.newBuilder() ;
+
+		int type = 2;
+		builder.setType(type);
+
+		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(type);
+		if (battleTypeList != null) {
+			builder.setId(battleTypeList.get(0).ID);
+		} else {
+			builder.setId(20001);
+		}
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 
