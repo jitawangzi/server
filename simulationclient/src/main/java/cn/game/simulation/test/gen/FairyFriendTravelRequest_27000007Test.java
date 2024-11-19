@@ -19,6 +19,15 @@ public class FairyFriendTravelRequest_27000007Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelRequest_27000007.Builder builder = cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelRequest_27000007.newBuilder() ; 
+		
+		builder.setCount(10);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

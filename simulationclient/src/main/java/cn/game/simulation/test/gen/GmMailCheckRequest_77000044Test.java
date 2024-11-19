@@ -19,6 +19,15 @@ public class GmMailCheckRequest_77000044Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.Builder builder = cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.newBuilder() ; 
+		
+		builder.addUid("3");
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

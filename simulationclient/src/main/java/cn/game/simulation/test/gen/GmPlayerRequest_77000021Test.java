@@ -20,6 +20,15 @@ public class GmPlayerRequest_77000021Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021.Builder builder = cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021.newBuilder() ; 
+		builder.setPlayerId(251220037 + "");
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

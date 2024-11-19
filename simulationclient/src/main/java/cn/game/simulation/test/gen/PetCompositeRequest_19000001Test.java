@@ -20,6 +20,15 @@ public class PetCompositeRequest_19000001Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PetMsg.PetCompositeRequest_19000001.Builder builder = cn.game.protocol.protobuf.PetMsg.PetCompositeRequest_19000001.newBuilder() ; 
+		
+		builder.setId(640001);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

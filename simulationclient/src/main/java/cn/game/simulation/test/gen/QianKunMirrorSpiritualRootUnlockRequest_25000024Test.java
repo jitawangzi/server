@@ -20,6 +20,15 @@ public class QianKunMirrorSpiritualRootUnlockRequest_25000024Test extends Server
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorSpiritualRootUnlockRequest_25000024.Builder builder = cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorSpiritualRootUnlockRequest_25000024.newBuilder() ; 
+		
+		builder.setId(1001002);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

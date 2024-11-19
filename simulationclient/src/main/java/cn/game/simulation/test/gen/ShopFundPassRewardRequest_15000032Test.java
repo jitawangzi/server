@@ -19,6 +19,14 @@ public class ShopFundPassRewardRequest_15000032Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.newBuilder() ; 
+		builder.addId(1);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

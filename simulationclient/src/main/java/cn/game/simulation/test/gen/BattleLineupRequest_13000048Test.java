@@ -19,6 +19,15 @@ public class BattleLineupRequest_13000048Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

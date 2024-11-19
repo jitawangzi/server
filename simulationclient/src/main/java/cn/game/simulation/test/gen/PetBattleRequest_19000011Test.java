@@ -20,6 +20,15 @@ public class PetBattleRequest_19000011Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PetMsg.PetBattleRequest_19000011.Builder builder = cn.game.protocol.protobuf.PetMsg.PetBattleRequest_19000011.newBuilder() ; 
+		
+		builder.setId(640001);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

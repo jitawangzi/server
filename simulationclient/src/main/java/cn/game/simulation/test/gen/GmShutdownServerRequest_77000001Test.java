@@ -19,6 +19,15 @@ public class GmShutdownServerRequest_77000001Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.GmMsg.GmShutdownServerRequest_77000001.Builder builder = cn.game.protocol.protobuf.GmMsg.GmShutdownServerRequest_77000001.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

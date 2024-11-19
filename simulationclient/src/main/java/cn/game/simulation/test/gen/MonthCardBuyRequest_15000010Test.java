@@ -20,6 +20,15 @@ public class MonthCardBuyRequest_15000010Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRequest_15000010.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRequest_15000010.newBuilder() ; 
+		builder.setId(1);
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

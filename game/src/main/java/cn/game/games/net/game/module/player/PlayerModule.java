@@ -83,7 +83,7 @@ public class PlayerModule extends BasePlayerModule {
 	private Map<Integer, Integer> guideMap = new HashMap<Integer, Integer>();
 
 	/** 上次世界聊天发言时间 */
-	private transient int lastChatTime;
+	private int lastChatTime;
 	
 
 	@Override

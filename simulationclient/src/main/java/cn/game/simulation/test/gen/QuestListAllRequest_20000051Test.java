@@ -19,6 +19,15 @@ public class QuestListAllRequest_20000051Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestListAllRequest_20000051.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

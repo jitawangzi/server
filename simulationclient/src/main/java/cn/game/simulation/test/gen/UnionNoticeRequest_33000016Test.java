@@ -19,6 +19,15 @@ public class UnionNoticeRequest_33000016Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.UnionMsg.UnionNoticeRequest_33000016.Builder builder = cn.game.protocol.protobuf.UnionMsg.UnionNoticeRequest_33000016.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

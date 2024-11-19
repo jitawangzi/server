@@ -20,6 +20,15 @@ public class HCBattleDataSaveRequest_13000100Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.HCBattleDataSaveRequest_13000100.Builder builder = cn.game.protocol.protobuf.BattleMsg.HCBattleDataSaveRequest_13000100.newBuilder() ; 
+		
+		builder.setData("test");
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

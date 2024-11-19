@@ -19,6 +19,15 @@ public class HeroBattleUpLevelBatchRequest_16000025Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleUpLevelBatchRequest_16000025.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

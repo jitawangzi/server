@@ -18,6 +18,14 @@ public class FriendGiftRequest_30000012Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendGiftRequest_30000012.newBuilder() ; 
+		builder.addFriendId(240200680 + "");
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

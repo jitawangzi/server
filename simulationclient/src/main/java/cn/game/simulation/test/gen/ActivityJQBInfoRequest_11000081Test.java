@@ -20,6 +20,15 @@ public class ActivityJQBInfoRequest_11000081Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ActivityMsg.ActivityJQBInfoRequest_11000081.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityJQBInfoRequest_11000081.newBuilder() ; 
+		
+		builder.setActivityId(22);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

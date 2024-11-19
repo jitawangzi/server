@@ -20,6 +20,15 @@ public class DrawListRequest_37000001Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001.newBuilder() ; 
+		
+		builder.setId(Rnd.get(1, 2));
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

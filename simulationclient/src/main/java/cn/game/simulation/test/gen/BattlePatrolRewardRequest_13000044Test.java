@@ -21,6 +21,15 @@ public class BattlePatrolRewardRequest_13000044Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044.newBuilder() ; 
+		
+		builder.setIsFast(true);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

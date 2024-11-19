@@ -19,6 +19,15 @@ public class FriendApplyRequest_30000005Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendApplyRequest_30000005.newBuilder() ; 
+		
+		builder.addPlayerIds(240200679 + "");
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -35,6 +35,25 @@ public class QuestReceiveRequest_20000004Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.newBuilder() ; 
+		List<QuestGroupInfo> questGroupsList = client.getPlayerAllInfo().getQuestGroupsList();
+		if (!questGroupsList.isEmpty()) {
+			QuestGroupInfo groupInfo = Rnd.randomOne(questGroupsList);
+			List<QuestInfo> questsList = groupInfo.getQuestsList();
+			for (QuestInfo questInfo : questsList) {
+				if (questInfo.getState() == 4) {
+					builder.addIds(questInfo.getId());
+					break;
+				}
+			}
+		} else {
+			builder.addIds(10301);
+		}
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -19,6 +19,15 @@ public class GmNoticeAddRequest_77000060Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.GmMsg.GmNoticeAddRequest_77000060.Builder builder = cn.game.protocol.protobuf.GmMsg.GmNoticeAddRequest_77000060.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

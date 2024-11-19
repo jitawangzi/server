@@ -19,6 +19,15 @@ public class UnionMasterChangeRequest_33000014Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.UnionMsg.UnionMasterChangeRequest_33000014.Builder builder = cn.game.protocol.protobuf.UnionMsg.UnionMasterChangeRequest_33000014.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

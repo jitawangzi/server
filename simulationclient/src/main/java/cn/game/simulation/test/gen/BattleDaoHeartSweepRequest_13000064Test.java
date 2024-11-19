@@ -19,6 +19,15 @@ public class BattleDaoHeartSweepRequest_13000064Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.newBuilder() ;
+
+		builder.setType(2);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

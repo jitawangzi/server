@@ -21,6 +21,15 @@ public class BattleDayChallengeReceiveActivePointRequest_13000070Test extends Se
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.newBuilder() ; 
+		
+		builder.setIndex(Rnd.nextInt(3));
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

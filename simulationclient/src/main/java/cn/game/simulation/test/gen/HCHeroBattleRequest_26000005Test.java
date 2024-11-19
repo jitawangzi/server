@@ -22,6 +22,16 @@ public class HCHeroBattleRequest_26000005Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HCHeroMsg.HCHeroBattleRequest_26000005.Builder builder = cn.game.protocol.protobuf.HCHeroMsg.HCHeroBattleRequest_26000005.newBuilder() ; 
+		HCHeroInfo hcHeros = client.getPlayerAllInfo().getHcHeros(0);
+		builder.setUid(hcHeros.getUid());
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

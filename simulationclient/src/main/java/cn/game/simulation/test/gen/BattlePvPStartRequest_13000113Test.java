@@ -26,6 +26,21 @@ public class BattlePvPStartRequest_13000113Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattlePvPStartRequest_13000113.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPStartRequest_13000113.newBuilder() ;
+
+		long targetPid = 1;
+		if (client.getTargetListResponse() != null && client.getTargetListResponse().getTargetListCount() > 0){
+			int index = RandomUtils.nextInt(client.getTargetListResponse().getTargetListCount());
+			targetPid = Long.parseLong(client.getTargetListResponse().getTargetList(index).getId());
+			client.setInPvPBattle(targetPid);
+		}
+		builder.setTargetId(targetPid+"");
+
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

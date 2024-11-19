@@ -34,6 +34,26 @@ public class ActivitySevenDaysSigninRequest_11000026Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninRequest_11000026.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninRequest_11000026.newBuilder() ;
+
+		Collection<ActivityConfig> list = ActivityManager.instance().list();
+		if (list != null) {
+			for (ActivityConfig activityConfig : list) {
+				if (activityConfig.type == 3) {
+					builder.setId(activityConfig.ID);
+					break;
+				}
+			}
+		} else {
+
+			builder.setId(12);
+		}
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -19,6 +19,15 @@ public class DevelopPotentialLvUpRequest_25000001Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialLvUpRequest_25000001.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DevelopPotentialLvUpRequest_25000001.newBuilder() ; 
+		
+		builder.setId(1001);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

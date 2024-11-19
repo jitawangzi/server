@@ -22,6 +22,19 @@ public class TestAddItemRequest_6f000008Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.Builder builder = cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.newBuilder() ; 
+
+//		builder.setId(Asset.playerExp.ID);
+//		builder.setCount(Integer.MAX_VALUE / 2);
+//		
+		builder.setId(205000);
+		builder.setCount(1);
+
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -31,6 +31,21 @@ public class PlayerHeadFrameRequest_01000015Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.newBuilder() ; 
+		
+		List<HeadBoxConfig> list = HeadBoxManager.instance().list();
+		if (list != null) {
+			HeadBoxConfig randomOne = Rnd.randomOne(list);
+			builder.setHeadFrame(randomOne.ID);
+		} else {
+			builder.setHeadFrame(1);
+		}
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

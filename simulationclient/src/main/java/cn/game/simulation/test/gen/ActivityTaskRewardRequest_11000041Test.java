@@ -20,6 +20,15 @@ public class ActivityTaskRewardRequest_11000041Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ActivityMsg.ActivityTaskRewardRequest_11000041.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityTaskRewardRequest_11000041.newBuilder() ; 
+		builder.setActivityId(23);
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

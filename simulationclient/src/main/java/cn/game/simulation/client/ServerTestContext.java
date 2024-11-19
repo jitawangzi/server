@@ -36,6 +36,11 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Promise;
 
+/**    
+ * 压测使用
+ * 2024年11月19日 11:33:29
+ * @author SYQ
+ */
 public class ServerTestContext {
 	static {
 		try {
@@ -261,7 +266,7 @@ public class ServerTestContext {
 					if (serverTest == null) {
 						throw new IllegalArgumentException("test message not found : " + randomMessage);
 					}
-					Message message = serverTest.getMessage(client);
+					Message message = serverTest.getMessagePressure(client);
 					if (message != null) {
 						client.sendProtocol(message);
 						client.sendingGroup = randomMessage.group;

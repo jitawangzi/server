@@ -19,6 +19,15 @@ public class BattleRougeRefreshRequest_13000052Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000052.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000052.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

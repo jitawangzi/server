@@ -19,6 +19,15 @@ public class GmAccountUnblockRequest_77000007Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.GmMsg.GmAccountUnblockRequest_77000007.Builder builder = cn.game.protocol.protobuf.GmMsg.GmAccountUnblockRequest_77000007.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

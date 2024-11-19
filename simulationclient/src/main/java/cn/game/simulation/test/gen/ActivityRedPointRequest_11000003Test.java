@@ -20,6 +20,15 @@ public class ActivityRedPointRequest_11000003Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ActivityMsg.ActivityRedPointRequest_11000003.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityRedPointRequest_11000003.newBuilder() ; 
+		builder.addIds(10);
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

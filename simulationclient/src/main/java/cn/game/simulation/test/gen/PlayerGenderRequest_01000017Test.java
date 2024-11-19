@@ -21,6 +21,15 @@ public class PlayerGenderRequest_01000017Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017.newBuilder() ; 
+		
+		builder.setIsMan(Rnd.nextBoolean());
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

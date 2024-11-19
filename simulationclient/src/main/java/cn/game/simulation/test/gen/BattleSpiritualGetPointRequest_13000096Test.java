@@ -19,6 +19,15 @@ public class BattleSpiritualGetPointRequest_13000096Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointRequest_13000096.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointRequest_13000096.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

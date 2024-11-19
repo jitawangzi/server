@@ -20,6 +20,15 @@ public class QianKunMirrorReplaceRequest_25000022Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.Builder builder = cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReplaceRequest_25000022.newBuilder() ; 
+		
+		builder.setReplace(true);
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 

@@ -19,6 +19,15 @@ public class BattleLostDayRewardRequest_13000203Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
+	@Override
+public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203.newBuilder() ; 
+		
+		
+		
+		return builder.build() ; 
+	}
+	
 	public static void main(String args[]) throws Exception{
 		
 		ServerTestContext.init(); 
