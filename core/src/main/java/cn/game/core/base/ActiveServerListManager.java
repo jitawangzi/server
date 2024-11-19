@@ -160,4 +160,10 @@ public class ActiveServerListManager {
 	public void setPlayerCount(String serverId, int playerCount) {
 		this.playerCountMap.put(serverId, playerCount);
 	}
+
+	public int getPlayerCount(String serverId) {
+		Integer integer = this.playerCountMap.get(serverId);
+		return integer == null ? 0 : integer;
+	}
+
 }

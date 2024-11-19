@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -681,6 +682,21 @@ public class Client extends AbstractNetClient {
 		return recvMessages.get(i - 1) != null;
 	}
 	
+	public void waitLastMessageReturn() throws TimeoutException {
+		int loop = 0;
+		while (!isLastMessageReturn()) {
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			loop++;
+			if (loop > 30000) {
+				throw new TimeoutException("");
+			}
+		}
+	}
+
 	public void resendLastMessage() {
 		// 如果5秒都没有收到返回，那就重发
 		if (System.currentTimeMillis() - lastSendMessageTime > 5000) {

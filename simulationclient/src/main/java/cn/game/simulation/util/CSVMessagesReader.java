@@ -12,10 +12,6 @@ import cn.game.util.Rnd;
 
 public class CSVMessagesReader {
 
-	public static String[] messageNames;
-	public static int[] messageIds;
-	public static float[] messageWeights;
-
 	public static List<CSVMessage> messages = new ArrayList<>();
 	/** 按权重找到某个排序后的组，组内按顺序请求消息 */
 	public static Map<Integer, List<CSVMessage>> groupMessageMap = new java.util.HashMap<>();
@@ -32,8 +28,6 @@ public class CSVMessagesReader {
 	 */
 	public static CSVMessage randomMessage(int sendingGroup, String msgNameSend) {
 
-//		int randomIndex = Rnd.randomIndex(messageWeights);
-//		return messageNames[randomIndex];
 		if (sendingGroup == 0) {
 			CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
 			List<CSVMessage> list = groupMessageMap.get(randomMessage.group);
@@ -54,11 +48,13 @@ public class CSVMessagesReader {
 		return list.get(0);
 	}
 
+	public static List<CSVMessage> getGroupMessages(int group) {
+		return groupMessageMap.get(group);
+	}
+
 	public static void read(String filePath) {
 
 		String[] headers = new String[] { "序号", "协议名", "协议号", "模块", "功能组", "组顺序", "权重", "描述" };
-		List<String> namesList = new ArrayList<>();
-		List<Float> weightList = new ArrayList<>();
 
 		List<List<String>> list = CSVUtil.read(filePath, headers);
 		for (List<String> csvRecord : list) {
@@ -85,8 +81,6 @@ public class CSVMessagesReader {
 
 			messages.add(message);
 			groupMessageMap.computeIfAbsent(message.group, k -> new ArrayList<>()).add(message);
-//			namesList.add(protocol);
-//			weightList.add(Float.parseFloat(weight));
 		}
 		groupMessageMap.forEach((k, v) -> {
 			v.sort(new Comparator<CSVMessage>() {
@@ -96,12 +90,6 @@ public class CSVMessagesReader {
 				}
 			});
 		});
-
-//		messageNames = namesList.toArray(new String[] {});
-//		messageWeights = new float[weightList.size()];
-//		for (int i = 0; i < weightList.size(); i++) {
-//			messageWeights[i] = weightList.get(i);
-//		}
 	}
 
 	public static class CSVMessage {
@@ -110,5 +98,12 @@ public class CSVMessagesReader {
 		public int group;
 		public int order;
 		public int weight;
+
+		@Override
+		public String toString() {
+			return "CSVMessage [msgId=" + msgId + ", msgName=" + msgName + ", group=" + group + ", order=" + order + ", weight=" + weight
+					+ "]";
+		}
+
 	}
 }

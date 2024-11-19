@@ -9,7 +9,8 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 	public static final int STATUS_RUN = 1; // 正常运行,所有人可进。
 	public static final int STATUS_MAINTANCE = 2;// 维护，仅ip白名单可进
 	public static final int STATUS_NEW_SERVER = 3;//开新服
-	public static final int STATUS_SHUTDOWN = 4;// 停服，服务器关闭状态，都不可进
+	public static final int STATUS_FULL = 4;// 服务器人满了
+	public static final int STATUS_SHUTDOWN = 5;// 停服，服务器关闭状态，都不可进
 	
     private String serverId;
 
@@ -32,6 +33,7 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 	private Integer type;
 	private String version;
 	private Integer priorty;
+	private Integer maxOnline;
 
 	public String getServerId() {
 		return serverId;
@@ -127,6 +129,14 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 
 	public void setServerOpenTime(String serverOpenTime) {
 		ServerOpenTime = serverOpenTime;
+	}
+
+	public Integer getMaxOnline() {
+		return maxOnline;
+	}
+
+	public void setMaxOnline(Integer maxOnline) {
+		this.maxOnline = maxOnline;
 	}
 
 	@Override

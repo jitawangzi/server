@@ -109,8 +109,17 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 					if (status == ServerList.STATUS_SHUTDOWN) {
 						continue;
 					}
-					// 设置为维护状态的，仅ip白名单可进
-					if (status == ServerList.STATUS_MAINTANCE) {
+					if (server.getMaxOnline() != null && server.getMaxOnline() > 0 && status == ServerList.STATUS_RUN) {
+						int playerCount = ActiveServerListManager.getInstance().getPlayerCount(server.getServerId());
+						if (playerCount >= server.getMaxOnline()) {
+							status = ServerList.STATUS_FULL;
+							// 满了先不发下去。
+							continue;
+						}
+					}
+
+					// 设置为维护状态的，或者已满的， 仅ip白名单可进
+					if (status == ServerList.STATUS_MAINTANCE || status == ServerList.STATUS_FULL) {
 						if (!IpWhitelistManger.getInstance().isIpWhitelist(remoteAddress.hostAddress())) {
 							continue;
 						}
