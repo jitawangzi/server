@@ -89,8 +89,10 @@ public class OfflineBattleModule extends BasePlayerModule {
         clear();
         clearRefreshNum();
         matchRefreshTargetList.clear();
-        tryResetSeasonData();
-        checkAndAddTicker();
+        if (isJoin()){
+          checkAndAddTicker();
+          tryResetSeasonData();
+        }
         break;
       }
       case refresh -> {
@@ -158,6 +160,7 @@ public class OfflineBattleModule extends BasePlayerModule {
       nextSeasonTimer = DateUtil.addWeekBeginTimer(1);
       addDayRankScore(player.getPlayerId(), player.getServerId(), GlobalConst.DaDaoStartupPoint);
       addSeasonRankScore(player.getPlayerId(), player.getServerId(), GlobalConst.DaDaoStartupPoint);
+      log.info(String.format("tryResetSeasonData pid:%s",player.getPlayerId()));
     }
   }
 
