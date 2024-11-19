@@ -274,7 +274,7 @@ public class ActivityHandler extends BaseHandler {
             // 请神任务 每轮最后一个任务完成之后 自动领取每轮回奖励的任务
             List<Integer> rewardTaskIds = new ArrayList<>(req.getTaskIdsList());
             if (activityBase instanceof ActivityQingShen activityQingShen) {
-                List<ActivityQingShenConfig> roundConfigList = activityQingShen.getRoundConfigList();
+                List<ActivityQingShenConfig> roundConfigList = activityQingShen.getRoundConfigList(activityQingShen.getRound());
                 List<Integer> roundIds = new ArrayList<>();
                 roundConfigList.forEach(roundConfig -> roundIds.add(roundConfig.taskID));
                 if (rewardTaskIds.contains(roundConfigList.get(roundConfigList.size() - 2).taskID) && !rewardTaskIds.contains(roundConfigList.get(roundConfigList.size() - 1).taskID)) {
@@ -283,6 +283,7 @@ public class ActivityHandler extends BaseHandler {
                 rewardTaskIds.removeIf(taskId -> !roundIds.contains(taskId));
                 Collections.sort(rewardTaskIds);
             }
+            log.info(String.format("ActivityQingShen rewardTaskIds:%s",rewardTaskIds));
             rewardTaskIds.forEach(taskId -> {
                 List<RewardInfo> reward = activityBase.receive(taskId);
                 if (reward == null) {

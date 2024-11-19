@@ -29,14 +29,14 @@ public class ActivityQingShen extends PlayerActivityBase {
 	int round;
 	List<Integer> rewardIdList = new ArrayList<>();
 
-	private static transient EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.QuestReward};
+	private static transient EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.QuestReward,EventTypeEnum.QuestFinish};
 
 	@Override
 	public Message buildActivityShowInfo() {
 		ActivityMsg.ActivityQingShenInfoResponse_11000072.Builder res = ActivityMsg.ActivityQingShenInfoResponse_11000072.newBuilder()
 				.setActivityId(getId())
 				.setRound(round);
-		List<ActivityQingShenConfig> configList = getRoundConfigList();
+		List<ActivityQingShenConfig> configList = getRoundConfigList(this.round);
 		if (!configList.isEmpty()){
 			res.setRoundTaskId(configList.get(Math.max(0,configList.size() - 1)).taskID);
 		}
@@ -49,7 +49,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	List<ActivityQingShenConfig> getConfigList() {
 		return ActivityQingShenManager.instance().getActivityiDList(id);
 	}
-	public List<ActivityQingShenConfig> getRoundConfigList(){
+	public List<ActivityQingShenConfig> getRoundConfigList(int round){
 		return getConfigList().stream().filter(activityQingShenConfig -> activityQingShenConfig.Round == round).toList();
 	}
 	int getMaxRound(){
@@ -103,8 +103,12 @@ public class ActivityQingShen extends PlayerActivityBase {
 	}
 
 	private void initActivityTask() {
-		List<ActivityQingShenConfig> newTaskIdList = getConfigList();
-//		List<ActivityQingShenConfig> newTaskIdList = getConfigList().stream().filter(activityQingShenConfig -> activityQingShenConfig.Round == round).toList();
+//		List<ActivityQingShenConfig> newTaskIdList = getConfigList();
+		openRoundTaskList(this.round);
+	}
+
+	private void openRoundTaskList(int round) {
+		List<ActivityQingShenConfig> newTaskIdList = getRoundConfigList(round);
 		QuestModule questModule = player.getQuestModule();
 		newTaskIdList.forEach(activityQingShenConfig -> {
 			questModule.remove(activityQingShenConfig.taskID);
@@ -120,7 +124,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	public void handleEvent(GameEvent event) {
 		if (event.getType() == EventTypeEnum.QuestReward){
 			int taskId = event.getIntParameter(0);
-			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList();
+			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList(this.round);
 			if (!roundConfigList.isEmpty()) {
 				int roundTaskId = roundConfigList.get(Math.max(0, roundConfigList.size() - 1)).taskID;
 				if (taskId == roundTaskId) {
@@ -128,6 +132,13 @@ public class ActivityQingShen extends PlayerActivityBase {
 					refreshActivity();
 					player.getGameClient().sendProtocol(buildActivityShowInfo());
 				}
+			}
+		}else if (event.getType() == EventTypeEnum.QuestFinish){
+			int taskId = event.getIntParameter(0);
+			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList(this.round);
+			int maxRoundId = roundConfigList.get(roundConfigList.size() - 2).taskID;
+			if (taskId == maxRoundId){
+				openRoundTaskList(round+1);
 			}
 		}
 	}
@@ -146,5 +157,9 @@ public class ActivityQingShen extends PlayerActivityBase {
 			//活动结束  删除活动相关的任务
 			questModule.remove(activityQingShenConfig.taskID);
 		});
+	}
+
+	public int getRound() {
+		return this.round;
 	}
 }
