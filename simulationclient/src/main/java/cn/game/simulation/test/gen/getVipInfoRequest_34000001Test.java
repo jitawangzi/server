@@ -28,15 +28,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new getVipInfoRequest_34000001Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    getVipInfoRequest_34000001Test instance = new getVipInfoRequest_34000001Test();
+	    instance.start();
 	}
 
 }

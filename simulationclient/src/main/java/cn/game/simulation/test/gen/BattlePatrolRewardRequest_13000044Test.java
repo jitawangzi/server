@@ -30,15 +30,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new BattlePatrolRewardRequest_13000044Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    BattlePatrolRewardRequest_13000044Test instance = new BattlePatrolRewardRequest_13000044Test();
+	    instance.start();
 	}
 
 }

@@ -26,15 +26,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new FriendGiftRequest_30000012Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    FriendGiftRequest_30000012Test instance = new FriendGiftRequest_30000012Test();
+	    instance.start();
 	}
 
 }

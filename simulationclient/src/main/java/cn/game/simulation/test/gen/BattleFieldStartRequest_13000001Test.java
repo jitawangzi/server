@@ -46,14 +46,8 @@ public class BattleFieldStartRequest_13000001Test extends ServerTest {
 	}
 
 	public static void main(String args[]) throws Exception {
-
-		ServerTestContext.init();
-
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId,
-				ServerTestContext.version);
-
-		ServerTestContext.send(client, () -> new BattleFieldStartRequest_13000001Test().getMessage(client));
-
+	    BattleFieldStartRequest_13000001Test instance = new BattleFieldStartRequest_13000001Test();
+	    instance.start();
 	}
 
 }

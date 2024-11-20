@@ -30,15 +30,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new PlayerRedPointRequest_01000075Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    PlayerRedPointRequest_01000075Test instance = new PlayerRedPointRequest_01000075Test();
+	    instance.start();
 	}
 
 }

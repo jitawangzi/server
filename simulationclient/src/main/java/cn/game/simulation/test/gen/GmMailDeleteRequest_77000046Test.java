@@ -28,15 +28,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new GmMailDeleteRequest_77000046Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    GmMailDeleteRequest_77000046Test instance = new GmMailDeleteRequest_77000046Test();
+	    instance.start();
 	}
 
 }

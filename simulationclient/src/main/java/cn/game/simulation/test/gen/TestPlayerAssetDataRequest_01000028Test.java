@@ -31,15 +31,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new TestPlayerAssetDataRequest_01000028Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    TestPlayerAssetDataRequest_01000028Test instance = new TestPlayerAssetDataRequest_01000028Test();
+	    instance.start();
 	}
 
 }

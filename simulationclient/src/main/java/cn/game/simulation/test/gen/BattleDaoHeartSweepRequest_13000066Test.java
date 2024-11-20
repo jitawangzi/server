@@ -48,15 +48,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new BattleDaoHeartSweepRequest_13000066Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    BattleDaoHeartSweepRequest_13000066Test instance = new BattleDaoHeartSweepRequest_13000066Test();
+	    instance.start();
 	}
 
 }

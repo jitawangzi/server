@@ -28,15 +28,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new MonthCardDoubleBonusRequest_15000016Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    MonthCardDoubleBonusRequest_15000016Test instance = new MonthCardDoubleBonusRequest_15000016Test();
+	    instance.start();
 	}
 
 }

@@ -29,15 +29,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new ShopHeishiRefreshRequest_15000005Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    ShopHeishiRefreshRequest_15000005Test instance = new ShopHeishiRefreshRequest_15000005Test();
+	    instance.start();
 	}
 
 }

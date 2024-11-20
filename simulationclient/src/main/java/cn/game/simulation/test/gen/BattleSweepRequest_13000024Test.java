@@ -52,15 +52,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new BattleSweepRequest_13000024Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    BattleSweepRequest_13000024Test instance = new BattleSweepRequest_13000024Test();
+	    instance.start();
 	}
 
 }

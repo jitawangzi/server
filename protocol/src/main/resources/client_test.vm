@@ -28,15 +28,9 @@ public class ${m.shortName}Test extends ServerTest{
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new ${m.shortName}Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    ${m.shortName}Test instance = new ${m.shortName}Test();
+	    instance.start();
 	}
 
 }

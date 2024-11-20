@@ -13,14 +13,16 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 
 /**    
- * 增加一个 getMessagePressure 方法到所有的类中
+ * 协议测试类修改
  * 2024年11月19日 11:36:12
  * @author SYQ
  */
-public class TestClassesAddMethod {
+public class TestClassesModify {
 	public static void main(String[] args) {
 		String directoryPath = "C:\\work_all\\work\\server\\simulationclient\\src\\main\\java\\cn\\game\\simulation\\test\\gen"; // 替换为你的目录路径
 
@@ -28,14 +30,14 @@ public class TestClassesAddMethod {
 			try (Stream<Path> paths = Files.walk(Paths.get(directoryPath))) {
 				paths.filter(Files::isRegularFile)
 						.filter(path -> path.toString().endsWith(".java"))
-						.forEach(TestClassesAddMethod::processFile);
+						.forEach(TestClassesModify::modifyMain);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void processFile(Path path) {
+	private static void addGetMessagePressure(Path path) {
 		try {
 			// 解析Java文件
 			CompilationUnit cu = StaticJavaParser.parse(path.toFile());
@@ -86,6 +88,58 @@ public class TestClassesAddMethod {
 					}
 				}
 			});
+		} catch (Exception e) {
+			System.err.println("处理文件时出错: " + path);
+			e.printStackTrace();
+		}
+	}
+
+	private static void modifyMain(Path path) {
+		try {
+			// 解析Java文件
+			CompilationUnit cu = StaticJavaParser.parse(path.toFile());
+			// 设置词法保持
+			LexicalPreservingPrinter.setup(cu);
+
+			// 获取类声明
+			cu.findAll(ClassOrInterfaceDeclaration.class)
+					.stream()
+					.filter(ClassOrInterfaceDeclaration::isPublic)
+					.findFirst()
+					.ifPresent(classDecl -> {
+						String className = classDecl.getNameAsString();
+						// 查找main方法
+						classDecl.getMethodsByName("main")
+								.stream()
+								.filter(method -> method.isStatic() && method.isPublic())
+								.findFirst()
+								.ifPresent(mainMethod -> {
+									// 修改方法签名
+									mainMethod.setType("void");
+									mainMethod.getParameter(0).setName("args");
+
+									// 添加throws Exception
+									mainMethod.getThrownExceptions().clear();
+									mainMethod.addThrownException(new ClassOrInterfaceType().setName("Exception"));
+									// 创建新的方法体
+									String newBody = String.format("""
+											{
+											    %s instance = new %s();
+											    instance.start();
+											}""", className, className);
+
+									BlockStmt newBlockStmt = StaticJavaParser.parseBlock(newBody);
+									mainMethod.setBody(newBlockStmt);
+								});
+
+						// 保存修改后的文件，使用LexicalPreservingPrinter
+						try (FileWriter writer = new FileWriter(path.toFile())) {
+							writer.write(LexicalPreservingPrinter.print(cu));
+						} catch (IOException e) {
+							System.err.println("保存文件时出错: " + path);
+							e.printStackTrace();
+						}
+					});
 		} catch (Exception e) {
 			System.err.println("处理文件时出错: " + path);
 			e.printStackTrace();

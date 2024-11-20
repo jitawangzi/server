@@ -54,15 +54,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new ActivitySevenDaysSigninRequest_11000026Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    ActivitySevenDaysSigninRequest_11000026Test instance = new ActivitySevenDaysSigninRequest_11000026Test();
+	    instance.start();
 	}
 
 }

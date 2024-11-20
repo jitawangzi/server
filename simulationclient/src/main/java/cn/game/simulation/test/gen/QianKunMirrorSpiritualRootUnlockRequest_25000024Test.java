@@ -29,15 +29,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new QianKunMirrorSpiritualRootUnlockRequest_25000024Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    QianKunMirrorSpiritualRootUnlockRequest_25000024Test instance = new QianKunMirrorSpiritualRootUnlockRequest_25000024Test();
+	    instance.start();
 	}
 
 }

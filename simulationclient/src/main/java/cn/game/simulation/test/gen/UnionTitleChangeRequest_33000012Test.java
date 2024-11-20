@@ -28,15 +28,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new UnionTitleChangeRequest_33000012Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    UnionTitleChangeRequest_33000012Test instance = new UnionTitleChangeRequest_33000012Test();
+	    instance.start();
 	}
 
 }

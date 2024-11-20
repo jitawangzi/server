@@ -46,15 +46,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new RankListRequest_35000001Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    RankListRequest_35000001Test instance = new RankListRequest_35000001Test();
+	    instance.start();
 	}
 
 }

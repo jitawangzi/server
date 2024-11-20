@@ -34,15 +34,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new HCHeroUpLevelRequest_26000001Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    HCHeroUpLevelRequest_26000001Test instance = new HCHeroUpLevelRequest_26000001Test();
+	    instance.start();
 	}
 
 }

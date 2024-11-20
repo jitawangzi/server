@@ -42,15 +42,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new HeroBattleRequest_16000005Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    HeroBattleRequest_16000005Test instance = new HeroBattleRequest_16000005Test();
+	    instance.start();
 	}
 
 }

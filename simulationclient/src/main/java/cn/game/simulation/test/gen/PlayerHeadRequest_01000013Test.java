@@ -35,14 +35,8 @@ public class PlayerHeadRequest_01000013Test extends ServerTest {
 	}
 
 	public static void main(String args[]) throws Exception {
-
-		ServerTestContext.init();
-
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId,
-				ServerTestContext.version);
-
-		ServerTestContext.send(client, () -> new PlayerHeadRequest_01000013Test().getMessage(client));
-
+	    PlayerHeadRequest_01000013Test instance = new PlayerHeadRequest_01000013Test();
+	    instance.start();
 	}
 
 }

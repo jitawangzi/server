@@ -28,15 +28,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new SecretscriptFusionPvPRequest_38000011Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    SecretscriptFusionPvPRequest_38000011Test instance = new SecretscriptFusionPvPRequest_38000011Test();
+	    instance.start();
 	}
 
 }

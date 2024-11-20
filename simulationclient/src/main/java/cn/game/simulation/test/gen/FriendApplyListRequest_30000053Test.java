@@ -28,15 +28,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new FriendApplyListRequest_30000053Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    FriendApplyListRequest_30000053Test instance = new FriendApplyListRequest_30000053Test();
+	    instance.start();
 	}
 
 }

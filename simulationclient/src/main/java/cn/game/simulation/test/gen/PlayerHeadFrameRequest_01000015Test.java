@@ -38,14 +38,8 @@ public class PlayerHeadFrameRequest_01000015Test extends ServerTest {
 	}
 
 	public static void main(String args[]) throws Exception {
-
-		ServerTestContext.init();
-
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId,
-				ServerTestContext.version);
-
-		ServerTestContext.send(client, () -> new PlayerHeadFrameRequest_01000015Test().getMessage(client));
-
+	    PlayerHeadFrameRequest_01000015Test instance = new PlayerHeadFrameRequest_01000015Test();
+	    instance.start();
 	}
 
 }

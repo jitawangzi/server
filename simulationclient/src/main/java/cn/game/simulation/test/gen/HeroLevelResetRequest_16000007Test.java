@@ -38,15 +38,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new HeroLevelResetRequest_16000007Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    HeroLevelResetRequest_16000007Test instance = new HeroLevelResetRequest_16000007Test();
+	    instance.start();
 	}
 
 }

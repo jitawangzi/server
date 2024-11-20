@@ -29,15 +29,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new ActivityBaoLiInfoRequest_11000061Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    ActivityBaoLiInfoRequest_11000061Test instance = new ActivityBaoLiInfoRequest_11000061Test();
+	    instance.start();
 	}
 
 }

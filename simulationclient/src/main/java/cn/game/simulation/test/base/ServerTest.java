@@ -3,6 +3,7 @@ package cn.game.simulation.test.base;
 import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
+import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.jmeter.util.JmeterUtil;
 import cn.game.util.log.LoggerManager;
 
@@ -35,5 +36,11 @@ public abstract class ServerTest {
 		return JmeterUtil.toHexString(message);
 	}
 
+	public void start() throws Exception {
+		ServerTestContext.init();
+		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId,
+				ServerTestContext.version);
+		ServerTestContext.send(client, () -> getMessage(client));
+	}
 
 }

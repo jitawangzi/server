@@ -29,15 +29,9 @@ public Message getMessagePressure(Client client) {
 		return builder.build() ; 
 	}
 	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
-		ServerTestContext.send(client, () -> new HCBattleDataSaveRequest_13000100Test().getMessage(client));
-
-		
+	public static void main(String args[]) throws Exception {
+	    HCBattleDataSaveRequest_13000100Test instance = new HCBattleDataSaveRequest_13000100Test();
+	    instance.start();
 	}
 
 }
