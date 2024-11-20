@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import com.google.protobuf.Descriptors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -272,7 +273,7 @@ public class GmHandler extends BaseHandler {
     GmPlayerResponse_77000022.Builder response = GmPlayerResponse_77000022.newBuilder();
     String channel = request.getChannel();
     String name = request.getName();
-    PlayerHelper.seachPlayer(name,Long.parseLong(request.getPlayerId()))
+    PlayerHelper.seachPlayer(name, request.getPlayerIdBytes().isEmpty() ? 0 :  Long.parseLong(request.getPlayerId()) )
             .onSuccess(result ->{
                 response.setPlayer(result.toGmPlayerInfo());
                 sendAndRecordOpt(client, request, response.build());
