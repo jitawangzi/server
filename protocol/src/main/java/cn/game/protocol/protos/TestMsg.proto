@@ -92,4 +92,10 @@ message TestMessageRequest_6f000080{
 message TestMessageResponse_6f000081{
 
 }
+//检查一些配置数据。
+message TestConfigCheckRequest_6f000090{
+}
+message TestConfigCheckResponse_6f000091{
+
+}
 

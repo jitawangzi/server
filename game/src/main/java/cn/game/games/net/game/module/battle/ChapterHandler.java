@@ -1267,7 +1267,7 @@ public class ChapterHandler extends BaseHandler {
 		client.sendProtocol(resp);
 	
 	}*/
-	protected void start(NetClient client, Object message) {
+	public void start(NetClient client, Object message) {
 		BattleFieldStartRequest_13000001 req = (BattleFieldStartRequest_13000001) message;
 		BattleFieldStartResponse_13000002.Builder resp = BattleFieldStartResponse_13000002.newBuilder();
 
@@ -1330,7 +1330,7 @@ public class ChapterHandler extends BaseHandler {
 
 	}
 
-	protected void quickeEnd(NetClient client, Object message) {
+	public void quickeEnd(NetClient client, Object message) {
 		BattleFieldQuickEndRequest_13000005 req = (BattleFieldQuickEndRequest_13000005) message;
 		BattleFieldQuickEndResponse_13000006.Builder resp = BattleFieldQuickEndResponse_13000006.newBuilder();
 		int type = req.getType();
@@ -1359,7 +1359,8 @@ public class ChapterHandler extends BaseHandler {
 		}
 		client.sendProtocol(resp);
 	}
-	protected void end(NetClient client, Object message) {
+
+	public void end(NetClient client, Object message) {
 		BattleFieldEndRequest_13000003 req = (BattleFieldEndRequest_13000003) message;
 		BattleFieldEndResponse_13000004.Builder resp = BattleFieldEndResponse_13000004.newBuilder();
 		boolean win = req.getWin(); 
