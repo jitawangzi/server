@@ -39,7 +39,7 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         page = page == null ? 0 : page - 1;
         pageSize = pageSize == null ? 10 : pageSize;
         PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-        Integer finalPage = page;
+        Integer finalPage = page * pageSize;
         Integer finalPageSize = pageSize;
         JSONObject result = getResultData();
         String finalPlayerId = playerId;
