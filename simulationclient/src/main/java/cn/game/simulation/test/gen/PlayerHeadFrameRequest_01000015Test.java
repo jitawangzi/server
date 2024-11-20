@@ -14,47 +14,38 @@ import cn.game.simulation.test.base.ServerTest;
 import cn.game.util.Rnd;
 
 @Component
-public class PlayerHeadFrameRequest_01000015Test extends ServerTest{
+public class PlayerHeadFrameRequest_01000015Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.newBuilder() ; 
-		
-		List<HeadBoxConfig> list = HeadBoxManager.instance().list();
-		if (list != null) {
-			HeadBoxConfig randomOne = Rnd.randomOne(list);
-			builder.setHeadFrame(randomOne.ID);
-		} else {
-			builder.setHeadFrame(1);
-		}
-		
-		return builder.build() ; 
+		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015
+				.newBuilder();
+
+		builder.setHeadFrame(1);
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.newBuilder() ; 
-		
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015
+				.newBuilder();
+
 		List<HeadBoxConfig> list = HeadBoxManager.instance().list();
-		if (list != null) {
-			HeadBoxConfig randomOne = Rnd.randomOne(list);
-			builder.setHeadFrame(randomOne.ID);
-		} else {
-			builder.setHeadFrame(1);
-		}
-		
-		return builder.build() ; 
+		HeadBoxConfig randomOne = Rnd.randomOne(list);
+		builder.setHeadFrame(randomOne.ID);
+		return builder.build();
 	}
-	
-	public static void main(String args[]) throws Exception{
-		
-		ServerTestContext.init(); 
-		
-		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId, ServerTestContext.version) ; 
-		
+
+	public static void main(String args[]) throws Exception {
+
+		ServerTestContext.init();
+
+		Client client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId,
+				ServerTestContext.version);
+
 		ServerTestContext.send(client, () -> new PlayerHeadFrameRequest_01000015Test().getMessage(client));
 
-		
 	}
 
 }

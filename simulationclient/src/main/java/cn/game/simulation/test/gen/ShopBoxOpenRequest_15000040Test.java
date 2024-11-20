@@ -1,12 +1,14 @@
 package cn.game.simulation.test.gen;
 
+import org.springframework.stereotype.Component;
+
 import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
-//@Component
+@Component
 public class ShopBoxOpenRequest_15000040Test extends ServerTest{
 
 	@Override

@@ -66,8 +66,6 @@ public class CSVMessagesReader {
 //			String weight = csvRecord.get("权重");
 //			String description = csvRecord.get("描述");
 
-//			String serialNumber = csvRecord.get("序号");
-//			String module = csvRecord.get("模块");
 			String protocol = csvRecord.get(1);
 			String protocolNumber = csvRecord.get(2);
 

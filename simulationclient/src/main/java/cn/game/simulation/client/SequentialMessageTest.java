@@ -15,6 +15,11 @@ import cn.game.util.log.LoggerManager;
 public class SequentialMessageTest {
 
 	public static void main(String args[]) throws Exception {
+		SequentialMessageTest test = new SequentialMessageTest();
+		test.start();
+	}
+
+	public void start() throws Exception {
 		LoggerManager.init();
 		String filePath = System.getProperty("user.dir") + "/messages.csv";
 		CSVMessagesReader.read(filePath);
@@ -22,10 +27,9 @@ public class SequentialMessageTest {
 
 		ServerTestContext.init();
 		run();
-
 	}
 
-	public static void run() throws Exception {
+	public void run() throws Exception {
 
 		Map<String, ServerTest> beansRead = SpringContextLoader.getContext().getBeansOfType(ServerTest.class, true, true);
 		Map<String, ServerTest> beansMap = new HashMap<String, ServerTest>();
@@ -40,7 +44,7 @@ public class SequentialMessageTest {
 		client.loginGateway(ServerTestContext.gateServerIp, ServerTestContext.gateServerPort);
 
 		client.waitInit();
-		List<CSVMessage> messages = CSVMessagesReader.getGroupMessages(ServerTestContext.msgGroup);
+		List<CSVMessage> messages = getMessages();
 		for (CSVMessage csvMessage : messages) {
 
 			ServerTest serverTest = beansMap.get(csvMessage.msgName.toLowerCase());
@@ -54,9 +58,10 @@ public class SequentialMessageTest {
 			}
 		}
 
-
-
 	}
 
+	public List<CSVMessage> getMessages() {
+		return CSVMessagesReader.getGroupMessages(ServerTestContext.msgGroup);
+	}
 
 }
