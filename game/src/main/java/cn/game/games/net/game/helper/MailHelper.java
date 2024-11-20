@@ -234,7 +234,7 @@ public class MailHelper {
             return true;
     }
 
-    public static boolean removeGlobalMail(String gmMailId) {
+    public static boolean removeGlobalMail(Integer gmMailId) {
        return globalMailList.removeIf(gmMail -> gmMail.getId().equals(gmMailId));
     }
 

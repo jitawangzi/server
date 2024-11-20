@@ -252,7 +252,7 @@ public class GmHandler extends BaseHandler {
               DAO.execute(GmMailMapper.class, MapperConstant.deleteByPrimaryKey,  Integer.parseInt(mailId))
                   .onSuccess(
                       r -> {
-                        if (r != null &&  MailHelper.removeGlobalMail(mailId)) {
+                        if (r != null &&  MailHelper.removeGlobalMail(Integer.getInteger(mailId))) {
                           // 该邮件是全服邮件, 通知其他节点删除该邮件
 //                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastDelGlobalGmMail(Integer.parseInt(mailId));
                             VxHolder.broadcastRemoteServer(ServerType.Game,ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId(Integer.parseInt(mailId)).build());

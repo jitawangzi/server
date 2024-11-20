@@ -162,7 +162,7 @@ public class ServerHandler extends BaseHandler {
 
 	private void delGlobalGmMail(NetClient client, Object o) {
 		ServerMsg.NotifyDelGlobalGmMailRequest_7d000062 req = (ServerMsg.NotifyDelGlobalGmMailRequest_7d000062)o;
-		MailHelper.removeGlobalMail(req.getDelGmMailId()+"");
+		MailHelper.removeGlobalMail(req.getDelGmMailId());
 		log.info("delGlobalGmMail: ", req.getDelGmMailId());
 		ServerMsg.NotifyDelGlobalGmMailResponse_7d000063.Builder res = ServerMsg.NotifyDelGlobalGmMailResponse_7d000063.newBuilder().setResult(true);
 		client.sendProtocol(res.build());
