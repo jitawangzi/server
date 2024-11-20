@@ -109,7 +109,7 @@ public class GameServerImpl implements GameServerInterface {
 
 	@Override
 	public void delGlobalGmMail(int mailId) {
-		MailHelper.removeGlobalMail(mailId+"");
+		MailHelper.removeGlobalMail(mailId);
 	}
 
 	@Override
