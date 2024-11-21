@@ -1025,7 +1025,7 @@ public class PlayerHandler extends BaseHandler {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime dateTime = LocalDateTime.parse(openTime, formatter);
 		// 获取下一天的 10 点
-		LocalDateTime nextDayAtTen = dateTime.plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0);
+		LocalDateTime nextDayAtTen = dateTime.plusDays(2).withHour(10).withMinute(0).withSecond(0).withNano(0);
 		long timestamp = nextDayAtTen.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 		int days = 1;
 		if (System.currentTimeMillis() > timestamp) {
