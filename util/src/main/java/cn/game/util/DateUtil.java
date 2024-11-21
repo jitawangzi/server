@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**   
@@ -513,18 +512,6 @@ public final class DateUtil {
 		return calendar.getTime();
 	}
 	
-	/**
-	 * 获取当天的指定小时 整分整秒的时间戳
-	 * @param hour
-	 * @return
-	 */
-	public static long getDayHourTimestamp(int hour) {
-		long current = System.currentTimeMillis();
-		long zero = current/(DAY_MILLIS)*(DAY_MILLIS) - TimeZone.getDefault().getRawOffset();
-		long newTime = zero + hour * HOUR_MILLIS + DAY_MILLIS;
-		return newTime;
-	}
-	
 	public static int getStamp() {
 		return (int) (System.currentTimeMillis()/1000);
 	}
@@ -555,6 +542,16 @@ public final class DateUtil {
 		LocalDate date2 = d2.toLocalDate();
 
 		// 计算日期差
+		return diffDays(date1, date2);
+	}
+
+	/**
+	 * 计算两个日期之间的天数差
+	 * @param date1 第一个日期
+	 * @param date2 第二个日期
+	 * @return 相差的天数
+	 */
+	public static int diffDays(LocalDate date1, LocalDate date2) {
 		return (int) ChronoUnit.DAYS.between(date1, date2);
 	}
 
@@ -569,6 +566,35 @@ public final class DateUtil {
 	}
 
 
+	/**
+	 * 获取当天的指定小时 整分整秒的时间戳
+	 * @param hour 小时（0-23）
+	 * @return 毫秒时间戳
+	 */
+	public static long getDayHourTimestamp(int hour) {
+		if (hour < 0 || hour > 23) {
+			throw new IllegalArgumentException("Hour must be between 0 and 23");
+		}
+		// 使用现代的日期时间API
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime targetDateTime = now.toLocalDate().atTime(hour, 0, 0); // 设置为指定小时的整点
+
+		return toEpochMilli(targetDateTime);
+	}
+
+	/**
+	 * 获取指定日期的指定小时时间戳
+	 * @param date 指定日期
+	 * @param hour 小时（0-23）
+	 * @return 毫秒时间戳
+	 */
+	public static long getDayHourTimestamp(LocalDate date, int hour) {
+		if (hour < 0 || hour > 23) {
+			throw new IllegalArgumentException("Hour must be between 0 and 23");
+		}
+		return toEpochMilli(date.atTime(hour, 0, 0));
+	}
+
 	/** 
 	 * 计算当前时间与特定时间之间相隔的天数（日期数）
 	 * @param dateTimeStr  "yyyy-MM-dd HH:mm:ss"  格式
@@ -581,7 +607,6 @@ public final class DateUtil {
 		LocalDate currentDate = LocalDate.now();
 		return (int) ChronoUnit.DAYS.between(specificDate, currentDate);
 	}
-
 	
 	public static int currentTimeSeconds() {
 		
