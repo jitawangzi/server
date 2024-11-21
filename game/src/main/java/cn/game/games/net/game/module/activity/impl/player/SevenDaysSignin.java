@@ -46,7 +46,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		GameLogger.activity(player, super.id, day);
 
 		if (day == SevenDaysSigninManager.instance().list().size()) {
-			player.getActivityModule().destroy(id, true);
+			player.getActivityModule().destroy(super.id, true);
 		}
 		return resources;
 	}
