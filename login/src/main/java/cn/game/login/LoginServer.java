@@ -129,6 +129,7 @@ public class LoginServer {
 		});
 
 		log.info("登录服启动成功。耗时[{}]s", (System.currentTimeMillis() - start) / 1000);
+		System.err.println("Login Server startup complete");
 	}
 
 	public static void main(String[] args) {
