@@ -61,7 +61,7 @@ public class GmHelper {
     }
     builder.setStatus(gmMail.getOptFlag());
     if (gmMail.getServerids() != null) {
-      String[] strs = gmMail.getServerids().split(";");
+      String[] strs = gmMail.getServerids().replace("[","").replace("]","").split(",");
       for (String str : strs) {
         builder.addServerId(str);
       }
@@ -70,7 +70,7 @@ public class GmHelper {
     builder.setLevelStart(gmMail.getMinLevel() ==null ? 0 :gmMail.getMinLevel());
     builder.setLevelEnd(gmMail.getMaxLevel() == null ? 0 : gmMail.getMaxLevel());
     if (gmMail.getPids() != null) {
-      String[] strs = gmMail.getPids().split(";");
+      String[] strs = gmMail.getPids().replace("[","").replace("]","").split(",");
       for (String str : strs) {
         builder.addPlayerIds(str);
       }
