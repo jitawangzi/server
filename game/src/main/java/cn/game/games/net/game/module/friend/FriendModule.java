@@ -299,6 +299,7 @@ public class FriendModule extends BasePlayerModule {
 		for (Friend friend : friends.values()) {
 			friend.setGift(false);
 			friend.setGifted(false);
+			friend.setReceive(false);
 			DAO.update(friend);
 		}
 	}
