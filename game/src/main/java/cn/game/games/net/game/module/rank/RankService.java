@@ -27,6 +27,7 @@ import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.generated.manager.RankRewardManager;
 import cn.game.util.BinarySearchUtil;
+import cn.game.util.DateUtil;
 import cn.game.util.LockUtil;
 import cn.game.util.LuaScriptUtil;
 import cn.game.util.RedisUtil;
@@ -43,6 +44,9 @@ public class RankService {
 	private static final RankService INSTANCE = new RankService();
 	/** 缩放次要分数 */
 	private static final double SECONDARY_SCORE_FACTOR = 1e-15;
+	private static final long TIME_END = DateUtil.currentTimeSeconds() + DateUtil.DAY_SECONDS * 365;
+
+	
 	private static final int DEFAULT_PAGE_SIZE = 50;
 
 	private RankService() {
@@ -75,7 +79,7 @@ public class RankService {
 	 * @param score 分数
 	 */
 	public void setScore(String serverId, RankType type, long playerId, long score) {
-		setScore(serverId, type, playerId, score, 0);
+		setScore(serverId, type, playerId, score, TIME_END - DateUtil.currentTimeSeconds());
 	}
 
 	/**
@@ -103,7 +107,7 @@ public class RankService {
 	 * @return 异步操作的Future
 	 */
 	public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long score) {
-		return setScoreAsync(serverId, type, playerId, score, 0);
+		return setScoreAsync(serverId, type, playerId, score, TIME_END - DateUtil.currentTimeSeconds());
 	}
 
 	/**
