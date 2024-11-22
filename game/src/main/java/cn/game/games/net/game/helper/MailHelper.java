@@ -2,6 +2,8 @@ package cn.game.games.net.game.helper;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -53,6 +55,7 @@ public class MailHelper {
 				  if (!list.isEmpty()){
 					  globalMailList.clear();
 					  globalMailList.addAll(list);
+					  globalMailList.sort(Comparator.comparingInt(GmMail::getId));
 				  }
 			  }
           }).onFailure(rs -> {
@@ -158,12 +161,14 @@ public class MailHelper {
 			}
 		}
 		globalMailList.add(gmMail);
+		globalMailList.sort(Comparator.comparingInt(GmMail::getId));
 		List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
 		PlayerManager.getInstance().getAllPlayer().values().forEach(player -> {
 			try {
 				if (canAddMail(player, gmMail)) {
 					sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
+					log.info(String.format("addGlobalMail playerId = %s, mailId = %s", player.getPlayerId(), gmMail.getId()));
 				}
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -190,6 +195,7 @@ public class MailHelper {
 					List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
 					sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
+					log.info(String.format("onLoginAddGlobalMail playerId = %s, mailId = %s", player.getPlayerId(), gmMail.getId()));
 				}
 			} catch (ParseException e) {
 				e.printStackTrace();
