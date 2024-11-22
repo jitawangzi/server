@@ -175,7 +175,7 @@ public class ShopHandler extends BaseHandler {
 		
 		int heishiPayTimes = heishiRefreshTimes - freeFreshMaxTimes;
 		if (heishiRefreshTimes < freeFreshMaxTimes) {
-			player.handleEvent(EventTypeEnum.WatchAds);
+//			player.handleEvent(EventTypeEnum.WatchAds);
 		}else {
 			if (heishiPayTimes >= GlobalConst.HeishiPayfrseh.length) {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());

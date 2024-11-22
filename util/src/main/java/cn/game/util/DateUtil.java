@@ -3,12 +3,15 @@ package cn.game.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**   
@@ -23,6 +26,8 @@ public final class DateUtil {
 	public static final String pattern_en = "yyyy-MM-dd HH:mm:ss";
 
 	public static final String pattern_en_yyyy_MM_dd = "yyyy-MM-dd";
+
+	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern_en);
 
 	// 一天的毫秒数 60*60*1000*24
 	public final static long DAY_MILLIS = 86400000;
@@ -232,11 +237,12 @@ public final class DateUtil {
 		return parse.getTime();
 
 	}
-
+	
 	/**
 	 * 获取当前时间 n天后0点的毫秒时间戳
 	 * 
-	 * @return
+	 * @param days 天数
+	 * @return 毫秒时间戳
 	 */
 	public static long nextDayStartTime(int days) {
 		return nextDayStartTime(System.currentTimeMillis(), days);
@@ -244,22 +250,37 @@ public final class DateUtil {
 
 	/** 
 	 * 获取当前时间 n天后0点的秒时间戳
-	 * @return
+	 * 
+	 * @param days 天数
+	 * @return 秒时间戳
 	 */
 	public static int nextDayStartTimeSecond(int days) {
-
 		return (int) (nextDayStartTime(System.currentTimeMillis(), days) / 1000);
 	}
 
+	/** 
+	 * n天后的0点开始时间戳
+	 * 
+	 * @param startTime 开始时间戳（毫秒）
+	 * @param days 天数
+	 * @return 毫秒时间戳
+	 */
 	public static long nextDayStartTime(long startTime, int days) {
+		// 使用系统默认时区（北京时间）
+		ZoneId zoneId = ZoneId.systemDefault();
+
+		// 转换时间戳为本地时间
 		Instant instant = Instant.ofEpochMilli(startTime);
-		LocalDateTime specificDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+		LocalDateTime specificDateTime = LocalDateTime.ofInstant(instant, zoneId);
+
+		// 计算目标日期
 		LocalDate targetDate = specificDateTime.toLocalDate().plusDays(days);
+
 		// 设置时间为 0 点 0 分 0 秒
 		LocalDateTime targetDateTime = targetDate.atStartOfDay();
-		// 获取时间戳（秒）
-		long timestamp = targetDateTime.toEpochSecond(ZoneOffset.UTC);
-		return timestamp * 1000;
+
+		// 转换回时间戳
+		return targetDateTime.atZone(zoneId).toInstant().toEpochMilli();
 	}
 
 	/**
@@ -493,18 +514,6 @@ public final class DateUtil {
 		return calendar.getTime();
 	}
 	
-	/**
-	 * 获取当天的指定小时 整分整秒的时间戳
-	 * @param hour
-	 * @return
-	 */
-	public static long getDayHourTimestamp(int hour) {
-		long current = System.currentTimeMillis();
-		long zero = current/(DAY_MILLIS)*(DAY_MILLIS) - TimeZone.getDefault().getRawOffset();
-		long newTime = zero + hour * HOUR_MILLIS + DAY_MILLIS;
-		return newTime;
-	}
-	
 	public static int getStamp() {
 		return (int) (System.currentTimeMillis()/1000);
 	}
@@ -518,17 +527,34 @@ public final class DateUtil {
 		return diffDays(timeMillis, System.currentTimeMillis());
 	}
 
-	/** 
+	/**
 	 * 计算两个时间戳之间相隔的天数（日期数）
-	 * @param t1
-	 * @param t2
-	 * @return
+	 * @param t1 第一个时间戳
+	 * @param t2 第二个时间戳
+	 * @return 相差的天数
 	 */
 	public static int diffDays(long t1, long t2) {
+		// 转换为当地时区
+		ZoneId zoneId = ZoneId.systemDefault();
+		LocalDateTime d1 = Instant.ofEpochMilli(t1).atZone(zoneId).toLocalDateTime();
+		LocalDateTime d2 = Instant.ofEpochMilli(t2).atZone(zoneId).toLocalDateTime();
 
-		LocalDate d1 = Instant.ofEpochMilli(t1).atZone(ZoneOffset.UTC).toLocalDate();
-		LocalDate d2 = Instant.ofEpochMilli(t2).atZone(ZoneOffset.UTC).toLocalDate();
-		return (int) ChronoUnit.DAYS.between(d1, d2);
+		// 获取日期部分
+		LocalDate date1 = d1.toLocalDate();
+		LocalDate date2 = d2.toLocalDate();
+
+		// 计算日期差
+		return diffDays(date1, date2);
+	}
+
+	/**
+	 * 计算两个日期之间的天数差
+	 * @param date1 第一个日期
+	 * @param date2 第二个日期
+	 * @return 相差的天数
+	 */
+	public static int diffDays(LocalDate date1, LocalDate date2) {
+		return (int) ChronoUnit.DAYS.between(date1, date2);
 	}
 
 	/**
@@ -542,19 +568,46 @@ public final class DateUtil {
 	}
 
 
+	/**
+	 * 获取当天的指定小时 整分整秒的时间戳
+	 * @param hour 小时（0-23）
+	 * @return 毫秒时间戳
+	 */
+	public static long getDayHourTimestamp(int hour) {
+		if (hour < 0 || hour > 23) {
+			throw new IllegalArgumentException("Hour must be between 0 and 23");
+		}
+		// 使用现代的日期时间API
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime targetDateTime = now.toLocalDate().atTime(hour, 0, 0); // 设置为指定小时的整点
+
+		return toEpochMilli(targetDateTime);
+	}
+
+	/**
+	 * 获取指定日期的指定小时时间戳
+	 * @param date 指定日期
+	 * @param hour 小时（0-23）
+	 * @return 毫秒时间戳
+	 */
+	public static long getDayHourTimestamp(LocalDate date, int hour) {
+		if (hour < 0 || hour > 23) {
+			throw new IllegalArgumentException("Hour must be between 0 and 23");
+		}
+		return toEpochMilli(date.atTime(hour, 0, 0));
+	}
+
 	/** 
 	 * 计算当前时间与特定时间之间相隔的天数（日期数）
 	 * @param dateTimeStr  "yyyy-MM-dd HH:mm:ss"  格式
 	 * @return
 	 */
 	public static int diffDays(String dateTimeStr) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern_en);
 		LocalDateTime specificDateTime = LocalDateTime.parse(dateTimeStr, formatter);
 		LocalDate specificDate = specificDateTime.toLocalDate();
 		LocalDate currentDate = LocalDate.now();
 		return (int) ChronoUnit.DAYS.between(specificDate, currentDate);
 	}
-
 	
 	public static int currentTimeSeconds() {
 		
@@ -567,24 +620,29 @@ public final class DateUtil {
 	}
 
 	/**
+	 * 将LocalDateTime转换为时间戳
+	 */
+	public static long toEpochMilli(LocalDateTime localDateTime) {
+		return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
+	/** 
+	 * 将LocalDateTime转换为秒级时间戳
+	 * @param localDateTime
+	 * @return
+	 */
+	public static int toEpochSecond(LocalDateTime localDateTime) {
+		return (int) localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		long addWeek = addWeekBeginTimer(2);
-        System.out.println(addWeek);
-		System.out.println(diffDays(System.currentTimeMillis() - DAY_MILLIS));
+		LocalDateTime dateTime = LocalDateTime.now(); // 当前 LocalDateTime
 
-		// System.out.println(DateUtil.getTimeByPattern(new Date()));
-		// System.out.println(DateUtil.timeStrToCn("20081212 22:22"));
-		// Calendar calendar = Calendar.getInstance();
-		// int day = calendar.get(Calendar.DAY_OF_MONTH);
-		// calendar.set(Calendar.DAY_OF_MONTH, day + 30);
-		// String result = getTimeByPattern(calendar.getTime(),"yyyy年MM月dd日");
-		// System.out.println("result : " + result);
-		// System.out.println("millis : " + calendar.getTimeInMillis());
-		// System.out.println("millis : " + getFutureTimeMillis(TimeUnit.DAYS,
-		// 30));
-		// System.out.println(getDayResetTimeSeconds(5));
+		// 转换为时间戳（毫秒）
+		long timestamp = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
 	}
 }

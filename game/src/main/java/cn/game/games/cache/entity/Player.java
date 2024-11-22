@@ -469,6 +469,14 @@ public class Player  {
 			}
 			final int rmbCost = Boolean.getBoolean("AllRecharge1") ? 1 : cost[1];
 			final int chargeItemId = Boolean.getBoolean("AllRecharge1") ? 1007 : cost[2];
+			// 有代金券用代金券，不用支付
+			long vouchersCount = getCurrencyModule().get(Asset.Vouchers);
+			if (vouchersCount >= rmbCost) {
+				PlayerHelper.delResources(this, Asset.Vouchers.ID, rmbCost, OpType.BuyGoods);
+				handleEvent(EventTypeEnum.Charge, rmbCost);
+				return Future.succeededFuture(true);
+			}
+
 			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId()).setPlatform(platform)
 					.setSessionId(getGameClient().getSessionId())
 					.setGoodsPrice(rmbCost * 100)

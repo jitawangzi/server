@@ -295,6 +295,13 @@ public class FriendModule extends BasePlayerModule {
 		this.applicationCount = 0;
 		this.giftReceiveCount = 0;
 		this.refreshCount = 0;
+
+		for (Friend friend : friends.values()) {
+			friend.setGift(false);
+			friend.setGifted(false);
+			friend.setReceive(false);
+			DAO.update(friend);
+		}
 	}
 
 	@Override

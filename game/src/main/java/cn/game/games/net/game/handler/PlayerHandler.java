@@ -1,7 +1,6 @@
 package cn.game.games.net.game.handler;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1021,17 +1020,24 @@ public class PlayerHandler extends BaseHandler {
 //		}
 		// player.getData().setSeq(seq) ;
 		// 这里先按照开服时间来设置区服，后续会改成按人数。
-		String openTime = GameServerStatus.getInstance().getServerInfo().getServerOpenTime();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalDateTime dateTime = LocalDateTime.parse(openTime, formatter);
-		// 获取下一天的 10 点
-		LocalDateTime nextDayAtTen = dateTime.plusDays(2).withHour(10).withMinute(0).withSecond(0).withNano(0);
-		long timestamp = nextDayAtTen.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		int days = 1;
-		if (System.currentTimeMillis() > timestamp) {
-			days = 2;
+//		String openTime = GameServerStatus.getInstance().getServerInfo().getServerOpenTime();
+		long timeMillis = System.currentTimeMillis();
+		String[] serverAllocationTimes = GameServerStatus.getInstance().getServerInfo().getServerAllocationTimes();
+		int day = 0;
+		if (serverAllocationTimes != null && serverAllocationTimes.length > 0) {
+			day = serverAllocationTimes.length;
+			for (int i = 0; i < serverAllocationTimes.length; i++) {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				LocalDateTime dateTime = LocalDateTime.parse(serverAllocationTimes[i], formatter);
+				long epochMilli = DateUtil.toEpochMilli(dateTime);
+				if (timeMillis <= epochMilli) {
+					day = i;
+					break;
+				}
+			}
 		}
-		playerData.setServerId("server" + days);
+		day++;
+		playerData.setServerId("server" + day);
 
 		playerData.setPlayerId(id);
 		playerData.setUid(uid);
