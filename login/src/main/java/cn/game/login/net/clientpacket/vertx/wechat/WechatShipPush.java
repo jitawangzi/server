@@ -108,7 +108,6 @@ public class WechatShipPush implements Handler<RoutingContext> {
 		future.onSuccess(r -> {
 			log.info("wechat ship resp from game ret[{}]", r.getSuccess());
 			if (r.getSuccess()) {
-				successConsumer.accept(null);
 				if (!payOrder.getIsDeliver()) {
 					payOrder.setIsDeliver(true);
 					payOrder.setCompleteDate(DateUtil.nowDateStr()); 
@@ -116,6 +115,7 @@ public class WechatShipPush implements Handler<RoutingContext> {
 				}
 				updatePayOrder(wechatPushBean, payOrder);
 				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
+				successConsumer.accept(null);
 			} else {
 				failConsumer.accept(null);
 				updatePayOrder(wechatPushBean, payOrder);
