@@ -74,6 +74,7 @@ public class SecretscriptModule extends AbstractItemModule<Secretscript> {
 	}
 
 	public void setPvPSecretscriptMap(Map<Integer, Integer> secretscriptMapMap) {
+		PvPSecretscriptMap.clear();
 		PvPSecretscriptMap.putAll(secretscriptMapMap);
 	}
 
