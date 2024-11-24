@@ -421,6 +421,7 @@ public final class DateUtil {
 
 	public static int getWeek() {
 		Calendar calendar = Calendar.getInstance();
+		calendar.setFirstDayOfWeek(Calendar.MONDAY);
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
 		return week;
 	}
@@ -643,6 +644,7 @@ public final class DateUtil {
 
 		// 转换为时间戳（毫秒）
 		long timestamp = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-
+		int nowWeek = DateUtil.getWeek();
+		System.out.println(nowWeek);
 	}
 }
