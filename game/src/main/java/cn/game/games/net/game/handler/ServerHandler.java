@@ -1,6 +1,9 @@
 package cn.game.games.net.game.handler;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -143,14 +146,20 @@ public class ServerHandler extends BaseHandler {
 		if (opType == 1) {
 			CompletableFuture.runAsync(() -> System.exit(0));
 		} else if (opType == 2) {
-			String scriptPath = "/server/bin/restart.sh";
-
-			ProcessBuilder processBuilder = new ProcessBuilder();
-			processBuilder.command("bash", "-c", scriptPath);
 			try {
-				Process process = processBuilder.start();
+				ProcessBuilder pb = new ProcessBuilder("/bin/sh", "/server/bin/restart_background.sh");
+				pb.directory(new File("/server/bin/"));
+				Process process = pb.start();
 				// 等待脚本执行完成
 				int exitCode = process.waitFor();
+				log.info("restart.sh exitCode: " + exitCode);
+				// 读取脚本的输出
+				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					log.info(line);
+				}
+
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
