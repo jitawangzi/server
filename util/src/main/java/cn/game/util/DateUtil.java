@@ -3,7 +3,11 @@ package cn.game.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -232,11 +236,12 @@ public final class DateUtil {
 		return parse.getTime();
 
 	}
-
+	
 	/**
 	 * 获取当前时间 n天后0点的毫秒时间戳
 	 * 
-	 * @return
+	 * @param days 天数
+	 * @return 毫秒时间戳
 	 */
 	public static long nextDayStartTime(int days) {
 		return nextDayStartTime(System.currentTimeMillis(), days);
@@ -244,22 +249,37 @@ public final class DateUtil {
 
 	/** 
 	 * 获取当前时间 n天后0点的秒时间戳
-	 * @return
+	 * 
+	 * @param days 天数
+	 * @return 秒时间戳
 	 */
 	public static int nextDayStartTimeSecond(int days) {
-
 		return (int) (nextDayStartTime(System.currentTimeMillis(), days) / 1000);
 	}
 
+	/** 
+	 * n天后的0点开始时间戳
+	 * 
+	 * @param startTime 开始时间戳（毫秒）
+	 * @param days 天数
+	 * @return 毫秒时间戳
+	 */
 	public static long nextDayStartTime(long startTime, int days) {
+		// 使用系统默认时区（北京时间）
+		ZoneId zoneId = ZoneId.systemDefault();
+
+		// 转换时间戳为本地时间
 		Instant instant = Instant.ofEpochMilli(startTime);
-		LocalDateTime specificDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+		LocalDateTime specificDateTime = LocalDateTime.ofInstant(instant, zoneId);
+
+		// 计算目标日期
 		LocalDate targetDate = specificDateTime.toLocalDate().plusDays(days);
+
 		// 设置时间为 0 点 0 分 0 秒
 		LocalDateTime targetDateTime = targetDate.atStartOfDay();
-		// 获取时间戳（秒）
-		long timestamp = targetDateTime.toEpochSecond(ZoneOffset.UTC);
-		return timestamp * 1000;
+
+		// 转换回时间戳
+		return targetDateTime.atZone(zoneId).toInstant().toEpochMilli();
 	}
 
 	/**
@@ -518,17 +538,24 @@ public final class DateUtil {
 		return diffDays(timeMillis, System.currentTimeMillis());
 	}
 
-	/** 
+	/**
 	 * 计算两个时间戳之间相隔的天数（日期数）
-	 * @param t1
-	 * @param t2
-	 * @return
+	 * @param t1 第一个时间戳
+	 * @param t2 第二个时间戳
+	 * @return 相差的天数
 	 */
 	public static int diffDays(long t1, long t2) {
+		// 转换为当地时区
+		ZoneId zoneId = ZoneId.systemDefault();
+		LocalDateTime d1 = Instant.ofEpochMilli(t1).atZone(zoneId).toLocalDateTime();
+		LocalDateTime d2 = Instant.ofEpochMilli(t2).atZone(zoneId).toLocalDateTime();
 
-		LocalDate d1 = Instant.ofEpochMilli(t1).atZone(ZoneOffset.UTC).toLocalDate();
-		LocalDate d2 = Instant.ofEpochMilli(t2).atZone(ZoneOffset.UTC).toLocalDate();
-		return (int) ChronoUnit.DAYS.between(d1, d2);
+		// 获取日期部分
+		LocalDate date1 = d1.toLocalDate();
+		LocalDate date2 = d2.toLocalDate();
+
+		// 计算日期差
+		return (int) ChronoUnit.DAYS.between(date1, date2);
 	}
 
 	/**
@@ -567,12 +594,38 @@ public final class DateUtil {
 	}
 
 	/**
+	 * 将LocalDateTime转换为时间戳
+	 */
+	public static long toEpochMilli(LocalDateTime localDateTime) {
+		return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
+	/** 
+	 * 将LocalDateTime转换为秒级时间戳
+	 * @param localDateTime
+	 * @return
+	 */
+	public static long toEpochSecond(LocalDateTime localDateTime) {
+		return localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		long addWeek = addWeekBeginTimer(2);
-        System.out.println(addWeek);
-		System.out.println(diffDays(System.currentTimeMillis() - DAY_MILLIS));
+
+		// 测试用例
+		String[][] testDates = { { "2018-12-12 22:22:00", "2018-12-13 00:22:00" }, // 应该返回 1
+				{ "2018-12-12 00:00:00", "2018-12-12 23:59:59" }, // 应该返回 0
+				{ "2018-12-12 00:00:00", "2018-12-14 00:00:00" }, // 应该返回 2
+				{ "2018-12-31 23:59:59", "2019-01-01 00:00:01" } // 应该返回 1
+		};
+
+		for (String[] test : testDates) {
+			long t1 = parse(test[0]).getTime();
+			long t2 = parse(test[1]).getTime();
+			System.out.println(String.format("%s 到 %s 相差 %d 天", test[0], test[1], diffDays(t1, t2)));
+		}
 
 		// System.out.println(DateUtil.getTimeByPattern(new Date()));
 		// System.out.println(DateUtil.timeStrToCn("20081212 22:22"));

@@ -3,7 +3,7 @@ package cn.game.games.net.game.module.battle;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -394,14 +394,15 @@ public class ChapterModule extends BasePlayerModule  {
 
 	public void updateStoreStaminas() {
 		Instant instant = Instant.ofEpochMilli(player.getData().getOfflineTime());
-		LocalDateTime lastOnlineTime = instant.atZone(ZoneOffset.UTC).toLocalDateTime();
+
+		LocalDateTime lastOnlineTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 		LocalDateTime currentOnlineTime = LocalDateTime.now();
 
 		List<LocalDateTime> rewardTimes = calculateRewardTimes(lastOnlineTime, currentOnlineTime);
 
 		for (LocalDateTime rewardTime : rewardTimes) {
 			if (rewardTime.isAfter(lastOnlineTime) && rewardTime.isBefore(currentOnlineTime)) {
-				boolean ret = addStoreStaminas((int) rewardTime.toEpochSecond(ZoneOffset.UTC));
+				boolean ret = addStoreStaminas((int) DateUtil.toEpochSecond(rewardTime));
 				if (!ret) {
 					break;
 				}
