@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.pvp;
 
-import cn.game.games.cache.entity.Player;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
@@ -24,7 +23,6 @@ import org.apache.commons.lang.math.RandomUtils;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName OfflineBattleModule
@@ -96,7 +94,7 @@ public class OfflineBattleModule extends BasePlayerModule {
         break;
       }
       case refresh -> {
-        clear();
+        clearTempTarget();
         checkAndAddTicker();
         break;
       }
@@ -176,9 +174,13 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
 
   private void clear() {
-    tempRefreshList.clear();
     playNum = 0;
     buyNum = 0;
+    clearTempTarget();
+  }
+
+  private void clearTempTarget() {
+    tempRefreshList.clear();
     setInBattlePlayer(null);
   }
 
