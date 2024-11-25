@@ -29,7 +29,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	int round;
 	List<Integer> rewardIdList = new ArrayList<>();
 
-	private static transient EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.QuestReward,EventTypeEnum.QuestFinish};
+	private static transient EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.QuestReward,EventTypeEnum.QuestFinish,EventTypeEnum.refresh};
 
 	@Override
 	public Message buildActivityShowInfo() {
@@ -114,9 +114,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 			questModule.remove(activityQingShenConfig.taskID);
 			if (rewardIdList.contains(activityQingShenConfig.taskID)) rewardIdList.remove(Integer.valueOf(activityQingShenConfig.taskID));
 			questModule.open(activityQingShenConfig.taskID,true);
-			if (!ServerContext.getInstance().getRunMode().isProduction()){
 				log.info(String.format("create new taskId:%d, activityId:%d, round:%d  pid:%d,",activityQingShenConfig.taskID,id,round,player.getPlayerId()));
-			}
 		});
 	}
 
@@ -135,10 +133,20 @@ public class ActivityQingShen extends PlayerActivityBase {
 			}
 		}else if (event.getType() == EventTypeEnum.QuestFinish){
 			int taskId = event.getIntParameter(0);
-			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList(this.round);
-			int maxRoundId = roundConfigList.get(roundConfigList.size() - 2).taskID;
-			if (taskId == maxRoundId){
-				openRoundTaskList(round+1);
+			for(int i = round; i <= getMaxRound(); i++) {
+				List<ActivityQingShenConfig> roundConfigList = getRoundConfigList(i);
+				int maxRoundId = roundConfigList.get(roundConfigList.size() - 2).taskID;
+				if (taskId == maxRoundId){
+					openRoundTaskList(i+1);
+				}
+			}
+		} else if (event.getType() == EventTypeEnum.refresh) {//修复 线上 少数玩家 请神的活动任务 未注册到 QuestModule 模块 导致数据错误问题
+			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList(round);
+			QuestModule questModule = player.getQuestModule();
+			//任务未 注册到 QuestModule
+			if (questModule.get(roundConfigList.get(0).taskID) == null){
+				//从新初始化 注册一遍
+				openRoundTaskList(round);
 			}
 		}
 	}
