@@ -188,6 +188,20 @@ message LoginGameQuestionnairePush_7d000090{
 }
 
 
+// 通知game，改服务器状态
+message GameStatusChangeRequest_7d000030{
+	int32 status = 1; // 服务器状态
+}
+message GameStatusChangeResponse_7d000031{
+}
+
+// 通知game，关闭或者重启等
+message GameOpRequest_7d000373{
+	int32 opType = 1; // 1关闭 2重启
+}
+message GameOpResponse_7d000374{
+}
+
 
 // 清档，一般只在测试时使用。
 message LoginPlayerDeleteRequest_7d000080{

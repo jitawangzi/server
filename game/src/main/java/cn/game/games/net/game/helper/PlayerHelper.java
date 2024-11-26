@@ -1478,6 +1478,7 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return
 	 */
+	@Deprecated
 	public static String getServerId(long playerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {
@@ -1492,6 +1493,7 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return
 	 */
+	@Deprecated
 	public static Future<String> getServerIdAsync(long playerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {

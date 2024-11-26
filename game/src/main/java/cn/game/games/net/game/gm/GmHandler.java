@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.google.protobuf.Descriptors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +25,6 @@ import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
@@ -42,10 +40,15 @@ import cn.game.protocol.protobuf.GmMsg.GmPlayerLogoutRequest_77000009;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogouttResponse_7700000a;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerResponse_77000022;
+import cn.game.protocol.protobuf.GmMsg.GmServerOpRequest_77000030;
+import cn.game.protocol.protobuf.GmMsg.GmServerOpResponse_77000031;
+import cn.game.protocol.protobuf.GmMsg.GmServerStatusRequest_77000032;
+import cn.game.protocol.protobuf.GmMsg.GmServerStatusResponse_77000033;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
-import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoRequest_7d000050;
-import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoResponse_7d000051;
+import cn.game.protocol.protobuf.ServerMsg.GameOpRequest_7d000373;
+import cn.game.protocol.protobuf.ServerMsg.GameStatusChangeRequest_7d000030;
+import cn.game.protocol.protobuf.ServerMsg.GameStatusChangeResponse_7d000031;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.ServerType;
@@ -73,9 +76,39 @@ public class GmHandler extends BaseHandler {
     putInvoker(PbProtocol.GmMailListRequest_77000042, this::selectGmMailList);
     putInvoker(PbProtocol.GmMailCheckRequest_77000044, this::checkMail);
     putInvoker(PbProtocol.GmMailDeleteRequest_77000046, this::delGmMail);
+	putInvoker(PbProtocol.GmServerStatusRequest_77000032, this::serverStatus);
+	putInvoker(PbProtocol.GmServerOpRequest_77000030, this::serverOp);
   }
 
-  private void gmSendMail(NetClient client, Object o) {
+	private void serverStatus(NetClient client, Object o) {
+		GmServerStatusRequest_77000032 req = (GmServerStatusRequest_77000032) o;
+		GmServerStatusResponse_77000033 resp = GmServerStatusResponse_77000033.getDefaultInstance();
+		String serverId = req.getServerId();
+		int status = req.getStatus();
+		if (status <= 0 || status > 2 || StringUtils.isEmpty(serverId)) {
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.ID);
+			return;
+		}
+		Future<GameStatusChangeResponse_7d000031> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
+				GameStatusChangeRequest_7d000030.newBuilder().setStatus(status).build());
+
+		requestRemoteServer.onSuccess(r -> {
+			client.sendProtocol(resp);
+		}).onFailure(r -> {
+			client.sendProtocol(resp, ErrorMsgEnum.unknown.ID);
+		});
+	}
+	private void serverOp(NetClient client, Object o) {
+
+		GmServerOpRequest_77000030 req = (GmServerOpRequest_77000030) o;
+		String serverId = req.getServerId();
+		int opType = req.getOpType();
+		VxHolder.requestRemoteServer(serverId, GameOpRequest_7d000373.newBuilder().setOpType(opType).build());
+
+		client.sendProtocol(GmServerOpResponse_77000031.getDefaultInstance());
+	}
+
+	private void gmSendMail(NetClient client, Object o) {
     GmMsg.GmMailServerSendRequest_77000048 req = (GmMsg.GmMailServerSendRequest_77000048) o;
     GmMsg.GmMailServerSendResponse_77000049.Builder res =
         GmMsg.GmMailServerSendResponse_77000049.newBuilder();

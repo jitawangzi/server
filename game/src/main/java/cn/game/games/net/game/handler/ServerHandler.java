@@ -1,8 +1,10 @@
 package cn.game.games.net.game.handler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
@@ -49,12 +52,16 @@ import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch_7d00000b;
 import cn.game.protocol.protobuf.ServerMsg.GameDataPush_7d00000a;
 import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoRequest_7d000050;
 import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoResponse_7d000051;
+import cn.game.protocol.protobuf.ServerMsg.GameOpRequest_7d000373;
+import cn.game.protocol.protobuf.ServerMsg.GameOpResponse_7d000374;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutRequest_7d000101;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutResponse_7d000102;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerOnlinePush_7d000010;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
+import cn.game.protocol.protobuf.ServerMsg.GameStatusChangeRequest_7d000030;
+import cn.game.protocol.protobuf.ServerMsg.GameStatusChangeResponse_7d000031;
 import cn.game.protocol.protobuf.ServerMsg.GameTestRequest_7d000500;
 import cn.game.protocol.protobuf.ServerMsg.GameTestResponse_7d000501;
 import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
@@ -106,11 +113,48 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000074, this::updateIOSAccessToken);
 		putInvoker(PbProtocol.ServerObjectTestRequest_7d000033, this::objectMessageTest);
 		putInvoker(PbProtocol.LoginGameQuestionnairePush_7d000090, this::questionnairePush);
+		putInvoker(PbProtocol.GameStatusChangeRequest_7d000030, this::gameStatusChange);
+		putInvoker(PbProtocol.GameOpRequest_7d000373, this::gameOp);
 		
 
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
+	}
+
+	private void gameStatusChange(NetClient client, Object o) {
+		GameStatusChangeRequest_7d000030 req = (GameStatusChangeRequest_7d000030) o;
+		GameStatusChangeResponse_7d000031 resp = GameStatusChangeResponse_7d000031.getDefaultInstance();
+		int status = req.getStatus();
+		int err = 0;
+		try {
+			GameServerStatus.getInstance().updateServerStatus(ServerContext.getInstance().getServerId(), status);
+		} catch (Exception e) {
+			log.error("", e);
+			err = 1;
+		}
+		client.sendProtocol(resp, err);
+	}
+
+	private void gameOp(NetClient client, Object o) {
+		GameOpRequest_7d000373 req = (GameOpRequest_7d000373) o;
+		GameOpResponse_7d000374 resp = GameOpResponse_7d000374.getDefaultInstance();
+		int opType = req.getOpType();
+		if (opType == 1) {
+			CompletableFuture.runAsync(() -> System.exit(0));
+		} else if (opType == 2) {
+			String scriptPath = "/server/bin/restart.sh";
+
+			ProcessBuilder processBuilder = new ProcessBuilder();
+			processBuilder.command("bash", "-c", scriptPath);
+			try {
+				Process process = processBuilder.start();
+				// 等待脚本执行完成
+				int exitCode = process.waitFor();
+			} catch (IOException | InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void questionnairePush(NetClient client, Object o) {

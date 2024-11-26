@@ -312,6 +312,25 @@ message OrderInfo{
 }
 
 
+// 操作服务器重启等
+message GmServerOpRequest_77000030{
+	string serverId = 1;
+	int32 opType = 2 ;   // 1关闭，2重启（启动）
+}
+// 操作服务器重启等
+message GmServerOpResponse_77000031{
+}
+
+
+// 改变服务器状态
+message GmServerStatusRequest_77000032{
+	string serverId = 1;
+	int32 status = 2 ;   // 1正常开放，2维护
+}
+// 改变服务器状态
+message GmServerStatusResponse_77000033{
+}
+
 
 
 

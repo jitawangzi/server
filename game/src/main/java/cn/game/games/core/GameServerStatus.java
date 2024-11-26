@@ -1,6 +1,8 @@
 package cn.game.games.core;
 
 
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -19,6 +21,7 @@ import cn.game.core.base.ServerList;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
+import cn.game.util.JsonUtil;
 import cn.game.util.ZkHelper;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -101,6 +104,27 @@ public class GameServerStatus {
 		});
 		
 		return promise.future();
+	}
+
+	/** 
+	 * 更改zk中配置的服务器状态
+	 * @param serverId
+	 * @param status
+	 * @throws Exception
+	 */
+	public void updateServerStatus(String serverId, int status) throws Exception {
+		CuratorFramework client = ZkHelper.curator;
+		Config config = ConfigService.getConfig("zookeeper");
+		String path = config.getProperty("game.server.path", "") + "/" + serverId;
+		// 获取当前节点的值
+		byte[] dataBytes = client.getData().forPath(path);
+		String data = new String(dataBytes, StandardCharsets.UTF_8);
+
+		ServerList serverList = JsonUtil.parseObject(data, ServerList.class);
+		serverList.setStatus(status);
+
+		String updatedData = JsonUtil.toJsonString(serverList);
+		client.setData().forPath(path, updatedData.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public int canLogin(String version) {
