@@ -85,7 +85,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
 		ChannelFuture close = ctx.close();
 		close.addListener((f) -> {
 			systemOutLog.info("WebSocket Client closed! , System exit");
-//			System.exit(0);
+			System.exit(0);
 		});
     }
 
