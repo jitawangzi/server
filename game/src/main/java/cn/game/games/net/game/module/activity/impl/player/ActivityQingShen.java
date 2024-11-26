@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.protobuf.Message;
 
-import cn.game.core.base.ServerContext;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
@@ -29,7 +28,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	int round;
 	List<Integer> rewardIdList = new ArrayList<>();
 
-	private static transient EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.QuestReward,EventTypeEnum.QuestFinish,EventTypeEnum.refresh};
+	private static transient EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.QuestReward,EventTypeEnum.QuestFinish,EventTypeEnum.LoginSuccess};
 
 	@Override
 	public Message buildActivityShowInfo() {
@@ -140,7 +139,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 					openRoundTaskList(i+1);
 				}
 			}
-		} else if (event.getType() == EventTypeEnum.refresh) {//修复 线上 少数玩家 请神的活动任务 未注册到 QuestModule 模块 导致数据错误问题
+		} else if (event.getType() == EventTypeEnum.LoginSuccess) {//修复 线上 少数玩家 请神的活动任务 未注册到 QuestModule 模块 导致数据错误问题
 			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList(round);
 			QuestModule questModule = player.getQuestModule();
 			//任务未 注册到 QuestModule

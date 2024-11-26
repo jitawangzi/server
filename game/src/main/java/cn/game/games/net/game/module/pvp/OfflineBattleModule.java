@@ -77,7 +77,7 @@ public class OfflineBattleModule extends BasePlayerModule {
 
   @Override
   public EventTypeEnum[] getEventTypes() {
-    return new EventTypeEnum[] {EventTypeEnum.NewDay, EventTypeEnum.refresh,EventTypeEnum.FuncOpen};
+    return new EventTypeEnum[] {EventTypeEnum.NewDay, EventTypeEnum.LoginSuccess,EventTypeEnum.FuncOpen};
   }
 
   @Override
@@ -93,7 +93,7 @@ public class OfflineBattleModule extends BasePlayerModule {
         }
         break;
       }
-      case refresh -> {
+      case LoginSuccess -> {
         clearTempTarget();
         checkAndAddTicker();
         break;
@@ -129,7 +129,8 @@ public class OfflineBattleModule extends BasePlayerModule {
 
 
   public long getDaySettlementTimer() {
-    return DateUtil.getDayTimeBySet(22, 0, 0);
+
+    return DateUtil.getDayTimeBySet(23, 55, 0);
   }
 
   public long getSeasonSettlementTimer() {

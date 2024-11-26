@@ -33,7 +33,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
 public class MailModule extends BasePlayerModule  {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginFinish };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginSuccess };
 
 	@JsonIgnore
 	private Map<Long, Mail>	mails = new HashMap<>();
@@ -192,7 +192,7 @@ public class MailModule extends BasePlayerModule  {
 
 		switch (event.getType()) {
 
-		case LoginFinish: {
+			case LoginSuccess : {
 			checkNoticeMail();
 			break;
 		}
