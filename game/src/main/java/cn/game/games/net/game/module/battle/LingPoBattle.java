@@ -63,7 +63,9 @@ public class LingPoBattle extends XiYouBattleHandler {
 	}
 
 	public void updateBattleId() {
-		initBattleId();
+		if (battleId == 0) {
+			initBattleId();
+		}
 		if (randomBuff.isEmpty()) {
 			randomBuff.addAll(BattleHelper.randomBuffs(battleId, 3));
 		}
@@ -84,6 +86,7 @@ public class LingPoBattle extends XiYouBattleHandler {
 		for (BattleConfig battleConfig : battleTypeList) {
 			if (BattleHelper.isComplete(mainBattleId, battleConfig.preBattle)) {
 				battleId = battleConfig.ID;
+			} else {
 				break;
 			}
 		}
