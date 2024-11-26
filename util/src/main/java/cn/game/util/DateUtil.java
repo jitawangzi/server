@@ -27,6 +27,8 @@ public final class DateUtil {
 
 	public static final String pattern_en_yyyy_MM_dd = "yyyy-MM-dd";
 
+	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern_en);
+
 	// 一天的毫秒数 60*60*1000*24
 	public final static long DAY_MILLIS = 86400000;
 	// 一天的秒数 60*60*24
@@ -601,7 +603,6 @@ public final class DateUtil {
 	 * @return
 	 */
 	public static int diffDays(String dateTimeStr) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern_en);
 		LocalDateTime specificDateTime = LocalDateTime.parse(dateTimeStr, formatter);
 		LocalDate specificDate = specificDateTime.toLocalDate();
 		LocalDate currentDate = LocalDate.now();
@@ -630,39 +631,18 @@ public final class DateUtil {
 	 * @param localDateTime
 	 * @return
 	 */
-	public static long toEpochSecond(LocalDateTime localDateTime) {
-		return localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+	public static int toEpochSecond(LocalDateTime localDateTime) {
+		return (int) localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		LocalDateTime dateTime = LocalDateTime.now(); // 当前 LocalDateTime
 
-		// 测试用例
-		String[][] testDates = { { "2018-12-12 22:22:00", "2018-12-13 00:22:00" }, // 应该返回 1
-				{ "2018-12-12 00:00:00", "2018-12-12 23:59:59" }, // 应该返回 0
-				{ "2018-12-12 00:00:00", "2018-12-14 00:00:00" }, // 应该返回 2
-				{ "2018-12-31 23:59:59", "2019-01-01 00:00:01" } // 应该返回 1
-		};
-
-		for (String[] test : testDates) {
-			long t1 = parse(test[0]).getTime();
-			long t2 = parse(test[1]).getTime();
-			System.out.println(String.format("%s 到 %s 相差 %d 天", test[0], test[1], diffDays(t1, t2)));
-		}
-
-		// System.out.println(DateUtil.getTimeByPattern(new Date()));
-		// System.out.println(DateUtil.timeStrToCn("20081212 22:22"));
-		// Calendar calendar = Calendar.getInstance();
-		// int day = calendar.get(Calendar.DAY_OF_MONTH);
-		// calendar.set(Calendar.DAY_OF_MONTH, day + 30);
-		// String result = getTimeByPattern(calendar.getTime(),"yyyy年MM月dd日");
-		// System.out.println("result : " + result);
-		// System.out.println("millis : " + calendar.getTimeInMillis());
-		// System.out.println("millis : " + getFutureTimeMillis(TimeUnit.DAYS,
-		// 30));
-		// System.out.println(getDayResetTimeSeconds(5));
+		// 转换为时间戳（毫秒）
+		long timestamp = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
 	}
 }

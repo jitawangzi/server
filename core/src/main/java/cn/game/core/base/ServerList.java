@@ -29,6 +29,8 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 	/** 开服时间，通常用来判断开服xx天的逻辑，后期不应该改变。  */
 	private String ServerOpenTime;
 
+	private String[] serverAllocationTimes;
+
     private Integer seq;
 	private Integer type;
 	private String version;
@@ -137,6 +139,14 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 
 	public void setMaxOnline(Integer maxOnline) {
 		this.maxOnline = maxOnline;
+	}
+
+	public String[] getServerAllocationTimes() {
+		return serverAllocationTimes;
+	}
+
+	public void setServerAllocationTimes(String[] serverAllocationTimes) {
+		this.serverAllocationTimes = serverAllocationTimes;
 	}
 
 	@Override
