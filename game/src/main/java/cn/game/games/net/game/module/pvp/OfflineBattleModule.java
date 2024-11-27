@@ -128,9 +128,15 @@ public class OfflineBattleModule extends BasePlayerModule {
   }
 
 
-  public long getDaySettlementTimer() {
-    return DateUtil.getDayTimeBySet(22, 0, 0);
-  }
+    public long getDaySettlementTimer() {
+      RankConfig config = RankManager.instance().get(9);
+      int hour = 23, minute =40;
+      if (config != null && config.RewardTime1.length > 2){
+        hour = config.RewardTime1[0];
+        minute = config.RewardTime1[1];
+      }
+      return DateUtil.getDayTimeBySet(hour, minute, 0);
+    }
 
   public long getSeasonSettlementTimer() {
     long weekEndTimer = nextSeasonTimer - 1000L;
