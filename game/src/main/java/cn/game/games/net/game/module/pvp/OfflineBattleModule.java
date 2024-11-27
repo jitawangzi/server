@@ -12,6 +12,7 @@ import cn.game.protocol.generated.config.*;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.NPCManager;
+import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PlayerMsg;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.poi.ss.formula.functions.Rank;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -129,8 +131,13 @@ public class OfflineBattleModule extends BasePlayerModule {
 
 
   public long getDaySettlementTimer() {
-
-    return DateUtil.getDayTimeBySet(23, 55, 0);
+    RankConfig config = RankManager.instance().get(9);
+    int hour = 23, minute =40;
+    if (config != null && config.RewardTime1.length > 2){
+      hour = config.RewardTime1[0];
+      minute = config.RewardTime1[1];
+    }
+    return DateUtil.getDayTimeBySet(hour, minute, 0);
   }
 
   public long getSeasonSettlementTimer() {
