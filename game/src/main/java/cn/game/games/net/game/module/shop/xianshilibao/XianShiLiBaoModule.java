@@ -59,9 +59,13 @@ public class XianShiLiBaoModule extends BasePlayerModule {
         return new EventTypeEnum[]{EventTypeEnum.LevelUp,EventTypeEnum.BattleEnd};
     }
     public List<ActivityXianShiLiBaoConfig> getXianShiLiBaoConfigList(int level, int battleId){
-        return ActivityXianShiLiBaoManager.instance().getLvList(level).stream().filter( c -> c.BattleID == battleId).collect(Collectors.toList());
+        Optional<ActivityXianShiLiBaoConfig> optionalActivityXianShiLiBaoConfig = ActivityXianShiLiBaoManager.instance().list().stream().filter( c -> c.BattleID == battleId && c.Lv<=level ).findAny();
+        int groupId =optionalActivityXianShiLiBaoConfig.isPresent()? optionalActivityXianShiLiBaoConfig.get().Group: 0;
+        if (groupId == 0){
+            return new ArrayList<>();
+        }
+        return ActivityXianShiLiBaoManager.instance().list().stream().filter(c ->c.Group == groupId).collect(Collectors.toList());
     }
-
     @Override
     public void handleEvent(GameEvent event) {
         switch (event.getType()){
