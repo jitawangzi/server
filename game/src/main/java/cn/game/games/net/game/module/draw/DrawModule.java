@@ -11,14 +11,19 @@ import java.util.Set;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.DrawConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuidanceRandomGroupConfig;
+import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.SupremeRandomGroupConfig;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.generated.manager.GuidanceRandomGroupManager;
+import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.SupremeRandomGroupManager;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.DrawMsg.DrawInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -54,6 +59,9 @@ public class DrawModule extends BasePlayerModule {
 
 	/** key：draw表id，value : 已经抽过的索引、下标 SupremeRandomGroupConfig */
 	private Map<Integer, List<Integer>> supremeRandomGroupMap = new HashMap<>();
+
+	private int wishHeroId;
+	private int wishHeroTimes = GlobalConst.OrientationFrequency;
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -103,6 +111,8 @@ public class DrawModule extends BasePlayerModule {
 		
 				newBuilder.putAllGiftRemainingTimes(map);
 				newBuilder.putAllGiftMaxTimes(mapMax);*/
+		newBuilder.setWishHeroId(wishHeroId);
+		newBuilder.setWishHeroTimes(wishHeroTimes);
 		return newBuilder.build();
 	}
 
@@ -136,7 +146,8 @@ public class DrawModule extends BasePlayerModule {
 			Set<Integer> guidanceKeySet = randomParameterGroupIds.keySet();
 			if (count == 10 && isFirstTen) {
 				for (int i = 0; i < count; i++) {
-					List<RewardInfo> reward = PlayerHelper.addReward(player, GlobalConst.FirstMandatoryDraw[i], OpType.Draw);
+
+					List<RewardInfo> reward = drawRewards(GlobalConst.FirstMandatoryDraw[i]);
 					ret.addAll(reward);
 				}
 				isFirstTen = false;
@@ -161,7 +172,7 @@ public class DrawModule extends BasePlayerModule {
 								curGuidanceGroupIndex = -1;
 							}
 						}
-						List<RewardInfo> reward = PlayerHelper.addReward(player, guidanceRandomGroupConfig.GivenID, OpType.Draw);
+						List<RewardInfo> reward = drawRewards(guidanceRandomGroupConfig.GivenID);
 						ret.addAll(reward);
 						guidanceDrawCount++;
 					} else {
@@ -178,8 +189,7 @@ public class DrawModule extends BasePlayerModule {
 			}
 		} else {
 			for (int i = 0; i < count; i++) {
-				List<RewardInfo> reward = PlayerHelper.addReward(player, drawConfig.DrawRandomId, OpType.Draw);
-				ret.addAll(reward);
+				ret.addAll(drawRewards(drawConfig.DrawRandomId));
 			}
 		}
 
@@ -190,6 +200,48 @@ public class DrawModule extends BasePlayerModule {
 			freeDrawTime.setValue(id, DateUtil.currentTimeSeconds());
 		}
 		return allRewards;
+	}
+
+	private List<Goods> wishHeroRewards(int randomDropId) {
+
+		List<Goods> randomReward = PlayerHelper.randomReward(randomDropId);
+		if (wishHeroId == 0) {
+			return randomReward;
+		}
+
+		// 检查里面有几个非心愿红卡
+		int redHeroCount = 0;
+		for (Goods goods : randomReward) {
+			int hid = goods.getId();
+			if (ItemHelper.getGoodsType(hid) == GoodsTypeEnum.Hero.getId()) {
+				if (hid == wishHeroId) {
+					wishHeroTimes = GlobalConst.OrientationFrequency;
+				} else {
+					HeroConfig heroConfig = HeroManager.instance().get(hid);
+					if (heroConfig.InitialQuality == 6) {
+						redHeroCount++;
+					}
+				}
+			}
+		}
+		if (wishHeroTimes - redHeroCount <= 0) {
+			wishHeroTimes = GlobalConst.OrientationFrequency - Math.abs(wishHeroTimes - redHeroCount);
+			// 换心愿卡
+			for (Goods goods : randomReward) {
+				if (goods.getId() != wishHeroId) {
+					goods.setId(wishHeroId);
+					break;
+				}
+			}
+		} else {
+			wishHeroTimes -= redHeroCount;
+		}
+		return randomReward;
+	}
+
+	private List<RewardInfo> drawRewards(int randomDropId) {
+		List<Goods> wishHeroRewards = wishHeroRewards(randomDropId);
+		return PlayerHelper.addResources(player, wishHeroRewards, OpType.Draw);
 	}
 
 	/** 
@@ -212,8 +264,15 @@ public class DrawModule extends BasePlayerModule {
 				supremeRandomGroupList.clear();
 			}
 		}
-		List<RewardInfo> reward = PlayerHelper.addReward(player, supremeRandomGroupConfig.GivenID, OpType.Draw);
-		return reward;
+		return drawRewards(supremeRandomGroupConfig.GivenID);
+	}
+
+	public int getWishHeroId() {
+		return wishHeroId;
+	}
+
+	public void setWishHeroId(int wishHeroId) {
+		this.wishHeroId = wishHeroId;
 	}
 
 }

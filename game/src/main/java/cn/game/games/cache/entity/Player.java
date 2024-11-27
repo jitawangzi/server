@@ -121,6 +121,7 @@ public class Player  {
 	/** 玩家基本数据 */
 	private PlayerData data;
 	private Account account;
+	/** 玩家的网络连接 */
 	private transient GameClient gameClient;
 	private List<Long> timerTask = new ArrayList<>();
 	private boolean isOnline = true;
