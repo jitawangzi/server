@@ -15,21 +15,10 @@ import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
+import cn.game.games.net.game.module.shop.xianshilibao.XianShiLiBaoModule;
 import cn.game.games.net.game.module.vip.VipModule;
-import cn.game.protocol.generated.config.ActivityJQBConfig;
-import cn.game.protocol.generated.config.ChapterPacksConfig;
-import cn.game.protocol.generated.config.MonthCardConfig;
-import cn.game.protocol.generated.config.QuestConfig;
-import cn.game.protocol.generated.config.RechargeConfig;
-import cn.game.protocol.generated.config.ShopItemConfig;
-import cn.game.protocol.generated.config.VIPConfig;
-import cn.game.protocol.generated.manager.ActivityJQBManager;
-import cn.game.protocol.generated.manager.ChapterPacksManager;
-import cn.game.protocol.generated.manager.MonthCardManager;
-import cn.game.protocol.generated.manager.QuestManager;
-import cn.game.protocol.generated.manager.RechargeManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.VIPManager;
+import cn.game.protocol.generated.config.*;
+import cn.game.protocol.generated.manager.*;
 import cn.game.protocol.manual.OpType;
 
 public enum PayType {
@@ -134,7 +123,19 @@ public enum PayType {
 			PlayerHelper.addReward(player,buyConfig.RandomGivenId,OpType.vipGiftReward);
 			return true;
 		}
-	};
+	},
+	/**限时礼包购买*/
+	XianShiLiBao(9){
+		public boolean offlinePay(Player player, PayItem payItem) {
+			int id = payItem.getPayId();
+			ActivityXianShiLiBaoConfig activityXianShiLiBaoConfig = ActivityXianShiLiBaoManager.instance().get(id);
+			XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
+			xianShiLiBaoModule.addBuyId(activityXianShiLiBaoConfig);
+			return false;
+		}
+	}
+	;
+
 
 	private int id;
 

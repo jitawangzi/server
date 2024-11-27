@@ -151,8 +151,10 @@ public enum ErrorMsgEnum {
 	we_chat_context_check_fail(404, "输入的文字包含屏蔽字，请检查之后在输入"),
 	login_fail_player_is_forbid(405,"玩家被封号 不可登录"),
 	chat_fail_player_is_forbid(406,"玩家被禁言 不可聊天"),
-
-	;
+	xian_shi_li_bao_not_found(407,"购买的限时礼包不存在"),
+	xian_shi_li_bao_time_is_fail(408,"限时礼包已经过期，不可购买"),
+	xian_shi_li_bao_buy_num_is_max(409, "限时礼包已经购买过了，不可重复购买"),
+	xian_shi_li_bao_buy_fail(410, "购买限时礼包失败");
 
 	/** id */
 	public int ID;

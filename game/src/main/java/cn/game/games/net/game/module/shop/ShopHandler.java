@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import cn.game.games.net.game.module.shop.xianshilibao.XianShiLiBaoModule;
+import cn.game.protocol.generated.config.*;
+import cn.game.protocol.generated.manager.*;
+import cn.game.protocol.protobuf.ShopMsg;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -22,26 +26,9 @@ import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
-import cn.game.protocol.generated.config.ChapterPacksConfig;
-import cn.game.protocol.generated.config.FundPassConfig;
-import cn.game.protocol.generated.config.FundPassRewardsConfig;
-import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.HCBattleConfig;
-import cn.game.protocol.generated.config.MonthCardConfig;
-import cn.game.protocol.generated.config.RechargeConfig;
-import cn.game.protocol.generated.config.ShopConfig;
-import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
-import cn.game.protocol.generated.manager.ChapterPacksManager;
-import cn.game.protocol.generated.manager.FundPassManager;
-import cn.game.protocol.generated.manager.FundPassRewardsManager;
-import cn.game.protocol.generated.manager.HCBattleManager;
-import cn.game.protocol.generated.manager.MonthCardManager;
-import cn.game.protocol.generated.manager.RechargeManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -98,6 +85,68 @@ public class ShopHandler extends BaseHandler {
 		putInvoker(PbProtocol.ShopHeishiRefreshRequest_15000005, this::heishiRefresh);
 		putInvoker(PbProtocol.ShopBoxOpenRequest_15000040, this::openBox);
 //		putInvoker(PbProtocol.AdvertiseWatchFinishRequest_15000030, this::advertise);
+
+		putInvoker(PbProtocol.GetXianShiLiBaoInfoRequest_15000050, this::XianShiLiBaoInfo);
+		putInvoker(PbProtocol.BuyXianShiLiBaoRequest_15000052, this::BuyXianShiLiBao);
+		
+	}
+
+	private void BuyXianShiLiBao(NetClient client, Object message) {
+		ShopMsg.BuyXianShiLiBaoRequest_15000052 req = (ShopMsg.BuyXianShiLiBaoRequest_15000052) message;
+		ShopMsg.BuyXianShiLiBaoResponse_15000053.Builder resp = ShopMsg.BuyXianShiLiBaoResponse_15000053.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
+		ActivityXianShiLiBaoConfig config = ActivityXianShiLiBaoManager.instance().getNullable(req.getId());
+		resp.setId(resp.getId());
+		if (config == null){
+			client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+			return;
+		}
+		if (!xianShiLiBaoModule.getGroupMap().containsKey(config.Group)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_not_found.getId());
+			return;
+		}
+		//前置礼包未购买
+		if (config.Type == 2 && config.PacksID != 0 && !xianShiLiBaoModule.getBuyIds().contains(config.PacksID)){ //"总类型 1：限时礼包 2：链路礼包"
+			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
+			return;
+		}
+		long failTimer = xianShiLiBaoModule.getGroupMap().get(config.Group);
+		if (System.currentTimeMillis() >= failTimer){
+			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_time_is_fail.getId());
+			return;
+		}
+		int buyNum = (int) xianShiLiBaoModule.getBuyIds().stream().filter(id -> id == req.getId()).count();
+		if (buyNum >= config.PurchasesNum) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_num_is_max.getId());
+			return;
+		}
+		if (!PlayerHelper.delResources(player, config.Price, OpType.BuyXianShiLiBao)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		player.pay(PayType.XianShiLiBao, req.getId(),config.Price).
+		onSuccess(handleSuccess -> {
+			if (handleSuccess){
+				resp.addAllRewards(xianShiLiBaoModule.addBuyId(config));
+				resp.setInfo(xianShiLiBaoModule.buildXianShiLiBao(config.Group));
+			}
+		}).onFailure(e -> {
+					e.printStackTrace();
+					client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
+				});
+	}
+
+	private void XianShiLiBaoInfo(NetClient client, Object message) {
+		ShopMsg.GetXianShiLiBaoInfoRequest_15000050 req = (ShopMsg.GetXianShiLiBaoInfoRequest_15000050) message;
+		ShopMsg.GetXianShiLiBaoInfoResponse_15000051.Builder resp = ShopMsg.GetXianShiLiBaoInfoResponse_15000051.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
+		xianShiLiBaoModule.getGroupMap().keySet().forEach(group ->{
+			resp.addInfos(xianShiLiBaoModule.buildXianShiLiBao(group));
+		});
+		client.sendProtocol(resp.build());
 	}
 
 	private void openBox(NetClient client, Object message) {

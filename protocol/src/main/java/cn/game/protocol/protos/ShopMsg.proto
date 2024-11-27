@@ -147,10 +147,41 @@ message ShopGroupItemInfo{
 message ShopBoxOpenRequest_15000040{
   bool watchAds = 1;   // 是看广告开宝箱，还是直接使用钻石开宝箱。
 }
-
 message ShopBoxOpenResponse_15000041{
   repeated RewardInfo rewards = 2;  // 获得的物品
 }
+//==================================现时礼包===============================
+message XianShiLiBaoInfo{
+	int32 failTimer = 1;//过期时间戳  秒
+	int32 groupId = 2;//该组限时礼包的组id
+	repeated int32 buyIds = 3;//已经购买过的id
+}
+
+//获取现时礼包数据
+message GetXianShiLiBaoInfoRequest_15000050{
+
+}
+message GetXianShiLiBaoInfoResponse_15000051{
+	repeated XianShiLiBaoInfo infos = 1;
+}
+
+//购买限时礼包
+message BuyXianShiLiBaoRequest_15000052{
+	int32 id = 1;//限时礼包的id
+}
+message BuyXianShiLiBaoResponse_15000053{
+	int32 id = 1;//限时礼包的id
+	repeated RewardInfo rewards = 2;//购买的物品
+	XianShiLiBaoInfo info = 3;//该组礼包信息
+}
+//解锁新的限时礼包
+message NotifyNewXianShiLiBao_15000054{
+	XianShiLiBaoInfo info = 1;
+}
+
+
+
+
 
 
 

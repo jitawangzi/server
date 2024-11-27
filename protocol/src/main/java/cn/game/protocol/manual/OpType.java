@@ -122,13 +122,13 @@ public enum OpType{
 	DA_DAO_Buy(214, "大道争锋购买"),
 	DA_DAO_FREE_ADD(215, "大道争锋每日免费奖励挑战券"),
 
+	BuyXianShiLiBao(216, "限时礼包购买" ),
 
 
 	PressureTest(888, "压力测试"),
-	None(999, "未定义"),
+	None(999, "未定义");
 
-    ;
-	private int id ; 
+	private int id ;
 	private String name ; 
 	private String desc ; 
 
