@@ -680,12 +680,12 @@ public class PlayerHelper {
 	 * @param rewards
 	 * @return
 	 */
-	public static List<RewardInfo> addResources(Player player, List<Entry<Integer, Integer>> rewards, OpType opType) {
+	public static List<RewardInfo> addResources(Player player, List<Goods> goods, OpType opType) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
-		if (rewards != null && rewards.size() > 0) {
-			for (Entry<Integer, Integer> entry : rewards) {
+		if (goods != null && goods.size() > 0) {
+			for (Goods g : goods) {
 
-				List<RewardInfo> rewardItem = addResources(player, entry.getKey(), entry.getValue(), opType, false);
+				List<RewardInfo> rewardItem = addResources(player, g.getId(), g.getCount(), opType, false);
 				rewardItems.addAll(rewardItem);
 			}
 //			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));

@@ -3,6 +3,9 @@ option java_package = "cn.game.protocol.protobuf";
 package Protos;
 import "RewardMsg.proto" ;
 
+//@HandlerPackage cn.game.games.net.game.module.draw
+//@Function PleaseGod
+//@MessageModule 37
 
 // 请求卡池界面数据
 message DrawListRequest_37000001{
@@ -20,6 +23,9 @@ message DrawInfo{
 	// 废弃了： 赠送当前品质的卡，需要的次数。 key:品质,value:次数
 	map<int32,int32> giftMaxTimes = 3;
 	int32 nextFreeTime = 2;  // 距离下次免费单抽的时间(秒)
+
+	int32  wishHeroId = 5;  // 选择的心愿英雄id
+	int32  wishHeroTimes = 6;  // 还剩几次红卡次数必出心愿英雄，最小是1
 }
 
 
@@ -37,4 +43,15 @@ message DrawResponse_37000004{
 	DrawInfo draw = 3;  // 更新相关数据
 	repeated RewardInfo heros	=	4;	// 额外赠送的英雄，废弃了
 }
+
+
+// 选择心愿红卡
+message DrawHeroWishRequest_37000005{
+	int32  heroId = 1;  // Hero表id
+}
+
+// 选择心愿红卡返回
+message DrawHeroWishResponse_37000006{
+}
+
 

@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.mail;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -150,12 +149,7 @@ public class MailModule extends BasePlayerModule  {
 					list.addAll(addResources);
 				}*/
 				if (attachmentList != null && !attachmentList.isEmpty()) {
-
-					List<AbstractMap.Entry<Integer, Integer>> rewards = new ArrayList<AbstractMap.Entry<Integer, Integer>>(attachmentList.size());
-					for (Goods goods : attachmentList) {
-						rewards.add(new AbstractMap.SimpleEntry(goods.getId(), goods.getCount()));
-					}
-					list = PlayerHelper.addResources(player, rewards, OpType.Mail);
+					list = PlayerHelper.addResources(player, attachmentList, OpType.Mail);
 				} else {
 					MailConfig mailConfig = MailManager.instance().get(mail.getMailId());
 					list = PlayerHelper.addResources(player, mailConfig.Reward, OpType.Mail);
