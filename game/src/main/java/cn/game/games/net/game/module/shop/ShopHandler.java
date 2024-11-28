@@ -143,7 +143,19 @@ public class ShopHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 
 		XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
-		xianShiLiBaoModule.getGroupMap().keySet().forEach(group ->{
+		long now = System.currentTimeMillis();
+		xianShiLiBaoModule.getGroupMap().forEach((group,failTimer) ->{
+			if (now >= failTimer){
+				return;
+			}
+			List<ActivityXianShiLiBaoConfig> groupList = xianShiLiBaoModule.getGroupConfigList(group);
+			List<Integer> groupIds = new ArrayList<>();
+			groupList.forEach(config -> {
+				groupIds.add(config.ID);
+			});
+			if (xianShiLiBaoModule.getBuyIds().containsAll(groupIds)){
+				return;
+			}
 			resp.addInfos(xianShiLiBaoModule.buildXianShiLiBao(group));
 		});
 		client.sendProtocol(resp.build());
