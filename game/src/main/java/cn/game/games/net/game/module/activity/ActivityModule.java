@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import cn.game.games.cache.entity.Activity;
 import cn.game.games.core.BasePlayerModule;
@@ -301,6 +302,7 @@ public class ActivityModule extends BasePlayerModule {
 			checkExpired();
 			refreshByType(1);
 			newDay();
+			checkResetCycleActivity();
 			break;
 		}
 		case NewWeek: {
@@ -325,6 +327,15 @@ public class ActivityModule extends BasePlayerModule {
 			break;
 		}
 		}
+	}
+	//检查 并重置 类型 4 周期的活动
+	private void checkResetCycleActivity() {
+		List<ActivityConfig> cycleList = ActivityManager.instance().list().stream().filter(activityConfig -> activityConfig.openType == 4).collect(Collectors.toList());
+		cycleList.forEach(activityConfig -> {
+			if (!activities.containsKey(activityConfig.ID)) {
+				open(activityConfig.ID, true);
+			}
+		});
 	}
 
 	@Override

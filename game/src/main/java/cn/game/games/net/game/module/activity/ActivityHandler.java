@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import cn.game.protocol.generated.config.SevenDaysSigninConfig;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -111,6 +112,7 @@ public class ActivityHandler extends BaseHandler {
         ActivitySevenDaysSigninRequest_11000026 req = (ActivitySevenDaysSigninRequest_11000026) message;
         ActivitySevenDaysSigninResponse_11000027.Builder resp = ActivitySevenDaysSigninResponse_11000027.newBuilder();
         int id = req.getId();
+        boolean isExtReward = req.getIsExtReward();
         ActivityConfig activityConfig = ActivityManager.instance().getNullable(id);
         if (activityConfig == null) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
@@ -122,11 +124,20 @@ public class ActivityHandler extends BaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
             return;
         }
-        if (activityBase.isSignin()) {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
-            return;
+        if (isExtReward){//领取 额外签到奖励
+            SevenDaysSigninConfig config = activityBase.getSevenDaysSigninConfig(activityBase.getSigninDay());
+            if (config == null){
+                client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+                return;
+            }
+            resp.addAllRewards(activityBase.rewardExtra(config));
+        }else {
+            if (activityBase.isSignin()) {
+                client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
+                return;
+            }
+            resp.addAllRewards(activityBase.receive(0));
         }
-        resp.addAllRewards(activityBase.receive(0));
         client.sendProtocol(resp.build());
     }
 

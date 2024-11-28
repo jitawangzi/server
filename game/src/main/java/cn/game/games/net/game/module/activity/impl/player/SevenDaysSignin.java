@@ -1,7 +1,13 @@
 package cn.game.games.net.game.module.activity.impl.player;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.games.net.game.helper.MailHelper;
+import cn.game.games.net.game.module.award.Goods;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
+import cn.game.util.GameUtil;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
@@ -23,10 +29,14 @@ public class SevenDaysSignin extends PlayerActivityBase {
 	private boolean isSignin;
 	/** 已经签到的天数   1 - 7 */
 	private int day;
+	/** 领取过的额外奖励 */
+	private List<Integer> rewardExtra = new ArrayList<>();
+
 
 	@Override
 	public Message buildActivityShowInfo() {
 		ActivitySevenDaysSigninInfoResponse_11000025.Builder builder = ActivitySevenDaysSigninInfoResponse_11000025.newBuilder();
+		builder.setActivityId(id);
 		builder.setDay(day);
 		builder.setCanSignin(!isSignin);
 		return builder.build();
@@ -37,18 +47,49 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		isSignin = false;
 		return true;
 	}
+
+	List<SevenDaysSigninConfig> getSevenDaysSigninConfigList(int activityId) {
+		return SevenDaysSigninManager.instance().list().stream().filter(config -> config.ActivityID == activityId).toList();
+	}
+
+	public SevenDaysSigninConfig getSevenDaysSigninConfig(int day) {
+		for (SevenDaysSigninConfig config : getSevenDaysSigninConfigList(id)) {
+			if (config.Days == day + 1) {
+				return config;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public List<RewardInfo> receive(int id) {
-		SevenDaysSigninConfig config = SevenDaysSigninManager.instance().getNullable(day + 1);
-		List<RewardInfo> resources = PlayerHelper.addResources(player, config.Item, OpType.SevenDaysSignin);
+		SevenDaysSigninConfig config = getSevenDaysSigninConfig(day);
+		//月卡加成额外掉落
+		int[][] drops =  GameUtil.arrayAddition(config.Item, player.getWelfareValue(WelfareTypeEnum.MonthClock));
+		List<RewardInfo> resources = PlayerHelper.addResources(player, drops, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;
 		GameLogger.activity(player, super.id, day);
-
-		if (day == SevenDaysSigninManager.instance().list().size()) {
+		if (day == getSevenDaysSigninConfigList(id).size()) {
 			player.getActivityModule().destroy(super.id, true);
 		}
 		return resources;
+	}
+
+	public List<RewardInfo> rewardExtra(SevenDaysSigninConfig config) {
+		//月卡加成额外掉落
+		if (config.Reward1.length > 0){
+			rewardExtra.add(config.ID);
+			int[] drops =  GameUtil.arrayAddition(config.Reward1, player.getWelfareValue(WelfareTypeEnum.MonthClock));
+			GameLogger.activity(player, super.id, day);
+			List<RewardInfo> resources = PlayerHelper.addResources(player, drops, OpType.SevenDaysSignin);
+			return resources;
+		}
+		return new ArrayList<>();
+	}
+
+	public List<Integer> getRewardExtra() {
+		return rewardExtra;
 	}
 
 	@Override
@@ -60,4 +101,19 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		return isSignin;
 	}
 
+	@Override
+	public void destroy() {
+		List<Goods> drops = new ArrayList<>();
+    	getSevenDaysSigninConfigList(id).forEach(
+            config -> {
+              if (config.Reward1.length > 0 && !rewardExtra.contains(config.ID)) {
+                drops.add(Goods.valueOf(config.Reward1));
+              }
+            });
+		MailHelper.sendMail(player.getPlayerId(), 21, drops, true);
+	}
+
+	public int getSigninDay() {
+		return day;
+	}
 }
