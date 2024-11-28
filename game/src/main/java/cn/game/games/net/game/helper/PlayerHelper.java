@@ -1,6 +1,7 @@
 package cn.game.games.net.game.helper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +84,6 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
-import cn.game.util.Pair;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import io.vertx.core.Future;
@@ -100,7 +99,7 @@ public class PlayerHelper {
 //	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
 //	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
 
-	public static boolean isEnough(Player player, List<? extends Entry<Integer, Integer>> list) {
+	public static boolean isEnough(Player player, Collection<? extends Entry<Integer, Integer>> list) {
 
 		if (list == null || list.isEmpty()) {
 			return true;
@@ -111,6 +110,13 @@ public class PlayerHelper {
 			}
 		}
 		return true;
+	}
+
+	public static boolean isEnough(Player player, Map<Integer, Integer> map) {
+		if (map == null || map.isEmpty()) {
+			return true;
+		}
+		return isEnough(player, map.entrySet());
 	}
 
 	public static boolean isEnoughOld(Player player, int[][] list) {
@@ -346,7 +352,7 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(Player player, List<? extends Entry<Integer, Integer>> list, OpType consumeType) {
+	public static boolean delResources(Player player, Collection<? extends Entry<Integer, Integer>> list, OpType consumeType) {
 
 		if (list == null || list.isEmpty()) {
 			return true;
@@ -365,6 +371,14 @@ public class PlayerHelper {
 			return true;
 		}
 		return false;
+	}
+
+	public static boolean delResources(Player player, Map<Integer, Integer> map, OpType consumeType) {
+
+		if (map == null || map.isEmpty()) {
+			return true;
+		}
+		return delResources(player, map.entrySet(), consumeType);
 	}
 
 	public static boolean delResources(Player player, int[][] list, OpType consumeType) {
@@ -756,16 +770,23 @@ public class PlayerHelper {
 	 * @param rewards
 	 * @return
 	 */
-	public static List<RewardInfo> addResources(Player player, Set<Pair<Integer, Integer>> rewards, OpType opType) {
+	public static List<RewardInfo> addResources(Player player, Collection<? extends Entry<Integer, Integer>> rewards, OpType opType) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.size() > 0) {
-			for (Pair<Integer, Integer> pair : rewards) {
-				List<RewardInfo> rewardItem = addResources(player, pair.first, pair.second, opType, false);
+			for (Entry<Integer, Integer> pair : rewards) {
+				List<RewardInfo> rewardItem = addResources(player, pair.getKey(), pair.getValue(), opType, false);
 				rewardItems.addAll(rewardItem);
 			}
 			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 		}
 		return rewardItems;
+	}
+
+	public static List<RewardInfo> addResources(Player player, Map<Integer, Integer> map, OpType opType) {
+		if (map == null || map.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
+		return addResources(player, map.entrySet(), opType);
 	}
 
 	/**

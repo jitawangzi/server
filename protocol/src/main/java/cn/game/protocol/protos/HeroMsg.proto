@@ -5,6 +5,11 @@ package Protos;
 import "BaseMsg.proto" ;
 import "RewardMsg.proto" ;
 //@File 英雄相关协议
+
+//@HandlerPackage cn.game.games.net.game.module.develop.hero
+//@MessageModule 16
+
+
 //英雄升级
 message HeroUpLevelRequest_16000001{
   string uid = 1; // 英雄唯一id
@@ -48,8 +53,10 @@ message HeroConflateResponse_16000004{
 }
 message HeroConflateInfo{
 	  string uid = 1; // 本体英雄唯一id
-  	// 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值
+  	// 被消耗的英雄唯一id,如果使用了万能耗材，万能耗材不用填写这个值,  废弃了。
   	repeated string consumedUid = 2;
+  	// 消耗的同职业碎片id和数量
+  	map<int32,int32> sameProfessionItems = 5 ;
 }
 
 //英雄上阵
@@ -88,11 +95,11 @@ message HeroLevelResetResponse_16000008{
 message HeroQualityResetRequest_16000011{
   string uid = 1; // 英雄唯一id
 }
-
+// 英雄品质重置返回
 message HeroQualityResetResponse_16000012{
-	repeated ItemInfo items = 2;	// 返还的万能突破道具。
+	HeroInfo hero = 1;	// 重置后的英雄数据
+	repeated RewardInfo items = 2;	// 返回的本体碎片，和同职业碎片
 }
-
 
 //请求免费英雄日租卡，这个只有在功能开启的时候请求一下，不能重复请求
 message HeroFreeDayRentRequest_16000030{
@@ -136,5 +143,21 @@ message HeroIllustrationsRewardResponse_16000043{
 	repeated RewardInfo reward = 2;	// 获得的奖励
 }
 
+//使用英雄碎片合成英雄
+message HeroFragmentComposeRequest_16000050{
+	int32 heroId = 1;			// Hero表id
+}
+
+message HeroFragmentComposeResponse_16000051{
+	repeated RewardInfo reward = 2;	// 获得的奖励
+}
+//英雄分解成碎片
+message HeroDisassembleRequest_16000052{
+	string uid = 1;			// 待分解的英雄唯一id
+}
+
+message HeroDisassembleResponse_16000053{
+	repeated RewardInfo reward = 2;	// 获得的奖励
+}
 
 
