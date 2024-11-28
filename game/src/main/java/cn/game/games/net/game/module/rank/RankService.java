@@ -434,9 +434,12 @@ public class RankService {
 		CompletableFuture<Double> resultFuture = new CompletableFuture<>();
 
 		sortedSet.getScoreAsync(playerId).thenCompose(currentScore -> {
-			if (currentScore == null || newValue > currentScore) {
+			if (currentScore == null) {
 				return sortedSet.addScoreAsync(playerId, newValue);
 			} else {
+				if (newValue > currentScore) {
+					return sortedSet.addScoreAsync(playerId, newValue - currentScore);
+				}
 				return CompletableFuture.completedFuture(currentScore);
 			}
 		}).whenComplete((score, throwable) -> {
