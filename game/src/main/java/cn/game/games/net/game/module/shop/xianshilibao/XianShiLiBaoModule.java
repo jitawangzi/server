@@ -87,14 +87,16 @@ public class XianShiLiBaoModule extends BasePlayerModule {
                ShiLuoZhenJingBattle shiLuoZhenJingBattle = player.getChapterModule().getBattle(DungeonTypeEnum.ShiLuoZhenJing);
                List<ActivityXianShiLiBaoConfig> allLevelConfigList = ActivityXianShiLiBaoManager.instance().getLvList(level);
                 Set<Integer> groupSet = new HashSet<>();
-                allLevelConfigList.forEach(config ->{
-                    if (shiLuoZhenJingBattle.getHistoryMaxBattleId() >= config.BattleID || shiLuoZhenJingBattle.getCompleteBattleId() >= config.BattleID){
-                        groupSet.add(config.Group);
-                    }
-                });
-                groupSet.forEach(group ->{
-                    checkAddNewLiBao(level,group);
-                });
+                if (allLevelConfigList != null){
+                    allLevelConfigList.forEach(config ->{
+                        if (shiLuoZhenJingBattle.getHistoryMaxBattleId() >= config.BattleID || shiLuoZhenJingBattle.getCompleteBattleId() >= config.BattleID){
+                            groupSet.add(config.Group);
+                        }
+                    });
+                    groupSet.forEach(group ->{
+                        checkAddNewLiBao(level,group);
+                    });
+                }
             }
             default -> {
                 log.error(String.format("XianShiLiBaoModule not found this type eventType:%s, pid:%d",event.getType(),player.getPlayerId()));
