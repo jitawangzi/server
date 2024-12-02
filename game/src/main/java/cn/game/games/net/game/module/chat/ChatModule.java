@@ -19,7 +19,9 @@ public class ChatModule extends BasePlayerModule {
 		switch (event.getType()) {
 
 		case LoginFinish: {
-			PushService.getInstance().addPlayerTags(playerId, player.getServerId());
+//			PushService.getInstance().addPlayerTags(playerId, player.getServerId());
+			// 登陆完成，添加玩家标签,目前不需要按服务器id分。
+			PushService.getInstance().addPlayerTags(playerId);
 			break;
 		}
 		}

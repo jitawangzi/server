@@ -14,6 +14,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.NPCConfig;
+import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
@@ -103,6 +104,7 @@ public class SimplePlayer implements Serializable {
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		this.serverId = player.getServerId();
+		this.serverName = VirtualServerManager.instance().get(this.serverId).ServerName;
 		//存储 大道争锋阵容
 		Map<Integer, List<String>> lineups = player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
 		Map<Integer, List<Hero>> lineupsMap = new HashMap<Integer, List<Hero>>();
@@ -171,6 +173,8 @@ public class SimplePlayer implements Serializable {
 		builder.setHead(head);
 		builder.setHeadFrame(headFrame);
 		builder.setServerId(serverId);
+		builder.setServerName(serverName);
+
 		builder.setCombatEffectiveness(combatEffectiveness);
 
 		return builder.build();

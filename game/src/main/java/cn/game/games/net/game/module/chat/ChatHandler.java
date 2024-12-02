@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.chat;
 
-import io.vertx.core.Future;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +23,7 @@ import cn.game.protocol.protobuf.ChatMsg.ServerChatMessagePush_31000010;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
+import io.vertx.core.Future;
 
 /**
  * 聊天处理器
@@ -71,7 +71,8 @@ public class ChatHandler extends BaseHandler {
 		switch (chatType) {
 		case WORLD_CHAT: {
 			// 推送给所有在线玩家
-			PushService.getInstance().pushMessage(notAtMeMessage, false, sendPlayer.getServerId());
+//			PushService.getInstance().pushMessage(notAtMeMessage, false, sendPlayer.getServerId());
+			PushService.getInstance().pushMessage(notAtMeMessage, false);
 //			Collection<Player> players = PlayerManager.getInstance().getAllPlayer().values();
 //			for (Player player : players) {
 //				if (!player.getData().getServerId().equals(sendServerId)) {
