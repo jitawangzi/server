@@ -145,7 +145,7 @@ message HeroIllustrationsRewardResponse_16000043{
 
 //使用英雄碎片合成英雄
 message HeroFragmentComposeRequest_16000050{
-	int32 heroId = 1;			// Hero表id
+	repeated int32 heroId = 1;			// Hero表id
 }
 
 message HeroFragmentComposeResponse_16000051{

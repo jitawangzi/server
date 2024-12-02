@@ -115,30 +115,27 @@ public class HeroHandler extends BaseHandler {
     private void fragmentCompose(NetClient client, Object message) {
         HeroFragmentComposeRequest_16000050 req = (HeroFragmentComposeRequest_16000050) message;
         HeroFragmentComposeResponse_16000051.Builder resp = HeroFragmentComposeResponse_16000051.newBuilder();
-        int heroId = req.getHeroId();
+		List<Integer> heroIdList = req.getHeroIdList();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        HeroModule heroModule = player.getHeroModule();
-        Collection<Hero> heros = heroModule.getByConfigId(heroId);
-        if (!heros.isEmpty()) {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-            return;
-        }
-        HeroConfig heroConfig = HeroManager.instance().get(heroId);
-        if (heroConfig == null) {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
-            return;
-        }
-        Integer count = GlobalConst.HeroSynthesisDisassemble.get(heroConfig.InitialQuality);
-        if (count == null) {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
-            return;
-        }
-        if (!PlayerHelper.delResources(player, heroConfig.Fragment, count, OpType.HeroFragmentCompose)) {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-            return;
-        }
-        List<RewardInfo> resources = PlayerHelper.addResources(player, heroId, 1, OpType.HeroFragmentCompose);
-        resp.addAllReward(resources);
+		for (Integer heroId : heroIdList) {
+			HeroConfig heroConfig = HeroManager.instance().get(heroId);
+			if (heroConfig == null) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+				return;
+			}
+			Integer count = GlobalConst.HeroSynthesisDisassemble.get(heroConfig.InitialQuality);
+			if (count == null) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+				return;
+			}
+			if (!PlayerHelper.delResources(player, heroConfig.Fragment, count, OpType.HeroFragmentCompose)) {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+				return;
+			}
+			List<RewardInfo> resources = PlayerHelper.addResources(player, heroId, 1, OpType.HeroFragmentCompose);
+			resp.addAllReward(resources);
+		}
+
         client.sendProtocol(resp.build());
     }
 
