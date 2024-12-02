@@ -107,7 +107,11 @@ public class XianShiLiBaoModule extends BasePlayerModule {
 
     private void checkAddNewLiBao(int level, int battleId) {
         List<ActivityXianShiLiBaoConfig> list = getXianShiLiBaoConfigList(level, battleId);
-        ActivityXianShiLiBaoConfig xianShiLiBaoConfig = list.stream().findAny().get();
+        Optional<ActivityXianShiLiBaoConfig> optionalActivityXianShiLiBaoConfig = list.stream().findAny();
+        if (!optionalActivityXianShiLiBaoConfig.isPresent()){
+            return;
+        }
+        ActivityXianShiLiBaoConfig xianShiLiBaoConfig = optionalActivityXianShiLiBaoConfig.get();
         if (groupMap.containsKey(xianShiLiBaoConfig.Group)){
             return;
         }
